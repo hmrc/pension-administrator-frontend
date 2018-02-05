@@ -2,9 +2,9 @@
 
 echo "Applying migration $className;format="snake"$"
 
-echo "Adding routes to conf/app.routes"
-echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                       controllers.$className$Controller.onPageLoad()" >> ../conf/app.routes
+echo "Adding routes to $routeFile$.routes"
+echo "" >> ../conf/$routeFile$.routes
+echo "GET        /$className;format="decap"$                       controllers.$routeFile$.$className$Controller.onPageLoad()" >> ../conf/$routeFile$.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
