@@ -23,7 +23,7 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(frontendAppConfig, messagesApi, FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl)
 
   "Check Your Answers Controller" must {

@@ -16,25 +16,20 @@
 
 package connectors
 
-import play.api.libs.json.Format
+import identifiers.Identifier
+import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object FakeDataCacheConnector extends DataCacheConnector {
-  override def save[A](cacheId: String, key: String, value: A)(implicit fmt: Format[A]): Future[CacheMap] = Future(CacheMap(cacheId, Map()))
+class FakeDataCacheConnector extends DataCacheConnector {
 
-  override def remove(cacheId: String, key: String): Future[Boolean] = ???
+  override def save[A](cacheId: String, path: JsPath, value: A)(implicit fmt: Format[A]): Future[JsValue] =
+    Future.successful(Json.obj())
 
-  override def fetch(cacheId: String): Future[Option[CacheMap]] = Future(Some(CacheMap(cacheId, Map())))
-
-  override def getEntry[A](cacheId: String, key: String)(implicit fmt: Format[A]): Future[Option[A]] = ???
-
-  override def addToCollection[A](cacheId: String, collectionKey: String, value: A)(implicit fmt: Format[A]): Future[CacheMap] = Future(CacheMap(cacheId, Map()))
-
-  override def removeFromCollection[A](cacheId: String, collectionKey: String, item: A)(implicit fmt: Format[A]): Future[CacheMap] = Future(CacheMap(cacheId, Map()))
-
-  override def replaceInCollection[A](cacheId: String, collectionKey: String, index: Int, item: A)(implicit fmt: Format[A]): Future[CacheMap] = Future(CacheMap(cacheId, Map()))
+  override def fetch(cacheId: String): Future[Option[JsValue]] =
+    Future.successful(Some(Json.obj()))
 }
+
+object FakeDataCacheConnector extends FakeDataCacheConnector

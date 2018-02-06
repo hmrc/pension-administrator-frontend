@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.{Configuration, Logger}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.modules.reactivemongo.MongoDbConnection
 import reactivemongo.api.DefaultDB
 import reactivemongo.api.indexes.{Index, IndexType}
@@ -45,12 +45,12 @@ object DatedCacheMap {
 }
 
 class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
-  extends ReactiveRepository[DatedCacheMap, BSONObjectID](config.getString("appName").get, mongo, DatedCacheMap.formats) {
+  extends ReactiveRepository[DatedCacheMap, BSONObjectID](config.underlying.getString("appName"), mongo, DatedCacheMap.formats) {
 
   val fieldName = "lastUpdated"
   val createdIndexName = "userAnswersExpiry"
   val expireAfterSeconds = "expireAfterSeconds"
-  val timeToLiveInSeconds: Int = config.getInt("mongodb.timeToLiveInSeconds").get
+  val timeToLiveInSeconds: Int = config.underlying.getInt("mongodb.timeToLiveInSeconds")
 
   createIndex(fieldName, createdIndexName, timeToLiveInSeconds)
 
@@ -67,18 +67,31 @@ class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
     }
   }
 
-  def upsert(cm: CacheMap): Future[Boolean] = {
-    val selector = BSONDocument("id" -> cm.id)
-    val cmDocument = Json.toJson(DatedCacheMap(cm))
-    val modifier = BSONDocument("$set" -> cmDocument)
+  def upsert(id: String, json: JsValue): Future[Boolean] = {
 
-    collection.update(selector, modifier, upsert = true).map { lastError =>
-      lastError.ok
-    }
+    val document = Json.obj(
+      "id" -> id,
+      "data" -> json,
+      "lastUpdated" -> DateTime.now(DateTimeZone.UTC)
+    )
+
+    val selector = BSONDocument("id" -> id)
+    val modifier = BSONDocument("$set" -> document)
+
+    collection.update(selector, modifier, upsert = true)
+      .map(_.ok)
   }
 
-  def get(id: String): Future[Option[CacheMap]] =
-    collection.find(Json.obj("id" -> id)).one[CacheMap]
+  def get(id: String): Future[Option[JsValue]] = {
+    import play.api.libs.json._
+    collection.find(Json.obj("id" -> id)).one[JsObject].map {
+      json =>
+        json.flatMap {
+          json =>
+            json.validate((__ \ "data").json.pick[JsObject]).asOpt
+        }
+    }
+  }
 }
 
 @Singleton

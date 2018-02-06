@@ -22,6 +22,7 @@ import org.scalatest.mockito.MockitoSugar
 import base.SpecBase
 import connectors.DataCacheConnector
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -40,7 +41,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
         when(dataCacheConnector.fetch("id")) thenReturn Future(None)
         val action = new Harness(dataCacheConnector)
 
-        val futureResult = action.callTransform(new AuthenticatedRequest(fakeRequest, "id"))
+        val futureResult = action.callTransform(AuthenticatedRequest(fakeRequest, "id"))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isEmpty mustBe true
@@ -51,10 +52,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
         val dataCacheConnector = mock[DataCacheConnector]
-        when(dataCacheConnector.fetch("id")) thenReturn Future(Some(new CacheMap("id", Map())))
+        when(dataCacheConnector.fetch("id")) thenReturn Future.successful(Some(Json.obj()))
         val action = new Harness(dataCacheConnector)
 
-        val futureResult = action.callTransform(new AuthenticatedRequest(fakeRequest, "id"))
+        val futureResult = action.callTransform(AuthenticatedRequest(fakeRequest, "id"))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isDefined mustBe true
