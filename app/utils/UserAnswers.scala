@@ -16,9 +16,23 @@
 
 package utils
 
-import uk.gov.hmrc.http.cache.client.CacheMap
-import identifiers._
-import models._
+import identifiers.TypedIdentifier
+import models.NormalMode
+import play.api.libs.json._
 
-class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
+class UserAnswers(json: JsValue) extends Enumerable.Implicits {
+
+  def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
+    get[A](id.path)
+  }
+
+  def get[A](path: JsPath)(implicit rds: Reads[A]): Option[A] = {
+    JsLens.fromPath(path).get(json)
+      .flatMap(Json.fromJson[A]).asOpt
+  }
+
+  def getAll[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
+    (JsLens.fromPath(path) andThen JsLens.atAllIndices).get(json)
+      .flatMap(Json.fromJson[Seq[A]]).asOpt
+  }
 }

@@ -16,4 +16,19 @@
 
 package identifiers
 
-trait Identifier
+import play.api.libs.json.JsPath
+
+import scala.language.implicitConversions
+import play.api.libs.json._
+
+trait Identifier {
+  def path: JsPath = __ \ toString
+}
+
+object Identifier {
+
+  implicit def toString(i: Identifier): String =
+    i.toString
+}
+
+trait TypedIdentifier[A] extends Identifier

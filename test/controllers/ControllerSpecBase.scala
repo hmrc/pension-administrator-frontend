@@ -16,17 +16,18 @@
 
 package controllers
 
-import uk.gov.hmrc.http.cache.client.CacheMap
 import base.SpecBase
 import controllers.actions.FakeDataRetrievalAction
+import org.joda.time.LocalDate
+import play.api.libs.json.Json
 
 trait ControllerSpecBase extends SpecBase {
 
   val cacheMapId = "id"
 
-  def emptyCacheMap = CacheMap(cacheMapId, Map())
+  def getEmptyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))
 
-  def getEmptyCacheMap = new FakeDataRetrievalAction(Some(emptyCacheMap))
+  def dontGetAnyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
 
-  def dontGetAnyData = new FakeDataRetrievalAction(None)
+
 }
