@@ -39,6 +39,22 @@ site.yes = Yes
 site.save_and_continue = Save and continue
 site.service_name = pension-administrator-frontend
 site.textarea.char_limit = (Limit is {0} characters)
+site.secondaryHeader = Register a new Pension Scheme Administrator
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+companyUniqueTaxReference.title = Corporation Tax Unique Taxpayer Reference number
+companyUniqueTaxReference.heading = Corporation Tax Unique Taxpayer Reference number
+companyUniqueTaxReference.body = A CTUTR is issued by HMRC when you register your business.
+companyUniqueTaxReference.hint = A UTR is 10 or 13 digits, if it is 13 digits only enter the last 10.
+companyUniqueTaxReference.checkYourAnswersLabel = companyUniqueTaxReference
+companyUniqueTaxReference.error__required = Please give an answer for companyUniqueTaxReference
+
+companyRegistrationNumber.title = Company Registration number
+companyRegistrationNumber.heading = Company Registration number
+companyRegistrationNumber.checkYourAnswersLabel = Company Registration number
+companyRegistrationNumber.error.required = Enter the Company Registration number
+companyRegistrationNumber.hint = This is issued by Companies House. It is 7 or 8 characters, typically 7 numbers or a combination of 2 letters followed by 6 digits, for example AB123456.
+companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
+companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number

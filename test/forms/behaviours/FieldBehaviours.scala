@@ -33,7 +33,7 @@ trait FieldBehaviours extends FormSpec with PropertyChecks with Generators {
       forAll(validDataGenerator -> "validDataItem") {
         dataItem: String =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-          result.value.value shouldBe dataItem
+          result.errors shouldBe empty
       }
     }
   }

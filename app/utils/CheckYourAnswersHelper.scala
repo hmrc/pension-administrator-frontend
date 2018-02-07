@@ -21,4 +21,12 @@ import models.CheckMode
 import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def companyUniqueTaxReference: Option[AnswerRow] = userAnswers.get(identifiers.company.CompanyUniqueTaxReferenceId) map {
+    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", s"$x", false, controllers.company.routes.CompanyUniqueTaxReferenceController.onPageLoad(CheckMode).url)
+  }
+
+  def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {
+    x => AnswerRow("companyRegistrationNumber.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)
+  }
 }

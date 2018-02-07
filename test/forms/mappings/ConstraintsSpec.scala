@@ -19,8 +19,7 @@ package forms.mappings
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
 
-class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
-
+class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with RegexBehaviour{
 
   "firstError" must {
 
@@ -115,5 +114,29 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
       val result = maxLength(10, "error.length")("a" * 11)
       result mustEqual Invalid("error.length", 10)
     }
+  }
+
+  "companyRegistrationNumber" must {
+
+    val validCrn = Table(
+      "1234567",
+      "A123456",
+      "AB123456"
+    )
+
+    val invalidCrn = Table(
+      "value",
+      "123456",
+      "12345678",
+      "ABC123456"
+    )
+
+    "Company Registration Number" must {
+
+      val invalidMsg = "companyRegistrationNumber.error.invalid"
+
+      behave like regexWithValidAndInvalidExamples(companyRegistrationNumber, validCrn, invalidCrn, invalidMsg, crn)
+    }
+
   }
 }
