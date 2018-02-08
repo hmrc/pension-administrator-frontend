@@ -19,15 +19,22 @@ package controllers
 import javax.inject.Inject
 
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import controllers.actions.AuthAction
+import play.api.libs.json.JsPath
+import play.api.mvc.{Action, AnyContent}
 import views.html.index
 
 class IndexController @Inject()(val appConfig: FrontendAppConfig,
-                                val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+                                val messagesApi: MessagesApi,
+                                authenticate: AuthAction,
+                                dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(index(appConfig))
+  def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
+    dataCacheConnector.save(request.externalId, JsPath \ "IndexController", "onPageLoad").map(_ =>
+      Ok(index(appConfig))
+    )
   }
 }
