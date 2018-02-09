@@ -119,13 +119,14 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
   "companyRegistrationNumber" must {
 
     val validCrn = Table(
+      "crn",
       "1234567",
       "A123456",
       "AB123456"
     )
 
     val invalidCrn = Table(
-      "value",
+      "crn",
       "123456",
       "12345678",
       "ABC123456"
@@ -156,4 +157,48 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     behave like regexWithValidAndInvalidExamples(companyUniqueTaxReference, validUtr, invalidUtr, invalidMsg, utr)
   }
+
+  "vatRgistrationNumber" must {
+
+    val validVat = Table(
+      "vat",
+      "123456789"
+    )
+
+    val invalidVat = Table(
+      "vat",
+      "12345678",
+      "1234567890",
+      "12345678A",
+      "12345678_"
+    )
+
+    val invalidMsg = "vatRgistrationNumber.error.invalid"
+
+    behave like regexWithValidAndInvalidExamples(vatRgistrationNumber, validVat, invalidVat, invalidMsg, vat)
+  }
+
+  "payeEmployerReferenceNumber" must {
+
+    val validPaye = Table(
+      "paye",
+      "1",
+      "A",
+      "1234567890123",
+      "1234567890ABC",
+      "ABCDEFGHIJKLM"
+    )
+
+    val invalidPaye = Table(
+      "paye",
+      "12345678901234",
+      "1234567890ABCD",
+      "A1._-"
+    )
+
+    val invalidMsg = "payeEmployerReferenceNumber.error.invalid"
+
+    behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, paye)
+  }
+
 }

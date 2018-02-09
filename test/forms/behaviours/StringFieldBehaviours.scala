@@ -44,8 +44,6 @@ trait StringFieldBehaviours extends FieldBehaviours {
       val result = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
       result.errors shouldEqual Seq(error)
     }
-
-
-
   }
+
 }

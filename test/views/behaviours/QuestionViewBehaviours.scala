@@ -63,4 +63,14 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
       }
     }
   }
+
+  def pageWithLabel(createView: (Form[A]) => HtmlFormat.Appendable,
+                     forElement: String,
+                     expectedText: String,
+                     expectedHintText: Option[String] = None): Unit = {
+    s"behave like a question page with labels and optional hint for $forElement" in {
+      val doc = asDocument(createView(form))
+      assertContainsLabel(doc, forElement, expectedText, expectedHintText)
+    }
+  }
 }
