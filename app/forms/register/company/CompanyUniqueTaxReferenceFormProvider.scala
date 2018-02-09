@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package forms.company
+package forms.register.company
+
+import javax.inject.Inject
 
 import forms.FormErrorHelper
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 
 class CompanyUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with Mappings {

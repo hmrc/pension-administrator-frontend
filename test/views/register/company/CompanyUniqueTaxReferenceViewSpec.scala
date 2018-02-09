@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package views.company
+package views.register.company
 
-import play.api.data.Form
-import controllers.company.routes
-import forms.company.CompanyUniqueTaxReferenceFormProvider
+import forms.register.company.CompanyUniqueTaxReferenceFormProvider
 import models.NormalMode
+import play.api.data.Form
 import views.behaviours.StringViewBehaviours
 import views.html.company.companyUniqueTaxReference
 
