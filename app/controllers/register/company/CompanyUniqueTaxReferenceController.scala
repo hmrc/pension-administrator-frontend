@@ -22,13 +22,13 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.register.company.CompanyUniqueTaxReferenceFormProvider
-import identifiers.company.CompanyUniqueTaxReferenceId
+import identifiers.register.company.CompanyUniqueTaxReferenceId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.company.companyUniqueTaxReference
+import views.html.register.company.companyUniqueTaxReference
 
 import scala.concurrent.Future
 

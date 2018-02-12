@@ -27,6 +27,8 @@ class CompanyUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper wi
   def apply(): Form[String] =
     Form(
       "value" -> text("companyUniqueTaxReference.error.required")
-        .verifying(maxLength(10, "companyUniqueTaxReference.error.length"))
+        .verifying(firstError(
+          companyUniqueTaxReference("companyUniqueTaxReference.error.invalid")
+        ))
     )
 }

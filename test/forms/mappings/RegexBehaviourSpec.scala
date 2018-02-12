@@ -20,7 +20,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
-trait RegexBehaviour extends TableDrivenPropertyChecks {
+trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
 
   this: WordSpec with MustMatchers =>
 

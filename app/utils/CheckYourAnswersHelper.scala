@@ -17,13 +17,14 @@
 package utils
 
 import controllers.routes
+import identifiers.register.company.CompanyUniqueTaxReferenceId
 import models.CheckMode
 import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def companyUniqueTaxReference: Option[AnswerRow] = userAnswers.get(identifiers.company.CompanyUniqueTaxReferenceId) map {
-    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", s"$x", false, controllers.company.routes.CompanyUniqueTaxReferenceController.onPageLoad(CheckMode).url)
+  def companyUniqueTaxReference: Option[AnswerRow] = userAnswers.get(CompanyUniqueTaxReferenceId) map {
+    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyUniqueTaxReferenceController.onPageLoad(CheckMode).url)
   }
 
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {

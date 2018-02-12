@@ -17,13 +17,14 @@
 package forms.register.company
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Constraints
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
-class CompanyUniqueTaxReferenceFormProviderSpec extends StringFieldBehaviours {
+class CompanyUniqueTaxReferenceFormProviderSpec extends StringFieldBehaviours with Constraints{
 
   val requiredKey = "companyUniqueTaxReference.error.required"
-  val lengthKey = "companyUniqueTaxReference.error.length"
-  val maxLength = 10
+  val invalid = "companyUniqueTaxReference.error.invalid"
 
   val form = new CompanyUniqueTaxReferenceFormProvider()()
 
@@ -34,20 +35,20 @@ class CompanyUniqueTaxReferenceFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      RegexpGen.from(utr)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithRegex(
+      form,
+      fieldName,
+      "ABC",
+      FormError(fieldName, invalid, Seq(utr))
     )
   }
 }

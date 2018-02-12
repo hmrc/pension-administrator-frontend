@@ -20,13 +20,13 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyUniqueTaxReferenceFormProvider
-import identifiers.company.CompanyUniqueTaxReferenceId
+import identifiers.register.company.CompanyUniqueTaxReferenceId
 import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.company.companyUniqueTaxReference
+import views.html.register.company.companyUniqueTaxReference
 
 class CompanyUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
@@ -41,7 +41,7 @@ class CompanyUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   def viewAsString(form: Form[_] = form) = companyUniqueTaxReference(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = "answer"
+  val testAnswer = "1234567890"
 
   "CompanyUniqueTaxReference Controller" must {
 
