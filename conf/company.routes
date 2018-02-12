@@ -1,8 +1,8 @@
 
-GET        /companyUniqueTaxReference               controllers.company.CompanyUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode)
-POST       /companyUniqueTaxReference               controllers.company.CompanyUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode)
-GET        /changeCompanyUniqueTaxReference                        controllers.company.CompanyUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeCompanyUniqueTaxReference                        controllers.company.CompanyUniqueTaxReferenceController.onSubmit(mode: Mode = CheckMode)
+GET        /companyUniqueTaxReference               controllers.register.company.CompanyUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode)
+POST       /companyUniqueTaxReference               controllers.register.company.CompanyUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode)
+GET        /changeCompanyUniqueTaxReference                        controllers.register.company.CompanyUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeCompanyUniqueTaxReference                        controllers.register.company.CompanyUniqueTaxReferenceController.onSubmit(mode: Mode = CheckMode)
 
 GET        /companyRegistrationNumber               controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /companyRegistrationNumber               controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)

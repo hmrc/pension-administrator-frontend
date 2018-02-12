@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package views.company
+package views.register.company
 
-import play.api.data.Form
-import controllers.company.routes
-import forms.company.CompanyUniqueTaxReferenceFormProvider
+import forms.register.company.CompanyUniqueTaxReferenceFormProvider
 import models.NormalMode
+import play.api.data.Form
 import views.behaviours.StringViewBehaviours
-import views.html.company.companyUniqueTaxReference
+import views.html.register.company.companyUniqueTaxReference
 
 class CompanyUniqueTaxReferenceViewSpec extends StringViewBehaviours {
 
@@ -41,7 +40,7 @@ class CompanyUniqueTaxReferenceViewSpec extends StringViewBehaviours {
     behave like pageWithBackLink(createView)
 
     behave like stringPage(createViewUsingForm, messageKeyPrefix,
-      controllers.company.routes.CompanyUniqueTaxReferenceController.onSubmit(NormalMode).url, Some(expectedHintKey) )
+      controllers.register.company.routes.CompanyUniqueTaxReferenceController.onSubmit(NormalMode).url, Some(expectedHintKey) )
 
     "display correct body text" in {
 

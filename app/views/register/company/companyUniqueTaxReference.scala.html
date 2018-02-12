@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.company.routes._
+@import controllers.register.company.routes._
 @import models.Mode
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -26,7 +26,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = controllers.company.routes.CompanyUniqueTaxReferenceController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = controllers.register.company.routes.CompanyUniqueTaxReferenceController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 

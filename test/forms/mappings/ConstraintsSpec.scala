@@ -19,7 +19,7 @@ package forms.mappings
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
 
-class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with RegexBehaviour{
+class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with RegexBehaviourSpec {
 
   "firstError" must {
 
@@ -135,5 +135,25 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     behave like regexWithValidAndInvalidExamples(companyRegistrationNumber, validCrn, invalidCrn, invalidMsg, crn)
 
+  }
+
+  "companyUniqueTaxReference" must {
+
+    val validUtr = Table(
+      "0123456789",
+      "9876543210",
+      "5432112345"
+    )
+
+    val invalidUtr = Table(
+      "value",
+      "32423423432423",
+      "12323",
+      "ABC123456"
+    )
+
+    val invalidMsg = "companyUniqueTaxReference.error.invalid"
+
+    behave like regexWithValidAndInvalidExamples(companyUniqueTaxReference, validUtr, invalidUtr, invalidMsg, utr)
   }
 }
