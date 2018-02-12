@@ -71,3 +71,11 @@ companyDetails.error.vatRegistrationNumber.length = The VAT Registration number 
 companyDetails.error.vatRegistrationNumber.invalid = Enter a valid VAT Registration number
 companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 13 characters
 companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE number
+
+contactDetails.title = contactDetails
+contactDetails.heading = contactDetails
+contactDetails.field1 = Field 1
+contactDetails.field2 = Field 2
+contactDetails.checkYourAnswersLabel = contactDetails
+contactDetails.error.field1.required = Please give an answer for field1
+contactDetails.error.field2.required = Please give an answer for field2

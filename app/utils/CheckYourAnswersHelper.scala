@@ -34,4 +34,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {
     x => AnswerRow("companyRegistrationNumber.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)
   }
+
+  def contactDetails: Option[AnswerRow] = userAnswers.get(identifiers.app.ContactDetailsId) map {
+    x => AnswerRow("contactDetails.checkYourAnswersLabel", s"${x.field1} ${x.field2}", false, controllers.app.routes.ContactDetailsController.onPageLoad(CheckMode).url)
+  }
 }
