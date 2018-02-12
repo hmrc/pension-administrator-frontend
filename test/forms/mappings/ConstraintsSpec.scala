@@ -131,12 +131,9 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
       "ABC123456"
     )
 
-    "Company Registration Number" must {
+    val invalidMsg = "companyRegistrationNumber.error.invalid"
 
-      val invalidMsg = "companyRegistrationNumber.error.invalid"
-
-      behave like regexWithValidAndInvalidExamples(companyRegistrationNumber, validCrn, invalidCrn, invalidMsg, crn)
-    }
+    behave like regexWithValidAndInvalidExamples(companyRegistrationNumber, validCrn, invalidCrn, invalidMsg, crn)
 
   }
 }

@@ -20,7 +20,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 
 trait Constraints {
 
-  val crn = """^\d{7}|[a-zA-Z]{1,2}\d{6}$"""
+  protected val crn = """^\d{7}|[a-zA-Z]{1,2}\d{6}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {

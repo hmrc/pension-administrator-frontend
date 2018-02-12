@@ -35,7 +35,7 @@ trait RegexBehaviour extends TableDrivenPropertyChecks {
       }
     }
 
-    "Rejext all invalid examples" in {
+    "Reject all invalid examples" in {
       forAll(invalid) {value: String =>
         constraint(invalidMsg)(value) mustBe Invalid(invalidMsg, regexString)
       }
