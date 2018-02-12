@@ -60,7 +60,8 @@ trait MicroService {
       .settings(resolvers ++= Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
         Resolver.jcenterRepo,
-        Resolver.bintrayRepo("emueller", "maven")
+        Resolver.bintrayRepo("emueller", "maven"),
+        Resolver.bintrayRepo("wolfendale", "maven")
       ))
     .settings(
       // concatenate js

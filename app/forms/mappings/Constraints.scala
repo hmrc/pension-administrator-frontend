@@ -20,6 +20,8 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 
 trait Constraints {
 
+  protected val crn = """^\d{7}|[a-zA-Z]{1,2}\d{6}$"""
+
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
       input =>
@@ -83,4 +85,11 @@ trait Constraints {
       case _ =>
         Invalid(errorKey, maximum)
     }
+
+  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = {
+
+    regexp(crn, errorKey)
+
+  }
+
 }
