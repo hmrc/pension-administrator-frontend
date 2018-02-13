@@ -123,6 +123,48 @@ class JsLensSpec extends WordSpec with MustMatchers with PropertyChecks with Opt
     }
   }
 
+  "#atKey (remove)" must {
+    "return a lens" which {
+
+      "removes an existing key on an object" in {
+
+        forAll(Gen.alphaNumStr, jsLeafGen) {
+          (key, value) =>
+            val lens = JsLens.atKey(key)
+            val json = Json.obj(key -> value)
+            lens.remove(json).asOpt.value mustEqual Json.obj()
+        }
+      }
+
+      "not alter an object if the key doesn't exist" in {
+
+        forAll(Gen.alphaNumStr) {
+          key =>
+            val lens = JsLens.atKey(key)
+            lens.remove(Json.obj()).asOpt.value mustEqual Json.obj()
+        }
+      }
+
+      "not alter JsNull" in {
+
+        forAll(Gen.alphaNumStr) {
+          key =>
+            val lens = JsLens.atKey(key)
+            lens.remove(JsNull).asOpt.value mustEqual JsNull
+        }
+      }
+
+      "fail when used on a non-object" in {
+
+        forAll(Gen.alphaNumStr, jsLeafGen) {
+          (key, value) =>
+            val lens = JsLens.atKey(key)
+            lens.remove(value).isError mustBe true
+        }
+      }
+    }
+  }
+
   "#atIndex (get)" must {
     "return a lens" which {
 
@@ -252,6 +294,58 @@ class JsLensSpec extends WordSpec with MustMatchers with PropertyChecks with Opt
         }
       }
     }
+  }
+
+  "#atIndex (remove)" must {
+    "return a lens" which {
+
+      "removes an index which exists" in {
+
+        val gen: Gen[(Int, JsArray)] = for {
+          idx <- Gen.chooseNum(0, 50)
+          arr <- Gen.listOfN(idx + 1, jsLeafGen).map(JsArray)
+        } yield (idx, arr)
+
+        forAll(gen) {
+          case (idx, arr) =>
+            val lens = JsLens.atIndex(idx)
+            val expected = JsArray(arr.value.patch(idx, Seq.empty, 1))
+            lens.remove(arr).asOpt.value mustEqual expected
+        }
+      }
+
+      "does not modify an array where the index does not exist" in {
+
+        val gen: Gen[(Int, JsArray)] = for {
+          idx <- Gen.chooseNum(0, 50)
+          arr <- Gen.listOfN(idx - 1, jsLeafGen).map(JsArray)
+        } yield (idx, arr)
+
+        forAll(gen) {
+          case (idx, arr) =>
+            val lens = JsLens.atIndex(idx)
+            lens.remove(arr).asOpt.value mustEqual arr
+        }
+      }
+
+      "does not modify JsNull" in {
+
+        forAll(Gen.chooseNum(0, 50)) {
+          idx =>
+            val lens = JsLens.atIndex(idx)
+            lens.remove(JsNull).asOpt.value mustEqual JsNull
+        }
+      }
+
+      "fails when used on a non-array" in {
+
+        forAll(Gen.chooseNum(0, 50), jsLeafGen) {
+          (idx, value) =>
+            val lens = JsLens.atIndex(idx)
+            lens.remove(value).isError mustBe true
+        }
+      }
+    }
 
     ".andThen" must {
 
@@ -345,6 +439,120 @@ class JsLensSpec extends WordSpec with MustMatchers with PropertyChecks with Opt
         val lens = JsLens.fromPath(__ \ "establishers" \ 0 \ "directors" \ 0 \ "name")
 
         lens.set(JsString("foo"), json).asOpt.value mustEqual expected
+      }
+
+      "apply lenses in order (remove index)" in {
+
+        val json = Json.obj(
+          "establishers" -> Json.arr(
+            Json.obj(
+              "name" -> "foo",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir quack"
+                ),
+                Json.obj(
+                  "name" -> "dir zap"
+                )
+              )
+            ),
+            Json.obj(
+              "name" -> "bar",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir foo"
+                ),
+                Json.obj(
+                  "name" -> "dir bar"
+                )
+              )
+            )
+          )
+        )
+        val expected = Json.obj(
+          "establishers" -> Json.arr(
+            Json.obj(
+              "name" -> "foo",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir zap"
+                )
+              )
+            ),
+            Json.obj(
+              "name" -> "bar",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir foo"
+                ),
+                Json.obj(
+                  "name" -> "dir bar"
+                )
+              )
+            )
+          )
+        )
+        val lens = JsLens.fromPath(__ \ "establishers" \ 0 \ "directors" \ 0)
+
+        lens.remove(json).asOpt.value mustEqual expected
+      }
+
+      "apply lenses in order (remove key)" in {
+
+        val json = Json.obj(
+          "establishers" -> Json.arr(
+            Json.obj(
+              "name" -> "foo",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir quack"
+                ),
+                Json.obj(
+                  "name" -> "dir zap"
+                )
+              )
+            ),
+            Json.obj(
+              "name" -> "bar",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir foo"
+                ),
+                Json.obj(
+                  "name" -> "dir bar"
+                )
+              )
+            )
+          )
+        )
+        val expected = Json.obj(
+          "establishers" -> Json.arr(
+            Json.obj(
+              "name" -> "foo",
+              "directors" -> Json.arr(
+                Json.obj(
+                ),
+                Json.obj(
+                  "name" -> "dir zap"
+                )
+              )
+            ),
+            Json.obj(
+              "name" -> "bar",
+              "directors" -> Json.arr(
+                Json.obj(
+                  "name" -> "dir foo"
+                ),
+                Json.obj(
+                  "name" -> "dir bar"
+                )
+              )
+            )
+          )
+        )
+        val lens = JsLens.fromPath(__ \ "establishers" \ 0 \ "directors" \ 0 \ "name")
+
+        lens.remove(json).asOpt.value mustEqual expected
       }
 
       "fail to insert into a new array when the index is greater than 0" in {
