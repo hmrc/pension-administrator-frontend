@@ -22,6 +22,8 @@ trait Constraints {
 
   protected val crn = """^\d{7}|[a-zA-Z]{1,2}\d{6}$"""
   protected val utr = """^\d{10}$"""
+  protected val vat = """^\d{9}$"""
+  protected val paye = """^[a-zA-Z\d]{1,13}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -97,6 +99,14 @@ trait Constraints {
 
     regexp(utr, errorKey)
 
+  }
+
+  protected def vatRgistrationNumber(errorKey: String): Constraint[String] = {
+    regexp(vat, errorKey)
+  }
+
+  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = {
+    regexp(paye, errorKey)
   }
 
 }

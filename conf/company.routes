@@ -8,3 +8,8 @@ GET        /companyRegistrationNumber               controllers.register.company
 POST       /companyRegistrationNumber               controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)
 GET        /changeCompanyRegistrationNumber                        controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeCompanyRegistrationNumber                        controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = CheckMode)
+
+GET        /companyDetails                       controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /companyDetails                       controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeCompanyDetails                       controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeCompanyDetails                       controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = CheckMode)
