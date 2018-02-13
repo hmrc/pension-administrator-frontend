@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions.AuthAction
+import identifiers.IndexId
 import play.api.libs.json.JsPath
 import play.api.mvc.{Action, AnyContent}
 import views.html.index
@@ -33,7 +34,7 @@ class IndexController @Inject()(val appConfig: FrontendAppConfig,
                                 dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
-    dataCacheConnector.save(request.externalId, JsPath \ "IndexController", "onPageLoad").map(_ =>
+    dataCacheConnector.save(request.externalId, IndexId, "").map(_ =>
       Ok(index(appConfig))
     )
   }

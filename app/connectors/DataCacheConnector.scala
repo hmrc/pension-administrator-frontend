@@ -17,27 +17,23 @@
 package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
-import identifiers.{Identifier, TypedIdentifier}
+import identifiers.TypedIdentifier
 import play.api.libs.json._
 import repositories.SessionRepository
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{CascadeUpsert, JsLens}
+import utils.{Cleanup, UserAnswers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DataCacheConnectorImpl @Inject()(
-                                        val sessionRepository: SessionRepository,
-                                        val cascadeUpsert: CascadeUpsert
+                                        val sessionRepository: SessionRepository
                                       ) extends DataCacheConnector {
 
-  // TODO cascade upsert
-  override def save[A](cacheId: String, path: JsPath, value: A)(implicit fmt: Format[A]): Future[JsValue] = {
+  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cu: Cleanup[I]): Future[JsValue] = {
     sessionRepository().get(cacheId).flatMap {
       json =>
-        val lens = JsLens.fromPath(path)
-        lens.set(Json.toJson(value), json.getOrElse(Json.obj())) match {
-          case JsSuccess(updatedJson, _) =>
+        UserAnswers(json.getOrElse(Json.obj())).set(id)(value) match {
+          case JsSuccess(UserAnswers(updatedJson), _) =>
             sessionRepository().upsert(cacheId, updatedJson)
               .map(_ => updatedJson)
           case JsError(errors) =>
@@ -53,11 +49,7 @@ class DataCacheConnectorImpl @Inject()(
 @ImplementedBy(classOf[DataCacheConnectorImpl])
 trait DataCacheConnector {
 
-  def save[A](cacheId: String, path: JsPath, value: A)(implicit fmt: Format[A]): Future[JsValue]
-
-  def save[A](cacheId: String, id: TypedIdentifier[A], value: A)(implicit fmt: Format[A]): Future[JsValue] = {
-    save[A](cacheId: String, id.path, value)
-  }
+  def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cleanup: Cleanup[I]): Future[JsValue]
 
   def fetch(cacheId: String): Future[Option[JsValue]]
 }

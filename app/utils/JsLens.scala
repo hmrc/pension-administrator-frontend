@@ -32,6 +32,7 @@ trait JsLens {
 
   def getAll(s: JsValue): JsResult[Seq[JsValue]]
   def set(a: JsValue, s: JsValue): JsResult[JsValue]
+  def remove(s: JsValue): JsResult[JsValue]
 
   def andThen(other: JsLens): JsLens =
     new JsLens {
@@ -63,8 +64,21 @@ trait JsLens {
               case Seq(jsValue) =>
                 self.set(jsValue, s)
               case _ =>
-                //                self.set(JsArray(as), s)
                 JsError("cannot set with traversal")
+            }
+        }
+      }
+
+      override def remove(s: JsValue): JsResult[JsValue] = {
+        self.getAll(s).flatMap {
+          case Seq(a) =>
+            other.remove(a).flatMap(self.set(_, s))
+          case as =>
+            traverse(as.map(other.remove)).flatMap {
+              case Seq(jsValue) =>
+                self.set(jsValue, s)
+              case _ =>
+                JsError("cannot remove with traversal")
             }
         }
       }
@@ -114,6 +128,16 @@ object JsLens {
             JsError("Not an object")
         }
       }
+
+      override def remove(outer: JsValue): JsResult[JsValue] =
+        outer match {
+          case obj: JsObject =>
+            JsSuccess(obj - key)
+          case JsNull =>
+            JsSuccess(JsNull)
+          case _ =>
+            JsError("Not an object")
+        }
     }
 
   def atIndex(index: Int): JsLens =
@@ -135,6 +159,17 @@ object JsLens {
             JsSuccess(JsArray(Seq(inner)))
           case JsArray(_) =>
             JsError("Index out of bounds")
+          case _ =>
+            JsError("Not an array")
+        }
+      }
+
+      override def remove(outer: JsValue): JsResult[JsValue] = {
+        outer match {
+          case JsArray(values) =>
+            JsSuccess(JsArray(values.patch(index, Seq.empty, 1)))
+          case JsNull =>
+            JsSuccess(JsNull)
           case _ =>
             JsError("Not an array")
         }
@@ -163,6 +198,8 @@ object JsLens {
           case _ =>
             JsError("Not an array")
         }
+
+      override def remove(s: JsValue): JsResult[JsValue] = ???
     }
 
   def fromPath(path: JsPath): JsLens = {

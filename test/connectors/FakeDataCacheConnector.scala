@@ -16,16 +16,15 @@
 
 package connectors
 
-import identifiers.Identifier
+import identifiers.TypedIdentifier
 import play.api.libs.json._
-import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.Cleanup
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class FakeDataCacheConnector extends DataCacheConnector {
 
-  override def save[A](cacheId: String, path: JsPath, value: A)(implicit fmt: Format[A]): Future[JsValue] =
+  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cleanup: Cleanup[I]): Future[JsValue] =
     Future.successful(Json.obj())
 
   override def fetch(cacheId: String): Future[Option[JsValue]] =

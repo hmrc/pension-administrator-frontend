@@ -16,30 +16,8 @@
 
 package identifiers
 
-import play.api.libs.json.JsPath
+import identifiers._
 
-import scala.language.implicitConversions
-import play.api.libs.json._
-import utils.{Cleanup, JsLens}
-
-trait Identifier {
-
-  def path: JsPath = __ \ toString
-}
-
-object Identifier {
-
-  implicit def toString(i: Identifier): String =
-    i.toString
-}
-
-trait TypedIdentifier[A] extends TypedIdentifier.PathDependent {
-  type Data = A
-}
-
-object TypedIdentifier {
-
-  trait PathDependent extends Identifier {
-    type Data
-  }
+case object IndexId extends TypedIdentifier[String] {
+  override def toString: String = "index"
 }
