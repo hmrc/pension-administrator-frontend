@@ -22,6 +22,8 @@ trait Constraints {
 
   protected val crn = """^\d{7}|[a-zA-Z]{1,2}\d{6}$"""
   protected val utr = """^\d{10}$"""
+  protected val email = """^[^@<>]+@[^@<>]+$"""
+  protected val number = """^[0-9]+$"""
   protected val vat = """^\d{9}$"""
   protected val paye = """^[a-zA-Z\d]{1,13}$"""
 
@@ -32,6 +34,15 @@ trait Constraints {
           .map(_.apply(input))
           .find(_ != Valid)
           .getOrElse(Valid)
+    }
+
+  protected def returnOnFirstFailure[T](constraints: Constraint[T]*): Constraint[T] =
+    Constraint {
+      field =>
+        constraints
+          .map(_.apply(field))
+          .filterNot(_ == Valid)
+          .headOption.getOrElse(Valid)
     }
 
   protected def minimumValue[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
@@ -95,11 +106,11 @@ trait Constraints {
 
   }
 
-  protected def companyUniqueTaxReference(errorKey: String): Constraint[String] = {
+  protected def companyUniqueTaxReference(errorKey: String): Constraint[String] = regexp(utr, errorKey)
 
-    regexp(utr, errorKey)
+  protected def emailAddress(errorKey: String): Constraint[String] = regexp(email, errorKey)
 
-  }
+  protected def wholeNumber(errorKey: String): Constraint[String] = regexp(number, errorKey)
 
   protected def vatRgistrationNumber(errorKey: String): Constraint[String] = {
     regexp(vat, errorKey)

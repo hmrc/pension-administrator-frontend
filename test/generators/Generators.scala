@@ -88,6 +88,12 @@ trait Generators {
       chars <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
+  def numbersWithMaxLength(maxLength: Int): Gen[String] =
+    for {
+      length <- choose(1, maxLength)
+      num <- listOfN(length, numChar)
+    } yield num.mkString
+
   def stringsLongerThan(minLength: Int): Gen[String] =
     arbitrary[String] suchThat (_.length > minLength)
 
