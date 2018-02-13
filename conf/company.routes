@@ -18,3 +18,8 @@ GET        /companyDetails                       controllers.register.company.Co
 POST       /companyDetails                       controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeCompanyDetails                       controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeCompanyDetails                       controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /companyAddressYears               controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = NormalMode)
+POST       /companyAddressYears               controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeCompanyAddressYears               controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeCompanyAddressYears               controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = CheckMode)
