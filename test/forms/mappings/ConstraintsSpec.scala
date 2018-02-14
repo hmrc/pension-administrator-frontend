@@ -201,4 +201,46 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
     behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, paye)
   }
 
+
+  "email" must {
+
+    val validEmail = Table(
+      "email",
+      "a@email.com",
+      "a@bc",
+      "123@456"
+    )
+
+    val invalidEmail = Table(
+      "email",
+      "32423423432423",
+      "12323",
+      "@@@@@@"
+    )
+
+    val invalidMsg = "contactDetails.error.email.valid"
+
+    behave like regexWithValidAndInvalidExamples(emailAddress, validEmail, invalidEmail, invalidMsg, email)
+  }
+
+  "wholeNumber" must {
+
+    val validNumber = Table(
+      "wholeNumber",
+      "1",
+      "99999999999999999999999",
+      "123456"
+    )
+
+    val invalidNumber = Table(
+      "wholeNumber",
+      "324234.23432423",
+      "123@23",
+      "@@@@@@"
+    )
+
+    val invalidMsg = "Invalid test"
+
+    behave like regexWithValidAndInvalidExamples(wholeNumber, validNumber, invalidNumber, invalidMsg, number)
+  }
 }

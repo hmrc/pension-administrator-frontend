@@ -9,6 +9,11 @@ POST       /companyRegistrationNumber               controllers.register.company
 GET        /changeCompanyRegistrationNumber                        controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeCompanyRegistrationNumber                        controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = CheckMode)
 
+GET        /contactDetails                       controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /contactDetails                       controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeContactDetails                       controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeContactDetails                       controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = CheckMode)
+
 GET        /companyDetails                       controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /companyDetails                       controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeCompanyDetails                       controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = CheckMode)

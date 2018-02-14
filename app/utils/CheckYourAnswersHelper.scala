@@ -17,12 +17,16 @@
 package utils
 
 import controllers.routes
-import identifiers.register.company.CompanyUniqueTaxReferenceId
+import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
 import models.CheckMode
 import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def contactDetails: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map {
+    x => AnswerRow("contactDetails.checkYourAnswersLabel", s"${x.email} ${x.phone}", false, controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)
+  }
+  
   def companyDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) map {
     x => AnswerRow("companyDetails.checkYourAnswersLabel", s"${x.companyName} ${x.vatRegistrationNumber} ${x.payeEmployerReferenceNumber}", false, controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
   }

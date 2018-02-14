@@ -44,6 +44,19 @@ site.secondaryHeader = Register a new Pension Scheme Administrator
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+contactDetails.title = PSA contact details
+contactDetails.heading = PSA contact details
+contactDetails.email = Email address
+contactDetails.phone = Phone number
+contactDetails.body = We will use this information to contact the PSA about the schemes they manage.
+contactDetails.checkYourAnswersLabel = PSA contact details
+contactDetails.error.email.required = Enter an email address
+contactDetails.error.email.invalid = Enter a valid email address
+contactDetails.error.email.length = The email address cannot be more than 132 characters
+contactDetails.error.phone.required = Enter a phone number
+contactDetails.error.phone.length = The telephone number cannot be more than 24 characters
+contactDetails.error.phone.invalid = The telephone number can only contain numbers
+
 companyUniqueTaxReference.title = Corporation Tax Unique Taxpayer Reference number
 companyUniqueTaxReference.heading = Corporation Tax Unique Taxpayer Reference number
 companyUniqueTaxReference.body = A CTUTR is issued by HMRC when you register your business.
