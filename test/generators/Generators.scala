@@ -16,37 +16,29 @@
 
 package generators
 
+import java.text.NumberFormat
+
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import Gen._
 import Arbitrary._
+
+import scala.util.Random
 
 trait Generators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
-  def genIntersperseString(gen: Gen[String],
-                           value: String,
-                           frequencyV: Int = 1,
-                           frequencyN: Int = 10): Gen[String] = {
-
-    val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
-
-    for {
-      seq1 <- gen
-      seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
-      seq1.toSeq.zip(seq2).foldRight("") {
-        case ((n, Some(v)), m) =>
-          m + n + v
-        case ((n, _), m) =>
-          m + n
-      }
-    }
-  }
-
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max)
-    genIntersperseString(numberGen.toString, ",")
+    val formatter = NumberFormat.getIntegerInstance
+    val random = Random
+
+    numberGen.map(n => {
+      random.nextInt(10) match {
+        case 1 => formatter.format(n)
+        case _  => n.toString
+      }
+    })
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =

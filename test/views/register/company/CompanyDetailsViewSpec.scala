@@ -38,6 +38,8 @@ class CompanyDetailsViewSpec extends QuestionViewBehaviours[CompanyDetails] {
 
     behave like normalPage(createView, messageKeyPrefix)
 
+    behave like pageWithBackLink(createView)
+
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 
     behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url, "companyName", "vatRegistrationNumber", "payeEmployerReferenceNumber")
