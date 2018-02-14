@@ -18,16 +18,15 @@ package controllers.register.company
 
 import javax.inject.Inject
 
+import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import controllers.actions._
+import forms.AddressFormProvider
+import identifiers.register.company.CompanyPreviousAddressId
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
-import config.FrontendAppConfig
-import forms.register.company.CompanyPreviousAddressFormProvider
-import identifiers.register.company.CompanyPreviousAddressId
-import models.Mode
-import models.register.company.CompanyPreviousAddress
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyPreviousAddress
 
@@ -41,10 +40,10 @@ class CompanyPreviousAddressController @Inject() (
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: CompanyPreviousAddressFormProvider
+                                        formProvider: AddressFormProvider
                                       ) extends FrontendController with I18nSupport {
 
-  private val form = formProvider()
+  private val form: Form[Address] = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>

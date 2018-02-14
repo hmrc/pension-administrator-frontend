@@ -100,11 +100,7 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = {
-
-    regexp(crn, errorKey)
-
-  }
+  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = regexp(crn, errorKey)
 
   protected def companyUniqueTaxReference(errorKey: String): Constraint[String] = regexp(utr, errorKey)
 
@@ -112,12 +108,8 @@ trait Constraints {
 
   protected def wholeNumber(errorKey: String): Constraint[String] = regexp(number, errorKey)
 
-  protected def vatRgistrationNumber(errorKey: String): Constraint[String] = {
-    regexp(vat, errorKey)
-  }
+  protected def vatRgistrationNumber(errorKey: String): Constraint[String] = regexp(vat, errorKey)
 
-  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = {
-    regexp(paye, errorKey)
-  }
+  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = regexp(paye, errorKey)
 
 }

@@ -2,6 +2,14 @@ checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
 
+address.line.1 = Address Line 1
+address.line.2 = Address Line 2
+address.line.3 = Address Line 3 (optional)
+address.line.4 = Address Line 4 (optional)
+
+address.postcode = Postal code
+address.country = Country
+
 date.day = Day
 date.month = Month
 date.year = Year
@@ -20,6 +28,18 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There’s been a problem
 error.summary.text = Check the following
+
+error.address_line_1.required = Enter the first line of address
+error.address_line_2.required = Enter the second line of address
+error.address_line_1.length = The first line of address cannot be more than 35 characters
+error.address_line_2.length = The second line of address cannot be more than 35 characters
+error.address_line_3.length = The third line of address cannot be more than 35 characters
+error.address_line_4.length = The fourth line of address cannot be more than 35 characters
+error.country.required = Enter a country
+
+error.postcode.required = Enter the postal code
+error.postcode.length = The postal code cannot be more than 8 characters
+error.postcode.invalid = Enter a valid postal code
 
 index.title = pension-administrator-frontend
 index.heading = pension-administrator-frontend
@@ -87,8 +107,4 @@ companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE nu
 
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
-companyPreviousAddress.addressLine1 = Address line 1
-companyPreviousAddress.addressLine2 = Address line 2
 companyPreviousAddress.checkYourAnswersLabel = companyPreviousAddress
-companyPreviousAddress.error.field1.required = Please give an answer for field1
-companyPreviousAddress.error.field2.required = Please give an answer for field2
