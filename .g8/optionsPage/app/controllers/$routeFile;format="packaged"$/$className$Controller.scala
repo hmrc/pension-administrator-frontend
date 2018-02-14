@@ -44,7 +44,7 @@ class $className$Controller @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest($className;format="decap"$(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[$className$](request.externalId, $className$Id, value).map(cacheMap =>
+          dataCacheConnector.save(request.externalId, $className$Id, value).map(cacheMap =>
             Redirect(navigator.nextPage($className$Id, mode)(new UserAnswers(cacheMap))))
     )
   }
