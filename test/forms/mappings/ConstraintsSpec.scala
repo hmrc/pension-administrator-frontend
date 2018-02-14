@@ -141,13 +141,14 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
   "companyUniqueTaxReference" must {
 
     val validUtr = Table(
+      "utr",
       "0123456789",
       "9876543210",
       "5432112345"
     )
 
     val invalidUtr = Table(
-      "value",
+      "utr",
       "32423423432423",
       "12323",
       "ABC123456"
