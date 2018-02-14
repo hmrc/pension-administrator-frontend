@@ -16,19 +16,17 @@
 
 package views.register.company
 
+import forms.AddressFormProvider
+import models.{Address, NormalMode}
 import play.api.data.Form
-import controllers.register.company.routes
-import forms.register.company.CompanyPreviousAddressFormProvider
-import models.NormalMode
-import models.register.company.CompanyPreviousAddress
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.companyPreviousAddress
 
-class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[CompanyPreviousAddress] {
+class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val messageKeyPrefix = "companyPreviousAddress"
 
-  override val form = new CompanyPreviousAddressFormProvider()()
+  override val form = new AddressFormProvider()()
 
   def createView = () => companyPreviousAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 

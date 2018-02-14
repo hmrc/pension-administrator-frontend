@@ -120,4 +120,5 @@ trait Constraints {
     regexp(paye, errorKey)
   }
 
+  protected def postcode(errorKey: String): Constraint[String] = ???
 }

@@ -16,25 +16,23 @@
 
 package controllers.register.company
 
+import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
+import controllers.actions._
+import forms.AddressFormProvider
+import identifiers.register.company.CompanyPreviousAddressId
+import models.{Address, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
-import controllers.actions._
 import play.api.test.Helpers._
-import forms.register.company.CompanyPreviousAddressFormProvider
-import identifiers.register.company.CompanyPreviousAddressId
-import models.NormalMode
-import models.register.company.CompanyPreviousAddress
+import utils.FakeNavigator
 import views.html.register.company.companyPreviousAddress
-import controllers.ControllerSpecBase
 
 class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyPreviousAddressFormProvider()
+  val formProvider = new AddressFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
@@ -53,16 +51,20 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyPreviousAddressId.toString -> CompanyPreviousAddress("value 1", "value 2"))
+      val validData = Json.obj(CompanyPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(CompanyPreviousAddress("value 1", "value 2")))
+      contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "GB")))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        "country" -> "GB"
+      )
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
