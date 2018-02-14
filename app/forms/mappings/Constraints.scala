@@ -112,4 +112,5 @@ trait Constraints {
 
   protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = regexp(paye, errorKey)
 
+  protected def postcode(errorKey: String): Constraint[String] = ???
 }
