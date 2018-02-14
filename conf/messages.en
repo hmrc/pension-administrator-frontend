@@ -72,6 +72,7 @@ companyRegistrationNumber.error.required = Enter the Company Registration number
 companyRegistrationNumber.hint = This is issued by Companies House. It is 7 or 8 characters, typically 7 numbers or a combination of 2 letters followed by 6 digits, for example AB123456.
 companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
 companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number
+
 companyDetails.title = Company details
 companyDetails.heading = Company details
 companyDetails.companyName = Company name
@@ -84,3 +85,10 @@ companyDetails.error.vatRegistrationNumber.length = The VAT Registration number 
 companyDetails.error.vatRegistrationNumber.invalid = Enter a valid VAT Registration number
 companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 13 characters
 companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE number
+
+companyAddressYears.title = How long has the company been at this address?
+companyAddressYears.heading = How long has the company been at this address?
+companyAddressYears.underAYear = Less than 12 months
+companyAddressYears.overAYear = More than 12 months
+companyAddressYears.checkYourAnswersLabel = How long has the company been at this address?
+companyAddressYears.error.required = You must make a selection

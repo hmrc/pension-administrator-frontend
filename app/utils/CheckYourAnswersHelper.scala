@@ -31,6 +31,10 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
     x => AnswerRow("companyDetails.checkYourAnswersLabel", s"${x.companyName} ${x.vatRegistrationNumber} ${x.payeEmployerReferenceNumber}", false, controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
   }
 
+  def companyAddressYears: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressYearsId) map {
+    x => AnswerRow("companyAddressYears.checkYourAnswersLabel", s"companyAddressYears.$x", true, controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)
+  }
+
   def companyUniqueTaxReference: Option[AnswerRow] = userAnswers.get(CompanyUniqueTaxReferenceId) map {
     x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyUniqueTaxReferenceController.onPageLoad(CheckMode).url)
   }
