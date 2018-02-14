@@ -38,6 +38,10 @@ class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[CompanyPrevi
 
     behave like normalPage(createView, messageKeyPrefix)
 
+    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
+
+    behave like pageWithBackLink(createView)
+
     behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.CompanyPreviousAddressController.onSubmit(NormalMode).url, "field1", "field2")
   }
 }

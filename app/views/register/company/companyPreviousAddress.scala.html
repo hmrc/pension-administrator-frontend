@@ -30,9 +30,11 @@
 
     @helpers.form(action = CompanyPreviousAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
+        @components.back_link()
+
         @components.error_summary(form.errors)
 
-        @components.heading("companyPreviousAddress.heading")
+        @components.heading("companyPreviousAddress.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @components.input_text(
             field = form("field1"),

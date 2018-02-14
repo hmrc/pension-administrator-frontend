@@ -16,10 +16,9 @@
 
 package utils
 
-import controllers.routes
 import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
 import models.CheckMode
-import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
+import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
