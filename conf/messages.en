@@ -116,3 +116,16 @@ companyAddressYears.error.required = You must make a selection
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
 companyPreviousAddress.checkYourAnswersLabel = Previous Address of the Company
+
+companyPreviousAddressPostCodeLookup.title = Previous address of the company
+companyPreviousAddressPostCodeLookup.heading = Previous address of the company
+companyPreviousAddressPostCodeLookup.lede = This is usually the registered business address but you can enter any address you have for this company.
+companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
+companyPreviousAddressPostCodeLookup.error.required = Enter a valid postal code
+companyPreviousAddressPostCodeLookup.error.length = Enter a valid postal code
+companyPreviousAddressPostCodeLookup.error.invalid = Enter a valid postal code
+companyPreviousAddressPostCodeLookup.error.noResults = No results found for that postal code
+companyPreviousAddressPostCodeLookup.postalCode = Postal code
+companyPreviousAddressPostCodeLookup.postalCode.hint = For example NE12 8ER
+companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+companyPreviousAddressPostCodeLookup.enterManually = enter the address manually

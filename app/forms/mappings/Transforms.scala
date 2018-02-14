@@ -29,9 +29,10 @@ trait Transforms {
   }
 
   def postCodeValidTransform(value: String): String = {
-    value.contains(" ") match {
-      case true => value
-      case false => value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
+    if (value.contains(" ")) {
+      value
+    } else {
+      value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
     }
   }
 
@@ -45,9 +46,10 @@ trait Transforms {
 
   @tailrec
   private def minimiseSpace(value: String): String = {
-    value.contains("  ") match {
-      case false => value
-      case true => minimiseSpace(value.replaceAll("  ", " "))
+    if (value.contains("  ")) {
+      minimiseSpace(value.replaceAll("  ", " "))
+    } else {
+      value
     }
   }
 

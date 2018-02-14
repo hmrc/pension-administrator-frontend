@@ -17,18 +17,29 @@
 package connectors
 
 import identifiers.TypedIdentifier
+import org.scalatest.Matchers
 import play.api.libs.json._
 import utils.Cleanup
 
+import scala.collection.mutable
 import scala.concurrent.Future
 
-class FakeDataCacheConnector extends DataCacheConnector {
+class FakeDataCacheConnector extends DataCacheConnector with Matchers {
 
-  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cleanup: Cleanup[I]): Future[JsValue] =
+  private val data: mutable.HashMap[String, JsValue] = mutable.HashMap()
+
+  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cleanup: Cleanup[I]): Future[JsValue] = {
+    data += (id.toString -> Json.toJson(value))
     Future.successful(Json.obj())
+  }
 
   override def fetch(cacheId: String): Future[Option[JsValue]] =
     Future.successful(Some(Json.obj()))
+
+  def verify[A, I <: TypedIdentifier[A]](id: I, value: A)(implicit fmt: Format[A]): Unit = {
+    data should contain (id.toString -> Json.toJson(value))
+  }
+
 }
 
 object FakeDataCacheConnector extends FakeDataCacheConnector
