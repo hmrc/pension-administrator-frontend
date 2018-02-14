@@ -30,6 +30,8 @@
 
     @helpers.form(action = CompanyDetailsController.onSubmit(mode), 'autoComplete -> "off") {
 
+        @components.back_link()
+
         @components.error_summary(form.errors)
 
         @components.heading("companyDetails.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
