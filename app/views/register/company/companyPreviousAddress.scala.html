@@ -38,12 +38,14 @@
 
         @components.input_text(
             field = form("field1"),
-            label = messages("companyPreviousAddress.field1")
+            label = messages("companyPreviousAddress.addressLine1"),
+            inputClass = Some("form-control-3-4")
         )
 
         @components.input_text(
             field = form("field2"),
-            label = messages("companyPreviousAddress.field2")
+            label = messages("companyPreviousAddress.addressLine2"),
+            inputClass = Some("form-control-3-4")
         )
 
         @components.submit_button()

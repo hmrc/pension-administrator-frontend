@@ -87,8 +87,8 @@ companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE nu
 
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
-companyPreviousAddress.field1 = Field 1
-companyPreviousAddress.field2 = Field 2
+companyPreviousAddress.addressLine1 = Address line 1
+companyPreviousAddress.addressLine2 = Address line 2
 companyPreviousAddress.checkYourAnswersLabel = companyPreviousAddress
 companyPreviousAddress.error.field1.required = Please give an answer for field1
 companyPreviousAddress.error.field2.required = Please give an answer for field2

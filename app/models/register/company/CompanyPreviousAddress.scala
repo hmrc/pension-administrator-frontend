@@ -18,7 +18,7 @@ package models.register.company
 
 import play.api.libs.json._
 
-case class CompanyPreviousAddress (field1: String, field2: String)
+case class CompanyPreviousAddress (addressLine1: String, addressLine2: String)
 
 object CompanyPreviousAddress {
   implicit val format = Json.format[CompanyPreviousAddress]
