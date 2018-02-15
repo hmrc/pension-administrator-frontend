@@ -46,10 +46,16 @@ trait StringFieldBehaviours extends FieldBehaviours {
     }
   }
 
-  def fieldWithTransform[T](form: Form[T], data: Map[String, String], test: T => Boolean): Unit = {
-    val result = form.bind(data)
-    result.errors.size shouldBe 0
-    test(result.get) shouldBe true
+  def fieldWithTransform[A, B](form: Form[A],
+                            transformName: String,
+                            data: Map[String, String],
+                            expected: B,
+                            actual: A => B): Unit = {
+    s"apply field transform s$transformName" in {
+      val result = form.bind(data)
+      result.errors.size shouldBe 0
+      actual(result.get) shouldBe expected
+    }
   }
 
 }
