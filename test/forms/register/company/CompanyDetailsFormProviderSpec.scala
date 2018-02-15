@@ -18,6 +18,7 @@ package forms.register.company
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
+import models.register.company.CompanyDetails
 import org.scalatest.OptionValues
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -80,16 +81,14 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       FormError(fieldName, invalid, Seq(vat))
     )
 
-    "transform VAT Registration Number" in {
-      val data = Map(
+    behave like fieldWithTransform(
+      form,
+      Map(
         "companyName" -> "MyCo Ltd",
         "vatRegistrationNumber" -> "  GB123456789  "
-      )
-
-      val result = form.bind(data)
-      result.errors.size shouldBe 0
-      result.get.vatRegistrationNumber.value shouldBe "123456789"
-    }
+      ),
+      (model: CompanyDetails) => model.vatRegistrationNumber.value.equals("123456789")
+    )
   }
 
   ".payeEmployerReferenceNumber" must {

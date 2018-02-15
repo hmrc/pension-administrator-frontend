@@ -244,4 +244,33 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     behave like regexWithValidAndInvalidExamples(wholeNumber, validNumber, invalidNumber, invalidMsg, number)
   }
+
+  "postCode" must {
+
+    val validPostCode = Table(
+      "postCode",
+      "A12 1AB",
+      "AB12 1AB",
+      "AB1A 1AB",
+      "AB121AB"
+    )
+
+    val invalidPostCode = Table(
+      "postCode",
+      "aB12 1AB",
+      "Ab12 1AB",
+      "0B12 1AB",
+      "A012 1AB",
+      "ABC2 1AB",
+      "AB1a 1AB",
+      "AB12 AAB",
+      "AB12 11B",
+      "AB12 1A1"
+    )
+
+    val invalidMsg = "Invalid post code"
+
+    behave like regexWithValidAndInvalidExamples(postalCode, validPostCode, invalidPostCode, invalidMsg, postCode)
+  }
+
 }
