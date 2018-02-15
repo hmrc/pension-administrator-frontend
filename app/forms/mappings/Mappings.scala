@@ -16,8 +16,9 @@
 
 package forms.mappings
 
-import play.api.data.FieldMapping
-import play.api.data.Forms.of
+import play.api.data.{FieldMapping, Mapping}
+import play.api.data.Forms.{of, optional, tuple}
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.Enumerable
 
 trait Mappings extends Formatters with Constraints {
@@ -38,4 +39,18 @@ trait Mappings extends Formatters with Constraints {
   protected def enumerable[A](requiredKey: String = "error.required",
                               invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
+
+  protected def postCode(requiredKey: String, invalidKey: String): Mapping[Option[String]] = {
+    val postCodeRegex = "^(?i)[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}"
+
+    def toPostCode(data: (Option[String], Option[String])): Option[String] = data._2
+
+    def fromPostCode(data: Option[String]): (Option[String], Option[String]) = (data, data)
+
+    tuple(
+      "postCode" -> mandatoryIfEqual[String]("country", "GB", text(requiredKey).verifying(regexp(postCodeRegex, invalidKey))),
+      "postCode" -> optional(text(requiredKey))
+    ).transform(toPostCode, fromPostCode)
+
+  }
 }

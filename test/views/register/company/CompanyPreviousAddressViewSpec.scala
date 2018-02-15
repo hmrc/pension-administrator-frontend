@@ -41,6 +41,7 @@ class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like pageWithBackLink(createView)
 
     behave like pageWithTextFields(
+
       createViewUsingForm,
       messageKeyPrefix,
       controllers.register.company.routes.CompanyPreviousAddressController.onSubmit(NormalMode).url,

@@ -26,7 +26,6 @@ import play.api.data.Forms.{mapping, optional}
 class AddressFormProvider @Inject() extends Mappings {
 
   val addressLineMaxLength = 35
-  val postCodeRegex = "^(?i)[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}"
 
   def apply(): Form[Address] = Form(
     mapping(
@@ -34,7 +33,7 @@ class AddressFormProvider @Inject() extends Mappings {
       "addressLine2" -> text("error.address_line_2.required").verifying(maxLength(addressLineMaxLength, "error.address_line_2.length")),
       "addressLine3" -> optional(Forms.text.verifying(maxLength(addressLineMaxLength, "error.address_line_3.length"))),
       "addressLine4" -> optional(Forms.text.verifying(maxLength(addressLineMaxLength, "error.address_line_4.length"))),
-      "postCode" -> optional(Forms.text.verifying(maxLength(8, "error.postcode.length"))),
+      "postCode" -> postCode("error.postcode.required", "error.postcode.invalid"),
       "country" -> text("error.country.required")
     )(Address.apply)(Address.unapply)
   )
