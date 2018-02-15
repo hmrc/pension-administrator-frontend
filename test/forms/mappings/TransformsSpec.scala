@@ -42,6 +42,35 @@ class TransformsSpec extends WordSpec with MustMatchers with TableDrivenProperty
     }
   }
 
+  "postCodeTransform" must {
+    "strip leading and trailing spaces" in {
+      val actual = postCodeTransform(" AB12 1AB ")
+      actual mustBe "AB12 1AB"
+    }
+
+    "upper case all characters" in {
+      val actual = postCodeTransform("ab12 1ab")
+      actual mustBe "AB12 1AB"
+    }
+
+    "minimise spaces" in {
+      val actual = postCodeTransform("AB12     1AB")
+      actual mustBe "AB12 1AB"
+    }
+  }
+
+  "postCodeValidTransform" must {
+    "add missing internal space in full post code" in {
+      val actual = postCodeValidTransform("AB121AB")
+      actual mustBe "AB12 1AB"
+    }
+
+    "add missing internal space in minimal post code" in {
+      val actual = postCodeValidTransform("A11AB")
+      actual mustBe "A1 1AB"
+    }
+  }
+
   "noTransform" must {
     "leave its input unchanged" in {
       val expected = " a B c "
