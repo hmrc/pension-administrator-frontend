@@ -48,7 +48,7 @@ trait Mappings extends Formatters with Constraints {
     def fromPostCode(data: Option[String]): (Option[String], Option[String]) = (data, data)
 
     tuple(
-      "postCode" -> mandatoryIfEqual[String]("country", "GB", text(requiredKey).verifying(regexp(postCodeRegex, invalidKey))),
+      "postCode" -> mandatoryIfEqual[String]("country", "GB", text(requiredKey).verifying(postalCode(invalidKey))),
       "postCode" -> optional(text(requiredKey))
     ).transform(toPostCode, fromPostCode)
 
