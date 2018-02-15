@@ -58,6 +58,11 @@
             label = messages("address.line.4")
         )
 
+        @components.input_text(
+            field = form("postCode.postCode"),
+            label = messages("address.postcode")
+        )
+
         @components.submit_button()
 
     }

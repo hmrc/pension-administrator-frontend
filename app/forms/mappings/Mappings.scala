@@ -35,13 +35,11 @@ trait Mappings extends Formatters with Constraints {
                         invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-
   protected def enumerable[A](requiredKey: String = "error.required",
                               invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
 
   protected def postCode(requiredKey: String, invalidKey: String): Mapping[Option[String]] = {
-    val postCodeRegex = "^(?i)[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}"
 
     def toPostCode(data: (Option[String], Option[String])): Option[String] = data._2
 
