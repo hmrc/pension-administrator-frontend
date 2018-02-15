@@ -16,10 +16,23 @@
 
 package forms.mappings
 
+import scala.annotation.tailrec
+
 trait Transforms {
 
   def vatRegistrationNumberTransform(value: String): String = {
     strip(value).replaceAll("^[gG][bB]", "")
+  }
+
+  def postCodeTransform(value: String): String = {
+    minimiseSpace(value.trim.toUpperCase)
+  }
+
+  def postCodeValidTransform(value: String): String = {
+    value.contains(" ") match {
+      case true => value
+      case false => value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
+    }
   }
 
   def noTransform(value: String): String = {
@@ -28,6 +41,14 @@ trait Transforms {
 
   private def strip(value: String): String = {
     value.replaceAll(" ", "")
+  }
+
+  @tailrec
+  private def minimiseSpace(value: String): String = {
+    value.contains("  ") match {
+      case false => value
+      case true => minimiseSpace(value.replaceAll("  ", " "))
+    }
   }
 
 }
