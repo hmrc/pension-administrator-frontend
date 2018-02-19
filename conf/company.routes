@@ -34,6 +34,11 @@ POST       /companyPreviousAddressPostCodeLookup               controllers.regis
 GET        /changeCompanyPreviousAddressPostCodeLookup                        controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeCompanyPreviousAddressPostCodeLookup                        controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
 
+GET        /companyAddressList               controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST       /companyAddressList               controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = NormalMode)
+GET        /changeCompanyAddressList               controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeCompanyAddressList               controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = CheckMode)
+
 GET        /addCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
 POST       /addCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeAddCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = CheckMode)

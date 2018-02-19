@@ -61,6 +61,9 @@ site.service_name = pension-administrator-frontend
 site.textarea.char_limit = (Limit is {0} characters)
 site.secondaryHeader = Register a new Pension Scheme Administrator
 
+common.selectAddress.text = Select the address from the list below, or
+common.selectAddress.link = enter the address manually
+
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
@@ -129,6 +132,13 @@ companyPreviousAddressPostCodeLookup.postalCode = Postal code
 companyPreviousAddressPostCodeLookup.postalCode.hint = For example NE12 8ER
 companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
 companyPreviousAddressPostCodeLookup.enterManually = enter the address manually
+
+companyAddressList.title = Select the previous address
+companyAddressList.heading = Select the previous address
+companyAddressList.option1 = companyAddressList Option 1
+companyAddressList.option2 = companyAddressList Option 2
+companyAddressList.checkYourAnswersLabel = companyAddressList
+companyAddressList.error.required = Select an address
 
 addCompanyDirectors.title = Company directors
 addCompanyDirectors.heading = Company directors
