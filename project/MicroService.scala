@@ -66,8 +66,11 @@ trait MicroService {
     .settings(
       // concatenate js
       Concat.groups := Seq(
-        "javascripts/pensionadministratorfrontend-app.js" -> group(Seq("javascripts/show-hide-content.js", "javascripts/pensionadministratorfrontend.js"))
-      ),
+        "javascripts/pensionadministratorfrontend-app.js" -> group(Seq(
+          "javascripts/show-hide-content.js",
+          "javascripts/pensionadministratorfrontend.js",
+          "javascripts/autocomplete/location-autocomplete.min.js"
+        ))),
       // prevent removal of unused code which generates warning errors due to use of third-party libs
       UglifyKeys.compressOptions := Seq("unused=false", "dead_code=false"),
       pipelineStages := Seq(digest),

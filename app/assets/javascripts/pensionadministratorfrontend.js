@@ -4,9 +4,8 @@ $(document).ready(function() {
   // Initialise show-hide-content
   // Toggles additional content based on radio/checkbox input state
   // =====================================================
-  var showHideContent, mediaQueryList;
-  showHideContent = new GOVUK.ShowHideContent()
-  showHideContent.init()
+      var showHideContent = new GOVUK.ShowHideContent()
+      showHideContent.init()
 
   // =====================================================
   // Handle number inputs
@@ -21,20 +20,27 @@ $(document).ready(function() {
     window.history.back();
   })
 
-  // =====================================================
-  // Adds data-focuses attribute to all containers of inputs listed in an error summary
-  // This allows validatorFocus to bring viewport to correct scroll point
-  // =====================================================
-      function assignFocus () {
-          var counter = 0;
-          $('.error-summary-list a').each(function(){
-              var linkhash = $(this).attr("href").split('#')[1];
-              $('#' + linkhash).parents('.form-field, .form-group').first().attr('id', 'f-' + counter);
-              $(this).attr('data-focuses', 'f-' + counter);
-              counter++;
-          });
-      }
-      assignFocus();
+
+    if(document.querySelectorAll('select').length > 0){
+        var graphUrl = '/assets/javascripts/autocomplete/location-autocomplete-graph.json'
+
+        openregisterLocationPicker({
+            defaultValue: '',
+            selectElement: document.querySelector('select'),
+            url: graphUrl
+        })
+
+          // temporary fix for IE not registering clicks on the text of the results list for the country autocomplete
+          $('body').on('mouseup', ".autocomplete__option > strong", function(e){
+                e.preventDefault(); $(this).parent().trigger('click')
+          })
+
+          // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
+          $('input[role="combobox"]').on('keydown', function(){
+                var sel = document.querySelector('.autocomplete-wrapper select')
+                sel.value = "";
+          })
+    }
 
       function beforePrintCall(){
           if($('.no-details').length > 0){
@@ -100,27 +106,6 @@ $(document).ready(function() {
       window.onafterprint = function(){
           afterPrintCall();
       }
-
-      if(document.querySelectorAll('select').length > 0){
-              var graphUrl = '/assets/javascripts/autocomplete/location-autocomplete-graph.json'
-
-              openregisterLocationPicker({
-                  defaultValue: '',
-                  selectElement: document.querySelector('select'),
-                  url: graphUrl
-              })
-
-                // temporary fix for IE not registering clicks on the text of the results list for the country autocomplete
-                $('body').on('mouseup', ".autocomplete__option > strong", function(e){
-                      e.preventDefault(); $(this).parent().trigger('click')
-                })
-
-                // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
-                $('input[role="combobox"]').on('keydown', function(){
-                      var sel = document.querySelector('.autocomplete-wrapper select')
-                      sel.value = "";
-                })
-          }
   });
 
 
