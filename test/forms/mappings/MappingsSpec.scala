@@ -184,7 +184,7 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
     Seq("A 1223", "1234 A23", "AA1 BBB", "AA 8989").foreach{ testPostCode =>
       s"fail to bind when postCode $testPostCode is not valid" in {
 
-        val result = testForm.bind(Map("country" -> "GB", "postCode.postCode" -> "", "postCode.postCode" -> "sfdaf"))
+        val result = testForm.bind(Map("country" -> "GB", "postCode.postCode" -> "", "postCode.postCode" -> testPostCode))
 
         result.errors mustEqual Seq(FormError("postCode.postCode", "error.invalid", Seq(postcode)))
 

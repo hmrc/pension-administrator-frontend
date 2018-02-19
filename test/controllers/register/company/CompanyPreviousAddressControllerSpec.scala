@@ -21,11 +21,12 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.CompanyPreviousAddressId
+import utils.CountryOptions
 import models.{Address, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, InputOption}
 import views.html.register.company.companyPreviousAddress
 
 class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
@@ -35,11 +36,24 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
   val formProvider = new AddressFormProvider()
   val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyPreviousAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
 
-  def viewAsString(form: Form[_] = form) = companyPreviousAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def countryOptions: CountryOptions = new CountryOptions(options)
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new CompanyPreviousAddressController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider,
+      countryOptions
+    )
+
+  def viewAsString(form: Form[_] = form) = companyPreviousAddress(frontendAppConfig, form, NormalMode, options)(fakeRequest, messages).toString
 
   "CompanyPreviousAddress Controller" must {
 

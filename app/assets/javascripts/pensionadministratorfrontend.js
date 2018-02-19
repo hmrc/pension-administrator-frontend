@@ -100,6 +100,27 @@ $(document).ready(function() {
       window.onafterprint = function(){
           afterPrintCall();
       }
+
+      if(document.querySelectorAll('select').length > 0){
+              var graphUrl = '/assets/javascripts/autocomplete/location-autocomplete-graph.json'
+
+              openregisterLocationPicker({
+                  defaultValue: '',
+                  selectElement: document.querySelector('select'),
+                  url: graphUrl
+              })
+
+                // temporary fix for IE not registering clicks on the text of the results list for the country autocomplete
+                $('body').on('mouseup', ".autocomplete__option > strong", function(e){
+                      e.preventDefault(); $(this).parent().trigger('click')
+                })
+
+                // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
+                $('input[role="combobox"]').on('keydown', function(){
+                      var sel = document.querySelector('.autocomplete-wrapper select')
+                      sel.value = "";
+                })
+          }
   });
 
 

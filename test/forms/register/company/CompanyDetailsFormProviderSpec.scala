@@ -83,11 +83,13 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
 
     behave like fieldWithTransform(
       form,
+      fieldName,
       Map(
         "companyName" -> "MyCo Ltd",
         "vatRegistrationNumber" -> "  GB123456789  "
       ),
-      (model: CompanyDetails) => model.vatRegistrationNumber.value.equals("123456789")
+      "123456789",
+      (model: CompanyDetails) => model.vatRegistrationNumber.value
     )
   }
 

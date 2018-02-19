@@ -27,7 +27,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{CountryOptions, Navigator, UserAnswers}
 import views.html.register.company.companyPreviousAddress
 
 import scala.concurrent.Future
@@ -40,7 +40,8 @@ class CompanyPreviousAddressController @Inject() (
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: AddressFormProvider
+                                        formProvider: AddressFormProvider,
+                                        countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport {
 
   private val form: Form[Address] = formProvider()
@@ -51,14 +52,14 @@ class CompanyPreviousAddressController @Inject() (
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(companyPreviousAddress(appConfig, preparedForm, mode))
+      Ok(companyPreviousAddress(appConfig, preparedForm, mode, countryOptions.options))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyPreviousAddress(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(companyPreviousAddress(appConfig, formWithErrors, mode, countryOptions.options))),
         (value) =>
           dataCacheConnector.save(request.externalId, CompanyPreviousAddressId, value).map(cacheMap =>
             Redirect(navigator.nextPage(CompanyPreviousAddressId, mode)(new UserAnswers(cacheMap))))

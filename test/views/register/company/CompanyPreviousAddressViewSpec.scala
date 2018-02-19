@@ -28,9 +28,9 @@ class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   override val form = new AddressFormProvider()()
 
-  def createView = () => companyPreviousAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => companyPreviousAddress(frontendAppConfig, form, NormalMode, Seq.empty)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => companyPreviousAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => companyPreviousAddress(frontendAppConfig, form, NormalMode, Seq.empty)(fakeRequest, messages)
 
   "CompanyPreviousAddress view" must {
 
@@ -41,7 +41,6 @@ class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like pageWithBackLink(createView)
 
     behave like pageWithTextFields(
-
       createViewUsingForm,
       messageKeyPrefix,
       controllers.register.company.routes.CompanyPreviousAddressController.onSubmit(NormalMode).url,
