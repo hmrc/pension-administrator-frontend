@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.addresslookup
+package models
 
 import org.scalatest.{MustMatchers, WordSpec}
 

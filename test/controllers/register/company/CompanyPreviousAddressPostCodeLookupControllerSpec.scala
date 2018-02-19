@@ -21,8 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyPreviousAddressPostCodeLookupFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.NormalMode
-import models.addresslookup.{Address, AddressRecord}
+import models.{Address, AddressRecord, NormalMode}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar

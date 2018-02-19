@@ -17,7 +17,7 @@
 package identifiers.register.company
 
 import identifiers._
-import models.addresslookup.Address
+import models.Address
 
 case object CompanyPreviousAddressPostCodeLookupId extends TypedIdentifier[Seq[Address]] {
   override def toString: String = "companyPreviousAddressPostCodeLookup"
