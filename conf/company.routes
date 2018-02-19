@@ -28,3 +28,8 @@ GET        /companyAddressYears               controllers.register.company.Compa
 POST       /companyAddressYears               controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeCompanyAddressYears               controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeCompanyAddressYears               controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /companyPreviousAddressPostCodeLookup               controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /companyPreviousAddressPostCodeLookup               controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /changeCompanyPreviousAddressPostCodeLookup                        controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeCompanyPreviousAddressPostCodeLookup                        controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)

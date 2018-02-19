@@ -18,10 +18,14 @@ package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import base.SpecBase
+import org.jsoup.select.Elements
+import org.scalatest.matchers.{MatchResult, Matcher}
 
 trait ViewSpecBase extends SpecBase {
+
+  type View = () => HtmlFormat.Appendable
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 
@@ -91,4 +95,26 @@ trait ViewSpecBase extends SpecBase {
       case _ => assert(!radio.hasAttr("checked") && radio.attr("checked") != "checked", s"\n\nElement $id is checked")
     }
   }
+
+  def haveDynamicText(messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
+    view =>
+      val text = messages(messageKey, args:_*)
+      MatchResult(
+        Jsoup.parse(view().toString).toString.contains(text),
+        s"text $text is not rendered on the page",
+        s"text $text is rendered on the page"
+      )
+  }
+
+  def haveLink(url: String, linkId: String): Matcher[View] = Matcher[View] {
+    view =>
+      val link = Jsoup.parse(view().toString()).select(s"a[id=$linkId]")
+      val href = link.attr("href")
+      MatchResult(
+        href == url,
+        s"href $href is not equal to the url $url",
+        s"href $href is equal to the url $url"
+      )
+  }
+
 }
