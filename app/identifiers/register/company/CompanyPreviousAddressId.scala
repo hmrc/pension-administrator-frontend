@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers.register.company
 
-case class InputOption(value: String, label: String, dataTarget: Option[String] = None)
+import identifiers._
+import models.Address
+
+case object CompanyPreviousAddressId extends TypedIdentifier[Address] {
+  override def toString: String = "companyPreviousAddress"
+}

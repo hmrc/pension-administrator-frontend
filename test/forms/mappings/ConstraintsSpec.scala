@@ -270,7 +270,7 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     val invalidMsg = "Invalid post code"
 
-    behave like regexWithValidAndInvalidExamples(postalCode, validPostCode, invalidPostCode, invalidMsg, postCode)
+    behave like regexWithValidAndInvalidExamples(postalCode, validPostCode, invalidPostCode, invalidMsg, postcode)
   }
 
 }

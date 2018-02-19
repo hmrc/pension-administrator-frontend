@@ -160,4 +160,35 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       result.errors must contain(FormError("value", "error.required"))
     }
   }
+
+  "postCode" must {
+
+    val testForm = Form("postCode" -> postCode("error.required", "error.invalid"))
+
+    "bind successfully when country is non UK and postcode is not of UK postal format" in {
+      val result = testForm.bind(Map("country" -> "IN", "postCode.postCode" -> "", "postCode.postCode" -> "sdsad"))
+      result.get mustEqual Some("sdsad")
+    }
+
+    "bind successfully when country is UK and postcode is of correct format" in {
+      val result = testForm.bind(Map("country" -> "GB", "postCode.postCode" -> "", "postCode.postCode" -> "AB1 1AB"))
+      result.get mustEqual Some("AB1 1AB")
+    }
+
+    "fail to bind when postCode is not provided" in {
+      val result = testForm.bind(Map("country" -> "GB", "postCode.postCode" -> "", "postCode.postCode" -> ""))
+
+      result.errors mustEqual Seq(FormError("postCode.postCode", "error.required"))
+    }
+
+    Seq("A 1223", "1234 A23", "AA1 BBB", "AA 8989").foreach{ testPostCode =>
+      s"fail to bind when postCode $testPostCode is not valid" in {
+
+        val result = testForm.bind(Map("country" -> "GB", "postCode.postCode" -> "", "postCode.postCode" -> testPostCode))
+
+        result.errors mustEqual Seq(FormError("postCode.postCode", "error.invalid", Seq(postcode)))
+
+      }
+    }
+  }
 }

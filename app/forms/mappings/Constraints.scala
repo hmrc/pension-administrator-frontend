@@ -26,7 +26,7 @@ trait Constraints {
   protected val number = """^[0-9]+$"""
   protected val vat = """^\d{9}$"""
   protected val paye = """^[a-zA-Z\d]{1,13}$"""
-  protected val postCode = """^[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}$"""
+  protected val postcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -101,11 +101,7 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = {
-
-    regexp(crn, errorKey)
-
-  }
+  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = regexp(crn, errorKey)
 
   protected def companyUniqueTaxReference(errorKey: String): Constraint[String] = regexp(utr, errorKey)
 
@@ -113,16 +109,10 @@ trait Constraints {
 
   protected def wholeNumber(errorKey: String): Constraint[String] = regexp(number, errorKey)
 
-  protected def vatRgistrationNumber(errorKey: String): Constraint[String] = {
-    regexp(vat, errorKey)
-  }
+  protected def vatRgistrationNumber(errorKey: String): Constraint[String] = regexp(vat, errorKey)
 
-  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = {
-    regexp(paye, errorKey)
-  }
+  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = regexp(paye, errorKey)
 
-  protected def postalCode(errorKey: String): Constraint[String] = {
-    regexp(postCode, errorKey)
-  }
+  protected def postalCode(errorKey: String): Constraint[String] = regexp(postcode, errorKey)
 
 }
