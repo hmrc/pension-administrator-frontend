@@ -33,3 +33,8 @@ GET        /companyPreviousAddressPostCodeLookup               controllers.regis
 POST       /companyPreviousAddressPostCodeLookup               controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /changeCompanyPreviousAddressPostCodeLookup                        controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeCompanyPreviousAddressPostCodeLookup                        controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET        /addCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
+POST       /addCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeAddCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeAddCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = CheckMode)
