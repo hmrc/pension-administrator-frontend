@@ -39,6 +39,12 @@ class MoreThanTenDirectorsViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url)
+    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
+
+    behave like yesNoPage(createViewUsingForm,
+      messageKeyPrefix,
+      routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,
+      "heading",
+      Some("hint"))
   }
 }

@@ -140,7 +140,8 @@ addCompanyDirectors.addADirector.hint = You must add all your directors. You can
 addCompanyDirectors.atMaximum = You have added the maximum number of directors.
 addCompanyDirectors.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
 
-moreThanTenDirectors.title = moreThanTenDirectors
-moreThanTenDirectors.heading = moreThanTenDirectors
-moreThanTenDirectors.checkYourAnswersLabel = moreThanTenDirectors
-moreThanTenDirectors.error.required = Please give an answer for moreThanTenDirectors
+moreThanTenDirectors.title = Do you need to tell us about other directors?
+moreThanTenDirectors.heading = Do you need to tell us about other directors?
+moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
+moreThanTenDirectors.hint = We will contact you if we need their information.
+moreThanTenDirectors.error.required = You must make a selection

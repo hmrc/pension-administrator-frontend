@@ -33,12 +33,12 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("moreThanTenDirectors.heading")
+        @components.heading("moreThanTenDirectors.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @components.input_yes_no(
             field = form("value"),
             label = messages("moreThanTenDirectors.heading"),
-            labelClass = Some("visually-hidden")
+            hint = Some(messages("moreThanTenDirectors.hint"))
         )
 
         @components.submit_button()
