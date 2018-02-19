@@ -34,6 +34,10 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
     x => AnswerRow("addCompanyDirectors.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url)
   }
 
+  def moreThanTenDirectors: Option[AnswerRow] = userAnswers.get(identifiers.register.company.MoreThanTenDirectorsId) map {
+    x => AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(CheckMode).url)
+  }
+
   def contactDetails: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map {
     x => AnswerRow("contactDetails.checkYourAnswersLabel", s"${x.email} ${x.phone}", false, controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)
   }

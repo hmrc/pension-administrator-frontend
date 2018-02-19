@@ -38,3 +38,8 @@ GET        /addCompanyDirectors                       controllers.register.compa
 POST       /addCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeAddCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeAddCompanyDirectors                       controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /moreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = NormalMode)
+POST       /moreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = CheckMode)

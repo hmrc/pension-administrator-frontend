@@ -139,3 +139,9 @@ addCompanyDirectors.addADirector = Add a director
 addCompanyDirectors.addADirector.hint = You must add all your directors. You can add up to 10 using the digital service.
 addCompanyDirectors.atMaximum = You have added the maximum number of directors.
 addCompanyDirectors.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+moreThanTenDirectors.title = Do you need to tell us about other directors?
+moreThanTenDirectors.heading = Do you need to tell us about other directors?
+moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
+moreThanTenDirectors.hint = We will contact you if we need their information.
+moreThanTenDirectors.error.required = You must make a selection
