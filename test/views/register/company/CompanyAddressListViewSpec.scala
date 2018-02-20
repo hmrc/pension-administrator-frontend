@@ -51,7 +51,7 @@ class CompanyAddressListViewSpec extends ViewBehaviours {
 
     "have link for enter address manually" in {
       createView must haveLink(
-        controllers.register.company.routes.CompanyAddressListController.onPageLoad(NormalMode).url,
+        controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(NormalMode).url,
         "manual-address-link"
       )
     }
