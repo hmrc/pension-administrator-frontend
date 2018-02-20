@@ -43,3 +43,6 @@ GET        /moreThanTenDirectors                       controllers.register.comp
 POST       /moreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad()
+POST        /confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad()

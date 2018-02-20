@@ -41,8 +41,8 @@ error.postcode.required = Enter the postal code
 error.postcode.length = The postal code cannot be more than 8 characters
 error.postcode.invalid = Enter a valid postal code
 
-index.title = pension-administrator-frontend
-index.heading = pension-administrator-frontend
+index.title = Pension Scheme Registrations
+index.heading = Pension Scheme Registrations
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 session_expired.title = For your security, this service has been reset
@@ -52,12 +52,14 @@ session_expired.guidance = The details you have given have been deleted because 
 site.back = Back
 site.delete = Remove
 site.edit = Change
+site.confirm = Confirm
+site.cancel = Cancel
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = pension-administrator-frontend
+site.service_name = Pension Scheme Registrations
 site.textarea.char_limit = (Limit is {0} characters)
 site.secondaryHeader = Register a new Pension Scheme Administrator
 
@@ -145,3 +147,6 @@ moreThanTenDirectors.heading = Do you need to tell us about other directors?
 moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
 moreThanTenDirectors.hint = We will contact you if we need their information.
 moreThanTenDirectors.error.required = You must make a selection
+
+confirmDeleteDirector.title = Are you sure you want to delete {0} as a director?
+confirmDeleteDirector.heading = Are you sure you want to delete {0} as a director?
