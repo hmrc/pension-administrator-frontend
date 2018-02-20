@@ -23,7 +23,7 @@ import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.CompanyAddressListFormProvider
-import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
+import identifiers.register.company.{CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.NormalMode
 import models.register.company.CompanyDetails
 import views.html.register.company.companyAddressList
@@ -72,24 +72,27 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Address look up page" when {
-      "no addresses are present after lookup" in {
-        val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails))
-        val result = controller(dataRetrieval).onPageLoad(NormalMode)(fakeRequest)
+      "no addresses are present after lookup" when {
+        "GET" in {
+          val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails))
+          val result = controller(dataRetrieval).onPageLoad(NormalMode)(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(
-          controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(
+            controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+        }
+
+        "POST" in {
+
+          val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails))
+          val result = controller(dataRetrieval).onSubmit(NormalMode)(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(
+            controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+        }
       }
 
-      "no addresses are present after lookup (post)" in {
-
-        val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails))
-        val result = controller(dataRetrieval).onSubmit(NormalMode)(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(
-          controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-      }
     }
 
     "redirect to the next page valid data is submitted" in {
@@ -129,13 +132,25 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
       }
+
+      "company name is not present" in {
+        val result = controller(getEmptyData).onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
     }
 
-    "company name is not present" in {
-      val result = controller(getEmptyData).onPageLoad(NormalMode)(fakeRequest)
+    "save to CompanyPreviousAddressId" in {
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails ++ addressObject))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1"))
+
+      controller(dataRetrieval).onSubmit(NormalMode)(postRequest)
+
+      FakeDataCacheConnector.verify(CompanyPreviousAddressId, address("test post code 2").copy(country = "GB"))
+
     }
+
   }
 }
