@@ -25,9 +25,7 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.CompanyAddressListFormProvider
-import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import identifiers.register.company.CompanyAddressListId
-import identifiers.register.company.CompanyDetailsId
+import identifiers.register.company.{CompanyAddressListId, CompanyDetailsId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyAddressList
 import models.Mode
@@ -74,11 +72,11 @@ class CompanyAddressListController @Inject()(
               (value) =>
                 dataCacheConnector.save(
                   request.externalId,
-                  CompanyAddressListId,
+                  CompanyPreviousAddressId,
                   addresses(value).copy(country = "GB")
+                ).map( cacheMap =>
+                  Redirect(navigator.nextPage(CompanyAddressListId, mode)(new UserAnswers(cacheMap)))
                 )
-                  .map(cacheMap =>
-                  Redirect(navigator.nextPage(CompanyAddressListId, mode)(new UserAnswers(cacheMap))))
             )
         }
       }

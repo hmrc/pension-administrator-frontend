@@ -28,7 +28,7 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec{
 
   val addressLineMaxLength = 35
 
-  def alphaString(max: Int = addressLineMaxLength) = Random.alphanumeric take Random.nextInt(max) mkString ""
+  def alphaString(max: Int = addressLineMaxLength) = Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
 
   val addressLine1 = alphaString()
   val addressLine2 = alphaString()
