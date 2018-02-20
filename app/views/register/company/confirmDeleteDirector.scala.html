@@ -26,4 +26,13 @@
     @components.back_link()
 
     @components.heading("confirmDeleteDirector.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+    @components.submit_button("site.confirm")
+
+    @*
+    * TODO - adding the route to the list of directors page
+    *@
+    <a id="cancel" href="@routes..onPageLoad(NormalMode)">
+        @messages("site.cancel")
+    </a>
 }
