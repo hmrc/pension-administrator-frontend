@@ -25,12 +25,13 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.AddCompanyDirectorsFormProvider
-import identifiers.register.company.AddCompanyDirectorsId
+import identifiers.register.company.{AddCompanyDirectorsId, CompanyDirectorsId}
 import models.Mode
-import utils.{Navigator, UserAnswers}
+import play.api.Logger
+import play.api.libs.json.JsResultException
+import play.api.mvc.{Action, AnyContent}
+import utils.Navigator
 import views.html.register.company.addCompanyDirectors
-
-import scala.concurrent.Future
 
 class AddCompanyDirectorsController @Inject() (
                                                      appConfig: FrontendAppConfig,
@@ -45,23 +46,34 @@ class AddCompanyDirectorsController @Inject() (
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddCompanyDirectorsId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(addCompanyDirectors(appConfig, preparedForm, mode, Nil))
+      val directors = request.userAnswers.get(CompanyDirectorsId).getOrElse(Nil)
+      Ok(addCompanyDirectors(appConfig, form, mode, directors))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, Nil))),
-        (value) =>
-          dataCacheConnector.save(request.externalId, AddCompanyDirectorsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AddCompanyDirectorsId, mode)(new UserAnswers(cacheMap))))
-      )
+      val directors = request.userAnswers.get(CompanyDirectorsId).getOrElse(Nil)
+
+      if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
+        Redirect(navigator.nextPage(AddCompanyDirectorsId, mode)(request.userAnswers))
+      }
+      else {
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors)),
+          (value) => {
+            request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
+              errors => {
+                Logger.error("Unable to set user answer", JsResultException(errors))
+                InternalServerError
+              },
+              userAnswers => Redirect(navigator.nextPage(AddCompanyDirectorsId, mode)(userAnswers))
+            )
+          }
+        )
+      }
   }
+
 }

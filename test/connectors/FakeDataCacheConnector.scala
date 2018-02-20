@@ -40,6 +40,10 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
     data should contain (id.toString -> Json.toJson(value))
   }
 
+  def verifyNot(id: TypedIdentifier[_]): Unit = {
+    data should not contain key (id.toString)
+  }
+
 }
 
 object FakeDataCacheConnector extends FakeDataCacheConnector
