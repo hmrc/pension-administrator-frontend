@@ -18,13 +18,14 @@ package forms.register.company
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.register.company.DirectorDetails
-import play.api.data.Form
+
+import models.register.company.CompanyDirector
+import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 
 class DirectorDetailsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[DirectorDetails] = Form(
+  def apply(): Form[CompanyDirector] = Form(
     mapping(
       "firstName" ->
         text("directorDetails.error.firstName.required")
@@ -33,14 +34,16 @@ class DirectorDetailsFormProvider @Inject() extends Mappings {
               "directorDetails.error.firstName.length"
             )
           ),
+      "middleName" -> optional(Forms.text),
       "lastName" ->
         text("directorDetails.error.lastName.required")
           .verifying(
             maxLength(DirectorDetailsFormProvider.lastNameLength,
               "directorDetails.error.lastName.length"
             )
-          )
-    )(DirectorDetails.apply)(DirectorDetails.unapply)
+          ),
+      "dateOfBirth" -> Forms.localDate
+    )(CompanyDirector.apply)(CompanyDirector.unapply)
   )
 
 }

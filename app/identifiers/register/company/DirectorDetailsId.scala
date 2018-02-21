@@ -17,8 +17,8 @@
 package identifiers.register.company
 
 import identifiers._
-import models.register.company.DirectorDetails
+import models.register.company.CompanyDirector
 
-case object DirectorDetailsId extends TypedIdentifier[DirectorDetails] {
+case object DirectorDetailsId extends TypedIdentifier[CompanyDirector] {
   override def toString: String = "directorDetails"
 }

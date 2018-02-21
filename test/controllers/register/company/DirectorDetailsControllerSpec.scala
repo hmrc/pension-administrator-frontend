@@ -16,6 +16,8 @@
 
 package controllers.register.company
 
+import java.time.LocalDate
+
 import play.api.data.Form
 import play.api.libs.json.Json
 import utils.FakeNavigator
@@ -25,9 +27,9 @@ import play.api.test.Helpers._
 import forms.register.company.DirectorDetailsFormProvider
 import identifiers.register.company.DirectorDetailsId
 import models.NormalMode
-import models.register.company.DirectorDetails
 import views.html.register.company.directorDetails
 import controllers.ControllerSpecBase
+import models.register.company.CompanyDirector
 
 class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
@@ -53,16 +55,16 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", "Doe"))
+      val validData = Json.obj(DirectorDetailsId.toString -> CompanyDirector("John", None, "Doe", LocalDate.now()))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorDetails("John", "Doe")))
+      contentAsString(result) mustBe viewAsString(form.fill(CompanyDirector("John", None, "Doe", LocalDate.now())))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"), ("dateOfBirth", LocalDate.now().toString))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

@@ -39,8 +39,8 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
       = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
 
   // scalastyle:off magic.number
-  private val johnDoe = CompanyDirector("John", "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = CompanyDirector("Joe", "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = CompanyDirector("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = CompanyDirector("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
   private val maxDirectors = frontendAppConfig.maxDirectors

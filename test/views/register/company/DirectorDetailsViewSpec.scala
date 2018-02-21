@@ -17,22 +17,21 @@
 package views.register.company
 
 import play.api.data.Form
-import controllers.register.company.routes
 import forms.register.company.DirectorDetailsFormProvider
 import models.NormalMode
-import models.register.company.DirectorDetails
+import models.register.company.CompanyDirector
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directorDetails
 
-class DirectorDetailsViewSpec extends QuestionViewBehaviours[DirectorDetails] {
+class DirectorDetailsViewSpec extends QuestionViewBehaviours[CompanyDirector] {
 
-  val messageKeyPrefix = "directorDetails"
+  private val messageKeyPrefix = "directorDetails"
 
   override val form = new DirectorDetailsFormProvider()()
 
-  def createView = () => directorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView = () => directorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => directorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => directorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "DirectorDetails view" must {
 
@@ -40,6 +39,13 @@ class DirectorDetailsViewSpec extends QuestionViewBehaviours[DirectorDetails] {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.DirectorDetailsController.onSubmit(NormalMode).url, "field1", "field2")
+    behave like pageWithTextFields(
+      createViewUsingForm,
+      messageKeyPrefix,
+      controllers.register.company.routes.DirectorDetailsController.onSubmit(NormalMode).url,
+      "firstName",
+      "lastName"
+    )
   }
+
 }
