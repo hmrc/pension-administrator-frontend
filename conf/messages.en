@@ -160,3 +160,13 @@ moreThanTenDirectors.error.required = You must make a selection
 
 confirmDeleteDirector.title = Are you sure you want to delete {0} as a director?
 confirmDeleteDirector.heading = Are you sure you want to delete {0} as a director?
+
+directorDetails.title = Company director
+directorDetails.heading = Company director
+directorDetails.firstName = First name
+directorDetails.lastName = Last name
+directorDetails.checkYourAnswersLabel = Company director
+directorDetails.error.firstName.required = Enter the first name
+directorDetails.error.firstName.length = The first name cannot be more than 35 characters
+directorDetails.error.lastName.required = Enter the last name
+directorDetails.error.lastName.length = The last name cannot be more than 35 characters

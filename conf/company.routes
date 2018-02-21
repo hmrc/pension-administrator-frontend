@@ -51,3 +51,8 @@ POST       /changeMoreThanTenDirectors                       controllers.registe
 
 GET        /confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad()
 POST        /confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad()
+
+POST       /directorDetails                       controllers.register.company.DirectorDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /directorDetails                       controllers.register.company.DirectorDetailsController.onPageLoad(mode: Mode = NormalMode)
+GET        /changeDirectorDetails                       controllers.register.company.DirectorDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDirectorDetails                       controllers.register.company.DirectorDetailsController.onSubmit(mode: Mode = CheckMode)
