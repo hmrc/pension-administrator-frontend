@@ -21,32 +21,37 @@ import java.time.LocalDate
 import play.api.data.Form
 import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
-import views.behaviours.YesNoViewBehaviours
+import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import models.NormalMode
 import models.register.company.CompanyDirector
 import views.html.register.company.addCompanyDirectors
 
-class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours {
+class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBehaviours {
 
-  val messageKeyPrefix = "addCompanyDirectors"
+  private val messageKeyPrefix = "addCompanyDirectors"
 
   val form = new AddCompanyDirectorsFormProvider()()
 
-  private def createView = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, Nil)(fakeRequest, messages)
+  private def createView(directors: Seq[CompanyDirector] = Nil)
+      = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
 
   private def createViewUsingForm(directors: Seq[CompanyDirector] = Nil)
       = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
 
+  // scalastyle:off magic.number
   private val johnDoe = CompanyDirector("John", "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = CompanyDirector("Joe", "Bloggs", LocalDate.of(1969, 7, 16))
+  // scalastyle:on magic.number
+
   private val maxDirectors = frontendAppConfig.maxDirectors
 
   "AddCompanyDirectors view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
+    behave like pageWithBackLink(createView())
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
+    behave like pageWithSecondaryHeader(createView(), messages("site.secondaryHeader"))
 
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),
@@ -55,6 +60,10 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours {
       "addYesNo",
       Some("addADirector.hint")
     )
+
+    val directors: Seq[CompanyDirector] = Seq(johnDoe, joeBloggs)
+
+    behave like peopleList(createView(), createView(directors), directors)
 
     "not show the yes no inputs if there are no directors" in {
       val doc = asDocument(createViewUsingForm()(form))
@@ -81,19 +90,14 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours {
     }
 
     "show the add director hint when there are zero directors" in {
-      //createView must haveDynamicText("addCompanyDirectors.addADirector.hint")
+      createView() must haveDynamicText("addCompanyDirectors.addADirector.hint")
     }
 
-    // Maximum number of directors
-    "show the maximum number of directors message when 10 directors" in {
-
+    "show the maximum number of directors message when there are 10 directors" in {
+      val view = createView(Seq.fill(maxDirectors)(johnDoe))
+      view must haveDynamicText("addCompanyDirectors.atMaximum")
+      view must haveDynamicText("addCompanyDirectors.tellUsIfYouHaveMore")
     }
-
-    // Directors list
-
-    // Delete link
-
-    // Edit link
 
   }
 

@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package models.register.company
+package identifiers.register.company
 
-import java.time.LocalDate
+import identifiers.TypedIdentifier
+import models.register.company.CompanyDirector
 
-import play.api.libs.json.{Format, Json}
-
-case class CompanyDirector(firstName: String, lastName: String, dateOfBirth: LocalDate) {
-  def fullName: String = firstName + " " + lastName
-}
-
-object CompanyDirector {
-  implicit val format: Format[CompanyDirector] = Json.format[CompanyDirector]
+object CompanyDirectorsId extends TypedIdentifier[Seq[CompanyDirector]]{
+  override def toString: String = "companyDirectors"
 }

@@ -16,9 +16,9 @@
 
 package controllers.register.company
 
+import java.time.LocalDate
+
 import play.api.data.Form
-import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
@@ -26,22 +26,52 @@ import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.AddCompanyDirectorsFormProvider
-import identifiers.register.company.AddCompanyDirectorsId
+import identifiers.register.company.{AddCompanyDirectorsId, CompanyDirectorsId}
 import models.NormalMode
+import models.register.company.CompanyDirector
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AddCompanyDirectorsFormProvider()
-  val form = formProvider()
+  private val formProvider = new AddCompanyDirectorsFormProvider()
+  private val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new AddCompanyDirectorsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+  protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
-  def viewAsString(form: Form[_] = form) = addCompanyDirectors(frontendAppConfig, form, NormalMode, Nil)(fakeRequest, messages).toString
+  protected def controller(
+      dataRetrievalAction: DataRetrievalAction = getEmptyData,
+      navigator: FakeNavigator = fakeNavigator()) =
+
+    new AddCompanyDirectorsController(
+        frontendAppConfig,
+        messagesApi,
+        FakeDataCacheConnector,
+        navigator,
+        FakeAuthAction,
+        dataRetrievalAction,
+        new DataRequiredActionImpl,
+        formProvider
+    )
+
+  private def viewAsString(form: Form[_] = form, directors: Seq[CompanyDirector] = Nil) =
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages).toString
+
+  // scalastyle:off magic.number
+  private val johnDoe = CompanyDirector("John", "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = CompanyDirector("Joe", "Bloggs", LocalDate.of(1969, 7, 16))
+  // scalastyle:on magic.number
+
+  private val maxDirectors = frontendAppConfig.maxDirectors
+
+  private def dataRetrievalAction(answer: Option[Boolean], directors: CompanyDirector*) = {
+    val validData = JsObject(Seq(
+      AddCompanyDirectorsId.toString -> answer.map(JsBoolean).getOrElse(JsNull),
+      CompanyDirectorsId.toString -> JsArray(directors.map(Json.toJson(_)))
+    ))
+    new FakeDataRetrievalAction(Some(validData))
+  }
 
   "AddCompanyDirectors Controller" must {
 
@@ -52,32 +82,81 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(AddCompanyDirectorsId.toString -> true)
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+    "not populate the view on a GET when the question has previously been answered" in {
+      val directors = Seq(johnDoe)
+      val getRelevantData = dataRetrievalAction(Some(true), directors: _*)
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(true))
+      contentAsString(result) mustBe viewAsString(form, directors)
     }
 
-    "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-
-      val result = controller().onSubmit(NormalMode)(postRequest)
+    "redirect to the next page when no directors exist and the user submits" in {
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "return a Bad Request and errors when invalid data is submitted" in {
+    "redirect to the next page when less than maximum directors exist and valid data is submitted" in {
+      val getRelevantData = dataRetrievalAction(None, Seq.fill(maxDirectors - 1)(johnDoe): _*)
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
+      val directors = Seq.fill(maxDirectors - 1)(johnDoe)
+      val getRelevantData = dataRetrievalAction(None, directors: _*)
+
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(boundForm)
+      contentAsString(result) mustBe viewAsString(boundForm, directors)
+    }
+
+    "not save the answer when directors exist and valid data is submitted" in {
+      val getRelevantData = dataRetrievalAction(None, johnDoe)
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      controller(getRelevantData).onSubmit(NormalMode)(postRequest)
+      FakeDataCacheConnector.verifyNot(AddCompanyDirectorsId)
+    }
+
+    "set the user answer when directors exist and valid data is submitted" in {
+      val getRelevantData = dataRetrievalAction(None, johnDoe)
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val navigator = fakeNavigator()
+
+      val result = controller(getRelevantData, navigator).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      navigator.lastUserAnswers.value.get(AddCompanyDirectorsId).value mustBe true
+    }
+
+    "redirect to the next page when maximum directors exist and the user submits" in {
+      val getRelevantData = dataRetrievalAction(None, Seq.fill(maxDirectors)(johnDoe): _*)
+
+      val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "populate the view with directors when they exist" in {
+      val directors = Seq(johnDoe, joeBloggs)
+      val getRelevantData = dataRetrievalAction(None, directors: _*)
+
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(form, directors)
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -95,4 +174,5 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
+
 }

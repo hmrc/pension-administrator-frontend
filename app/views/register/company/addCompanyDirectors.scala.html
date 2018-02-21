@@ -37,15 +37,21 @@
         @components.heading("addCompanyDirectors.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @if(directors.isEmpty) {
-            <p>@messages("addCompanyDirectors.addADirector.hint")</p>
+            @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
             @components.submit_button("addCompanyDirectors.addADirector")
         } else {
+
+            @components.person_list(directors)
+
             @if(directors.size < appConfig.maxDirectors) {
                 @components.input_yes_no(
                     field = form("value"),
                     label = messages("addCompanyDirectors.addYesNo"),
                     hint = Some(messages("addCompanyDirectors.addADirector.hint"))
                 )
+            } else {
+                @components.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+                @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
             }
 
             @components.submit_button()
