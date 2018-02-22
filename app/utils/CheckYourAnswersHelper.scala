@@ -26,6 +26,10 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
     x => AnswerRow("directorDetails.checkYourAnswersLabel", s"${x.firstName} ${x.lastName}", false, controllers.register.company.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
   }
 
+  def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorNinoId(index)) map {
+    x => AnswerRow("directorNino.checkYourAnswersLabel", s"directorNino.$x", true, controllers.register.company.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)
+  }
+
   def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyPreviousAddressId) map {
     x => AnswerRow("companyPreviousAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine2}", false, controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)
   }

@@ -17,6 +17,7 @@
 package forms.mappings
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.domain.Nino
 
 trait Constraints {
 
@@ -115,4 +116,10 @@ trait Constraints {
 
   protected def postalCode(errorKey: String): Constraint[String] = regexp(postcode, errorKey)
 
+  protected def validNino(invalidKey: String) : Constraint[String] = {
+    Constraint {
+      case nino if(Nino.isValid(nino.replaceAll(" ", "").toUpperCase)) => Valid
+      case _ => Invalid(invalidKey)
+    }
+  }
 }

@@ -30,6 +30,7 @@ private object AppDependencies {
   private val bootstrapVersion = "1.3.0"
   private val scalacheckVersion = "1.13.4"
   private val scalacheckGenRegexp = "0.1.0"
+  private val domainVersion = "5.1.0"
 
   val compile = Seq(
     ws,
@@ -41,7 +42,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalFormMappingVersion,
     "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-language" % playLanguageVersion
+    "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
+    "uk.gov.hmrc" %% "domain" % domainVersion
   )
 
   trait TestDependencies {

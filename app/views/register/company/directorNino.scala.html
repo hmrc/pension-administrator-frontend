@@ -1,0 +1,84 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.company.routes._
+@import models.{Mode,Index}
+@import models.register.company.DirectorNino
+
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
+
+@_options = @{
+DirectorNino.options
+}
+
+@main_template(
+    title = messages("directorNino.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @helpers.form(action = DirectorNinoController.onSubmit(mode, index), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.heading("directorNino.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+        @components.input_radio(
+            field = form("value"),
+            legend = messages("directorNino.heading"),
+            legendClass = Some("visually-hidden"),
+            inputs = DirectorNino.options
+        )
+
+        @components.fieldSet(
+            field = form("directorNino.hasNino"),
+            legend = "directorNino.title",
+            hiddenLegend = true
+        ) {
+            @components.radio(
+                field = form("directorNino.hasNino"),
+                label = _options.head.label,
+                value = _options.head.value,
+                dataTarget = _options.head.dataTarget
+            )
+
+            @components.input_text(
+                field = form("directorNino.nino"),
+                label = messages("common.nino"),
+                groupClass = Some("js-hidden panel panel-border-narrow"),
+                hint = Some(messages("common.nino.hint"))
+            )
+
+            @components.radio(
+                field = form("directorNino.hasNino"),
+                label = _options(1).label,
+                value = _options(1).value,
+                dataTarget = _options(1).dataTarget
+            )
+
+            @components.input_text(
+                field = form("directorNino.reason"),
+                label = messages("directorNino.no.reason"),
+                groupClass = Some("js-hidden panel panel-border-narrow")
+            )
+        }
+
+        @components.submit_button()
+    }
+}
