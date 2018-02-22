@@ -29,9 +29,9 @@ class DirectorDetailsViewSpec extends QuestionViewBehaviours[CompanyDirector] {
 
   override val form = new DirectorDetailsFormProvider()()
 
-  private def createView = () => directorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView = () => directorDetails(frontendAppConfig, form, NormalMode, 0)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => directorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => directorDetails(frontendAppConfig, form, NormalMode, 0)(fakeRequest, messages)
 
   "DirectorDetails view" must {
 
@@ -42,7 +42,7 @@ class DirectorDetailsViewSpec extends QuestionViewBehaviours[CompanyDirector] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.company.routes.DirectorDetailsController.onSubmit(NormalMode).url,
+      controllers.register.company.routes.DirectorDetailsController.onSubmit(NormalMode, 0).url,
       "firstName",
       "lastName"
     )

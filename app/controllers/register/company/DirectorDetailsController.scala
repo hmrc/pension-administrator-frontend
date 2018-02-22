@@ -26,7 +26,7 @@ import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.DirectorDetailsFormProvider
 import identifiers.register.company.DirectorDetailsId
-import models.Mode
+import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent}
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.directorDetails
@@ -46,23 +46,23 @@ class DirectorDetailsController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DirectorDetailsId) match {
+      val preparedForm = request.userAnswers.get(DirectorDetailsId(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(directorDetails(appConfig, preparedForm, mode))
+      Ok(directorDetails(appConfig, preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(directorDetails(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(directorDetails(appConfig, formWithErrors, mode, index))),
         (value) =>
-          dataCacheConnector.save(request.externalId, DirectorDetailsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(DirectorDetailsId, mode)(UserAnswers(cacheMap))))
+          dataCacheConnector.save(request.externalId, DirectorDetailsId(index), value).map(cacheMap =>
+            Redirect(navigator.nextPage(DirectorDetailsId(index), mode)(UserAnswers(cacheMap))))
     )
   }
 

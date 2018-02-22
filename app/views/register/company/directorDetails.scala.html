@@ -21,14 +21,14 @@
 @import models.Mode
 @import models.register.company.CompanyDirector
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("directorDetails.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = DirectorDetailsController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = DirectorDetailsController.onSubmit(mode, index), 'autoComplete -> "off") {
 
         @components.back_link()
 
