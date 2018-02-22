@@ -26,7 +26,7 @@ import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.AddCompanyDirectorsFormProvider
-import identifiers.register.company.{AddCompanyDirectorsId, CompanyDirectorsId}
+import identifiers.register.company.{AddCompanyDirectorsId, DirectorDetailsId}
 import models.NormalMode
 import models.register.company.DirectorDetails
 import views.html.register.company.addCompanyDirectors
@@ -65,11 +65,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 
-  private def dataRetrievalAction(answer: Option[Boolean], directors: DirectorDetails*) = {
-    val validData = JsObject(Seq(
-      AddCompanyDirectorsId.toString -> answer.map(JsBoolean).getOrElse(JsNull),
-      CompanyDirectorsId.toString -> JsArray(directors.map(Json.toJson(_)))
-    ))
+  private def dataRetrievalAction(directors: DirectorDetails*) = {
+    val validData = Json.obj(
+      "directors" -> directors.map(d => Json.obj(DirectorDetailsId.toString -> Json.toJson(d)))
+    )
     new FakeDataRetrievalAction(Some(validData))
   }
 
@@ -84,7 +83,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "not populate the view on a GET when the question has previously been answered" in {
       val directors = Seq(johnDoe)
-      val getRelevantData = dataRetrievalAction(Some(true), directors: _*)
+      val getRelevantData = dataRetrievalAction(directors: _*)
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
       contentAsString(result) mustBe viewAsString(form, directors)
@@ -98,7 +97,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when less than maximum directors exist and valid data is submitted" in {
-      val getRelevantData = dataRetrievalAction(None, Seq.fill(maxDirectors - 1)(johnDoe): _*)
+      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
@@ -110,7 +109,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
       val directors = Seq.fill(maxDirectors - 1)(johnDoe)
-      val getRelevantData = dataRetrievalAction(None, directors: _*)
+      val getRelevantData = dataRetrievalAction(directors: _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -122,7 +121,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "not save the answer when directors exist and valid data is submitted" in {
-      val getRelevantData = dataRetrievalAction(None, johnDoe)
+      val getRelevantData = dataRetrievalAction(johnDoe)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
@@ -131,7 +130,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "set the user answer when directors exist and valid data is submitted" in {
-      val getRelevantData = dataRetrievalAction(None, johnDoe)
+      val getRelevantData = dataRetrievalAction(johnDoe)
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
       val navigator = fakeNavigator()
 
@@ -142,7 +141,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when maximum directors exist and the user submits" in {
-      val getRelevantData = dataRetrievalAction(None, Seq.fill(maxDirectors)(johnDoe): _*)
+      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors)(johnDoe): _*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 
@@ -152,8 +151,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "populate the view with directors when they exist" in {
       val directors = Seq(johnDoe, joeBloggs)
-      val getRelevantData = dataRetrievalAction(None, directors: _*)
-
+      val getRelevantData = dataRetrievalAction(directors: _*)
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form, directors)

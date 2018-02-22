@@ -25,7 +25,7 @@ import connectors.FakeDataCacheConnector
 import controllers.actions._
 import play.api.test.Helpers._
 import forms.register.company.DirectorDetailsFormProvider
-import identifiers.register.company.{CompanyDirectorsId, DirectorDetailsId}
+import identifiers.register.company.DirectorDetailsId
 import models.NormalMode
 import views.html.register.company.directorDetails
 import controllers.ControllerSpecBase
@@ -56,7 +56,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        CompanyDirectorsId.toString -> Json.arr(
+        "directors" -> Json.arr(
           Json.obj(
             DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
           )
