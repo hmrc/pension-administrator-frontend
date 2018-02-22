@@ -19,11 +19,11 @@ package views.register.company
 import play.api.data.Form
 import forms.register.company.DirectorDetailsFormProvider
 import models.NormalMode
-import models.register.company.CompanyDirector
+import models.register.company.DirectorDetails
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directorDetails
 
-class DirectorDetailsViewSpec extends QuestionViewBehaviours[CompanyDirector] {
+class DirectorDetailsViewSpec extends QuestionViewBehaviours[DirectorDetails] {
 
   private val messageKeyPrefix = "directorDetails"
 

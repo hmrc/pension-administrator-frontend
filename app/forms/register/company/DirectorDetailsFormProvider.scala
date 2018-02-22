@@ -19,13 +19,13 @@ package forms.register.company
 import forms.mappings.Mappings
 import javax.inject.Inject
 
-import models.register.company.CompanyDirector
+import models.register.company.DirectorDetails
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 
 class DirectorDetailsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[CompanyDirector] = Form(
+  def apply(): Form[DirectorDetails] = Form(
     mapping(
       "firstName" ->
         text("directorDetails.error.firstName.required")
@@ -43,7 +43,7 @@ class DirectorDetailsFormProvider @Inject() extends Mappings {
             )
           ),
       "dateOfBirth" -> Forms.localDate
-    )(CompanyDirector.apply)(CompanyDirector.unapply)
+    )(DirectorDetails.apply)(DirectorDetails.unapply)
   )
 
 }

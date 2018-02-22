@@ -28,7 +28,7 @@ import play.api.libs.json._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.{AddCompanyDirectorsId, CompanyDirectorsId}
 import models.NormalMode
-import models.register.company.CompanyDirector
+import models.register.company.DirectorDetails
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
@@ -55,17 +55,17 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
         formProvider
     )
 
-  private def viewAsString(form: Form[_] = form, directors: Seq[CompanyDirector] = Nil) =
+  private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
     addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages).toString
 
   // scalastyle:off magic.number
-  private val johnDoe = CompanyDirector("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = CompanyDirector("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 
-  private def dataRetrievalAction(answer: Option[Boolean], directors: CompanyDirector*) = {
+  private def dataRetrievalAction(answer: Option[Boolean], directors: DirectorDetails*) = {
     val validData = JsObject(Seq(
       AddCompanyDirectorsId.toString -> answer.map(JsBoolean).getOrElse(JsNull),
       CompanyDirectorsId.toString -> JsArray(directors.map(Json.toJson(_)))

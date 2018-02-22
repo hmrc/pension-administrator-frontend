@@ -16,7 +16,7 @@
 
 package models
 
-import models.register.company.CompanyDirector
+import models.register.company.DirectorDetails
 import scala.language.implicitConversions
 
 case class Person(name: String, deleteLink: String, editLink: String)
@@ -27,7 +27,7 @@ object Person {
   def deleteLinkId(index: Int) = s"${id(index)}-delete"
   def editLinkId(index: Int) = s"${id(index)}-edit"
 
-  implicit def indexedCompanyDirectors(directors: Seq[CompanyDirector]): Seq[(Int, Person)] = {
+  implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[(Int, Person)] = {
     directors.indices.zip(directors.map { director =>
       Person(
         director.fullName,

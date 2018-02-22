@@ -29,7 +29,7 @@ import identifiers.register.company.{CompanyDirectorsId, DirectorDetailsId}
 import models.NormalMode
 import views.html.register.company.directorDetails
 import controllers.ControllerSpecBase
-import models.register.company.CompanyDirector
+import models.register.company.DirectorDetails
 
 class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
@@ -58,7 +58,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         CompanyDirectorsId.toString -> Json.arr(
           Json.obj(
-            DirectorDetailsId.toString -> CompanyDirector("John", None, "Doe", LocalDate.now())
+            DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
           )
         )
       )
@@ -66,7 +66,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, 0)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(0, form.fill(CompanyDirector("John", None, "Doe", LocalDate.now())))
+      contentAsString(result) mustBe viewAsString(0, form.fill(DirectorDetails("John", None, "Doe", LocalDate.now())))
     }
 
     "redirect to the next page when valid data is submitted" in {

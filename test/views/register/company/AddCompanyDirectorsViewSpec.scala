@@ -23,7 +23,7 @@ import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
 import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import models.NormalMode
-import models.register.company.CompanyDirector
+import models.register.company.DirectorDetails
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBehaviours {
@@ -32,15 +32,15 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
 
   val form = new AddCompanyDirectorsFormProvider()()
 
-  private def createView(directors: Seq[CompanyDirector] = Nil)
+  private def createView(directors: Seq[DirectorDetails] = Nil)
       = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
 
-  private def createViewUsingForm(directors: Seq[CompanyDirector] = Nil)
+  private def createViewUsingForm(directors: Seq[DirectorDetails] = Nil)
       = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
 
   // scalastyle:off magic.number
-  private val johnDoe = CompanyDirector("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = CompanyDirector("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
   private val maxDirectors = frontendAppConfig.maxDirectors
@@ -61,7 +61,7 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
       Some("addADirector.hint")
     )
 
-    val directors: Seq[CompanyDirector] = Seq(johnDoe, joeBloggs)
+    val directors: Seq[DirectorDetails] = Seq(johnDoe, joeBloggs)
 
     behave like peopleList(createView(), createView(directors), directors)
 
