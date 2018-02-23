@@ -34,5 +34,15 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
     behave like pageWithBackLink(createView)
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
+
+    "have a confirm button" in {
+      val doc = asDocument(createView())
+      assertRenderedById(doc, "submit")
+    }
+
+    "have a cancel button" in {
+      val doc = asDocument(createView())
+      assertRenderedById(doc, "cancel")
+    }
   }
 }

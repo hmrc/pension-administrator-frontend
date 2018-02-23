@@ -65,5 +65,4 @@ class CompanyPreviousAddressPostCodeLookupViewSpec extends StringViewBehaviours 
       createView must haveLink(routes.CompanyPreviousAddressController.onPageLoad(NormalMode).url, "manual-address-link")
     }
   }
-
 }
