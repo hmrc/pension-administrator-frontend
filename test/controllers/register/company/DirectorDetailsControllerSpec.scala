@@ -70,12 +70,45 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"), ("dateOfBirth", LocalDate.now().toString))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("firstName", "John"),
+        ("lastName", "Doe"),
+        ("dateOfBirth.day", "9"),
+        ("dateOfBirth.month", "6"),
+        ("dateOfBirth.year", "1862")
+      )
 
       val result = controller().onSubmit(NormalMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "save the director details when valid data is submittd" in {
+      // scalastyle:off magic.number
+      val dob = LocalDate.of(1862, 6, 9)
+      // scalastyle:on magic.number
+
+      val director = DirectorDetails(
+        "John",
+        Some("J"),
+        "Doe",
+        dob
+      )
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("firstName", director.firstName),
+        ("middleName", director.middleName.get),
+        ("lastName", director.lastName),
+        ("dateOfBirth.day", director.dateOfBirth.getDayOfMonth.toString),
+        ("dateOfBirth.month", director.dateOfBirth.getMonthValue.toString),
+        ("dateOfBirth.year", director.dateOfBirth.getYear.toString)
+      )
+
+      val result = controller().onSubmit(NormalMode, 1)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      FakeDataCacheConnector.verify(DirectorDetailsId(1), director)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

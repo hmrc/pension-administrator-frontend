@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import play.api.data.{Form, FormError}
+import play.api.data.{Field, Form, FormError}
 import play.twirl.api.HtmlFormat
 
 trait QuestionViewBehaviours[A] extends ViewBehaviours {
@@ -27,10 +27,43 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   val form: Form[A]
 
+  private def assertFieldExists(
+                         createView: (Form[A]) => HtmlFormat.Appendable,
+                         fieldName: String,
+                         text: Option[String] = None,
+                         error: Option[FormError] = None): Unit = {
+
+    val doc = error match {
+      case Some(e) => asDocument(createView(form.withError(e)))
+      case _ => asDocument(createView(form))
+    }
+    val field: Field = form.apply(fieldName)
+
+    text match {
+      case Some(s) => assertRenderedByIdWithText(doc, field.id, s)
+      case _ => assertRenderedById(doc, field.id)
+    }
+  }
+
+  private def assertLabelExists(createView: (Form[A]) => HtmlFormat.Appendable, forElement: String, text: String): Unit = {
+    val doc = asDocument(createView(form))
+    val field: Field = form.apply(forElement)
+    assertRenderedByForWithText(doc, field.id, text)
+  }
+
+  private def assertDatePartErrorExists(createView: (Form[A]) => HtmlFormat.Appendable, fieldName: String, datePart: String): Unit = {
+    assertFieldExists(
+      createView,
+      "error-message-date",
+      Some(messages("error.invalid_date")),
+      Some(FormError(s"$fieldName.$datePart", "error-text"))
+    )
+  }
+
   def pageWithTextFields(createView: (Form[A]) => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
                          expectedFormAction: String,
-                         fields: String*) = {
+                         fields: String*): Unit = {
 
     "behave like a question page" when {
       "rendered" must {
@@ -73,4 +106,71 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
       assertContainsLabel(doc, forElement, expectedText, expectedHintText)
     }
   }
+
+  // scalastyle:off method.length
+  def pageWithDateField(
+      createView: (Form[A]) => HtmlFormat.Appendable,
+      fieldName: String,
+      label: String,
+      hint: Option[String]): Unit = {
+
+    "hava a date label?" in {
+      assertFieldExists(createView, s"$fieldName-label", Some(label))
+    }
+
+    "have a hint?" in {
+      hint match {
+        case Some(_) => assertFieldExists(createView, s"$fieldName-date-hint", hint)
+        case _ => Unit
+      }
+    }
+
+    "have a day input" in {
+      assertFieldExists(createView, s"$fieldName.day")
+    }
+
+    "have a month input" in {
+      assertFieldExists(createView, s"$fieldName.month")
+    }
+
+    "have a year input" in {
+      assertFieldExists(createView, s"$fieldName.year")
+    }
+
+    "have a label for day" in {
+      assertLabelExists(createView, s"$fieldName.day", messages("date.day"))
+    }
+
+    "have a label for month" in {
+      assertLabelExists(createView, s"$fieldName.month", messages("date.month"))
+    }
+
+    "have a label for year" in {
+      assertLabelExists(createView, s"$fieldName.year", messages("date.year"))
+    }
+
+    "render errors when day is invalid" in {
+      assertDatePartErrorExists(createView, fieldName, "day")
+    }
+
+    "render errors when month is invalid" in {
+      assertDatePartErrorExists(createView, fieldName, "month")
+    }
+
+    "render errors when year is invalid" in {
+      assertDatePartErrorExists(createView, fieldName, "year")
+    }
+
+    "render errors when date field is invalid" in {
+      assertFieldExists(
+        createView,
+        s"error-message-$fieldName-input",
+        Some("dummy-error-message-key"),
+        Some(FormError(fieldName, "dummy-error-message-key"))
+      )
+    }
+
+  }
+  // scalastyle:on method.length
+
 }

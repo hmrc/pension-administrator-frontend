@@ -51,7 +51,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
                             data: Map[String, String],
                             expected: B,
                             actual: A => B): Unit = {
-    s"apply field transform s$transformName" in {
+    s"apply field transform $transformName" in {
       val result = form.bind(data)
       result.errors.size shouldBe 0
       actual(result.get) shouldBe expected

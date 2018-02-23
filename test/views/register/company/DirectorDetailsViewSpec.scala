@@ -39,13 +39,24 @@ class DirectorDetailsViewSpec extends QuestionViewBehaviours[DirectorDetails] {
 
     behave like pageWithBackLink(createView)
 
+    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader") )
+
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
       controllers.register.company.routes.DirectorDetailsController.onSubmit(NormalMode, 0).url,
       "firstName",
+      "middleName",
       "lastName"
     )
+
+    behave like pageWithDateField(
+      createViewUsingForm,
+      "dateOfBirth",
+      messages("directorDetails.dateOfBirth"),
+      Some(messages("directorDetails.dateOfBirth.hint"))
+    )
+
   }
 
 }

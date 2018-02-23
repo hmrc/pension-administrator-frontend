@@ -79,4 +79,11 @@ class TransformsSpec extends WordSpec with MustMatchers with TableDrivenProperty
     }
   }
 
+  "standard text transform" must {
+    "strip leading and trailing spaces" in {
+      val actual = standardTextTransform("  ABC DEF  ")
+      actual mustBe "ABC DEF"
+    }
+  }
+
 }

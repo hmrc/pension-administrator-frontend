@@ -18,8 +18,11 @@ package forms.mappings
 
 import models.register.company.DirectorNino
 import org.apache.commons.lang3.RandomStringUtils
+import java.time.LocalDate
+
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.{Form, FormError}
+import play.api.data.Forms._
 import utils.Enumerable
 
 object MappingsSpec {
@@ -135,10 +138,12 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       result.errors must contain(FormError("value", "error.required"))
     }
 
+    // scalastyle:off magic.number
     "unbind a valid value" in {
       val result = testForm.fill(123)
       result.apply("value").value.value mustEqual "123"
     }
+    // scalastyle:on magic.number
   }
 
   "enumerable" must {
@@ -169,12 +174,12 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
 
     "bind successfully when country is non UK and postcode is not of UK postal format" in {
       val result = testForm.bind(Map("country" -> "IN", "postCode.postCode" -> "", "postCode.postCode" -> "sdsad"))
-      result.get mustEqual Some("sdsad")
+      result.get.value mustEqual "sdsad"
     }
 
     "bind successfully when country is UK and postcode is of correct format" in {
       val result = testForm.bind(Map("country" -> "GB", "postCode.postCode" -> "", "postCode.postCode" -> "AB1 1AB"))
-      result.get mustEqual Some("AB1 1AB")
+      result.get.value mustEqual "AB1 1AB"
     }
 
     "fail to bind when postCode is not provided" in {
@@ -221,4 +226,101 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       result.errors mustEqual Seq(FormError("directorNino.reason", "directorNino.error.reason.length", Seq(150)))
     }
   }
+
+  "date" must {
+    case class TestClass (date: LocalDate)
+
+    val testForm = Form(
+      mapping(
+      "date" -> date("error.required", "error.invalid")
+      )(TestClass.apply)(TestClass.unapply)
+    )
+
+    // scalastyle:off magic.number
+    val testDate = LocalDate.of(1862, 6, 9)
+    // scalastyle:on magic.number
+
+    "bind valid data" in {
+      val result = testForm.bind(
+        Map(
+          "date.day" -> testDate.getDayOfMonth.toString,
+          "date.month" -> testDate.getMonthValue.toString,
+          "date.year" -> testDate.getYear.toString
+        )
+      )
+
+      result.errors.size mustBe 0
+      result.get.date mustBe testDate
+    }
+
+    "not bind blank data" in {
+      val result = testForm.bind(
+        Map(
+          "date.day" -> "",
+          "date.month" -> "",
+          "date.year" -> ""
+        )
+      )
+
+      result.errors.size mustBe 3
+      result.errors must contain allOf(
+        FormError("date.day", "error.date.day_blank"),
+        FormError("date.month", "error.date.month_blank"),
+        FormError("date.year", "error.date.year_blank")
+      )
+    }
+
+    "not bind non-numeric input" in {
+      val result = testForm.bind(
+        Map(
+          "date.day" -> "A",
+          "date.month" -> "B",
+          "date.year" -> "C"
+        )
+      )
+
+      result.errors.size mustBe 3
+      result.errors must contain allOf(
+        FormError("date.day", "error.date.day_invalid"),
+        FormError("date.month", "error.date.month_invalid"),
+        FormError("date.year", "error.date.year_invalid")
+      )
+    }
+
+    "not bind invalid day" in {
+      val result = testForm.bind(
+        Map(
+          "date.day" -> "0",
+          "date.month" -> testDate.getMonthValue.toString,
+          "date.year" -> testDate.getYear.toString
+        )
+      )
+
+      result.errors.size mustBe 1
+      result.errors must contain(FormError("date", "error.invalid"))
+    }
+
+    "not bind invalid month" in {
+      val result = testForm.bind(
+        Map(
+          "date.day" -> testDate.getDayOfMonth.toString,
+          "date.month" -> "0",
+          "date.year" -> testDate.getYear.toString
+        )
+      )
+
+      result.errors.size mustBe 1
+      result.errors must contain(FormError("date", "error.invalid"))
+    }
+
+    "fill correctly from model" in {
+      val testClass = TestClass(testDate)
+      val result = testForm.fill(testClass)
+
+      result("date.day").value.value mustBe "9"
+      result("date.month").value.value mustBe "6"
+      result("date.year").value.value mustBe "1862"
+    }
+  }
+
 }

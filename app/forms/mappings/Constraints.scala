@@ -28,6 +28,7 @@ trait Constraints {
   protected val vat = """^\d{9}$"""
   protected val paye = """^[a-zA-Z\d]{1,13}$"""
   protected val postcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}$"""
+  protected val nameRegex = """^[A-Za-z].*"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -122,4 +123,6 @@ trait Constraints {
       case _ => Invalid(invalidKey)
     }
   }
+  protected def name(errorKey: String): Constraint[String] = regexp(nameRegex, errorKey)
+
 }

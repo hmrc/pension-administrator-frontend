@@ -17,10 +17,14 @@
 package forms.mappings
 
 import models.register.company.DirectorNino
+import java.time.LocalDate
+
 import play.api.data.{FieldMapping, Mapping}
 import play.api.data.Forms.{of, optional, tuple}
 import uk.gov.voa.play.form.ConditionalMappings._
 import utils.Enumerable
+
+import scala.util.Try
 
 trait Mappings extends Formatters with Constraints {
 
@@ -83,4 +87,28 @@ trait Mappings extends Formatters with Constraints {
       "reason" -> mandatoryIfFalse("directorNino.hasNino", text(requiredReasonKey).
         verifying(maxLength(reasonMaxLength,reasonLengthKey)))).transform(toDirectorNino, fromDirectorNino)
   }
+
+  protected def date(requiredKey: String, invalidKey: String): Mapping[LocalDate] = {
+
+    def toLocalDate(input: (Int, Int, Int)): LocalDate = {
+      LocalDate.of(input._3, input._2, input._1)
+    }
+
+    def fromLocalDate(date: LocalDate): (Int, Int, Int) = {
+      (date.getDayOfMonth, date.getMonthValue, date.getYear)
+    }
+
+    def validDate(input: (Int, Int, Int)): Boolean = {
+      Try(toLocalDate(input)).isSuccess
+    }
+
+    tuple(
+      "day" -> int("error.date.day_blank", "error.date.day_invalid", "error.date.day_invalid"),
+      "month" -> int("error.date.month_blank", "error.date.month_invalid", "error.date.month_invalid"),
+      "year" -> int("error.date.year_blank", "error.date.year_invalid", "error.date.year_invalid")
+    ).verifying(invalidKey, (inputs) => validDate(inputs))
+      .transform(toLocalDate, fromLocalDate)
+
+  }
+
 }
