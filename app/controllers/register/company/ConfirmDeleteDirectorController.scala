@@ -18,11 +18,11 @@ package controllers.register.company
 
 import javax.inject.Inject
 
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
+import controllers.actions._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.register.company.confirmDeleteDirector
 
 class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
@@ -34,5 +34,10 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Ok(confirmDeleteDirector(appConfig))
+  }
+
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+    implicit request =>
+      ???
   }
 }

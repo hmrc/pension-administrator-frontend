@@ -43,5 +43,13 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
+
+    "redirect to directors list on removal direcot" in {
+
+      val result = controller().onSubmit()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
+    }
   }
 }
