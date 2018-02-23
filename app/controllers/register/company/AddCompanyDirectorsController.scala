@@ -25,8 +25,9 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.AddCompanyDirectorsFormProvider
-import identifiers.register.company.{AddCompanyDirectorsId, CompanyDirectorsId}
+import identifiers.register.company.{AddCompanyDirectorsId, DirectorDetailsId}
 import models.Mode
+import models.register.company.DirectorDetails
 import play.api.Logger
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}
@@ -48,13 +49,13 @@ class AddCompanyDirectorsController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors = request.userAnswers.get(CompanyDirectorsId).getOrElse(Nil)
+      val directors= request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       Ok(addCompanyDirectors(appConfig, form, mode, directors))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors = request.userAnswers.get(CompanyDirectorsId).getOrElse(Nil)
+      val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode)(request.userAnswers))

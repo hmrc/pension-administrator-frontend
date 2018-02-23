@@ -16,25 +16,31 @@
 
 package models
 
-import models.register.company.DirectorDetails
+import play.api.mvc.PathBindable
+
 import scala.language.implicitConversions
 
-case class Person(name: String, deleteLink: String, editLink: String)
+case class Index(id: Int)
 
-object Person {
+object Index {
 
-  def id(index: Int) = s"person-$index"
-  def deleteLinkId(index: Int) = s"${id(index)}-delete"
-  def editLinkId(index: Int) = s"${id(index)}-edit"
+  implicit def indexPathBindable(implicit intBinder: PathBindable[Int]): PathBindable[Index] = new PathBindable[Index] {
 
-  implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[(Int, Person)] = {
-    directors.indices.zip(directors.map { director =>
-      Person(
-        director.fullName,
-        controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad().url,
-        controllers.routes.IndexController.onPageLoad().url
-      )
-    })
+    override def bind(key: String, value: String): Either[String, Index] = {
+      intBinder.bind(key, value) match {
+        case Right(x) if x > 0 => Right(Index(x - 1))
+        case _ => Left("Index binding failed")
+      }
+    }
+
+    override def unbind(key: String, value: Index): String = {
+      intBinder.unbind(key, value.id + 1)
+    }
   }
 
+  implicit def indexToInt(index: Index): Int =
+    index.id
+
+  implicit def intToIndex(index: Int): Index =
+    Index(index)
 }

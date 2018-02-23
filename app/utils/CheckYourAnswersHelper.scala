@@ -22,6 +22,10 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def directorDetails(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorDetailsId(index)) map {
+    x => AnswerRow("directorDetails.checkYourAnswersLabel", s"${x.firstName} ${x.lastName}", false, controllers.register.company.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
+  }
+
   def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyPreviousAddressId) map {
     x => AnswerRow("companyPreviousAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine2}", false, controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)
   }

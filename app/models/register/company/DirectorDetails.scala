@@ -20,10 +20,10 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-case class CompanyDirector(firstName: String, lastName: String, dateOfBirth: LocalDate) {
+case class DirectorDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate) {
   def fullName: String = firstName + " " + lastName
 }
 
-object CompanyDirector {
-  implicit val format: Format[CompanyDirector] = Json.format[CompanyDirector]
+object DirectorDetails {
+  implicit val format: Format[DirectorDetails] = Json.format[DirectorDetails]
 }

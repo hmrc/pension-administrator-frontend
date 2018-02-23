@@ -16,9 +16,15 @@
 
 package identifiers.register.company
 
-import identifiers.TypedIdentifier
-import models.register.company.CompanyDirector
+import identifiers._
+import models.register.company.DirectorDetails
+import play.api.libs.json.JsPath
 
-object CompanyDirectorsId extends TypedIdentifier[Seq[CompanyDirector]]{
-  override def toString: String = "companyDirectors"
+case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails] {
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorDetailsId.toString
+}
+
+object DirectorDetailsId {
+  def collectionPath: JsPath = JsPath \ "directors" \\ DirectorDetailsId.toString
+  override def toString: String = "directorDetails"
 }

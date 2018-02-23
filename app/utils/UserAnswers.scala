@@ -17,7 +17,6 @@
 package utils
 
 import identifiers.TypedIdentifier
-import models.NormalMode
 import play.api.libs.json._
 
 import scala.language.implicitConversions
@@ -34,8 +33,13 @@ case class UserAnswers(private[UserAnswers] val json: JsValue) {
   }
 
   def getAll[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
-    (JsLens.fromPath(path) andThen JsLens.atAllIndices).get(json)
-      .flatMap(Json.fromJson[Seq[A]]).asOpt
+    JsLens
+      .fromPath(path)
+      .getAll(json)
+      .asOpt
+      .flatMap(vs =>
+        Some(vs.map(v => v.as[A]))
+      )
   }
 
   def set[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data], cleanup: Cleanup[I]): JsResult[UserAnswers] = {
@@ -53,4 +57,5 @@ case class UserAnswers(private[UserAnswers] val json: JsValue) {
       .remove(json)
       .flatMap(json => cleanup(id)(None, UserAnswers(json)))
   }
+
 }
