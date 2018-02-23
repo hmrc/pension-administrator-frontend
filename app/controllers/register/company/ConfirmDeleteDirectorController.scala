@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.NormalMode
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -32,12 +32,12 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Ok(confirmDeleteDirector(appConfig))
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
   }
