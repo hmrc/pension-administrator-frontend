@@ -218,4 +218,3 @@ object JsLens {
     path.path.map(toLens).reduceLeft(_ andThen _)
   }
 }
-

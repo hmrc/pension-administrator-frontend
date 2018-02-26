@@ -15,21 +15,27 @@
  *@
 
 @import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.company.routes._
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("confirmDeleteDirector.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.back_link()
+    @helpers.form(action = ConfirmDeleteDirectorController.onSubmit(index), 'autoComplete -> "off") {
 
-    @components.heading("confirmDeleteDirector.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.back_link()
 
-    @components.submit_button("site.confirm")
+        @components.heading("confirmDeleteDirector.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
-    <a id="cancel" href="">
-        @messages("site.cancel")
-    </a>
+        @components.submit_button("site.confirm")
+
+        <a id="cancel" href="">
+            @messages("site.cancel")
+        </a>
+
+    }
 }

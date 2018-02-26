@@ -18,27 +18,40 @@ package controllers.register.company
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.DirectorDetailsId
 import models.register.company.DirectorDetails
 import models.{Index, NormalMode}
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import repositories.{FakeSessionRepository, ReactiveMongoRepository}
 import views.html.register.company.confirmDeleteDirector
 
-class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
+
+class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar{
+
+  lazy val fakeMongoRepo = mock[ReactiveMongoRepository]
 
   val firstIndex = Index(0)
 
   val directorOne = DirectorDetails("John", None, "Doe", LocalDate.now())
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new ConfirmDeleteDirectorController(frontendAppConfig, messagesApi, FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+    new ConfirmDeleteDirectorController(
+      frontendAppConfig,
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      new FakeSessionRepository(fakeMongoRepo)
+    )
 
-  def viewAsString() = confirmDeleteDirector(frontendAppConfig)(fakeRequest, messages).toString
+  def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex)(fakeRequest, messages).toString
 
   "ConfirmDeleteDirector Controller" must {
 
@@ -49,7 +62,10 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
 
-    "redirect to directors list on removal director" in {
+    "redirect to directors list on removal of director" in {
+
+      when(fakeMongoRepo.upsert(any(),any()))
+        .thenReturn(Future.successful(true))
 
       val validData = Json.obj(
         "directors" -> Json.arr(
@@ -64,8 +80,6 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
-
-      FakeDataCacheConnector.verify(DirectorDetailsId.collectionPath, Seq.empty[DirectorDetails])
 
     }
   }

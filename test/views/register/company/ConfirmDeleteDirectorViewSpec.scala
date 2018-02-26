@@ -16,17 +16,17 @@
 
 package views.register.company
 
-import play.api.data.Form
-import controllers.routes
+import models.Index
 import views.behaviours.ViewBehaviours
-import models.NormalMode
 import views.html.register.company.confirmDeleteDirector
 
 class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "confirmDeleteDirector"
 
-  def createView = () => confirmDeleteDirector(frontendAppConfig)(fakeRequest, messages)
+  val firstIndex = Index(0)
+
+  def createView = () => confirmDeleteDirector(frontendAppConfig, firstIndex)(fakeRequest, messages)
 
   "ConfirmDeleteDirector view" must {
     behave like normalPage(createView, messageKeyPrefix)
