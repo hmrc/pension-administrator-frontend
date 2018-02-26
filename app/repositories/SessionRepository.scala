@@ -99,7 +99,7 @@ class SessionRepository @Inject()(config: Configuration) {
 
   class DbConnection extends MongoDbConnection
 
-  private lazy val sessionRepository = new ReactiveMongoRepository(config, new DbConnection().db)
+  private lazy val sessionRepository: ReactiveMongoRepository = new ReactiveMongoRepository(config, new DbConnection().db)
 
   def apply(): ReactiveMongoRepository = sessionRepository
 }

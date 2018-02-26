@@ -16,32 +16,71 @@
 
 package controllers.register.company
 
-import play.api.data.Form
-import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
-import controllers.actions._
-import play.api.test.Helpers._
-import models.NormalMode
-import views.html.register.company.confirmDeleteDirector
-import controllers.ControllerSpecBase
+import java.time.LocalDate
 
-class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
+import controllers.ControllerSpecBase
+import controllers.actions._
+import identifiers.register.company.DirectorDetailsId
+import models.register.company.DirectorDetails
+import models.{Index, NormalMode}
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
+import play.api.libs.json.Json
+import play.api.test.Helpers._
+import repositories.{FakeSessionRepository, ReactiveMongoRepository}
+import views.html.register.company.confirmDeleteDirector
+
+import scala.concurrent.Future
+
+class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar{
+
+  lazy val fakeMongoRepo = mock[ReactiveMongoRepository]
+
+  val firstIndex = Index(0)
+
+  val directorOne = DirectorDetails("John", None, "Doe", LocalDate.now())
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new ConfirmDeleteDirectorController(frontendAppConfig, messagesApi, FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+    new ConfirmDeleteDirectorController(
+      frontendAppConfig,
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      new FakeSessionRepository(fakeMongoRepo)
+    )
 
-  def viewAsString() = confirmDeleteDirector(frontendAppConfig)(fakeRequest, messages).toString
+  def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex)(fakeRequest, messages).toString
 
   "ConfirmDeleteDirector Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(fakeRequest)
+      val result = controller().onPageLoad(firstIndex)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+    }
+
+    "redirect to directors list on removal of director" in {
+
+      when(fakeMongoRepo.upsert(any(),any()))
+        .thenReturn(Future.successful(true))
+
+      val validData = Json.obj(
+        "directors" -> Json.arr(
+          Json.obj(
+            DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
+          )
+        )
+      )
+      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+
+      val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
+
     }
   }
 }

@@ -49,8 +49,8 @@ POST       /moreThanTenDirectors                       controllers.register.comp
 GET        /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = CheckMode)
 
-GET        /confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad()
-POST        /confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad()
+GET        /directors/:index/confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onPageLoad(index: Int)
+POST       /directors/:index/confirmDeleteDirector                       controllers.register.company.ConfirmDeleteDirectorController.onSubmit(index: Int)
 
 POST       /directors/:index/directorDetails                       controllers.register.company.DirectorDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /directors/:index/directorDetails                       controllers.register.company.DirectorDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)

@@ -28,13 +28,13 @@ object Person {
   def editLinkId(index: Int) = s"${id(index)}-edit"
 
   implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[(Int, Person)] = {
-    directors.indices.zip(directors.map { director =>
-      Person(
+    directors.zipWithIndex.map { case (director, index) =>
+      (index, Person(
         director.fullName,
-        controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad().url,
+        controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
         controllers.routes.IndexController.onPageLoad().url
-      )
-    })
+      ))
+    }
   }
 
 }
