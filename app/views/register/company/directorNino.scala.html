@@ -17,13 +17,14 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
-@import models.{Mode,Index}
+@import controllers.register.company._
+@import models.Mode
 @import models.register.company.DirectorNino
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
 
 @_options = @{
-DirectorNino.options
+        DirectorNino.options
 }
 
 @main_template(
@@ -38,13 +39,6 @@ DirectorNino.options
         @components.error_summary(form.errors)
 
         @components.heading("directorNino.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
-
-        @components.input_radio(
-            field = form("value"),
-            legend = messages("directorNino.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = DirectorNino.options
-        )
 
         @components.fieldSet(
             field = form("directorNino.hasNino"),

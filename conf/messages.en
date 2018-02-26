@@ -177,10 +177,9 @@ directorDetails.error.lastName.length = The last name cannot be more than 35 cha
 
 directorNino.title = Does the director have a National Insurance number?
 directorNino.heading = Does the director have a National Insurance number?
-directorNino.option1 = directorNino Option 1
-directorNino.option2 = directorNino Option 2
-directorNino.checkYourAnswersLabel = directorNino
+directorNino.checkYourAnswersLabel = Director National Insurance number
 directorNino.no.reason = Tell us why the director does not have a National Insurance number
 directorNino.error.required = One of the two radio buttons must be selected (YES/NO)
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
-directorNino.error.reason.length = You need to tell us why the director does not have a National Insurance number
+directorNino.error.reason.length = The reason cannot be more than 150 characters
+

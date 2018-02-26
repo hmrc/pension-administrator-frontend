@@ -57,7 +57,7 @@ GET        /directors/:index/directorDetails                       controllers.r
 GET        /directors/:index/changeDirectorDetails                       controllers.register.company.DirectorDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /directors/:index/changeDirectorDetails                       controllers.register.company.DirectorDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
 
-GET        /:index/directorNino               controllers.register.company.DirectorNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/directorNino               controllers.register.company.DirectorNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/changeDirectorNino               controllers.register.company.DirectorNinoController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/changeDirectorNino               controllers.register.company.DirectorNinoController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /directors/:index/directorNino               controllers.register.company.DirectorNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /directors/:index/directorNino               controllers.register.company.DirectorNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /directors/:index/changeDirectorNino               controllers.register.company.DirectorNinoController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /directors/:index/changeDirectorNino               controllers.register.company.DirectorNinoController.onSubmit(mode: Mode = CheckMode, index: Index)

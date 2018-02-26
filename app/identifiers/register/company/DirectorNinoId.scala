@@ -21,7 +21,7 @@ import models.register.company.DirectorNino
 import play.api.libs.json.JsPath
 
 case class DirectorNinoId(index: Int) extends TypedIdentifier[DirectorNino] {
-  override def path: JsPath = DirectorDetailsId(index).path \ index \ DirectorNinoId.toString
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorNinoId.toString
 }
 
 object DirectorNinoId {
