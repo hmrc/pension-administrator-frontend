@@ -18,10 +18,10 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
 
-@(appConfig: FrontendAppConfig, index: Int)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, index: Int, fullName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmDeleteDirector.title"),
+    title = messages("confirmDeleteDirector.title", fullName),
     appConfig = appConfig,
     bodyClasses = None) {
 

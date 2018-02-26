@@ -20,8 +20,10 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.company.DirectorDetailsId
+import models.register.company.DirectorDetails
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
@@ -38,11 +40,13 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                sessionRepository: SessionRepository) extends FrontendController with I18nSupport {
+                                                sessionRepository: SessionRepository) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Ok(confirmDeleteDirector(appConfig, index))
+      retrieve[DirectorDetails](DirectorDetailsId(index)) { directorDetails =>
+        Future.successful(Ok(confirmDeleteDirector(appConfig, index, directorDetails.fullName)))
+      }
   }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
