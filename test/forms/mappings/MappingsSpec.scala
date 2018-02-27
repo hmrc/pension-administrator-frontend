@@ -16,6 +16,8 @@
 
 package forms.mappings
 
+import models.register.company.DirectorNino
+import org.apache.commons.lang3.RandomStringUtils
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.{Form, FormError}
 import utils.Enumerable
@@ -189,6 +191,34 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
         result.errors mustEqual Seq(FormError("postCode.postCode", "error.invalid", Seq(postcode)))
 
       }
+    }
+  }
+
+  "directorNino" must {
+
+    val testForm: Form[DirectorNino] = Form("directorNino" ->  directorNinoMapping())
+
+    "fail to bind when yes is selected but NINO is not provided" in {
+      val result = testForm.bind(Map("directorNino.hasNino" -> "true"))
+      result.errors mustEqual Seq(FormError("directorNino.nino", "common.error.nino.required"))
+    }
+
+    "fail to bind when no is selected but reason is not provided" in {
+      val result = testForm.bind(Map("directorNino.hasNino" -> "false"))
+      result.errors mustEqual Seq(FormError("directorNino.reason", "directorNino.error.reason.required"))
+    }
+
+    Seq("DE999999A", "AO111111B", "ORA12345C", "AB0202020", "AB0303030D", "AB040404E").foreach { nino =>
+      s"fail to bind when NINO $nino is invalid" in {
+        val result = testForm.bind(Map("directorNino.hasNino" -> "true", "directorNino.nino" -> nino))
+        result.errors mustEqual Seq(FormError("directorNino.nino", "common.error.nino.invalid"))
+      }
+    }
+
+    "fail to bind when no is selected and reason exceeds max length of 150" in {
+      val testString = RandomStringUtils.randomAlphabetic(151)
+      val result = testForm.bind(Map("directorNino.hasNino" -> "false", "directorNino.reason" -> testString))
+      result.errors mustEqual Seq(FormError("directorNino.reason", "directorNino.error.reason.length", Seq(150)))
     }
   }
 }

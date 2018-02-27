@@ -16,9 +16,12 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
 import controllers.actions.FakeDataRetrievalAction
-import org.joda.time.LocalDate
+import identifiers.register.company.{CompanyDetailsId, DirectorDetailsId}
+import models.register.company.{CompanyDetails, DirectorDetails}
 import play.api.libs.json.Json
 
 trait ControllerSpecBase extends SpecBase {
@@ -29,5 +32,15 @@ trait ControllerSpecBase extends SpecBase {
 
   def dontGetAnyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
 
+  def getDirector: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(
+      CompanyDetailsId.toString ->
+        CompanyDetails("Test Company Name", None, None),
+      "directors" -> Json.arr(
+        Json.obj(
+          DirectorDetailsId.toString -> DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
+        )
+      )
+    )))
 
 }

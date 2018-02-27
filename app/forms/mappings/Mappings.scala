@@ -16,9 +16,10 @@
 
 package forms.mappings
 
+import models.register.company.DirectorNino
 import play.api.data.{FieldMapping, Mapping}
 import play.api.data.Forms.{of, optional, tuple}
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
+import uk.gov.voa.play.form.ConditionalMappings._
 import utils.Enumerable
 
 trait Mappings extends Formatters with Constraints {
@@ -50,5 +51,36 @@ trait Mappings extends Formatters with Constraints {
       "postCode" -> optional(text(requiredKey))
     ).transform(toPostCode, fromPostCode)
 
+  }
+
+
+  protected def directorNinoMapping(requiredKey: String = "directorNino.error.required",
+                                    requiredNinoKey: String = "common.error.nino.required",
+                                    requiredReasonKey: String = "directorNino.error.reason.required",
+                                    reasonLengthKey: String = "directorNino.error.reason.length",
+                                    invalidNinoKey: String = "common.error.nino.invalid"):
+  Mapping[DirectorNino] = {
+    val reasonMaxLength = 150
+
+    def fromDirectorNino(nino: DirectorNino): (Boolean, Option[String], Option[String]) = {
+      nino match {
+        case DirectorNino.Yes(ninoNo) => (true, Some(ninoNo), None)
+        case DirectorNino.No(reason) =>  (false, None, Some(reason))
+      }
+    }
+
+    def toDirectorNino(ninoTuple: (Boolean, Option[String], Option[String])) = {
+
+      ninoTuple match {
+        case (true, Some(nino), None)  => DirectorNino.Yes(nino)
+        case (false, None, Some(reason))  => DirectorNino.No(reason)
+        case _ => throw new RuntimeException("Invalid selection")
+      }
+    }
+
+    tuple("hasNino" -> boolean(requiredKey),
+      "nino" -> mandatoryIfTrue("directorNino.hasNino", text(requiredNinoKey).verifying(validNino(invalidNinoKey))),
+      "reason" -> mandatoryIfFalse("directorNino.hasNino", text(requiredReasonKey).
+        verifying(maxLength(reasonMaxLength,reasonLengthKey)))).transform(toDirectorNino, fromDirectorNino)
   }
 }
