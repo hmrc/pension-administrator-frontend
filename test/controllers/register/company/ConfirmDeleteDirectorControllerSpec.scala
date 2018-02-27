@@ -51,12 +51,27 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       new FakeSessionRepository(fakeMongoRepo)
     )
 
-  def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex)(fakeRequest, messages).toString
+  def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex, "John Doe")(fakeRequest, messages).toString
 
   "ConfirmDeleteDirector Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(firstIndex)(fakeRequest)
+
+      val validData = Json.obj(
+        "directors" -> Json.arr(
+          Json.obj(
+            "directorDetails" -> Json.obj(
+              "firstName" -> "John",
+              "lastName" -> "Doe",
+              "dateOfBirth" -> Json.toJson(LocalDate.now())
+            )
+          )
+        )
+      )
+
+      val data = new FakeDataRetrievalAction(Some(validData))
+
+      val result = controller(data).onPageLoad(firstIndex)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
