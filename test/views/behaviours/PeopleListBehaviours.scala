@@ -22,7 +22,8 @@ import views.ViewSpecBase
 trait PeopleListBehaviours {
   this: ViewSpecBase =>
 
-  def peopleList(emptyView: View, nonEmptyView: View, people: Seq[(Int, Person)]): Unit = {
+  // scalastyle:off method.length
+  def peopleList(emptyView: View, nonEmptyView: View, people: Seq[Person]): Unit = {
     "behave like a list of people" must {
       "not show the list if there are no people" in {
         val doc = asDocument(emptyView())
@@ -41,8 +42,8 @@ trait PeopleListBehaviours {
 
       "display the correct details for each person" in {
         val doc = asDocument(nonEmptyView())
-        people.foreach { case (index, person) =>
-          val name = doc.select(s"#${Person.id(index)}")
+        people.foreach { person =>
+          val name = doc.select(s"#${person.id}")
           name.size mustBe 1
           name.first.text mustBe person.name
         }
@@ -50,30 +51,25 @@ trait PeopleListBehaviours {
 
       "display the delete link for each person" in {
         val doc = asDocument(nonEmptyView())
-        people.foreach { case (index, person) =>
-          val link = doc.select(s"#${Person.deleteLinkId(index)}")
+        people.foreach { person =>
+          val link = doc.select(s"#${person.deleteLinkId}")
           link.size mustBe 1
           link.first.text mustBe messages("site.delete")
           link.first.attr("href") mustBe person.deleteLink
-        }
-        withClue("Delete page has not been developed") {
-          pending
         }
       }
 
       "display the edit link for each person" in {
         val doc = asDocument(nonEmptyView())
-        people.foreach { case (index, person) =>
-          val link = doc.select(s"#${Person.editLinkId(index)}")
+        people.foreach { person =>
+          val link = doc.select(s"#${person.editLinkId}")
           link.size mustBe 1
           link.first.text mustBe messages("site.edit")
           link.first.attr("href") mustBe person.editLink
         }
-        withClue("Edit page has not been developed") {
-          pending
-        }
       }
     }
   }
+  // scalastyle:on method.length
 
 }
