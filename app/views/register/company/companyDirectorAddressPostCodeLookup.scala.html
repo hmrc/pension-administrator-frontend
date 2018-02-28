@@ -34,7 +34,7 @@
 
         @components.heading("companyDirectorAddressPostCodeLookup.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
-        @components.paragraph_text(messages("companyDirectorAddressPostCodeLookup.lede"))
+        @components.paragraph_text(messages("companyDirectorAddressPostCodeLookup.body"))
 
         <p>
             @messages("companyDirectorAddressPostCodeLookup.enterPostcode")
@@ -45,8 +45,8 @@
 
         @components.input_text(
             field = form("value"),
-            label = messages("companyDirectorAddressPostCodeLookup.postalCode"),
-            hint = Some(messages("companyDirectorAddressPostCodeLookup.postalCode.hint"))
+            label = messages("companyDirectorAddressPostCodeLookup.postcode"),
+            hint = Some(messages("companyDirectorAddressPostCodeLookup.postcode.hint"))
         )
 
         @components.submit_button()

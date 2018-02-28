@@ -57,8 +57,8 @@ class CompanyDirectorAddressPostCodeLookupViewSpec extends StringViewBehaviours 
       "postalCode"
     )
 
-    "display lede text" in {
-      createView must haveDynamicText(s"$messageKeyPrefix.lede")
+    "display body text" in {
+      createView must haveDynamicText(s"$messageKeyPrefix.body")
     }
 
     "display enter address manually link" in {
