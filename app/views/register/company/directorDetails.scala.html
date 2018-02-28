@@ -34,7 +34,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("directorDetails.heading")
+        @components.heading("directorDetails.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @components.input_text(
             field = form("firstName"),
@@ -42,8 +42,19 @@
         )
 
         @components.input_text(
+            field = form("middleName"),
+            label = messages("directorDetails.middleName")
+        )
+
+        @components.input_text(
             field = form("lastName"),
             label = messages("directorDetails.lastName")
+        )
+
+        @components.input_date(
+            field = form("dateOfBirth"),
+            label = messages("directorDetails.dateOfBirth"),
+            hint = Some(messages("directorDetails.dateOfBirth.hint"))
         )
 
         @components.submit_button()

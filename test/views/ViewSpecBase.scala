@@ -16,12 +16,11 @@
 
 package views
 
+import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.twirl.api.{Html, HtmlFormat}
-import base.SpecBase
-import org.jsoup.select.Elements
 import org.scalatest.matchers.{MatchResult, Matcher}
+import play.twirl.api.{Html, HtmlFormat}
 
 trait ViewSpecBase extends SpecBase {
 
@@ -59,6 +58,23 @@ trait ViewSpecBase extends SpecBase {
 
   def assertNotRenderedById(doc: Document, id: String) = {
     assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
+  }
+
+  def assertRenderedByIdWithText(doc: Document, id: String, text: String) = {
+    val element = doc.getElementById(id)
+    assert(element != null, "\n\nElement " + id + " was not rendered on the page.\n")
+    assert(element.text().equals(text), s"\n\nElement $id had text '${element.text()}' not '$text'.\n")
+  }
+
+  def assertRenderedByForWithText(doc: Document, forElement: String, text: String) = {
+    val element = doc.select(s"label[for=$forElement]")
+    assert(
+      element.size == 1,
+      s"\n\nElement for $forElement was not rendered on the page.\n")
+    assert(
+      element.first.text().equals(text),
+      s"\n\nElement for $forElement had text '${element.first.text}' not '$text'.\n"
+    )
   }
 
   def assertRenderedByCssSelector(doc: Document, cssSelector: String) = {

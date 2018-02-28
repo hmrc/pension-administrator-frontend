@@ -17,6 +17,8 @@
 package generators
 
 import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import Gen._
@@ -24,9 +26,12 @@ import Arbitrary._
 
 import scala.util.Random
 
+// scalastyle:off magic.number
 trait Generators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
+
+  private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max)
@@ -35,7 +40,7 @@ trait Generators {
 
     numberGen.map(n => {
       random.nextInt(10) match {
-        case 1 => formatter.format(n)
+        case 1 => formatter format n
         case _  => n.toString
       }
     })
@@ -48,7 +53,7 @@ trait Generators {
     arbitrary[BigInt] suchThat(x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.size > 0)
+    alphaStr suchThat(_.nonEmpty)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -80,6 +85,13 @@ trait Generators {
       chars <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
+  def stringsStartingAlphaWithMaxLength(maxLength: Int): Gen[String] =
+    for {
+      length <- choose(1, maxLength)
+      first <- Gen.alphaChar
+      chars <- listOfN(length - 1, arbitrary[Char])
+    } yield (first :: chars).mkString.trim
+
   def numbersWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
@@ -91,4 +103,13 @@ trait Generators {
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
+
+  def historicDate(yearsBack: Int = 100): Gen[String] = {
+    val to = LocalDate.now().minusDays(1)
+    val from = LocalDate.of(to.getYear - yearsBack, 1, 1)
+
+    Gen.choose(from.toEpochDay, to.toEpochDay)
+      .map(LocalDate.ofEpochDay(_).format(formatter))
+  }
+
 }

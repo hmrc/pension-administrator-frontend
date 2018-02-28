@@ -16,33 +16,52 @@
 
 package forms.register.company
 
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Transforms}
 import javax.inject.Inject
 
 import models.register.company.DirectorDetails
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 
-class DirectorDetailsFormProvider @Inject() extends Mappings {
+class DirectorDetailsFormProvider @Inject() extends Mappings with Transforms {
 
   def apply(): Form[DirectorDetails] = Form(
     mapping(
       "firstName" ->
         text("directorDetails.error.firstName.required")
+          .transform(standardTextTransform, noTransform)
           .verifying(
-            maxLength(DirectorDetailsFormProvider.firstNameLength,
-              "directorDetails.error.firstName.length"
+            firstError(
+              maxLength(DirectorDetailsFormProvider.firstNameLength,
+                "directorDetails.error.firstName.length"
+              ),
+              name("directorDetails.error.firstName.invalid")
             )
           ),
-      "middleName" -> optional(Forms.text),
+      "middleName" -> optional(
+        Forms.text
+          .transform(standardTextTransform, noTransform)
+          .verifying(
+            firstError(
+              maxLength(DirectorDetailsFormProvider.middleNameLength,
+                "directorDetails.error.middleName.length"
+              ),
+              name("directorDetails.error.middleName.invalid")
+            )
+          )
+      ),
       "lastName" ->
         text("directorDetails.error.lastName.required")
+          .transform(standardTextTransform, noTransform)
           .verifying(
-            maxLength(DirectorDetailsFormProvider.lastNameLength,
-              "directorDetails.error.lastName.length"
+            firstError(
+              maxLength(DirectorDetailsFormProvider.lastNameLength,
+                "directorDetails.error.lastName.length"
+              ),
+              name("directorDetails.error.lastName.invalid")
             )
           ),
-      "dateOfBirth" -> Forms.localDate
+      "dateOfBirth" -> date("directorDetails.error.dateOfBirth.required", "directorDetails.error.dateOfBirth.invalid")
     )(DirectorDetails.apply)(DirectorDetails.unapply)
   )
 
@@ -50,5 +69,6 @@ class DirectorDetailsFormProvider @Inject() extends Mappings {
 
 object DirectorDetailsFormProvider {
   val firstNameLength: Int = 35
+  val middleNameLength: Int = 35
   val lastNameLength: Int = 35
 }

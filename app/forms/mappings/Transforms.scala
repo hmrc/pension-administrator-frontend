@@ -40,6 +40,10 @@ trait Transforms {
     value
   }
 
+  def standardTextTransform(value: String): String = {
+    value.trim
+  }
+
   private def strip(value: String): String = {
     value.replaceAll(" ", "")
   }
