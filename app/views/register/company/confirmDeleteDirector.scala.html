@@ -21,7 +21,7 @@
 @(appConfig: FrontendAppConfig, index: Int, fullName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmDeleteDirector.title", fullName),
+    title = messages("confirmDeleteDirector.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -29,7 +29,10 @@
 
         @components.back_link()
 
-        @components.heading("confirmDeleteDirector.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.heading(
+            headingKey = "confirmDeleteDirector.heading",
+            headingToken = Some(fullName),
+            secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @components.submit_button("site.confirm")
 
