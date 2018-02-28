@@ -20,6 +20,7 @@ import play.api.data.Form
 import controllers.register.company.routes
 import forms.register.company.CompanyDirectorAddressPostCodeLookupFormProvider
 import models.NormalMode
+import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
 import views.html.register.company.companyDirectorAddressPostCodeLookup
 
@@ -29,15 +30,39 @@ class CompanyDirectorAddressPostCodeLookupViewSpec extends StringViewBehaviours 
 
   val form = new CompanyDirectorAddressPostCodeLookupFormProvider()()
 
-  def createView = () => companyDirectorAddressPostCodeLookup(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable =
+    () => companyDirectorAddressPostCodeLookup(
+      frontendAppConfig,
+      form,
+      NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[String]) => companyDirectorAddressPostCodeLookup(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm: Form[String] => HtmlFormat.Appendable =
+    (form: Form[String]) => companyDirectorAddressPostCodeLookup(
+      frontendAppConfig,
+      form,
+      NormalMode)(fakeRequest, messages)
 
-  "CompanyDirectorAddressPostCodeLookup view" must {
+  "CompanyPreviousAddressPostCodeLookup view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)
 
-    behave like stringPage(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(NormalMode).url)
+    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
+
+    behave like stringPage(
+      createViewUsingForm,
+      messageKeyPrefix,
+      controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(NormalMode).url,
+      Some(s"$messageKeyPrefix.postalCode.hint"),
+      "postalCode"
+    )
+
+    "display lede text" in {
+      createView must haveDynamicText(s"$messageKeyPrefix.lede")
+    }
+
+    "display enter address manually link" in {
+      createView must haveLink(routes.CompanyDirectorAddressController.onPageLoad(NormalMode).url, "manual-address-link")
+    }
   }
 }

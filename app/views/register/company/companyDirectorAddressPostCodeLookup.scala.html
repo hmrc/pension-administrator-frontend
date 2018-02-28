@@ -1,22 +1,22 @@
 @*
- * Copyright 2018 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *@
+* Copyright 2018 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.register.company.routes._
+@import controllers.register.company.routes
 @import models.Mode
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -26,18 +26,27 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = routes.CompanyDirectorAddressPostCodeLookup.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("companyDirectorAddressPostCodeLookup.heading")
+        @components.heading("companyDirectorAddressPostCodeLookup.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+        @components.paragraph_text(messages("companyDirectorAddressPostCodeLookup.lede"))
+
+        <p>
+            @messages("companyDirectorAddressPostCodeLookup.enterPostcode")
+            <a id="manual-address-link" href="@routes.CompanyDirectorAddressController.onPageLoad(NormalMode)">
+                @messages("companyDirectorAddressPostCodeLookup.enterManually")
+            </a>
+        </p>
 
         @components.input_text(
-          field = form("value"),
-          label = messages("companyDirectorAddressPostCodeLookup.heading"),
-          labelClass=Some("visually-hidden")
+            field = form("value"),
+            label = messages("companyDirectorAddressPostCodeLookup.postalCode"),
+            hint = Some(messages("companyDirectorAddressPostCodeLookup.postalCode.hint"))
         )
 
         @components.submit_button()
