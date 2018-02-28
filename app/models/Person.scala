@@ -30,28 +30,14 @@ case class Person(index: Int, name: String, deleteLink: String, editLink: String
 object Person {
 
   implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[Person] = {
-    var index = -1
-    val people: mutable.ListBuffer[Person] = mutable.ListBuffer()
-
-    for (director <- directors) {
-      index += 1
-
-      val name = director match {
-        case DirectorDetails(first, Some(middle), last, _) => s"$first $middle $last"
-        case DirectorDetails(first, None, last, _) => s"$first $last"
-      }
-
-      people.append(
-        Person(
-          index,
-          name,
-          controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-          controllers.register.company.routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
-        )
+    directors.zipWithIndex.map { case (director, index) =>
+      Person(
+        index,
+        director.fullName,
+        controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
+        controllers.register.company.routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
       )
     }
-
-    people
   }
 
 }
