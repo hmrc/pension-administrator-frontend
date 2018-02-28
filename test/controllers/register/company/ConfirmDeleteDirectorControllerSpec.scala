@@ -18,6 +18,7 @@ package controllers.register.company
 
 import java.time.LocalDate
 
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.DirectorDetailsId
@@ -35,8 +36,6 @@ import scala.concurrent.Future
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar{
 
-  lazy val fakeMongoRepo = mock[ReactiveMongoRepository]
-
   val firstIndex = Index(0)
 
   val directorOne = DirectorDetails("John", None, "Doe", LocalDate.now())
@@ -48,7 +47,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      new FakeSessionRepository(fakeMongoRepo)
+      new FakeDataCacheConnector
     )
 
   def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex, "John Doe")(fakeRequest, messages).toString
@@ -78,9 +77,6 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
     }
 
     "redirect to directors list on removal of director" in {
-
-      when(fakeMongoRepo.upsert(any(),any()))
-        .thenReturn(Future.successful(true))
 
       val validData = Json.obj(
         "directors" -> Json.arr(
