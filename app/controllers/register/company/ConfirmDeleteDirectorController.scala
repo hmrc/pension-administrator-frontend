@@ -28,7 +28,6 @@ import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import play.api.mvc.{Action, AnyContent}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.UserAnswers
 import views.html.register.company.confirmDeleteDirector
@@ -40,7 +39,7 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                sessionRepository: SessionRepository) extends FrontendController with I18nSupport with Retrievals {
+                                                dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -56,7 +55,7 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
 
       removal match {
         case JsSuccess(UserAnswers(updatedJson), _) =>
-          sessionRepository().upsert(request.externalId, updatedJson)
+          dataCacheConnector.cacheUpsert(request.externalId, updatedJson)
             .map(_ => Redirect(routes.AddCompanyDirectorsController.onPageLoad(NormalMode)))
         case JsError(errors) =>
           Future.failed(JsResultException(errors))

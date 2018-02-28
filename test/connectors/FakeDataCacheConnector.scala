@@ -33,6 +33,10 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
     Future.successful(Json.obj())
   }
 
+  override def cacheUpsert(cacheId: String, value: JsValue) = {
+    Future.successful(value)
+  }
+
   override def fetch(cacheId: String): Future[Option[JsValue]] =
     Future.successful(Some(Json.obj()))
 

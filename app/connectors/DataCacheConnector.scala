@@ -34,12 +34,15 @@ class DataCacheConnectorImpl @Inject()(
       json =>
         UserAnswers(json.getOrElse(Json.obj())).set(id)(value) match {
           case JsSuccess(UserAnswers(updatedJson), _) =>
-            sessionRepository().upsert(cacheId, updatedJson)
-              .map(_ => updatedJson)
+            cacheUpsert(cacheId, updatedJson)
           case JsError(errors) =>
             Future.failed(JsResultException(errors))
         }
     }
+  }
+
+  override def cacheUpsert(cacheId: String, value: JsValue): Future[JsValue] = {
+    sessionRepository().upsert(cacheId, value) map (_ => value)
   }
 
   override def fetch(cacheId: String): Future[Option[JsValue]] =
@@ -50,6 +53,8 @@ class DataCacheConnectorImpl @Inject()(
 trait DataCacheConnector {
 
   def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cleanup: Cleanup[I]): Future[JsValue]
+
+  def cacheUpsert(cacheId: String, value: JsValue): Future[JsValue]
 
   def fetch(cacheId: String): Future[Option[JsValue]]
 }
