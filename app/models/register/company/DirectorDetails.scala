@@ -21,7 +21,10 @@ import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 
 case class DirectorDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate) {
-  def fullName: String = firstName + " " + lastName
+  def fullName: String = middleName match {
+    case Some(middle) => s"$firstName $middle $lastName"
+    case _ => s"$firstName $lastName"
+  }
 }
 
 object DirectorDetails {

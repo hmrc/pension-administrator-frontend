@@ -17,23 +17,26 @@
 package models
 
 import models.register.company.DirectorDetails
+
+import scala.collection.mutable
 import scala.language.implicitConversions
 
-case class Person(name: String, deleteLink: String, editLink: String)
+case class Person(index: Int, name: String, deleteLink: String, editLink: String) {
+  def id = s"person-$index"
+  def deleteLinkId = s"$id-delete"
+  def editLinkId = s"$id-edit"
+}
 
 object Person {
 
-  def id(index: Int) = s"person-$index"
-  def deleteLinkId(index: Int) = s"${id(index)}-delete"
-  def editLinkId(index: Int) = s"${id(index)}-edit"
-
-  implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[(Int, Person)] = {
+  implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[Person] = {
     directors.zipWithIndex.map { case (director, index) =>
-      (index, Person(
+      Person(
+        index,
         director.fullName,
         controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-        controllers.routes.IndexController.onPageLoad().url
-      ))
+        controllers.register.company.routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+      )
     }
   }
 

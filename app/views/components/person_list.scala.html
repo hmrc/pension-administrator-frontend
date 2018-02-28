@@ -15,24 +15,24 @@
  *@
 
 @import models.Person
-@(people: Seq[(Int, Person)])(implicit messages: Messages)
+@(people: Seq[Person])(implicit messages: Messages)
 
 <div class="form-group">
     <ul id="people" class="govuk-check-your-answers form-group cya-questions-long">
-        @for((index, person) <- people) {
+        @for(person <- people) {
         <li>
             <div class="cya-question">
-                <h2 id="@Person.id(index)" class="bold std-text">@person.name</h2>
+                <h2 id="@person.id" class="bold std-text">@person.name</h2>
             </div>
 
             <div class="cya-change">
-                <a id="@Person.deleteLinkId(index)" href="@person.deleteLink">
+                <a id="@person.deleteLinkId" href="@person.deleteLink">
                     @messages("site.delete")
                 </a>
             </div>
 
             <div class="cya-change">
-                <a id="@Person.editLinkId(index)" href="@person.editLink">
+                <a id="@person.editLinkId" href="@person.editLink">
                     @messages("site.edit")
                 </a>
             </div>
