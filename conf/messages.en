@@ -190,6 +190,10 @@ directorNino.error.required = One of the two radio buttons must be selected (YES
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
 directorNino.error.reason.length = The reason cannot be more than 150 characters
 
+companyDirectorAddressPostCodeLookup.title = companyDirectorAddressPostCodeLookup
+companyDirectorAddressPostCodeLookup.heading = companyDirectorAddressPostCodeLookup
+companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = companyDirectorAddressPostCodeLookup
+companyDirectorAddressPostCodeLookup.error.required = Please give an answer for companyDirectorAddressPostCodeLookup
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
