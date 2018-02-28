@@ -28,8 +28,31 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
   def createView = () => confirmDeleteDirector(frontendAppConfig, firstIndex, "directorName")(fakeRequest, messages)
 
+  val view = createView
+
   "ConfirmDeleteDirector view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+
+    "have the correct banner title" in {
+      val doc = asDocument(view())
+      val nav = doc.getElementById("proposition-menu")
+      val span = nav.children.first
+      span.text mustBe messagesApi("site.service_name")
+    }
+
+    "display the correct browser title" in {
+      val doc = asDocument(view())
+      assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+    }
+
+    "display the correct page title" in {
+      val doc = asDocument(view())
+      assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", "directorName")
+    }
+
+    "display language toggles" in {
+      val doc = asDocument(view())
+      assertRenderedById(doc, "cymraeg-switch")
+    }
 
     behave like pageWithBackLink(createView)
 

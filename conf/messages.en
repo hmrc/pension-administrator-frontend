@@ -162,7 +162,7 @@ moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other 
 moreThanTenDirectors.hint = We will contact you if we need their information.
 moreThanTenDirectors.error.required = You must make a selection
 
-confirmDeleteDirector.title = Are you sure you want to delete {0} as a director?
+confirmDeleteDirector.title = Confirm deletion
 confirmDeleteDirector.heading = Are you sure you want to delete {0} as a director?
 
 directorDetails.title = Company director
