@@ -25,5 +25,5 @@ case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[Dire
 }
 
 object DirectorUniqueTaxReferenceId {
-  override lazy val toString: String = "directorUniqueTaxReference"
+  override lazy val toString: String = "directorUtr"
 }

@@ -40,7 +40,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
   val formProvider = new DirectorUniqueTaxReferenceFormProvider()
   val form = formProvider()
   val index = Index(0)
-  val directorName = "test first name test last name"
+  val directorName = "test first name test middle name test last name"
   val companyName = "ThisCompanyName"
 
 
@@ -51,7 +51,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorUniqueTaxReferenceId.toString ->
-          DirectorUniqueTaxReference.Yes("1234567890")
+          DirectorUniqueTaxReference.Yes("1234567891")
       ),
       Json.obj(
         DirectorDetailsId.toString ->
@@ -81,7 +81,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorUniqueTaxReference.Yes("1234567890")))
+      contentAsString(result) mustBe viewAsString(form.fill(DirectorUniqueTaxReference.Yes("1234567891")))
     }
 
     "redirect to the next page" when {

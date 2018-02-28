@@ -52,8 +52,10 @@ class DirectorUniqueTaxReferenceController @Inject()(
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
-          case None => Ok(directorUniqueTaxReference(appConfig, form, mode, index, directorName))
-          case Some(value) => Ok(directorUniqueTaxReference(appConfig, form.fill(value), mode, index, directorName))
+          case None =>
+            Ok(directorUniqueTaxReference(appConfig, form, mode, index, directorName))
+          case Some(value) =>
+            Ok(directorUniqueTaxReference(appConfig, form.fill(value), mode, index, directorName))
         }
         Future.successful(redirectResult)
       }
@@ -66,8 +68,8 @@ class DirectorUniqueTaxReferenceController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
           (value) =>
-            dataCacheConnector.save(request.externalId, DirectorUniqueTaxReferenceId(index), value).map(cacheMap =>
-              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode)(new UserAnswers(cacheMap))))
+            dataCacheConnector.save(request.externalId, DirectorUniqueTaxReferenceId(index), value).map(json =>
+              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode)(new UserAnswers(json))))
         )
       }
   }

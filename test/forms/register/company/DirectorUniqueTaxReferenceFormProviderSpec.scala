@@ -22,13 +22,24 @@ import play.api.data.FormError
 
 class DirectorUniqueTaxReferenceFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DirectorUniqueTaxReferenceFormProvider()()
+  val requiredKey = "directorUniqueTaxReference.error.required"
+  val formProvider = new DirectorUniqueTaxReferenceFormProvider()()
 
-  ".value" must {
+  "DirectorUniqueTaxReference form provider" must {
 
-    val fieldName = "value"
-    val requiredKey = "directorUniqueTaxReference.error.required"
+    "successfully bind when yes is selected and valid utr is provided" in {
+      val form = formProvider.bind(Map("directorUtr.hasUtr" -> "true", "directorUtr.utr" -> "1234567890"))
+      form.get shouldBe DirectorUniqueTaxReference.Yes("1234567890")
+    }
 
+    "successfully bind when no is selected and reason is provided" in {
+      val form = formProvider.bind(Map("directorUtr.hasUtr" -> "false", "directorUtr.reason" -> "haven't got utr"))
+      form.get shouldBe DirectorUniqueTaxReference.No("haven't got utr")
+    }
 
+    "fail to bind when value is omitted" in {
+      val expectedError = error("directorUtr.hasUtr", requiredKey)
+      checkForError(formProvider, emptyForm, expectedError)
+    }
   }
 }

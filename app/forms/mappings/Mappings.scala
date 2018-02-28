@@ -16,13 +16,11 @@
 
 package forms.mappings
 
-import models.register.company.DirectorUniqueTaxReference.{No, Yes}
-import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
-import models.register.company.DirectorNino
 import java.time.LocalDate
 
-import play.api.data.{FieldMapping, Mapping}
+import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
 import play.api.data.Forms.{of, optional, tuple}
+import play.api.data.{FieldMapping, Mapping}
 import uk.gov.voa.play.form.ConditionalMappings._
 import utils.Enumerable
 
@@ -113,8 +111,6 @@ trait Mappings extends Formatters with Constraints {
 
   }
 
-}
-
   protected def directorUtrMapping(requiredKey: String = "directorUniqueTaxReference.error.required",
                                                   requiredUtrKey: String  = "directorUniqueTaxReference.error.utr.required",
                                                   utrLengthKey: String = "directorUniqueTaxReference.error.utr.length",
@@ -134,8 +130,8 @@ trait Mappings extends Formatters with Constraints {
 
     def fromDirectorUtr(utr: DirectorUniqueTaxReference) ={
       utr match {
-        case Yes(utr) => (true, Some(utr), None)
-        case No(reason) => (false, None, Some(reason))
+        case DirectorUniqueTaxReference.Yes(utr) => (true, Some(utr), None)
+        case DirectorUniqueTaxReference.No(reason) => (false, None, Some(reason))
       }
     }
 

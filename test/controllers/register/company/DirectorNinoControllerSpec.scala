@@ -38,7 +38,7 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
   val formProvider = new DirectorNinoFormProvider()
   val form = formProvider()
   val index = Index(0)
-  val directorName = "test first name test last name"
+  val directorName = "test first name test middle name test last name"
   val companyName = "ThisCompanyName"
 
 
@@ -59,7 +59,8 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new DirectorNinoController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new DirectorNinoController(frontendAppConfig, messagesApi,
+      FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   def viewAsString(form: Form[_] = form) = directorNino(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
