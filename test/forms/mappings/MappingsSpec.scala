@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.register.company.DirectorNino
+import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
 import org.apache.commons.lang3.RandomStringUtils
 import java.time.LocalDate
 
@@ -320,6 +320,34 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       result("date.day").value.value mustBe "9"
       result("date.month").value.value mustBe "6"
       result("date.year").value.value mustBe "1862"
+    }
+  }
+
+
+  "directorUtr" must {
+
+    val testForm: Form[DirectorUniqueTaxReference] = Form("directorUtr" ->  directorUtrMapping())
+
+    "fail to bind when yes is selected but utr is not provided" in {
+      val result = testForm.bind(Map("directorUtr.hasUtr" -> "true"))
+      result.errors mustEqual Seq(FormError("directorUtr.utr", "directorUniqueTaxReference.error.utr.required"))
+    }
+
+    "fail to bind when no is selected but reason is not provided" in {
+      val result = testForm.bind(Map("directorUtr.hasUtr" -> "false"))
+      result.errors mustEqual Seq(FormError("directorUtr.reason", "directorUniqueTaxReference.error.reason.required"))
+    }
+
+    "fail to bind when yes is selected and utr exceeds max length of 10" in {
+      val testString = RandomStringUtils.randomAlphabetic(11)
+      val result = testForm.bind(Map("directorUtr.hasUtr" -> "true", "directorUtr.utr" -> testString))
+      result.errors mustEqual Seq(FormError("directorUtr.utr", "directorUniqueTaxReference.error.utr.length", Seq(10)))
+    }
+
+    "fail to bind when no is selected and reason exceeds max length of 150" in {
+      val testString = RandomStringUtils.randomAlphabetic(151)
+      val result = testForm.bind(Map("directorUtr.hasUtr" -> "false", "directorUtr.reason" -> testString))
+      result.errors mustEqual Seq(FormError("directorUtr.reason", "directorUniqueTaxReference.error.reason.length", Seq(150)))
     }
   }
 

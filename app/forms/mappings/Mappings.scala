@@ -16,11 +16,11 @@
 
 package forms.mappings
 
-import models.register.company.DirectorNino
 import java.time.LocalDate
 
-import play.api.data.{FieldMapping, Mapping}
+import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
 import play.api.data.Forms.{of, optional, tuple}
+import play.api.data.{FieldMapping, Mapping}
 import uk.gov.voa.play.form.ConditionalMappings._
 import utils.Enumerable
 
@@ -111,4 +111,34 @@ trait Mappings extends Formatters with Constraints {
 
   }
 
+  protected def directorUtrMapping(requiredKey: String = "directorUniqueTaxReference.error.required",
+                                                  requiredUtrKey: String  = "directorUniqueTaxReference.error.utr.required",
+                                                  utrLengthKey: String = "directorUniqueTaxReference.error.utr.length",
+                                                  requiredReasonKey: String = "directorUniqueTaxReference.error.reason.required",
+                                                  reasonLengthKey : String = "directorUniqueTaxReference.error.reason.length"):
+  Mapping[DirectorUniqueTaxReference] = {
+    val utrMaxLength = 10
+    val reasonMaxLength = 150
+
+    def toDirectorUtr(utrTuple: (Boolean, Option[String], Option[String])) = {
+      utrTuple match {
+        case (true, Some(utr), None) => DirectorUniqueTaxReference.Yes(utr)
+        case (false, None, Some(reason)) => DirectorUniqueTaxReference.No(reason)
+        case _ => throw new RuntimeException("Invalid selection")
+      }
+    }
+
+    def fromDirectorUtr(utr: DirectorUniqueTaxReference) ={
+      utr match {
+        case DirectorUniqueTaxReference.Yes(utr) => (true, Some(utr), None)
+        case DirectorUniqueTaxReference.No(reason) => (false, None, Some(reason))
+      }
+    }
+
+    tuple("hasUtr" -> boolean(requiredKey),
+    "utr" -> mandatoryIfTrue("directorUtr.hasUtr", text(requiredUtrKey)
+      .verifying(maxLength(utrMaxLength, utrLengthKey))),
+    "reason" -> mandatoryIfFalse("directorUtr.hasUtr", text(requiredReasonKey)
+      .verifying(maxLength(reasonMaxLength, reasonLengthKey)))).transform(toDirectorUtr,fromDirectorUtr)
+  }
 }

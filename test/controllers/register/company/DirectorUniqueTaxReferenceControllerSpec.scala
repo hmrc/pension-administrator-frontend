@@ -18,24 +18,26 @@ package controllers.register.company
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
-import controllers.ControllerSpecBase
-import controllers.actions._
-import forms.register.company.DirectorNinoFormProvider
-import identifiers.register.company.{CompanyDetailsId, DirectorDetailsId, DirectorNinoId}
-import models.register.company.{CompanyDetails, DirectorDetails, DirectorNino}
-import models.{Index, NormalMode}
 import play.api.data.Form
-import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.libs.json.JsString
+import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
-import views.html.register.company.directorNino
+import connectors.FakeDataCacheConnector
+import controllers.actions._
+import play.api.test.Helpers._
+import play.api.libs.json._
+import forms.register.company.DirectorUniqueTaxReferenceFormProvider
+import identifiers.register.company.{CompanyDetailsId, DirectorDetailsId, DirectorNinoId, DirectorUniqueTaxReferenceId}
+import models.{Index, NormalMode}
+import models.register.company.{CompanyDetails, DirectorDetails, DirectorNino, DirectorUniqueTaxReference}
+import views.html.register.company.directorUniqueTaxReference
+import controllers.ControllerSpecBase
 
-class DirectorNinoControllerSpec extends ControllerSpecBase {
+class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorNinoFormProvider()
+  val formProvider = new DirectorUniqueTaxReferenceFormProvider()
   val form = formProvider()
   val index = Index(0)
   val directorName = "test first name test middle name test last name"
@@ -48,8 +50,8 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
       Json.obj(
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
-        DirectorNinoId.toString ->
-          DirectorNino.Yes("CS700100A")
+        DirectorUniqueTaxReferenceId.toString ->
+          DirectorUniqueTaxReference.Yes("1234567891")
       ),
       Json.obj(
         DirectorDetailsId.toString ->
@@ -59,13 +61,13 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new DirectorNinoController(frontendAppConfig, messagesApi,
+    new DirectorUniqueTaxReferenceController(frontendAppConfig, messagesApi,
       FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = directorNino(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
 
-  "DirectorNino Controller" must {
+  "DirectorUniqueTaxReference Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode, index)(fakeRequest)
@@ -79,12 +81,12 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorNino.Yes("CS700100A")))
+      contentAsString(result) mustBe viewAsString(form.fill(DirectorUniqueTaxReference.Yes("1234567891")))
     }
 
     "redirect to the next page" when {
-      "valid data is submitted and yes is selected" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorNino.hasNino", "true"), ("directorNino.nino", "CS700100A"))
+      "valid data is submitted with yes selected" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorUtr.hasUtr", "true"), ("directorUtr.utr", "1234567890"))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 
@@ -92,8 +94,8 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
         redirectLocation(result) mustBe Some(onwardRoute.url)
       }
 
-      "valid data is submitted and no is selected" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorNino.hasNino", "false"), ("directorNino.reason", "test reason"))
+      "valid data is submitted with no selected" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorUtr.hasUtr", "false"), ("directorUtr.reason", "test reason"))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 
