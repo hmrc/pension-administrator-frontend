@@ -21,47 +21,82 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
+import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.CompanyDirectorAddressPostCodeLookupFormProvider
 import identifiers.register.company.CompanyDirectorAddressPostCodeLookupId
 import models.Mode
+import play.api.mvc.{Action, AnyContent}
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyDirectorAddressPostCodeLookup
 
 import scala.concurrent.Future
 
 class CompanyDirectorAddressPostCodeLookupController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CompanyDirectorAddressPostCodeLookupFormProvider
-                                      ) extends FrontendController with I18nSupport {
+                                                                 appConfig: FrontendAppConfig,
+                                                                 override val messagesApi: MessagesApi,
+                                                                 dataCacheConnector: DataCacheConnector,
+                                                                 addressLookupConnector: AddressLookupConnector,
+                                                                 navigator: Navigator,
+                                                                 authenticate: AuthAction,
+                                                                 getData: DataRetrievalAction,
+                                                                 requireData: DataRequiredAction,
+                                                                 formProvider: CompanyDirectorAddressPostCodeLookupFormProvider
+                                                               ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def formWithError(messageKey: String): Form[String] = {
+    form.withError("value", messageKey)
+  }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CompanyDirectorAddressPostCodeLookupId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(companyDirectorAddressPostCodeLookup(appConfig, preparedForm, mode))
+      Ok(companyDirectorAddressPostCodeLookup(appConfig, form, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(companyDirectorAddressPostCodeLookup(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save(request.externalId, CompanyDirectorAddressPostCodeLookupId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(CompanyDirectorAddressPostCodeLookupId, mode)(new UserAnswers(cacheMap))))
-    )
+          addressLookupConnector.addressLookupByPostCode(value).flatMap {
+            case None =>
+              Future.successful(
+                BadRequest(
+                  companyDirectorAddressPostCodeLookup(
+                    appConfig,
+                    formWithError("companyDirectorAddressPostCodeLookup.error.invalid"),
+                    mode
+                  )
+                )
+              )
+            case Some(Nil) =>
+              Future.successful(
+                BadRequest(
+                  companyDirectorAddressPostCodeLookup(
+                    appConfig,
+                    formWithError("companyDirectorAddressPostCodeLookup.error.noResults"),
+                    mode
+                  )
+                )
+              )
+            case Some(addressRecords) =>
+              val addresses = addressRecords.map(_.address)
+
+              dataCacheConnector
+                .save(
+                  request.externalId,
+                  CompanyDirectorAddressPostCodeLookupId,
+                  addresses
+                )
+                .map(cacheMap =>
+                  Redirect(
+                    navigator.nextPage(CompanyDirectorAddressPostCodeLookupId, mode)(UserAnswers(cacheMap))
+                  )
+                )
+          }
+      )
   }
 }

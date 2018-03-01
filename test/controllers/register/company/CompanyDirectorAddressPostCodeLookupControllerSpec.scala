@@ -16,34 +16,51 @@
 
 package controllers.register.company
 
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.libs.json.JsString
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
+import connectors.{AddressLookupConnector, FakeDataCacheConnector}
 import controllers.actions._
 import play.api.test.Helpers._
 import forms.register.company.CompanyDirectorAddressPostCodeLookupFormProvider
 import identifiers.register.company.CompanyDirectorAddressPostCodeLookupId
-import models.NormalMode
+import models.{Address, AddressRecord, NormalMode}
 import views.html.register.company.companyDirectorAddressPostCodeLookup
 import play.api.libs.json._
 import controllers.ControllerSpecBase
+import org.mockito.Matchers
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
 
-class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpecBase with MockitoSugar {
 
-  val formProvider = new CompanyDirectorAddressPostCodeLookupFormProvider()
-  val form = formProvider()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyDirectorAddressPostCodeLookupController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+  private val formProvider = new CompanyDirectorAddressPostCodeLookupFormProvider()
+  private val form = formProvider()
+  private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new CompanyDirectorAddressPostCodeLookupController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
+      fakeAddressLookupConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+
 
   def viewAsString(form: Form[_] = form) = companyDirectorAddressPostCodeLookup(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = "answer"
+  private def fakeAddress(postCode: String) = Address(
+    "Address Line 1",
+    "Address Line 2",
+    Some("Address Line 3"),
+    Some("Address Line 4"),
+    Some(postCode),
+    "GB"
+  )
+
+  private val testAnswer = "AB12 1AB"
 
   "CompanyDirectorAddressPostCodeLookup Controller" must {
 
@@ -54,22 +71,40 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       contentAsString(result) mustBe viewAsString()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyDirectorAddressPostCodeLookupId.toString -> JsString(testAnswer))
+    "not populate the view on a GET when the question has previously been answered" in {
+      val validData = Json.obj(
+        CompanyDirectorAddressPostCodeLookupId.toString -> Seq(fakeAddress(testAnswer))
+      )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
+      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Some(Seq(AddressRecord(fakeAddress(testAnswer))))))
+
       val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "save the list of matching addresses when valid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val expected = Seq(fakeAddress(testAnswer))
+
+      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Some(Seq(AddressRecord(fakeAddress(testAnswer))))))
+
+      controller().onSubmit(NormalMode)(postRequest)
+
+      FakeDataCacheConnector.verify(CompanyDirectorAddressPostCodeLookupId, expected)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -91,10 +126,37 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "return a Bad Request when post code lookup fails" in {
+      val boundForm = form.withError(FormError("value", "companyDirectorAddressPostCodeLookup.error.invalid"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+
+      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(None))
+
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(boundForm)
+    }
+
+    "return a Bad Request when post code lookup returns zero results" in {
+      val boundForm = form.withError(FormError("value", "companyDirectorAddressPostCodeLookup.error.noResults"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+
+      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Some(Nil)))
+
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(boundForm)
     }
   }
 }
