@@ -17,15 +17,30 @@
 package forms.register.company
 
 import forms.FormErrorHelper
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Transforms}
 import javax.inject.Inject
+
 import play.api.data.Form
 
-class CompanyDirectorAddressPostCodeLookupFormProvider @Inject() extends FormErrorHelper with Mappings {
+class CompanyDirectorAddressPostCodeLookupFormProvider @Inject() extends FormErrorHelper with Mappings with Transforms {
 
   def apply(): Form[String] =
     Form(
       "value" -> text("companyDirectorAddressPostCodeLookup.error.required")
-        .verifying(maxLength(100, "companyDirectorAddressPostCodeLookup.error.length"))
-    )
+        .transform(postCodeTransform, noTransform)
+        .verifying(
+          firstError(
+            maxLength(
+              CompanyDirectorAddressPostCodeLookupFormProvider.PostCodeLength,
+              "companyDirectorAddressPostCodeLookup.error.length"
+            ),
+            postalCode("companyDirectorAddressPostCodeLookup.error.invalid")
+          )
+        )
+        .transform(postCodeValidTransform, noTransform)
+      )
+}
+
+object CompanyDirectorAddressPostCodeLookupFormProvider {
+  val PostCodeLength: Int = 8
 }

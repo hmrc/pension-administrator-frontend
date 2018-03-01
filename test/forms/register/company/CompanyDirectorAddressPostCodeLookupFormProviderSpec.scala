@@ -17,13 +17,16 @@
 package forms.register.company
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Constraints
 import play.api.data.FormError
 
-class CompanyDirectorAddressPostCodeLookupFormProviderSpec extends StringFieldBehaviours {
+class CompanyDirectorAddressPostCodeLookupFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   val requiredKey = "companyDirectorAddressPostCodeLookup.error.required"
   val lengthKey = "companyDirectorAddressPostCodeLookup.error.length"
-  val maxLength = 100
+  val invalid = "companyDirectorAddressPostCodeLookup.error.invalid"
+  val maxLength = CompanyDirectorAddressPostCodeLookupFormProvider.PostCodeLength
+  val fieldName = "value"
 
   val form = new CompanyDirectorAddressPostCodeLookupFormProvider()()
 
@@ -34,7 +37,7 @@ class CompanyDirectorAddressPostCodeLookupFormProviderSpec extends StringFieldBe
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(postcode)
     )
 
     behave like fieldWithMaxLength(
@@ -48,6 +51,29 @@ class CompanyDirectorAddressPostCodeLookupFormProviderSpec extends StringFieldBe
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithRegex(
+      form,
+      "value",
+      "1B12 1AB",
+      FormError(fieldName, invalid, Seq(postcode))
+    )
+
+    behave like fieldWithTransform(
+      form,
+      s"$fieldName pre-validate",
+      Map(fieldName -> " AB12 1AB "),
+      "AB12 1AB",
+      (actual: String) => actual
+    )
+
+    behave like fieldWithTransform(
+      form,
+      s"$fieldName post-validate",
+      Map(fieldName -> "AB121AB"),
+      "AB12 1AB",
+      (actual: String) => actual
     )
   }
 }
