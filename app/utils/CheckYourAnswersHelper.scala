@@ -26,6 +26,10 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
     x => AnswerRow("directorAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine2}", false, controllers.register.company.routes.DirectorAddressController.onPageLoad(CheckMode, index).url)
   }
 
+  def directorUniqueTaxReference(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) map {
+    x => AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", s"directorUniqueTaxReference.$x", true, controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
+  }
+
   def directorDetails(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorDetailsId(index)) map {
     x => AnswerRow("directorDetails.checkYourAnswersLabel", s"${x.firstName} ${x.lastName}", false, controllers.register.company.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
   }

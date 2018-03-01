@@ -191,10 +191,20 @@ directorNino.error.reason.required = You need to tell us why the director does n
 directorNino.error.reason.length = The reason cannot be more than 150 characters
 
 
-directorAddress.title = directorAddress
-directorAddress.heading = directorAddress
-directorAddress.field1 = Field 1
-directorAddress.field2 = Field 2
-directorAddress.checkYourAnswersLabel = directorAddress
-directorAddress.error.field1.required = Please give an answer for field1
-directorAddress.error.field2.required = Please give an answer for field2
+directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
+directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
+directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register your business or for Self assessment.
+directorUniqueTaxReference.checkYourAnswersLabel = Director Unique Taxpayer Reference Number
+directorUniqueTaxReference.utr.text = Unique Taxpayer Reference number
+directorUniqueTaxReference.number.hint = A UTR is 10 or 13 digits, if it is 13 digits only enter the last 10.
+directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
+directorUniqueTaxReference.error.required = Select yes if the director has a UTR
+directorUniqueTaxReference.error.utr.required = Enter the Unique Tax Reference number
+directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 characters
+directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
+directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
+
+directorAddress.title = Director’s address
+directorAddress.heading = {0}’s address
+directorAddress.checkYourAnswersLabel = {0}’s address
+
