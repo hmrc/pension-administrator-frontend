@@ -62,6 +62,11 @@ POST       /directors/:index/directorNino               controllers.register.com
 GET        /directors/:index/changeDirectorNino               controllers.register.company.DirectorNinoController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /directors/:index/changeDirectorNino               controllers.register.company.DirectorNinoController.onSubmit(mode: Mode = CheckMode, index: Index)
 
+GET        /directors/:index/directorAddress                       controllers.register.company.DirectorAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /directors/:index/directorAddress                       controllers.register.company.DirectorAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /directors/:index/changedirectorAddress                       controllers.register.company.DirectorAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /directors/:index/changedirectorAddress                       controllers.register.company.DirectorAddressController.onSubmit(mode: Mode = CheckMode, index: Index)
+
 GET        /directors/:index/directorUniqueTaxReference               controllers.register.company.DirectorUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /directors/:index/directorUniqueTaxReference               controllers.register.company.DirectorUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /directors/:index/changeDirectorUniqueTaxReference               controllers.register.company.DirectorUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode, index: Index)

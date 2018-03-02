@@ -203,3 +203,8 @@ directorUniqueTaxReference.error.utr.required = Enter the Unique Tax Reference n
 directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 characters
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
+
+directorAddress.title = Director’s address
+directorAddress.heading = {0}’s address
+directorAddress.checkYourAnswersLabel = {0}’s address
+
