@@ -82,14 +82,14 @@ trait Generators {
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
-      chars <- listOfN(length, arbitrary[Char])
+      chars <- listOfN(length, regexWildcardChar)
     } yield chars.mkString
 
   def stringsStartingAlphaWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
       first <- Gen.alphaChar
-      chars <- listOfN(length - 1, arbitrary[Char])
+      chars <- listOfN(length - 1, regexWildcardChar)
     } yield (first :: chars).mkString.trim
 
   def numbersWithMaxLength(maxLength: Int): Gen[String] =
@@ -110,6 +110,17 @@ trait Generators {
 
     Gen.choose(from.toEpochDay, to.toEpochDay)
       .map(LocalDate.ofEpochDay(_).format(formatter))
+  }
+
+  def regexWildcardChar: Gen[Char] = {
+    arbitrary[Char].retryUntil( c =>
+      c.getType match {
+        case Character.LINE_SEPARATOR => false
+        case Character.PARAGRAPH_SEPARATOR => false
+        case Character.CONTROL => false
+        case _ => true
+      }
+    )
   }
 
 }
