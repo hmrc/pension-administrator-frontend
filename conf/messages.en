@@ -210,3 +210,6 @@ directorAddressYears.less_than_twelve = 12 months or less
 directorAddressYears.more_than_twelve = More than 12 months
 directorAddressYears.checkYourAnswersLabel = Director Years At Address
 directorAddressYears.error.required = Select how long they have been at the current address
+
+directorAddress.title = Director’s address
+directorAddress.heading = Director’s address
