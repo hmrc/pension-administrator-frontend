@@ -203,3 +203,10 @@ directorUniqueTaxReference.error.utr.required = Enter the Unique Tax Reference n
 directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 characters
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
+
+directorAddressYears.title = How long has the director lived at this address?
+directorAddressYears.heading = How long has the director lived at this address?
+directorAddressYears.less_than_twelve = 12 months or less
+directorAddressYears.more_than_twelve = More than 12 months
+directorAddressYears.checkYourAnswersLabel = Director Years At Address
+directorAddressYears.error.required = Select how long they have been at the current address

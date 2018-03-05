@@ -44,6 +44,7 @@ trait MicroService {
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(
+      PlayKeys.devSettings += "play.server.http.port" -> "8201",
       scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
       libraryDependencies ++= appDependencies,
       retrieveManaged := true,

@@ -16,14 +16,22 @@
 
 package utils
 
-import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
+import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId, DirectorAddressId}
 import models.CheckMode
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def directorAddress(index: Int): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map {
+    x => AnswerRow("directorAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine2}", false, controllers.register.company.routes.DirectorAddressController.onPageLoad(CheckMode, index).url)
+  }
+
   def directorUniqueTaxReference(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) map {
     x => AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", s"directorUniqueTaxReference.$x", true, controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
+  }
+
+  def directorAddressYears(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorAddressYearsId(index)) map {
+    x => AnswerRow("directorAddressYears.checkYourAnswersLabel", s"directorAddressYears.$x", true, controllers.register.company.routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url)
   }
 
   def directorDetails(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorDetailsId(index)) map {

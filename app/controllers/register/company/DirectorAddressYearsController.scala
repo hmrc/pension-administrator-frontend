@@ -18,25 +18,23 @@ package controllers.register.company
 
 import javax.inject.Inject
 
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
-import controllers.Retrievals
-import forms.register.company.DirectorUniqueTaxReferenceFormProvider
-import identifiers.register.company.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
-import models.register.company.DirectorUniqueTaxReference
+import forms.register.company.DirectorAddressYearsFormProvider
+import identifiers.register.company.{DirectorAddressYearsId, DirectorDetailsId}
 import models.requests.DataRequest
-import utils.{Enumerable, Navigator, UserAnswers}
-import views.html.register.company.directorUniqueTaxReference
 import models.{Index, Mode}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, Result}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{Enumerable, Navigator, UserAnswers}
+import views.html.register.company.directorAddressYears
 
 import scala.concurrent.Future
 
-class DirectorUniqueTaxReferenceController @Inject()(
+class DirectorAddressYearsController @Inject()(
                                        appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
                                        dataCacheConnector: DataCacheConnector,
@@ -44,19 +42,17 @@ class DirectorUniqueTaxReferenceController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       formProvider: DirectorUniqueTaxReferenceFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                       formProvider: DirectorAddressYearsFormProvider
+                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
-  private val form: Form[DirectorUniqueTaxReference] = formProvider()
+  private val form = formProvider()
 
   def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
-        val redirectResult = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
-          case None =>
-            Ok(directorUniqueTaxReference(appConfig, form, mode, index, directorName))
-          case Some(value) =>
-            Ok(directorUniqueTaxReference(appConfig, form.fill(value), mode, index, directorName))
+        val redirectResult = request.userAnswers.get(DirectorAddressYearsId(index)) match {
+          case None => Ok(directorAddressYears(appConfig, form, mode, index, directorName))
+          case Some(value) => Ok(directorAddressYears(appConfig, form.fill(value), mode, index, directorName))
         }
         Future.successful(redirectResult)
       }
@@ -67,12 +63,21 @@ class DirectorUniqueTaxReferenceController @Inject()(
       retrieveDirectorName(index) { directorName =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
+            Future.successful(BadRequest(directorAddressYears(appConfig, formWithErrors, mode, index, directorName))),
           (value) =>
-            dataCacheConnector.save(request.externalId, DirectorUniqueTaxReferenceId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode)(new UserAnswers(json))))
+            dataCacheConnector.save(request.externalId, DirectorAddressYearsId(index), value).map(cacheMap =>
+              Redirect(navigator.nextPage(DirectorAddressYearsId(index), mode)(new UserAnswers(cacheMap))))
         )
       }
   }
 
+  def retrieveDirectorName(index: Index)(block: String => Future[Result])
+                          (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    request.userAnswers.get(DirectorDetailsId(index)) match {
+      case Some(value) =>
+        block(value.fullName)
+      case _ =>
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+    }
+  }
 }

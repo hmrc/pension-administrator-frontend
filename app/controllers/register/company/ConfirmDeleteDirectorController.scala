@@ -43,8 +43,8 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieve[DirectorDetails](DirectorDetailsId(index)) { directorDetails =>
-        Future.successful(Ok(confirmDeleteDirector(appConfig, index, directorDetails.fullName)))
+      retrieveDirectorName(index) { directorName =>
+        Future.successful(Ok(confirmDeleteDirector(appConfig, index, directorName)))
       }
   }
 
