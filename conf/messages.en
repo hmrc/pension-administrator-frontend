@@ -237,5 +237,13 @@ directorAddressYears.more_than_twelve = More than 12 months
 directorAddressYears.checkYourAnswersLabel = Director Years At Address
 directorAddressYears.error.required = Select how long they have been at the current address
 
+directorPreviousAddress.title = directorPreviousAddress
+directorPreviousAddress.heading = directorPreviousAddress
+directorPreviousAddress.field1 = Field 1
+directorPreviousAddress.field2 = Field 2
+directorPreviousAddress.checkYourAnswersLabel = directorPreviousAddress
+directorPreviousAddress.error.field1.required = Please give an answer for field1
+directorPreviousAddress.error.field2.required = Please give an answer for field2
+
 directorAddress.title = Director’s address
 directorAddress.heading = Director’s address

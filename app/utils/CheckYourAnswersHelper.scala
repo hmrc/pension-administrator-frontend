@@ -16,8 +16,6 @@
 
 package utils
 
-
-
 import models.{CheckMode, Index}
 import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId, DirectorAddressId}
 import viewmodels.AnswerRow
@@ -32,10 +30,14 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   def directorPreviousAddressPostCodeLookup(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorPreviousAddressPostCodeLookupId(index)) map {
     x => AnswerRow("directorPreviousAddressPostCodeLookup.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
   }
-  
+
   def directorAddress(index: Int): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map {
     x => AnswerRow("directorAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine2}", false, controllers.register.company.routes.DirectorAddressController.onPageLoad(CheckMode, index).url)
 
+  }
+
+  def directorPreviousAddress(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorPreviousAddressId(index)) map {
+    x => AnswerRow("directorPreviousAddress.checkYourAnswersLabel", s"${x.field1} ${x.field2}", false, controllers.register.company.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url)
   }
 
   def directorUniqueTaxReference(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) map {
