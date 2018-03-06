@@ -87,3 +87,7 @@ POST       /directors/:index/directorAddressYears               controllers.regi
 GET        /directors/:index/changeDirectorAddressYears               controllers.register.company.DirectorAddressYearsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /directors/:index/changeDirectorAddressYears               controllers.register.company.DirectorAddressYearsController.onSubmit(mode: Mode = CheckMode, index: Index)
 
+GET        /directors/:index/directorContactDetails                       controllers.register.company.DirectorContactDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /directors/:index/directorContactDetails                       controllers.register.company.DirectorContactDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
