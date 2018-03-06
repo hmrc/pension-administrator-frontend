@@ -37,7 +37,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
   }
 
   def directorPreviousAddress(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorPreviousAddressId(index)) map {
-    x => AnswerRow("directorPreviousAddress.checkYourAnswersLabel", s"${x.field1} ${x.field2}", false, controllers.register.company.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url)
+    x => AnswerRow("directorPreviousAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine1}", false, controllers.register.company.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url)
   }
 
   def directorUniqueTaxReference(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) map {

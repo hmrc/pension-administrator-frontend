@@ -16,24 +16,25 @@
 
 package views.register.company
 
+import forms.AddressFormProvider
+import models.{Address, Index, NormalMode}
 import play.api.data.Form
-import controllers.register.company.routes
-import forms.register.company.DirectorPreviousAddressFormProvider
-import models.{Index, NormalMode}
-import models.register.company.DirectorPreviousAddress
+import utils.InputOption
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directorPreviousAddress
 
-class DirectorPreviousAddressViewSpec extends QuestionViewBehaviours[DirectorPreviousAddress] {
+class DirectorPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val messageKeyPrefix = "directorPreviousAddress"
   val index = Index(0)
+  val directorName = "test first name test middle name test last name"
+  val countryOptions : Seq[InputOption] = Seq.empty
 
-  override val form = new DirectorPreviousAddressFormProvider()()
+  override val form = new AddressFormProvider()()
 
-  def createView = () => directorPreviousAddress(frontendAppConfig, form, NormalMode, index)(fakeRequest, messages)
+  def createView = () => directorPreviousAddress(frontendAppConfig, form, NormalMode, index, directorName, countryOptions)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => directorPreviousAddress(frontendAppConfig, form, NormalMode, index)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => directorPreviousAddress(frontendAppConfig, form, NormalMode, index, directorName, countryOptions)(fakeRequest, messages)
 
   "DirectorPreviousAddress view" must {
 
@@ -41,6 +42,12 @@ class DirectorPreviousAddressViewSpec extends QuestionViewBehaviours[DirectorPre
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.DirectorPreviousAddressController.onSubmit(NormalMode, index).url, "field1", "field2")
+    behave like pageWithSecondaryHeader(createView, directorName)
+
+    behave like pageWithTextFields(
+      createViewUsingForm,
+      messageKeyPrefix,
+      controllers.register.company.routes.DirectorPreviousAddressController.onSubmit(NormalMode, index).url,
+      "addressLine1", "addressLine2", "addressLine3", "addressLine4")
   }
 }

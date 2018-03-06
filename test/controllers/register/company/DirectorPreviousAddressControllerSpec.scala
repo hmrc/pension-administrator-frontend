@@ -16,33 +16,57 @@
 
 package controllers.register.company
 
+import java.time.LocalDate
+
+import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
+import controllers.actions._
+import forms.AddressFormProvider
+import identifiers.register.company.{CompanyDetailsId, DirectorDetailsId, DirectorNinoId, DirectorPreviousAddressId}
+import models.register.company.{CompanyDetails, DirectorDetails, DirectorNino}
+import models.{Address, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
-import controllers.actions._
 import play.api.test.Helpers._
-import forms.register.company.DirectorPreviousAddressFormProvider
-import identifiers.register.company.DirectorPreviousAddressId
-import models.{Index, NormalMode}
-import models.register.company.DirectorPreviousAddress
+import utils.{CountryOptions, FakeNavigator, InputOption}
 import views.html.register.company.directorPreviousAddress
-import controllers.ControllerSpecBase
 
 class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorPreviousAddressFormProvider()
+  val formProvider = new AddressFormProvider()
   val form = formProvider()
   val index = Index(0)
+  val directorName = "test first name test middle name test last name"
+  val countryOptions: Seq[InputOption] = Seq(InputOption("country:AU", "Australia"), InputOption("territory:KY", "Cayman Islands"))
+  val companyName = "test company name"
+  val address = Address("test address line 1", "test address line 2", None, None, None, "GB")
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  val validData = Json.obj(
+    CompanyDetailsId.toString -> CompanyDetails(companyName, None, None),
+    "directors" -> Json.arr(
+      Json.obj(
+        DirectorDetailsId.toString ->
+          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+        DirectorPreviousAddressId.toString ->
+          address
+
+      ),
+      Json.obj(
+        DirectorDetailsId.toString ->
+          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+      )
+    )
+  )
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      dataRetrievalAction, new DataRequiredActionImpl, formProvider, new CountryOptions(countryOptions))
 
-  def viewAsString(form: Form[_] = form) = directorPreviousAddress(frontendAppConfig, form, NormalMode, index)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = directorPreviousAddress(
+    frontendAppConfig, form, NormalMode, index, directorName, countryOptions
+  )(fakeRequest, messages).toString
 
   "DirectorPreviousAddress Controller" must {
 
@@ -54,21 +78,35 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(DirectorPreviousAddressId.toString -> DirectorPreviousAddress("value 1", "value 2"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorPreviousAddress("value 1", "value 2")))
+      contentAsString(result) mustBe viewAsString(form.fill(Address("test address line 1", "test address line 2", None, None, None, "GB")))
     }
 
-    "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+    "redirect to the next page" when {
+      "valid data is submitted with country as GB" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("addressLine1", "test address line 1"), ("addressLine2", "test address line 2"),
+          ("postCode.postCode", "NE1 1NE"),
+          "country" -> "GB"
+        )
 
-      val result = controller().onSubmit(NormalMode, index)(postRequest)
+        val result = controller().onSubmit(NormalMode, index)(postRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+      "valid data is submitted with country as non GB" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("addressLine1", "test address line 1"), ("addressLine2", "test address line 2"),
+          "country" -> "CA"
+        )
+
+        val result = controller().onSubmit(NormalMode, index)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
