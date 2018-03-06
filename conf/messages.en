@@ -190,6 +190,18 @@ directorNino.error.required = One of the two radio buttons must be selected (YES
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
 directorNino.error.reason.length = The reason cannot be more than 150 characters
 
+companyDirectorAddressPostCodeLookup.title = Director’s address
+companyDirectorAddressPostCodeLookup.heading = Director’s address
+companyDirectorAddressPostCodeLookup.body = This is usually the director’s residential address.
+companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = Director’s address
+companyDirectorAddressPostCodeLookup.error.required = Enter a valid postal code
+companyDirectorAddressPostCodeLookup.error.length = Enter a valid postal code
+companyDirectorAddressPostCodeLookup.error.invalid = Enter a valid postal code
+companyDirectorAddressPostCodeLookup.error.noResults = No results found for that postal code
+companyDirectorAddressPostCodeLookup.postcode = Postcode
+companyDirectorAddressPostCodeLookup.postcode.hint = For example NE12 8ER
+companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+companyDirectorAddressPostCodeLookup.enterManually = enter the address manually
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
