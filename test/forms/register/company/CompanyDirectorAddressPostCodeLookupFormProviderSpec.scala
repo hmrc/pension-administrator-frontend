@@ -19,6 +19,7 @@ package forms.register.company
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class CompanyDirectorAddressPostCodeLookupFormProviderSpec extends StringFieldBehaviours with Constraints {
 

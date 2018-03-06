@@ -24,8 +24,8 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
-  def companyDirectorAddressPostCodeLookup: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDirectorAddressPostCodeLookupId) map {
-    x => AnswerRow("companyDirectorAddressPostCodeLookup.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode).url)
+  def companyDirectorAddressPostCodeLookup(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDirectorAddressPostCodeLookupId(index)) map {
+    x => AnswerRow("companyDirectorAddressPostCodeLookup.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
   }
 
 
