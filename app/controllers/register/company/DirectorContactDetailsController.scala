@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.company.{ContactDetailsFormProvider, DirectorContactDetailsFormProvider}
+import forms.register.company.ContactDetailsFormProvider
 import identifiers.register.company.DirectorContactDetailsId
 import models.{Index, Mode}
 import play.api.data.Form
