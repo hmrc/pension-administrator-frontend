@@ -204,6 +204,20 @@ directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 cha
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
 
+directorPreviousAddressPostCodeLookup.title = Director’s previous address
+directorPreviousAddressPostCodeLookup.heading = Director’s previous address
+directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
+directorPreviousAddressPostCodeLookup.input.text = Postcode
+directorPreviousAddressPostCodeLookup.input.hint = Example, NE12 8ER
+directorPreviousAddressPostCodeLookup.checkYourAnswersLabel = Director’s previous address post code
+directorPreviousAddressPostCodeLookup.error.required = Enter the postcode
+directorPreviousAddressPostCodeLookup.error.length = Enter a valid postcode
+directorPreviousAddressPostCodeLookup.error.invalid = Enter a valid postcode
+directorPreviousAddressPostCodeLookup.error.noResults = No results found for that postal code
+directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+directorPreviousAddressPostCodeLookup.enterManually = enter the address manually
+directorPreviousAddressPostCodeLookup.submit.button = Find address
+
 directorAddressYears.title = How long has the director lived at this address?
 directorAddressYears.heading = How long has the director lived at this address?
 directorAddressYears.less_than_twelve = 12 months or less
