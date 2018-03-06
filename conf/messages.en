@@ -252,6 +252,13 @@ directorPreviousAddressList.checkYourAnswersLabel = directorPreviousAddressList
 directorAddress.title = Director’s address
 directorAddress.heading = Director’s address
 
+companyDirectorAddressList.title = companyDirectorAddressList
+companyDirectorAddressList.heading = companyDirectorAddressList
+companyDirectorAddressList.option1 = companyDirectorAddressList Option 1
+companyDirectorAddressList.option2 = companyDirectorAddressList Option 2
+companyDirectorAddressList.checkYourAnswersLabel = companyDirectorAddressList
+companyDirectorAddressList.error.required = Please give an answer for companyDirectorAddressList
+
 directorContactDetails.title = Contact details for director
 directorContactDetails.heading = Contact details for director
 directorContactDetails.checkYourAnswersLabel = Contact details for director

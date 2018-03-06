@@ -98,6 +98,11 @@ POST       /directors/:index/directorPreviousAddress                       contr
 GET        /directors/:index/changeDirectorPreviousAddress                       controllers.register.company.DirectorPreviousAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /directors/:index/changeDirectorPreviousAddress                       controllers.register.company.DirectorPreviousAddressController.onSubmit(mode: Mode = CheckMode, index: Index)
 
+GET        /directors/:index/companyDirectorAddressList               controllers.register.company.CompanyDirectorAddressListController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /directors/:index/companyDirectorAddressList               controllers.register.company.CompanyDirectorAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /directors/:index/changeCompanyDirectorAddressList               controllers.register.company.CompanyDirectorAddressListController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /directors/:index/changeCompanyDirectorAddressList               controllers.register.company.CompanyDirectorAddressListController.onSubmit(mode: Mode = CheckMode, index: Index)
+
 GET        /directors/:index/directorContactDetails                       controllers.register.company.DirectorContactDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /directors/:index/directorContactDetails                       controllers.register.company.DirectorContactDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
