@@ -237,5 +237,9 @@ directorAddressYears.more_than_twelve = More than 12 months
 directorAddressYears.checkYourAnswersLabel = Director Years At Address
 directorAddressYears.error.required = Select how long they have been at the current address
 
+directorPreviousAddress.title = Director’s previous address
+directorPreviousAddress.heading = Director’s previous address
+directorPreviousAddress.checkYourAnswersLabel = Director's Previous Address
+
 directorAddress.title = Director’s address
 directorAddress.heading = Director’s address
