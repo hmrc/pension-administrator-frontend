@@ -243,5 +243,3 @@ directorAddress.heading = Director’s address
 directorContactDetails.title = Contact details for director
 directorContactDetails.heading = Contact details for director
 directorContactDetails.checkYourAnswersLabel = Contact details for director
-directorContactDetails.error.field1.required = Please give an answer for field1
-directorContactDetails.error.field2.required = Please give an answer for field2
