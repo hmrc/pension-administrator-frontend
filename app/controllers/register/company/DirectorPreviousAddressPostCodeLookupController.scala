@@ -20,14 +20,13 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.DirectorPreviousAddressPostCodeLookupFormProvider
-import identifiers.register.company.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
-import models.requests.DataRequest
+import identifiers.register.company.DirectorPreviousAddressPostCodeLookupId
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.directorPreviousAddressPostCodeLookup
@@ -44,7 +43,7 @@ class DirectorPreviousAddressPostCodeLookupController @Inject() (
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorPreviousAddressPostCodeLookupFormProvider
-                                      ) extends FrontendController with I18nSupport {
+                                      ) extends FrontendController with Retrievals with I18nSupport {
 
   private val form = formProvider()
 
@@ -78,14 +77,5 @@ class DirectorPreviousAddressPostCodeLookupController @Inject() (
             }
         )
       }
-  }
-
-  def retrieveDirectorName(index: Int)(block: String => Future[Result])(implicit request: DataRequest[AnyContent]):Future[Result] = {
-    request.userAnswers.get(DirectorDetailsId(index)) match {
-      case Some(value) =>
-        block(value.fullName)
-      case _ =>
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-    }
   }
 }

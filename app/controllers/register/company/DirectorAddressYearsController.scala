@@ -20,14 +20,13 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.DirectorAddressYearsFormProvider
-import identifiers.register.company.{DirectorAddressYearsId, DirectorDetailsId}
-import models.requests.DataRequest
+import identifiers.register.company.DirectorAddressYearsId
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directorAddressYears
@@ -43,7 +42,7 @@ class DirectorAddressYearsController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: DirectorAddressYearsFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                     ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
@@ -69,15 +68,5 @@ class DirectorAddressYearsController @Inject()(
               Redirect(navigator.nextPage(DirectorAddressYearsId(index), mode)(new UserAnswers(cacheMap))))
         )
       }
-  }
-
-  def retrieveDirectorName(index: Index)(block: String => Future[Result])
-                          (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.get(DirectorDetailsId(index)) match {
-      case Some(value) =>
-        block(value.fullName)
-      case _ =>
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-    }
   }
 }

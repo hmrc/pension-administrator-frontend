@@ -20,15 +20,14 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.DirectorNinoFormProvider
-import identifiers.register.company.{DirectorDetailsId, DirectorNinoId}
+import identifiers.register.company.DirectorNinoId
 import models.register.company.DirectorNino
-import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directorNino
@@ -44,7 +43,7 @@ class DirectorNinoController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: DirectorNinoFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                     ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form: Form[DirectorNino] = formProvider()
 
@@ -72,15 +71,5 @@ class DirectorNinoController @Inject()(
               Redirect(navigator.nextPage(DirectorNinoId(index), mode)(new UserAnswers(json))))
         )
       }
-  }
-
-  private def retrieveDirectorName(index:Int)(block: String => Future[Result])
-                                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.get(DirectorDetailsId(index)) match {
-      case Some(value) =>
-        block(value.fullName)
-      case _ =>
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-    }
   }
 }

@@ -24,6 +24,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.actions._
 import config.FrontendAppConfig
+import controllers.Retrievals
 import forms.register.company.CompanyDirectorAddressPostCodeLookupFormProvider
 import identifiers.register.company.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
 import models.{Index, Mode}
@@ -44,7 +45,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject() (
                                                                  getData: DataRetrievalAction,
                                                                  requireData: DataRequiredAction,
                                                                  formProvider: CompanyDirectorAddressPostCodeLookupFormProvider
-                                                               ) extends FrontendController with I18nSupport {
+                                                               ) extends FrontendController with Retrievals with I18nSupport {
 
   private val form = formProvider()
 
@@ -107,15 +108,5 @@ class CompanyDirectorAddressPostCodeLookupController @Inject() (
             }
         )
       }
-  }
-
-  private def retrieveDirectorName(index:Int)(block: String => Future[Result])
-                                  (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.get(DirectorDetailsId(index)) match {
-      case Some(value) =>
-        block(value.fullName)
-      case _ =>
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-    }
   }
 }

@@ -18,21 +18,19 @@ package controllers.register.company
 
 import javax.inject.Inject
 
+import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import controllers.Retrievals
+import controllers.actions._
+import forms.register.company.DirectorUniqueTaxReferenceFormProvider
+import identifiers.register.company.DirectorUniqueTaxReferenceId
+import models.register.company.DirectorUniqueTaxReference
+import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
-import config.FrontendAppConfig
-import controllers.Retrievals
-import forms.register.company.DirectorUniqueTaxReferenceFormProvider
-import identifiers.register.company.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
-import models.register.company.DirectorUniqueTaxReference
-import models.requests.DataRequest
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directorUniqueTaxReference
-import models.{Index, Mode}
-import play.api.mvc.{AnyContent, Result}
 
 import scala.concurrent.Future
 

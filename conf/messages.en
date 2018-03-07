@@ -243,3 +243,7 @@ directorPreviousAddress.checkYourAnswersLabel = Director's Previous Address
 
 directorAddress.title = Director’s address
 directorAddress.heading = Director’s address
+
+directorContactDetails.title = Contact details for director
+directorContactDetails.heading = Contact details for director
+directorContactDetails.checkYourAnswersLabel = Contact details for director
