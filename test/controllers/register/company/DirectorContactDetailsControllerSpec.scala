@@ -25,7 +25,7 @@ import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import play.api.test.Helpers._
-import forms.register.company.{ContactDetailsFormProvider, DirectorContactDetailsFormProvider}
+import forms.register.company.ContactDetailsFormProvider
 import identifiers.register.company.{CompanyDetailsId, DirectorContactDetailsId, DirectorDetailsId, DirectorNinoId}
 import models.{Index, NormalMode}
 import models.register.company._

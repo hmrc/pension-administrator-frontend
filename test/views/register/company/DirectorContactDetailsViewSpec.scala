@@ -16,21 +16,20 @@
 
 package views.register.company
 
-import play.api.data.Form
-import controllers.register.company.routes
-import forms.register.company.DirectorContactDetailsFormProvider
+import forms.register.company.ContactDetailsFormProvider
+import models.register.company.ContactDetails
 import models.{Index, NormalMode}
-import models.register.company.DirectorContactDetails
+import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directorContactDetails
 
-class DirectorContactDetailsViewSpec extends QuestionViewBehaviours[DirectorContactDetails] {
+class DirectorContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
 
   val messageKeyPrefix = "directorContactDetails"
   val index = Index(0)
   val directorName = "test first name test middle name test last name"
 
-  override val form = new DirectorContactDetailsFormProvider()()
+  override val form = new ContactDetailsFormProvider()()
 
   def createView = () => directorContactDetails(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
 
