@@ -17,6 +17,8 @@
 package controllers
 
 import identifiers.TypedIdentifier
+import identifiers.register.company.DirectorDetailsId
+import models.register.company.DirectorDetails
 import models.requests.DataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
@@ -27,6 +29,14 @@ import scala.concurrent.Future
 trait Retrievals {
 
   this: FrontendController =>
+
+  private[controllers] def retrieveDirectorName(index: Int)
+                                               (f: String => Future[Result])
+                                               (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    retrieve[DirectorDetails](DirectorDetailsId(index)) { directorDetails =>
+      f(directorDetails.fullName)
+    }
+  }
 
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
                                       (f: (A) => Future[Result])

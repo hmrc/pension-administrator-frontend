@@ -18,15 +18,15 @@ package forms.register.company
 
 import forms.behaviours.FormBehaviours
 
-class CompanyAddressListFormProviderSpec extends FormBehaviours {
+class DirectorPreviousAddressListFormProviderSpec extends FormBehaviours {
 
   val validData: Map[String, String] = Map(
     "value" -> "0"
   )
 
-  val form = new CompanyAddressListFormProvider()(Seq(0, 1))
+  val form = new DirectorPreviousAddressListFormProvider()(Seq(0, 1))
 
-  "CompanyAddressListForm" must {
+  ".value" must {
 
     behave like questionForm[Int](0)
 

@@ -18,20 +18,19 @@ package controllers.register.company
 
 import javax.inject.Inject
 
+import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import controllers.Retrievals
+import controllers.actions._
+import forms.register.company.DirectorUniqueTaxReferenceFormProvider
+import identifiers.register.company.DirectorUniqueTaxReferenceId
+import models.register.company.DirectorUniqueTaxReference
+import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
-import config.FrontendAppConfig
-import forms.register.company.DirectorUniqueTaxReferenceFormProvider
-import identifiers.register.company.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
-import models.register.company.DirectorUniqueTaxReference
-import models.requests.DataRequest
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directorUniqueTaxReference
-import models.{Index, Mode}
-import play.api.mvc.{AnyContent, Result}
 
 import scala.concurrent.Future
 
@@ -44,7 +43,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: DirectorUniqueTaxReferenceFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form: Form[DirectorUniqueTaxReference] = formProvider()
 
@@ -74,13 +73,4 @@ class DirectorUniqueTaxReferenceController @Inject()(
       }
   }
 
-  private def retrieveDirectorName(index:Int)(block: String => Future[Result])
-                                  (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.get(DirectorDetailsId(index)) match {
-      case Some(value) =>
-        block(value.fullName)
-      case _ =>
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-    }
-  }
 }

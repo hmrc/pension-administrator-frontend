@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package identifiers.register.company
 
-import javax.inject.Inject
+import identifiers._
+import models.register.company.ContactDetails
+import play.api.libs.json.JsPath
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import play.api.data.Form
+case class DirectorContactDetailsId(index: Int) extends TypedIdentifier[ContactDetails] {
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorContactDetailsId.toString
+}
 
-class CompanyAddressListFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(addresses: Seq[_]): Form[Int] =
-    Form(
-      "value" -> int("common.previousAddressList.error.required")
-        .verifying(minimumValue(0, "error.invalid"))
-        .verifying(maximumValue(addresses.length - 1, "error.invalid"))
-    )
+object DirectorContactDetailsId {
+  override def toString: String = "directorContactDetails"
 }

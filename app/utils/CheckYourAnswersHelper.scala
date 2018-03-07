@@ -16,11 +16,37 @@
 
 package utils
 
-import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
+
+
+import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId, DirectorAddressId, DirectorPreviousAddressListId}
 import models.CheckMode
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
+
+  def directorContactDetails(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorContactDetailsId(index)) map {
+    x => AnswerRow("directorContactDetails.checkYourAnswersLabel", s"${x.email} ${x.phone}", false, controllers.register.company.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url)
+  }
+
+  def directorPreviousAddressList(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPreviousAddressListId(index)) map {
+    x => AnswerRow("directorPreviousAddressList.checkYourAnswersLabel", s"directorPreviousAddressList.$x", true, controllers.register.company.routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index).url)
+  }
+  def companyDirectorAddressPostCodeLookup(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDirectorAddressPostCodeLookupId(index)) map {
+    x => AnswerRow("companyDirectorAddressPostCodeLookup.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
+  }
+
+
+  def directorPreviousAddressPostCodeLookup(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorPreviousAddressPostCodeLookupId(index)) map {
+    x => AnswerRow("directorPreviousAddressPostCodeLookup.checkYourAnswersLabel", s"$x", false, controllers.register.company.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
+  }
+
+  def directorAddress(index: Int): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map {
+    x => AnswerRow("directorAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine2}", false, controllers.register.company.routes.DirectorAddressController.onPageLoad(CheckMode, index).url)
+  }
+
+  def directorPreviousAddress(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorPreviousAddressId(index)) map {
+    x => AnswerRow("directorPreviousAddress.checkYourAnswersLabel", s"${x.addressLine1} ${x.addressLine1}", false, controllers.register.company.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url)
+  }
 
   def directorUniqueTaxReference(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) map {
     x => AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", s"directorUniqueTaxReference.$x", true, controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)

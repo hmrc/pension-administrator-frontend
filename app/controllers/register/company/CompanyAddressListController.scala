@@ -49,7 +49,6 @@ class CompanyAddressListController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
         retrieveCompanyName { companyName =>
-
           request.userAnswers.get(CompanyPreviousAddressPostCodeLookupId) match {
             case None =>
               Future.successful(Redirect(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)))

@@ -69,6 +69,9 @@ common.nino = National Insurance number
 common.nino.hint = Example ’QQ 12 34 56 C’
 common.error.nino.required = Enter the National Insurance number
 common.error.nino.invalid = Enter a valid National Insurance number in the format QQ 12 34 56 C
+common.previousAddressList.title = Select the previous address
+common.previousAddressList.heading = Select the previous address
+common.previousAddressList.error.required = Select an address
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -139,12 +142,7 @@ companyPreviousAddressPostCodeLookup.postalCode.hint = For example NE12 8ER
 companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
 companyPreviousAddressPostCodeLookup.enterManually = enter the address manually
 
-companyAddressList.title = Select the previous address
-companyAddressList.heading = Select the previous address
-companyAddressList.option1 = companyAddressList Option 1
-companyAddressList.option2 = companyAddressList Option 2
 companyAddressList.checkYourAnswersLabel = companyAddressList
-companyAddressList.error.required = Select an address
 
 addCompanyDirectors.title = Company directors
 addCompanyDirectors.heading = Company directors
@@ -190,6 +188,18 @@ directorNino.error.required = One of the two radio buttons must be selected (YES
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
 directorNino.error.reason.length = The reason cannot be more than 150 characters
 
+companyDirectorAddressPostCodeLookup.title = Director’s address
+companyDirectorAddressPostCodeLookup.heading = Director’s address
+companyDirectorAddressPostCodeLookup.body = This is usually the director’s residential address.
+companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = Director’s address
+companyDirectorAddressPostCodeLookup.error.required = Enter a valid postal code
+companyDirectorAddressPostCodeLookup.error.length = Enter a valid postal code
+companyDirectorAddressPostCodeLookup.error.invalid = Enter a valid postal code
+companyDirectorAddressPostCodeLookup.error.noResults = No results found for that postal code
+companyDirectorAddressPostCodeLookup.postcode = Postcode
+companyDirectorAddressPostCodeLookup.postcode.hint = For example NE12 8ER
+companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+companyDirectorAddressPostCodeLookup.enterManually = enter the address manually
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
@@ -204,9 +214,36 @@ directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 cha
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
 
+directorPreviousAddressPostCodeLookup.title = Director’s previous address
+directorPreviousAddressPostCodeLookup.heading = Director’s previous address
+directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
+directorPreviousAddressPostCodeLookup.input.text = Postcode
+directorPreviousAddressPostCodeLookup.input.hint = Example, NE12 8ER
+directorPreviousAddressPostCodeLookup.checkYourAnswersLabel = Director’s previous address post code
+directorPreviousAddressPostCodeLookup.error.required = Enter the postcode
+directorPreviousAddressPostCodeLookup.error.length = Enter a valid postcode
+directorPreviousAddressPostCodeLookup.error.invalid = Enter a valid postcode
+directorPreviousAddressPostCodeLookup.error.noResults = No results found for that postal code
+directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+directorPreviousAddressPostCodeLookup.enterManually = enter the address manually
+directorPreviousAddressPostCodeLookup.submit.button = Find address
+
 directorAddressYears.title = How long has the director lived at this address?
 directorAddressYears.heading = How long has the director lived at this address?
 directorAddressYears.less_than_twelve = 12 months or less
 directorAddressYears.more_than_twelve = More than 12 months
 directorAddressYears.checkYourAnswersLabel = Director Years At Address
 directorAddressYears.error.required = Select how long they have been at the current address
+
+directorPreviousAddress.title = Director’s previous address
+directorPreviousAddress.heading = Director’s previous address
+directorPreviousAddress.checkYourAnswersLabel = Director's Previous Address
+
+directorPreviousAddressList.checkYourAnswersLabel = directorPreviousAddressList
+
+directorAddress.title = Director’s address
+directorAddress.heading = Director’s address
+
+directorContactDetails.title = Contact details for director
+directorContactDetails.heading = Contact details for director
+directorContactDetails.checkYourAnswersLabel = Contact details for director

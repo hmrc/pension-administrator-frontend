@@ -53,7 +53,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     country = "United Kingdom"
   )
 
-  val form = formProvider(Seq(0))
+  val form: Form[Int] = formProvider(Seq(0))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressListController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
@@ -92,7 +92,6 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
             controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
         }
       }
-
     }
 
     "redirect to the next page valid data is submitted" in {

@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import play.api.libs.json.{JsValue, Json}
@@ -42,6 +44,29 @@ class RetrievalsSpec extends ControllerSpecBase {
 
   val testIdentifier = new TypedIdentifier[String]{
     override def toString: String = "test"
+  }
+
+  "retrieveDirectorName" must {
+    "reach the intended result when companyName is found" in {
+
+      val validData = Json.obj(
+        "directors" -> Json.arr(
+          Json.obj(
+            "directorDetails" -> Json.obj(
+              "firstName" -> "John",
+              "lastName" -> "Doe",
+              "dateOfBirth" -> Json.toJson(LocalDate.now())
+            )
+          )
+        )
+      )
+
+      implicit val request: DataRequest[AnyContent] = dataRequest(validData)
+
+      val result = controller.retrieveDirectorName(0)(success)
+
+      status(result) must be(OK)
+    }
   }
 
   "retrieve" must {
