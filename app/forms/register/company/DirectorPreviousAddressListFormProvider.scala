@@ -22,7 +22,7 @@ import forms.FormErrorHelper
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class CompanyAddressListFormProvider @Inject() extends FormErrorHelper with Mappings {
+class DirectorPreviousAddressListFormProvider @Inject() extends FormErrorHelper with Mappings {
 
   def apply(addresses: Seq[_]): Form[Int] =
     Form(

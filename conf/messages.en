@@ -69,6 +69,9 @@ common.nino = National Insurance number
 common.nino.hint = Example ’QQ 12 34 56 C’
 common.error.nino.required = Enter the National Insurance number
 common.error.nino.invalid = Enter a valid National Insurance number in the format QQ 12 34 56 C
+common.previousAddressList.title = Select the previous address
+common.previousAddressList.heading = Select the previous address
+common.previousAddressList.error.required = Select an address
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -139,12 +142,7 @@ companyPreviousAddressPostCodeLookup.postalCode.hint = For example NE12 8ER
 companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
 companyPreviousAddressPostCodeLookup.enterManually = enter the address manually
 
-companyAddressList.title = Select the previous address
-companyAddressList.heading = Select the previous address
-companyAddressList.option1 = companyAddressList Option 1
-companyAddressList.option2 = companyAddressList Option 2
 companyAddressList.checkYourAnswersLabel = companyAddressList
-companyAddressList.error.required = Select an address
 
 addCompanyDirectors.title = Company directors
 addCompanyDirectors.heading = Company directors
@@ -240,6 +238,8 @@ directorAddressYears.error.required = Select how long they have been at the curr
 directorPreviousAddress.title = Director’s previous address
 directorPreviousAddress.heading = Director’s previous address
 directorPreviousAddress.checkYourAnswersLabel = Director's Previous Address
+
+directorPreviousAddressList.checkYourAnswersLabel = directorPreviousAddressList
 
 directorAddress.title = Director’s address
 directorAddress.heading = Director’s address

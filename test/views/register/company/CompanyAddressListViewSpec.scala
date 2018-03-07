@@ -25,7 +25,7 @@ import views.html.register.company.companyAddressList
 
 class CompanyAddressListViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "companyAddressList"
+  val messageKeyPrefix = "common.previousAddressList"
   val companyName = "ThisCompanyName"
   val addressIndexes = Seq.range(0, 2)
   val addresses = Seq(
