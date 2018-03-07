@@ -247,3 +247,6 @@ directorAddress.heading = Director’s address
 directorContactDetails.title = Contact details for director
 directorContactDetails.heading = Contact details for director
 directorContactDetails.checkYourAnswersLabel = Contact details for director
+
+companyAddress.title = Company address
+companyAddress.heading = Company address
