@@ -51,7 +51,7 @@ session_expired.guidance = The details you have given have been deleted because 
 
 site.back = Back
 site.delete = Remove
-site.edit = Change
+site.edit = Edit
 site.confirm = Confirm
 site.cancel = Cancel
 site.hidden-delete = Delete {0}
@@ -75,6 +75,10 @@ common.previousAddressList.error.required = Select an address
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+cya.label.name = Name
+cya.label.address = Address
+cya.label.dob = Date of birth
 
 contactDetails.title = PSA contact details
 contactDetails.heading = PSA contact details
@@ -182,7 +186,9 @@ directorDetails.error.dateOfBirth.invalid = Enter a valid date in the format 01 
 
 directorNino.title = Does the director have a National Insurance number?
 directorNino.heading = Does the director have a National Insurance number?
-directorNino.checkYourAnswersLabel = Director National Insurance number
+directorNino.checkYourAnswersLabel = Does the director have a National Insurance number?
+directorNino.checkYourAnswersLabel.nino = National Insurance number
+directorNino.checkYourAnswersLabel.reason = Why the director does not have a National Insurance number
 directorNino.no.reason = Tell us why the director does not have a National Insurance number
 directorNino.error.required = One of the two radio buttons must be selected (YES/NO)
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
@@ -204,7 +210,9 @@ companyDirectorAddressPostCodeLookup.enterManually = enter the address manually
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register your business or for Self assessment.
-directorUniqueTaxReference.checkYourAnswersLabel = Director Unique Taxpayer Reference Number
+directorUniqueTaxReference.checkYourAnswersLabel = Does the director have a Self Assessment Unique Taxpayer Reference number?
+directorUniqueTaxReference.checkYourAnswersLabel.utr = Unique Taxpayer Reference number
+directorUniqueTaxReference.checkYourAnswersLabel.reason = Why the director does not have a UTR
 directorUniqueTaxReference.utr.text = Unique Taxpayer Reference number
 directorUniqueTaxReference.number.hint = A UTR is 10 or 13 digits, if it is 13 digits only enter the last 10.
 directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
@@ -232,12 +240,12 @@ directorAddressYears.title = How long has the director lived at this address?
 directorAddressYears.heading = How long has the director lived at this address?
 directorAddressYears.less_than_twelve = 12 months or less
 directorAddressYears.more_than_twelve = More than 12 months
-directorAddressYears.checkYourAnswersLabel = Director Years At Address
+directorAddressYears.checkYourAnswersLabel = How long has the director lived at this address?
 directorAddressYears.error.required = Select how long they have been at the current address
 
 directorPreviousAddress.title = Director’s previous address
 directorPreviousAddress.heading = Director’s previous address
-directorPreviousAddress.checkYourAnswersLabel = Director's Previous Address
+directorPreviousAddress.checkYourAnswersLabel = Previous Address
 
 directorPreviousAddressList.checkYourAnswersLabel = directorPreviousAddressList
 
@@ -247,6 +255,9 @@ directorAddress.heading = Director’s address
 directorContactDetails.title = Contact details for director
 directorContactDetails.heading = Contact details for director
 directorContactDetails.checkYourAnswersLabel = Contact details for director
+
+directorCheckYourAnswers.directorDetails.heading = Company director details
+directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
 companyAddress.title = Company address
 companyAddress.heading = Company address
