@@ -96,3 +96,5 @@ GET        /directors/:index/directorContactDetails                       contro
 POST       /directors/:index/directorContactDetails                       controllers.register.company.DirectorContactDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
+
+GET        /directors/:index/checkYourAnswers                       controllers.register.company.CheckYourAnswersController.onPageLoad(index: Index)
