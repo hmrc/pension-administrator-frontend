@@ -23,7 +23,7 @@ import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
 import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import models.NormalMode
-import models.register.company.DirectorDetails
+import models.register.company.directors.DirectorDetails
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBehaviours {

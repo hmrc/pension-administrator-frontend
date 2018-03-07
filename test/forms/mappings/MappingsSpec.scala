@@ -16,10 +16,10 @@
 
 package forms.mappings
 
-import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
 import org.apache.commons.lang3.RandomStringUtils
 import java.time.LocalDate
 
+import models.register.company.directors.{DirectorNino, DirectorUniqueTaxReference}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.{Form, FormError}
 import play.api.data.Forms._

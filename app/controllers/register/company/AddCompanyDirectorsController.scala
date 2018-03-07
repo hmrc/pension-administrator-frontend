@@ -25,9 +25,10 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.AddCompanyDirectorsFormProvider
-import identifiers.register.company.{AddCompanyDirectorsId, DirectorDetailsId}
+import identifiers.register.company.AddCompanyDirectorsId
+import identifiers.register.company.directors.DirectorDetailsId
 import models.Mode
-import models.register.company.DirectorDetails
+import models.register.company.directors.DirectorDetails
 import play.api.Logger
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}

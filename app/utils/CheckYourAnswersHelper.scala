@@ -16,103 +16,104 @@
 
 package utils
 
-import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId, DirectorAddressId, DirectorPreviousAddressListId}
-import models.register.company.DirectorNino.{No, Yes}
-import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
+import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
+import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
+import models.register.company.directors.DirectorNino.{No, Yes}
+import models.register.company.directors.{DirectorNino, DirectorUniqueTaxReference}
 import models.{Address, CheckMode}
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
-  def directorContactDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorContactDetailsId(index)) match {
+  def directorContactDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorContactDetailsId(index)) match {
     case Some(x) => Seq(
       AnswerRow("contactDetails.email", Seq(s"${x.email}"), false,
-        controllers.register.company.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url),
+        controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url),
       AnswerRow("contactDetails.phone", Seq(s"${x.phone}"), false,
-        controllers.register.company.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url)
+        controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url)
     )
 
     case _ => Nil
   }
 
-  def companyDirectorAddressList(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDirectorAddressListId(index)) map {
-    x => AnswerRow("companyDirectorAddressList.checkYourAnswersLabel", Seq(s"companyDirectorAddressList.$x"), true, controllers.register.company.routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index).url)
+  def companyDirectorAddressList(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.directors.CompanyDirectorAddressListId(index)) map {
+    x => AnswerRow("companyDirectorAddressList.checkYourAnswersLabel", Seq(s"companyDirectorAddressList.$x"), true, controllers.register.company.directors.routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index).url)
   }
   
   def directorPreviousAddressList(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPreviousAddressListId(index)) map {
-    x => AnswerRow("directorPreviousAddressList.checkYourAnswersLabel", Seq(s"directorPreviousAddressList.$x"), true, controllers.register.company.routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index).url)
+    x => AnswerRow("directorPreviousAddressList.checkYourAnswersLabel", Seq(s"directorPreviousAddressList.$x"), true, controllers.register.company.directors.routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index).url)
   }
 
   def companyDirectorAddressPostCodeLookup(index: Int): Option[AnswerRow] =
-    userAnswers.get(identifiers.register.company.CompanyDirectorAddressPostCodeLookupId(index)) map {
+    userAnswers.get(identifiers.register.company.directors.CompanyDirectorAddressPostCodeLookupId(index)) map {
     x => AnswerRow("companyDirectorAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false,
-      controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
+      controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
   }
 
   def directorPreviousAddressPostCodeLookup(index: Int): Option[AnswerRow] =
-    userAnswers.get(identifiers.register.company.DirectorPreviousAddressPostCodeLookupId(index)) map {
+    userAnswers.get(identifiers.register.company.directors.DirectorPreviousAddressPostCodeLookupId(index)) map {
     x => AnswerRow("directorPreviousAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false,
-      controllers.register.company.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
+      controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
   }
 
   def directorAddress(index: Int): Seq[AnswerRow] = userAnswers.get(DirectorAddressId(index)) match {
     case Some(x) => Seq(AnswerRow("cya.label.address", addressAnswer(x), false,
-      controllers.register.company.routes.DirectorAddressController.onPageLoad(CheckMode, index).url))
+      controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(CheckMode, index).url))
     case _ => Nil
   }
 
-  def directorPreviousAddress(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorPreviousAddressId(index)) match {
+  def directorPreviousAddress(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorPreviousAddressId(index)) match {
     case Some(x) => Seq(AnswerRow("directorPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false,
-      controllers.register.company.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url))
+      controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url))
     case _ => Nil
   }
 
-  def directorUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) match {
+  def directorUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorUniqueTaxReferenceId(index)) match {
     case Some(DirectorUniqueTaxReference.Yes(utr)) => Seq(
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${DirectorUniqueTaxReference.Yes}"), true,
-        controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
+        controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.utr", Seq(utr), true,
-        controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
+        controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
     )
 
     case Some(DirectorUniqueTaxReference.No(reason)) => Seq(
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${DirectorUniqueTaxReference.No}"), true,
-        controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
+        controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.reason", Seq(reason), true,
-        controllers.register.company.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
+        controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
     )
 
     case _ => Nil
   }
 
-  def directorAddressYears(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorAddressYearsId(index)) match {
+  def directorAddressYears(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorAddressYearsId(index)) match {
     case Some(x) => Seq(AnswerRow("directorAddressYears.checkYourAnswersLabel", Seq(s"directorAddressYears.$x"), true,
-      controllers.register.company.routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url))
+      controllers.register.company.directors.routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url))
 
     case _ => Nil
   }
 
-  def directorDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorDetailsId(index)) match {
+  def directorDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorDetailsId(index)) match {
     case Some(x) => Seq(AnswerRow("cya.label.name", Seq(s"${x.firstName} ${x.lastName}"), false,
-      controllers.register.company.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url),
+      controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url),
       AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x.dateOfBirth)}"), false,
-        controllers.register.company.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url))
+        controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url))
     case _ => Nil
   }
 
-  def directorNino(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorNinoId(index)) match {
+  def directorNino(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorNinoId(index)) match {
     case Some(Yes(nino)) => Seq(
       AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${DirectorNino.Yes}"), true,
-        controllers.register.company.routes.DirectorNinoController.onPageLoad(CheckMode, index).url),
+        controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorNino.checkYourAnswersLabel.nino", Seq(nino), true,
-        controllers.register.company.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)
+        controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)
     )
 
     case Some(No(reason)) => Seq(
       AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${DirectorNino.No}"), true,
-        controllers.register.company.routes.DirectorNinoController.onPageLoad(CheckMode, index).url),
+        controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorNino.checkYourAnswersLabel.reason", Seq(reason), true,
-        controllers.register.company.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)
+        controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)
     )
 
     case _ => Nil

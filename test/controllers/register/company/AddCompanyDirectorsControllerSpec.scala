@@ -26,9 +26,10 @@ import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.AddCompanyDirectorsFormProvider
-import identifiers.register.company.{AddCompanyDirectorsId, DirectorDetailsId}
+import identifiers.register.company.AddCompanyDirectorsId
+import identifiers.register.company.directors.DirectorDetailsId
 import models.NormalMode
-import models.register.company.DirectorDetails
+import models.register.company.directors.DirectorDetails
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {

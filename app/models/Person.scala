@@ -16,9 +16,9 @@
 
 package models
 
-import models.register.company.DirectorDetails
+import controllers.register.company.directors.routes
+import models.register.company.directors.DirectorDetails
 
-import scala.collection.mutable
 import scala.language.implicitConversions
 
 case class Person(index: Int, name: String, deleteLink: String, editLink: String) {
@@ -34,8 +34,8 @@ object Person {
       Person(
         index,
         director.fullName,
-        controllers.register.company.routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-        controllers.register.company.routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
+        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
       )
     }
   }
