@@ -15,8 +15,9 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.register.company.routes
 @import viewmodels.{Section, AnswerSection, RepeaterAnswerSection}
+@import uk.gov.hmrc.play.views.html._
+@import models.Mode
 
 @(appConfig: FrontendAppConfig, directorName: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
@@ -25,20 +26,21 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.back_link()
+    @helpers.form(action = controllers.register.company.routes.CheckYourAnswersController.onSubmit, 'autoComplete -> "off") {
 
-    @components.heading("checkYourAnswers.heading", secondaryHeaderKey = Some(directorName))
+        @components.back_link()
 
-    @for(section <- answerSections){
-        @{
-            section match {
-                case a: AnswerSection => components.answer_section(a)
-                case r: RepeaterAnswerSection => components.repeater_answer_section(r)
+        @components.heading("checkYourAnswers.heading", secondaryHeaderKey = Some(directorName))
+
+        @for(section <- answerSections){
+            @{
+                section match {
+                    case a: AnswerSection => components.answer_section(a)
+                    case r: RepeaterAnswerSection => components.repeater_answer_section(r)
+                }
             }
         }
+
+        @components.submit_button()
     }
-
-<a id = "cya-submit" href = "@routes.AddCompanyDirectorsController.onPageLoad(NormalMode)">@components.submit_button()</a>
-
-
 }

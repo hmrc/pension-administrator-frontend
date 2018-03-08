@@ -21,7 +21,7 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import models.Index
+import models.{Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -52,6 +52,12 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
         Future.successful(Ok(check_your_answers(appConfig, directorName, answersSection)))
       }
+  }
+
+  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData) {
+    implicit request =>
+      Redirect(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode))
+
   }
 
 }

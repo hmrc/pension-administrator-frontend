@@ -43,8 +43,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     userAnswers.get(identifiers.register.company.CompanyDirectorAddressPostCodeLookupId(index)) map {
     x => AnswerRow("companyDirectorAddressPostCodeLookup.checkYourAnswersLabel", s"$x", false,
       controllers.register.company.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode, index).url)
- }
-
+  }
 
   def directorPreviousAddressPostCodeLookup(index: Int): Option[AnswerRow] =
     userAnswers.get(identifiers.register.company.DirectorPreviousAddressPostCodeLookupId(index)) map {
