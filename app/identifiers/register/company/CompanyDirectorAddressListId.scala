@@ -18,7 +18,6 @@ package identifiers.register.company
 
 import identifiers._
 import models.{Address, Index}
-import models.register.company.CompanyDirectorAddressList
 import play.api.libs.json.JsPath
 
 case class CompanyDirectorAddressListId(index: Index) extends TypedIdentifier[Address] {

@@ -28,7 +28,6 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import forms.register.company.CompanyDirectorAddressListFormProvider
 import identifiers.register.company.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
-import models.register.company.CompanyDirectorAddressList
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyDirectorAddressList
 import models.{Index, Mode, NormalMode}

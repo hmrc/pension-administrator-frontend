@@ -27,7 +27,7 @@ import play.api.libs.json._
 import forms.register.company.CompanyDirectorAddressListFormProvider
 import identifiers.register.company.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
 import models.{Address, Index, NormalMode}
-import models.register.company.{CompanyDirectorAddressList, DirectorDetails}
+import models.register.company.DirectorDetails
 import views.html.register.company.companyDirectorAddressList
 import controllers.ControllerSpecBase
 import java.time.LocalDate

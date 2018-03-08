@@ -17,7 +17,6 @@
 package forms.register.company
 
 import forms.behaviours.FormBehaviours
-import models.register.company.CompanyDirectorAddressList
 import play.api.data.FormError
 
 class CompanyDirectorAddressListFormProviderSpec extends FormBehaviours {

@@ -19,7 +19,6 @@ package views.register.company
 import play.api.data.Form
 import forms.register.company.CompanyDirectorAddressListFormProvider
 import models.{Address, Index, NormalMode}
-import models.register.company.CompanyDirectorAddressList
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyDirectorAddressList
 
