@@ -15,6 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
+@import controllers.register.company.routes
 @import viewmodels.{Section, AnswerSection, RepeaterAnswerSection}
 
 @(appConfig: FrontendAppConfig, directorName: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
@@ -37,7 +38,7 @@
         }
     }
 
-    @components.submit_button()
+<a id = "cya-submit" href = "@routes.AddCompanyDirectorsController.onPageLoad(NormalMode)">@components.submit_button()</a>
 
 
 }
