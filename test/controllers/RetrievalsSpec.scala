@@ -20,6 +20,8 @@ import java.time.LocalDate
 
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
+import org.scalatest.EitherValues
+import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContent, Result}
@@ -30,7 +32,7 @@ import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class RetrievalsSpec extends ControllerSpecBase {
+class RetrievalsSpec extends ControllerSpecBase with FrontendController with Retrievals with EitherValues with ScalaFutures {
 
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "", UserAnswers(data))
 
@@ -44,6 +46,10 @@ class RetrievalsSpec extends ControllerSpecBase {
 
   val testIdentifier = new TypedIdentifier[String]{
     override def toString: String = "test"
+  }
+
+  val secondIdentifier = new TypedIdentifier[String]{
+    override def toString: String = "second"
   }
 
   "retrieveDirectorName" must {
@@ -75,10 +81,23 @@ class RetrievalsSpec extends ControllerSpecBase {
 
       implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result"))
 
-      val result = controller.retrieve(testIdentifier)(success)
+      testIdentifier.retrieve.right.value mustEqual "result"
+    }
 
-      status(result) must be(OK)
+    "reach the intended result when identifier uses and to get the value from answers" in {
 
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result", "second" -> "answer"))
+
+      (testIdentifier and secondIdentifier).retrieve.right.value mustEqual new ~("result", "answer")
+    }
+
+    "redirect to the session expired page when cant find identifier" in {
+
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test1" -> "result"))
+
+      whenReady(testIdentifier.retrieve.left.value) {
+        _ mustEqual (Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
     }
 
     "redirect to Session Expired page when company name is not present" in {

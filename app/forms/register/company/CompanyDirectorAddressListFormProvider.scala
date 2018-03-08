@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package identifiers
+package forms.register.company
 
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-import scala.language.implicitConversions
-import play.api.libs.json._
-import utils.{Cleanup, JsLens, UserAnswers}
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import play.api.data.Form
 
-trait Identifier {
+class CompanyDirectorAddressListFormProvider @Inject() () extends FormErrorHelper with Mappings {
 
-  def path: JsPath = __ \ toString
-}
-
-object Identifier {
-
-  implicit def toString(i: Identifier): String =
-    i.toString
-}
-
-trait TypedIdentifier[A] extends TypedIdentifier.PathDependent {
-  type Data = A
-}
-
-object TypedIdentifier {
-
-  trait PathDependent extends Identifier {
-    type Data
-  }
+  def apply(addresses: Seq[_]): Form[Int] =
+    Form(
+      "value" -> int("common.previousAddressList.error.required")
+        .verifying(minimumValue(0, "error.invalid"))
+        .verifying(maximumValue(addresses.length - 1, "error.invalid"))
+    )
 }

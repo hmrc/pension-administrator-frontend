@@ -63,6 +63,8 @@ site.service_name = Pension Scheme Registrations
 site.textarea.char_limit = (Limit is {0} characters)
 site.secondaryHeader = Register a new Pension Scheme Administrator
 
+common.selectAddress.heading = Select the address
+common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
 common.selectAddress.link = enter the address manually
 common.nino = National Insurance number
@@ -251,6 +253,8 @@ directorPreviousAddressList.checkYourAnswersLabel = directorPreviousAddressList
 
 directorAddress.title = Director’s address
 directorAddress.heading = Director’s address
+
+companyDirectorAddressList.checkYourAnswersLabel = companyDirectorAddressList
 
 directorContactDetails.title = Contact details for director
 directorContactDetails.heading = Contact details for director

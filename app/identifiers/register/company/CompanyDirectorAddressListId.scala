@@ -14,32 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers
+package identifiers.register.company
 
+import identifiers._
+import models.{Address, Index}
 import play.api.libs.json.JsPath
 
-import scala.language.implicitConversions
-import play.api.libs.json._
-import utils.{Cleanup, JsLens, UserAnswers}
-
-trait Identifier {
-
-  def path: JsPath = __ \ toString
+case class CompanyDirectorAddressListId(index: Index) extends TypedIdentifier[Address] {
+  override def path: JsPath = JsPath \ "directors" \ index \ CompanyDirectorAddressListId.toString
 }
 
-object Identifier {
-
-  implicit def toString(i: Identifier): String =
-    i.toString
-}
-
-trait TypedIdentifier[A] extends TypedIdentifier.PathDependent {
-  type Data = A
-}
-
-object TypedIdentifier {
-
-  trait PathDependent extends Identifier {
-    type Data
-  }
+case object CompanyDirectorAddressListId {
+  override def toString: String = "companyDirectorAddressList"
 }
