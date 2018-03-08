@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.company.directors
 
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.CheckYourAnswersFactory
 import viewmodels.AnswerSection
-import views.html.register.company.check_your_answers
+import views.html.register.company.directors.check_your_answers
 
 import scala.concurrent.Future
 
@@ -43,12 +43,19 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       retrieveDirectorName(index) { directorName =>
         val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
         val answersSection = Seq(
-          AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"), checkYourAnswerHelper.directorDetails(index.id) ++
-            checkYourAnswerHelper.directorNino(index.id) ++ checkYourAnswerHelper.directorUniqueTaxReference(index.id)),
-        AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"), checkYourAnswerHelper.directorAddress(index.id) ++
-            checkYourAnswerHelper.directorAddressYears(index.id) ++ checkYourAnswerHelper.directorPreviousAddress(index.id)
-          ++ checkYourAnswerHelper.directorContactDetails(index.id))
-        )
+          AnswerSection(
+            Some("directorCheckYourAnswers.directorDetails.heading"),
+            checkYourAnswerHelper.directorDetails(index.id) ++
+              checkYourAnswerHelper.directorNino(index.id) ++
+              checkYourAnswerHelper.directorUniqueTaxReference(index.id)
+          ),
+        AnswerSection(
+          Some("directorCheckYourAnswers.contactDetails.heading"),
+          checkYourAnswerHelper.directorAddress(index.id) ++
+            checkYourAnswerHelper.directorAddressYears(index.id) ++
+            checkYourAnswerHelper.directorPreviousAddress(index.id) ++
+            checkYourAnswerHelper.directorContactDetails(index.id)
+        ))
 
         Future.successful(Ok(check_your_answers(appConfig, directorName, answersSection)))
       }

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package views.register.company
+package views.register.company.directors
 
-import play.api.data.Form
-import controllers.routes
-import views.behaviours.ViewBehaviours
-import models.{Index, NormalMode}
+import models.Index
 import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
-import views.html.register.company.check_your_answers
+import views.behaviours.ViewBehaviours
+import views.html.register.company.directors.check_your_answers
 
 class CheckYourAnswersViewSpec extends ViewBehaviours {
 
