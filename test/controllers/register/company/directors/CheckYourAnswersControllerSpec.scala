@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.company.directors
 
 import java.time.LocalDate
 
@@ -24,7 +24,7 @@ import models.Index
 import play.api.test.Helpers._
 import utils.{CheckYourAnswersFactory, CountryOptions, DateHelper, InputOption}
 import viewmodels.{AnswerRow, AnswerSection}
-import views.html.register.company.check_your_answers
+import views.html.register.company.directors.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
@@ -34,14 +34,29 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
-  val answersDD: Seq[AnswerRow] = Seq(AnswerRow("cya.label.name", "test first name test last name", false,
-     "/pension-administrator/register/company/directors/1/changeDirectorDetails"),
-      AnswerRow("cya.label.dob", DateHelper.formatDate(LocalDate.now), false,
-        "/pension-administrator/register/company/directors/1/changeDirectorDetails"))
+  val answersDD: Seq[AnswerRow] = Seq(
+    AnswerRow(
+      "cya.label.name",
+      "test first name test last name",
+      false,
+      "/pension-administrator/register/company/directors/1/changeDirectorDetails"
+    ),
+    AnswerRow(
+      "cya.label.dob",
+      DateHelper.formatDate(LocalDate.now),
+      false,
+      "/pension-administrator/register/company/directors/1/changeDirectorDetails")
+  )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new CheckYourAnswersController(frontendAppConfig, messagesApi, FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, checkYourAnswersFactory)
+    new CheckYourAnswersController(
+      frontendAppConfig,
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      checkYourAnswersFactory
+    )
 
   def viewAsString() = check_your_answers(frontendAppConfig, directorName,
     Seq(AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"),answersDD),
