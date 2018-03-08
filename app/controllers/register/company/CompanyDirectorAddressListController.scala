@@ -16,6 +16,7 @@
 
 package controllers.register.company
 
+import java.lang.ProcessBuilder.Redirect
 import javax.inject.Inject
 
 import play.api.data.Form
@@ -26,11 +27,12 @@ import controllers.actions._
 import config.FrontendAppConfig
 import controllers.Retrievals
 import forms.register.company.CompanyDirectorAddressListFormProvider
-import identifiers.register.company.CompanyDirectorAddressListId
+import identifiers.register.company.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
 import models.register.company.CompanyDirectorAddressList
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyDirectorAddressList
-import models.{Index, Mode}
+import models.{Index, Mode, NormalMode}
+import play.api.mvc.Result
 
 import scala.concurrent.Future
 
@@ -43,31 +45,28 @@ class CompanyDirectorAddressListController @Inject()(
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: CompanyDirectorAddressListFormProvider
-                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals{
+                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
-  private val form = formProvider()
 
   def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CompanyDirectorAddressListId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      retrieveDirectorName(index) { name =>
-        Future.successful(Ok(companyDirectorAddressList(appConfig, preparedForm, mode, index, name)))
-      }
+      (DirectorDetailsId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
+        case (directorDetails ~ addresses) =>
+          Future.successful(Ok(companyDirectorAddressList(appConfig, formProvider(addresses), NormalMode, index, directorDetails.fullName, addresses)))
+      }.left.map(_ => Future.successful(Redirect(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))
   }
 
   def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { name =>
-        form.bindFromRequest().fold(
+      (DirectorDetailsId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
+        case (directorDetails ~ addresses) =>
+        formProvider(addresses).bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, name))),
+            Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, directorDetails.fullName, addresses))),
           (value) =>
-            dataCacheConnector.save(request.externalId, CompanyDirectorAddressListId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(CompanyDirectorAddressListId, mode)(new UserAnswers(cacheMap))))
+            dataCacheConnector.save(request.externalId, CompanyDirectorAddressListId(index), addresses(value).copy(country = "GB")).map(cacheMap =>
+              Redirect(navigator.nextPage(CompanyDirectorAddressListId(index), mode)(new UserAnswers(cacheMap))))
         )
-      }
+      }.left.map(_ => Future.successful(Redirect(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))
   }
 }

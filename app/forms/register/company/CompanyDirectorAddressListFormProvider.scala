@@ -17,15 +17,17 @@
 package forms.register.company
 
 import javax.inject.Inject
+
 import forms.FormErrorHelper
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.register.company.CompanyDirectorAddressList
 
-class CompanyDirectorAddressListFormProvider @Inject() extends FormErrorHelper with Mappings {
+class CompanyDirectorAddressListFormProvider @Inject() () extends FormErrorHelper with Mappings {
 
-  def apply(): Form[CompanyDirectorAddressList] =
+  def apply(addresses: Seq[_]): Form[Int] =
     Form(
-      "value" -> enumerable[CompanyDirectorAddressList]("companyDirectorAddressList.error.required")
+      "value" -> int("common.previousAddressList.error.required")
+        .verifying(minimumValue(0, "error.invalid"))
+        .verifying(maximumValue(addresses.length - 1, "error.invalid"))
     )
 }

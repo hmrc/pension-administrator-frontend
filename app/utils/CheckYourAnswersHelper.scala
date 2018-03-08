@@ -35,7 +35,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def companyDirectorAddressList(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDirectorAddressListId) map {
+  def companyDirectorAddressList(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDirectorAddressListId(index)) map {
     x => AnswerRow("companyDirectorAddressList.checkYourAnswersLabel", s"companyDirectorAddressList.$x", true, controllers.register.company.routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index).url)
   }
   

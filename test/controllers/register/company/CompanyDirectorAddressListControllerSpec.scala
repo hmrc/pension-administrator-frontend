@@ -25,8 +25,8 @@ import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.CompanyDirectorAddressListFormProvider
-import identifiers.register.company.{CompanyDirectorAddressListId, DirectorDetailsId}
-import models.{Index, NormalMode}
+import identifiers.register.company.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
+import models.{Address, Index, NormalMode}
 import models.register.company.{CompanyDirectorAddressList, DirectorDetails}
 import views.html.register.company.companyDirectorAddressList
 import controllers.ControllerSpecBase
@@ -39,15 +39,30 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new CompanyDirectorAddressListFormProvider()
-  val form: Form[CompanyDirectorAddressList] = formProvider()
+  val form: Form[Int] = formProvider(Seq.empty)
 
   val firstIndex = Index(0)
   val director = DirectorDetails("firstName", Some("middle"), "lastName", LocalDate.now())
 
+  val addresses = Seq(
+    address("test post code 1"),
+    address("test post code 2")
+  )
+
+  def address(postCode: String): Address = Address(
+    "address line 1",
+    "address line 2",
+    Some("test town"),
+    Some("test county"),
+    postcode = Some(postCode),
+    country = "United Kingdom"
+  )
+
   val validData: JsValue = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString -> director
+        DirectorDetailsId.toString -> director,
+        CompanyDirectorAddressPostCodeLookupId.toString -> addresses
       )
     )
   )
@@ -71,10 +86,11 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
     form,
     NormalMode,
     firstIndex,
-    director.fullName
+    director.fullName,
+    addresses
   )(fakeRequest, messages).toString
 
-  "DirectorPreviousAddressList Controller" must {
+  "CompanyDirectorAddressList Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller(data).onPageLoad(NormalMode, firstIndex)(fakeRequest)
@@ -84,12 +100,52 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", CompanyDirectorAddressList.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1"))
 
       val result = controller(data).onSubmit(NormalMode, firstIndex)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to Address look up page" when {
+      "no addresses are present after lookup" when {
+        "GET" in {
+
+          val validData: JsValue = Json.obj(
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorDetailsId.toString -> director
+              )
+            )
+          )
+
+          val data = new FakeDataRetrievalAction(Some(validData))
+
+          val result = controller(data).onPageLoad(NormalMode, firstIndex)(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, firstIndex).url)
+        }
+
+        "POST" in {
+
+          val validData: JsValue = Json.obj(
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorDetailsId.toString -> director
+              )
+            )
+          )
+
+          val data = new FakeDataRetrievalAction(Some(validData))
+
+          val result = controller(data).onSubmit(NormalMode, firstIndex)(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, firstIndex).url)
+        }
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -111,7 +167,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
         "POST" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", CompanyDirectorAddressList.options.head.value))
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1"))
           val result = controller(dontGetAnyData).onSubmit(NormalMode, firstIndex)(postRequest)
 
           status(result) mustBe SEE_OTHER
@@ -119,5 +175,6 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
         }
       }
     }
+
   }
 }

@@ -18,50 +18,80 @@ package views.register.company
 
 import play.api.data.Form
 import forms.register.company.CompanyDirectorAddressListFormProvider
-import models.{Index, NormalMode}
+import models.{Address, Index, NormalMode}
 import models.register.company.CompanyDirectorAddressList
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyDirectorAddressList
 
 class CompanyDirectorAddressListViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "common.previousAddressList"
+  val messageKeyPrefix = "common.selectAddress"
 
-  val form = new CompanyDirectorAddressListFormProvider()()
+  val form = new CompanyDirectorAddressListFormProvider()(Seq.empty)
 
   val firstIndex = Index(0)
   val directorName = "fullName"
 
-  def createView = () => companyDirectorAddressList(frontendAppConfig, form, NormalMode, firstIndex, directorName)(fakeRequest, messages)
+  val addressIndices: Seq[Int] = Seq.range(0, 2)
+  val addresses = Seq(
+    address("test post code 1"),
+    address("test post code 2")
+  )
 
-  def createViewUsingForm = (form: Form[_]) => companyDirectorAddressList(frontendAppConfig, form, NormalMode, firstIndex, directorName)(fakeRequest, messages)
+  def address(postCode: String): Address = Address("address line 1", "address line 2", Some("test town"),
+    Some("test county"), postcode = Some(postCode), country = "United Kingdom")
 
-  "DirectorPreviousAddressList view" must {
+  def createView = () => companyDirectorAddressList(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    firstIndex,
+    directorName,
+    addresses
+  )(fakeRequest, messages)
+
+  def createViewUsingForm = (form: Form[_]) => companyDirectorAddressList(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    firstIndex,
+    directorName,
+    addresses
+  )(fakeRequest, messages)
+
+  "CompanyDirectorAddressList view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)
 
     behave like pageWithSecondaryHeader(createView, directorName)
+
+    "have link for enter address manually" in {
+      createView must haveLink(
+        controllers.register.company.routes.DirectorAddressController.onPageLoad(NormalMode, firstIndex).url,
+        "manual-address-link"
+      )
+    }
   }
 
-  "DirectorPreviousAddressList view" when {
+  "CompanyDirectorAddressList view" when {
     "rendered" must {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
-        for (option <- CompanyDirectorAddressList.options) {
-          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, false)
+        for (option <- addressIndices) {
+          assertContainsRadioButton(doc, s"value-$option", "value", option.toString, false)
         }
       }
     }
 
-    for(option <- CompanyDirectorAddressList.options) {
-      s"rendered with a value of '${option.value}'" must {
-        s"have the '${option.value}' radio button selected" in {
-          val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
-          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, true)
+    for(option <- addressIndices) {
+      s"rendered with a value of '$option'" must {
+        s"have the '$option' radio button selected" in {
+          val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"$option"))))
+          assertContainsRadioButton(doc, s"value-$option", "value", option.toString, true)
 
-          for(unselectedOption <- CompanyDirectorAddressList.options.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, false)
+          for(unselectedOption <- addressIndices.filterNot(o => o == option)) {
+            assertContainsRadioButton(doc, s"value-$unselectedOption", "value", unselectedOption.toString, false)
           }
         }
       }

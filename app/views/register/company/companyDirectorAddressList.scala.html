@@ -19,11 +19,18 @@
 @import controllers.register.company.routes._
 @import models.Mode
 @import models.register.company.CompanyDirectorAddressList
+@import utils.InputOption
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String, addresses: Seq[Address])(implicit request: Request[_], messages: Messages)
+
+@options = @{
+    for ((address, id) <- addresses.zipWithIndex) yield {
+        InputOption(id.toString, address.print)
+    }
+}
 
 @main_template(
-    title = messages("common.previousAddressList.title"),
+    title = messages("common.selectAddress.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -33,13 +40,20 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("common.previousAddressList.heading", secondaryHeaderKey = Some(directorName))
+        @components.heading("common.selectAddress.heading", secondaryHeaderKey = Some(directorName))
+
+        <p>
+            @messages("common.selectAddress.text")
+            <a id="manual-address-link" href="@DirectorAddressController.onPageLoad(mode, index)">
+                @messages(s"common.selectAddress.link")
+            </a>
+        </p>
 
         @components.input_radio(
             field = form("value"),
             legend = messages("companyDirectorAddressList.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = CompanyDirectorAddressList.options
+            inputs = options
         )
 
         @components.submit_button()

@@ -16,30 +16,35 @@
 
 package forms.register.company
 
-import forms.behaviours.OptionFieldBehaviours
+import forms.behaviours.FormBehaviours
 import models.register.company.CompanyDirectorAddressList
 import play.api.data.FormError
 
-class CompanyDirectorAddressListFormProviderSpec extends OptionFieldBehaviours {
+class CompanyDirectorAddressListFormProviderSpec extends FormBehaviours {
 
-  val form = new CompanyDirectorAddressListFormProvider()()
+  val validData: Map[String, String] = Map(
+    "value" -> "0"
+  )
 
-  ".value" must {
+  val form = new CompanyAddressListFormProvider()(Seq(0, 1))
 
-    val fieldName = "value"
-    val requiredKey = "companyDirectorAddressList.error.required"
+  "CompanyAddressListForm" must {
 
-    behave like optionsField[CompanyDirectorAddressList](
-      form,
-      fieldName,
-      validValues  = CompanyDirectorAddressList.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    behave like questionForm[Int](0)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    "fail to bind when value is omitted" in {
+      val expectedError = error("value", "common.previousAddressList.error.required")
+      checkForError(form, emptyForm, expectedError)
+    }
+
+    "fail to bind when value is negative" in {
+      val expectedError = error("value", "error.invalid", 0)
+      checkForError(form, Map("value" -> "-1"), expectedError)
+    }
+
+    "fail to bind when the value is out of bounds" in {
+      val expectedError = error("value", "error.invalid", 1)
+      checkForError(form, Map("value" -> "2"), expectedError)
+    }
   }
 }

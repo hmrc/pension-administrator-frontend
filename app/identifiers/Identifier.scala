@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 
 import scala.language.implicitConversions
 import play.api.libs.json._
-import utils.{Cleanup, JsLens}
+import utils.{Cleanup, JsLens, UserAnswers}
 
 trait Identifier {
 
