@@ -103,5 +103,8 @@ POST       /directors/:index/directorContactDetails                       contro
 GET        /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /directors/:index/changeDirectorContactDetails                       controllers.register.company.DirectorContactDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
 
+GET        /directors/:index/checkYourAnswers                       controllers.register.company.CheckYourAnswersController.onPageLoad(index: Index)
+POST        /directors/checkYourAnswers                       controllers.register.company.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
+
 GET        /companyAddress                       controllers.register.company.CompanyAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /companyAddress                       controllers.register.company.CompanyAddressController.onSubmit(mode: Mode = NormalMode)

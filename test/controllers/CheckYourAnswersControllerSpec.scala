@@ -18,13 +18,17 @@ package controllers
 
 import play.api.test.Helpers._
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
+import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CheckYourAnswersController(frontendAppConfig, messagesApi, FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl)
+  val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
+    new CheckYourAnswersController(frontendAppConfig, messagesApi, FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, checkYourAnswersFactory)
 
   "Check Your Answers Controller" must {
     "return 200 and the correct view for a GET" in {
