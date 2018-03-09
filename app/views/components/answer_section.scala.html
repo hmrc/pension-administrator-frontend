@@ -25,6 +25,6 @@
 
 <ul class="govuk-check-your-answers form-group cya-questions-short">
     @for((row, i) <- answerSection.rows.zipWithIndex){
-    @components.answer_row(row, idPath + "-" + i.toString)
+        @components.answer_row(row, idPath + "-" + i.toString)
     }
 </ul>
