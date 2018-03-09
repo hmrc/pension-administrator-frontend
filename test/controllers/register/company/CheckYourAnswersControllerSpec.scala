@@ -18,13 +18,18 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.company.CompanyDetailsId
 import models.register.company.CompanyDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
 import viewmodels.Section
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
+
+  val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(
@@ -32,7 +37,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      checkYourAnswersFactory
     )
 
   def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()

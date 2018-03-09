@@ -160,6 +160,11 @@ addCompanyDirectors.addADirector.hint = You must add all your directors. You can
 addCompanyDirectors.atMaximum = You have added the maximum number of directors.
 addCompanyDirectors.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
 
+company.checkYourAnswers.company.details.heading = Company details
+company.checkYourAnswers.company.contact.details.heading = Company contact details
+company.checkYourAnswers.contact.details.heading = Contact details
+
+
 moreThanTenDirectors.title = Do you need to tell us about other directors?
 moreThanTenDirectors.heading = Do you need to tell us about other directors?
 moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
@@ -265,3 +270,4 @@ directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
 companyAddress.title = Company address
 companyAddress.heading = Company address
+companyAddress.checkYourAnswersLabel = Company address

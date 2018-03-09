@@ -21,21 +21,48 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import viewmodels.Section
+import utils.CheckYourAnswersFactory
+import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction) extends FrontendController with I18nSupport with Retrievals {
+                                           override val messagesApi: MessagesApi,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           checkYourAnswersFactory: CheckYourAnswersFactory
+                                          ) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Ok(check_your_answers(appConfig, Seq.empty[Section], Some(Messages("site.secondary")), controllers.register.company.routes.CheckYourAnswersController.onSubmit()))
+
+      val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
+
+      val companyDetails = AnswerSection(
+        Some("company.checkYourAnswers.company.details.heading"),
+        Seq(
+          checkYourAnswerHelper.companyDetails,
+          checkYourAnswerHelper.companyRegistrationNumber,
+          checkYourAnswerHelper.companyUniqueTaxReference
+        ).flatten
+      )
+
+      val companyContactDetails = AnswerSection(
+        Some("company.checkYourAnswers.company.contact.details.heading"),
+        Seq(
+          checkYourAnswerHelper.companyAddress
+        ).flatten
+      )
+
+      Ok(check_your_answers(
+        appConfig,
+        Seq(companyDetails, companyContactDetails),
+        Some(messagesApi("site.secondaryHeader")),
+        controllers.register.company.routes.CheckYourAnswersController.onSubmit()
+      ))
   }
 
   def onSubmit: Action[AnyContent] = authenticate {

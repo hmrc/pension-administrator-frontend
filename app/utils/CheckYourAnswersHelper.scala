@@ -67,22 +67,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def addressAnswer(address: Address): Seq[String] = {
-    val country = countryOptions.options
-      .find(_.value == address.country)
-      .map(_.label)
-      .getOrElse(address.country)
-
-    Seq(
-      Some(s"${address.addressLine1},"),
-      Some(s"${address.addressLine2},"),
-      address.addressLine3.map(line3 => s"$line3,"),
-      address.addressLine4.map(line4 => s"$line4,"),
-      address.postcode.map(postcode => s"$postcode,"),
-      Some(country)
-    ).flatten
-  }
-
   def directorUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorUniqueTaxReferenceId(index)) match {
     case Some(DirectorUniqueTaxReference.Yes(utr)) => Seq(
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${DirectorUniqueTaxReference.Yes}"), true,
@@ -158,12 +142,27 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     x => AnswerRow("contactDetails.checkYourAnswersLabel", Seq(s"${x.email} ${x.phone}"), false, controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)
   }
   
-  def companyDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) map {
-    x => AnswerRow("companyDetails.checkYourAnswersLabel", Seq(s"${x.companyName} ${x.vatRegistrationNumber} ${x.payeEmployerReferenceNumber}"), false, controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
+  def companyDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) map { x =>
+    AnswerRow(
+      "companyDetails.checkYourAnswersLabel",
+      Seq(
+        x.companyName,
+        x.vatRegistrationNumber.getOrElse(""),
+        x.payeEmployerReferenceNumber.getOrElse("")
+      ),
+      false,
+      controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+    )
   }
 
   def companyAddressYears: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressYearsId) map {
     x => AnswerRow("companyAddressYears.checkYourAnswersLabel", Seq(s"companyAddressYears.$x"), true, controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)
+  }
+
+  def companyAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressId) flatMap { x =>
+    x.toAddress map { address =>
+      AnswerRow("companyAddress.checkYourAnswersLabel", addressAnswer(address), false, controllers.register.company.routes.CompanyAddressController.onPageLoad().url)
+    }
   }
 
   def companyUniqueTaxReference: Option[AnswerRow] = userAnswers.get(CompanyUniqueTaxReferenceId) map {
@@ -173,4 +172,21 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {
     x => AnswerRow("companyRegistrationNumber.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)
   }
+
+  private def addressAnswer(address: Address): Seq[String] = {
+    val country = countryOptions.options
+      .find(_.value == address.country)
+      .map(_.label)
+      .getOrElse(address.country)
+
+    Seq(
+      Some(s"${address.addressLine1},"),
+      Some(s"${address.addressLine2},"),
+      address.addressLine3.map(line3 => s"$line3,"),
+      address.addressLine4.map(line4 => s"$line4,"),
+      address.postcode.map(postcode => s"$postcode,"),
+      Some(country)
+    ).flatten
+  }
+
 }
