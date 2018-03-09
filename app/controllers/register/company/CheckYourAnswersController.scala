@@ -21,6 +21,7 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -53,13 +54,22 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       val companyContactDetails = AnswerSection(
         Some("company.checkYourAnswers.company.contact.details.heading"),
         Seq(
-          checkYourAnswerHelper.companyAddress
+          checkYourAnswerHelper.companyAddress,
+          checkYourAnswerHelper.companyAddressYears,
+          checkYourAnswerHelper.companyPreviousAddress
+        ).flatten
+      )
+
+      val contactDetails = AnswerSection(
+        Some("company.checkYourAnswers.contact.details.heading"),
+        Seq(
+          checkYourAnswerHelper.contactDetails
         ).flatten
       )
 
       Ok(check_your_answers(
         appConfig,
-        Seq(companyDetails, companyContactDetails),
+        Seq(companyDetails, companyContactDetails, contactDetails),
         Some(messagesApi("site.secondaryHeader")),
         controllers.register.company.routes.CheckYourAnswersController.onSubmit()
       ))
@@ -67,6 +77,6 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit: Action[AnyContent] = authenticate {
     implicit request =>
-      Ok
+      Redirect(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
   }
 }

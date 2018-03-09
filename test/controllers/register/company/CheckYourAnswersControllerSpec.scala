@@ -19,11 +19,12 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.CompanyDetailsId
+import models.{CheckMode, NormalMode}
 import models.register.company.CompanyDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
-import viewmodels.Section
+import viewmodels.{AnswerRow, AnswerSection, Section}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -43,13 +44,27 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()
 
-  def viewAsString() = check_your_answers(frontendAppConfig, Seq.empty[Section], Some(messages("site.secondary")), call)(fakeRequest, messages).toString
+  def viewAsString() = check_your_answers(frontendAppConfig, Seq.empty[Section], Some(messages("site.secondaryHeader")), call)(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val companyDetails = Json.obj("companyDetails" -> CompanyDetails("companyName", None, None))
+
+      val answers = AnswerSection(
+        Some("company.checkYourAnswers.company.details.heading"),
+        Seq(
+          AnswerRow(
+            "companyDetails.checkYourAnswersLabel",
+            Seq(
+              "companyName"
+            ),
+            false,
+            controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+          )
+        ).flatten
+      )
 
       val result = controller(new FakeDataRetrievalAction(Some(companyDetails))).onPageLoad(fakeRequest)
 
@@ -63,6 +78,14 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
+    }
+
+    "redirect to next page on submit" in {
+
+      val result = controller().onSubmit(fakeRequest)
+
+      redirectLocation(result) must be(Some(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url))
+
     }
   }
 }

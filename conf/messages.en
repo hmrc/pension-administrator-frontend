@@ -133,7 +133,7 @@ companyAddressYears.error.required = You must make a selection
 
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
-companyPreviousAddress.checkYourAnswersLabel = Previous Address of the Company
+companyPreviousAddress.checkYourAnswersLabel = Previous address
 
 companyPreviousAddressPostCodeLookup.title = Previous address of the company
 companyPreviousAddressPostCodeLookup.heading = Previous address of the company
