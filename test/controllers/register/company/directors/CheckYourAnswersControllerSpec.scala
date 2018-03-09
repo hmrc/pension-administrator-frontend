@@ -24,7 +24,7 @@ import models.Index
 import play.api.test.Helpers._
 import utils.{CheckYourAnswersFactory, CountryOptions, DateHelper, InputOption}
 import viewmodels.{AnswerRow, AnswerSection}
-import views.html.register.company.directors.check_your_answers
+import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
@@ -37,16 +37,18 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val answersDD: Seq[AnswerRow] = Seq(
     AnswerRow(
       "cya.label.name",
-      "test first name test last name",
+      Seq("test first name test last name"),
       false,
       "/pension-administrator/register/company/directors/1/changeDirectorDetails"
     ),
     AnswerRow(
       "cya.label.dob",
-      DateHelper.formatDate(LocalDate.now),
+      Seq(DateHelper.formatDate(LocalDate.now)),
       false,
       "/pension-administrator/register/company/directors/1/changeDirectorDetails")
   )
+
+  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
@@ -58,9 +60,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       checkYourAnswersFactory
     )
 
-  def viewAsString() = check_your_answers(frontendAppConfig, directorName,
-    Seq(AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"),answersDD),
-        AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"),Seq.empty)))(fakeRequest, messages).toString
+  def viewAsString() = check_your_answers(
+    frontendAppConfig,
+    Seq(
+      AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"),answersDD),
+      AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"),Seq.empty)
+    ),
+    Some(directorName),
+    call
+  )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
 

@@ -19,6 +19,7 @@ package views
 import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import org.scalatest.matchers.{MatchResult, Matcher}
 import play.twirl.api.{Html, HtmlFormat}
 
@@ -131,6 +132,14 @@ trait ViewSpecBase extends SpecBase {
         s"href $href is not equal to the url $url",
         s"href $href is equal to the url $url"
       )
+  }
+
+
+  def assertLink(doc: Document, linkId: String, url: String): Assertion = {
+    val link = doc.select(s"a[id=$linkId]")
+    assert(link.size() == 1, s"\n\nLink $linkId is not displayed")
+    val href = link.attr("href")
+    assert(href == url, s"\n\nLink $linkId has href $href no $url")
   }
 
 }

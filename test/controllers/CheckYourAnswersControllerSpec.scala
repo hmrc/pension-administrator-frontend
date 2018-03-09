@@ -18,6 +18,7 @@ package controllers
 
 import play.api.test.Helpers._
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
+import play.api.mvc.Call
 import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
@@ -27,14 +28,27 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
+  def call: Call = controllers.routes.CheckYourAnswersController.onSubmit()
+
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new CheckYourAnswersController(frontendAppConfig, messagesApi, FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, checkYourAnswersFactory)
+    new CheckYourAnswersController(
+      frontendAppConfig,
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      checkYourAnswersFactory
+    )
 
   "Check Your Answers Controller" must {
     "return 200 and the correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
+
       status(result) mustBe OK
-      contentAsString(result) mustBe check_your_answers(frontendAppConfig, Seq(AnswerSection(None, Seq())))(fakeRequest, messages).toString
+
+      val expectedViewContent = check_your_answers(frontendAppConfig, Seq(AnswerSection(None, Seq())), None, call)(fakeRequest, messages).toString
+
+      contentAsString(result) mustBe expectedViewContent
     }
 
     "redirect to Session Expired for a GET if not existing data is found" in {
