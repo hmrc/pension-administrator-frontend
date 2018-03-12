@@ -46,6 +46,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
         Some("company.checkYourAnswers.company.details.heading"),
         Seq(
           checkYourAnswerHelper.companyDetails,
+          checkYourAnswerHelper.vatRegistrationNumber,
+          checkYourAnswerHelper.payeEmployerReferenceNumber,
           checkYourAnswerHelper.companyRegistrationNumber,
           checkYourAnswerHelper.companyUniqueTaxReference
         ).flatten
@@ -63,7 +65,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       val contactDetails = AnswerSection(
         Some("company.checkYourAnswers.contact.details.heading"),
         Seq(
-          checkYourAnswerHelper.contactDetails
+          checkYourAnswerHelper.email,
+          checkYourAnswerHelper.phone
         ).flatten
       )
 

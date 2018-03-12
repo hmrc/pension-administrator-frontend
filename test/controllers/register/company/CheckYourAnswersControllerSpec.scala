@@ -18,13 +18,12 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.company.CompanyDetailsId
-import models.{CheckMode, NormalMode}
 import models.register.company.CompanyDetails
+import models.{CheckMode, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
-import viewmodels.{AnswerRow, AnswerSection, Section}
+import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -64,7 +63,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         Seq(
           AnswerRow(
             "companyDetails.checkYourAnswersLabel",
-            Seq(companyName, "", ""),
+            Seq(companyName),
             false,
             controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
           )

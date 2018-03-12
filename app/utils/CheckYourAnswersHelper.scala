@@ -138,21 +138,53 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     x => AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq(if(x) "site.yes" else "site.no"), true, controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(CheckMode).url)
   }
 
-  def contactDetails: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map {
-    x => AnswerRow("contactDetails.checkYourAnswersLabel", Seq(s"${x.email} ${x.phone}"), false, controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)
+  def email: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { x =>
+    AnswerRow(
+      "contactDetails.email.checkYourAnswersLabel",
+      Seq(x.email),
+      false,
+      controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url
+    )
   }
-  
+
+  def phone: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { x =>
+    AnswerRow(
+      "contactDetails.phone.checkYourAnswersLabel",
+      Seq(x.phone),
+      false,
+      controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url
+    )
+  }
+
   def companyDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) map { x =>
     AnswerRow(
       "companyDetails.checkYourAnswersLabel",
-      Seq(
-        x.companyName,
-        x.vatRegistrationNumber.getOrElse(""),
-        x.payeEmployerReferenceNumber.getOrElse("")
-      ),
+      Seq(x.companyName),
       false,
       controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
     )
+  }
+
+  def vatRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) flatMap { x =>
+    x.vatRegistrationNumber map { vatRegNo =>
+      AnswerRow(
+        "companyDetails.vatRegistrationNumber.checkYourAnswersLabel",
+        Seq(vatRegNo),
+        false,
+        controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+      )
+    }
+  }
+
+  def payeEmployerReferenceNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) flatMap { x =>
+    x.payeEmployerReferenceNumber map { payeRefNo =>
+      AnswerRow(
+        "companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel",
+        Seq(payeRefNo),
+        false,
+        controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+      )
+    }
   }
 
   def companyAddressYears: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressYearsId) map {
