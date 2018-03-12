@@ -52,6 +52,7 @@ session_expired.guidance = The details you have given have been deleted because 
 site.back = Back
 site.delete = Remove
 site.edit = Edit
+site.change = Change
 site.confirm = Confirm
 site.cancel = Cancel
 site.hidden-delete = Delete {0}
@@ -82,12 +83,13 @@ cya.label.name = Name
 cya.label.address = Address
 cya.label.dob = Date of birth
 
-contactDetails.title = PSA contact details
-contactDetails.heading = PSA contact details
+contactDetails.title = Contact details
+contactDetails.heading = Contact details
 contactDetails.email = Email address
 contactDetails.phone = Phone number
 contactDetails.body = We will use this information to contact the PSA about the schemes they manage.
-contactDetails.checkYourAnswersLabel = PSA contact details
+contactDetails.email.checkYourAnswersLabel = Email address
+contactDetails.phone.checkYourAnswersLabel = Phone number
 contactDetails.error.email.required = Enter an email address
 contactDetails.error.email.invalid = Enter a valid email address
 contactDetails.error.email.length = The email address cannot be more than 132 characters
@@ -117,6 +119,8 @@ companyDetails.companyName = Company name
 companyDetails.vatRegistrationNumber = VAT registration number (optional)
 companyDetails.payeEmployerReferenceNumber = PAYE employer reference number (optional)
 companyDetails.checkYourAnswersLabel = Company details
+companyDetails.vatRegistrationNumber.checkYourAnswersLabel = VAT registration number
+companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel = PAYE employer reference number
 companyDetails.error.companyName.required = Please give an answer for Company name
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.vatRegistrationNumber.length = The VAT Registration number cannot be more than 9 characters
@@ -133,7 +137,7 @@ companyAddressYears.error.required = You must make a selection
 
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
-companyPreviousAddress.checkYourAnswersLabel = Previous Address of the Company
+companyPreviousAddress.checkYourAnswersLabel = Previous address
 
 companyPreviousAddressPostCodeLookup.title = Previous address of the company
 companyPreviousAddressPostCodeLookup.heading = Previous address of the company
@@ -159,6 +163,11 @@ addCompanyDirectors.addADirector = Add a director
 addCompanyDirectors.addADirector.hint = You must add all your directors. You can add up to 10 using the digital service.
 addCompanyDirectors.atMaximum = You have added the maximum number of directors.
 addCompanyDirectors.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+company.checkYourAnswers.company.details.heading = Company details
+company.checkYourAnswers.company.contact.details.heading = Company contact details
+company.checkYourAnswers.contact.details.heading = Contact details
+
 
 moreThanTenDirectors.title = Do you need to tell us about other directors?
 moreThanTenDirectors.heading = Do you need to tell us about other directors?
@@ -265,3 +274,4 @@ directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
 companyAddress.title = Company address
 companyAddress.heading = Company address
+companyAddress.checkYourAnswersLabel = Address

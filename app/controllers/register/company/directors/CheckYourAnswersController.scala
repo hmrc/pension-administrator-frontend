@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.CheckYourAnswersFactory
 import viewmodels.AnswerSection
-import views.html.register.company.directors.check_your_answers
+import views.html.check_your_answers
 
 import scala.concurrent.Future
 
@@ -57,7 +57,12 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
             checkYourAnswerHelper.directorContactDetails(index.id)
         ))
 
-        Future.successful(Ok(check_your_answers(appConfig, directorName, answersSection)))
+        Future.successful(Ok(check_your_answers(
+          appConfig,
+          answersSection,
+          Some(directorName),
+          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()))
+        )
       }
   }
 

@@ -24,7 +24,26 @@ case class TolerantAddress(addressLine1: Option[String],
                            addressLine3: Option[String],
                            addressLine4: Option[String],
                            postcode: Option[String],
-                           country: Option[String])
+                           country: Option[String]) {
+
+  def toAddress: Option[Address] = {
+    for {
+      addressLine1 <- this.addressLine1
+      addressLine2 <- this.addressLine2
+      country <- this.country
+    } yield {
+      Address(
+        addressLine1,
+        addressLine2,
+        this.addressLine3,
+        this.addressLine4,
+        this.postcode,
+        country
+      )
+    }
+  }
+
+}
 
 object TolerantAddress {
 
