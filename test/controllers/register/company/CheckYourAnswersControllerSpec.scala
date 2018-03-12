@@ -44,32 +44,47 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()
 
-  def viewAsString() = check_your_answers(frontendAppConfig, Seq.empty[Section], Some(messages("site.secondaryHeader")), call)(fakeRequest, messages).toString
+  def viewAsString(answers: Seq[AnswerSection]) = check_your_answers(
+    frontendAppConfig,
+    answers,
+    Some(messages("site.secondaryHeader")),
+    call
+  )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val companyDetails = Json.obj("companyDetails" -> CompanyDetails("companyName", None, None))
+      val companyName = "companyName"
 
-      val answers = AnswerSection(
+      val companyDetailsJson = Json.obj("companyDetails" -> CompanyDetails("companyName", None, None))
+
+      val companyDetailsSection = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
         Seq(
           AnswerRow(
             "companyDetails.checkYourAnswersLabel",
-            Seq(
-              "companyName"
-            ),
+            Seq(companyName, "", ""),
             false,
             controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
           )
-        ).flatten
+        )
       )
 
-      val result = controller(new FakeDataRetrievalAction(Some(companyDetails))).onPageLoad(fakeRequest)
+      val companyContactDetails = AnswerSection(
+        Some("company.checkYourAnswers.company.contact.details.heading"),
+        Seq.empty
+      )
+
+      val contactDetails = AnswerSection(
+        Some("company.checkYourAnswers.contact.details.heading"),
+        Seq.empty
+      )
+
+      val result = controller(new FakeDataRetrievalAction(Some(companyDetailsJson))).onPageLoad(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(Seq(companyDetailsSection, companyContactDetails, contactDetails))
     }
 
     "redirect to Session Expired page" when {
