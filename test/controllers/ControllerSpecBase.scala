@@ -20,8 +20,10 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.actions.FakeDataRetrievalAction
-import identifiers.register.company.{CompanyDetailsId, DirectorDetailsId}
-import models.register.company.{CompanyDetails, DirectorDetails}
+import identifiers.register.company.CompanyDetailsId
+import identifiers.register.company.directors.DirectorDetailsId
+import models.register.company.CompanyDetails
+import models.register.company.directors.DirectorDetails
 import play.api.libs.json.Json
 
 trait ControllerSpecBase extends SpecBase {

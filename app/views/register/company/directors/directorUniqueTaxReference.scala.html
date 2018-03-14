@@ -1,0 +1,78 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.company.directors.routes
+@import models.Mode
+@import models.register.company.directors.DirectorUniqueTaxReference
+
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
+
+@options = @{
+        DirectorUniqueTaxReference.options
+}
+
+@main_template(
+    title = messages("directorUniqueTaxReference.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @helpers.form(action = routes.DirectorUniqueTaxReferenceController.onSubmit(mode, index), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.heading("directorUniqueTaxReference.heading", secondaryHeaderKey = Some(directorName))
+
+        @components.fieldSet(
+            field = form("directorUtr.hasUtr"),
+            legend = messages("directorUniqueTaxReference.heading"),
+            hint = Some(messages("directorUniqueTaxReference.hint")),
+            hiddenLegend = true
+        ){
+            @components.radio(
+                field = form("directorUtr.hasUtr"),
+                label = options.head.label,
+                value = options.head.value,
+                dataTarget = options.head.dataTarget
+            )
+
+            @components.input_text(
+                field = form("directorUtr.utr"),
+                label = messages("directorUniqueTaxReference.utr.text"),
+                groupClass = Some("js-hidden panel panel-border-narrow"),
+                hint = Some(messages("directorUniqueTaxReference.number.hint"))
+            )
+
+            @components.radio(
+                field = form("directorUtr.hasUtr"),
+                label = options(1).label,
+                value = options(1).value,
+                dataTarget = options(1).dataTarget
+            )
+
+            @components.input_text(
+                field = form("directorUtr.reason"),
+                label = messages("directorUniqueTaxReference.reason.text"),
+                groupClass = Some("js-hidden panel panel-border-narrow")
+            )
+        }
+
+        @components.submit_button()
+    }
+}

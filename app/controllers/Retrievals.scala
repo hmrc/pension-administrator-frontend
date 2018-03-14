@@ -17,8 +17,8 @@
 package controllers
 
 import identifiers.TypedIdentifier
-import identifiers.register.company.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
-import models.register.company.DirectorDetails
+import identifiers.register.company.directors.DirectorDetailsId
+import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}

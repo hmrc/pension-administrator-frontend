@@ -18,7 +18,7 @@ package forms.mappings
 
 import java.time.LocalDate
 
-import models.register.company.{DirectorNino, DirectorUniqueTaxReference}
+import models.register.company.directors.{DirectorNino, DirectorUniqueTaxReference}
 import play.api.data.Forms.{of, optional, tuple}
 import play.api.data.{FieldMapping, Mapping}
 import uk.gov.voa.play.form.ConditionalMappings._
