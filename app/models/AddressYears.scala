@@ -31,7 +31,7 @@ object AddressYears extends Enumerable.Implicits {
 
   val options: Seq[InputOption] = values.map {
     value =>
-      InputOption(value.toString, s"commonAddressYears.${value.toString}")
+      InputOption(value.toString, s"common.addressYears.${value.toString}")
   }
 
   implicit val enumerable: Enumerable[AddressYears] =
