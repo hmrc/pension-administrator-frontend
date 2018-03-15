@@ -23,17 +23,17 @@ import utils.{Enumerable, UserAnswers}
 
 class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 
-  "Cleanup" must {
+  "Cleanup" when {
 
-    val answers = UserAnswers(Json.obj())
+    val answersWithPreviousAddress = UserAnswers(Json.obj())
       .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear)
       .flatMap(_.set(DirectorPreviousAddressPostCodeLookupId(0))(Seq.empty))
       .flatMap(_.set(DirectorPreviousAddressId(0))(Address("foo", "bar", None, None, None, "GB")))
       .asOpt.value
 
-    "`AddressYears` is set to `UnderAYear`" when {
+    "`AddressYears` is set to `OverAYear`" must {
 
-      val result: UserAnswers = answers.set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
+      val result: UserAnswers = answersWithPreviousAddress.set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
 
       "remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustNot be(defined)
@@ -44,9 +44,9 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
       }
     }
 
-    "`AddressYears` is set to `OverAYear`" when {
+    "`AddressYears` is set to `UnderAYear`" must {
 
-      val result: UserAnswers = answers.set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+      val result: UserAnswers = answersWithPreviousAddress.set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustBe defined
@@ -57,9 +57,9 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
       }
     }
 
-    "`AddressYears` is removed" when {
+    "`AddressYears` is removed" must {
 
-      val result: UserAnswers = answers.remove(DirectorAddressYearsId(0)).asOpt.value
+      val result: UserAnswers = answersWithPreviousAddress.remove(DirectorAddressYearsId(0)).asOpt.value
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustBe defined
