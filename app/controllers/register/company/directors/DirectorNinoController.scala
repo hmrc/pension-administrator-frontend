@@ -24,10 +24,10 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.directors.DirectorNinoId
-import models.register.company.directors.DirectorNino
-import models.{Index, Mode}
+import models.{Index, Mode, Nino}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
@@ -46,9 +46,9 @@ class DirectorNinoController @Inject()(
                                         formProvider: DirectorNinoFormProvider
                                       ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
-  private val form: Form[DirectorNino] = formProvider()
+  private val form: Form[Nino] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorNinoId(index)) match {
@@ -61,7 +61,7 @@ class DirectorNinoController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         form.bindFromRequest().fold(
@@ -69,7 +69,7 @@ class DirectorNinoController @Inject()(
             Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
           (value) =>
             dataCacheConnector.save(request.externalId, DirectorNinoId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorNinoId(index), mode)(new UserAnswers(json))))
+              Redirect(navigator.nextPage(DirectorNinoId(index), mode)(UserAnswers(json))))
         )
       }
   }

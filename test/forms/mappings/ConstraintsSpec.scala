@@ -16,31 +16,34 @@
 
 package forms.mappings
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
+import utils.{CountryOptions, InputOption}
 
-class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with RegexBehaviourSpec {
+class ConstraintsSpec extends WordSpec with Matchers with Constraints with RegexBehaviourSpec {
+
+  // scalastyle:off magic.number
 
   "firstError" must {
 
     "return Valid when all constraints pass" in {
       val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("foo")
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Invalid when the first constraint fails" in {
       val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("a" * 11)
-      result mustEqual Invalid("error.length", 10)
+      result shouldEqual Invalid("error.length", 10)
     }
 
     "return Invalid when the second constraint fails" in {
       val result = firstError(maxLength(10, "error.length"), regexp("""^\w+$""", "error.regexp"))("")
-      result mustEqual Invalid("error.regexp", """^\w+$""")
+      result shouldEqual Invalid("error.regexp", """^\w+$""")
     }
 
     "return Invalid for the first error when both constraints fail" in {
       val result = firstError(maxLength(-1, "error.length"), regexp("""^\w+$""", "error.regexp"))("")
-      result mustEqual Invalid("error.length", -1)
+      result shouldEqual Invalid("error.length", -1)
     }
   }
 
@@ -48,17 +51,17 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     "return Valid for a number greater than the threshold" in {
       val result = minimumValue(1, "error.min").apply(2)
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Valid for a number equal to the threshold" in {
       val result = minimumValue(1, "error.min").apply(1)
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Invalid for a number below the threshold" in {
       val result = minimumValue(1, "error.min").apply(0)
-      result mustEqual Invalid("error.min", 1)
+      result shouldEqual Invalid("error.min", 1)
     }
   }
 
@@ -66,17 +69,17 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     "return Valid for a number less than the threshold" in {
       val result = maximumValue(1, "error.max").apply(0)
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Valid for a number equal to the threshold" in {
       val result = maximumValue(1, "error.max").apply(1)
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Invalid for a number above the threshold" in {
       val result = maximumValue(1, "error.max").apply(2)
-      result mustEqual Invalid("error.max", 1)
+      result shouldEqual Invalid("error.max", 1)
     }
   }
 
@@ -84,12 +87,12 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     "return Valid for an input that matches the expression" in {
       val result = regexp("""^\w+$""", "error.invalid")("foo")
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Invalid for an input that does not match the expression" in {
       val result = regexp("""^\d+$""", "error.invalid")("foo")
-      result mustEqual Invalid("error.invalid", """^\d+$""")
+      result shouldEqual Invalid("error.invalid", """^\d+$""")
     }
   }
 
@@ -97,22 +100,22 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     "return Valid for a string shorter than the allowed length" in {
       val result = maxLength(10, "error.length")("a" * 9)
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Valid for an empty string" in {
       val result = maxLength(10, "error.length")("")
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Valid for a string equal to the allowed length" in {
       val result = maxLength(10, "error.length")("a" * 10)
-      result mustEqual Valid
+      result shouldEqual Valid
     }
 
     "return Invalid for a string longer than the allowed length" in {
       val result = maxLength(10, "error.length")("a" * 11)
-      result mustEqual Invalid("error.length", 10)
+      result shouldEqual Invalid("error.length", 10)
     }
   }
 
@@ -121,20 +124,24 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
     val validCrn = Table(
       "crn",
       "1234567",
-      "A123456",
-      "AB123456"
+      "12345678",
+      "ABCDEFG",
+      "ABCDEFGH",
+      "A1B2C3D",
+      "A1B2C3D4"
     )
 
     val invalidCrn = Table(
       "crn",
       "123456",
-      "12345678",
-      "ABC123456"
+      "123456789",
+      "ABCDEF",
+      "ABCDEFGHI"
     )
 
     val invalidMsg = "companyRegistrationNumber.error.invalid"
 
-    behave like regexWithValidAndInvalidExamples(companyRegistrationNumber, validCrn, invalidCrn, invalidMsg, crn)
+    behave like regexWithValidAndInvalidExamples(companyRegistrationNumber, validCrn, invalidCrn, invalidMsg, crnRegex)
 
   }
 
@@ -156,7 +163,7 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     val invalidMsg = "companyUniqueTaxReference.error.invalid"
 
-    behave like regexWithValidAndInvalidExamples(companyUniqueTaxReference, validUtr, invalidUtr, invalidMsg, utr)
+    behave like regexWithValidAndInvalidExamples(uniqueTaxReference, validUtr, invalidUtr, invalidMsg, utrRegex)
   }
 
   "vatRgistrationNumber" must {
@@ -176,30 +183,31 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     val invalidMsg = "vatRgistrationNumber.error.invalid"
 
-    behave like regexWithValidAndInvalidExamples(vatRgistrationNumber, validVat, invalidVat, invalidMsg, vat)
+    behave like regexWithValidAndInvalidExamples(vatRegistrationNumber, validVat, invalidVat, invalidMsg, vatRegex)
   }
 
   "payeEmployerReferenceNumber" must {
 
     val validPaye = Table(
       "paye",
-      "1",
-      "A",
-      "1234567890123",
-      "1234567890ABC",
-      "ABCDEFGHIJKLM"
+      "123A",
+      "123abcdefghijklm",
+      "123ABCDEFGHIJKLM",
+      "0001234567890123",
+      "121AB45CD67QWERT"
     )
 
     val invalidPaye = Table(
       "paye",
-      "12345678901234",
-      "1234567890ABCD",
-      "A1._-"
+      "123",
+      "123abcdefghijklmN",
+      "12abcdefghijklm",
+      "123***?."
     )
 
     val invalidMsg = "payeEmployerReferenceNumber.error.invalid"
 
-    behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, paye)
+    behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, payeRegex)
   }
 
 
@@ -221,20 +229,20 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     val invalidMsg = "contactDetails.error.email.valid"
 
-    behave like regexWithValidAndInvalidExamples(emailAddress, validEmail, invalidEmail, invalidMsg, email)
+    behave like regexWithValidAndInvalidExamples(emailAddress, validEmail, invalidEmail, invalidMsg, emailRegex)
   }
 
-  "wholeNumber" must {
+  "phoneNumber" must {
 
     val validNumber = Table(
-      "wholeNumber",
+      "phoneNumber",
       "1",
       "99999999999999999999999",
       "123456"
     )
 
     val invalidNumber = Table(
-      "wholeNumber",
+      "phoneNumber",
       "324234.23432423",
       "123@23",
       "@@@@@@"
@@ -242,7 +250,7 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     val invalidMsg = "Invalid test"
 
-    behave like regexWithValidAndInvalidExamples(wholeNumber, validNumber, invalidNumber, invalidMsg, number)
+    behave like regexWithValidAndInvalidExamples(phoneNumber, validNumber, invalidNumber, invalidMsg, phoneNumberRegex)
   }
 
   "postCode" must {
@@ -252,17 +260,17 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
       "A12 1AB",
       "AB12 1AB",
       "AB1A 1AB",
-      "AB121AB"
+      "AB121AB",
+      "aB12 1AB",
+      "Ab12 1AB",
+      "AB1a 1AB"
     )
 
     val invalidPostCode = Table(
       "postCode",
-      "aB12 1AB",
-      "Ab12 1AB",
       "0B12 1AB",
       "A012 1AB",
       "ABC2 1AB",
-      "AB1a 1AB",
       "AB12 AAB",
       "AB12 11B",
       "AB12 1A1"
@@ -270,7 +278,29 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
 
     val invalidMsg = "Invalid post code"
 
-    behave like regexWithValidAndInvalidExamples(postalCode, validPostCode, invalidPostCode, invalidMsg, postcode)
+    behave like regexWithValidAndInvalidExamples(postCode, validPostCode, invalidPostCode, invalidMsg, postCodeRegex)
+  }
+
+  "postCodeNonUk" must {
+
+    val validPostCode = Table(
+      "postCode",
+      "1",
+      "1234567890",
+      "1-2-3"
+    )
+
+    val invalidPostCode = Table(
+      "postCode",
+      "-",
+      "-1",
+      "1-"
+    )
+
+    val invalidMsg = "Invalid post code"
+
+    behave like regexWithValidAndInvalidExamples(postCodeNonUk, validPostCode, invalidPostCode, invalidMsg, postCodeNonUkRegex)
+
   }
 
   "name" must {
@@ -278,11 +308,7 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
     val validName = Table(
       "name",
       "A",
-      "A_",
-      "A1",
-      "a",
-      "a_",
-      "a1"
+      "a"
     )
 
     val invalidName = Table(
@@ -298,6 +324,65 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints with R
     val invalidMsg = "Invalid name"
 
     behave like regexWithValidAndInvalidExamples(name, validName, invalidName, invalidMsg, nameRegex)
+  }
+
+  "addressLine" must {
+
+    val validAddress = Table(
+      "address",
+      "1 Main St."
+    )
+
+    val invalidAddress = Table(
+      "address",
+      "Apt [12]"
+    )
+
+    val invalidMsg = "Invalid address"
+
+    behave like regexWithValidAndInvalidExamples(addressLine, validAddress, invalidAddress, invalidMsg, addressLineRegex)
+
+  }
+
+  "safeText" must {
+
+    val validText = Table(
+      "text",
+      "some valid text"
+    )
+
+    val invalidText = Table(
+      "text",
+      "[invalid text]"
+    )
+
+    val invalidMsg = "Invalid text"
+
+    behave like regexWithValidAndInvalidExamples(safeText, validText, invalidText, invalidMsg, safeTextRegex)
+
+  }
+
+  "country" must {
+
+    val keyInvalid = "error.invalid"
+
+    val countryOptions: CountryOptions = new CountryOptions(
+      Seq(
+        InputOption("GB", "United Kingdom"),
+        InputOption("PN", "Ponteland")
+      )
+    )
+
+    "return valid when the country code exists" in {
+      val result = country(countryOptions, keyInvalid).apply("GB")
+      result shouldBe Valid
+    }
+
+    "return invalid when the country code does not exist" in {
+      val result = country(countryOptions, keyInvalid).apply("XXX")
+      result shouldBe Invalid(keyInvalid)
+    }
+
   }
 
 }

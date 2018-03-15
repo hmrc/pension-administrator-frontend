@@ -23,6 +23,7 @@ import forms.mappings.Constraints
 import models.register.company.directors.DirectorDetails
 import org.scalatest.Matchers
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
 
@@ -43,7 +44,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsStartingAlphaWithMaxLength(maxLength)
+      RegexpGen.from(nameRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -92,7 +93,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsStartingAlphaWithMaxLength(maxLength)
+      RegexpGen.from(nameRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -137,7 +138,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsStartingAlphaWithMaxLength(maxLength)
+      RegexpGen.from(nameRegex)
     )
 
     behave like fieldWithMaxLength(

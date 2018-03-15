@@ -18,9 +18,7 @@ package utils
 
 import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
-import models.register.company.directors.DirectorNino.{No, Yes}
-import models.register.company.directors.{DirectorNino, DirectorUniqueTaxReference}
-import models.{Address, CheckMode}
+import models.{Address, CheckMode, UniqueTaxReference, Nino}
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
@@ -69,15 +67,15 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   }
 
   def directorUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorUniqueTaxReferenceId(index)) match {
-    case Some(DirectorUniqueTaxReference.Yes(utr)) => Seq(
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${DirectorUniqueTaxReference.Yes}"), true,
+    case Some(UniqueTaxReference.Yes(utr)) => Seq(
+      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.Yes}"), true,
         controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.utr", Seq(utr), true,
         controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
     )
 
-    case Some(DirectorUniqueTaxReference.No(reason)) => Seq(
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${DirectorUniqueTaxReference.No}"), true,
+    case Some(UniqueTaxReference.No(reason)) => Seq(
+      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.No}"), true,
         controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.reason", Seq(reason), true,
         controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
@@ -102,15 +100,15 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   }
 
   def directorNino(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorNinoId(index)) match {
-    case Some(Yes(nino)) => Seq(
-      AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${DirectorNino.Yes}"), true,
+    case Some(Nino.Yes(nino)) => Seq(
+      AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${Nino.Yes}"), true,
         controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorNino.checkYourAnswersLabel.nino", Seq(nino), true,
         controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)
     )
 
-    case Some(No(reason)) => Seq(
-      AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${DirectorNino.No}"), true,
+    case Some(Nino.No(reason)) => Seq(
+      AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${Nino.No}"), true,
         controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url),
       AnswerRow("directorNino.checkYourAnswersLabel.reason", Seq(reason), true,
         controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url)

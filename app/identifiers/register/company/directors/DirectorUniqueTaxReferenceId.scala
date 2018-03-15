@@ -17,10 +17,10 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.directors.DirectorUniqueTaxReference
+import models.UniqueTaxReference
 import play.api.libs.json.JsPath
 
-case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[DirectorUniqueTaxReference] {
+case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[UniqueTaxReference] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorUniqueTaxReferenceId.toString
 }
 

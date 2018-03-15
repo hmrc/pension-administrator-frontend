@@ -30,14 +30,14 @@ import models.{Address, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CountryOptions, FakeNavigator, InputOption}
+import utils.{CountryOptions, FakeCountryOptions, FakeNavigator, InputOption}
 import views.html.register.company.directors.directorPreviousAddress
 
 class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AddressFormProvider()
+  val formProvider = new AddressFormProvider(FakeCountryOptions())
   val form = formProvider()
   val index = Index(0)
   val directorName = "test first name test middle name test last name"
@@ -90,7 +90,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
     "redirect to the next page" when {
       "valid data is submitted with country as GB" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("addressLine1", "test address line 1"), ("addressLine2", "test address line 2"),
-          ("postCode.postCode", "NE1 1NE"),
+          ("postCode", "NE1 1NE"),
           "country" -> "GB"
         )
 

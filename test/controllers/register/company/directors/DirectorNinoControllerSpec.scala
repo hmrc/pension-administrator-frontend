@@ -25,8 +25,8 @@ import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorNinoId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.{DirectorDetails, DirectorNino}
-import models.{Index, NormalMode}
+import models.register.company.directors.DirectorDetails
+import models.{Index, Nino, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -51,7 +51,7 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorNinoId.toString ->
-          DirectorNino.Yes("CS700100A")
+          Nino.Yes("CS700100A")
       ),
       Json.obj(
         DirectorDetailsId.toString ->
@@ -81,12 +81,12 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorNino.Yes("CS700100A")))
+      contentAsString(result) mustBe viewAsString(form.fill(Nino.Yes("CS700100A")))
     }
 
     "redirect to the next page" when {
       "valid data is submitted and yes is selected" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorNino.hasNino", "true"), ("directorNino.nino", "CS700100A"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("nino.hasNino", "true"), ("nino.nino", "CS700100A"))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 
@@ -95,7 +95,7 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
       }
 
       "valid data is submitted and no is selected" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorNino.hasNino", "false"), ("directorNino.reason", "test reason"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("nino.hasNino", "false"), ("nino.reason", "test reason"))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 
@@ -125,7 +125,7 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
 
         "POST" in {
 
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DirectorNino.options.head.value))
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", Nino.options.head.value))
           val result = controller(dontGetAnyData).onSubmit(NormalMode, index)(postRequest)
 
           status(result) mustBe SEE_OTHER

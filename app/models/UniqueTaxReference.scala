@@ -14,44 +14,46 @@
  * limitations under the License.
  */
 
-package models.register.company.directors
+package models
 
 import play.api.libs.json._
 import utils.InputOption
 
-sealed trait DirectorUniqueTaxReference
+sealed trait UniqueTaxReference
 
-object DirectorUniqueTaxReference {
+object UniqueTaxReference {
 
-  case class Yes(utr: String) extends DirectorUniqueTaxReference
-  case class No(reason: String) extends DirectorUniqueTaxReference
+  case class Yes(utr: String) extends UniqueTaxReference
+  case class No(reason: String) extends UniqueTaxReference
 
   val options: Seq[InputOption] = Seq(
-      InputOption("true", "site.yes", Some("directorUtr_utr-form")),
-      InputOption("false", "site.no", Some("directorUtr_reason-form"))
+      InputOption("true", "site.yes", Some("utr_utr-form")),
+      InputOption("false", "site.no", Some("utr_reason-form"))
   )
 
-  implicit val reads: Reads[DirectorUniqueTaxReference] = {
+  implicit val reads: Reads[UniqueTaxReference] = {
     (JsPath \ "hasUtr").read[Boolean].flatMap {
       case true =>
         (JsPath \ "utr").read[String]
-          .map[DirectorUniqueTaxReference](Yes.apply)
-          .orElse(Reads[DirectorUniqueTaxReference](_ => JsError("Director UTR expected")))
+          .map[UniqueTaxReference](Yes.apply)
+          .orElse(Reads[UniqueTaxReference](_ => JsError("UTR expected")))
       case false =>
         (JsPath \ "reason").read[String]
-          .map[DirectorUniqueTaxReference](No.apply)
-          .orElse(Reads[DirectorUniqueTaxReference](_ => JsError("Reason expected")))
+          .map[UniqueTaxReference](No.apply)
+          .orElse(Reads[UniqueTaxReference](_ => JsError("Reason expected")))
     }
   }
 
-  implicit lazy val writes = new Writes[DirectorUniqueTaxReference] {
-    def writes(directorUtr: DirectorUniqueTaxReference) = {
+  //noinspection ConvertExpressionToSAM
+  implicit lazy val writes: Writes[UniqueTaxReference] = new Writes[UniqueTaxReference] {
+    def writes(directorUtr: UniqueTaxReference): JsObject = {
       directorUtr match {
-        case DirectorUniqueTaxReference.Yes(utr) =>
+        case UniqueTaxReference.Yes(utr) =>
           Json.obj("hasUtr" -> true, "utr" -> utr)
-        case DirectorUniqueTaxReference.No(reason) =>
+        case UniqueTaxReference.No(reason) =>
           Json.obj("hasUtr" -> false, "reason" -> reason)
       }
     }
   }
+
 }
