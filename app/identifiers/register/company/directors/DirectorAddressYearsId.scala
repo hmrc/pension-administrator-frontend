@@ -17,10 +17,10 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.directors.DirectorAddressYears
+import models.AddressYears
 import play.api.libs.json.JsPath
 
-case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[DirectorAddressYears] {
+case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[AddressYears] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorAddressYearsId.toString
 }
 

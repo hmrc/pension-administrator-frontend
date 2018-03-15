@@ -16,10 +16,9 @@
 
 package views.register.company
 
-import play.api.data.Form
 import forms.register.company.CompanyAddressYearsFormProvider
-import models.NormalMode
-import models.register.company.CompanyAddressYears
+import models.{AddressYears, NormalMode}
+import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyAddressYears
 
@@ -45,19 +44,19 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
     "rendered" must {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
-        for (option <- CompanyAddressYears.options) {
+        for (option <- AddressYears.options) {
           assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, false)
         }
       }
     }
 
-    for(option <- CompanyAddressYears.options) {
+    for(option <- AddressYears.options) {
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
           assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, true)
 
-          for(unselectedOption <- CompanyAddressYears.options.filterNot(o => o == option)) {
+          for(unselectedOption <- AddressYears.options.filterNot(o => o == option)) {
             assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, false)
           }
         }

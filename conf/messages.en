@@ -75,6 +75,10 @@ common.error.nino.invalid = Enter a valid National Insurance number in the forma
 common.previousAddressList.title = Select the previous address
 common.previousAddressList.heading = Select the previous address
 common.previousAddressList.error.required = Select an address
+common.addressYears.underAYear = Less than 12 months
+common.addressYears.overAYear = More than 12 months
+
+
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -130,8 +134,6 @@ companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE nu
 
 companyAddressYears.title = How long has the company been at this address?
 companyAddressYears.heading = How long has the company been at this address?
-companyAddressYears.underAYear = Less than 12 months
-companyAddressYears.overAYear = More than 12 months
 companyAddressYears.checkYourAnswersLabel = How long has the company been at this address?
 companyAddressYears.error.required = You must make a selection
 
@@ -249,8 +251,6 @@ directorPreviousAddressPostCodeLookup.submit.button = Find address
 
 directorAddressYears.title = How long has the director lived at this address?
 directorAddressYears.heading = How long has the director lived at this address?
-directorAddressYears.less_than_twelve = 12 months or less
-directorAddressYears.more_than_twelve = More than 12 months
 directorAddressYears.checkYourAnswersLabel = How long has the director lived at this address?
 directorAddressYears.error.required = Select how long they have been at the current address
 

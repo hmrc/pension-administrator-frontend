@@ -17,7 +17,7 @@
 package forms.register.company
 
 import forms.behaviours.OptionFieldBehaviours
-import models.register.company.CompanyAddressYears
+import models.AddressYears
 import play.api.data.FormError
 
 class CompanyAddressYearsFormProviderSpec extends OptionFieldBehaviours {
@@ -29,10 +29,10 @@ class CompanyAddressYearsFormProviderSpec extends OptionFieldBehaviours {
     val fieldName = "value"
     val requiredKey = "companyAddressYears.error.required"
 
-    behave like optionsField[CompanyAddressYears](
+    behave like optionsField[AddressYears](
       form,
       fieldName,
-      validValues  = CompanyAddressYears.values,
+      validValues  = AddressYears.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

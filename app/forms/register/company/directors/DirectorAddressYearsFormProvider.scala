@@ -20,13 +20,13 @@ import javax.inject.Inject
 
 import forms.FormErrorHelper
 import forms.mappings.Mappings
-import models.register.company.directors.DirectorAddressYears
+import models.AddressYears
 import play.api.data.Form
 
 class DirectorAddressYearsFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[DirectorAddressYears] =
+  def apply(): Form[AddressYears] =
     Form(
-      "value" -> enumerable[DirectorAddressYears]("directorAddressYears.error.required")
+      "value" -> enumerable[AddressYears]("directorAddressYears.error.required")
     )
 }

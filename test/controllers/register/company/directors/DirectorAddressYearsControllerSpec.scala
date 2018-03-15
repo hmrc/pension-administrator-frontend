@@ -25,8 +25,8 @@ import forms.register.company.directors.DirectorAddressYearsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.{DirectorAddressYears, DirectorDetails}
-import models.{Index, NormalMode}
+import models.register.company.directors.DirectorDetails
+import models.{AddressYears, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -51,7 +51,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorAddressYearsId.toString ->
-          DirectorAddressYears.options.head.value.toString
+          AddressYears.options.head.value.toString
       ),
       Json.obj(
         DirectorDetailsId.toString ->
@@ -78,12 +78,12 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorAddressYears.values.head))
+      contentAsString(result) mustBe viewAsString(form.fill(AddressYears.values.head))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DirectorAddressYears.options.head.value))
 
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
       val result = controller().onSubmit(NormalMode, index)(postRequest)
 
       status(result) mustBe SEE_OTHER
@@ -108,7 +108,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DirectorAddressYears.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
       val result = controller(dontGetAnyData).onSubmit(NormalMode, index)(postRequest)
 
       status(result) mustBe SEE_OTHER

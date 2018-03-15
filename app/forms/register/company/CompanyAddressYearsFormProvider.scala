@@ -17,15 +17,16 @@
 package forms.register.company
 
 import javax.inject.Inject
+
 import forms.FormErrorHelper
 import forms.mappings.Mappings
+import models.AddressYears
 import play.api.data.Form
-import models.register.company.CompanyAddressYears
 
 class CompanyAddressYearsFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[CompanyAddressYears] =
+  def apply(): Form[AddressYears] =
     Form(
-      "value" -> enumerable[CompanyAddressYears]("companyAddressYears.error.required")
+      "value" -> enumerable[AddressYears]("companyAddressYears.error.required")
     )
 }

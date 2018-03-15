@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package models.register.company.directors
+package models
 
 import utils.{Enumerable, InputOption, WithName}
 
-sealed trait DirectorAddressYears
+sealed trait AddressYears
 
-object DirectorAddressYears extends Enumerable.Implicits {
+object AddressYears extends Enumerable.Implicits {
 
-  case object LessThanTwelve extends WithName("less_than_twelve") with DirectorAddressYears
-  case object MoreThanTwelve extends WithName("more_than_twelve") with DirectorAddressYears
+  case object UnderAYear extends WithName("underAYear") with AddressYears
+  case object OverAYear extends WithName("overAYear") with AddressYears
 
-  val values: Seq[DirectorAddressYears] = Seq(
-    LessThanTwelve, MoreThanTwelve
+  val values: Seq[AddressYears] = Seq(
+    UnderAYear, OverAYear
   )
 
   val options: Seq[InputOption] = values.map {
     value =>
-      InputOption(value.toString, s"directorAddressYears.${value.toString}")
+      InputOption(value.toString, s"commonAddressYears.${value.toString}")
   }
 
-  implicit val enumerable: Enumerable[DirectorAddressYears] =
+  implicit val enumerable: Enumerable[AddressYears] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

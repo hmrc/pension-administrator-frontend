@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
 @import models.Mode
-@import models.register.company.CompanyAddressYears
+@import models.AddressYears
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
@@ -39,7 +39,7 @@
             field = form("value"),
             legend = messages("companyAddressYears.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = CompanyAddressYears.options
+            inputs = AddressYears.options
         )
 
         @components.submit_button()
