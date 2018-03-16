@@ -24,8 +24,9 @@ import controllers.actions._
 import config.FrontendAppConfig
 import identifiers.register.individual.WhatYouWillNeedId
 import models.NormalMode
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
@@ -35,13 +36,14 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       Ok(whatYouWillNeed(appConfig))
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
-      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
+      val userAnswers = request.userAnswers.getOrElse(new UserAnswers(Json.obj()))
+      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(userAnswers))
   }
 }
