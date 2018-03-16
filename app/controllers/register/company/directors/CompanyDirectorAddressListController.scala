@@ -28,6 +28,7 @@ import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.companyDirectorAddressList
 
@@ -37,7 +38,7 @@ class CompanyDirectorAddressListController @Inject()(
                                                       appConfig: FrontendAppConfig,
                                                       override val messagesApi: MessagesApi,
                                                       dataCacheConnector: DataCacheConnector,
-                                                      navigator: Navigator,
+                                                      @CompanyDirector navigator: Navigator,
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
@@ -57,13 +58,13 @@ class CompanyDirectorAddressListController @Inject()(
     implicit request =>
       (DirectorDetailsId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
         case (directorDetails ~ addresses) =>
-        formProvider(addresses).bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, directorDetails.fullName, addresses))),
-          (value) =>
-            dataCacheConnector.save(request.externalId, CompanyDirectorAddressListId(index), addresses(value).copy(country = "GB")).map(cacheMap =>
-              Redirect(navigator.nextPage(CompanyDirectorAddressListId(index), mode)(new UserAnswers(cacheMap))))
-        )
+          formProvider(addresses).bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, directorDetails.fullName, addresses))),
+            (value) =>
+              dataCacheConnector.save(request.externalId, CompanyDirectorAddressListId(index), addresses(value).copy(country = "GB")).map(cacheMap =>
+                Redirect(navigator.nextPage(CompanyDirectorAddressListId(index), mode)(new UserAnswers(cacheMap))))
+          )
       }.left.map(_ => Future.successful(Redirect(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))
   }
 }

@@ -28,21 +28,22 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.directors.directorDetails
 
 import scala.concurrent.Future
 
-class DirectorDetailsController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: DirectorDetailsFormProvider
-                                      ) extends FrontendController with I18nSupport {
+class DirectorDetailsController @Inject()(
+                                           appConfig: FrontendAppConfig,
+                                           override val messagesApi: MessagesApi,
+                                           dataCacheConnector: DataCacheConnector,
+                                           @CompanyDirector navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: DirectorDetailsFormProvider
+                                         ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
@@ -63,7 +64,7 @@ class DirectorDetailsController @Inject() (
         (value) =>
           dataCacheConnector.save(request.externalId, DirectorDetailsId(index), value).map(cacheMap =>
             Redirect(navigator.nextPage(DirectorDetailsId(index), mode)(UserAnswers(cacheMap))))
-    )
+      )
   }
 
 }

@@ -29,28 +29,30 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.directors.companyDirectorAddressPostCodeLookup
 
 import scala.concurrent.Future
 
-class CompanyDirectorAddressPostCodeLookupController @Inject() (
-                                                                 appConfig: FrontendAppConfig,
-                                                                 override val messagesApi: MessagesApi,
-                                                                 dataCacheConnector: DataCacheConnector,
-                                                                 addressLookupConnector: AddressLookupConnector,
-                                                                 navigator: Navigator,
-                                                                 authenticate: AuthAction,
-                                                                 getData: DataRetrievalAction,
-                                                                 requireData: DataRequiredAction,
-                                                                 formProvider: CompanyDirectorAddressPostCodeLookupFormProvider
-                                                               ) extends FrontendController with Retrievals with I18nSupport {
+class CompanyDirectorAddressPostCodeLookupController @Inject()(
+                                                                appConfig: FrontendAppConfig,
+                                                                override val messagesApi: MessagesApi,
+                                                                dataCacheConnector: DataCacheConnector,
+                                                                addressLookupConnector: AddressLookupConnector,
+                                                                @CompanyDirector navigator: Navigator,
+                                                                authenticate: AuthAction,
+                                                                getData: DataRetrievalAction,
+                                                                requireData: DataRequiredAction,
+                                                                formProvider: CompanyDirectorAddressPostCodeLookupFormProvider
+                                                              ) extends FrontendController with Retrievals with I18nSupport {
 
   private val form = formProvider()
 
   def formWithError(messageKey: String): Form[String] = {
     form.withError("value", messageKey)
   }
+
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>

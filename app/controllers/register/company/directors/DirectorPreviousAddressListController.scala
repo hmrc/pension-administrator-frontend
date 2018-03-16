@@ -28,6 +28,7 @@ import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorPreviousAddressList
 
@@ -37,7 +38,7 @@ class DirectorPreviousAddressListController @Inject()(
                                                        appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
                                                        dataCacheConnector: DataCacheConnector,
-                                                       navigator: Navigator,
+                                                       @CompanyDirector navigator: Navigator,
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
@@ -70,7 +71,7 @@ class DirectorPreviousAddressListController @Inject()(
                   request.externalId,
                   DirectorPreviousAddressListId(index),
                   addresses(value).copy(country = "GB")
-                ).map( cacheMap =>
+                ).map(cacheMap =>
                   Redirect(navigator.nextPage(DirectorPreviousAddressListId(index), mode)(new UserAnswers(cacheMap)))
                 )
             )

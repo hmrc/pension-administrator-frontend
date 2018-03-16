@@ -32,11 +32,11 @@ import views.html.check_your_answers
 import scala.concurrent.Future
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with Retrievals with I18nSupport {
+                                           override val messagesApi: MessagesApi,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -49,13 +49,13 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
               checkYourAnswerHelper.directorNino(index.id) ++
               checkYourAnswerHelper.directorUniqueTaxReference(index.id)
           ),
-        AnswerSection(
-          Some("directorCheckYourAnswers.contactDetails.heading"),
-          checkYourAnswerHelper.directorAddress(index.id) ++
-            checkYourAnswerHelper.directorAddressYears(index.id) ++
-            checkYourAnswerHelper.directorPreviousAddress(index.id) ++
-            checkYourAnswerHelper.directorContactDetails(index.id)
-        ))
+          AnswerSection(
+            Some("directorCheckYourAnswers.contactDetails.heading"),
+            checkYourAnswerHelper.directorAddress(index.id) ++
+              checkYourAnswerHelper.directorAddressYears(index.id) ++
+              checkYourAnswerHelper.directorPreviousAddress(index.id) ++
+              checkYourAnswerHelper.directorContactDetails(index.id)
+          ))
 
         Future.successful(Ok(check_your_answers(
           appConfig,

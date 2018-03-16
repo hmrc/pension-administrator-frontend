@@ -28,22 +28,23 @@ import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{CountryOptions, Navigator, UserAnswers}
 import views.html.register.company.directors.directorAddress
 
 import scala.concurrent.Future
 
 class DirectorAddressController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AddressFormProvider,
-                                        countryOptions: CountryOptions
-                                      ) extends FrontendController with I18nSupport with Retrievals {
+                                           appConfig: FrontendAppConfig,
+                                           override val messagesApi: MessagesApi,
+                                           dataCacheConnector: DataCacheConnector,
+                                           @CompanyDirector navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: AddressFormProvider,
+                                           countryOptions: CountryOptions
+                                         ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
