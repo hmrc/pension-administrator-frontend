@@ -19,25 +19,70 @@ package utils
 import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.Call
-import controllers.routes
 import identifiers._
+import identifiers.register.company.AddCompanyDirectorsId
+import controllers.register.company.directors.routes
+import identifiers.register.company.directors._
+import models.register.company.directors.{DirectorAddressYears, DirectorNino}
 import models.{CheckMode, Mode, NormalMode}
 
 @Singleton
 class Navigator @Inject()() {
 
-  private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
+  private val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
+    case DirectorDetailsId(id) => _ => routes.DirectorNinoController.onPageLoad(NormalMode, id)
+    case DirectorNinoId(id) => _ => routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, id)
+    case DirectorUniqueTaxReferenceId(id) => _ => routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, id)
+    case CompanyDirectorAddressPostCodeLookupId(id) => _ => routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, id)
+    case CompanyDirectorAddressListId(id) => _ => routes.DirectorAddressController.onPageLoad(NormalMode, id)
+    case DirectorAddressId(id) => _ => routes.DirectorAddressYearsController.onPageLoad(NormalMode, id)
+    case DirectorAddressYearsId(id) => directorAddressYearsRoutes(id)
+    case DirectorPreviousAddressPostCodeLookupId(id) => _ => routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, id)
+    case DirectorPreviousAddressListId(id) => _ => routes.DirectorPreviousAddressController.onPageLoad(NormalMode, id)
+    case DirectorPreviousAddressId(id) => _ => routes.DirectorContactDetailsController.onPageLoad(NormalMode, id)
+    case DirectorContactDetailsId(id) => _ => controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(id)
+  }
 
-  )
-
-  private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
-
-  )
+  private val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
+    case DirectorDetailsId(id) => _ => routes.CheckYourAnswersController.onPageLoad(id)
+    case DirectorNinoId(id) => _ => routes.CheckYourAnswersController.onPageLoad(id)
+    case DirectorUniqueTaxReferenceId(id) => _ => routes.CheckYourAnswersController.onPageLoad(id)
+    case CompanyDirectorAddressPostCodeLookupId(id) => _ => routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, id)
+    case CompanyDirectorAddressListId(id) => _ => routes.DirectorAddressController.onPageLoad(CheckMode, id)
+    case DirectorAddressId(id) => _ => routes.CheckYourAnswersController.onPageLoad(id)
+    case DirectorAddressYearsId(id) => directorAddressYearsCheckRoutes(id)
+    case DirectorPreviousAddressPostCodeLookupId(id) => _ => routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, id)
+    case DirectorPreviousAddressListId(id) => _ => routes.DirectorPreviousAddressController.onPageLoad(CheckMode, id)
+    case DirectorPreviousAddressId(id) => _ => routes.CheckYourAnswersController.onPageLoad(id)
+    case DirectorContactDetailsId(id) => _ => routes.CheckYourAnswersController.onPageLoad(id)
+  }
 
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call = mode match {
     case NormalMode =>
-      routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())
+      routeMap.lift(id).getOrElse(_ => controllers.routes.IndexController.onPageLoad())
     case CheckMode =>
-      editRouteMap.getOrElse(id, _ => routes.CheckYourAnswersController.onPageLoad())
+      editRouteMap.lift(id).getOrElse(_ => controllers.routes.CheckYourAnswersController.onPageLoad())
+  }
+
+  private def directorAddressYearsRoutes(index: Int)(answers: UserAnswers): Call = {
+    answers.get(DirectorAddressYearsId(index)) match {
+      case Some(DirectorAddressYears.LessThanTwelve) =>
+        routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index)
+      case Some(DirectorAddressYears.MoreThanTwelve) =>
+        routes.DirectorContactDetailsController.onPageLoad(NormalMode, index)
+      case None =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def directorAddressYearsCheckRoutes(index: Int)(answers: UserAnswers): Call = {
+    answers.get(DirectorAddressYearsId(index)) match {
+      case Some(DirectorAddressYears.LessThanTwelve) =>
+        routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index)
+      case Some(DirectorAddressYears.MoreThanTwelve) =>
+        routes.CheckYourAnswersController.onPageLoad(index)
+      case None =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
   }
 }
