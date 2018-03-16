@@ -19,14 +19,19 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import models.register.company.CompanyDetails
+import models.requests.DataRequest
 import models.{CheckMode, NormalMode}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
+import utils.{CheckYourAnswersFactory, CountryOptions, InputOption, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
+
+  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id", UserAnswers(Json.obj()))
 
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
@@ -38,7 +43,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      checkYourAnswersFactory
+      checkYourAnswersFactory,
+      new CountryOptions(Seq.empty[InputOption])
     )
 
   def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()

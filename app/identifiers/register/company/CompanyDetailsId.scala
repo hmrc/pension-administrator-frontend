@@ -18,7 +18,24 @@ package identifiers.register.company
 
 import identifiers._
 import models.register.company.CompanyDetails
+import play.api.libs.json.Reads
+import utils.{CheckYourAnswers, UserAnswers}
+import viewmodels.AnswerRow
 
 case object CompanyDetailsId extends TypedIdentifier[CompanyDetails] {
   override def toString: String = "companyDetails"
+
+  implicit def checkYourAnswers[I <: TypedIdentifier[CompanyDetails]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map { x =>
+          Seq(AnswerRow(
+            "companyDetails.checkYourAnswersLabel",
+            Seq(x.companyName),
+            false,
+            changeUrl
+          ))
+        }.getOrElse(Seq.empty)
+    }
+
 }

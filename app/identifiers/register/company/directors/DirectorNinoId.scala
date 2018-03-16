@@ -18,7 +18,10 @@ package identifiers.register.company.directors
 
 import identifiers._
 import models.register.company.directors.DirectorNino
-import play.api.libs.json.JsPath
+import models.register.company.directors.DirectorNino.{No, Yes}
+import play.api.libs.json.{JsPath, Reads}
+import utils.{CheckYourAnswers, UserAnswers}
+import viewmodels.AnswerRow
 
 case class DirectorNinoId(index: Int) extends TypedIdentifier[DirectorNino] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNinoId.toString
@@ -26,6 +29,38 @@ case class DirectorNinoId(index: Int) extends TypedIdentifier[DirectorNino] {
 
 object DirectorNinoId {
   override lazy val toString: String = "directorNino"
+
+  implicit def checkYourAnswers[I <: TypedIdentifier[DirectorNino]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          case _@Yes(nino) => Seq(
+            AnswerRow(
+              "directorNino.checkYourAnswersLabel",
+              Seq(s"${DirectorNino.Yes}"),
+              true,
+              changeUrl
+            ),
+            AnswerRow(
+              "directorNino.checkYourAnswersLabel.nino", Seq(nino),
+              true,
+              changeUrl
+            )
+          )
+          case _@No(reason) => Seq(
+            AnswerRow(
+              "directorNino.checkYourAnswersLabel", Seq(s"${DirectorNino.No}"),
+              true,
+              changeUrl
+            ),
+            AnswerRow(
+              "directorNino.checkYourAnswersLabel.reason", Seq(reason),
+              true,
+              changeUrl
+            )
+          )
+        }.getOrElse(Seq.empty)
+    }
 }
 
 

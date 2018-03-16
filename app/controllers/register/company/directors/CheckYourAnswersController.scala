@@ -21,46 +21,69 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import models.{Index, Mode}
+import identifiers.register.company.directors._
+import models.{Address, CheckMode, Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.CheckYourAnswersFactory
+import utils.{CheckYourAnswersFactory, CountryOptions}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
+import utils.CheckYourAnswers.Ops._
 
 import scala.concurrent.Future
+import scala.language.implicitConversions
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with Retrievals with I18nSupport {
+                                           override val messagesApi: MessagesApi,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           countryOptions: CountryOptions) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-        val answersSection = Seq(
+
+      DirectorDetailsId(index).retrieve.right.map { director =>
+
+        val directorDetails = DirectorDetailsId(index).row(
+          controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+        )
+        val directorNino = DirectorNinoId(index).row(
+          controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url
+        )
+        val directorUniqueTaxReference = DirectorUniqueTaxReferenceId(index).row(
+          controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url
+        )
+
+        val directorAddress = DirectorAddressId(index).row(
+          controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(CheckMode, index).url
+        )
+        val directorAddressYears = DirectorAddressYearsId(index).row(
+          controllers.register.company.directors.routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url
+        )
+        val directorPreviousAddress = DirectorPreviousAddressId(index).row(
+          controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url
+        )
+        val directorContactDetails = DirectorContactDetailsId(index).row(
+          controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url
+        )
+
+        val answers = Seq(
           AnswerSection(
             Some("directorCheckYourAnswers.directorDetails.heading"),
-            checkYourAnswerHelper.directorDetails(index.id) ++
-              checkYourAnswerHelper.directorNino(index.id) ++
-              checkYourAnswerHelper.directorUniqueTaxReference(index.id)
+            directorDetails ++ directorNino ++ directorUniqueTaxReference
           ),
-        AnswerSection(
-          Some("directorCheckYourAnswers.contactDetails.heading"),
-          checkYourAnswerHelper.directorAddress(index.id) ++
-            checkYourAnswerHelper.directorAddressYears(index.id) ++
-            checkYourAnswerHelper.directorPreviousAddress(index.id) ++
-            checkYourAnswerHelper.directorContactDetails(index.id)
-        ))
+          AnswerSection(
+            Some("directorCheckYourAnswers.contactDetails.heading"),
+            directorAddress ++ directorAddressYears ++ directorPreviousAddress ++ directorContactDetails
+          )
+        )
 
         Future.successful(Ok(check_your_answers(
           appConfig,
-          answersSection,
-          Some(directorName),
+          answers,
+          Some(director.fullName),
           controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()))
         )
       }
@@ -70,6 +93,22 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       Redirect(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode))
 
+  }
+
+  implicit def addressAnswer(address: Address): Seq[String] = {
+    val country = countryOptions.options
+      .find(_.value == address.country)
+      .map(_.label)
+      .getOrElse(address.country)
+
+    Seq(
+      Some(s"${address.addressLine1},"),
+      Some(s"${address.addressLine2},"),
+      address.addressLine3.map(line3 => s"$line3,"),
+      address.addressLine4.map(line4 => s"$line4,"),
+      address.postcode.map(postcode => s"$postcode,"),
+      Some(country)
+    ).flatten
   }
 
 }

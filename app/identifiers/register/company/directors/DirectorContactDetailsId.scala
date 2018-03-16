@@ -18,7 +18,9 @@ package identifiers.register.company.directors
 
 import identifiers._
 import models.register.company.ContactDetails
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, Reads}
+import utils.{CheckYourAnswers, UserAnswers}
+import viewmodels.AnswerRow
 
 case class DirectorContactDetailsId(index: Int) extends TypedIdentifier[ContactDetails] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorContactDetailsId.toString
@@ -26,4 +28,26 @@ case class DirectorContactDetailsId(index: Int) extends TypedIdentifier[ContactD
 
 object DirectorContactDetailsId {
   override def toString: String = "directorContactDetails"
+
+
+  implicit def checkYourAnswers[I <: TypedIdentifier[ContactDetails]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map { x =>
+          Seq(
+            AnswerRow(
+              "contactDetails.email",
+              Seq(s"${x.email}"),
+              false,
+              changeUrl
+            ),
+            AnswerRow(
+              "contactDetails.phone",
+              Seq(s"${x.phone}"),
+              false,
+              changeUrl
+            )
+          )
+        }.getOrElse(Seq.empty)
+    }
 }

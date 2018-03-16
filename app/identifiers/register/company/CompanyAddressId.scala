@@ -17,8 +17,28 @@
 package identifiers.register.company
 
 import identifiers.TypedIdentifier
-import models.TolerantAddress
+import models.{Address, TolerantAddress}
+import play.api.libs.json.Reads
+import utils.{CheckYourAnswers, UserAnswers}
+import viewmodels.AnswerRow
 
 case object CompanyAddressId extends TypedIdentifier[TolerantAddress] {
   override def toString = "companyAddressId"
+
+  implicit def checkYourAnswers[I <: TypedIdentifier[TolerantAddress]](implicit rds: Reads[TolerantAddress], fn: Address => Seq[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map { x =>
+          x.toAddress match {
+            case Some(address) =>
+              Seq(AnswerRow(
+                "cya.label.address",
+                fn(address),
+                false,
+                controllers.register.company.routes.CompanyAddressController.onPageLoad().url
+              ))
+            case _ => Seq.empty[AnswerRow]
+          }
+        }.getOrElse(Seq.empty)
+    }
 }
