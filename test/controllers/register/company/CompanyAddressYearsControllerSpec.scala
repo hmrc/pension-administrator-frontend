@@ -16,20 +16,17 @@
 
 package controllers.register.company
 
-import play.api.data.Form
-import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
-import play.api.libs.json._
 import forms.register.company.CompanyAddressYearsFormProvider
 import identifiers.register.company.CompanyAddressYearsId
-import models.NormalMode
-import models.register.company.CompanyAddressYears
+import models.{AddressYears, NormalMode}
+import play.api.data.Form
+import play.api.libs.json.{JsString, _}
+import play.api.test.Helpers._
+import utils.FakeNavigator
 import views.html.register.company.companyAddressYears
-import controllers.ControllerSpecBase
 
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
@@ -54,16 +51,16 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyAddressYearsId.toString -> JsString(CompanyAddressYears.values.head.toString))
+      val validData = Json.obj(CompanyAddressYearsId.toString -> JsString(AddressYears.values.head.toString))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(CompanyAddressYears.values.head))
+      contentAsString(result) mustBe viewAsString(form.fill(AddressYears.values.head))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", CompanyAddressYears.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -89,7 +86,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", CompanyAddressYears.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

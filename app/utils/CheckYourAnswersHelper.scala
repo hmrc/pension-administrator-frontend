@@ -87,7 +87,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   }
 
   def directorAddressYears(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorAddressYearsId(index)) match {
-    case Some(x) => Seq(AnswerRow("directorAddressYears.checkYourAnswersLabel", Seq(s"directorAddressYears.$x"), true,
+    case Some(x) => Seq(AnswerRow("directorAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true,
       controllers.register.company.directors.routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url))
 
     case _ => Nil
@@ -189,7 +189,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   }
 
   def companyAddressYears: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressYearsId) map {
-    x => AnswerRow("companyAddressYears.checkYourAnswersLabel", Seq(s"companyAddressYears.$x"), true, controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)
+    x => AnswerRow("companyAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)
   }
 
   def companyAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressId) flatMap { x =>

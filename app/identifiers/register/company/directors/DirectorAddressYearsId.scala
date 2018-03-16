@@ -17,13 +17,23 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.directors.DirectorAddressYears
+import models.AddressYears
 import play.api.libs.json.JsPath
+import utils.Cleanup
 
-case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[DirectorAddressYears] {
+case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[AddressYears] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorAddressYearsId.toString
 }
 
 object DirectorAddressYearsId {
   override lazy val toString: String = "directorAddressYears"
+
+  implicit lazy val addressYears: Cleanup[DirectorAddressYearsId] =
+    Cleanup[AddressYears, DirectorAddressYearsId] {
+      case (DirectorAddressYearsId(id), Some(AddressYears.OverAYear), answers) =>
+        answers
+          .remove(DirectorPreviousAddressPostCodeLookupId(id))
+          .flatMap(_.remove(DirectorPreviousAddressId(id)))
+    }
+
 }

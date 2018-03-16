@@ -18,18 +18,18 @@ package controllers.register.company
 
 import javax.inject.Inject
 
+import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import controllers.actions._
+import forms.register.company.CompanyAddressYearsFormProvider
+import identifiers.register.company.CompanyAddressYearsId
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
-import config.FrontendAppConfig
-import forms.register.company.CompanyAddressYearsFormProvider
-import identifiers.register.company.CompanyAddressYearsId
-import models.register.company.CompanyAddressYears
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyAddressYears
-import models.Mode
+
 import scala.concurrent.Future
 
 class CompanyAddressYearsController @Inject()(
