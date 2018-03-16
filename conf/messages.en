@@ -275,3 +275,10 @@ directorCheckYourAnswers.contactDetails.heading = Contact details for director
 companyAddress.title = Company address
 companyAddress.heading = Company address
 companyAddress.checkYourAnswersLabel = Address
+
+whatYouWillNeed.title = What you’ll need
+whatYouWillNeed.heading = What you’ll need
+whatYouWillNeed.secondary.heading = Register as a new pension scheme administrator
+whatYouWillNeed.body.text = To register as a pension scheme administrator (PSA) with HMRC you will need:
+whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
+whatYouWillNeed.body.item2 = your contact telephone number and email address
