@@ -22,11 +22,15 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
+import identifiers.register.individual.WhatYouWillNeedId
+import models.NormalMode
 import play.api.mvc.{Action, AnyContent}
+import utils.Navigator
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
+                                         navigator: Navigator,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
@@ -38,6 +42,6 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Redirect(routes.WhatYouWillNeedController.onPageLoad())
+      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
   }
 }

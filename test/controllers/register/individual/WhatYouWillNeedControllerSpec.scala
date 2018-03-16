@@ -29,8 +29,10 @@ import controllers.ControllerSpecBase
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new WhatYouWillNeedController(frontendAppConfig, messagesApi, FakeAuthAction,
+    new WhatYouWillNeedController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl)
 
   def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
@@ -48,8 +50,8 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
       val result = controller().onSubmit(fakeRequest)
 
-      redirectLocation(result) must be(Some(controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad().url))
-
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
 }
