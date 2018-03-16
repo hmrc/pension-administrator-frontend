@@ -21,7 +21,7 @@ import controllers.register.company.directors.routes
 import identifiers.Identifier
 import identifiers.register.company.directors._
 import models.{CheckMode, Mode, NormalMode}
-import models.register.company.directors.DirectorAddressYears
+import models.AddressYears
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
@@ -61,9 +61,9 @@ class DirectorNavigator @Inject() extends Navigator {
 
   private def directorAddressYearsRoutes(index: Int)(answers: UserAnswers): Call = {
     answers.get(DirectorAddressYearsId(index)) match {
-      case Some(DirectorAddressYears.LessThanTwelve) =>
+      case Some(AddressYears.UnderAYear) =>
         routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index)
-      case Some(DirectorAddressYears.MoreThanTwelve) =>
+      case Some(AddressYears.OverAYear) =>
         routes.DirectorContactDetailsController.onPageLoad(NormalMode, index)
       case None =>
         controllers.routes.SessionExpiredController.onPageLoad()
@@ -72,9 +72,9 @@ class DirectorNavigator @Inject() extends Navigator {
 
   private def directorAddressYearsCheckRoutes(index: Int)(answers: UserAnswers): Call = {
     answers.get(DirectorAddressYearsId(index)) match {
-      case Some(DirectorAddressYears.LessThanTwelve) =>
+      case Some(AddressYears.UnderAYear) =>
         routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index)
-      case Some(DirectorAddressYears.MoreThanTwelve) =>
+      case Some(AddressYears.OverAYear) =>
         routes.CheckYourAnswersController.onPageLoad(index)
       case None =>
         controllers.routes.SessionExpiredController.onPageLoad()

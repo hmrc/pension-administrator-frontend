@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.register.company.directors.routes
 import identifiers.Identifier
 import identifiers.register.company.directors._
-import models.register.company.directors.DirectorAddressYears
+import models.AddressYears
 import models.{CheckMode, NormalMode}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpec}
@@ -94,7 +94,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar {
           index =>
 
             val answers = UserAnswers(Json.obj())
-              .set(DirectorAddressYearsId(0))(DirectorAddressYears.LessThanTwelve)
+              .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear)
               .asOpt.value
 
             navigator.nextPage(DirectorAddressYearsId(testIndex), NormalMode)(answers) mustBe
@@ -107,7 +107,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar {
           index =>
 
             val answers = UserAnswers(Json.obj())
-              .set(DirectorAddressYearsId(0))(DirectorAddressYears.MoreThanTwelve)
+              .set(DirectorAddressYearsId(0))(AddressYears.OverAYear)
               .asOpt.value
 
             navigator.nextPage(DirectorAddressYearsId(testIndex), NormalMode)(answers) mustBe
@@ -210,7 +210,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar {
 
         "return a `Call` to `DirectorCheckYourAnswersPage` page when `DirectorAddressYears` is `more_than_twelve`" in {
           val answers = UserAnswers(Json.obj())
-            .set(DirectorAddressYearsId(0))(DirectorAddressYears.MoreThanTwelve)
+            .set(DirectorAddressYearsId(0))(AddressYears.OverAYear)
             .asOpt.value
 
           val result = navigator.nextPage(DirectorAddressYearsId(0), CheckMode)(answers)
@@ -219,7 +219,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar {
 
         "return a `Call` to `DirectorPreviousPostCodeLookup` page when `DirectorAddressYears` is `less_than_twelve`" in {
           val answers = UserAnswers(Json.obj())
-            .set(DirectorAddressYearsId(0))(DirectorAddressYears.LessThanTwelve)
+            .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear)
             .asOpt.value
 
           val result = navigator.nextPage(DirectorAddressYearsId(0), CheckMode)(answers)
