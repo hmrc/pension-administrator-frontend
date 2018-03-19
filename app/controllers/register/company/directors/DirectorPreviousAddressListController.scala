@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.DirectorPreviousAddressListFormProvider
-import identifiers.register.company.directors.{DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
+import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -69,7 +69,7 @@ class DirectorPreviousAddressListController @Inject()(
               (value) =>
                 dataCacheConnector.save(
                   request.externalId,
-                  DirectorPreviousAddressListId(index),
+                  DirectorPreviousAddressId(index),
                   addresses(value).copy(country = "GB")
                 ).map(cacheMap =>
                   Redirect(navigator.nextPage(DirectorPreviousAddressListId(index), mode)(new UserAnswers(cacheMap)))

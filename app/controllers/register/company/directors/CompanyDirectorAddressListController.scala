@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.CompanyDirectorAddressListFormProvider
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
+import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorDetailsId}
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,7 +62,7 @@ class CompanyDirectorAddressListController @Inject()(
             (formWithErrors: Form[_]) =>
               Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, directorDetails.fullName, addresses))),
             (value) =>
-              dataCacheConnector.save(request.externalId, CompanyDirectorAddressListId(index), addresses(value).copy(country = "GB")).map(cacheMap =>
+              dataCacheConnector.save(request.externalId, DirectorAddressId(index), addresses(value).copy(country = "GB")).map(cacheMap =>
                 Redirect(navigator.nextPage(CompanyDirectorAddressListId(index), mode)(new UserAnswers(cacheMap))))
           )
       }.left.map(_ => Future.successful(Redirect(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))
