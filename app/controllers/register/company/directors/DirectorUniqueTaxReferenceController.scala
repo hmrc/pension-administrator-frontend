@@ -29,21 +29,22 @@ import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorUniqueTaxReference
 
 import scala.concurrent.Future
 
 class DirectorUniqueTaxReferenceController @Inject()(
-                                       appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       dataCacheConnector: DataCacheConnector,
-                                       navigator: Navigator,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: DirectorUniqueTaxReferenceFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                                      appConfig: FrontendAppConfig,
+                                                      override val messagesApi: MessagesApi,
+                                                      dataCacheConnector: DataCacheConnector,
+                                                      @CompanyDirector navigator: Navigator,
+                                                      authenticate: AuthAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      formProvider: DirectorUniqueTaxReferenceFormProvider
+                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form: Form[DirectorUniqueTaxReference] = formProvider()
 

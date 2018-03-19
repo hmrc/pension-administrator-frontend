@@ -54,6 +54,6 @@ class DirectorPreviousAddressPostCodeLookupViewSpec extends StringViewBehaviours
   }
 
   "display enter address manually link" in {
-    createView must haveLink(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index).url, "manual-address-link")
+    createView must haveLink(routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index).url, "manual-address-link")
   }
 }

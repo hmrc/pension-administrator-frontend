@@ -23,11 +23,12 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.DirectorPreviousAddressListFormProvider
-import identifiers.register.company.directors.{DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
+import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorPreviousAddressList
 
@@ -37,7 +38,7 @@ class DirectorPreviousAddressListController @Inject()(
                                                        appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
                                                        dataCacheConnector: DataCacheConnector,
-                                                       navigator: Navigator,
+                                                       @CompanyDirector navigator: Navigator,
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
@@ -68,9 +69,9 @@ class DirectorPreviousAddressListController @Inject()(
               (value) =>
                 dataCacheConnector.save(
                   request.externalId,
-                  DirectorPreviousAddressListId(index),
+                  DirectorPreviousAddressId(index),
                   addresses(value).copy(country = "GB")
-                ).map( cacheMap =>
+                ).map(cacheMap =>
                   Redirect(navigator.nextPage(DirectorPreviousAddressListId(index), mode)(new UserAnswers(cacheMap)))
                 )
             )
