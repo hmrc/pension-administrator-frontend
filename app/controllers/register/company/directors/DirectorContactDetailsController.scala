@@ -28,21 +28,22 @@ import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.directors.directorContactDetails
 
 import scala.concurrent.Future
 
-class DirectorContactDetailsController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ContactDetailsFormProvider
-                                      ) extends FrontendController with Retrievals with I18nSupport {
+class DirectorContactDetailsController @Inject()(
+                                                  appConfig: FrontendAppConfig,
+                                                  override val messagesApi: MessagesApi,
+                                                  dataCacheConnector: DataCacheConnector,
+                                                  @CompanyDirector navigator: Navigator,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: ContactDetailsFormProvider
+                                                ) extends FrontendController with Retrievals with I18nSupport {
 
   private val form = formProvider()
 

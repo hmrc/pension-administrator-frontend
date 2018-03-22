@@ -28,22 +28,23 @@ import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.CompanyDirector
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.directors.directorPreviousAddressPostCodeLookup
 
 import scala.concurrent.Future
 
-class DirectorPreviousAddressPostCodeLookupController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        addressLookupConnector: AddressLookupConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: DirectorPreviousAddressPostCodeLookupFormProvider
-                                      ) extends FrontendController with Retrievals with I18nSupport {
+class DirectorPreviousAddressPostCodeLookupController @Inject()(
+                                                                 appConfig: FrontendAppConfig,
+                                                                 override val messagesApi: MessagesApi,
+                                                                 dataCacheConnector: DataCacheConnector,
+                                                                 addressLookupConnector: AddressLookupConnector,
+                                                                 @CompanyDirector navigator: Navigator,
+                                                                 authenticate: AuthAction,
+                                                                 getData: DataRetrievalAction,
+                                                                 requireData: DataRequiredAction,
+                                                                 formProvider: DirectorPreviousAddressPostCodeLookupFormProvider
+                                                               ) extends FrontendController with Retrievals with I18nSupport {
 
   private val form = formProvider()
 
@@ -51,14 +52,14 @@ class DirectorPreviousAddressPostCodeLookupController @Inject() (
     form.withError("value", messageKey)
   }
 
-  def onPageLoad(mode: Mode, index:Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         Future.successful(Ok(directorPreviousAddressPostCodeLookup(appConfig, form, mode, index, directorName)))
       }
   }
 
-  def onSubmit(mode: Mode, index:Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         form.bindFromRequest().fold(
@@ -73,7 +74,7 @@ class DirectorPreviousAddressPostCodeLookupController @Inject() (
               case Some(addressRecords) =>
                 val address = addressRecords.map(_.address)
                 dataCacheConnector.save(request.externalId, DirectorPreviousAddressPostCodeLookupId(index), address).map(cacheMap =>
-                Redirect(navigator.nextPage(DirectorPreviousAddressPostCodeLookupId(index), mode)(UserAnswers(cacheMap))))
+                  Redirect(navigator.nextPage(DirectorPreviousAddressPostCodeLookupId(index), mode)(UserAnswers(cacheMap))))
             }
         )
       }
