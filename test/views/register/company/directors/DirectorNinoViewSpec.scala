@@ -47,7 +47,7 @@ class DirectorNinoViewSpec extends ViewBehaviours {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- ninoOptions) {
-          assertContainsRadioButton(doc, s"directorNino_hasNino-$option", "directorNino.hasNino", option, false)
+          assertContainsRadioButton(doc, s"nino_hasNino-$option", "nino.hasNino", option, false)
         }
       }
 
@@ -55,11 +55,11 @@ class DirectorNinoViewSpec extends ViewBehaviours {
       for (option <- ninoOptions) {
         s"rendered with a value of '$option'" must {
           s"have the '$option' radio button selected" in {
-            val doc = asDocument(createViewUsingForm(form.bind(Map("directorNino.hasNino" -> s"$option"))))
-            assertContainsRadioButton(doc, s"directorNino_hasNino-$option", "directorNino.hasNino", option, true)
+            val doc = asDocument(createViewUsingForm(form.bind(Map("nino.hasNino" -> s"$option"))))
+            assertContainsRadioButton(doc, s"nino_hasNino-$option", "nino.hasNino", option, true)
 
             for (unselectedOption <- ninoOptions.filterNot(o => o == option)) {
-              assertContainsRadioButton(doc, s"directorNino_hasNino-$unselectedOption", "directorNino.hasNino", unselectedOption, false)
+              assertContainsRadioButton(doc, s"nino_hasNino-$unselectedOption", "nino.hasNino", unselectedOption, false)
             }
           }
         }

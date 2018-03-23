@@ -18,12 +18,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.directors.routes
 @import models.Mode
-@import models.register.company.directors.DirectorUniqueTaxReference
+@import models.UniqueTaxReference
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
 
 @options = @{
-        DirectorUniqueTaxReference.options
+    UniqueTaxReference.options
 }
 
 @main_template(

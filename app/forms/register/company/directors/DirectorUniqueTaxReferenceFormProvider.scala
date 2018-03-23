@@ -19,14 +19,25 @@ package forms.register.company.directors
 import javax.inject.Inject
 
 import forms.FormErrorHelper
-import forms.mappings.Mappings
-import models.register.company.directors.DirectorUniqueTaxReference
+import forms.mappings.UtrMapping
+import models.UniqueTaxReference
 import play.api.data.Form
 
-class DirectorUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with Mappings {
+class DirectorUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with UtrMapping {
 
-  def apply(): Form[DirectorUniqueTaxReference] =
-    Form(
-      "directorUtr" -> directorUtrMapping()
+  def apply(): Form[UniqueTaxReference] = {
+    val mapping = utrMapping(
+      requiredKey = "directorUniqueTaxReference.error.required",
+      requiredUtrKey = "directorUniqueTaxReference.error.utr.required",
+      utrLengthKey = "directorUniqueTaxReference.error.utr.length",
+      utrInvalidKey = "directorUniqueTaxReference.error.utr.invalid",
+      requiredReasonKey = "directorUniqueTaxReference.error.reason.required",
+      reasonLengthKey = "directorUniqueTaxReference.error.reason.length"
     )
+
+    Form(
+      "utr" -> mapping
+    )
+  }
+
 }

@@ -19,7 +19,7 @@ package views.register.company.directors
 import forms.AddressFormProvider
 import models.{Address, Index, NormalMode}
 import play.api.data.Form
-import utils.InputOption
+import utils.{FakeCountryOptions, InputOption}
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directors.directorAddress
 
@@ -33,7 +33,7 @@ class DirectorAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val options = Seq.empty[InputOption]
 
-  override val form = new AddressFormProvider()()
+  override val form = new AddressFormProvider(FakeCountryOptions())()
 
   def createView = () => directorAddress(frontendAppConfig, form, NormalMode, firstIndex, fullName, options)(fakeRequest, messages)
 

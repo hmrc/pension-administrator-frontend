@@ -16,36 +16,36 @@
 
 package forms
 
-import forms.behaviours.FormBehaviours
-import forms.mappings.Constraints
-import models.{Address, Field, Required}
-import org.apache.commons.lang3.RandomStringUtils
-import play.api.data.FormError
+import forms.behaviours.{AddressBehaviours, FormBehaviours}
+import forms.mappings.AddressMapping
+import models.Address
+import utils.FakeCountryOptions
 
 import scala.util.Random
 
-class AddressFormProviderSpec extends FormBehaviours with FormSpec{
+class AddressFormProviderSpec extends FormBehaviours with FormSpec with AddressBehaviours {
 
-  val addressLineMaxLength = 35
+  private def alphaString(max: Int = AddressMapping.maxAddressLineLength) =
+    Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
 
-  def alphaString(max: Int = addressLineMaxLength) = Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
+  private val addressLine1 = alphaString()
+  private val addressLine2 = alphaString()
+  private val addressLine3 = alphaString()
+  private val addressLine4 = alphaString()
+  private val postCode = "ZZ1 1ZZ"
 
-  val addressLine1 = alphaString()
-  val addressLine2 = alphaString()
-  val addressLine3 = alphaString()
-  val addressLine4 = alphaString()
-  val postCode = "ZZ1 1ZZ"
+  private val countryOptions = FakeCountryOptions()
 
   val validData: Map[String, String] = Map(
     "addressLine1" -> addressLine1,
     "addressLine2" -> addressLine2,
     "addressLine3" -> addressLine3,
     "addressLine4" -> addressLine4,
-    "postCode.postCode" -> postCode,
+    "postCode" -> postCode,
     "country" -> "GB"
   )
 
-  val form = new AddressFormProvider()()
+  val form = new AddressFormProvider(countryOptions)()
 
   "Address form" must {
     behave like questionForm(Address(
@@ -57,87 +57,63 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec{
       "GB"
     ))
 
-    behave like formWithMandatoryTextFields(
-      Field("addressLine1", Required -> "error.address_line_1.required"),
-      Field("addressLine2", Required -> "error.address_line_2.required"),
-      Field("country", Required -> "error.country.required"
+    behave like formWithCountry(
+      form,
+      "country",
+      "error.country.required",
+      "error.country.invalid",
+      countryOptions,
+      Map(
+        "addressLine1" -> addressLine1,
+        "addressLine2" -> addressLine2
       )
     )
 
-    "successfully bind" when {
-      "country is not UK and postcode is any postcode" in {
+    behave like formWithCountryAndPostCode(
+      form,
+      "error.postcode.required",
+      "error.postcode.invalid",
+      Map(
+        "addressLine1" -> addressLine1,
+        "addressLine2" -> addressLine2
+      ),
+      (address: Address) => address.postcode.getOrElse("")
+    )
 
-        val postCode = alphaString(6)
+    "behave like a form with address lines" when {
 
-        val data = validData + ("postCode.postCode" -> postCode, "country" -> "AF")
-        val result = form.bind(data)
-        result.get shouldEqual Address(
-          addressLine1,
-          addressLine2,
-          Some(addressLine3),
-          Some(addressLine4),
-          Some(postCode),
-          "AF"
-        )
-      }
-      "country is UK and postcode is a valid postcode" in {
-        val data = validData + ("postCode.postCode" -> postCode, "country" -> "GB")
-        val result = form.bind(data)
-        result.get shouldEqual Address(
-          addressLine1,
-          addressLine2,
-          Some(addressLine3),
-          Some(addressLine4),
-          Some(postCode),
-          "GB"
-        )
-      }
+      behave like formWithAddressField(
+        form,
+        "addressLine1",
+        "error.address_line_1.required",
+        "error.address_line_1.length",
+        "error.address_line_1.invalid"
+      )
+
+      behave like formWithAddressField(
+        form,
+        "addressLine2",
+        "error.address_line_2.required",
+        "error.address_line_2.length",
+        "error.address_line_2.invalid"
+      )
+
+      behave like formWithOptionalAddressField(
+        form,
+        "addressLine3",
+        "error.address_line_3.length",
+        "error.address_line_3.invalid"
+      )
+
+      behave like formWithOptionalAddressField(
+        form,
+        "addressLine4",
+        "error.address_line_4.length",
+        "error.address_line_4.invalid"
+      )
+
     }
 
-    "fail to bind" when {
-      s"address line 1 exceeds max length $addressLineMaxLength" in {
-        val addressLine1 = RandomStringUtils.randomAlphabetic(addressLineMaxLength + 1)
-        val data = validData + ("addressLine1" -> addressLine1)
-
-        val expectedError: Seq[FormError] = error("addressLine1", "error.address_line_1.length", addressLineMaxLength)
-        checkForError(form, data, expectedError)
-      }
-
-      s"address line 2 exceeds max length $addressLineMaxLength" in {
-        val addressLine2 = RandomStringUtils.randomAlphabetic(addressLineMaxLength + 1)
-        val data = validData + ("addressLine2" -> addressLine2)
-
-        val expectedError: Seq[FormError] = error("addressLine2", "error.address_line_2.length", addressLineMaxLength)
-        checkForError(form, data, expectedError)
-      }
-
-      s"address line 3 exceeds max length $addressLineMaxLength" in {
-        val addressLine3 = RandomStringUtils.randomAlphabetic(addressLineMaxLength + 1)
-        val data = validData + ("addressLine3" -> addressLine3)
-
-        val expectedError: Seq[FormError] = error("addressLine3", "error.address_line_3.length", addressLineMaxLength)
-        checkForError(form, data, expectedError)
-      }
-
-      s"address line 4 exceeds max length $addressLineMaxLength" in {
-        val addressLine4 = RandomStringUtils.randomAlphabetic(addressLineMaxLength + 1)
-        val data = validData + ("addressLine4" -> addressLine4)
-
-        val expectedError: Seq[FormError] = error("addressLine4", "error.address_line_4.length", addressLineMaxLength)
-        checkForError(form, data, expectedError)
-      }
-
-      "postcode is missing for country UK" in {
-        val validData: Map[String, String] = Map(
-          "addressLine1" -> addressLine1,
-          "addressLine2" -> addressLine2,
-          "addressLine3" -> addressLine3,
-          "addressLine4" -> addressLine4,
-          "country" -> "GB"
-        )
-        val expectedError: Seq[FormError] = error("postCode.postCode", "error.postcode.required")
-        checkForError(form, validData, expectedError)
-      }
-    }
   }
+
 }

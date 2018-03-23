@@ -16,39 +16,14 @@
 
 package forms.register.company.directors
 
-import forms.FormSpec
-import models.register.company.directors.DirectorNino
+import forms.behaviours.NinoBehaviours
 
-class DirectorNinoFormProviderSpec extends FormSpec {
+class DirectorNinoFormProviderSpec extends NinoBehaviours {
 
-  val requiredKey = "directorNino.error.required"
-  val requiredNinoKey = "common.error.nino.required"
-  val requiredReasonKey = "directorNino.error.reason.required"
-  val invalidNinoKey = "common.error.nino.invalid"
+  "DirectorNinoFormProviderSpec" should {
+    val testForm = new DirectorNinoFormProvider()()
 
-  val reasonMaxLength = 150
-  val reasonInvalidLength = 151
-  val validData:Map[String,String] = Map(
-    "directorNino.hasNino" ->"true",
-    "directorNino.nino" -> "AB020202A"
-  )
-  val formProvider = new DirectorNinoFormProvider()()
-
-  "DirectorNino form provider" must {
-
-    "successfully bind when yes is selected and valid NINO is provided" in {
-      val form = formProvider.bind(Map("directorNino.hasNino" -> "true", "directorNino.nino" -> "AB020202A"))
-      form.get shouldBe DirectorNino.Yes("AB020202A")
-    }
-
-    "successfully bind when no is selected and reason is provided" in {
-      val form = formProvider.bind(Map("directorNino.hasNino" -> "false", "directorNino.reason" -> "haven't got Nino"))
-      form.get shouldBe DirectorNino.No("haven't got Nino")
-    }
-
-    "fail to bind when value is omitted" in {
-      val expectedError = error("directorNino.hasNino", requiredKey)
-      checkForError(formProvider, emptyForm, expectedError)
-    }
+    behave like formWithNino(testForm)
   }
+
 }

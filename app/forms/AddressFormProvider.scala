@@ -18,23 +18,23 @@ package forms
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
+import forms.mappings.AddressMapping
 import models.Address
-import play.api.data.{Form, Forms}
-import play.api.data.Forms.{mapping, optional}
+import play.api.data.Form
+import play.api.data.Forms.mapping
+import utils.CountryOptions
 
-class AddressFormProvider @Inject() extends Mappings {
-
-  val addressLineMaxLength = 35
+class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
 
   def apply(): Form[Address] = Form(
     mapping(
-      "addressLine1" -> text("error.address_line_1.required").verifying(maxLength(addressLineMaxLength, "error.address_line_1.length")),
-      "addressLine2" -> text("error.address_line_2.required").verifying(maxLength(addressLineMaxLength, "error.address_line_2.length")),
-      "addressLine3" -> optional(Forms.text.verifying(maxLength(addressLineMaxLength, "error.address_line_3.length"))),
-      "addressLine4" -> optional(Forms.text.verifying(maxLength(addressLineMaxLength, "error.address_line_4.length"))),
-      "postCode" -> postCode("error.postcode.required", "error.postcode.invalid"),
-      "country" -> text("error.country.required")
+      "addressLine1" -> addressLineMapping("error.address_line_1.required", "error.address_line_1.length", "error.address_line_1.invalid"),
+      "addressLine2" -> addressLineMapping("error.address_line_2.required", "error.address_line_2.length", "error.address_line_2.invalid"),
+      "addressLine3" -> optionalAddressLineMapping("error.address_line_3.length", "error.address_line_3.invalid"),
+      "addressLine4" -> optionalAddressLineMapping("error.address_line_4.length", "error.address_line_4.invalid"),
+      "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid"),
+      "country" -> countryMapping(countryOptions, "error.country.required", "error.country.invalid")
     )(Address.apply)(Address.unapply)
   )
+
 }

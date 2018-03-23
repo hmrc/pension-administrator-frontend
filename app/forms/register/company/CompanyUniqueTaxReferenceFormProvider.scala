@@ -28,7 +28,7 @@ class CompanyUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper wi
     Form(
       "value" -> text("companyUniqueTaxReference.error.required")
         .verifying(firstError(
-          companyUniqueTaxReference("companyUniqueTaxReference.error.invalid")
+          uniqueTaxReference("companyUniqueTaxReference.error.invalid")
         ))
     )
 }

@@ -18,13 +18,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.directors.routes._
 @import controllers.register.company.directors._
-@import models.Mode
-@import models.register.company.directors.DirectorNino
+@import models.{Mode, Nino}
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
 
 @_options = @{
-        DirectorNino.options
+        Nino.options
 }
 
 @main_template(
@@ -41,33 +40,33 @@
         @components.heading("directorNino.heading", secondaryHeaderKey = Some(directorName))
 
         @components.fieldSet(
-            field = form("directorNino.hasNino"),
+            field = form("nino.hasNino"),
             legend = "directorNino.title",
             hiddenLegend = true
         ) {
             @components.radio(
-                field = form("directorNino.hasNino"),
+                field = form("nino.hasNino"),
                 label = _options.head.label,
                 value = _options.head.value,
                 dataTarget = _options.head.dataTarget
             )
 
             @components.input_text(
-                field = form("directorNino.nino"),
+                field = form("nino.nino"),
                 label = messages("common.nino"),
                 groupClass = Some("js-hidden panel panel-border-narrow"),
                 hint = Some(messages("common.nino.hint"))
             )
 
             @components.radio(
-                field = form("directorNino.hasNino"),
+                field = form("nino.hasNino"),
                 label = _options(1).label,
                 value = _options(1).value,
                 dataTarget = _options(1).dataTarget
             )
 
             @components.input_text(
-                field = form("directorNino.reason"),
+                field = form("nino.reason"),
                 label = messages("directorNino.no.reason"),
                 groupClass = Some("js-hidden panel panel-border-narrow")
             )

@@ -16,14 +16,13 @@
 
 package forms.register.company
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.{PayeBehaviours, StringFieldBehaviours, VatBehaviours}
 import forms.mappings.Constraints
-import models.register.company.CompanyDetails
 import org.scalatest.OptionValues
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with OptionValues {
+class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with OptionValues with PayeBehaviours with VatBehaviours {
 
   val form = new CompanyDetailsFormProvider()()
 
@@ -32,12 +31,13 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
     val fieldName = "companyName"
     val requiredKey = "companyDetails.error.companyName.required"
     val lengthKey = "companyDetails.error.companyName.length"
+    val invalidKey = "companyDetails.error.companyName.invalid"
     val maxLength = CompanyDetailsFormProvider.companyNameLength
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(safeTextRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -52,73 +52,42 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
-  }
-
-  ".vatRegistrationNumber" must {
-
-    val fieldName = "vatRegistrationNumber"
-    val lengthKey = "companyDetails.error.vatRegistrationNumber.length"
-    val maxLength = CompanyDetailsFormProvider.vatRegistrationNumberLength
-    val invalid = "companyDetails.error.vatRegistrationNumber.invalid"
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      RegexpGen.from(vat)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
 
     behave like fieldWithRegex(
       form,
       fieldName,
-      "12345678A",
-      FormError(fieldName, invalid, Seq(vat))
+      "[invalid]",
+      error = FormError(fieldName, invalidKey, Seq(safeTextRegex))
     )
+  }
 
-    behave like fieldWithTransform(
+  ".vatRegistrationNumber" must {
+    val fieldName = "vatRegistrationNumber"
+    val keyVatLength = "companyDetails.error.vatRegistrationNumber.length"
+    val keyVatInvalid = "companyDetails.error.vatRegistrationNumber.invalid"
+
+    behave like formWithVatField(
       form,
       fieldName,
-      Map(
-        "companyName" -> "MyCo Ltd",
-        "vatRegistrationNumber" -> "  GB123456789  "
-      ),
-      "123456789",
-      (model: CompanyDetails) => model.vatRegistrationNumber.value
+      keyVatLength,
+      keyVatInvalid
     )
+
   }
 
   ".payeEmployerReferenceNumber" must {
 
     val fieldName = "payeEmployerReferenceNumber"
-    val lengthKey = "companyDetails.error.payeEmployerReferenceNumber.length"
-    val maxLength = CompanyDetailsFormProvider.payeEmployerReferenceNumberLength
-    val invalid = "companyDetails.error.payeEmployerReferenceNumber.invalid"
+    val keyPayeLength = "companyDetails.error.payeEmployerReferenceNumber.length"
+    val keyPayeInvalid = "companyDetails.error.payeEmployerReferenceNumber.invalid"
 
-    behave like fieldThatBindsValidData(
+    behave like formWithPayeField(
       form,
       fieldName,
-      RegexpGen.from(paye)
+      keyPayeLength,
+      keyPayeInvalid
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like fieldWithRegex(
-      form,
-      fieldName,
-      "A1_",
-      FormError(fieldName, invalid, Seq(paye))
-    )
   }
 
 }

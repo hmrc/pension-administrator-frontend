@@ -19,14 +19,19 @@ package forms.register.company.directors
 import javax.inject.Inject
 
 import forms.FormErrorHelper
-import forms.mappings.Mappings
-import models.register.company.directors.DirectorNino
+import forms.mappings.NinoMapping
+import models.Nino
 import play.api.data.Form
 
-class DirectorNinoFormProvider @Inject() extends FormErrorHelper with Mappings {
+class DirectorNinoFormProvider @Inject() extends FormErrorHelper with NinoMapping {
 
-  def apply(): Form[DirectorNino] =
+  def apply(): Form[Nino] =
     Form(
-      "directorNino" -> directorNinoMapping()
+      "nino" -> ninoMapping(
+        requiredKey = "directorNino.error.required",
+        requiredReasonKey = "directorNino.error.reason.required",
+        reasonLengthKey = "directorNino.error.reason.length"
+      )
     )
+
 }
