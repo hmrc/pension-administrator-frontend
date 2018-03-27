@@ -17,26 +17,26 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.directors.DirectorUniqueTaxReference
+import models.UniqueTaxReference
 import play.api.libs.json.{JsPath, Reads}
 import utils.{CheckYourAnswers, UserAnswers}
 import viewmodels.AnswerRow
 
-case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[DirectorUniqueTaxReference] {
+case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[UniqueTaxReference] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorUniqueTaxReferenceId.toString
 }
 
 object DirectorUniqueTaxReferenceId {
   override lazy val toString: String = "directorUtr"
 
-  implicit def checkYourAnswers[I <: TypedIdentifier[DirectorUniqueTaxReference]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+  implicit def checkYourAnswers[I <: TypedIdentifier[UniqueTaxReference]](implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map {
-          case _@DirectorUniqueTaxReference.Yes(utr) => Seq(
+          case _@UniqueTaxReference.Yes(utr) => Seq(
             AnswerRow(
               "directorUniqueTaxReference.checkYourAnswersLabel",
-              Seq(s"${DirectorUniqueTaxReference.Yes}"),
+              Seq(s"${UniqueTaxReference.Yes}"),
               true,
               changeUrl
             ),
@@ -47,10 +47,10 @@ object DirectorUniqueTaxReferenceId {
               changeUrl
             )
           )
-          case _@DirectorUniqueTaxReference.No(reason) => Seq(
+          case _@UniqueTaxReference.No(reason) => Seq(
             AnswerRow(
               "directorUniqueTaxReference.checkYourAnswersLabel",
-              Seq(s"${DirectorUniqueTaxReference.No}"),
+              Seq(s"${UniqueTaxReference.No}"),
               true,
               changeUrl
             ),

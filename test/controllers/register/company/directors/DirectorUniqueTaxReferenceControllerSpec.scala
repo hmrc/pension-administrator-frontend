@@ -25,8 +25,8 @@ import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.{DirectorDetails, DirectorNino, DirectorUniqueTaxReference}
-import models.{Index, NormalMode}
+import models.register.company.directors.DirectorDetails
+import models.{Index, Nino, NormalMode, UniqueTaxReference}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -51,7 +51,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorUniqueTaxReferenceId.toString ->
-          DirectorUniqueTaxReference.Yes("1234567891")
+          UniqueTaxReference.Yes("1234567891")
       ),
       Json.obj(
         DirectorDetailsId.toString ->
@@ -81,12 +81,12 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DirectorUniqueTaxReference.Yes("1234567891")))
+      contentAsString(result) mustBe viewAsString(form.fill(UniqueTaxReference.Yes("1234567891")))
     }
 
     "redirect to the next page" when {
       "valid data is submitted with yes selected" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorUtr.hasUtr", "true"), ("directorUtr.utr", "1234567890"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("utr.hasUtr", "true"), ("utr.utr", "1234567890"))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 
@@ -95,7 +95,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
       }
 
       "valid data is submitted with no selected" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("directorUtr.hasUtr", "false"), ("directorUtr.reason", "test reason"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("utr.hasUtr", "false"), ("utr.reason", "test reason"))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 
@@ -125,7 +125,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
         "POST" in {
 
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DirectorNino.options.head.value))
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", Nino.options.head.value))
           val result = controller(dontGetAnyData).onSubmit(NormalMode, index)(postRequest)
 
           status(result) mustBe SEE_OTHER

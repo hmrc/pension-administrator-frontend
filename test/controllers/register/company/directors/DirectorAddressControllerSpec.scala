@@ -28,14 +28,14 @@ import models.{Address, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CountryOptions, FakeNavigator, InputOption}
+import utils.{CountryOptions, FakeCountryOptions, FakeNavigator, InputOption}
 import views.html.register.company.directors.directorAddress
 
 class DirectorAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AddressFormProvider()
+  val formProvider = new AddressFormProvider(FakeCountryOptions())
   val form: Form[Address] = formProvider()
 
   val firstIndex = Index(0)
@@ -119,7 +119,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
         ("addressLine2", "value 2"),
-        ("postCode.postCode", "NE1 1NE"),
+        ("postCode", "NE1 1NE"),
         "country" -> "GB"
       )
 

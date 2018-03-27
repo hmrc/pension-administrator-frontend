@@ -17,12 +17,13 @@
 package forms.mappings
 
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
+import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
 
-  this: WordSpec with MustMatchers =>
+  this: WordSpec with Matchers =>
 
   def regexWithValidAndInvalidExamples(
                                         constraint: String => Constraint[String],
@@ -31,13 +32,32 @@ trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
                                         regexString: String): Unit = {
     "Accept all valid examples" in {
       forAll(valid) {value: String =>
-        constraint(invalidMsg)(value) mustBe Valid
+        constraint(invalidMsg)(value) shouldBe Valid
       }
     }
 
     "Reject all invalid examples" in {
       forAll(invalid) {value: String =>
-        constraint(invalidMsg)(value) mustBe Invalid(invalidMsg, regexString)
+        constraint(invalidMsg)(value) shouldBe Invalid(invalidMsg, regexString)
+      }
+    }
+  }
+
+  def formWithRegex(
+    form: Form[_],
+    valid: TableFor1[Map[String, String]],
+    invalid: TableFor1[Map[String, String]]
+  ): Unit = {
+
+    "Accept all valid examples" in {
+      forAll(valid) { data =>
+        form.bind(data).errors.isEmpty shouldBe true
+      }
+    }
+
+    "Reject all invalid examples" in {
+      forAll(invalid) { data =>
+        form.bind(data).errors.nonEmpty shouldBe true
       }
     }
   }

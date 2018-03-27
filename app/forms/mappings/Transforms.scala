@@ -20,22 +20,6 @@ import scala.annotation.tailrec
 
 trait Transforms {
 
-  def vatRegistrationNumberTransform(value: String): String = {
-    strip(value).replaceAll("^[gG][bB]", "")
-  }
-
-  def postCodeTransform(value: String): String = {
-    minimiseSpace(value.trim.toUpperCase)
-  }
-
-  def postCodeValidTransform(value: String): String = {
-    if (value.contains(" ")) {
-      value
-    } else {
-      value.substring(0, value.length - 3) + " " + value.substring(value.length - 3, value.length)
-    }
-  }
-
   def noTransform(value: String): String = {
     value
   }
@@ -44,12 +28,12 @@ trait Transforms {
     value.trim
   }
 
-  private def strip(value: String): String = {
+  protected def strip(value: String): String = {
     value.replaceAll(" ", "")
   }
 
   @tailrec
-  private def minimiseSpace(value: String): String = {
+  protected final def minimiseSpace(value: String): String = {
     if (value.contains("  ")) {
       minimiseSpace(value.replaceAll("  ", " "))
     } else {

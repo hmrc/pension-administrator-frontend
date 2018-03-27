@@ -35,7 +35,7 @@ class CompanyUniqueTaxReferenceFormProviderSpec extends StringFieldBehaviours wi
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(utr)
+      RegexpGen.from(utrRegex)
     )
 
     behave like mandatoryField(
@@ -48,7 +48,7 @@ class CompanyUniqueTaxReferenceFormProviderSpec extends StringFieldBehaviours wi
       form,
       fieldName,
       "ABC",
-      FormError(fieldName, invalid, Seq(utr))
+      FormError(fieldName, invalid, Seq(utrRegex))
     )
   }
 }

@@ -62,7 +62,7 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", "value 1"), ("vatRegistrationNumber", "123456789"), ("payeEmployerReferenceNumber", "A1"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", "value 1"), ("vatRegistrationNumber", "123456789"), ("payeEmployerReferenceNumber", "123A"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

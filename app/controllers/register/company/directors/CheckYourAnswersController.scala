@@ -26,10 +26,10 @@ import models.{Address, CheckMode, Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{CheckYourAnswersFactory, CountryOptions}
+import utils.CheckYourAnswers.Ops._
+import utils.CountryOptions
 import viewmodels.AnswerSection
 import views.html.check_your_answers
-import utils.CheckYourAnswers.Ops._
 
 import scala.concurrent.Future
 import scala.language.implicitConversions

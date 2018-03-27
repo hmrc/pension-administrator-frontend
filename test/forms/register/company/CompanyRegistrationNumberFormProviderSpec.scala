@@ -16,50 +16,28 @@
 
 package forms.register.company
 
-import forms.behaviours.StringFieldBehaviours
-import forms.mappings.Constraints
-import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
+import forms.behaviours.CrnBehaviours
+import play.api.data.Form
 
-class CompanyRegistrationNumberFormProviderSpec extends StringFieldBehaviours with Constraints {
-
-  val requiredKey = "companyRegistrationNumber.error.required"
-  val lengthKey = "companyRegistrationNumber.error.length"
-  val invalid = "companyRegistrationNumber.error.invalid"
-  val maxLength = 8
-
-  val form: Form[String] = new CompanyRegistrationNumberFormProvider().apply()
+class CompanyRegistrationNumberFormProviderSpec extends CrnBehaviours {
 
   ".value" must {
 
     val fieldName = "value"
+    val keyCrnRequired = "companyRegistrationNumber.error.required"
+    val keyCrnLength = "companyRegistrationNumber.error.length"
+    val keyCrnInvalid = "companyRegistrationNumber.error.invalid"
 
-    behave like fieldThatBindsValidData(
+    val form: Form[String] = new CompanyRegistrationNumberFormProvider().apply()
+
+    behave like formWithCrnField(
       form,
       fieldName,
-      RegexpGen.from(crn)
+      keyCrnRequired,
+      keyCrnLength,
+      keyCrnInvalid
     )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like fieldWithRegex(
-      form,
-      fieldName,
-      "ABC",
-      FormError(fieldName, invalid, Seq(crn))
-    )
-
 
   }
+
 }

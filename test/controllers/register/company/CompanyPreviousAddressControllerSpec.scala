@@ -21,19 +21,18 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.CompanyPreviousAddressId
-import utils.CountryOptions
+import utils.{CountryOptions, FakeCountryOptions, FakeNavigator, InputOption}
 import models.{Address, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{FakeNavigator, InputOption}
 import views.html.register.company.companyPreviousAddress
 
 class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AddressFormProvider()
+  val formProvider = new AddressFormProvider(FakeCountryOptions())
   val form = formProvider()
 
   val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
@@ -77,7 +76,7 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
         ("addressLine2", "value 2"),
-        ("postCode.postCode", "NE1 1NE"),
+        ("postCode", "NE1 1NE"),
         "country" -> "GB"
       )
 

@@ -17,27 +17,27 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.directors.DirectorNino
-import models.register.company.directors.DirectorNino.{No, Yes}
+import models.Nino
+import models.Nino.{No, Yes}
 import play.api.libs.json.{JsPath, Reads}
 import utils.{CheckYourAnswers, UserAnswers}
 import viewmodels.AnswerRow
 
-case class DirectorNinoId(index: Int) extends TypedIdentifier[DirectorNino] {
+case class DirectorNinoId(index: Int) extends TypedIdentifier[Nino] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNinoId.toString
 }
 
 object DirectorNinoId {
   override lazy val toString: String = "directorNino"
 
-  implicit def checkYourAnswers[I <: TypedIdentifier[DirectorNino]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+  implicit def checkYourAnswers[I <: TypedIdentifier[Nino]](implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map {
           case _@Yes(nino) => Seq(
             AnswerRow(
               "directorNino.checkYourAnswersLabel",
-              Seq(s"${DirectorNino.Yes}"),
+              Seq(s"${Nino.Yes}"),
               true,
               changeUrl
             ),
@@ -49,7 +49,7 @@ object DirectorNinoId {
           )
           case _@No(reason) => Seq(
             AnswerRow(
-              "directorNino.checkYourAnswersLabel", Seq(s"${DirectorNino.No}"),
+              "directorNino.checkYourAnswersLabel", Seq(s"${Nino.No}"),
               true,
               changeUrl
             ),

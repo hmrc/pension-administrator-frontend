@@ -18,17 +18,21 @@ package forms.mappings
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
+import utils.CountryOptions
 
 trait Constraints {
 
-  protected val crn = """^\d{7}|[a-zA-Z]{1,2}\d{6}$"""
-  protected val utr = """^\d{10}$"""
-  protected val email = """^[^@<>]+@[^@<>]+$"""
-  protected val number = """^[0-9]+$"""
-  protected val vat = """^\d{9}$"""
-  protected val paye = """^[a-zA-Z\d]{1,13}$"""
-  protected val postcode = """^[A-Z]{1,2}[0-9][0-9A-Z]?[ ]?[0-9][A-Z]{2}$"""
-  protected val nameRegex = """^[A-Za-z].*"""
+  protected val crnRegex = """^[A-Za-z0-9 -]{7,8}$"""
+  protected val utrRegex = """^\d{10}$"""
+  protected val emailRegex = """^[^@'<>"]+@[^@'<>"]+$"""
+  protected val phoneNumberRegex = """^[0-9 ()+--]{1,24}$"""
+  protected val vatRegex = """^\d{9}$"""
+  protected val payeRegex = """^[0-9]{3}[0-9A-Za-z]{1,13}$"""
+  protected val postCodeRegex = """^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?[ ]?[0-9][A-Za-z]{2}$"""
+  protected val postCodeNonUkRegex = """^([0-9]+-)*[0-9]+$"""
+  protected val nameRegex = """^[a-zA-Z\u00C0-\u00FF'‘’\u2014\u2013\u2010\u002d]{1,35}$"""
+  protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’\"“”«»()*+,./:;=?@\\[\\]|~£€¥\\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
+  protected val addressLineRegex = """^[A-Za-z0-9 !'‘’"“”(),./\u2014\u2013\u2010\u002d]{1,35}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -103,26 +107,41 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = regexp(crn, errorKey)
+  protected def companyRegistrationNumber(errorKey: String): Constraint[String] = regexp(crnRegex, errorKey)
 
-  protected def companyUniqueTaxReference(errorKey: String): Constraint[String] = regexp(utr, errorKey)
+  protected def uniqueTaxReference(errorKey: String): Constraint[String] = regexp(utrRegex, errorKey)
 
-  protected def emailAddress(errorKey: String): Constraint[String] = regexp(email, errorKey)
+  protected def emailAddress(errorKey: String): Constraint[String] = regexp(emailRegex, errorKey)
 
-  protected def wholeNumber(errorKey: String): Constraint[String] = regexp(number, errorKey)
+  protected def phoneNumber(errorKey: String): Constraint[String] = regexp(phoneNumberRegex, errorKey)
 
-  protected def vatRgistrationNumber(errorKey: String): Constraint[String] = regexp(vat, errorKey)
+  protected def vatRegistrationNumber(errorKey: String): Constraint[String] = regexp(vatRegex, errorKey)
 
-  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = regexp(paye, errorKey)
+  protected def payeEmployerReferenceNumber(errorKey: String): Constraint[String] = regexp(payeRegex, errorKey)
 
-  protected def postalCode(errorKey: String): Constraint[String] = regexp(postcode, errorKey)
+  protected def postCode(errorKey: String): Constraint[String] = regexp(postCodeRegex, errorKey)
+
+  protected def postCodeNonUk(errorKey: String): Constraint[String] = regexp(postCodeNonUkRegex, errorKey)
+
+  protected def safeText(errorKey: String): Constraint[String] = regexp(safeTextRegex, errorKey)
 
   protected def validNino(invalidKey: String) : Constraint[String] = {
     Constraint {
-      case nino if(Nino.isValid(nino.replaceAll(" ", "").toUpperCase)) => Valid
+      case nino if Nino.isValid(nino.replaceAll(" ", "").toUpperCase) => Valid
       case _ => Invalid(invalidKey)
     }
   }
   protected def name(errorKey: String): Constraint[String] = regexp(nameRegex, errorKey)
+
+  protected def addressLine(errorKey: String): Constraint[String] = regexp(addressLineRegex, errorKey)
+
+  protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
+    Constraint {
+      input =>
+        countryOptions.options
+          .find(_.value == input)
+          .map(_ => Valid)
+          .getOrElse(Invalid(errorKey))
+    }
 
 }

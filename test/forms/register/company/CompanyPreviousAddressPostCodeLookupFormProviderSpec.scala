@@ -16,65 +16,24 @@
 
 package forms.register.company
 
-import forms.behaviours.StringFieldBehaviours
-import forms.mappings.Constraints
-import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
+import forms.behaviours.AddressBehaviours
 
-class CompanyPreviousAddressPostCodeLookupFormProviderSpec extends StringFieldBehaviours with Constraints {
+class CompanyPreviousAddressPostCodeLookupFormProviderSpec extends AddressBehaviours {
 
-  val requiredKey = "companyPreviousAddressPostCodeLookup.error.required"
-  val lengthKey = "companyPreviousAddressPostCodeLookup.error.length"
-  val invalid = "companyPreviousAddressPostCodeLookup.error.invalid"
-  val maxLength = CompanyPreviousAddressPostCodeLookupFormProvider.PostCodeLength
-  val fieldName = "value"
+  private val requiredKey = "companyPreviousAddressPostCodeLookup.error.required"
+  private val lengthKey = "companyPreviousAddressPostCodeLookup.error.length"
+  private val invalid = "companyPreviousAddressPostCodeLookup.error.invalid"
+  private val fieldName = "value"
 
   val form = new CompanyPreviousAddressPostCodeLookupFormProvider()()
 
   ".value" must {
-
-    val fieldName = "value"
-
-    behave like fieldThatBindsValidData(
+    behave like formWithPostCode(
       form,
       fieldName,
-      RegexpGen.from(postcode)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like fieldWithRegex(
-      form,
-      "value",
-      "1B12 1AB",
-      FormError(fieldName, invalid, Seq(postcode))
-    )
-
-    behave like fieldWithTransform(
-      form,
-      s"$fieldName pre-validate",
-      Map(fieldName -> " AB12 1AB "),
-      "AB12 1AB",
-      (actual: String) => actual
-    )
-
-    behave like fieldWithTransform(
-      form,
-      s"$fieldName post-validate",
-      Map(fieldName -> "AB121AB"),
-      "AB12 1AB",
-      (actual: String) => actual
+      requiredKey,
+      lengthKey,
+      invalid
     )
   }
 

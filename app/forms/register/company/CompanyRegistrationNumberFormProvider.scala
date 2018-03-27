@@ -17,18 +17,20 @@
 package forms.register.company
 
 import forms.FormErrorHelper
-import forms.mappings.Mappings
+import forms.mappings.CrnMapping
 import javax.inject.Inject
+
 import play.api.data.Form
 
-class CompanyRegistrationNumberFormProvider @Inject() extends FormErrorHelper with Mappings {
+class CompanyRegistrationNumberFormProvider @Inject() extends FormErrorHelper with CrnMapping {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("companyRegistrationNumber.error.required")
-        .verifying(firstError(
-          maxLength(8, "companyRegistrationNumber.error.length"),
-          companyRegistrationNumber("companyRegistrationNumber.error.invalid")
-        ))
+      "value" -> crnMapping(
+        "companyRegistrationNumber.error.required",
+        "companyRegistrationNumber.error.length",
+        "companyRegistrationNumber.error.invalid"
+      )
     )
+
 }

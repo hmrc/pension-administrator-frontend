@@ -24,8 +24,7 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
 import identifiers.register.company.directors.DirectorUniqueTaxReferenceId
-import models.register.company.directors.DirectorUniqueTaxReference
-import models.{Index, Mode}
+import models.{UniqueTaxReference, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -46,7 +45,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
                                                       formProvider: DirectorUniqueTaxReferenceFormProvider
                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
-  private val form: Form[DirectorUniqueTaxReference] = formProvider()
+  private val form: Form[UniqueTaxReference] = formProvider()
 
   def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>

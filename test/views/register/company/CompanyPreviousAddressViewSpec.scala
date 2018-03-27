@@ -19,6 +19,7 @@ package views.register.company
 import forms.AddressFormProvider
 import models.{Address, NormalMode}
 import play.api.data.Form
+import utils.FakeCountryOptions
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.companyPreviousAddress
 
@@ -26,7 +27,7 @@ class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val messageKeyPrefix = "companyPreviousAddress"
 
-  override val form = new AddressFormProvider()()
+  override val form = new AddressFormProvider(FakeCountryOptions())()
 
   def createView = () => companyPreviousAddress(frontendAppConfig, form, NormalMode, Seq.empty)(fakeRequest, messages)
 

@@ -16,64 +16,25 @@
 
 package forms.register.company.directors
 
-import forms.behaviours.StringFieldBehaviours
-import forms.mappings.Constraints
-import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
+import forms.behaviours.AddressBehaviours
 
-class DirectorPreviousAddressPostCodeLookupFormProviderSpec extends StringFieldBehaviours with Constraints {
+class DirectorPreviousAddressPostCodeLookupFormProviderSpec extends AddressBehaviours {
 
-  val requiredKey = "directorPreviousAddressPostCodeLookup.error.required"
-  val lengthKey = "directorPreviousAddressPostCodeLookup.error.length"
-  val invalid = "directorPreviousAddressPostCodeLookup.error.invalid"
-  val maxLength = 8
+  private val requiredKey = "directorPreviousAddressPostCodeLookup.error.required"
+  private val lengthKey = "directorPreviousAddressPostCodeLookup.error.length"
+  private val invalid = "directorPreviousAddressPostCodeLookup.error.invalid"
+  private val fieldName = "value"
 
   val form = new DirectorPreviousAddressPostCodeLookupFormProvider()()
 
   ".value" must {
-
-    val fieldName = "value"
-
-    behave like fieldThatBindsValidData(
+    behave like formWithPostCode(
       form,
       fieldName,
-      RegexpGen.from(postcode)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like fieldWithRegex(
-      form,
-      "value",
-      "12AB AB1",
-      FormError(fieldName, invalid, Seq(postcode))
-    )
-
-    behave like fieldWithTransform(
-      form,
-      s"$fieldName pre-validate",
-      Map(fieldName -> " AB12 1AB "),
-      "AB12 1AB",
-      (actual: String) => actual
-    )
-
-    behave like fieldWithTransform(
-      form,
-      s"$fieldName post-validate",
-      Map(fieldName -> "AB121AB"),
-      "AB12 1AB",
-      (actual: String) => actual
+      requiredKey,
+      lengthKey,
+      invalid
     )
   }
+
 }

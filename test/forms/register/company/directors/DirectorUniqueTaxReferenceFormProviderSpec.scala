@@ -16,29 +16,21 @@
 
 package forms.register.company.directors
 
-import forms.behaviours.OptionFieldBehaviours
-import models.register.company.directors.DirectorUniqueTaxReference
+import forms.behaviours.{OptionFieldBehaviours, UtrBehaviours}
+import models.UniqueTaxReference
 
-class DirectorUniqueTaxReferenceFormProviderSpec extends OptionFieldBehaviours {
+class DirectorUniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
 
-  val requiredKey = "directorUniqueTaxReference.error.required"
   val formProvider = new DirectorUniqueTaxReferenceFormProvider()()
 
   "DirectorUniqueTaxReference form provider" must {
-
-    "successfully bind when yes is selected and valid utr is provided" in {
-      val form = formProvider.bind(Map("directorUtr.hasUtr" -> "true", "directorUtr.utr" -> "1234567890"))
-      form.get shouldBe DirectorUniqueTaxReference.Yes("1234567890")
-    }
-
-    "successfully bind when no is selected and reason is provided" in {
-      val form = formProvider.bind(Map("directorUtr.hasUtr" -> "false", "directorUtr.reason" -> "haven't got utr"))
-      form.get shouldBe DirectorUniqueTaxReference.No("haven't got utr")
-    }
-
-    "fail to bind when value is omitted" in {
-      val expectedError = error("directorUtr.hasUtr", requiredKey)
-      checkForError(formProvider, emptyForm, expectedError)
-    }
+    behave like formWithUtr(
+      formProvider,
+      keyUtrRequired = "directorUniqueTaxReference.error.utr.required",
+      keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
+      keyUtrLength = "directorUniqueTaxReference.error.utr.length",
+      keyReasonLength = "directorUniqueTaxReference.error.reason.length"
+    )
   }
+
 }

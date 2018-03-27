@@ -18,11 +18,8 @@ package utils
 
 import identifiers.TypedIdentifier
 import identifiers.register.company._
-import identifiers.register.company.directors._
+import models.CheckMode
 import models.register.company.CompanyDetails
-import models.register.company.directors.DirectorNino.{No, Yes}
-import models.register.company.directors.{DirectorNino, DirectorUniqueTaxReference}
-import models.{Address, CheckMode}
 import play.api.libs.json.Reads
 import viewmodels.AnswerRow
 
