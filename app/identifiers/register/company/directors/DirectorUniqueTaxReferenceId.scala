@@ -18,7 +18,9 @@ package identifiers.register.company.directors
 
 import identifiers._
 import models.UniqueTaxReference
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, Reads}
+import utils.{CheckYourAnswers, UserAnswers}
+import viewmodels.AnswerRow
 
 case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[UniqueTaxReference] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorUniqueTaxReferenceId.toString
@@ -26,4 +28,40 @@ case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[Uniq
 
 object DirectorUniqueTaxReferenceId {
   override lazy val toString: String = "directorUtr"
+
+  implicit def checkYourAnswers[I <: TypedIdentifier[UniqueTaxReference]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          case _@UniqueTaxReference.Yes(utr) => Seq(
+            AnswerRow(
+              "directorUniqueTaxReference.checkYourAnswersLabel",
+              Seq(s"${UniqueTaxReference.Yes}"),
+              true,
+              changeUrl
+            ),
+            AnswerRow(
+              "directorUniqueTaxReference.checkYourAnswersLabel.utr",
+              Seq(utr),
+              true,
+              changeUrl
+            )
+          )
+          case _@UniqueTaxReference.No(reason) => Seq(
+            AnswerRow(
+              "directorUniqueTaxReference.checkYourAnswersLabel",
+              Seq(s"${UniqueTaxReference.No}"),
+              true,
+              changeUrl
+            ),
+            AnswerRow(
+              "directorUniqueTaxReference.checkYourAnswersLabel.reason",
+              Seq(reason),
+              true,
+              changeUrl
+            )
+          )
+        }.getOrElse(Seq.empty)
+    }
+
 }

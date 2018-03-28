@@ -18,12 +18,17 @@ package controllers
 
 import play.api.test.Helpers._
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
-import play.api.mvc.Call
-import utils.{CheckYourAnswersFactory, CountryOptions, InputOption}
+import models.requests.DataRequest
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, Call}
+import play.api.test.FakeRequest
+import utils.{CheckYourAnswersFactory, CountryOptions, InputOption, UserAnswers}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
+
+  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id", UserAnswers(Json.obj()))
 
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)

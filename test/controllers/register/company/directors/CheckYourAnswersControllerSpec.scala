@@ -21,18 +21,23 @@ import java.time.LocalDate
 import controllers.ControllerSpecBase
 import controllers.actions._
 import models.Index
+import models.requests.DataRequest
+import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{CheckYourAnswersFactory, CountryOptions, DateHelper, InputOption}
+import utils._
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
+  implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id", UserAnswers(Json.obj()))
+
   val index = Index(0)
   val companyName = "Test Company Name"
   val directorName = "test first name test middle name test last name"
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
-  val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   val answersDD: Seq[AnswerRow] = Seq(
     AnswerRow(
@@ -57,7 +62,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      checkYourAnswersFactory
+      new CountryOptions(Seq.empty[InputOption])
     )
 
   def viewAsString() = check_your_answers(
