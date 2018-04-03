@@ -41,6 +41,7 @@ error.address_line_3.invalid = The third line of the address contains invalid ch
 error.address_line_4.invalid = The fourth line of the address contains invalid characters
 error.country.required = Enter a country
 error.country.invalid = Enter a valid country
+error.addressYears.required = Select how long they have been at the current address
 
 error.postcode.required = Enter the postal code
 error.postcode.length = The postal code cannot be more than 8 characters
@@ -299,3 +300,7 @@ individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
 individualDetailsCorrect.error.required = You must make a selection
 individualDetailsCorrect.name = Name
 individualDetailsCorrect.address = Address
+
+
+individualAddressYears.title = How long has {0} been at this address?
+individualAddressYears.heading = How long has {0} been at this address?

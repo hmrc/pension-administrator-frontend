@@ -6,3 +6,8 @@ GET        /individualDetailsCorrect                       controllers.register.
 POST       /individualDetailsCorrect                       controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode = NormalMode)
 GET        /changeIndividualDetailsCorrect                       controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeIndividualDetailsCorrect                       controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode = CheckMode)
+
+GET        /individualAddressYears               controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode = NormalMode)
+POST       /individualAddressYears               controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIndividualAddressYears               controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIndividualAddressYears               controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode = CheckMode)

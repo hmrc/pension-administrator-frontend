@@ -28,6 +28,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
+  def individualAddressYears: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) match {
+    case Some(x) => Seq(AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url))
+    case _ => Nil
+  }
+
   def directorContactDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorContactDetailsId(index)) match {
     case Some(x) => Seq(
       AnswerRow("contactDetails.email", Seq(s"${x.email}"), false,
