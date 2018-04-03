@@ -20,13 +20,12 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.individual.IndividualAddressYearsId
-import models.register.individual.IndividualAddressYears
-import models.{AddressYears, NormalMode}
+import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
+import models.{AddressYears, NormalMode, TolerantIndividual}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -38,7 +37,8 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   val formProvider = new AddressYearsFormProvider()
   val form = formProvider(Message("error.addressYears.required"))
   val questionText = "individualAddressYears.title"
-  val name = "Name from someplace"
+  val individualDetails = TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
+  val name = individualDetails.fullName
   val viewmodel = AddressYearsViewModel(
     postCall = routes.IndividualAddressYearsController.onSubmit(NormalMode),
     title = Message(questionText, name),
@@ -47,34 +47,38 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
     Some(Message("whatYouWillNeed.secondary.heading"))
   )
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualAddressYearsController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeDataCacheConnector, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   def viewAsString(form: Form[_] = form) = addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
+  val validData = UserAnswers()
+    .set(IndividualDetailsId)(individualDetails)
+
+  val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
+
   "IndividualAddressYears Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(IndividualAddressYearsId.toString -> JsString(IndividualAddressYears.values.head.toString))
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+      val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(IndividualAddressYearsId)(AddressYears.values.head)).get.json))
 
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(AddressYears.values.head))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", IndividualAddressYears.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -84,7 +88,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -98,7 +102,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", IndividualAddressYears.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

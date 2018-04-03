@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.individual.IndividualAddressYearsId
+import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -45,15 +45,14 @@ class IndividualAddressYearsController @Inject()(
   private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
     Retrieval(
     implicit request =>
-      IndividualAddressYearsId.retrieve.right.map{
+      IndividualDetailsId.retrieve.right.map{
         details =>
           val questionText = "individualAddressYears.title"
-          val name = "Name from someplace"
           AddressYearsViewModel(
             postCall = routes.IndividualAddressYearsController.onSubmit(mode),
-            title = Message(questionText, name),
-            heading = Message(questionText, name),
-            legend = Message(questionText, name),
+            title = Message(questionText, details.fullName),
+            heading = Message(questionText, details.fullName),
+            legend = Message(questionText, details.fullName),
             Some(Message("whatYouWillNeed.secondary.heading"))
           )
       }
