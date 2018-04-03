@@ -1,0 +1,71 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.individual.routes._
+@import models.{Mode, TolerantAddress, TolerantIndividual}
+@import utils.FormHelpers
+
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("individualDetailsCorrect.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @helpers.form(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.heading("individualDetailsCorrect.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+        <ul class="govuk-check-your-answers form-group cya-questions-short">
+            <li class="tabular-data__entry tabular-data__entry--grouped divider--bottom">
+                <div class="cya-question tabular-data__data tabular-data__data--6-12">
+                    <h2 id="individual-title" class="bold std-text">@messages("individualDetailsCorrect.name")</h2>
+                </div>
+                <div class="cya-answer tabular-data__data tabular-data__data--3-12">
+                    <p>
+                        <span id="individual-value" class="address-multi-line">@individual.fullName</span>
+                    </p>
+                </div>
+            </li>
+            <li class="tabular-data__entry tabular-data__entry--grouped divider--bottom">
+                <div class="cya-question tabular-data__data tabular-data__data--6-12">
+                    <h2 id="address-title" class="bold std-text">@messages("individualDetailsCorrect.address")</h2>
+                </div>
+                <div class="cya-answer tabular-data__data tabular-data__data--3-12">
+                    <p>
+                        @for((line, i) <- address.lines.zipWithIndex) {
+                            <span id="address-value-@i" class="address-multi-line">@line</span>
+                        }
+                    </p>
+                </div>
+            </li>
+        </ul>
+
+        @components.input_yes_no(
+            field = form("value"),
+            label = messages("individualDetailsCorrect.heading"),
+            labelClass = Some("visually-hidden")
+        )
+
+        @components.submit_button()
+    }
+}
