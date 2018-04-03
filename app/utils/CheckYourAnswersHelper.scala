@@ -23,13 +23,13 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
-  def individualDetailsCorrect: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDetailsCorrectId) match {
-    case Some(x) => Seq(AnswerRow("individualDetailsCorrect.checkYourAnswersLabel", if(x) Seq("site.yes") else Seq("site.no"), true, controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(CheckMode).url))
+  def individualAddressYears: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) match {
+    case Some(x) => Seq(AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 
-  def individualAddressYears: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) match {
-    case Some(x) => Seq(AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url))
+  def individualDetailsCorrect: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDetailsCorrectId) match {
+    case Some(x) => Seq(AnswerRow("individualDetailsCorrect.checkYourAnswersLabel", if(x) Seq("site.yes") else Seq("site.no"), true, controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 

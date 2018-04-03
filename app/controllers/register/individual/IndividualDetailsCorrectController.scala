@@ -18,16 +18,17 @@ package controllers.register.individual
 
 import javax.inject.Inject
 
+import config.FrontendAppConfig
+import connectors.{DataCacheConnector, RegistrationConnector}
+import controllers.Retrievals
+import controllers.actions._
+import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
-import config.FrontendAppConfig
-import forms.register.individual.IndividualDetailsCorrectFormProvider
-import identifiers.register.individual.IndividualDetailsCorrectId
-import models.{Mode, TolerantAddress, TolerantIndividual}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
@@ -41,56 +42,44 @@ class IndividualDetailsCorrectController @Inject() (
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: IndividualDetailsCorrectFormProvider
-                                                   ) extends FrontendController with I18nSupport {
+                                                     formProvider: IndividualDetailsCorrectFormProvider,
+                                                     registrationConnector: RegistrationConnector
+                                                   ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+
       val preparedForm = request.userAnswers.get(IndividualDetailsCorrectId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      val individual = TolerantIndividual(
-        Some("John"),
-        Some("T"),
-        Some("Doe")
-      )
+      (IndividualDetailsId and IndividualAddressId).retrieve match {
+        case Right(individual ~ address) =>
+          Future.successful(Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address)))
+        case _ =>
+          for {
+            response <- registrationConnector.registerWithIdIndividual()
+            _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, response.individual)
+            _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, response.address)
+          } yield {
+            Ok(individualDetailsCorrect(appConfig, preparedForm, mode, response.individual, response.address))
+          }
+      }
 
-      val address = TolerantAddress(
-        Some("Building Name"),
-        Some("1 Main Street"),
-        Some("Some Village"),
-        Some("Some Town"),
-        Some("GB"),
-        Some("ZZ1 1ZZ")
-      )
-
-      Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val individual = TolerantIndividual(
-        Some("John"),
-        Some("T"),
-        Some("Doe")
-      )
-
-      val address = TolerantAddress(
-        Some("Building Name"),
-        Some("1 Main Street"),
-        Some("Some Village"),
-        Some("Some Town"),
-        Some("GB"),
-        Some("ZZ1 1ZZ")
-      )
-
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(individualDetailsCorrect(appConfig, formWithErrors, mode, individual, address))),
+        (formWithErrors: Form[_]) => {
+          (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+            case individual ~ address =>
+              Future.successful(BadRequest(individualDetailsCorrect(appConfig, formWithErrors, mode, individual, address)))
+          }
+        },
         (value) =>
           dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
             Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode)(UserAnswers(cacheMap))))

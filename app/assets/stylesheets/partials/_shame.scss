@@ -14,3 +14,8 @@
     display: revert;
   }
 }
+
+// Styling addresses without using <br> tags
+.address-multi-line {
+  display: block;
+}

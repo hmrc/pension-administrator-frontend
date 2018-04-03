@@ -84,7 +84,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
       }
     } andThen {
       case Failure(ex) =>
-        Logger.error("Unable to connect to registerWithIdOrganisation", ex)
+        Logger.error("Unable to connect to registerWithIdIndividual", ex)
         ex
     }
 
