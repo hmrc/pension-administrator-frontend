@@ -40,7 +40,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    val formProvider: AddressFormProvider,
+                                                    formProvider: AddressFormProvider,
                                                     val countryOptions: CountryOptions
                                                    ) extends ManualAddressController with I18nSupport {
 

@@ -304,7 +304,6 @@ individualDetailsCorrect.error.required = You must make a selection
 individualDetailsCorrect.name = Name
 individualDetailsCorrect.address = Address
 
-
 individualAddressYears.title = How long has {0} been at this address?
 individualAddressYears.heading = How long has {0} been at this address?
 individualPreviousAddress.title = individualPreviousAddress

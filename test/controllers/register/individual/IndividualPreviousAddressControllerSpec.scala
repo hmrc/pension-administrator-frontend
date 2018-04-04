@@ -16,9 +16,7 @@
 
 package controllers.register.individual
 
-import base.CSRFRequest
-import config.FrontendAppConfig
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -28,20 +26,17 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import utils._
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with CSRFRequest with OptionValues {
+class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   def countryOptions: CountryOptions = new CountryOptions(options)
 
   val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
@@ -61,12 +56,12 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualPreviousAddressController(frontendAppConfig, messagesApi,
-      FakeDataCacheConnector, FakeNavigator)
+    new IndividualPreviousAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider, countryOptions)
 
-  def viewAsString(form: Form[_] = form) = manualAddress(frontendAppConfig, )(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
-  "CompanyPreviousAddress Controller" must {
+  "IndividualPreviousAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -76,7 +71,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
+      val validData = Json.obj(IndividualPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
