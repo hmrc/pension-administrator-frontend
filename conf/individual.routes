@@ -16,3 +16,5 @@ GET        /individualPreviousAddress                       controllers.register
 POST       /individualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /changeIndividualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeIndividualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /youWillNeedToUpdate                   controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()
