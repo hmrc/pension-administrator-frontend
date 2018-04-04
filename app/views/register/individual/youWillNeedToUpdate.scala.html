@@ -26,4 +26,11 @@
     @components.back_link()
 
     @components.heading("youWillNeedToUpdate.heading")
+
+    <p>
+        @messages("youWillNeedToUpdate.text")
+        <a id="inform-hmrc-link" href="@appConfig.tellHMRCChangesUrl">
+            @messages(s"youWillNeedToUpdate.link")
+        </a>
+    </p>
 }

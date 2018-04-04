@@ -2,4 +2,4 @@
 GET        /whatYouWillNeed                       controllers.register.individual.WhatYouWillNeedController.onPageLoad()
 POST       /whatYouWillNeed                       controllers.register.individual.WhatYouWillNeedController.onSubmit()
 
-GET        /youWillNeedToUpdate                       controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()
+GET        /youWillNeedToUpdate                   controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()

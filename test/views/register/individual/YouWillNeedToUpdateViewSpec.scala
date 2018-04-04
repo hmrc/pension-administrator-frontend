@@ -16,14 +16,13 @@
 
 package views.register.individual
 
-import play.api.data.Form
-import controllers.routes
 import views.behaviours.ViewBehaviours
-import models.NormalMode
 import views.html.register.individual.youWillNeedToUpdate
 
 class YouWillNeedToUpdateViewSpec extends ViewBehaviours {
 
+
+  val tellHMRCChangesUrl = "https://www.gov.uk/tell-hmrc-change-of-details"
   val messageKeyPrefix = "youWillNeedToUpdate"
 
   def createView = () => youWillNeedToUpdate(frontendAppConfig)(fakeRequest, messages)
@@ -32,5 +31,12 @@ class YouWillNeedToUpdateViewSpec extends ViewBehaviours {
     behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)
+
+    "have link for enter address manually" in {
+      createView must haveLink(
+        tellHMRCChangesUrl,
+        "inform-hmrc-link"
+      )
+    }
   }
 }
