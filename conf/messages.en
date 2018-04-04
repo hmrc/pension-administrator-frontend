@@ -84,8 +84,12 @@ common.previousAddressList.heading = Select the previous address
 common.previousAddressList.error.required = Select an address
 common.addressYears.underAYear = Less than 12 months
 common.addressYears.overAYear = More than 12 months
+common.previousAddress.heading = Previous Address
+common.previousAddress.title = Previous Address
+common.previousAddress.lede = This can be a residential or company address.
 common.individual.secondary.heading = Register as a new pension scheme administrator
-
+common.manual.address.title = Address
+common.manual.address.heading = Address
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -303,3 +307,5 @@ individualDetailsCorrect.address = Address
 
 individualAddressYears.title = How long has {0} been at this address?
 individualAddressYears.heading = How long has {0} been at this address?
+individualPreviousAddress.title = individualPreviousAddress
+individualPreviousAddress.heading = individualPreviousAddress

@@ -11,3 +11,8 @@ GET        /individualAddressYears               controllers.register.individual
 POST       /individualAddressYears               controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeIndividualAddressYears               controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeIndividualAddressYears               controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /individualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /individualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIndividualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIndividualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = CheckMode)
