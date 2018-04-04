@@ -18,3 +18,8 @@ GET        /changeIndividualPreviousAddress                       controllers.re
 POST       /changeIndividualPreviousAddress                       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET        /youWillNeedToUpdate                   controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()
+
+GET        /individualPreviousAddressPostCodeLookup               controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /individualPreviousAddressPostCodeLookup               controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIndividualPreviousAddressPostCodeLookup                        controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIndividualPreviousAddressPostCodeLookup                        controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
