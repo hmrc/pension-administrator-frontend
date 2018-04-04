@@ -24,33 +24,33 @@ class MessageSpec extends SpecBase with MustMatchers with OptionValues {
   "resolve" must {
 
     "explicitly resolve a literal string to itself" in {
-      val message: Message = "messages__common__first_name"
-      message.resolve mustEqual "messages__common__first_name"
+      val message: Message = "common.firstname"
+      message.resolve mustEqual "common.firstname"
     }
 
     "implicitly resolve a literal string to itself" in {
-      val message: Message = "messages__common__first_name"
-      (message: String) mustEqual "messages__common__first_name"
+      val message: Message = "common.firstname"
+      (message: String) mustEqual "common.firstname"
     }
 
     "explicitly resolve a message key to its value" in {
-      val message: Message = Message("messages__common__first_name")
-      message.resolve(messages) mustEqual messages("messages__common__first_name")
+      val message: Message = Message("common.firstname")
+      message.resolve(messages) mustEqual messages("common.firstname")
     }
 
     "implicitly resolve a message key to its value" in {
-      val message: String = Message("messages__common__first_name")
-      message mustEqual messages("messages__common__first_name")
+      val message: String = Message("common.firstname")
+      message mustEqual messages("common.firstname")
     }
 
     "implicitly resolve an optional message" in {
-      val message: Option[String] = Some(Message("messages__common__first_name"))
-      message.value mustEqual messages("messages__common__first_name")
+      val message: Option[String] = Some(Message("common.firstname"))
+      message.value mustEqual messages("common.firstname")
     }
 
     "resolve a message with args" in {
-      val message: Message = Message("messages__common__postcode_lookup__enter_postcode", "foo", "bar")
-      message.resolve mustEqual messages("messages__common__postcode_lookup__enter_postcode", "foo", "bar")
+      val message: Message = Message("common.postcodeLookup.enterPostcode", "foo", "bar")
+      message.resolve mustEqual messages("common.postcodeLookup.enterPostcode", "foo", "bar")
     }
   }
 
