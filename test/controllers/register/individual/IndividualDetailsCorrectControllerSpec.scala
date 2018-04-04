@@ -18,15 +18,18 @@ package controllers.register.individual
 
 import play.api.data.Form
 import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
+import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
-import identifiers.register.individual.IndividualDetailsCorrectId
-import models.{NormalMode, TolerantAddress, TolerantIndividual}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import models._
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.register.individual.individualDetailsCorrect
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
 
@@ -34,18 +37,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
-
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualDetailsCorrectController(
-      frontendAppConfig,
-      messagesApi,
-      FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider
-    )
 
   private val individual = TolerantIndividual(
     Some("John"),
@@ -61,6 +52,43 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
     Some("GB"),
     Some("ZZ1 1ZZ")
   )
+
+  private object FakeRegistrationConnector extends RegistrationConnector {
+    //noinspection NotImplementedCode
+    override def registerWithIdOrganisation
+        (utr: String, organisation: Organisation)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = ???
+
+    override def registerWithIdIndividual()
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
+      Future.successful(IndividualRegisterWithIdResponse(individual, address))
+    }
+  }
+
+  private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
+    //noinspection NotImplementedCode
+    override def registerWithIdOrganisation
+    (utr: String, organisation: Organisation)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = ???
+
+    override def registerWithIdIndividual()
+                                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
+      throw new Exception("registerWithIdIndividual should not be called in this test")
+    }
+  }
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, registrationConnector: RegistrationConnector = FakeRegistrationConnector) =
+    new IndividualDetailsCorrectController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider,
+      registrationConnector
+    )
 
   private def viewAsString(form: Form[_] = form) =
     individualDetailsCorrect(
@@ -80,6 +108,15 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
 
+    "save the individual and address details on a GET" in {
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+
+      FakeDataCacheConnector.verify(IndividualDetailsId, individual)
+      FakeDataCacheConnector.verify(IndividualAddressId, address)
+    }
+
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(IndividualDetailsCorrectId.toString -> true)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
@@ -87,6 +124,18 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(true))
+    }
+
+    "use existing individual details and address data if present" in {
+      val data = Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressId.toString -> address
+      )
+      val getRelevantData = new FakeDataRetrievalAction(Some(data))
+
+      val result = controller(getRelevantData, ExceptionThrowingRegistrationConnector).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -98,11 +147,25 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
+    "save the user answer when valid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      FakeDataCacheConnector.verify(IndividualDetailsCorrectId, true)
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
+      val data = Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressId.toString -> address
+      )
+      val getRelevantData = new FakeDataRetrievalAction(Some(data))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -122,5 +185,15 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
+
+    "redirect to Session Expired for a POST when invalid data is submitted and no individual details or address are found" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid"))
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
   }
+
 }

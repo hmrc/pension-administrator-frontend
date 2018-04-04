@@ -35,22 +35,22 @@
 
         @components.heading("individualDetailsCorrect.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
-        <ul class="govuk-check-your-answers form-group cya-questions-short">
-            <li class="tabular-data__entry tabular-data__entry--grouped divider--bottom">
-                <div class="cya-question tabular-data__data tabular-data__data--6-12">
-                    <h2 id="individual-title" class="bold std-text">@messages("individualDetailsCorrect.name")</h2>
+        <ul>
+            <li class="tabular-data__entry divider--bottom">
+                <div class="tabular-data__data tabular-data__data--6-12">
+                    <h2 id="individual-title" class="bold">@messages("individualDetailsCorrect.name")</h2>
                 </div>
-                <div class="cya-answer tabular-data__data tabular-data__data--3-12">
+                <div class="tabular-data__data tabular-data__data--3-12">
                     <p>
                         <span id="individual-value" class="address-multi-line">@individual.fullName</span>
                     </p>
                 </div>
             </li>
-            <li class="tabular-data__entry tabular-data__entry--grouped divider--bottom">
-                <div class="cya-question tabular-data__data tabular-data__data--6-12">
+            <li class="tabular-data__entry divider--bottom">
+                <div class="tabular-data__data tabular-data__data--6-12">
                     <h2 id="address-title" class="bold std-text">@messages("individualDetailsCorrect.address")</h2>
                 </div>
-                <div class="cya-answer tabular-data__data tabular-data__data--3-12">
+                <div class="tabular-data__data tabular-data__data--3-12">
                     <p>
                         @for((line, i) <- address.lines.zipWithIndex) {
                             <span id="address-value-@i" class="address-multi-line">@line</span>
