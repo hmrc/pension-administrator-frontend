@@ -20,7 +20,7 @@ import javax.inject.Singleton
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import models.{Organisation, RegisterWithIdResponse}
+import models.{IndividualRegisterWithIdResponse, Organisation, OrganizationRegisterWithIdResponse}
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
@@ -34,7 +34,10 @@ import scala.util.Failure
 trait RegistrationConnector {
   def registerWithIdOrganisation
       (utr: String, organisation: Organisation)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegisterWithIdResponse]
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse]
+
+  def registerWithIdIndividual()
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse]
 }
 
 @Singleton
@@ -42,7 +45,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   override def registerWithIdOrganisation
       (utr: String, organisation: Organisation)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegisterWithIdResponse] = {
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
 
     val url = config.registerWithIdOrganisationUrl
 
@@ -54,15 +57,37 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
     http.POST(url, body) map {response =>
       require(response.status == Status.OK, "The only valid response to registerWithIdOrganisation is 200 OK")
-      Json.parse(response.body).validate[RegisterWithIdResponse] match {
+
+      Json.parse(response.body).validate[OrganizationRegisterWithIdResponse] match {
         case JsSuccess(value, _) => value
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
       case Failure(ex) =>
-        Logger.error("Unable to connect to RegisterWithId", ex)
+        Logger.error("Unable to connect to registerWithIdOrganisation", ex)
         ex
     }
+
+  }
+
+  override def registerWithIdIndividual()
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
+
+    val url = config.registerWithIdIndividualUrl
+
+    http.POSTEmpty(url) map { response =>
+      require(response.status == Status.OK, "The only valid response to registerWithIdIndividual is 200 OK")
+
+      Json.parse(response.body).validate[IndividualRegisterWithIdResponse] match {
+        case JsSuccess(value, _) => value
+        case JsError(errors) => throw JsResultException(errors)
+      }
+    } andThen {
+      case Failure(ex) =>
+        Logger.error("Unable to connect to registerWithIdIndividual", ex)
+        ex
+    }
+
   }
 
 }

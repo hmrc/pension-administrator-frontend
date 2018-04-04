@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers.register.individual
 
-import play.api.mvc.Call
-import identifiers.Identifier
-import models.{Mode, NormalMode}
+import identifiers.TypedIdentifier
+import models.TolerantIndividual
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
-
-  private[this] var userAnswers: Option[UserAnswers] = None
-
-  override def nextPage(controllerId: Identifier, mode: Mode): (UserAnswers) => Call = {
-    (ua) =>
-      userAnswers = Some(ua)
-      desiredRoute
-  }
-
-  def lastUserAnswers: Option[UserAnswers] = userAnswers
-
+case object IndividualDetailsId extends TypedIdentifier[TolerantIndividual] {
+  override def toString: String = "individualDetails"
 }
-
-object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

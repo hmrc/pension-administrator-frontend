@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import models.Person
+import viewmodels.Person
 import views.ViewSpecBase
 
 trait PeopleListBehaviours {

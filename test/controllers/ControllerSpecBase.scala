@@ -22,6 +22,8 @@ import base.SpecBase
 import controllers.actions.FakeDataRetrievalAction
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.individual.IndividualDetailsId
+import models.TolerantIndividual
 import models.register.company.CompanyDetails
 import models.register.company.directors.DirectorDetails
 import play.api.libs.json.Json
@@ -43,6 +45,12 @@ trait ControllerSpecBase extends SpecBase {
           DirectorDetailsId.toString -> DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
         )
       )
+    )))
+
+  def getIndividual: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(
+      IndividualDetailsId.toString ->
+        TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
     )))
 
 }

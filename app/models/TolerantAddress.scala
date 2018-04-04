@@ -43,6 +43,17 @@ case class TolerantAddress(addressLine1: Option[String],
     }
   }
 
+  def lines: Seq[String] = {
+    Seq(
+      this.addressLine1,
+      this.addressLine2,
+      this.addressLine3,
+      this.addressLine4,
+      this.country,
+      this.postcode
+    ).flatten(s => s)
+  }
+
 }
 
 object TolerantAddress {

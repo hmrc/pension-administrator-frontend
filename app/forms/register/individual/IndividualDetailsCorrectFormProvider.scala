@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package forms.register.individual
 
-import play.api.mvc.Call
-import identifiers.Identifier
-import models.{Mode, NormalMode}
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class IndividualDetailsCorrectFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  private[this] var userAnswers: Option[UserAnswers] = None
-
-  override def nextPage(controllerId: Identifier, mode: Mode): (UserAnswers) => Call = {
-    (ua) =>
-      userAnswers = Some(ua)
-      desiredRoute
-  }
-
-  def lastUserAnswers: Option[UserAnswers] = userAnswers
-
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("individualDetailsCorrect.error.required")
+    )
 }
-
-object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

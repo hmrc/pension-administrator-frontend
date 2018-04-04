@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models.register.company.CompanyDetails
-import models.{TolerantAddress, NormalMode, Organisation, RegisterWithIdResponse}
+import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
@@ -49,15 +49,19 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation
         (utr: String, organisation: Organisation)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegisterWithIdResponse] = {
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
 
         if (utr == validUtr) {
-          Future.successful(RegisterWithIdResponse(testAddress))
+          Future.successful(OrganizationRegisterWithIdResponse(testAddress))
         }
         else {
           Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
         }
     }
+
+    //noinspection NotImplementedCode
+    def registerWithIdIndividual()
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

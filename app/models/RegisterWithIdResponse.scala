@@ -16,21 +16,32 @@
 
 package models
 
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class RegisterWithIdResponse(address: TolerantAddress)
+abstract class RegisterWithIdResponse(address: TolerantAddress)
+
+case class OrganizationRegisterWithIdResponse(address: TolerantAddress) extends RegisterWithIdResponse(address)
+
+case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address)
 
 object RegisterWithIdResponse {
 
-  implicit lazy val readsRegisterWithIdResponse: Reads[RegisterWithIdResponse] =
+  implicit lazy val readsOrganizationRegisterWithIdResponse: Reads[OrganizationRegisterWithIdResponse] =
     (JsPath \ "address").read[TolerantAddress].map { address =>
-      RegisterWithIdResponse(address)
+      OrganizationRegisterWithIdResponse(address)
     }
 
-  implicit lazy val writesRegisterWithIdResponse: Writes[RegisterWithIdResponse] = Writes[RegisterWithIdResponse] { response =>
+  implicit lazy val writesOrganizationRegisterWithIdResponse: Writes[OrganizationRegisterWithIdResponse] =
+      Writes[OrganizationRegisterWithIdResponse] { response =>
     Json.obj(
       "address" -> response.address
     )
   }
+
+  implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = (
+    (JsPath \ "individual").format[TolerantIndividual] and
+    (JsPath \ "address").format[TolerantAddress]
+  )(IndividualRegisterWithIdResponse.apply, unlift(IndividualRegisterWithIdResponse.unapply))
 
 }
