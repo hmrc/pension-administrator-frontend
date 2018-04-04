@@ -303,3 +303,8 @@ individualDetailsCorrect.address = Address
 
 individualAddressYears.title = How long has {0} been at this address?
 individualAddressYears.heading = How long has {0} been at this address?
+
+youWillNeedToUpdate.title = You need to update your details before registering
+youWillNeedToUpdate.heading = You need to update your details before registering
+youWillNeedToUpdate.text = If you are an individual or partnership and are not registered with Companies House
+youWillNeedToUpdate.link = you only need to inform HMRC
