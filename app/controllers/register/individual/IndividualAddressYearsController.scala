@@ -53,12 +53,12 @@ class IndividualAddressYearsController @Inject()(
             title = Message(questionText, details.fullName),
             heading = Message(questionText, details.fullName),
             legend = Message(questionText, details.fullName),
-            Some(Message("whatYouWillNeed.secondary.heading"))
+            Some(Message("common.individual.secondary.heading"))
           )
       }
   )
 
-  private val form: Form[AddressYears] = formProvider(Message("messages__common_error__current_address_years"))
+  private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {

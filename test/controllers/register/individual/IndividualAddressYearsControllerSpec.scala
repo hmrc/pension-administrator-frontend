@@ -44,7 +44,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
     title = Message(questionText, name),
     heading = Message(questionText, name),
     legend = Message(questionText, name),
-    Some(Message("whatYouWillNeed.secondary.heading"))
+    Some(Message("common.individual.secondary.heading"))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
