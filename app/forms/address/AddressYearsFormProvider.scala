@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package utils
+package forms.address
 
-import play.api.mvc.Call
-import identifiers.Identifier
-import models.{Mode, NormalMode}
+import com.google.inject.Inject
+import forms.mappings.Mappings
+import models.AddressYears
+import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class AddressYearsFormProvider @Inject() extends Mappings {
 
-  private[this] var userAnswers: Option[UserAnswers] = None
-
-  override def nextPage(controllerId: Identifier, mode: Mode): (UserAnswers) => Call = {
-    (ua) =>
-      userAnswers = Some(ua)
-      desiredRoute
-  }
-
-  def lastUserAnswers: Option[UserAnswers] = userAnswers
-
+  def apply(requiredError: Message)(implicit messages: Messages): Form[AddressYears] =
+    Form(
+      "value" -> enumerable[AddressYears](requiredError)
+    )
 }
 
-object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

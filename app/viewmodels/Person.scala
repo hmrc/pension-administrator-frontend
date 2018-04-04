@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package viewmodels
 
 import controllers.register.company.directors.routes
 import models.register.company.directors.DirectorDetails
+import models.{Index, NormalMode}
 
 import scala.language.implicitConversions
 

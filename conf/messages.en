@@ -41,6 +41,7 @@ error.address_line_3.invalid = The third line of the address contains invalid ch
 error.address_line_4.invalid = The fourth line of the address contains invalid characters
 error.country.required = Enter a country
 error.country.invalid = Enter a valid country
+error.addressYears.required = Select how long they have been at the current address
 
 error.postcode.required = Enter the postal code
 error.postcode.length = The postal code cannot be more than 8 characters
@@ -83,7 +84,7 @@ common.previousAddressList.heading = Select the previous address
 common.previousAddressList.error.required = Select an address
 common.addressYears.underAYear = Less than 12 months
 common.addressYears.overAYear = More than 12 months
-
+common.individual.secondary.heading = Register as a new pension scheme administrator
 
 
 unauthorised.title = You can’t access this service with this account
@@ -288,7 +289,17 @@ companyAddress.checkYourAnswersLabel = Address
 
 whatYouWillNeed.title = What you’ll need
 whatYouWillNeed.heading = What you’ll need
-whatYouWillNeed.secondary.heading = Register as a new pension scheme administrator
 whatYouWillNeed.body.text = To register as a pension scheme administrator (PSA) with HMRC you will need:
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
 whatYouWillNeed.body.item2 = your contact telephone number and email address
+
+individualDetailsCorrect.title = Are your details correct?
+individualDetailsCorrect.heading = Are your details correct?
+individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
+individualDetailsCorrect.error.required = You must make a selection
+individualDetailsCorrect.name = Name
+individualDetailsCorrect.address = Address
+
+
+individualAddressYears.title = How long has {0} been at this address?
+individualAddressYears.heading = How long has {0} been at this address?
