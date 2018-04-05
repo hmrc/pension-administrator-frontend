@@ -25,7 +25,7 @@ class AddressListFormProvider @Inject()() extends Mappings with Constraints {
 
   def apply(addresses: Seq[_]): Form[Int] =
     Form(
-      "value" -> int("messages__error__select_address")
+      "value" -> int("common.previousAddressList.error.required")
         .verifying(minimumValue(0, "error.invalid"))
         .verifying(maximumValue(addresses.length - 1, "error.invalid"))
     )

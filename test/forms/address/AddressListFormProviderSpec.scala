@@ -31,7 +31,7 @@ class AddressListFormProviderSpec extends FormBehaviours {
     behave like questionForm[Int](0)
 
     "fail to bind when value is omitted" in {
-      val expectedError = error("value", "messages__error__select_address")
+      val expectedError = error("value", "common.previousAddressList.error.required")
       checkForError(form, emptyForm, expectedError)
     }
 
