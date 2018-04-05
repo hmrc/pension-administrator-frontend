@@ -291,8 +291,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-companyAddress.title = Company address
-companyAddress.heading = Company address
+companyAddress.title = Is this your address?
+companyAddress.heading = Is this your address?
 companyAddress.checkYourAnswersLabel = Address
 
 whatYouWillNeed.title = What you’ll need
@@ -336,8 +336,4 @@ individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 individualPreviousAddressPostCodeLookup.formHint = Example, NE12 8ER
 
-
-companyAddress.title = companyAddress
-companyAddress.heading = companyAddress
-companyAddress.checkYourAnswersLabel = companyAddress
 companyAddress.error.required = Please give an answer for companyAddress
