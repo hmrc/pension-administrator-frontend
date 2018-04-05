@@ -303,3 +303,6 @@ individualDetailsCorrect.address = Address
 
 individualAddressYears.title = How long has {0} been at this address?
 individualAddressYears.heading = How long has {0} been at this address?
+
+contactDetails.individual.lede = We will use this information to contact you about your schemes. You can enter a group or individual email.
+

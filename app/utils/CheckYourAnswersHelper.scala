@@ -23,6 +23,11 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
+  def contactDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualContactDetailsId) match {
+    case Some(x) => Seq(AnswerRow("contactDetails.checkYourAnswersLabel", Seq(x.email,x.phone), false, controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url))
+    case _ => Nil
+  }
+
   def individualAddressYears: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) match {
     case Some(x) => Seq(AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url))
     case _ => Nil
