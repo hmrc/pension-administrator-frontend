@@ -40,7 +40,7 @@ class MicroserviceCacheConnectorSpec extends WordSpec
   override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private def url(id: String): String = s"/pensions-scheme/journey-cache/scheme/$id"
+  private def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
 
   private lazy val connector = injector.instanceOf[MicroserviceCacheConnector]
   private lazy val crypto = injector.instanceOf[ApplicationCrypto].JsonCrypto
