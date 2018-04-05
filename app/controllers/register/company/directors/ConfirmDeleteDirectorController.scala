@@ -55,11 +55,10 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
 
       removal match {
         case JsSuccess(UserAnswers(updatedJson), _) =>
-          dataCacheConnector.cacheUpsert(request.externalId, updatedJson)
+          dataCacheConnector.upsert(request.externalId, updatedJson)
             .map(_ => Redirect(AddCompanyDirectorsController.onPageLoad(NormalMode)))
         case JsError(errors) =>
           Future.failed(JsResultException(errors))
       }
-
   }
 }

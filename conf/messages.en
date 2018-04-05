@@ -46,6 +46,7 @@ error.addressYears.required = Select how long they have been at the current addr
 error.postcode.required = Enter the postal code
 error.postcode.length = The postal code cannot be more than 8 characters
 error.postcode.invalid = Enter a valid postal code
+error.postcode.noResults = No results found for that postal code
 
 index.title = Pension Scheme Registrations
 index.heading = Pension Scheme Registrations
@@ -69,6 +70,7 @@ site.continue = Continue
 site.service_name = Pension Scheme Registrations
 site.textarea.char_limit = (Limit is {0} characters)
 site.secondaryHeader = Register a new Pension Scheme Administrator
+site.find_address = Find address
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -320,4 +322,17 @@ youWillNeedToUpdate.link = you only need to inform HMRC
 
 
 contactDetails.individual.lede = We will use this information to contact you about your schemes. You can enter a group or individual email.
+
+companyReview.title = Review the company details
+companyReview.heading = Review the company details
+companyReview.editLink = Edit company details
+companyReview.directors.heading = Company directors
+companyReview.directors.editLink = Add, delete or edit company directors
+
+individualPreviousAddressPostCodeLookup.title = Previous address
+individualPreviousAddressPostCodeLookup.heading = Previous address
+individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
+individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0} enter the address manually {1}
+individualPreviousAddressPostCodeLookup.formLabel = Postcode
+individualPreviousAddressPostCodeLookup.formHint = Example, NE12 8ER
 
