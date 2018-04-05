@@ -2,14 +2,14 @@
 
 echo "Applying migration ContactDetails"
 
-echo "Adding routes to app.routes"
+echo "Adding routes to register.individual.routes"
 
-echo "" >> ../conf/app.routes
-echo "GET        /contactDetails                       controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /contactDetails                       controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "" >> ../conf/register.individual.routes
+echo "GET        /contactDetails                       controllers.register.individual.ContactDetailsController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/register.individual.routes
+echo "POST       /contactDetails                       controllers.register.individual.ContactDetailsController.onSubmit(mode: Mode = NormalMode)" >> ../conf/register.individual.routes
 
-echo "GET        /changeContactDetails                       controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
-echo "POST       /changeContactDetails                       controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes
+echo "GET        /changeContactDetails                       controllers.register.individual.ContactDetailsController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/register.individual.routes
+echo "POST       /changeContactDetails                       controllers.register.individual.ContactDetailsController.onSubmit(mode: Mode = CheckMode)" >> ../conf/register.individual.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -25,8 +25,9 @@ echo "Adding helper method to CheckYourAnswersHelper"
 awk '/class/ {\
      print;\
      print "";\
-     print "  def contactDetails: Option[AnswerRow] = userAnswers.get(identifiers.app.ContactDetailsId) map {";\
-     print "    x => AnswerRow(\"contactDetails.checkYourAnswersLabel\", s\"${x.field1} ${x.field2}\", false, controllers.app.routes.ContactDetailsController.onPageLoad(CheckMode).url)";\
+     print "  def contactDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.ContactDetailsId) match {";\
+     print "    case Some(x) => Seq(AnswerRow(\"contactDetails.checkYourAnswersLabel\", s\"${x.field1} ${x.field2}\", false, controllers.register.individual.routes.ContactDetailsController.onPageLoad(CheckMode).url))";\
+     print "    case _ => Nil";\
      print "  }";\
      next }1' ../app/utils/CheckYourAnswersHelper.scala > tmp && mv tmp ../app/utils/CheckYourAnswersHelper.scala
 

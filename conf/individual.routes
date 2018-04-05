@@ -19,6 +19,11 @@ POST       /changeIndividualPreviousAddress                       controllers.re
 
 GET        /youWillNeedToUpdate                   controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()
 
+GET        /individualContactDetails                       controllers.register.individual.IndividualContactDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /individualContactDetails                       controllers.register.individual.IndividualContactDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIndividualContactDetails                       controllers.register.individual.IndividualContactDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIndividualContactDetails                       controllers.register.individual.IndividualContactDetailsController.onSubmit(mode: Mode = CheckMode)
+
 GET        /individualPreviousAddressPostCodeLookup               controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST       /individualPreviousAddressPostCodeLookup               controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /changeIndividualPreviousAddressPostCodeLookup                        controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)

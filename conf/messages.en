@@ -319,6 +319,10 @@ youWillNeedToUpdate.heading = You need to update your details before registering
 youWillNeedToUpdate.text = If you are an individual or partnership and are not registered with Companies House
 youWillNeedToUpdate.link = you only need to inform HMRC
 
+
+
+contactDetails.individual.lede = We will use this information to contact you about your schemes. You can enter a group or individual email.
+
 companyReview.title = Review the company details
 companyReview.heading = Review the company details
 companyReview.editLink = Edit company details
