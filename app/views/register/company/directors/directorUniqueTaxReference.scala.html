@@ -40,34 +40,34 @@
         @components.heading("directorUniqueTaxReference.heading", secondaryHeaderKey = Some(directorName))
 
         @components.fieldSet(
-            field = form("directorUtr.hasUtr"),
+            field = form("utr.hasUtr"),
             legend = messages("directorUniqueTaxReference.heading"),
             hint = Some(messages("directorUniqueTaxReference.hint")),
             hiddenLegend = true
         ){
             @components.radio(
-                field = form("directorUtr.hasUtr"),
+                field = form("utr.hasUtr"),
                 label = options.head.label,
                 value = options.head.value,
                 dataTarget = options.head.dataTarget
             )
 
             @components.input_text(
-                field = form("directorUtr.utr"),
+                field = form("utr.utr"),
                 label = messages("directorUniqueTaxReference.utr.text"),
                 groupClass = Some("js-hidden panel panel-border-narrow"),
                 hint = Some(messages("directorUniqueTaxReference.number.hint"))
             )
 
             @components.radio(
-                field = form("directorUtr.hasUtr"),
+                field = form("utr.hasUtr"),
                 label = options(1).label,
                 value = options(1).value,
                 dataTarget = options(1).dataTarget
             )
 
             @components.input_text(
-                field = form("directorUtr.reason"),
+                field = form("utr.reason"),
                 label = messages("directorUniqueTaxReference.reason.text"),
                 groupClass = Some("js-hidden panel panel-border-narrow")
             )
