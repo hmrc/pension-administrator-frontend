@@ -18,18 +18,23 @@ package controllers.register.company
 
 import javax.inject.Inject
 
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
+import controllers.actions._
+import forms.company.CompanyAddressFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
-import models.{Mode, Organisation, OrganisationTypeEnum}
-import play.api.mvc.{Action, AnyContent}
+import models.requests.DataRequest
+import models.{Mode, Organisation, OrganisationTypeEnum, TolerantAddress}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
 import views.html.register.company.companyAddress
+
+import scala.concurrent.Future
 
 class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
@@ -38,29 +43,46 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         registrationConnector: RegistrationConnector
+                                         registrationConnector: RegistrationConnector,
+                                         formProvider: CompanyAddressFormProvider
                                         ) extends FrontendController with I18nSupport with Retrievals {
+
+  private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieve(CompanyDetailsId)( companyDetails => {
-        retrieve(CompanyUniqueTaxReferenceId)( utr => {
-          val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
-
-          registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-            dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map(_ =>
-              Ok(companyAddress(appConfig, response.address)))
-          } recover {
-            case _: NotFoundException =>
-              Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
-          }
-        })
-      })
+      getCompanyAddress(mode){ response =>
+        Future.successful(Ok(companyAddress(appConfig, response)))
+      }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
+      getCompanyAddress(mode) { response =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(companyAddress(appConfig, response))),
+          (value) => {
+            dataCacheConnector.save(request.externalId, CompanyAddressId, response).map(cacheMap =>
+              Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
+            )
+          }
+        )
+      }
+
+  }
+
+  def getCompanyAddress(mode: Mode)(fn: TolerantAddress => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+    retrieve(CompanyDetailsId)( companyDetails => {
+      retrieve(CompanyUniqueTaxReferenceId)( utr => {
+        val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
+          registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
+            fn(response.address)
+          } recoverWith {
+            case _: NotFoundException =>
+              Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
+          }
+      })
+    })
   }
 
 }

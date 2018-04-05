@@ -19,9 +19,11 @@ package controllers.register.company
 import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import forms.company.CompanyAddressFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models.register.company.CompanyDetails
 import models._
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
@@ -43,14 +45,16 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     Some("UK")
   )
 
+  val formProvider = new CompanyAddressFormProvider
+
+  val form: Form[Boolean] = formProvider()
+
   private val validUtr = "1234567890"
   private val invalidUtr = "INVALID"
 
   private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation
-        (utr: String, organisation: Organisation)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
-
+    override def registerWithIdOrganisation(utr: String, organisation: Organisation)
+                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
         if (utr == validUtr) {
           Future.successful(OrganizationRegisterWithIdResponse(testAddress))
         }
@@ -58,15 +62,22 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
           Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
         }
     }
+    override def registerWithIdIndividual()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
 
-    //noinspection NotImplementedCode
-    def registerWithIdIndividual()
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, fakeRegistrationConnector)
+    new CompanyAddressController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      fakeRegistrationConnector,
+      formProvider
+    )
 
   private def viewAsString(): String = companyAddress(frontendAppConfig, testAddress)(fakeRequest, messages).toString
 
@@ -84,59 +95,97 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
 
-    "save the address to user answers when UTR is valid" in {
+    "save the address to user answers when request data and UTR is valid" in {
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
       val data = Json.obj(
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
         CompanyUniqueTaxReferenceId.toString -> validUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
 
       status(result) mustBe OK
       FakeDataCacheConnector.verify(CompanyAddressId, testAddress)
     }
 
-    "redirect to the next page when the UTR is invalid" in {
-      val data = Json.obj(
-        CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
-      )
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+    "return a Bad Request and errors when invalid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString()
     }
 
-    "redirect to Session Expired for a GET if no company details data is found" in {
-      val data = Json.obj(
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
-      )
+    "redirect to the next page" when {
+      "the UTR is invalid" in {
+        val data = Json.obj(
+          CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
+          CompanyUniqueTaxReferenceId.toString -> invalidUtr
+        )
+        val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+        val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      "valid data is submitted" which {
+        "will save the address" in {
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+          val result = controller().onSubmit(NormalMode)(postRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+        }
+      }
     }
 
-    "redirect to Session Expired for a GET if no UTR data is found" in {
-      val data = Json.obj(
-        CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None)
-      )
+    "redirect to Session Expired" when {
+      "GET" when {
+        "no company details data is found" in {
+          val data = Json.obj(
+            CompanyUniqueTaxReferenceId.toString -> invalidUtr
+          )
 
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+          val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+        "no UTR data is found" in {
+          val data = Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None)
+          )
 
-    "redirect to the next page on a POST" in {
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+          val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+
+        "no existing data is found" in {
+          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+      }
+      "POST" when {
+        "no existing data is found" in {
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+      }
     }
 
   }
