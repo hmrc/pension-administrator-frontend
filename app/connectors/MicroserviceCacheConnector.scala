@@ -34,7 +34,7 @@ class MicroserviceCacheConnector @Inject() (
                                              crypto: ApplicationCrypto
                                            ) extends DataCacheConnector {
 
-  private def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/journey-cache/scheme/$id"
+  private def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/journey-cache/psa/$id"
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
