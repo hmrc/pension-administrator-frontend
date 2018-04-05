@@ -32,6 +32,7 @@ private object AppDependencies {
   private val scalacheckGenRegexp = "0.1.0"
   private val domainVersion = "5.1.0"
   private val wireMockVersion = "2.15.0"
+  private val whitelistVersion = "2.0.0"
 
   val compile = Seq(
     ws,
@@ -44,7 +45,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalFormMappingVersion,
     "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapVersion,
     "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
-    "uk.gov.hmrc" %% "domain" % domainVersion
+    "uk.gov.hmrc" %% "domain" % domainVersion,
+    "uk.gov.hmrc" %% "play-whitelist-filter" % whitelistVersion
   )
 
   trait TestDependencies {
