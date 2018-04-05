@@ -138,9 +138,9 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
           implicit val materializer: Materializer = app.materializer
 
           val answers = UserAnswers().set(FakeIdentifier)(ContactDetails("test@test.com", "123456789")).get
-          when(cacheConnector.save[ContactDetails, FakeIdentifier.type](
-          eqTo(FakeIdentifier), any())(any(), any(), any(), any(), any())
-        ) thenReturn Future.successful(UserAnswers())
+          when(
+            cacheConnector.save[ContactDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any(), any())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
