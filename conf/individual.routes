@@ -23,3 +23,8 @@ GET        /individualPreviousAddressPostCodeLookup               controllers.re
 POST       /individualPreviousAddressPostCodeLookup               controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /changeIndividualPreviousAddressPostCodeLookup                        controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeIndividualPreviousAddressPostCodeLookup                        controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET        /individualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST       /individualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIndividualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIndividualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onSubmit(mode: Mode = CheckMode)
