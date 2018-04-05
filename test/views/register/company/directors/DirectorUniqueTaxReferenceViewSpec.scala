@@ -48,7 +48,7 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- utrOptions) {
-          assertContainsRadioButton(doc, s"directorUtr_hasUtr-$option", "directorUtr.hasUtr", option, false)
+          assertContainsRadioButton(doc, s"utr_hasUtr-$option", "utr.hasUtr", option, false)
         }
       }
     }
@@ -56,11 +56,11 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
     for(option <- utrOptions) {
       s"rendered with a value of '$option'" must {
         s"have the '$option' radio button selected" in {
-          val doc = asDocument(createViewUsingForm(form.bind(Map("directorUtr.hasUtr" -> s"$option"))))
-          assertContainsRadioButton(doc, s"directorUtr_hasUtr-$option", "directorUtr.hasUtr", option, true)
+          val doc = asDocument(createViewUsingForm(form.bind(Map("utr.hasUtr" -> s"$option"))))
+          assertContainsRadioButton(doc, s"utr_hasUtr-$option", "utr.hasUtr", option, true)
 
           for(unselectedOption <- utrOptions.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, s"directorUtr_hasUtr-$unselectedOption", "directorUtr.hasUtr", unselectedOption, false)
+            assertContainsRadioButton(doc, s"utr_hasUtr-$unselectedOption", "utr.hasUtr", unselectedOption, false)
           }
         }
       }
