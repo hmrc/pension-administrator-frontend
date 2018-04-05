@@ -55,3 +55,6 @@ POST       /changeMoreThanTenDirectors                       controllers.registe
 
 GET        /companyAddress                       controllers.register.company.CompanyAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /companyAddress                       controllers.register.company.CompanyAddressController.onSubmit(mode: Mode = NormalMode)
+
+GET        /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
+POST       /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
