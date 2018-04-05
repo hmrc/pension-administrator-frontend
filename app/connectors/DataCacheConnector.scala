@@ -16,59 +16,34 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import play.api.libs.json._
-import play.api.mvc.AnyContent
-import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{Cleanup, UserAnswers}
+import utils.Cleanup
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataCacheConnectorImpl @Inject()(
-                                        val sessionRepository: SessionRepository
-                                      ) extends DataCacheConnector {
-
-  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cu: Cleanup[I]): Future[JsValue] = {
-    sessionRepository().get(cacheId).flatMap {
-      json =>
-        UserAnswers(json.getOrElse(Json.obj())).set(id)(value) match {
-          case JsSuccess(UserAnswers(updatedJson), _) =>
-            cacheUpsert(cacheId, updatedJson)
-          case JsError(errors) =>
-            Future.failed(JsResultException(errors))
-        }
-    }
-  }
-
-  override def cacheUpsert(cacheId: String, value: JsValue): Future[JsValue] = {
-    sessionRepository().upsert(cacheId, value) map (_ => value)
-  }
-
-  override def fetch(cacheId: String): Future[Option[JsValue]] =
-    sessionRepository().get(cacheId)
-}
-
-@ImplementedBy(classOf[DataCacheConnectorImpl])
 trait DataCacheConnector {
 
-  def save[A, I <: TypedIdentifier[A]](id: I, value: A)
+  def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                       (implicit
-                                       request: DataRequest[AnyContent],
-                                       wrts: Format[A],
+                                       fmt: Format[A],
                                        cleanup: Cleanup[I],
                                        ec: ExecutionContext,
                                        hc: HeaderCarrier
-                                      ): Future[UserAnswers] = {
-    save(request.externalId, id, value).map(UserAnswers)
-  }
+                                      ): Future[JsValue]
 
-  def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)(implicit fmt: Format[A], cleanup: Cleanup[I]): Future[JsValue]
+  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                     (implicit
+                                      cleanup: Cleanup[I],
+                                      ec: ExecutionContext,
+                                      hc: HeaderCarrier
+                                     ): Future[JsValue]
 
-  def cacheUpsert(cacheId: String, value: JsValue): Future[JsValue]
+  def fetch(cacheId: String)(implicit
+                             ec: ExecutionContext,
+                             hc: HeaderCarrier
+  ): Future[Option[JsValue]]
 
-  def fetch(cacheId: String): Future[Option[JsValue]]
+  def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
 }
