@@ -16,7 +16,9 @@
 
 package views.register.company
 
+import forms.company.CompanyAddressFormProvider
 import models.TolerantAddress
+import play.api.data.Form
 import views.behaviours.{AddressBehaviours, ViewBehaviours}
 import views.html.register.company.companyAddress
 
@@ -33,7 +35,11 @@ class CompanyAddressViewSpec extends ViewBehaviours with AddressBehaviours {
     Some("UK")
   )
 
-  private def createView(address: TolerantAddress = testAddress) = () => companyAddress(frontendAppConfig, address)(fakeRequest, messages)
+  val formProvider = new CompanyAddressFormProvider
+
+  val form: Form[Boolean] = formProvider()
+
+  private def createView(address: TolerantAddress = testAddress) = () => companyAddress(frontendAppConfig, form, address)(fakeRequest, messages)
 
   "CompanyAddress view" must {
     behave like normalPage(createView(), messageKeyPrefix)

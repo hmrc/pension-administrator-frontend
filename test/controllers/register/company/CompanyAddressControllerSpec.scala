@@ -52,6 +52,12 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
   private val validUtr = "1234567890"
   private val invalidUtr = "INVALID"
 
+  val data = Json.obj(
+    CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
+    CompanyUniqueTaxReferenceId.toString -> validUtr
+  )
+  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation(utr: String, organisation: Organisation)
                                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
@@ -79,45 +85,25 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(): String = companyAddress(frontendAppConfig, testAddress)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form): String = companyAddress(frontendAppConfig, form, testAddress)(fakeRequest, messages).toString
 
   "CompanyAddress Controller" must {
 
     "return OK and the correct view for a GET when UTR is valid" in {
-      val data = Json.obj(
-        CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validUtr
-      )
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
-    "save the address to user answers when request data and UTR is valid" in {
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-
-      val data = Json.obj(
-        CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validUtr
-      )
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
-
-      status(result) mustBe OK
-      FakeDataCacheConnector.verify(CompanyAddressId, testAddress)
-    }
-
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(boundForm)
     }
 
     "redirect to the next page" when {
@@ -133,11 +119,22 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
         redirectLocation(result) mustBe Some(onwardRoute.url)
       }
 
-      "valid data is submitted" which {
-        "will save the address" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      "valid data is submitted" when {
+        "yes" which {
+          "will save the address" in {
+            val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller().onSubmit(NormalMode)(postRequest)
+            val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(onwardRoute.url)
+            FakeDataCacheConnector.verify(CompanyAddressId, testAddress)
+          }
+        }
+        "no" in {
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -178,6 +175,29 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
         }
       }
       "POST" when {
+        "no company details data is found" in {
+          val data = Json.obj(
+            CompanyUniqueTaxReferenceId.toString -> invalidUtr
+          )
+
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+        "no UTR data is found" in {
+          val data = Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None)
+          )
+
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+
         "no existing data is found" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)

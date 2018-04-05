@@ -19,7 +19,7 @@
 @import models.TolerantAddress
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, address: TolerantAddress)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], address: TolerantAddress)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("companyAddress.title"),

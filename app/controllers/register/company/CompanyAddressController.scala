@@ -52,7 +52,7 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       getCompanyAddress(mode){ response =>
-        Future.successful(Ok(companyAddress(appConfig, response)))
+        Future.successful(Ok(companyAddress(appConfig, form, response)))
       }
   }
 
@@ -60,9 +60,9 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       getCompanyAddress(mode) { response =>
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => Future.successful(BadRequest(companyAddress(appConfig, response))),
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(companyAddress(appConfig, formWithErrors, response))),
           (value) => {
-            dataCacheConnector.save(request.externalId, CompanyAddressId, response).map(cacheMap =>
+            dataCacheConnector.save(request.externalId, CompanyAddressId, response).map( _ =>
               Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
             )
           }
