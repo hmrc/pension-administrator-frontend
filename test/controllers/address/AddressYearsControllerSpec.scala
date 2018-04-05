@@ -36,6 +36,7 @@ import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => eqTo, _}
+import play.api.libs.json.Json
 
 import scala.concurrent.Future
 
@@ -135,8 +136,9 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
           implicit val materializer: Materializer = app.materializer
 
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](
-            eqTo(FakeIdentifier), any())(any(), any(), any(), any(), any())
-          ) thenReturn Future.successful(UserAnswers())
+            any(),
+            eqTo(FakeIdentifier), any())(any(), any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddressYearsFormProvider]

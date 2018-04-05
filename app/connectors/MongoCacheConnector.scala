@@ -16,29 +16,28 @@
 
 package connectors
 
+import com.google.inject.Inject
 import identifiers.TypedIdentifier
-import org.scalatest.Matchers
 import play.api.libs.json._
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.Cleanup
+import utils.{Cleanup, UserAnswers}
 
-import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataCacheConnector extends DataCacheConnector with Matchers {
-
-  private val data: mutable.HashMap[String, JsValue] = mutable.HashMap()
-  private val removed: mutable.ListBuffer[String] = mutable.ListBuffer()
+class MongoCacheConnector @Inject() (
+                                      val sessionRepository: SessionRepository
+                                    ) extends DataCacheConnector {
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
                                                 fmt: Format[A],
-                                                cleanup: Cleanup[I],
+                                                cu: Cleanup[I],
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
-    data += (id.toString -> Json.toJson(value))
-    Future.successful(Json.obj())
+
+    modify(cacheId, _.set(id)(value))
   }
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
@@ -47,8 +46,29 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
                                       ec: ExecutionContext,
                                       hc: HeaderCarrier
                                      ): Future[JsValue] = {
-    removed += id.toString
-    Future.successful(Json.obj())
+
+    modify(cacheId, _.remove(id))
+  }
+
+  def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+    modify(cacheId, _ => JsSuccess(UserAnswers(value)))
+
+  private def modify(cacheId: String, modification: (UserAnswers) => JsResult[UserAnswers])
+                    (implicit
+                     ec: ExecutionContext,
+                     hc: HeaderCarrier
+                    ): Future[JsValue] = {
+
+    sessionRepository().get(cacheId).flatMap {
+      json =>
+        modification(UserAnswers(json.getOrElse(Json.obj()))) match {
+          case JsSuccess(UserAnswers(updatedJson), _) =>
+            sessionRepository().upsert(cacheId, updatedJson)
+              .map(_ => updatedJson)
+          case JsError(errors) =>
+            Future.failed(JsResultException(errors))
+        }
+    }
   }
 
   override def fetch(cacheId: String)(implicit
@@ -56,20 +76,7 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
                                       hc: HeaderCarrier
   ): Future[Option[JsValue]] = {
 
-    Future.successful(Some(Json.obj()))
+    sessionRepository().get(cacheId)
   }
 
-  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier) = {
-    Future.successful(value)
-  }
-
-  def verify[A, I <: TypedIdentifier[A]](id: I, value: A)(implicit fmt: Format[A]): Unit = {
-    data should contain (id.toString -> Json.toJson(value))
-  }
-
-  def verifyNot(id: TypedIdentifier[_]): Unit = {
-    data should not contain key (id.toString)
-  }
 }
-
-object FakeDataCacheConnector extends FakeDataCacheConnector
