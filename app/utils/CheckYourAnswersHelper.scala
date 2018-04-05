@@ -18,7 +18,8 @@ package utils
 
 import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
-import models.{Address, CheckMode, UniqueTaxReference, Nino}
+import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
+import models.{Address, CheckMode, Nino, UniqueTaxReference}
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
@@ -28,14 +29,40 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def individualAddressYears: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) match {
-    case Some(x) => Seq(AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url))
-    case _ => Nil
+  def individualPhoneNumber: Option[AnswerRow] = {
+    userAnswers.get(IndividualContactDetailsId) map { x =>
+      AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false, controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
+    }
   }
 
-  def individualDetailsCorrect: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDetailsCorrectId) match {
-    case Some(x) => Seq(AnswerRow("individualDetailsCorrect.checkYourAnswersLabel", if(x) Seq("site.yes") else Seq("site.no"), true, controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(CheckMode).url))
-    case _ => Nil
+  def individualEmailAddress: Option[AnswerRow] = {
+    userAnswers.get(IndividualContactDetailsId) map { x =>
+      AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
+    }
+  }
+
+  def individualPreviousAddress: Option[AnswerRow] = {
+    userAnswers.get(IndividualPreviousAddressId) map { x =>
+      AnswerRow("individualPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false, controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)
+    }
+  }
+
+  def individualAddressYears: Option[AnswerRow] = {
+    userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) map { x =>
+      AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
+    }
+  }
+
+  def individualDetails: Option[AnswerRow] = {
+    userAnswers.get(IndividualDetailsId) map { x =>
+      AnswerRow("individualDetailsCorrect.name", Seq(s"${x.fullName}"), false, None)
+    }
+  }
+
+  def individualAddress: Option[AnswerRow] = {
+    userAnswers.get(IndividualAddressId) map { x =>
+      AnswerRow("individualDetailsCorrect.address", x.lines, false, None)
+    }
   }
 
   def directorContactDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorContactDetailsId(index)) match {
@@ -52,7 +79,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def companyDirectorAddressList(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.directors.CompanyDirectorAddressListId(index)) map {
     x => AnswerRow("companyDirectorAddressList.checkYourAnswersLabel", Seq(s"companyDirectorAddressList.$x"), true, controllers.register.company.directors.routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index).url)
   }
-  
+
   def directorPreviousAddressList(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPreviousAddressListId(index)) map {
     x => AnswerRow("directorPreviousAddressList.checkYourAnswersLabel", Seq(s"directorPreviousAddressList.$x"), true, controllers.register.company.directors.routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index).url)
   }
