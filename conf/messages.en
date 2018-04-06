@@ -337,4 +337,5 @@ individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 individualPreviousAddressPostCodeLookup.formHint = Example, NE12 8ER
 
-companyAddress.error.required = Please give an answer for companyAddress
+companyAddress.error.required = You must make a selection
+

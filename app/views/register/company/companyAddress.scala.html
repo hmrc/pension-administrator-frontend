@@ -29,9 +29,17 @@
     @helpers.form(action = CompanyAddressController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
+        @components.error_summary(form.errors)
+
         @components.heading("companyAddress.heading")
 
         @components.tolerant_address("companyAddress", address)
+
+        @components.input_yes_no(
+            field = form("value"),
+            label = messages("companyAddress.title"),
+            labelClass = Some("visually-hidden")
+        )
 
         @components.submit_button()
     }
