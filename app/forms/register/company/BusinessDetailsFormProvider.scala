@@ -35,13 +35,13 @@ class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mapping
               BusinessDetailsFormProvider.BusinessNameLength,
               "businessDetails.error.companyName.length"
             ),
-            safeText("companyDetails.error.companyName.invalid")
+            safeText("businessDetails.error.companyName.invalid")
           )
         ),
 
       "utr" -> text("businessDetails.error.utr.required")
         .verifying(firstError(
-          uniqueTaxReference("companyUniqueTaxReference.error.utr.invalid")
+          uniqueTaxReference("businessDetails.error.utr.invalid")
         )
         )
     )(BusinessDetails.apply)(BusinessDetails.unapply)
