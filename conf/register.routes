@@ -9,3 +9,8 @@ GET        /declarationWorkingKnowledge                       controllers.regist
 POST       /declarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
 GET        /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
+
+GET        /advisor/advisorDetails                       controllers.register.advisor.AdvisorDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /advisor/advisorDetails                       controllers.register.advisor.AdvisorDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /advisor/changeAdvisorDetails                       controllers.register.advisor.AdvisorDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /advisor/changeAdvisorDetails                       controllers.register.advisor.AdvisorDetailsController.onSubmit(mode: Mode = CheckMode)
