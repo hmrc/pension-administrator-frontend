@@ -62,7 +62,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     override def registerWithIdOrganisation(utr: String, organisation: Organisation)
                                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
         if (utr == validUtr) {
-          Future.successful(OrganizationRegisterWithIdResponse(testAddress))
+          Future.successful(OrganizationRegisterWithIdResponse(testAddress, Organisation("MyCo", OrganisationTypeEnum.CorporateBody)))
         }
         else {
           Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
