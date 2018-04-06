@@ -34,9 +34,11 @@
         </p>
     </div>
     <div class="cya-change tabular-data__data tabular-data__data--3-12 u-align--tablet-right">
-        <a id="cya-@idPath-change" href='@row.changeUrl'>
-            <span aria-hidden="true">@messages("site.change")</span>
-            <span class="visually-hidden">@messages("site.hidden-edit", messages(row.label))</span>
-        </a>
+        @row.changeUrl.map { changeUrl =>
+            <a id="cya-@idPath-change" href='@changeUrl'>
+                <span aria-hidden="true">@messages("site.change")</span>
+                <span class="visually-hidden">@messages("site.hidden-edit", messages(row.label))</span>
+            </a>
+        }
     </div>
 </li>

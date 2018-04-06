@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register.individual
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[String])
+import identifiers.Identifier
 
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: String): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
-  }
+case object CheckYourAnswersId extends Identifier {
+  override def toString: String = "checkYourAnswersId"
 }
