@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
+import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, BusinessDetailsId}
 import models.register.company.CompanyDetails
 import models._
 import play.api.libs.json.Json
@@ -75,7 +75,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     "return OK and the correct view for a GET when UTR is valid" in {
       val data = Json.obj(
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validUtr
+        BusinessDetailsId.toString -> validUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -87,7 +87,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     "save the address to user answers when UTR is valid" in {
       val data = Json.obj(
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validUtr
+        BusinessDetailsId.toString -> validUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -99,7 +99,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
+        BusinessDetailsId.toString -> invalidUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -110,7 +110,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a GET if no company details data is found" in {
       val data = Json.obj(
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
+        BusinessDetailsId.toString -> invalidUtr
       )
 
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))

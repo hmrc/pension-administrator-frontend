@@ -24,7 +24,8 @@ import controllers.actions._
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
-import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
+import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, BusinessDetailsId}
+import models.register.company.BusinessDetails
 import models.{Mode, Organisation, OrganisationTypeEnum}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.NotFoundException
@@ -44,10 +45,10 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieve(CompanyDetailsId)( companyDetails => {
-        retrieve(CompanyUniqueTaxReferenceId)( utr => {
+        retrieve(BusinessDetailsId)(businessDetails => {
           val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
 
-          registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
+          registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap { response =>
             dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map(_ =>
               Ok(companyAddress(appConfig, response.address)))
           } recover {

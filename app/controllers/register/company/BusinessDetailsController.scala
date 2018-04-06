@@ -21,18 +21,18 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import forms.register.company.CompanyUniqueTaxReferenceFormProvider
-import identifiers.register.company.CompanyUniqueTaxReferenceId
+import forms.register.company.BusinessDetailsFormProvider
+import identifiers.register.company.BusinessDetailsId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.register.company.companyUniqueTaxReference
+import views.html.register.company.businessDetails
 
 import scala.concurrent.Future
 
-class CompanyUniqueTaxReferenceController @Inject() (
+class BusinessDetailsController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: DataCacheConnector,
@@ -40,28 +40,28 @@ class CompanyUniqueTaxReferenceController @Inject() (
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: CompanyUniqueTaxReferenceFormProvider
+                                        formProvider: BusinessDetailsFormProvider
                                       ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CompanyUniqueTaxReferenceId) match {
+      val preparedForm = request.userAnswers.get(BusinessDetailsId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(companyUniqueTaxReference(appConfig, preparedForm, mode))
+      Ok(businessDetails(appConfig, preparedForm, mode))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyUniqueTaxReference(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(businessDetails(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save(request.externalId, CompanyUniqueTaxReferenceId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(CompanyUniqueTaxReferenceId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save(request.externalId, BusinessDetailsId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(BusinessDetailsId, mode)(new UserAnswers(cacheMap))))
     )
   }
 }

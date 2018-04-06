@@ -49,7 +49,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
           checkYourAnswerHelper.vatRegistrationNumber,
           checkYourAnswerHelper.payeEmployerReferenceNumber,
           checkYourAnswerHelper.companyRegistrationNumber,
-          checkYourAnswerHelper.companyUniqueTaxReference
+          checkYourAnswerHelper.businessDetails
         ).flatten
       )
 
