@@ -52,10 +52,11 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
   private val validUtr = "1234567890"
   private val invalidUtr = "INVALID"
 
-  val organisation = Organisation("MyCo", OrganisationTypeEnum.CorporateBody)
+  val companyDetails = CompanyDetails("MyCompany", None, None)
+  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
   val data = Json.obj(
-    CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
+    CompanyDetailsId.toString -> companyDetails,
     CompanyUniqueTaxReferenceId.toString -> validUtr
   )
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -88,7 +89,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form): String =
-    companyAddress(frontendAppConfig, form, testAddress, organisation.organisationName)(fakeRequest, messages).toString
+    companyAddress(frontendAppConfig, form, testAddress, companyDetails.companyName)(fakeRequest, messages).toString
 
   "CompanyAddress Controller" must {
 
@@ -124,14 +125,13 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
 
       "valid data is submitted" when {
         "yes" which {
-          "will save the address" in {
+          "upsert address and organisation name from api response" in {
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
             val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(onwardRoute.url)
-            FakeDataCacheConnector.verify(CompanyAddressId, testAddress)
           }
         }
         "no" in {

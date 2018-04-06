@@ -20,13 +20,10 @@ import base.SpecBase
 import controllers.register.company.directors.routes
 import identifiers.Identifier
 import identifiers.register.company.directors._
-import models.AddressYears
-import models.{CheckMode, NormalMode}
+import models.{AddressYears, CheckMode, NormalMode}
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, WordSpec}
-import org.scalatest.prop.PropertyChecks
 import play.api.libs.json.Json
-import utils.{Navigator, UserAnswers}
+import utils.UserAnswers
 
 class DirectorNavigatorSpec extends SpecBase with MockitoSugar {
 

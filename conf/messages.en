@@ -291,8 +291,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-companyAddress.title = Is this your address?
-companyAddress.heading = Is this your address?
+companyAddress.title = Are these details correct?
+companyAddress.heading = Are these details correct?
 companyAddress.checkYourAnswersLabel = Address
 
 whatYouWillNeed.title = What you’ll need

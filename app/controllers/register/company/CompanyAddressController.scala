@@ -23,15 +23,19 @@ import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.company.CompanyAddressFormProvider
+import identifiers.TypedIdentifier
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models.requests.DataRequest
 import models._
+import models.register.company.CompanyDetails
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyAddress
 
 import scala.concurrent.Future
@@ -51,39 +55,57 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyAddress(mode){ response =>
+      getCompanyAddress(mode){ case (_, response) =>
         Future.successful(Ok(companyAddress(appConfig, form, response.address, response.organisation.organisationName)))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyAddress(mode) { response =>
+      getCompanyAddress(mode) { case (companyDetails, response) =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(companyAddress(appConfig, formWithErrors, response.address, response.organisation.organisationName))),
           {
-            case true => dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map( _ =>
-              Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
-            )
+            case true =>
+              upsert(request.userAnswers, CompanyAddressId)(response.address){ userAnswers =>
+                upsert(userAnswers, CompanyDetailsId)(companyDetails.copy(response.organisation.organisationName)){ userAnswers =>
+                  dataCacheConnector.upsert(request.externalId, userAnswers.json).map{ _ =>
+                    Redirect(navigator.nextPage(CompanyDetailsId, mode)(userAnswers))
+                  }
+                }
+              }
             case false => Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
           }
         )
       }
-
   }
 
-  def getCompanyAddress(mode: Mode)(fn: OrganizationRegisterWithIdResponse => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+  def getCompanyAddress(mode: Mode)(fn: (CompanyDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
     (CompanyDetailsId and CompanyUniqueTaxReferenceId).retrieve.right.map {
       case (companyDetails ~ utr) =>
         val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
         registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-          fn(response)
+          fn(companyDetails, response)
         } recoverWith {
           case _: NotFoundException =>
             Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
         }
     }
+  }
+
+  private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)(value: id.Data)
+                                                        (fn: UserAnswers => Future[Result])
+                                                        (implicit writes: Writes[id.Data]) = {
+    userAnswers
+      .set(id)(value)
+      .fold(
+        errors => {
+          Logger.error("Unable to set user answer", JsResultException(errors))
+          Future.successful(InternalServerError)
+        },
+        userAnswers => fn(userAnswers)
+      )
   }
 
 }
