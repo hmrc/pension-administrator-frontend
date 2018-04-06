@@ -33,7 +33,9 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("declarationWorkingKnowledge.heading")
+        @components.heading("declarationWorkingKnowledge.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+        @components.paragraph_text(messages("declarationWorkingKnowledge.body"))
 
         @components.input_yes_no(
             field = form("value"),
@@ -41,6 +43,6 @@
             labelClass = Some("visually-hidden")
         )
 
-        @components.submit_button()
+        @components.submit_button("site.agree")
     }
 }
