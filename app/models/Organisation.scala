@@ -16,17 +16,19 @@
 
 package models
 
+import models.register.BusinessType
+import models.register.BusinessType.{BusinessPartnership, LimitedCompany, LimitedLiabilityPartnership, LimitedPartnership, UnlimitedCompany}
 import play.api.libs.json.Json
 import play.api.libs.json._
 import utils.EnumUtils
 
 object OrganisationTypeEnum extends Enumeration {
   type OrganisationType = Value
-  val CorporateBody = Value("Corporate Body")
-  val NotSpecified = Value("Not Specified")
-  val LLP = Value("LLP")
-  val Partnership = Value("Partnership")
-  val UnincorporatedBody = Value("Unincorporated Body")
+  val CorporateBody: OrganisationTypeEnum.Value = Value("Corporate Body")
+  val NotSpecified: OrganisationTypeEnum.Value = Value("Not Specified")
+  val LLP: OrganisationTypeEnum.Value = Value("LLP")
+  val Partnership: OrganisationTypeEnum.Value = Value("Partnership")
+  val UnincorporatedBody: OrganisationTypeEnum.Value = Value("Unincorporated Body")
 
   implicit def enumFormats: Format[OrganisationType] = EnumUtils.enumFormat(OrganisationTypeEnum)
 }
@@ -34,5 +36,20 @@ object OrganisationTypeEnum extends Enumeration {
 case class Organisation(organisationName: String, organisationType: OrganisationTypeEnum.OrganisationType)
 
 object Organisation {
-  implicit val formats = Json.format[Organisation]
+
+  def apply (organisationName: String, businessType: BusinessType): Organisation = {
+    val organisationType = businessType match {
+      case LimitedCompany => OrganisationTypeEnum.CorporateBody
+      case BusinessPartnership => OrganisationTypeEnum.Partnership
+      case LimitedPartnership => OrganisationTypeEnum.Partnership
+      case LimitedLiabilityPartnership => OrganisationTypeEnum.LLP
+      case UnlimitedCompany => OrganisationTypeEnum.CorporateBody
+      case _ => throw new IllegalArgumentException(s"Business type ${businessType.toString} cannot be mapped to OrganisationTypeEnum")
+    }
+
+    Organisation(organisationName, organisationType)
+  }
+
+  implicit val formats: OFormat[Organisation] = Json.format[Organisation]
+
 }

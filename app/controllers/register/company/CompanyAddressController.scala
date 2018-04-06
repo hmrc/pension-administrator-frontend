@@ -21,9 +21,10 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.BusinessTypeId
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models.requests.DataRequest
 import models._
@@ -82,9 +83,9 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
   }
 
   def getCompanyAddress(mode: Mode)(fn: (CompanyDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
-    (CompanyDetailsId and CompanyUniqueTaxReferenceId).retrieve.right.map {
-      case (companyDetails ~ utr) =>
-        val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
+    (CompanyDetailsId and CompanyUniqueTaxReferenceId and BusinessTypeId).retrieve.right.map {
+      case (companyDetails ~ utr ~ businessType) =>
+        val organisation = Organisation(companyDetails.companyName, businessType)
         registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
           fn(companyDetails, response)
         } recoverWith {

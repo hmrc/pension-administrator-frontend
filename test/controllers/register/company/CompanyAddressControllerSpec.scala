@@ -20,9 +20,11 @@ import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.company.CompanyAddressFormProvider
+import identifiers.register.BusinessTypeId
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models.register.company.CompanyDetails
 import models._
+import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -31,99 +33,52 @@ import utils.FakeNavigator
 import views.html.register.company.companyAddress
 
 import scala.concurrent.{ExecutionContext, Future}
+import identifiers.register.BusinessTypeId
+import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 
 class CompanyAddressControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  private val testAddress = TolerantAddress(
-    Some("Some Building"),
-    Some("1 Some Street"),
-    Some("Some Village"),
-    Some("Some Town"),
-    Some("ZZ1 1ZZ"),
-    Some("UK")
-  )
-
-  val formProvider = new CompanyAddressFormProvider
-
-  val form: Form[Boolean] = formProvider()
-
-  private val validUtr = "1234567890"
-  private val invalidUtr = "INVALID"
-
-  val companyDetails = CompanyDetails("MyCompany", None, None)
-  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
-
-  val data = Json.obj(
-    CompanyDetailsId.toString -> companyDetails,
-    CompanyUniqueTaxReferenceId.toString -> validUtr
-  )
-  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-
-  private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation(utr: String, organisation: Organisation)
-                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
-        if (utr == validUtr) {
-          Future.successful(OrganizationRegisterWithIdResponse(testAddress, organisation))
-        }
-        else {
-          Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
-        }
-    }
-    override def registerWithIdIndividual()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
-
-  }
-
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyAddressController(
-      frontendAppConfig,
-      messagesApi,
-      FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      fakeRegistrationConnector,
-      formProvider
-    )
-
-  private def viewAsString(form: Form[_] = form): String =
-    companyAddress(frontendAppConfig, form, testAddress, companyDetails.companyName)(fakeRequest, messages).toString
+  import CompanyAddressControllerSpec._
 
   "CompanyAddress Controller" must {
 
-    "return OK and the correct view for a GET when UTR is valid" in {
+    "return OK and the correct view for a GET" in {
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
-    "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+    "correctly map the Business Type to Organisation Type for the call to API4" in {
 
-      val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+      val companyName = "MyPartnership"
 
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(boundForm)
+      val data = Json.obj(
+        BusinessTypeId.toString -> BusinessPartnership.toString,
+        CompanyDetailsId.toString -> CompanyDetails(companyName, None, None),
+        CompanyUniqueTaxReferenceId.toString -> validBusinessPartnershipUtr
+      )
+      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(companyName, testBusinessPartnershipAddress)
     }
 
-    "redirect to the next page" when {
-      "the UTR is invalid" in {
-        val data = Json.obj(
-          CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-          CompanyUniqueTaxReferenceId.toString -> invalidUtr
-        )
-        val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-        val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+    "redirect to the next page when the UTR is invalid" in {
+      val data = Json.obj(
+        BusinessTypeId.toString -> LimitedCompany.toString,
+        CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
+        CompanyUniqueTaxReferenceId.toString -> invalidUtr
+      )
+      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
       }
 
-      "valid data is submitted" when {
+    "valid data is submitted" when {
         "yes" which {
           "upsert address and organisation name from api response" in {
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
@@ -143,7 +98,6 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(onwardRoute.url)
         }
       }
-    }
 
     "redirect to Session Expired" when {
       "GET" when {
@@ -212,5 +166,85 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     }
 
   }
+
+}
+
+object CompanyAddressControllerSpec extends ControllerSpecBase {
+
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  private val testLimitedCompanyAddress = TolerantAddress(
+    Some("Some Building"),
+    Some("1 Some Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("UK")
+  )
+
+  private val testBusinessPartnershipAddress = TolerantAddress(
+    Some("Some Other Building"),
+    Some("2 Some Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("UK")
+  )
+
+  private val validLimitedCompanyUtr = "1234567890"
+  private val validBusinessPartnershipUtr = "0987654321"
+  private val invalidUtr = "INVALID"
+
+  val companyDetails = CompanyDetails("MyCompany", None, None)
+  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
+
+  val data = Json.obj(
+    BusinessTypeId.toString -> LimitedCompany.toString,
+    CompanyDetailsId.toString -> companyDetails,
+    CompanyUniqueTaxReferenceId.toString -> validLimitedCompanyUtr
+  )
+
+  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
+  val formProvider = new CompanyAddressFormProvider
+
+  val form: Form[Boolean] = formProvider()
+
+  private def fakeRegistrationConnector = new RegistrationConnector {
+    override def registerWithIdOrganisation
+    (utr: String, organisation: Organisation)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
+
+      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
+        Future.successful(OrganizationRegisterWithIdResponse(testLimitedCompanyAddress, organisation))
+      }
+      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
+        Future.successful(OrganizationRegisterWithIdResponse(testBusinessPartnershipAddress, organisation))
+      }
+      else {
+        Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
+      }
+    }
+
+    //noinspection NotImplementedCode
+    def registerWithIdIndividual()
+                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
+  }
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new CompanyAddressController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      fakeRegistrationConnector,
+      formProvider
+    )
+
+  private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
+    companyAddress(frontendAppConfig, form, address, companyName)(fakeRequest, messages).toString
 
 }

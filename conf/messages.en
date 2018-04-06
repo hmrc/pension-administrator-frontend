@@ -61,6 +61,7 @@ site.delete = Remove
 site.edit = Edit
 site.change = Change
 site.confirm = Confirm
+site.agree = Agree and continue
 site.cancel = Cancel
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
@@ -320,8 +321,6 @@ youWillNeedToUpdate.heading = You need to update your details before registering
 youWillNeedToUpdate.text = If you are an individual or partnership and are not registered with Companies House
 youWillNeedToUpdate.link = you only need to inform HMRC
 
-
-
 contactDetails.individual.lede = We will use this information to contact you about your schemes. You can enter a group or individual email.
 
 companyReview.title = Review the company details
@@ -337,9 +336,25 @@ individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 individualPreviousAddressPostCodeLookup.formHint = Example, NE12 8ER
 
+businessType.title = What is your business type?
+businessType.heading = What is your business type?
+businessType.limitedCompany = Limited company
+businessType.businessPartnership = Business partnership
+businessType.limitedPartnership = Limited partnership
+businessType.limitedLiabilityPartnership = Limited liability partnership
+businessType.unlimitedCompany = Unlimited company
+businessType.overseasCompany = Overseas company
+businessType.error.required = Select your business type
+
 companyAddress.error.required = You must make a selection
 
 
 companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering
 companyUpdateDetails.text = If you are a company or a limited liability partnership that is registered with companies house you need to inform you need to inform {0}Companies House{1} and {2}HMRC{1}
+
+declarationWorkingKnowledge.title = Have you appointed an adviser who has a working knowledge of pension administration?
+declarationWorkingKnowledge.heading = Have you appointed an adviser who has a working knowledge of pension administration?
+declarationWorkingKnowledge.body = This could be a pension professional, legal adviser or solicitor.
+declarationWorkingKnowledge.checkYourAnswersLabel = Have you appointed an adviser who has a working knowledge of pension administration?
+declarationWorkingKnowledge.error.required = You need to tell us if you have appointed an adviser
