@@ -72,6 +72,7 @@ site.service_name = Pension Scheme Registrations
 site.textarea.char_limit = (Limit is {0} characters)
 site.secondaryHeader = Register a new Pension Scheme Administrator
 site.find_address = Find address
+site.go_back = Go back
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -353,8 +354,20 @@ companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering
 companyUpdateDetails.text = If you are a company or a limited liability partnership that is registered with companies house you need to inform you need to inform {0}Companies House{1} and {2}HMRC{1}
 
+companyNotFound.title = Business details not found
+companyNotFound.heading = Business details not found
+companyNotFound.lede = There could be a number of reasons why we cannot find your business details.
+companyNotFound.businessNameExactMatch = Your business name isn’t an exact match
+companyNotFound.businessNameExactMatch.description = Your business name should match the name written on letters you have from HMRC. Check the capital letters and spaces in your business name. You should also check if your business name uses ‘limited’ or ‘LTD’.
+companyNotFound.businessNameChanged = Your business name has changed
+companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with companies house you need to inform you need to inform {0}Companies House{1} and {2}HMRC{1}
+companyNotFound.businessNameChanged.individual = If you are an individual or partnership and are not registered with Companies House {0}you only need to inform HMRC{1}
+companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number doesn’t match
+companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference number is made up of 10 or 13 numbers. If it is 13, only enter the last 10.
+
 declarationWorkingKnowledge.title = Have you appointed an adviser who has a working knowledge of pension administration?
 declarationWorkingKnowledge.heading = Have you appointed an adviser who has a working knowledge of pension administration?
 declarationWorkingKnowledge.body = This could be a pension professional, legal adviser or solicitor.
 declarationWorkingKnowledge.checkYourAnswersLabel = Have you appointed an adviser who has a working knowledge of pension administration?
 declarationWorkingKnowledge.error.required = You need to tell us if you have appointed an adviser
+
