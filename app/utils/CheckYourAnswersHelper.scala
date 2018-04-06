@@ -24,6 +24,11 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
+  def declarationWorkingKnowledge: Seq[AnswerRow] = userAnswers.get(identifiers.register.DeclarationWorkingKnowledgeId) match {
+    case Some(x) => Seq(AnswerRow("declarationWorkingKnowledge.checkYourAnswersLabel", Seq(if(x) "site.yes" else "site.no"), true, controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(CheckMode).url))
+    case _ => Nil
+  }
+
   def contactDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualContactDetailsId) match {
     case Some(x) => Seq(AnswerRow("contactDetails.checkYourAnswersLabel", Seq(x.email,x.phone), false, controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url))
     case _ => Nil
