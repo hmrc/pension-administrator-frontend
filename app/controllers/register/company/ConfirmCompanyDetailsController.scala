@@ -37,36 +37,36 @@ import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.register.company.companyAddress
+import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.Future
 
-class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         dataCacheConnector: DataCacheConnector,
-                                         navigator: Navigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         registrationConnector: RegistrationConnector,
-                                         formProvider: CompanyAddressFormProvider
+class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
+                                                override val messagesApi: MessagesApi,
+                                                dataCacheConnector: DataCacheConnector,
+                                                navigator: Navigator,
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                registrationConnector: RegistrationConnector,
+                                                formProvider: CompanyAddressFormProvider
                                         ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyAddress(mode){ case (_, response) =>
-        Future.successful(Ok(companyAddress(appConfig, form, response.address, response.organisation.organisationName)))
+      getCompanyDetails(mode){ case (_, response) =>
+        Future.successful(Ok(confirmCompanyDetails(appConfig, form, response.address, response.organisation.organisationName)))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyAddress(mode) { case (companyDetails, response) =>
+      getCompanyDetails(mode) { case (companyDetails, response) =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyAddress(appConfig, formWithErrors, response.address, response.organisation.organisationName))),
+            Future.successful(BadRequest(confirmCompanyDetails(appConfig, formWithErrors, response.address, response.organisation.organisationName))),
           {
             case true =>
               upsert(request.userAnswers, CompanyAddressId)(response.address){ userAnswers =>
@@ -82,7 +82,7 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def getCompanyAddress(mode: Mode)(fn: (CompanyDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+  def getCompanyDetails(mode: Mode)(fn: (CompanyDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
     (CompanyDetailsId and CompanyUniqueTaxReferenceId and BusinessTypeId).retrieve.right.map {
       case (companyDetails ~ utr ~ businessType) =>
         val organisation = Organisation(companyDetails.companyName, businessType)

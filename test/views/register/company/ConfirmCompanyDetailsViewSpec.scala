@@ -20,9 +20,9 @@ import forms.company.CompanyAddressFormProvider
 import models.TolerantAddress
 import play.api.data.Form
 import views.behaviours.{AddressBehaviours, ViewBehaviours, YesNoViewBehaviours}
-import views.html.register.company.companyAddress
+import views.html.register.company.confirmCompanyDetails
 
-class CompanyAddressViewSpec extends ViewBehaviours with AddressBehaviours with YesNoViewBehaviours{
+class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviours with YesNoViewBehaviours{
 
   private val messageKeyPrefix = "companyAddress"
 
@@ -39,9 +39,9 @@ class CompanyAddressViewSpec extends ViewBehaviours with AddressBehaviours with 
 
   val form: Form[Boolean] = formProvider()
 
-  private def createView(address: TolerantAddress = testAddress) = () => companyAddress(frontendAppConfig, form, address, "MyCo")(fakeRequest, messages)
+  private def createView(address: TolerantAddress = testAddress) = () => confirmCompanyDetails(frontendAppConfig, form, address, "MyCo")(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => companyAddress(frontendAppConfig, form, testAddress, "MyCo")(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => confirmCompanyDetails(frontendAppConfig, form, testAddress, "MyCo")(fakeRequest, messages)
 
   "CompanyAddress view" must {
     behave like normalPage(createView(), messageKeyPrefix)

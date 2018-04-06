@@ -21,24 +21,22 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.company.CompanyAddressFormProvider
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
-import models.register.company.CompanyDetails
+import identifiers.register.company.{CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
+import models.register.company.CompanyDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.FakeNavigator
-import views.html.register.company.companyAddress
+import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
-import identifiers.register.BusinessTypeId
-import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 
-class CompanyAddressControllerSpec extends ControllerSpecBase {
+class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
-  import CompanyAddressControllerSpec._
+  import ConfirmCompanyDetailsControllerSpec._
 
   "CompanyAddress Controller" must {
 
@@ -169,7 +167,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
 
 }
 
-object CompanyAddressControllerSpec extends ControllerSpecBase {
+object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -232,7 +230,7 @@ object CompanyAddressControllerSpec extends ControllerSpecBase {
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyAddressController(
+    new ConfirmCompanyDetailsController(
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
@@ -245,6 +243,6 @@ object CompanyAddressControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
-    companyAddress(frontendAppConfig, form, address, companyName)(fakeRequest, messages).toString
+    confirmCompanyDetails(frontendAppConfig, form, address, companyName)(fakeRequest, messages).toString
 
 }
