@@ -52,6 +52,8 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
   private val validUtr = "1234567890"
   private val invalidUtr = "INVALID"
 
+  val organisation = Organisation("MyCo", OrganisationTypeEnum.CorporateBody)
+
   val data = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
     CompanyUniqueTaxReferenceId.toString -> validUtr
@@ -62,7 +64,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
     override def registerWithIdOrganisation(utr: String, organisation: Organisation)
                                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
         if (utr == validUtr) {
-          Future.successful(OrganizationRegisterWithIdResponse(testAddress, Organisation("MyCo", OrganisationTypeEnum.CorporateBody)))
+          Future.successful(OrganizationRegisterWithIdResponse(testAddress, organisation))
         }
         else {
           Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
@@ -85,7 +87,8 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form): String = companyAddress(frontendAppConfig, form, testAddress)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form): String =
+    companyAddress(frontendAppConfig, form, testAddress, organisation.organisationName)(fakeRequest, messages).toString
 
   "CompanyAddress Controller" must {
 

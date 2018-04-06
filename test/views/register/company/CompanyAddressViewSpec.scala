@@ -39,9 +39,9 @@ class CompanyAddressViewSpec extends ViewBehaviours with AddressBehaviours with 
 
   val form: Form[Boolean] = formProvider()
 
-  private def createView(address: TolerantAddress = testAddress) = () => companyAddress(frontendAppConfig, form, address)(fakeRequest, messages)
+  private def createView(address: TolerantAddress = testAddress) = () => companyAddress(frontendAppConfig, form, address, "MyCo")(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => companyAddress(frontendAppConfig, form, testAddress)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => companyAddress(frontendAppConfig, form, testAddress, "MyCo")(fakeRequest, messages)
 
   "CompanyAddress view" must {
     behave like normalPage(createView(), messageKeyPrefix)

@@ -25,7 +25,7 @@ import controllers.actions._
 import forms.company.CompanyAddressFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
 import models.requests.DataRequest
-import models.{Mode, Organisation, OrganisationTypeEnum, TolerantAddress}
+import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
@@ -52,7 +52,7 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       getCompanyAddress(mode){ response =>
-        Future.successful(Ok(companyAddress(appConfig, form, response)))
+        Future.successful(Ok(companyAddress(appConfig, form, response.address, response.organisation.organisationName)))
       }
   }
 
@@ -60,9 +60,10 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       getCompanyAddress(mode) { response =>
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) => Future.successful(BadRequest(companyAddress(appConfig, formWithErrors, response))),
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(companyAddress(appConfig, formWithErrors, response.address, response.organisation.organisationName))),
           {
-            case true => dataCacheConnector.save(request.externalId, CompanyAddressId, response).map( _ =>
+            case true => dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map( _ =>
               Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
             )
             case false => Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
@@ -72,12 +73,12 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
 
   }
 
-  def getCompanyAddress(mode: Mode)(fn: TolerantAddress => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+  def getCompanyAddress(mode: Mode)(fn: OrganizationRegisterWithIdResponse => Future[Result])(implicit request: DataRequest[AnyContent]) = {
     (CompanyDetailsId and CompanyUniqueTaxReferenceId).retrieve.right.map {
       case (companyDetails ~ utr) =>
         val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
         registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-          fn(response.address)
+          fn(response)
         } recoverWith {
           case _: NotFoundException =>
             Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
