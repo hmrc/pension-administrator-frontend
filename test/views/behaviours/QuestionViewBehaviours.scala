@@ -23,7 +23,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   val errorKey = "value"
   val errorMessage = "error.number"
-  val error = FormError(errorKey, errorMessage)
+  lazy val error = FormError(errorKey, errorMessage)
 
   val form: Form[A]
 
