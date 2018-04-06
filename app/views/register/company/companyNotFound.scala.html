@@ -33,15 +33,15 @@
 
     <p>@messages("companyNotFound.lede")</p>
 
-    <h2>@messages("companyNotFound.reason1")</h2>
-    <p>@messages("companyNotFound.reason1.text1")</p>
+    <h2>@messages("companyNotFound.businessNameExactMatch")</h2>
+    <p>@messages("companyNotFound.businessNameExactMatch.description")</p>
 
-    <h2>@messages("companyNotFound.reason2")</h2>
-    <p>@Html(Message("companyNotFound.reason2.text1").withArgs(openLink1, closeLink, openLink2, closeLink))</p>
-    <p>@Html(Message("companyNotFound.reason2.text2").withArgs(openLink3, closeLink))</p>
+    <h2>@messages("companyNotFound.businessNameChanged")</h2>
+    <p>@Html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))</p>
+    <p>@Html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))</p>
 
-    <h2>@messages("companyNotFound.reason3")</h2>
-    <p>@messages("companyNotFound.reason3.text1")</p>
+    <h2>@messages("companyNotFound.utrDoesntMatch")</h2>
+    <p>@messages("companyNotFound.utrDoesntMatch.description")</p>
 
     @components.button_link("site.go_back", "#", "back-link")
 }
