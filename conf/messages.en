@@ -395,6 +395,9 @@ advisorDetails.error.name.required = Enter the name of your advisor
 advisorDetails.error.name.length = The name cannot be more than 107 characters
 advisorDetails.error.name.invalid = The name contains invalid characters
 
+declarationFitAndProper.title = declarationFitAndProper
+declarationFitAndProper.heading = declarationFitAndProper
+
 advisorAddressPostCodeLookup.title = Pension adviser’s address
 advisorAddressPostCodeLookup.heading = Pension adviser’s address
 advisorAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
