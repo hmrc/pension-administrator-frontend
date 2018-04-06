@@ -42,7 +42,9 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase {
 
   def viewAsString(form: Form[_] = form) = businessDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  "CompanyUniqueTaxReference Controller" must {
+  val testAnswer = "1234567890"
+
+  "BusinessDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -61,7 +63,7 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
