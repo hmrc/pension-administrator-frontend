@@ -58,3 +58,6 @@ POST       /companyAddress                       controllers.register.company.Co
 
 GET        /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
 POST       /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
+
+GET        /companyNotFound                       controllers.register.company.CompanyNotFoundController.onPageLoad()
+
