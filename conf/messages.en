@@ -349,6 +349,7 @@ businessType.error.required = Select your business type
 companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering
 companyUpdateDetails.text = If you are a company or a limited liability partnership that is registered with companies house you need to inform you need to inform {0}Companies House{1} and {2}HMRC{1}
+
 companyNotFound.title = Business details not found
 companyNotFound.heading = Business details not found
 companyNotFound.lede = There could be a number of reasons why we cannot find your business details.
