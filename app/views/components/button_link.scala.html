@@ -16,9 +16,10 @@
 
 @(
 messageKey: String = "",
-href: String
+href: String,
+id: String
 )(implicit messages: Messages)
 
 <div class="section">
-    <a href="@href" role="button" class="button">@messages(messageKey)</a>
+    <a id="@id" href="@href" role="button" class="button">@messages(messageKey)</a>
 </div>
