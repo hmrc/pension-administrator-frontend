@@ -320,8 +320,6 @@ youWillNeedToUpdate.heading = You need to update your details before registering
 youWillNeedToUpdate.text = If you are an individual or partnership and are not registered with Companies House
 youWillNeedToUpdate.link = you only need to inform HMRC
 
-
-
 contactDetails.individual.lede = We will use this information to contact you about your schemes. You can enter a group or individual email.
 
 companyReview.title = Review the company details
@@ -337,6 +335,15 @@ individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 individualPreviousAddressPostCodeLookup.formHint = Example, NE12 8ER
 
+businessType.title = What is your business type?
+businessType.heading = What is your business type?
+businessType.limitedCompany = Limited company
+businessType.businessPartnership = Business partnership
+businessType.limitedPartnership = Limited partnership
+businessType.limitedLiabilityPartnership = Limited liability partnership
+businessType.unlimitedCompany = Unlimited company
+businessType.overseasCompany = Overseas company
+businessType.error.required = Select your business type
 
 companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering

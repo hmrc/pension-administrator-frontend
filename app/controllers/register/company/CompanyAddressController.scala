@@ -24,8 +24,9 @@ import controllers.actions._
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
+import identifiers.register.BusinessTypeId
 import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
-import models.{Mode, Organisation, OrganisationTypeEnum}
+import models.{Mode, Organisation}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.NotFoundException
 import utils.Navigator
@@ -45,15 +46,17 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       retrieve(CompanyDetailsId)( companyDetails => {
         retrieve(CompanyUniqueTaxReferenceId)( utr => {
-          val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
+          retrieve(BusinessTypeId)( businessType => {
+            val organisation = Organisation(companyDetails.companyName, businessType)
 
-          registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-            dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map(_ =>
-              Ok(companyAddress(appConfig, response.address)))
-          } recover {
-            case _: NotFoundException =>
-              Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
-          }
+            registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
+              dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map(_ =>
+                Ok(companyAddress(appConfig, response.address)))
+            } recover {
+              case _: NotFoundException =>
+                Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
+            }
+          })
         })
       })
   }
