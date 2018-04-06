@@ -58,3 +58,5 @@ POST       /companyAddress                       controllers.register.company.Co
 
 GET        /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
 POST       /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
+
+GET        /companyUpdateDetails                       controllers.register.company.CompanyUpdateDetailsController.onPageLoad()
