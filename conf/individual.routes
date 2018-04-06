@@ -33,3 +33,6 @@ GET        /individualPreviousAddressList                       controllers.regi
 POST       /individualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
 GET        /changeIndividualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeIndividualPreviousAddressList                       controllers.register.individual.IndividualPreviousAddressListController.onSubmit(mode: Mode = CheckMode)
+
+GET        /checkYourAnswers                       controllers.register.individual.CheckYourAnswersController.onPageLoad()
+POST       /checkYourAnswers                       controllers.register.individual.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)

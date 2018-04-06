@@ -311,8 +311,9 @@ individualDetailsCorrect.address = Address
 individualAddressYears.title = How long has {0} been at this address?
 individualAddressYears.heading = How long has {0} been at this address?
 
-individualPreviousAddress.title = individualPreviousAddress
-individualPreviousAddress.heading = individualPreviousAddress
+individualPreviousAddress.title = Previous address
+individualPreviousAddress.heading = Previous address
+individualPreviousAddress.checkYourAnswersLabel = Previous address
 
 youWillNeedToUpdate.title = You need to update your details before registering
 youWillNeedToUpdate.heading = You need to update your details before registering
