@@ -61,10 +61,11 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
       getCompanyAddress(mode) { response =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) => Future.successful(BadRequest(companyAddress(appConfig, formWithErrors, response))),
-          (value) => {
-            dataCacheConnector.save(request.externalId, CompanyAddressId, response).map( _ =>
+          {
+            case true => dataCacheConnector.save(request.externalId, CompanyAddressId, response).map( _ =>
               Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
             )
+            case false => Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
           }
         )
       }
@@ -72,17 +73,16 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
   }
 
   def getCompanyAddress(mode: Mode)(fn: TolerantAddress => Future[Result])(implicit request: DataRequest[AnyContent]) = {
-    retrieve(CompanyDetailsId)( companyDetails => {
-      retrieve(CompanyUniqueTaxReferenceId)( utr => {
+    (CompanyDetailsId and CompanyUniqueTaxReferenceId).retrieve.right.map {
+      case (companyDetails ~ utr) =>
         val organisation = Organisation(companyDetails.companyName, OrganisationTypeEnum.CorporateBody)
-          registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-            fn(response.address)
-          } recoverWith {
-            case _: NotFoundException =>
-              Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
-          }
-      })
-    })
+        registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
+          fn(response.address)
+        } recoverWith {
+          case _: NotFoundException =>
+            Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
+        }
+    }
   }
 
 }
