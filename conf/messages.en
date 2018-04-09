@@ -358,3 +358,6 @@ advisorAddressPostCodeLookup.formLabel = Postcode
 advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
 advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup
 advisorAddressPostCodeLookup.error.required = Please give an answer for advisorAddressPostCodeLookup
+
+advisorAddressList.title = advisorAddressList
+advisorAddressList.heading = advisorAddressList
