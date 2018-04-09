@@ -61,8 +61,8 @@ class AdvisorAddressPostCodeLookupController @Inject()(
 object AdvisorAddressPostCodeLookupController {
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
-    routes.AdvisorAddressPostCodeLookupController.onSubmit(mode),
-    routes.AdvisorAddressPostCodeLookupController.onPageLoad(mode),
+    controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onSubmit(mode),
+    controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onPageLoad(mode),
     Message("advisorAddressPostCodeLookup.title"),
     Message("advisorAddressPostCodeLookup.heading"),
     Some(Message("common.advisor.secondary.heading")),
