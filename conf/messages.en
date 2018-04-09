@@ -300,8 +300,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-companyAddress.title = Company address
-companyAddress.heading = Company address
+companyAddress.title = Are these details correct?
+companyAddress.heading = Are these details correct?
 companyAddress.checkYourAnswersLabel = Address
 
 whatYouWillNeed.title = What you’ll need
@@ -353,6 +353,9 @@ businessType.limitedLiabilityPartnership = Limited liability partnership
 businessType.unlimitedCompany = Unlimited company
 businessType.overseasCompany = Overseas company
 businessType.error.required = Select your business type
+
+companyAddress.error.required = You must make a selection
+
 
 companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering

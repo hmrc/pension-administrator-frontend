@@ -53,8 +53,8 @@ POST       /moreThanTenDirectors                       controllers.register.comp
 GET        /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeMoreThanTenDirectors                       controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = CheckMode)
 
-GET        /companyAddress                       controllers.register.company.CompanyAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /companyAddress                       controllers.register.company.CompanyAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /confirmCompanyDetails                       controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirmCompanyDetails                       controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
 GET        /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
 POST       /companyReview                       controllers.register.company.CompanyReviewController.onPageLoad()
