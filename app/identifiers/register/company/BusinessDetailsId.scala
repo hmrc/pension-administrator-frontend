@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package identifiers.register.company
 
-import javax.inject.Inject
+import identifiers._
+import models.register.company.BusinessDetails
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import play.api.data.Form
-
-class CompanyUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("companyUniqueTaxReference.error.required")
-        .verifying(firstError(
-          uniqueTaxReference("companyUniqueTaxReference.error.invalid")
-        ))
-    )
+case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] {
+  override def toString: String = "businessDetails"
 }

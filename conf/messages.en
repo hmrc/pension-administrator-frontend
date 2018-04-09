@@ -119,13 +119,18 @@ contactDetails.error.phone.required = Enter a phone number
 contactDetails.error.phone.length = The telephone number cannot be more than 24 characters
 contactDetails.error.phone.invalid = The telephone number can only contain numbers
 
-companyUniqueTaxReference.title = Corporation Tax Unique Taxpayer Reference number
-companyUniqueTaxReference.heading = Corporation Tax Unique Taxpayer Reference number
-companyUniqueTaxReference.body = A CTUTR is issued by HMRC when you register your business.
-companyUniqueTaxReference.hint = A UTR is 10 or 13 digits, if it is 13 digits only enter the last 10.
-companyUniqueTaxReference.checkYourAnswersLabel = Corporation Tax Unique Taxpayer Reference number
-companyUniqueTaxReference.error.required = Enter the Unique Taxpayer Reference number
-companyUniqueTaxReference.error.invalid = Enter a valid Unique Taxpayer Reference number
+businessDetails.title = What are your business details?
+businessDetails.heading = What are your business details?
+businessDetails.companyName = Registered company name
+businessDetails.utr = Unique Taxpayer Reference number
+businessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’. ’UTR’ or ’Offical Use’
+businessDetails.companyName.hint = This is the registered name on your company’s incorporation certificate.
+businessDetails.checkYourAnswersLabel = What are your business details?
+businessDetails.error.companyName.required = Enter the registered company name
+businessDetails.error.utr.required = Enter the Unique Taxpayer Reference number
+businessDetails.error.companyName.invalid = Enter a valid registered company name
+businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference number
+businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
 companyRegistrationNumber.title = Company Registration number
 companyRegistrationNumber.heading = Company Registration number

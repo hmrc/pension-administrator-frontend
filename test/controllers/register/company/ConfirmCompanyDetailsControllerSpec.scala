@@ -21,10 +21,10 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.company.CompanyAddressFormProvider
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{CompanyDetailsId, CompanyUniqueTaxReferenceId}
+import identifiers.register.company.BusinessDetailsId
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
-import models.register.company.CompanyDetails
+import models.register.company.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -53,8 +53,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        CompanyDetailsId.toString -> CompanyDetails(companyName, None, None),
-        CompanyUniqueTaxReferenceId.toString -> validBusinessPartnershipUtr
+        BusinessDetailsId.toString -> BusinessDetails(companyName, validBusinessPartnershipUtr)
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -66,8 +65,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         BusinessTypeId.toString -> LimitedCompany.toString,
-        CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
+        BusinessDetailsId.toString -> BusinessDetails("MyCo", invalidUtr)
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -99,9 +97,9 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired" when {
       "GET" when {
-        "no company details data is found" in {
+        "no business details data is found" in {
           val data = Json.obj(
-            CompanyUniqueTaxReferenceId.toString -> invalidUtr
+            BusinessTypeId.toString -> LimitedCompany.toString
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -110,9 +108,9 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
-        "no UTR data is found" in {
+        "no business type data is found" in {
           val data = Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None)
+            BusinessDetailsId.toString -> BusinessDetails("MyCo", validBusinessPartnershipUtr)
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -130,9 +128,9 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         }
       }
       "POST" when {
-        "no company details data is found" in {
+        "no business details data is found" in {
           val data = Json.obj(
-            CompanyUniqueTaxReferenceId.toString -> invalidUtr
+            BusinessTypeId.toString -> LimitedCompany.toString
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -141,9 +139,9 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
-        "no UTR data is found" in {
+        "no business type data is found" in {
           val data = Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None)
+            BusinessDetailsId.toString -> BusinessDetails("MyCo", validLimitedCompanyUtr)
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -193,13 +191,12 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
   private val validBusinessPartnershipUtr = "0987654321"
   private val invalidUtr = "INVALID"
 
-  val companyDetails = CompanyDetails("MyCompany", None, None)
+  val companyDetails = BusinessDetails("MyCompany", validLimitedCompanyUtr)
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
   val data = Json.obj(
     BusinessTypeId.toString -> LimitedCompany.toString,
-    CompanyDetailsId.toString -> companyDetails,
-    CompanyUniqueTaxReferenceId.toString -> validLimitedCompanyUtr
+    BusinessDetailsId.toString -> companyDetails
   )
 
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))

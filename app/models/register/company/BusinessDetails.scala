@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package models.register.company
 
-import identifiers._
+import play.api.libs.json.Json
 
-case object CompanyUniqueTaxReferenceId extends TypedIdentifier[String] {
-  override def toString: String = "companyUniqueTaxReference"
+case class BusinessDetails (companyName: String, uniqueTaxReferenceNumber: String)
+
+object BusinessDetails {
+  implicit val format = Json.format[BusinessDetails]
 }

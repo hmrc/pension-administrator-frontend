@@ -25,10 +25,10 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import models.requests.DataRequest
 import models._
-import models.register.company.CompanyDetails
+import models.register.company.{BusinessDetails, CompanyDetails}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,27 +70,27 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
           {
             case true =>
               upsert(request.userAnswers, CompanyAddressId)(response.address){ userAnswers =>
-                upsert(userAnswers, CompanyDetailsId)(companyDetails.copy(response.organisation.organisationName)){ userAnswers =>
+                upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)){ userAnswers =>
                   dataCacheConnector.upsert(request.externalId, userAnswers.json).map{ _ =>
-                    Redirect(navigator.nextPage(CompanyDetailsId, mode)(userAnswers))
+                    Redirect(navigator.nextPage(BusinessDetailsId, mode)(userAnswers))
                   }
                 }
               }
-            case false => Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
+            case false => Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
           }
         )
       }
   }
 
-  def getCompanyDetails(mode: Mode)(fn: (CompanyDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
-    (CompanyDetailsId and CompanyUniqueTaxReferenceId and BusinessTypeId).retrieve.right.map {
-      case (companyDetails ~ utr ~ businessType) =>
-        val organisation = Organisation(companyDetails.companyName, businessType)
-        registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-          fn(companyDetails, response)
+  def getCompanyDetails(mode: Mode)(fn: (BusinessDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+    (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
+      case (businessDetails ~ businessType) =>
+        val organisation = Organisation(businessDetails.companyName, businessType)
+        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap { response =>
+          fn(businessDetails, response)
         } recoverWith {
           case _: NotFoundException =>
-            Future.successful(Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers)))
+            Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
         }
     }
   }
