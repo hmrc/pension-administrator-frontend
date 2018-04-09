@@ -26,7 +26,7 @@ case class ManualAddressViewModel(
                                    title: Message,
                                    heading: Message,
                                    secondaryHeader: Option[Message],
-                                   hint: Message = "messages__common__address_lede"
+                                   hint: Option[Message] = None
                                  ) {
 
 }

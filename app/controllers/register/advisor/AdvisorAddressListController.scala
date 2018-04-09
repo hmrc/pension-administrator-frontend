@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
-import identifiers.register.advisor.{AdvisorAddressListId, AdvisorAddressPostCodeLookupId}
+import identifiers.register.advisor._
 import models.requests.DataRequest
 import models.Mode
 import play.api.i18n.MessagesApi
@@ -49,7 +49,7 @@ class AdvisorAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, AdvisorAddressListId, AdvisorAddressListId, mode))
+      viewmodel(mode).right.map(vm => post(vm, AdvisorAddressListId, AdvisorAddressId, mode))
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

@@ -17,8 +17,8 @@
 package identifiers.register.advisor
 
 import identifiers._
-import models.register.advisor.AdvisorAddress
+import models.Address
 
-case object AdvisorAddressId extends TypedIdentifier[AdvisorAddress] {
+case object AdvisorAddressId extends TypedIdentifier[Address] {
   override def toString: String = "advisorAddress"
 }

@@ -19,50 +19,48 @@ package controllers.register.advisor
 import javax.inject.Inject
 
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.MessagesApi
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.register.advisor.AdvisorAddressFormProvider
-import identifiers.register.advisor.AdvisorAddressId
-import models.Mode
-import models.register.advisor.AdvisorAddress
-import utils.{Navigator, UserAnswers}
-import views.html.register.advisor.advisorAddress
+import controllers.address.ManualAddressController
+import forms.AddressFormProvider
+import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressListId}
+import models.{Address, Mode}
+import play.api.mvc.{Action, AnyContent}
+import utils.{CountryOptions, Navigator}
+import viewmodels.Message
+import viewmodels.address.ManualAddressViewModel
 
-import scala.concurrent.Future
+class AdvisorAddressController @Inject()(
+                                          override val appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          override val dataCacheConnector: DataCacheConnector,
+                                          override val navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: AddressFormProvider,
+                                          val countryOptions: CountryOptions
+                                        ) extends ManualAddressController {
 
-class AdvisorAddressController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AdvisorAddressFormProvider
-                                      ) extends FrontendController with I18nSupport {
+  protected val form: Form[Address] = formProvider()
 
-  private val form = formProvider()
+  private def addressViewModel(mode: Mode) = ManualAddressViewModel(
+    routes.AdvisorAddressController.onSubmit(mode),
+    countryOptions.options,
+    Message("common.advisor.address.title"),
+    Message("common.advisor.address.heading"),
+    Some(Message("common.advisor.secondary.heading"))
+  )
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AdvisorAddressId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(advisorAddress(appConfig, preparedForm, mode))
+      get(AdvisorAddressId, addressViewModel(mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(advisorAddress(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save(request.externalId, AdvisorAddressId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AdvisorAddressId, mode)(new UserAnswers(cacheMap))))
-    )
+      post(AdvisorAddressId, addressViewModel(mode), mode)
   }
 }
