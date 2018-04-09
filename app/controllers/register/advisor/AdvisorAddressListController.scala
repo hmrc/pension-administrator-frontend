@@ -49,11 +49,11 @@ class AdvisorAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, AdvisorAddressListId, AdvisorAddressListId,mode))
+      viewmodel(mode).right.map(vm => post(vm, AdvisorAddressListId, AdvisorAddressListId, mode))
   }
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    AdvisorAddressPostCodeLookupId.retrieve.right.map{
+  def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+    AdvisorAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.AdvisorAddressListController.onSubmit(mode),
@@ -61,7 +61,7 @@ class AdvisorAddressListController @Inject()(override val appConfig: FrontendApp
           addresses = addresses,
           Message("common.selectAddress.title"),
           Message("common.selectAddress.heading"),
-          Some(Message("common.adviser.secondary.heading")),
+          Some(Message("common.advisor.secondary.heading")),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )
