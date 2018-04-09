@@ -134,6 +134,28 @@ trait ViewSpecBase extends SpecBase {
       )
   }
 
+  def haveCheckBox(id: String, value: String): Matcher[View] = Matcher[View] {
+    view =>
+      val doc = Jsoup.parse(view().toString())
+      val checkbox = doc.select(s"input[id=$id][type=checkbox][value=$value]")
+
+      MatchResult(
+        checkbox.size == 1,
+        s"Checkbox with Id $id and value $value not rendered on page",
+        s"Checkbox with Id $id and value $value rendered on page"
+      )
+  }
+
+  def haveLabel(forId: String, text: String): Matcher[View] = Matcher[View] {
+    view =>
+      val doc = Jsoup.parse(view().toString())
+      val label = doc.select(s"label[for=$forId]")
+    MatchResult(
+      label.size == 1 && label.text == text,
+      s"Label for $forId and text $text not rendered on page",
+      s"Label for $forId and text $text rendered on page"
+    )
+  }
 
   def assertLink(doc: Document, linkId: String, url: String): Assertion = {
     val link = doc.select(s"a[id=$linkId]")

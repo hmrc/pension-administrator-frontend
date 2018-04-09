@@ -12,3 +12,5 @@ POST       /declarationWorkingKnowledge                       controllers.regist
 GET        /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
 
+GET        /declaration                       controllers.register.DeclarationController.onPageLoad()
+POST       /declaration                       controllers.register.DeclarationController.onSubmit()
