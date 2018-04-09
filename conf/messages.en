@@ -369,6 +369,15 @@ declarationWorkingKnowledge.body = This could be a pension professional, legal a
 declarationWorkingKnowledge.checkYourAnswersLabel = Have you appointed an adviser who has a working knowledge of pension administration?
 declarationWorkingKnowledge.error.required = You need to tell us if you have appointed an adviser
 
+advisorDetails.title = Provide details of your pension advisor
+advisorDetails.heading = Provide details of your pension advisor
+advisorDetails.secondary.heading = Pension advisor
+advisorDetails.name = Name
+advisorDetails.email = Email address
+advisorDetails.checkYourAnswersLabel = Advisor details
+advisorDetails.error.name.required = Enter the name of your advisor
+advisorDetails.error.name.length = The name cannot be more than 107 characters
+advisorDetails.error.name.invalid = The name contains invalid characters
 
 advisorAddressPostCodeLookup.title = Pension adviser’s address
 advisorAddressPostCodeLookup.heading = Pension adviser’s address
@@ -377,3 +386,4 @@ advisorAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have 
 advisorAddressPostCodeLookup.formLabel = Postcode
 advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
 advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup
+
