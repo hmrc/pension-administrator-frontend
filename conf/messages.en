@@ -96,6 +96,7 @@ common.manual.address.title = Address
 common.manual.address.heading = Address
 common.firstname = First name
 common.postcodeLookup.enterPostcode = Enter the postcode below, or {0} enter the address manually {1}
+common.advisor.secondary.heading = Pension adviser
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -368,3 +369,11 @@ declarationWorkingKnowledge.body = This could be a pension professional, legal a
 declarationWorkingKnowledge.checkYourAnswersLabel = Have you appointed an adviser who has a working knowledge of pension administration?
 declarationWorkingKnowledge.error.required = You need to tell us if you have appointed an adviser
 
+
+advisorAddressPostCodeLookup.title = Pension adviser’s address
+advisorAddressPostCodeLookup.heading = Pension adviser’s address
+advisorAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
+advisorAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
+advisorAddressPostCodeLookup.formLabel = Postcode
+advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
+advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup

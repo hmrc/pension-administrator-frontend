@@ -1,0 +1,4 @@
+GET        /advisorAddressPostCodeLookup               controllers.register.advisor.AdvisorAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /advisorAddressPostCodeLookup               controllers.register.advisor.AdvisorAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /changeAdvisorAddressPostCodeLookup                        controllers.register.advisor.AdvisorAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeAdvisorAddressPostCodeLookup                        controllers.register.advisor.AdvisorAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)

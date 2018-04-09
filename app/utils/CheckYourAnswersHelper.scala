@@ -29,6 +29,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
+  def advisorAddressPostCodeLookup: Seq[AnswerRow] = userAnswers.get(identifiers.register.advisor.AdvisorAddressPostCodeLookupId) match {
+    case Some(x) => Seq(AnswerRow("advisorAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onPageLoad(CheckMode).url))
+    case _ => Nil
+  }
+
   def contactDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualContactDetailsId) match {
     case Some(x) => Seq(AnswerRow("contactDetails.checkYourAnswersLabel", Seq(x.email,x.phone), false, controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url))
     case _ => Nil
