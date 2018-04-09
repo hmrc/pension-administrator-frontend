@@ -72,6 +72,7 @@ site.service_name = Pension Scheme Registrations
 site.textarea.char_limit = (Limit is {0} characters)
 site.secondaryHeader = Register a new Pension Scheme Administrator
 site.find_address = Find address
+site.agreeAndContinue = Agree and continue
 site.go_back = Go back
 
 common.selectAddress.heading = Select the address
@@ -376,6 +377,16 @@ declarationWorkingKnowledge.heading = Have you appointed an adviser who has a wo
 declarationWorkingKnowledge.body = This could be a pension professional, legal adviser or solicitor.
 declarationWorkingKnowledge.checkYourAnswersLabel = Have you appointed an adviser who has a working knowledge of pension administration?
 declarationWorkingKnowledge.error.required = You need to tell us if you have appointed an adviser
+
+declaration.title = Declaration
+declaration.heading = Declaration
+declaration.declaration = I declare/understand
+declaration.statement1 = that the information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
+declaration.statement2 = that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state. I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
+declaration.statement3 = that as a scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrator under part 4 of the Finance Act 2004
+declaration.statement4 = that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme, is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme or, if the scheme is already registered, HMRC may de-register a scheme
+declaration.agree = I agree
+declaration.invalid = You need to agree to all the declarations before you can continue
 
 advisorDetails.title = Provide details of your pension advisor
 advisorDetails.heading = Provide details of your pension advisor
