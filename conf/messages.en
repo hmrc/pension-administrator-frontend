@@ -74,6 +74,7 @@ site.secondaryHeader = Register a new Pension Scheme Administrator
 site.find_address = Find address
 site.agreeAndContinue = Agree and continue
 site.go_back = Go back
+site.start = Start
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -309,6 +310,9 @@ whatYouWillNeed.heading = What you’ll need
 whatYouWillNeed.body.text = To register as a pension scheme administrator (PSA) with HMRC you will need:
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
 whatYouWillNeed.body.item2 = your contact telephone number and email address
+whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company
+whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
+whatYouWillNeed.company.body.item3 = the details of all the directors in the company
 
 individualDetailsCorrect.title = Are your details correct?
 individualDetailsCorrect.heading = Are your details correct?

@@ -24,16 +24,17 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.heading("whatYouWillNeed.heading", secondaryHeaderKey = Some("common.individual.secondary.heading"))
+    @components.heading("whatYouWillNeed.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
     @components.paragraph_text(messages("whatYouWillNeed.body.text"))
 
     <ul class="list list-bullet">
-        <li>@messages("whatYouWillNeed.body.item1")</li>
-        <li>@messages("whatYouWillNeed.body.item2")</li>
+        <li>@messages("whatYouWillNeed.company.body.item1")</li>
+        <li>@messages("whatYouWillNeed.company.body.item2")</li>
+        <li>@messages("whatYouWillNeed.company.body.item3")</li>
     </ul>
 
-    @helpers.form(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+    @helpers.form(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
         @components.submit_button("site.start")
     }
 
