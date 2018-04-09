@@ -81,20 +81,18 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
     }
 
     "redirect to Session Expired" when {
-      "no existing data is found" when {
-        "GET" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      "no existing data is found on a GET" in {
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
-        "POST" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
+      "no existing data is found on a POST" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody()
+        val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
   }
@@ -102,6 +100,7 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
 
 object AdvisorAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
   def countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
 
   val formProvider = new AddressFormProvider(countryOptions)
