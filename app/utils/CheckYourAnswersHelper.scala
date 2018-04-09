@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
-import identifiers.register.company.{CompanyUniqueTaxReferenceId, ContactDetailsId}
+import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
 import models.{Address, CheckMode, Nino, UniqueTaxReference}
 import viewmodels.AnswerRow
@@ -253,8 +253,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     }
   }
 
-  def companyUniqueTaxReference: Option[AnswerRow] = userAnswers.get(CompanyUniqueTaxReferenceId) map {
-    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.company.routes.CompanyUniqueTaxReferenceController.onPageLoad(CheckMode).url)
+  def businessDetails: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) map {
+    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.company.routes.BusinessDetailsController.onPageLoad(CheckMode).url)
   }
 
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {

@@ -20,10 +20,10 @@ import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
-import models.register.company.CompanyDetails
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId, CompanyDetailsId}
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
+import models.register.company.{BusinessDetails, CompanyDetails}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
@@ -42,7 +42,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       val data = Json.obj(
         BusinessTypeId.toString -> LimitedCompany.toString,
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validLimitedCompanyUtr
+        BusinessDetailsId.toString -> BusinessDetails("MyCo", validLimitedCompanyUtr)
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -55,7 +55,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
         CompanyDetailsId.toString -> CompanyDetails("MyPartnership", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validBusinessPartnershipUtr
+        BusinessDetailsId.toString -> BusinessDetails("MyPartnership", validBusinessPartnershipUtr)
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -68,7 +68,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       val data = Json.obj(
         BusinessTypeId.toString -> LimitedCompany.toString,
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> validLimitedCompanyUtr
+        BusinessDetailsId.toString -> BusinessDetails("MyCo", validLimitedCompanyUtr)
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -81,7 +81,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       val data = Json.obj(
         BusinessTypeId.toString -> LimitedCompany.toString,
         CompanyDetailsId.toString -> CompanyDetails("MyCo", None, None),
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
+        BusinessDetailsId.toString -> BusinessDetails("name", invalidUtr)
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -92,7 +92,7 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a GET if no company details data is found" in {
       val data = Json.obj(
-        CompanyUniqueTaxReferenceId.toString -> invalidUtr
+        BusinessDetailsId.toString -> BusinessDetails("name", validLimitedCompanyUtr)
       )
 
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))

@@ -19,31 +19,35 @@ package controllers.register.company
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.CompanyUniqueTaxReferenceFormProvider
-import identifiers.register.company.CompanyUniqueTaxReferenceId
+import forms.register.company.BusinessDetailsFormProvider
+import identifiers.register.company.BusinessDetailsId
 import models.NormalMode
+import models.register.company.BusinessDetails
 import play.api.data.Form
-import play.api.libs.json.{JsString, _}
+import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.companyUniqueTaxReference
+import views.html.register.company.businessDetails
 
-class CompanyUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
+class BusinessDetailsControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyUniqueTaxReferenceFormProvider()
+  val formProvider = new BusinessDetailsFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyUniqueTaxReferenceController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new BusinessDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = companyUniqueTaxReference(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = businessDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = "1234567890"
+  val testUtr = "1234567890"
+  val testOrganisationName = "test organisation"
+  val invalidName = "invalid name"
+  val invalidUtr = "invalid utr"
 
-  "CompanyUniqueTaxReference Controller" must {
+  "BusinessDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -53,16 +57,16 @@ class CompanyUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyUniqueTaxReferenceId.toString -> JsString(testAnswer))
+      val validData = Json.obj(BusinessDetailsId.toString -> BusinessDetails(testOrganisationName, testUtr))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
+      contentAsString(result) mustBe viewAsString(form.fill(BusinessDetails(testOrganisationName, testUtr)))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", testOrganisationName), ("utr", testUtr))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -71,8 +75,8 @@ class CompanyUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val postRequest = fakeRequest.withFormUrlEncodedBody((invalidName, invalidUtr))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -88,7 +92,7 @@ class CompanyUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val postRequest = fakeRequest.withFormUrlEncodedBody()
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

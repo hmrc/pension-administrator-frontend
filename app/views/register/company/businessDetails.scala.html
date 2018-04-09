@@ -22,25 +22,28 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("companyUniqueTaxReference.title"),
+    title = messages("businessDetails.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = controllers.register.company.routes.CompanyUniqueTaxReferenceController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = controllers.register.company.routes.BusinessDetailsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("companyUniqueTaxReference.heading", "heading-xlarge", Some("site.secondaryHeader"))
-
-        <p>@messages("companyUniqueTaxReference.body")</p>
+        @components.heading("businessDetails.heading", "heading-xlarge", Some("site.secondaryHeader"))
 
         @components.input_text(
-          field = form("value"),
-          label = messages("companyUniqueTaxReference.heading"),
-          hint = Some(messages("companyUniqueTaxReference.hint")),
-          labelClass=Some("visually-hidden")
+        field = form("companyName"),
+        label = messages("businessDetails.companyName"),
+        hint = Some(messages("businessDetails.companyName.hint"))
+        )
+
+        @components.input_text(
+          field = form("utr"),
+          label = messages("businessDetails.utr"),
+          hint = Some(messages("businessDetails.utr.hint"))
         )
 
         @components.submit_button()
