@@ -11,3 +11,4 @@ GET        /declarationWorkingKnowledge                       controllers.regist
 POST       /declarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
 GET        /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
+
