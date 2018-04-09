@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(
-messageKey: String = "",
-href: String,
-id: String
-)(implicit messages: Messages)
+package identifiers.register
 
-<div class="section">
-    <a id="@id" href="@href" role="button" class="button">@messages(messageKey)</a>
-</div>
+import identifiers._
+import models.register.BusinessType
+
+case object BusinessTypeId extends TypedIdentifier[BusinessType] {
+  override def toString: String = "businessType"
+}
