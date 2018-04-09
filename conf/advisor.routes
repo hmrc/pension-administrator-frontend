@@ -17,3 +17,5 @@ GET        /advisorDetails                       controllers.register.advisor.Ad
 POST       /advisorDetails                       controllers.register.advisor.AdvisorDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeAdvisorDetails                       controllers.register.advisor.AdvisorDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeAdvisorDetails                       controllers.register.advisor.AdvisorDetailsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /checkYourAnswers                       controllers.register.advisor.CheckYourAnswersController.onPageLoad()
