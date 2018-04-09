@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package forms.register
 
-import javax.inject.Inject
-
-import forms.FormErrorHelper
-import forms.mappings.Mappings
+import forms.mappings.CheckboxMapping
 import play.api.data.Form
 
-class CompanyUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with Mappings {
+class DeclarationFormProvider extends CheckboxMapping {
 
-  def apply(): Form[String] =
+  private val fieldName = "agree"
+  private val trueValue = "agreed"
+  private val invalidKey = "declaration.invalid"
+
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> text("companyUniqueTaxReference.error.required")
-        .verifying(firstError(
-          uniqueTaxReference("companyUniqueTaxReference.error.invalid")
-        ))
+      fieldName -> checkboxMapping(fieldName, trueValue, acceptTrueOnly = true, invalidKey)
     )
+
 }

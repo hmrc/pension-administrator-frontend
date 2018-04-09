@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package controllers.register.company
 
-import identifiers._
+import play.api.mvc.Action
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-case object CompanyUniqueTaxReferenceId extends TypedIdentifier[String] {
-  override def toString: String = "companyUniqueTaxReference"
+class WhatYouWillNeedController extends FrontendController {
+
+  // Stub implementation to be completed by PODS-714
+
+  def onPageLoad() = Action { Ok }
+
+  def onSubmit() = Action { Ok }
+
 }

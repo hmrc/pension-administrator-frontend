@@ -1,9 +1,9 @@
 ->         /directors                               directors.Routes
 
-GET        /companyUniqueTaxReference               controllers.register.company.CompanyUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode)
-POST       /companyUniqueTaxReference               controllers.register.company.CompanyUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode)
-GET        /changeCompanyUniqueTaxReference                        controllers.register.company.CompanyUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeCompanyUniqueTaxReference                        controllers.register.company.CompanyUniqueTaxReferenceController.onSubmit(mode: Mode = CheckMode)
+GET        /businessDetails               controllers.register.company.BusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /businessDetails               controllers.register.company.BusinessDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /changeBusinessDetails                        controllers.register.company.BusinessDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeBusinessDetails                        controllers.register.company.BusinessDetailsController.onSubmit(mode: Mode = CheckMode)
 
 GET        /companyRegistrationNumber               controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /companyRegistrationNumber               controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)
@@ -63,3 +63,5 @@ GET        /companyUpdateDetails                       controllers.register.comp
 
 GET        /companyNotFound                       controllers.register.company.CompanyNotFoundController.onPageLoad()
 
+GET        /whatYouWillNeed                       controllers.register.company.WhatYouWillNeedController.onPageLoad()
+POST       /whatYouWillNeed                       controllers.register.company.WhatYouWillNeedController.onSubmit()

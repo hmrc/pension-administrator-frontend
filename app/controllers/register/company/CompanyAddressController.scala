@@ -18,17 +18,17 @@ package controllers.register.company
 
 import javax.inject.Inject
 
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
+import controllers.actions._
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{CompanyAddressId, CompanyDetailsId, CompanyUniqueTaxReferenceId}
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId, CompanyDetailsId}
 import models.{Mode, Organisation}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
 import views.html.register.company.companyAddress
 
@@ -44,21 +44,18 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieve(CompanyDetailsId)( companyDetails => {
-        retrieve(CompanyUniqueTaxReferenceId)( utr => {
-          retrieve(BusinessTypeId)( businessType => {
-            val organisation = Organisation(companyDetails.companyName, businessType)
+      (CompanyDetailsId and BusinessTypeId and BusinessDetailsId).retrieve.right.map{
+        case (companyDetails ~ businessType ~ businessDetails) =>
+          val organisation = Organisation(companyDetails.companyName, businessType)
 
-            registrationConnector.registerWithIdOrganisation(utr, organisation).flatMap { response =>
-              dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map(_ =>
-                Ok(companyAddress(appConfig, response.address)))
-            } recover {
-              case _: NotFoundException =>
-                Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
-            }
-          })
-        })
-      })
+          registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap { response =>
+            dataCacheConnector.save(request.externalId, CompanyAddressId, response.address).map(_ =>
+              Ok(companyAddress(appConfig, response.address)))
+          } recover {
+            case _: NotFoundException =>
+              Redirect(navigator.nextPage(CompanyDetailsId, mode)(request.userAnswers))
+          }
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

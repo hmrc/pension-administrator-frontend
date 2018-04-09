@@ -1,0 +1,53 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package forms.register.company
+
+import javax.inject.Inject
+
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import models.register.company.BusinessDetails
+import play.api.data.Form
+import play.api.data.Forms._
+
+class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mappings {
+
+  def apply(): Form[BusinessDetails] = Form(
+    mapping(
+      "companyName" -> text("businessDetails.error.companyName.required")
+        .verifying(
+          firstError(
+            maxLength(
+              BusinessDetailsFormProvider.BusinessNameLength,
+              "businessDetails.error.companyName.length"
+            ),
+            safeText("businessDetails.error.companyName.invalid")
+          )
+        ),
+
+      "utr" -> text("businessDetails.error.utr.required")
+        .verifying(firstError(
+          uniqueTaxReference("businessDetails.error.utr.invalid")
+        )
+        )
+    )(BusinessDetails.apply)(BusinessDetails.unapply)
+  )
+}
+
+object BusinessDetailsFormProvider {
+  val BusinessNameLength: Int = 105
+}
