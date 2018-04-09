@@ -65,7 +65,7 @@ object AdvisorAddressPostCodeLookupController {
     routes.AdvisorAddressPostCodeLookupController.onPageLoad(mode),
     Message("advisorAddressPostCodeLookup.title"),
     Message("advisorAddressPostCodeLookup.heading"),
-    Some(Message("common.adviser.secondary.heading")),
+    Some(Message("common.advisor.secondary.heading")),
     Message("advisorAddressPostCodeLookup.hint"),
     Message("advisorAddressPostCodeLookup.enterPostcode"),
     Message("advisorAddressPostCodeLookup.formLabel"),
