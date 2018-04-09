@@ -395,8 +395,15 @@ advisorDetails.error.name.required = Enter the name of your advisor
 advisorDetails.error.name.length = The name cannot be more than 107 characters
 advisorDetails.error.name.invalid = The name contains invalid characters
 
-declarationFitAndProper.title = declarationFitAndProper
-declarationFitAndProper.heading = declarationFitAndProper
+declarationFitAndProper.title = Fit and proper declaration
+declarationFitAndProper.heading = Fit and proper declaration
+declarationFitAndProper.declaration = I am a fit and proper person to be a scheme administrator and:
+declarationFitAndProper.statement1 = I have not been involved in tax fraud, abuse of tax repayment systems or other fraudulent behaviour including misrepresentation and/or identity theft
+declarationFitAndProper.statement2 = I have not been convicted of a crime relating to finance, corporate bodies or dishonesty
+declarationFitAndProper.statement3 = I have not been the subject of adverse civil proceedings relating to finance, corporate bodies or dishonesty/misconduct
+declarationFitAndProper.statement4 = I have not participated in, or been connected with, designing and/or marketing tax avoidance or pensions liberation schemes
+declarationFitAndProper.statement5 = I have not been disqualified from acting as a company director or are bankrupt
+declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
 
 advisorAddressPostCodeLookup.title = Pension adviser’s address
 advisorAddressPostCodeLookup.heading = Pension adviser’s address
@@ -405,4 +412,3 @@ advisorAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have 
 advisorAddressPostCodeLookup.formLabel = Postcode
 advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
 advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup
-
