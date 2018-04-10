@@ -16,6 +16,7 @@
 
 package utils
 
+import identifiers.register.advisor.AdvisorAddressId
 import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
@@ -24,8 +25,15 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
+  def advisorAddress: Seq[AnswerRow] = userAnswers.get(AdvisorAddressId) match {
+    case Some(x) => Seq(AnswerRow("cya.label.address", addressAnswer(x), false,
+      controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(CheckMode).url))
+    case _ => Nil
+  }
+
   def advisorDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.advisor.AdvisorDetailsId) match {
-    case Some(x) => Seq(AnswerRow("advisorDetails.checkYourAnswersLabel", Seq(x.name,x.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
+    case Some(x) => Seq(AnswerRow("cya.label.name", Seq(x.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
+                        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 

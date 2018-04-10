@@ -2,9 +2,9 @@
 
 echo "Applying migration CheckYourAnswers"
 
-echo "Adding routes to register.company.routes"
-echo "" >> ../conf/register.company.routes
-echo "GET        /checkYourAnswers                       controllers.register.company.director.CheckYourAnswersController.onPageLoad()" >> ../conf/register.company.routes
+echo "Adding routes to register.advisor.routes"
+echo "" >> ../conf/register.advisor.routes
+echo "GET        /checkYourAnswers                       controllers.register.advisor.CheckYourAnswersController.onPageLoad()" >> ../conf/register.advisor.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
