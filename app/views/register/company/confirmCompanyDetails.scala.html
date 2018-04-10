@@ -33,9 +33,10 @@
 
         @components.heading("companyAddress.heading")
 
-        @name,
-        @components.tolerant_address("companyAddress", address)
-        <br />
+        <p>
+            <div>@name,</div>
+            @components.tolerant_address("companyAddress", address)
+        </p>
 
         @components.input_yes_no(
             field = form("value"),
