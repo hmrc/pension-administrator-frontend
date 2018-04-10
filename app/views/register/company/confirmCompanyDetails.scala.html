@@ -33,9 +33,9 @@
 
         @components.heading("companyAddress.heading")
 
-        <p>@name</p>
-
+        @name,
         @components.tolerant_address("companyAddress", address)
+        <br />
 
         @components.input_yes_no(
             field = form("value"),
