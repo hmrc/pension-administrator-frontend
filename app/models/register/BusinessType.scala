@@ -38,8 +38,20 @@ object BusinessType extends Enumerable.Implicits {
     OverseasCompany
   )
 
-  val options: Seq[InputOption] = values.map {
-    value =>
+  /*
+    PODS-751: To include partnerships in the list of options presented to the user replace the sequence below
+    with the full list defined in values: Seq[BusinessType] above.
+    ie replace
+      Seq(...).map { value => ... }
+       with
+      values.map { value => ... }
+   */
+  val options: Seq[InputOption] =
+    Seq(
+      LimitedCompany,
+      UnlimitedCompany,
+      OverseasCompany
+    ).map { value =>
       InputOption(value.toString, s"businessType.${value.toString}")
   }
 
