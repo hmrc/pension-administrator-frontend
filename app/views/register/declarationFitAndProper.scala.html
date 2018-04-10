@@ -27,6 +27,8 @@
 
     @components.back_link()
 
+    @components.error_summary(form.errors)
+
     @components.heading("declarationFitAndProper.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
     @helpers.form(action = routes.DeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {

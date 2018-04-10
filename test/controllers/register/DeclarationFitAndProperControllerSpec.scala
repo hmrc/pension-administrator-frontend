@@ -17,25 +17,25 @@
 package controllers.register
 
 import play.api.data.Form
-import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
+import controllers.JourneyType.JourneyType
 import controllers.actions._
-import play.api.test.Helpers._
-import models.NormalMode
+import play.api.test.Helpers.{contentAsString, _}
 import views.html.register.declarationFitAndProper
-import controllers.ControllerSpecBase
+import controllers.{ControllerSpecBase, Journey, JourneyType}
+import forms.register.DeclarationFormProvider
+import identifiers.register.{DeclarationFitAndProperId}
+import models.requests.DataRequest
+import play.api.mvc.{Call, Result}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new DeclarationFitAndProperController(frontendAppConfig, messagesApi, FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+  import DeclarationFitAndProperControllerSpec._
 
-  def viewAsString() = declarationFitAndProper(frontendAppConfig)(fakeRequest, messages).toString
-
-  "DeclarationFitAndProper Controller" must {
+  "DeclarationFitAndProperController" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeRequest)
@@ -43,5 +43,110 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
+
+    "redirect to Session Expired on a GET request if no cached data is found" in {
+      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "redirect to the next page on a valid POST request" in {
+      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+      val result = controller().onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "save the answer on a valid POST request" in {
+      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+      val result = controller().onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      FakeDataCacheConnector.verify(DeclarationFitAndProperId, true)
+    }
+
+    "reject an invalid POST request and display errors" in {
+      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+      val result = controller().onSubmit(fakeRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(formWithErrors)
+    }
+
+    "redirect to Session Expired on a POST request if no cached data is found" in {
+      val result = controller(dontGetAnyData).onSubmit(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "set cancel link correctly to Individual What You Will Need page on a GET request" in {
+      val result = controller(journey = individualJourney).onPageLoad()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(cancelCall = individualCancelCall)
+    }
+
+    "set cancel link correctly to Company What You Will Need page on a GET request" in {
+      val result = controller(journey = companyJourney).onPageLoad()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(cancelCall = companyCancelCall)
+    }
+
+    "set cancel link correctly to Individual What You Will Need page on a POST request" in {
+      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+      val result = controller(journey = individualJourney).onSubmit()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
+    }
+
+    "set cancel link correctly to Company What You Will Need page on a POST request" in {
+      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+      val result = controller(journey = companyJourney).onSubmit()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
+    }
   }
+}
+object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
+
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val form: Form[_] = new DeclarationFormProvider()()
+
+  private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
+  private val companyJourney = new Journey {
+    override def withJourneyType(f: JourneyType => Future[Result])(implicit request: DataRequest[_], ec: ExecutionContext): Future[Result] = {
+      f(JourneyType.Company)
+    }
+  }
+
+  private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
+  private val individualJourney = new Journey {
+    override def withJourneyType(f: JourneyType => Future[Result])(implicit request: DataRequest[_], ec: ExecutionContext): Future[Result] = {
+      f(JourneyType.Individual)
+    }
+  }
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, journey: Journey = companyJourney) =
+    new DeclarationFitAndProperController(
+      frontendAppConfig,
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      fakeNavigator,
+      new DeclarationFormProvider(),
+      FakeDataCacheConnector,
+      journey
+    )
+
+  private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =
+    declarationFitAndProper(
+      frontendAppConfig,
+      form,
+      cancelCall
+    )(fakeRequest, messages).toString
+
 }
