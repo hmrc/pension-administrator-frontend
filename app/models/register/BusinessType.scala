@@ -45,12 +45,13 @@ object BusinessType extends Enumerable.Implicits {
       Seq(...).map { value => ... }
        with
       values.map { value => ... }
+
+    PODS-770: Ditto with Overseas company
    */
   val options: Seq[InputOption] =
     Seq(
       LimitedCompany,
-      UnlimitedCompany,
-      OverseasCompany
+      UnlimitedCompany
     ).map { value =>
       InputOption(value.toString, s"businessType.${value.toString}")
   }
