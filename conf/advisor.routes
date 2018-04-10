@@ -8,6 +8,11 @@ POST       /advisorAddressList                             controllers.register.
 GET        /changeAdvisorAddressList                       controllers.register.advisor.AdvisorAddressListController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeAdvisorAddressList                       controllers.register.advisor.AdvisorAddressListController.onSubmit(mode: Mode = CheckMode)
 
+GET        /advisorAddress                                 controllers.register.advisor.AdvisorAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /advisorAddress                                 controllers.register.advisor.AdvisorAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /changeAdvisorAddress                           controllers.register.advisor.AdvisorAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeAdvisorAddress                           controllers.register.advisor.AdvisorAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /advisorDetails                       controllers.register.advisor.AdvisorDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /advisorDetails                       controllers.register.advisor.AdvisorDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /changeAdvisorDetails                       controllers.register.advisor.AdvisorDetailsController.onPageLoad(mode: Mode = CheckMode)

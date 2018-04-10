@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.register.individual
+package controllers.register.advisor
 
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.individual.IndividualPreviousAddressId
-import models.{Address, Index, NormalMode}
+import identifiers.register.advisor.AdvisorAddressId
+import models.{Address, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -34,34 +34,11 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
+class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  def countryOptions: CountryOptions = new CountryOptions(options)
+  import AdvisorAddressControllerSpec._
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
-  val messagePrefix = "common.previousAddress"
-  val firstIndex = Index(0)
-
-  val formProvider = new AddressFormProvider(FakeCountryOptions())
-  val form: Form[Address] = formProvider()
-
-  val viewmodel = ManualAddressViewModel(
-    postCall = routes.IndividualPreviousAddressController.onSubmit(NormalMode),
-    countryOptions = options,
-    title = Message(s"$messagePrefix.title"),
-    heading = Message(s"$messagePrefix.heading"),
-    secondaryHeader = Some("common.individual.secondary.heading"),
-    hint = Some(Message(s"$messagePrefix.lede"))
-  )
-
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualPreviousAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider, countryOptions)
-
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
-
-  "IndividualPreviousAddress Controller" must {
+  "AdvisorAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -71,7 +48,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(IndividualPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
+      val validData = Json.obj(AdvisorAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -104,22 +81,43 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     }
 
     "redirect to Session Expired" when {
-      "no existing data is found" when {
-        "GET" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      "no existing data is found on a GET" in {
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
-        "POST" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
+      "no existing data is found on a POST" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody()
+        val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
-
   }
+}
+
+object AdvisorAddressControllerSpec extends ControllerSpecBase {
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  def countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+
+  val formProvider = new AddressFormProvider(countryOptions)
+  val form: Form[Address] = formProvider()
+
+  val addressViewModel = ManualAddressViewModel(
+    postCall = routes.AdvisorAddressController.onSubmit(NormalMode),
+    countryOptions = countryOptions.options,
+    title = Message("common.advisor.address.title"),
+    heading = Message("common.advisor.address.heading"),
+    secondaryHeader = Some("common.advisor.secondary.heading")
+  )
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new AdvisorAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+      countryOptions)
+
+  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, addressViewModel)(fakeRequest, messages).toString
 }

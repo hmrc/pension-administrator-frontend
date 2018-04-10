@@ -84,7 +84,7 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
           .withFormUrlEncodedBody(("value", "0"))), dataRetrievalAction,
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.AdvisorAddressListController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.AdvisorAddressController.onPageLoad(NormalMode).url)
         }
       )
     }
@@ -143,7 +143,7 @@ object AdvisorAddressListControllerSpec extends ControllerSpecBase {
   private def addressListViewModel(addresses: Seq[Address]): AddressListViewModel = {
     AddressListViewModel(
       routes.AdvisorAddressListController.onSubmit(NormalMode),
-      routes.AdvisorAddressListController.onPageLoad(NormalMode),
+      routes.AdvisorAddressController.onPageLoad(NormalMode),
       addresses,
       Message("common.selectAddress.title"),
       Message("common.selectAddress.heading"),
