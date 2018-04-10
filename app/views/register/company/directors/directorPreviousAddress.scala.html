@@ -36,40 +36,7 @@
 
         @components.heading("directorPreviousAddress.heading", secondaryHeaderKey = Some(directorName))
 
-        @components.input_text(
-            field = form("addressLine1"),
-            label = messages("address.line.1"),
-            inputClass = Some("form-control-3-4")
-        )
-
-        @components.input_text(
-            field = form("addressLine2"),
-            label = messages("address.line.2"),
-            inputClass = Some("form-control-3-4")
-        )
-
-        @components.input_text(
-            field = form("addressLine3"),
-            label = messages("address.line.3")
-        )
-
-        @components.input_text(
-            field = form("addressLine4"),
-            label = messages("address.line.4")
-        )
-
-        @components.input_text(
-            field = form("postCode.postCode"),
-            label = messages("address.postcode")
-        )
-
-        @components.select(
-            field = form("country"),
-            label = messages("address.country"),
-            options = countryOptions,
-            placeholder = Some("address.country.select"),
-            formGroupClasses = Set("autocomplete-wrapper")
-        )
+        @components.address(form, countryOptions)
 
         @components.submit_button()
     }
