@@ -62,9 +62,9 @@ object AdvisorAddressPostCodeLookupController {
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onSubmit(mode),
-    controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onPageLoad(mode),
-    Message("advisorAddressPostCodeLookup.title"),
-    Message("advisorAddressPostCodeLookup.heading"),
+    controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(mode),
+    Message("common.advisor.address.title"),
+    Message("common.advisor.address.heading"),
     Some(Message("common.advisor.secondary.heading")),
     Message("advisorAddressPostCodeLookup.hint"),
     Message("advisorAddressPostCodeLookup.enterPostcode"),

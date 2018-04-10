@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package viewmodels.address
+package forms.company
 
-import play.api.mvc.Call
-import utils.InputOption
-import viewmodels.Message
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class ManualAddressViewModel(
-                                   postCall: Call,
-                                   countryOptions: Seq[InputOption],
-                                   title: Message,
-                                   heading: Message,
-                                   secondaryHeader: Option[Message],
-                                   hint: Option[Message] = None
-                                 ) {
+class CompanyAddressFormProviderSpec extends BooleanFieldBehaviours {
 
+  val requiredKey = "companyAddress.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new CompanyAddressFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

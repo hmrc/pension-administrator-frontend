@@ -21,21 +21,20 @@ import play.api.libs.json._
 
 abstract class RegisterWithIdResponse(address: TolerantAddress)
 
-case class OrganizationRegisterWithIdResponse(address: TolerantAddress) extends RegisterWithIdResponse(address)
+case class OrganizationRegisterWithIdResponse(address: TolerantAddress, organisation: Organisation) extends RegisterWithIdResponse(address)
 
 case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address)
 
 object RegisterWithIdResponse {
 
   implicit lazy val readsOrganizationRegisterWithIdResponse: Reads[OrganizationRegisterWithIdResponse] =
-    (JsPath \ "address").read[TolerantAddress].map { address =>
-      OrganizationRegisterWithIdResponse(address)
-    }
+    ((JsPath \ "address").read[TolerantAddress] ~ (JsPath \ "organisation").read[Organisation]).apply(OrganizationRegisterWithIdResponse)
 
   implicit lazy val writesOrganizationRegisterWithIdResponse: Writes[OrganizationRegisterWithIdResponse] =
       Writes[OrganizationRegisterWithIdResponse] { response =>
     Json.obj(
-      "address" -> response.address
+      "address" -> response.address,
+      "organisation" -> response.organisation
     )
   }
 

@@ -19,19 +19,29 @@
 @import models.TolerantAddress
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, address: TolerantAddress)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], address: TolerantAddress, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("companyAddress.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = CompanyAddressController.onSubmit(), 'autoComplete -> "off") {
+    @helpers.form(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
-        @components.heading("companyAddress.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.error_summary(form.errors)
+
+        @components.heading("companyAddress.heading")
+
+        <p>@name</p>
 
         @components.tolerant_address("companyAddress", address)
+
+        @components.input_yes_no(
+            field = form("value"),
+            label = messages("companyAddress.title"),
+            labelClass = Some("visually-hidden")
+        )
 
         @components.submit_button()
     }

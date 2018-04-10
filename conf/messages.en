@@ -74,6 +74,7 @@ site.secondaryHeader = Register a new Pension Scheme Administrator
 site.find_address = Find address
 site.agreeAndContinue = Agree and continue
 site.go_back = Go back
+site.start = Start
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -98,6 +99,8 @@ common.manual.address.heading = Address
 common.firstname = First name
 common.postcodeLookup.enterPostcode = Enter the postcode below, or {0} enter the address manually {1}
 common.advisor.secondary.heading = Pension adviser
+common.advisor.address.heading = Pension adviser’s address
+common.advisor.address.title = Pension adviser’s address
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -300,8 +303,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-companyAddress.title = Company address
-companyAddress.heading = Company address
+companyAddress.title = Are these details correct?
+companyAddress.heading = Are these details correct?
 companyAddress.checkYourAnswersLabel = Address
 
 whatYouWillNeed.title = What you’ll need
@@ -309,6 +312,9 @@ whatYouWillNeed.heading = What you’ll need
 whatYouWillNeed.body.text = To register as a pension scheme administrator (PSA) with HMRC you will need:
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
 whatYouWillNeed.body.item2 = your contact telephone number and email address
+whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company
+whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
+whatYouWillNeed.company.body.item3 = the details of all the directors in the company
 
 individualDetailsCorrect.title = Are your details correct?
 individualDetailsCorrect.heading = Are your details correct?
@@ -353,6 +359,9 @@ businessType.limitedLiabilityPartnership = Limited liability partnership
 businessType.unlimitedCompany = Unlimited company
 businessType.overseasCompany = Overseas company
 businessType.error.required = Select your business type
+
+companyAddress.error.required = You must make a selection
+
 
 companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering

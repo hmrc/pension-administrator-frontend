@@ -16,15 +16,33 @@
 
 package controllers.register.company
 
-import play.api.mvc.Action
+import javax.inject.Inject
+
+import config.FrontendAppConfig
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.company.WhatYouWillNeedId
+import models.NormalMode
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
+import views.html.register.company.whatYouWillNeed
 
-class WhatYouWillNeedController extends FrontendController {
+class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
 
-  // Stub implementation to be completed by PODS-714
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+    implicit request =>
+      Ok(whatYouWillNeed(appConfig))
+  }
 
-  def onPageLoad() = Action { Ok }
-
-  def onSubmit() = Action { Ok }
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+    request =>
+        Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
+  }
 
 }

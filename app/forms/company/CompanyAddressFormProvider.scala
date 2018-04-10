@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels.address
+package forms.company
 
-import play.api.mvc.Call
-import utils.InputOption
-import viewmodels.Message
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case class ManualAddressViewModel(
-                                   postCall: Call,
-                                   countryOptions: Seq[InputOption],
-                                   title: Message,
-                                   heading: Message,
-                                   secondaryHeader: Option[Message],
-                                   hint: Option[Message] = None
-                                 ) {
+class CompanyAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
 
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("companyAddress.error.required")
+    )
 }
