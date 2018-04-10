@@ -18,8 +18,8 @@ package controllers.register.advisor
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.advisor.AdvisorDetailsId
-import models.{CheckMode, NormalMode}
+import identifiers.register.advisor.{AdvisorAddressId, AdvisorDetailsId}
+import models.{Address, CheckMode, NormalMode}
 import models.register.advisor.AdvisorDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -34,13 +34,35 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val advDetails = AdvisorDetails("test advisor name", "test@test.com")
-  val validData = Json.obj(
-    AdvisorDetailsId.toString -> advDetails
+  val address = Address(
+    "address-line-1",
+    "address-line-2",
+    None,
+    None,
+    Some("post-code"),
+    "country"
   )
-  
+
+  val validData = Json.obj(
+    AdvisorDetailsId.toString -> advDetails,
+    AdvisorAddressId.toString -> address
+  )
+
+  def advisorAddress = Seq(AnswerRow(
+    "cya.label.address",
+    Seq(
+      s"${address.addressLine1},",
+      s"${address.addressLine2},",
+      s"${address.postcode.value},",
+      address.country
+    ),
+    false,
+    controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(CheckMode).url
+  ))
+
   def advisorDetails = Seq(AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
-  def sections = Seq(AnswerSection(None, advisorDetails))
+  def sections = Seq(AnswerSection(None, advisorDetails ++ advisorAddress))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,

@@ -40,7 +40,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val helper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-      val sections = Seq(AnswerSection(None, helper.advisorDetails))
+      val sections = Seq(AnswerSection(None, helper.advisorDetails ++ helper.advisorAddress))
       Ok(check_your_answers(appConfig, sections, Some("common.advisor.secondary.heading"), routes.CheckYourAnswersController.onPageLoad()))
   }
 
