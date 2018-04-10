@@ -123,14 +123,36 @@ trait ViewSpecBase extends SpecBase {
       )
   }
 
+  def haveElementWithText(id: String, messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
+    view =>
+      val text = messages(messageKey, args:_*)
+      val element = Jsoup.parse(view().toString()).getElementById(id)
+      MatchResult(
+        element.text().equals(text),
+        s"element $id with text $text is not rendered on the page",
+        s"element $id with text $text is rendered on the page"
+      )
+  }
+
   def haveLink(url: String, linkId: String): Matcher[View] = Matcher[View] {
     view =>
       val link = Jsoup.parse(view().toString()).select(s"a[id=$linkId]")
       val href = link.attr("href")
       MatchResult(
         href == url,
-        s"href $href is not equal to the url $url",
-        s"href $href is equal to the url $url"
+        s"link $linkId href $href is not equal to the url $url",
+        s"link $linkId href $href is equal to the url $url"
+      )
+  }
+
+  def haveLinkOnClick(action: String, linkId: String): Matcher[View] = Matcher[View] {
+    view =>
+      val link = Jsoup.parse(view().toString()).select(s"a[id=$linkId]")
+      val onClick = link.attr("onClick")
+      MatchResult(
+        onClick == action,
+        s"link $linkId onClick $onClick is not equal to $action",
+        s"link $linkId onClick $onClick is equal to $action"
       )
   }
 

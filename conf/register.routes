@@ -14,3 +14,6 @@ POST       /changeDeclarationWorkingKnowledge                       controllers.
 
 GET        /declaration                       controllers.register.DeclarationController.onPageLoad()
 POST       /declaration                       controllers.register.DeclarationController.onSubmit()
+
+GET        /confirmation                       controllers.register.ConfirmationController.onPageLoad()
+POST       /confirmation                       controllers.register.ConfirmationController.onSubmit()

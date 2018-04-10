@@ -75,6 +75,8 @@ site.find_address = Find address
 site.agreeAndContinue = Agree and continue
 site.go_back = Go back
 site.start = Start
+site.finishAndSignOut = Finish and sign out
+site.printThisPage = Print this page
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -409,3 +411,10 @@ advisorAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have 
 advisorAddressPostCodeLookup.formLabel = Postcode
 advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
 advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup
+
+confirmation.title = Your registration to become a Pension Scheme Administrator has been successful
+confirmation.heading = Your registration to become a Pension Scheme Administrator has been successful.
+confirmation.psaIdNumber = Your PSA ID number is
+confirmation.whatYouNeedToKnow.heading = What you need to know
+confirmation.whatYouNeedToKnow.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
+confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
