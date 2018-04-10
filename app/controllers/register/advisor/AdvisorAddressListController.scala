@@ -57,7 +57,7 @@ class AdvisorAddressListController @Inject()(override val appConfig: FrontendApp
       addresses =>
         AddressListViewModel(
           postCall = routes.AdvisorAddressListController.onSubmit(mode),
-          manualInputCall = routes.AdvisorAddressListController.onPageLoad(mode),
+          manualInputCall = routes.AdvisorAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("common.selectAddress.title"),
           Message("common.selectAddress.heading"),
