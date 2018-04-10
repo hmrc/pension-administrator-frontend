@@ -15,8 +15,10 @@
  *@
 
 @import config.FrontendAppConfig
+@import controllers.register.routes
+@import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig,form: Form[_], cancelCall: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declarationFitAndProper.title"),
@@ -53,16 +55,25 @@
         </ol>
 
         <div class="form-group">
-            <div class="multiple-choice">
-                <input id="agree" type="checkbox" value="agreed">
-                <label for="agree">I agree</label>
-            </div>
+            <div class="form-field @if(form("agree").hasErrors){form-field--error}">
+            <fieldset class="inline">
+                <legend>
+                    @form("agree").errors.map { error =>
+                    <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
+                    }
+                </legend>
+                <div class="multiple-choice">
+                    <input id="agree" name="agree" type="checkbox" value="agreed">
+                    <label for="agree">I agree</label>
+                </div>
+            </fieldset>
         </div>
+
 
         <div class="form-group">
             @components.submit_button("site.agreeAndContinue")
 
-            <a id="cancel" href="@controllers.routes.IndexController.onPageLoad().url">@messages("site.cancel")</a>
+            <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
         </div>
     }
 
