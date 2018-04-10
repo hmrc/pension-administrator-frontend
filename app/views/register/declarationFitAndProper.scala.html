@@ -1,0 +1,82 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import controllers.register.routes
+@import uk.gov.hmrc.play.views.html._
+
+@(appConfig: FrontendAppConfig,form: Form[_], cancelCall: Call)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("declarationFitAndProper.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @components.back_link()
+
+    @components.error_summary(form.errors)
+
+    @components.heading("declarationFitAndProper.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+    @helpers.form(action = routes.DeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
+
+        @components.paragraph_text(messages("declarationFitAndProper.declaration") + ":")
+
+        <ol class="list-number">
+            <li>
+                @components.paragraph_text(messages("declarationFitAndProper.statement1"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declarationFitAndProper.statement2"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declarationFitAndProper.statement3"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declarationFitAndProper.statement4"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declarationFitAndProper.statement5"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declarationFitAndProper.statement6"))
+            </li>
+        </ol>
+
+        <div class="form-group">
+            <div class="form-field @if(form("agree").hasErrors){form-field--error}">
+            <fieldset class="inline">
+                <legend>
+                    @form("agree").errors.map { error =>
+                    <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
+                    }
+                </legend>
+                <div class="multiple-choice">
+                    <input id="agree" name="agree" type="checkbox" value="agreed">
+                    <label for="agree">I agree</label>
+                </div>
+            </fieldset>
+        </div>
+
+
+        <div class="form-group">
+            @components.submit_button("site.agreeAndContinue")
+
+            <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
+        </div>
+    }
+
+}
