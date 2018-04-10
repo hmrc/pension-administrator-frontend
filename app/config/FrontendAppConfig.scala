@@ -48,6 +48,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val tellHMRCChangesUrl: String = loadConfig("urls.tellHMRCChanges")
   lazy val tellCompaniesHouseCompanyChangesUrl: String = loadConfig("urls.companyChangesCompaniesHouse")
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
+  lazy val registerSchemeUrl: String = loadConfig("urls.registerScheme")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
