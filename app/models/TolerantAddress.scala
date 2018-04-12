@@ -19,29 +19,14 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, JsPath}
 
+import scala.language.implicitConversions
+
 case class TolerantAddress(addressLine1: Option[String],
                            addressLine2: Option[String],
                            addressLine3: Option[String],
                            addressLine4: Option[String],
                            postcode: Option[String],
                            country: Option[String]) {
-
-  def toAddress: Option[Address] = {
-    for {
-      addressLine1 <- this.addressLine1
-      addressLine2 <- this.addressLine2
-      country <- this.country
-    } yield {
-      Address(
-        addressLine1,
-        addressLine2,
-        this.addressLine3,
-        this.addressLine4,
-        this.postcode,
-        country
-      )
-    }
-  }
 
   def lines: Seq[String] = {
     Seq(
@@ -67,4 +52,20 @@ object TolerantAddress {
     (JsPath \ "countryCode").formatNullable[String]
   )(TolerantAddress.apply, unlift(TolerantAddress.unapply))
 
+  implicit def convert(tolerant: TolerantAddress): Option[Address] = {
+    for {
+      addressLine1 <- tolerant.addressLine1
+      addressLine2 <- tolerant.addressLine2
+      country <- tolerant.country
+    } yield {
+      Address(
+        addressLine1,
+        addressLine2,
+        tolerant.addressLine3,
+        tolerant.addressLine4,
+        tolerant.postcode,
+        country
+      )
+    }
+  }
 }

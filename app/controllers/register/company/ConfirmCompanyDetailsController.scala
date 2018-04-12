@@ -22,13 +22,13 @@ import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.company.CompanyAddressFormProvider
+import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessTypeId
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.requests.DataRequest
 import models._
 import models.register.company.BusinessDetails
+import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -78,11 +78,8 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                 }
               }
             case false =>
-              upsert(request.userAnswers, CompanyAddressId)(response.address) { userAnswers =>
-                  dataCacheConnector.remove(request.externalId, CompanyAddressId).map { _ =>
-                    Redirect(navigator.nextPage(CompanyAddressId, mode)(userAnswers))
-                  }
-
+              dataCacheConnector.remove(request.externalId, CompanyAddressId).map { _ =>
+                Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers))
               }
           }
         )

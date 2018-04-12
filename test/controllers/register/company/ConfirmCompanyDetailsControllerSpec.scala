@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.company.CompanyAddressFormProvider
+import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.BusinessTypeId
 import identifiers.register.company._
 import models._
@@ -86,12 +86,13 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         }
       }
       "no" which {
-        "upsert address and organisation name from api response" in {
+        "removes address" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+
           val data = Json.obj(
-              BusinessTypeId.toString -> LimitedCompany.toString,
-              BusinessDetailsId.toString -> companyDetails,
-                CompanyAddressId.toString -> testLimitedCompanyAddress
+            BusinessTypeId.toString -> LimitedCompany.toString,
+            BusinessDetailsId.toString -> companyDetails,
+            CompanyAddressId.toString -> testLimitedCompanyAddress
           )
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
@@ -99,6 +100,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
+
+          FakeDataCacheConnector.verifyNot(CompanyAddressId)
         }
       }
     }
