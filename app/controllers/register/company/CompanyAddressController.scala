@@ -19,20 +19,26 @@ package controllers.register.company
 import javax.inject.Inject
 
 import config.FrontendAppConfig
+import controllers.Retrievals
 import controllers.actions._
+import identifiers.register.company.CompanyAddressId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.register.company.companyAddress
 
+import scala.concurrent.Future
+
 class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                         requireData: DataRequiredAction) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Ok(companyAddress(appConfig))
+      CompanyAddressId.retrieve.right.map { _ =>
+        Future.successful(Ok(companyAddress(appConfig)))
+      }
   }
 }
