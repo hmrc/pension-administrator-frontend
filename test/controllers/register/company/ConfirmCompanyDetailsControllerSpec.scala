@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.company.CompanyAddressFormProvider
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.company._
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models.register.company.BusinessDetails
@@ -88,8 +88,14 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       "no" which {
         "upsert address and organisation name from api response" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+          val data = Json.obj(
+              BusinessTypeId.toString -> LimitedCompany.toString,
+              BusinessDetailsId.toString -> companyDetails,
+                CompanyAddressId.toString -> testLimitedCompanyAddress
+          )
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
-          val result = controller(dataRetrievalAction2).onSubmit(NormalMode)(postRequest)
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -201,13 +207,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     BusinessDetailsId.toString -> companyDetails
   )
 
-  val data2 = Json.obj(
-    CompanyAddressId.toString -> testLimitedCompanyAddress
-  )
-
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-
-  val dataRetrievalAction2 = new FakeDataRetrievalAction(Some(Json.obj(testLimitedCompanyAddress)))
 
   val formProvider = new CompanyAddressFormProvider
 
