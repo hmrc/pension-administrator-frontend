@@ -16,6 +16,7 @@
 
 package views.register.company
 
+import models.Address
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyAddress
 
@@ -23,7 +24,13 @@ class CompanyAddressViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "companyAddress"
 
-  def createView = () => companyAddress(frontendAppConfig)(fakeRequest, messages)
+  val address = Address(
+    "add1", "add2",
+    None, None,
+    Some("NE11NE"), "GB"
+  )
+
+  def createView = () => companyAddress(frontendAppConfig, Some(address))(fakeRequest, messages)
 
   "CompanyAddress view" must {
     behave like normalPage(createView, messageKeyPrefix)

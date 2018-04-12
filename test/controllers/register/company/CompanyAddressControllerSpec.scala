@@ -19,7 +19,7 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.CompanyAddressId
-import models.TolerantAddress
+import models.{Address, TolerantAddress}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import views.html.register.company.companyAddress
@@ -35,7 +35,13 @@ class CompanyAddressControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl
     )
 
-  def viewAsString() = companyAddress(frontendAppConfig)(fakeRequest, messages).toString
+  val address = Address(
+    "add1", "add2",
+    None, None,
+    Some("NE11NE"), "GB"
+  )
+
+  def viewAsString() = companyAddress(frontendAppConfig, Some(address))(fakeRequest, messages).toString
 
   "CompanyAddress Controller" must {
 

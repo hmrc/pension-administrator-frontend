@@ -37,8 +37,8 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      CompanyAddressId.retrieve.right.map { _ =>
-        Future.successful(Ok(companyAddress(appConfig)))
+      CompanyAddressId.retrieve.right.map { address =>
+        Future.successful(Ok(companyAddress(appConfig, address)))
       }
   }
 }
