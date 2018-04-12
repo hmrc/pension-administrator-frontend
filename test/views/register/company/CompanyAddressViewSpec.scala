@@ -28,6 +28,6 @@ class CompanyAddressViewSpec extends ViewBehaviours {
   "CompanyAddress view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
+    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
   }
 }

@@ -70,7 +70,7 @@ site.yes = Yes
 site.continue = Continue
 site.service_name = Pension Scheme Registrations
 site.textarea.char_limit = (Limit is {0} characters)
-site.secondaryHeader = Register a new Pension Scheme Administrator
+site.secondaryHeader = Register as a Pension Scheme Administrator
 site.find_address = Find address
 site.agreeAndContinue = Agree and continue
 site.go_back = Go back
@@ -362,6 +362,8 @@ businessType.unlimitedCompany = Unlimited company
 businessType.overseasCompany = Overseas company
 businessType.error.required = Select your business type
 
+companyAddress.title = Company address
+companyAddress.heading = Company address
 companyAddress.error.required = You must make a selection
 
 
@@ -430,6 +432,3 @@ confirmation.psaIdNumber = Your PSA ID number is
 confirmation.whatYouNeedToKnow.heading = What you need to know
 confirmation.whatYouNeedToKnow.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
-
-companyAddress.title = companyAddress
-companyAddress.heading = companyAddress
