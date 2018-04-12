@@ -22,9 +22,11 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.company.CompanyAddressId
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import views.html.register.company.companyAddress
 
 import scala.concurrent.Future
@@ -32,6 +34,7 @@ import scala.concurrent.Future
 class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
                                          authenticate: AuthAction,
+                                         navigator: Navigator,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport with Retrievals {
 
@@ -40,5 +43,10 @@ class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
       CompanyAddressId.retrieve.right.map { address =>
         Future.successful(Ok(companyAddress(appConfig, address)))
       }
+  }
+
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+    implicit request =>
+      Redirect(navigator.nextPage(CompanyAddressId, NormalMode)(request.userAnswers))
   }
 }
