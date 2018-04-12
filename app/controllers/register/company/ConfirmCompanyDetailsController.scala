@@ -28,7 +28,7 @@ import identifiers.register.BusinessTypeId
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import models.requests.DataRequest
 import models._
-import models.register.company.{BusinessDetails, CompanyDetails}
+import models.register.company.BusinessDetails
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,6 +36,7 @@ import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
@@ -44,7 +45,7 @@ import scala.concurrent.Future
 class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 dataCacheConnector: DataCacheConnector,
-                                                navigator: Navigator,
+                                                @RegisterCompany navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
@@ -72,11 +73,17 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
               upsert(request.userAnswers, CompanyAddressId)(response.address){ userAnswers =>
                 upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)){ userAnswers =>
                   dataCacheConnector.upsert(request.externalId, userAnswers.json).map{ _ =>
-                    Redirect(navigator.nextPage(BusinessDetailsId, mode)(userAnswers))
+                    Redirect(navigator.nextPage(CompanyAddressId, mode)(userAnswers))
                   }
                 }
               }
-            case false => Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
+            case false =>
+              upsert(request.userAnswers, CompanyAddressId)(response.address) { userAnswers =>
+                  dataCacheConnector.remove(request.externalId, CompanyAddressId).map { _ =>
+                    Redirect(navigator.nextPage(CompanyAddressId, mode)(userAnswers))
+                  }
+
+              }
           }
         )
       }
@@ -98,6 +105,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
   private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)(value: id.Data)
                                                         (fn: UserAnswers => Future[Result])
                                                         (implicit writes: Writes[id.Data]) = {
+
     userAnswers
       .set(id)(value)
       .fold(

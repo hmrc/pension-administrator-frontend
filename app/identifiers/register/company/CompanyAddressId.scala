@@ -18,7 +18,16 @@ package identifiers.register.company
 
 import identifiers.TypedIdentifier
 import models.TolerantAddress
+import utils.Cleanup
 
-case object CompanyAddressId extends TypedIdentifier[TolerantAddress] {
+case object CompanyAddressId extends TypedIdentifier[TolerantAddress] {self =>
   override def toString = "companyAddressId"
+
+  implicit lazy val tolerantAddress: Cleanup[self.type] =
+    Cleanup[TolerantAddress, self.type] {
+      case (CompanyAddressId, None, answers) =>
+        answers
+          .remove(CompanyAddressId)
+          .flatMap(_.remove(CompanyAddressId))
+    }
 }
