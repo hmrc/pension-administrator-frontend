@@ -16,7 +16,7 @@
 
 package views.register.company
 
-import forms.company.CompanyAddressFormProvider
+import forms.register.company.CompanyAddressFormProvider
 import models.TolerantAddress
 import play.api.data.Form
 import views.behaviours.{AddressBehaviours, ViewBehaviours, YesNoViewBehaviours}

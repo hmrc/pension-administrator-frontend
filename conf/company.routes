@@ -65,3 +65,5 @@ GET        /companyNotFound                       controllers.register.company.C
 
 GET        /whatYouWillNeed                       controllers.register.company.WhatYouWillNeedController.onPageLoad()
 POST       /whatYouWillNeed                       controllers.register.company.WhatYouWillNeedController.onSubmit()
+
+GET        /companyAddress                       controllers.register.company.CompanyAddressController.onPageLoad()

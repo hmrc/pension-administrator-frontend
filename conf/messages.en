@@ -430,3 +430,6 @@ confirmation.psaIdNumber = Your PSA ID number is
 confirmation.whatYouNeedToKnow.heading = What you need to know
 confirmation.whatYouNeedToKnow.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
+
+companyAddress.title = companyAddress
+companyAddress.heading = companyAddress

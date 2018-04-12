@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.company
+@import config.FrontendAppConfig
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
-class CompanyAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
+@main_template(
+    title = messages("companyAddress.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("companyAddress.error.required")
-    )
+    @components.back_link()
+
+    @components.heading("companyAddress.heading")
 }
