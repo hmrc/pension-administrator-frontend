@@ -19,42 +19,53 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.CompanyAddressId
-import models.{Address, TolerantAddress}
+import models.{Address, NormalMode, TolerantAddress}
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import utils.FakeNavigator
 import views.html.register.company.companyAddress
 
 class CompanyAddressControllerSpec extends ControllerSpecBase {
+
+  val onwardRoute = Call("GET", "/")
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
+      new FakeNavigator(desiredRoute = onwardRoute),
       dataRetrievalAction,
       new DataRequiredActionImpl
     )
 
-  val address = Address(
-    "add1", "add2",
+  val address = TolerantAddress(
+    Some("add1"), Some("add2"),
     None, None,
-    Some("NE11NE"), "GB"
+    Some("NE11NE"), Some("GB")
   )
 
-  def viewAsString() = companyAddress(frontendAppConfig, Some(address))(fakeRequest, messages).toString
+  val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyAddressId.toString -> address)))
+
+  def viewAsString() = companyAddress(frontendAppConfig, address)(fakeRequest, messages).toString
 
   "CompanyAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller(
-        new FakeDataRetrievalAction(Some(Json.obj(
-          CompanyAddressId.toString -> TolerantAddress(Some("AddressLine1"), Some("Add2"), Some("Add3"), None, Some("NE11NE"), Some("GB"))
-        )))
-      ).onPageLoad(fakeRequest)
+      val result = controller(validData).onPageLoad(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
+
+    "redirect to the next page valid data is submitted" in {
+      val result = controller(validData).onSubmit(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
 
     "redirect to Session Expired" when {
       "companyAddress cannot be retrieved" in {

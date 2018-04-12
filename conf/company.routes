@@ -67,3 +67,4 @@ GET        /whatYouWillNeed                       controllers.register.company.W
 POST       /whatYouWillNeed                       controllers.register.company.WhatYouWillNeedController.onSubmit()
 
 GET        /companyAddress                       controllers.register.company.CompanyAddressController.onPageLoad()
+POST       /companyAddress                       controllers.register.company.CompanyAddressController.onSubmit()
