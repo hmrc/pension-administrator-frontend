@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.company.CompanyAddressFormProvider
+import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.BusinessTypeId
 import identifiers.register.company.BusinessDetailsId
 import models._

@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package forms.company
+package forms.register.company
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class CompanyAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
+class CompanyAddressFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("companyAddress.error.required")
+  val requiredKey = "companyAddress.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new CompanyAddressFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

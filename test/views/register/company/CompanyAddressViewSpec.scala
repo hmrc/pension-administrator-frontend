@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package forms.company
+package views.register.company
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import models.Address
+import views.behaviours.ViewBehaviours
+import views.html.register.company.companyAddress
 
-class CompanyAddressFormProviderSpec extends BooleanFieldBehaviours {
+class CompanyAddressViewSpec extends ViewBehaviours {
 
-  val requiredKey = "companyAddress.error.required"
-  val invalidKey = "error.boolean"
+  val messageKeyPrefix = "companyAddress"
 
-  val form = new CompanyAddressFormProvider()()
+  val address = Address(
+    "add1", "add2",
+    None, None,
+    Some("NE11NE"), "GB"
+  )
 
-  ".value" must {
+  def createView = () => companyAddress(frontendAppConfig, Some(address))(fakeRequest, messages)
 
-    val fieldName = "value"
+  "CompanyAddress view" must {
+    behave like normalPage(createView, messageKeyPrefix)
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
   }
 }
