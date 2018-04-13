@@ -123,7 +123,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
         Some(Seq(AddressRecord(address)))
       }
 
-      when(cacheConnector.save(eqTo("cacheId"), eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any(), any())) thenReturn Future.successful {
+      when(cacheConnector.save(eqTo("cacheId"), eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())) thenReturn Future.successful {
         Json.obj()
       }
 

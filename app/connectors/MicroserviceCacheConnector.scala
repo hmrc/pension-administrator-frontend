@@ -24,7 +24,7 @@ import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted, PlainText}
 import uk.gov.hmrc.http._
-import utils.{Cleanup, UserAnswers}
+import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,6 @@ class MicroserviceCacheConnector @Inject() (
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
                                                 fmt: Format[A],
-                                                cleanup: Cleanup[I],
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
@@ -48,7 +47,6 @@ class MicroserviceCacheConnector @Inject() (
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                      (implicit
-                                      cleanup: Cleanup[I],
                                       ec: ExecutionContext,
                                       hc: HeaderCarrier
                                      ): Future[JsValue] = {

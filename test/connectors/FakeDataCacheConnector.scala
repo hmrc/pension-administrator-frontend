@@ -20,7 +20,6 @@ import identifiers.TypedIdentifier
 import org.scalatest.Matchers
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.Cleanup
 
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +32,6 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
                                                 fmt: Format[A],
-                                                cleanup: Cleanup[I],
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
@@ -43,7 +41,6 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                      (implicit
-                                      cleanup: Cleanup[I],
                                       ec: ExecutionContext,
                                       hc: HeaderCarrier
                                      ): Future[JsValue] = {
@@ -59,7 +56,7 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
     Future.successful(Some(Json.obj()))
   }
 
-  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier) = {
+  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     Future.successful(value)
   }
 
