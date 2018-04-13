@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,9 +70,17 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "data is removed on page load" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+
+      controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
+
+      FakeDataCacheConnector.verifyRemoved(CompanyAddressId)
+    }
 
     "valid data is submitted" when {
       "yes" which {
@@ -85,24 +93,13 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(onwardRoute.url)
         }
       }
-      "no" which {
-        "removes address" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+      "no" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-          val data = Json.obj(
-            BusinessTypeId.toString -> LimitedCompany.toString,
-            BusinessDetailsId.toString -> companyDetails,
-            CompanyAddressId.toString -> testLimitedCompanyAddress
-          )
-          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
-
-          FakeDataCacheConnector.verifyNot(CompanyAddressId)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
       }
     }
 

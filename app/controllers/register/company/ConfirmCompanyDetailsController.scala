@@ -51,13 +51,14 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 requireData: DataRequiredAction,
                                                 registrationConnector: RegistrationConnector,
                                                 formProvider: CompanyAddressFormProvider
-                                        ) extends FrontendController with I18nSupport with Retrievals {
+                                               ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyDetails(mode){ case (_, response) =>
+      getCompanyDetails(mode) { case (_, response) =>
+        dataCacheConnector.remove(request.externalId, CompanyAddressId)
         Future.successful(Ok(confirmCompanyDetails(appConfig, form, response.address, response.organisation.organisationName)))
       }
   }
@@ -67,20 +68,16 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
       getCompanyDetails(mode) { case (companyDetails, response) =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(confirmCompanyDetails(appConfig, formWithErrors, response.address, response.organisation.organisationName))),
-          {
+            Future.successful(BadRequest(confirmCompanyDetails(appConfig, formWithErrors, response.address, response.organisation.organisationName))), {
             case true =>
-              upsert(request.userAnswers, CompanyAddressId)(response.address){ userAnswers =>
-                upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)){ userAnswers =>
-                  dataCacheConnector.upsert(request.externalId, userAnswers.json).map{ _ =>
+              upsert(request.userAnswers, CompanyAddressId)(response.address) { userAnswers =>
+                upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)) { userAnswers =>
+                  dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
                     Redirect(navigator.nextPage(CompanyAddressId, mode)(userAnswers))
                   }
                 }
               }
-            case false =>
-              dataCacheConnector.remove(request.externalId, CompanyAddressId).map { _ =>
-                Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers))
-              }
+            case false => Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
           }
         )
       }
@@ -90,8 +87,9 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
     (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
       case (businessDetails ~ businessType) =>
         val organisation = Organisation(businessDetails.companyName, businessType)
-        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap { response =>
-          fn(businessDetails, response)
+        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap {
+          response =>
+            fn(businessDetails, response)
         } recoverWith {
           case _: NotFoundException =>
             Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
