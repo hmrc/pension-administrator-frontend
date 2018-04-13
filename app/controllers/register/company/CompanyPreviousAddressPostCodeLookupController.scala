@@ -28,21 +28,22 @@ import forms.register.company.CompanyPreviousAddressPostCodeLookupFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.Mode
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyPreviousAddressPostCodeLookup
 
 import scala.concurrent.Future
 
 class CompanyPreviousAddressPostCodeLookupController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        addressLookupConnector: AddressLookupConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
+                                                                 appConfig: FrontendAppConfig,
+                                                                 override val messagesApi: MessagesApi,
+                                                                 dataCacheConnector: DataCacheConnector,
+                                                                 addressLookupConnector: AddressLookupConnector,
+                                                                 @RegisterCompany navigator: Navigator,
+                                                                 authenticate: AuthAction,
+                                                                 getData: DataRetrievalAction,
+                                                                 requireData: DataRequiredAction,
+                                                                 formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
                                       ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()

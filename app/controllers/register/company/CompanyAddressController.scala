@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
+import utils.annotations.RegisterCompany
 import views.html.register.company.companyAddress
 
 import scala.concurrent.Future
@@ -34,7 +35,7 @@ import scala.concurrent.Future
 class CompanyAddressController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
                                          authenticate: AuthAction,
-                                         navigator: Navigator,
+                                         @RegisterCompany navigator: Navigator,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport with Retrievals {
 

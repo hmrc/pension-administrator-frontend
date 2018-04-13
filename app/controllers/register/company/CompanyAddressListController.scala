@@ -31,6 +31,7 @@ import views.html.register.company.companyAddressList
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, Result}
+import utils.annotations.RegisterCompany
 
 import scala.concurrent.Future
 
@@ -38,7 +39,7 @@ class CompanyAddressListController @Inject()(
                                        appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
                                        dataCacheConnector: DataCacheConnector,
-                                       navigator: Navigator,
+                                       @RegisterCompany navigator: Navigator,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,

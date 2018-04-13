@@ -17,10 +17,10 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import identifiers.register.company._
-import identifiers.Identifier
-import models._
 import controllers.register.company.routes
+import identifiers.Identifier
+import identifiers.register.company._
+import models._
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
@@ -28,16 +28,37 @@ import utils.{Navigator, UserAnswers}
 class RegisterCompanyNavigator @Inject() extends Navigator {
 
   override protected val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case CompanyAddressId => companyAddressIdRoutes
-
+    case ConfirmCompanyAddressId => companyAddressIdRoutes
+    case WhatYouWillNeedId =>
+      _ => routes.CompanyDetailsController.onPageLoad(NormalMode)
+    case CompanyDetailsId =>
+      _ => routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
+    case CompanyRegistrationNumberId =>
+      _ => routes.CompanyAddressController.onPageLoad()
+    case CompanyAddressId =>
+      _ => routes.CompanyAddressYearsController.onPageLoad(NormalMode)
+    case CompanyAddressYearsId => companyAddressYearsIdRoutes
+    case CompanyPreviousAddressPostCodeLookupId =>
+      _ => routes.CompanyPreviousAddressController.onPageLoad(NormalMode)
+    case CompanyPreviousAddressId =>
+      _ => routes.ContactDetailsController.onPageLoad(NormalMode)
+    case ContactDetailsId =>
+      _ => routes.CheckYourAnswersController.onPageLoad()
   }
 
   private def companyAddressIdRoutes(answers: UserAnswers): Call = {
-    answers.get(CompanyAddressId) match {
+    answers.get(ConfirmCompanyAddressId) match {
       case Some(_) => routes.WhatYouWillNeedController.onPageLoad()
       case None => routes.CompanyUpdateDetailsController.onPageLoad()
-
     }
   }
 
+  private def companyAddressYearsIdRoutes(answers: UserAnswers): Call = {
+    answers.get(CompanyAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
+      case Some(AddressYears.OverAYear) => routes.ContactDetailsController.onPageLoad(NormalMode)
+      case None =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
 }

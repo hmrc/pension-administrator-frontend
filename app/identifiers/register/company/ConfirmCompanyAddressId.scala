@@ -16,20 +16,9 @@
 
 package identifiers.register.company
 
-import identifiers._
-import models.AddressYears
-import utils.Cleanup
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
-  self =>
-  override def toString: String = "companyAddressYears"
-
-  implicit lazy val addressYears: Cleanup[self.type] =
-    Cleanup[AddressYears, self.type] {
-      case (CompanyAddressYearsId, Some(AddressYears.OverAYear), answers) =>
-        answers
-          .remove(CompanyPreviousAddressPostCodeLookupId)
-          .flatMap(_.remove(CompanyPreviousAddressId))
-    }
-
+case object ConfirmCompanyAddressId extends TypedIdentifier[TolerantAddress] {self =>
+  override def toString = "companyAddressId"
 }

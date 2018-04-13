@@ -79,7 +79,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
       controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
 
-      FakeDataCacheConnector.verifyRemoved(CompanyAddressId)
+      FakeDataCacheConnector.verifyRemoved(ConfirmCompanyAddressId)
     }
 
     "valid data is submitted" when {

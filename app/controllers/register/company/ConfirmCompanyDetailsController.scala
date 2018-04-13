@@ -25,7 +25,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
 import models._
 import models.register.company.BusinessDetails
 import models.requests.DataRequest
@@ -58,7 +58,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       getCompanyDetails(mode) { case (_, response) =>
-        dataCacheConnector.remove(request.externalId, CompanyAddressId)
+        dataCacheConnector.remove(request.externalId, ConfirmCompanyAddressId)
         Future.successful(Ok(confirmCompanyDetails(appConfig, form, response.address, response.organisation.organisationName)))
       }
   }
@@ -70,14 +70,14 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmCompanyDetails(appConfig, formWithErrors, response.address, response.organisation.organisationName))), {
             case true =>
-              upsert(request.userAnswers, CompanyAddressId)(response.address) { userAnswers =>
+              upsert(request.userAnswers, ConfirmCompanyAddressId)(response.address) { userAnswers =>
                 upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)) { userAnswers =>
                   dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
-                    Redirect(navigator.nextPage(CompanyAddressId, mode)(userAnswers))
+                    Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode)(userAnswers))
                   }
                 }
               }
-            case false => Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
+            case false => Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode)(request.userAnswers)))
           }
         )
       }
@@ -92,7 +92,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
             fn(businessDetails, response)
         } recoverWith {
           case _: NotFoundException =>
-            Future.successful(Redirect(navigator.nextPage(CompanyAddressId, mode)(request.userAnswers)))
+            Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode)(request.userAnswers)))
         }
     }
   }

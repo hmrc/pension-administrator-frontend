@@ -146,6 +146,8 @@ companyRegistrationNumber.hint = This is issued by Companies House. It is 7 or 8
 companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
 companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number
 
+companyUniqueTaxReference.checkYourAnswersLabel = UTR
+
 companyDetails.title = Company details
 companyDetails.heading = Company details
 companyDetails.companyName = Company name

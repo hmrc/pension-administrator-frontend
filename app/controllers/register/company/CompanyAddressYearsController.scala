@@ -27,20 +27,21 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.RegisterCompany
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyAddressYears
 
 import scala.concurrent.Future
 
 class CompanyAddressYearsController @Inject()(
-                                       appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       dataCacheConnector: DataCacheConnector,
-                                       navigator: Navigator,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: CompanyAddressYearsFormProvider
+                                               appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               dataCacheConnector: DataCacheConnector,
+                                               @RegisterCompany navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: CompanyAddressYearsFormProvider
                                      ) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
