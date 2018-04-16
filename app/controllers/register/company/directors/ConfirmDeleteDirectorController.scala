@@ -23,13 +23,11 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorId
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.UserAnswers
 import views.html.register.company.directors.confirmDeleteDirector
 
 import scala.concurrent.Future
@@ -50,15 +48,9 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-
-      val removal = request.userAnswers.remove(DirectorDetailsId(index))
-
-      removal match {
-        case JsSuccess(UserAnswers(updatedJson), _) =>
-          dataCacheConnector.upsert(request.externalId, updatedJson)
-            .map(_ => Redirect(AddCompanyDirectorsController.onPageLoad(NormalMode)))
-        case JsError(errors) =>
-          Future.failed(JsResultException(errors))
+      dataCacheConnector.remove(request.externalId, DirectorId(index)).map { _ =>
+        Redirect(AddCompanyDirectorsController.onPageLoad(NormalMode))
       }
   }
+
 }
