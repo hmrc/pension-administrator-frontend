@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 
 import scala.language.implicitConversions
 import play.api.libs.json._
-import utils.{Cleanup, JsLens, UserAnswers}
+import utils.UserAnswers
 
 trait Identifier {
 
@@ -41,5 +41,6 @@ object TypedIdentifier {
 
   trait PathDependent extends Identifier {
     type Data
+    def cleanup(value: Option[Data], userAnswers: UserAnswers): JsResult[UserAnswers] = JsSuccess(userAnswers)
   }
 }

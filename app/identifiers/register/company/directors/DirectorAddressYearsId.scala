@@ -18,22 +18,25 @@ package identifiers.register.company.directors
 
 import identifiers._
 import models.AddressYears
-import play.api.libs.json.JsPath
-import utils.Cleanup
+import play.api.libs.json.{JsPath, JsResult}
+import utils.UserAnswers
 
 case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[AddressYears] {
+
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorAddressYearsId.toString
+
+  override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(AddressYears.OverAYear) =>
+        userAnswers
+          .remove(DirectorPreviousAddressPostCodeLookupId(this.index))
+          .flatMap(_.remove(DirectorPreviousAddressId(this.index)))
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
+
 }
 
 object DirectorAddressYearsId {
   override lazy val toString: String = "directorAddressYears"
-
-  implicit lazy val addressYears: Cleanup[DirectorAddressYearsId] =
-    Cleanup[AddressYears, DirectorAddressYearsId] {
-      case (DirectorAddressYearsId(id), Some(AddressYears.OverAYear), answers) =>
-        answers
-          .remove(DirectorPreviousAddressPostCodeLookupId(id))
-          .flatMap(_.remove(DirectorPreviousAddressId(id)))
-    }
-
 }
