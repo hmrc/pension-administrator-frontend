@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
@@ -26,19 +25,20 @@ import identifiers.register.individual.IndividualContactDetailsId
 import models.Mode
 import play.api.i18n.MessagesApi
 import utils.Navigator
+import utils.annotations.Individual
 import viewmodels.{ContactDetailsViewModel, Message}
 
 
 class IndividualContactDetailsController @Inject()(
-                                        override val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        override val cacheConnector: DataCacheConnector,
-                                        override val navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ContactDetailsFormProvider
-                                      ) extends controllers.ContactDetailsController {
+                                                    @Individual override val navigator: Navigator,
+                                                    override val appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    override val cacheConnector: DataCacheConnector,
+                                                    authenticate: AuthAction,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: ContactDetailsFormProvider
+                                                  ) extends controllers.ContactDetailsController {
 
   private def viewmodel(mode: Mode) = ContactDetailsViewModel(
     postCall = routes.IndividualContactDetailsController.onSubmit(mode),

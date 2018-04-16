@@ -45,7 +45,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualContactDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new IndividualContactDetailsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   def viewAsString(form: Form[_] = form) = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
