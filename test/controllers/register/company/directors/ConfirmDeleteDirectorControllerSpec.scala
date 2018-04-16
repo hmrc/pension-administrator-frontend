@@ -22,7 +22,7 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.{DirectorDetailsId, DirectorId}
 import models.register.company.directors.DirectorDetails
 import models.{Index, NormalMode}
 import org.scalatest.mockito.MockitoSugar
@@ -32,21 +32,19 @@ import views.html.register.company.directors.confirmDeleteDirector
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar{
 
-  val firstIndex = Index(0)
+  private val firstIndex = Index(0)
 
-  val directorOne = DirectorDetails("John", None, "Doe", LocalDate.now())
-
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmDeleteDirectorController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      new FakeDataCacheConnector
+      FakeDataCacheConnector
     )
 
-  def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex, "John Doe")(fakeRequest, messages).toString
+  private def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex, "John Doe")(fakeRequest, messages).toString
 
   "ConfirmDeleteDirector Controller" must {
 
@@ -89,5 +87,23 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       redirectLocation(result) mustBe Some(AddCompanyDirectorsController.onPageLoad(NormalMode).url)
 
     }
+
+    "remove the director on submission of POST request" in {
+      val validData = Json.obj(
+        "directors" -> Json.arr(
+          Json.obj(
+            DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
+          )
+        )
+      )
+      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+
+      val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      FakeDataCacheConnector.verifyRemoved(DirectorId(firstIndex))
+    }
+
   }
+
 }
