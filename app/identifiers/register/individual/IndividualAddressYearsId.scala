@@ -18,7 +18,19 @@ package identifiers.register.individual
 
 import identifiers._
 import models.AddressYears
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
 case object IndividualAddressYearsId extends TypedIdentifier[AddressYears] {
   override def toString: String = "individualAddressYears"
+
+  override def cleanup(value: Option[AddressYears], answers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(AddressYears.OverAYear) =>
+        answers
+          .remove(IndividualPreviousAddressPostCodeLookupId)
+          .flatMap(_.remove(IndividualPreviousAddressId))
+      case _ => super.cleanup(value, answers)
+    }
+  }
 }
