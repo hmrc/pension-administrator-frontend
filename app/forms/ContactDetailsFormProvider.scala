@@ -28,12 +28,12 @@ class ContactDetailsFormProvider @Inject() extends EmailMapping with PhoneNumber
 
   def apply(): Form[ContactDetails] = Form(
     mapping(
-      "email" -> emailMapping(
+      "emailAddress" -> emailMapping(
         "contactDetails.error.email.required",
         "contactDetails.error.email.length",
         "contactDetails.error.email.invalid"
       ),
-      "phone" -> phoneNumberMapping(
+      "phoneNumber" -> phoneNumberMapping(
         "contactDetails.error.phone.required",
         "contactDetails.error.phone.length",
         "contactDetails.error.phone.invalid"
