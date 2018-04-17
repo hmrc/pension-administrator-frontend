@@ -89,7 +89,7 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
     }
   }
 
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute = controllers.register.individual.routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
   private def requestResult[T](request: (Application) => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {

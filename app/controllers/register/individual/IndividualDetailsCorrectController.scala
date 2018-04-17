@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
@@ -29,22 +28,23 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.Future
 
-class IndividualDetailsCorrectController @Inject() (
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
-                                                     navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: IndividualDetailsCorrectFormProvider,
-                                                     registrationConnector: RegistrationConnector
-                                                   ) extends FrontendController with I18nSupport with Retrievals {
+class IndividualDetailsCorrectController @Inject()(
+                                                    @Individual navigator: Navigator,
+                                                    appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    dataCacheConnector: DataCacheConnector,
+                                                    authenticate: AuthAction,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: IndividualDetailsCorrectFormProvider,
+                                                    registrationConnector: RegistrationConnector
+                                                  ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

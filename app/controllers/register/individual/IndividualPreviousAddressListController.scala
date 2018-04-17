@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
@@ -29,6 +28,7 @@ import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
+import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 
@@ -36,13 +36,13 @@ import scala.concurrent.Future
 
 
 class IndividualPreviousAddressListController @Inject()(
-                                                       override val appConfig: FrontendAppConfig,
-                                                       override val messagesApi: MessagesApi,
-                                                       override val cacheConnector: DataCacheConnector,
-                                                       override val navigator: Navigator,
-                                                       authenticate: AuthAction,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                                         @Individual override val navigator: Navigator,
+                                                         override val appConfig: FrontendAppConfig,
+                                                         override val messagesApi: MessagesApi,
+                                                         override val cacheConnector: DataCacheConnector,
+                                                         authenticate: AuthAction,
+                                                         getData: DataRetrievalAction,
+                                                         requireData: DataRequiredAction) extends AddressListController with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -51,11 +51,11 @@ class IndividualPreviousAddressListController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm,IndividualPreviousAddressListId,IndividualPreviousAddressId,mode))
+      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    IndividualPreviousAddressPostCodeLookupId.retrieve.right.map{
+    IndividualPreviousAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.IndividualPreviousAddressListController.onSubmit(mode),
