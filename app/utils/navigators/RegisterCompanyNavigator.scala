@@ -27,6 +27,9 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterCompanyNavigator @Inject() extends Navigator {
 
+  private def checkYourAnswers(answers: UserAnswers): Call =
+    controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
+
   override protected val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case ConfirmCompanyAddressId => companyAddressIdRoutes
     case WhatYouWillNeedId =>
@@ -39,9 +42,27 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
       _ => routes.CompanyAddressYearsController.onPageLoad(NormalMode)
     case CompanyAddressYearsId => companyAddressYearsIdRoutes
     case CompanyPreviousAddressPostCodeLookupId =>
+      _ => routes.CompanyAddressListController.onPageLoad(NormalMode)
+    case CompanyAddressListId =>
       _ => routes.CompanyPreviousAddressController.onPageLoad(NormalMode)
     case CompanyPreviousAddressId =>
       _ => routes.ContactDetailsController.onPageLoad(NormalMode)
+    case ContactDetailsId =>
+      _ => routes.CheckYourAnswersController.onPageLoad()
+  }
+
+  override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
+    case ConfirmCompanyAddressId => companyAddressCheckIdRoutes
+    case WhatYouWillNeedId => checkYourAnswers
+    case CompanyDetailsId =>checkYourAnswers
+    case CompanyRegistrationNumberId =>checkYourAnswers
+    case CompanyAddressId => checkYourAnswers
+    case CompanyAddressYearsId => companyAddressYearsCheckIdRoutes
+    case CompanyPreviousAddressPostCodeLookupId =>
+      _ => routes.CompanyAddressListController.onPageLoad(CheckMode)
+    case CompanyAddressListId =>
+      _ => routes.CompanyPreviousAddressController.onPageLoad(CheckMode)
+    case CompanyPreviousAddressId => checkYourAnswers
     case ContactDetailsId =>
       _ => routes.CheckYourAnswersController.onPageLoad()
   }
@@ -53,10 +74,26 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
     }
   }
 
+  private def companyAddressCheckIdRoutes(answers: UserAnswers): Call = {
+    answers.get(ConfirmCompanyAddressId) match {
+      case Some(_) => routes.CheckYourAnswersController.onPageLoad()
+      case None => routes.CompanyUpdateDetailsController.onPageLoad()
+    }
+  }
+
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
       case Some(AddressYears.OverAYear) => routes.ContactDetailsController.onPageLoad(NormalMode)
+      case None =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Call = {
+    answers.get(CompanyAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
+      case Some(AddressYears.OverAYear) => routes.CheckYourAnswersController.onPageLoad()
       case None =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }
