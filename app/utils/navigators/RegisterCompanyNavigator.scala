@@ -20,7 +20,10 @@ import com.google.inject.{Inject, Singleton}
 import controllers.register.company.routes
 import identifiers.Identifier
 import identifiers.register.company._
+import controllers.register.company.directors._
+import identifiers.register.company.directors.DirectorDetailsId
 import models._
+import models.register.company.directors.DirectorDetails
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
@@ -49,13 +52,16 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
       _ => routes.ContactDetailsController.onPageLoad(NormalMode)
     case ContactDetailsId =>
       _ => routes.CheckYourAnswersController.onPageLoad()
+    case AddCompanyDirectorsId => addCompanyDirectorRoutes
+    case MoreThanTenDirectorsId =>
+      _ => routes.CompanyReviewController.onPageLoad()
   }
 
   override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case ConfirmCompanyAddressId => companyAddressCheckIdRoutes
     case WhatYouWillNeedId => checkYourAnswers
-    case CompanyDetailsId =>checkYourAnswers
-    case CompanyRegistrationNumberId =>checkYourAnswers
+    case CompanyDetailsId => checkYourAnswers
+    case CompanyRegistrationNumberId => checkYourAnswers
     case CompanyAddressId => checkYourAnswers
     case CompanyAddressYearsId => companyAddressYearsCheckIdRoutes
     case CompanyPreviousAddressPostCodeLookupId =>
@@ -65,6 +71,27 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
     case CompanyPreviousAddressId => checkYourAnswers
     case ContactDetailsId =>
       _ => routes.CheckYourAnswersController.onPageLoad()
+    case AddCompanyDirectorsId =>
+      _ => routes.CompanyReviewController.onPageLoad()
+  }
+
+  private def addCompanyDirectorRoutes(answers: UserAnswers): Call = {
+    answers.get(AddCompanyDirectorsId) match {
+      case Some(false) => {
+        controllers.register.company.routes.CompanyReviewController.onPageLoad()
+      }
+      case _ => {
+        val index = answers.getAll(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
+          case Some(seq@Seq(_*)) => seq.length
+          case None => 0
+        }
+        if (index > 9) {
+          controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode)
+        } else {
+          controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index)
+        }
+      }
+    }
   }
 
   private def companyAddressIdRoutes(answers: UserAnswers): Call = {

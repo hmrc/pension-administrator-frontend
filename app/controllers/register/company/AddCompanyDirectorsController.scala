@@ -33,13 +33,14 @@ import play.api.Logger
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
+import utils.annotations.RegisterCompany
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsController @Inject() (
                                                      appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
                                                      dataCacheConnector: DataCacheConnector,
-                                                     navigator: Navigator,
+                                                     @RegisterCompany navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

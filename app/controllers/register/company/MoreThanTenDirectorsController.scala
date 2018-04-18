@@ -27,6 +27,7 @@ import config.FrontendAppConfig
 import forms.register.company.MoreThanTenDirectorsFormProvider
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.Mode
+import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.moreThanTenDirectors
 
@@ -36,7 +37,7 @@ class MoreThanTenDirectorsController @Inject() (
                                                      appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
                                                      dataCacheConnector: DataCacheConnector,
-                                                     navigator: Navigator,
+                                                     @RegisterCompany navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

@@ -16,10 +16,14 @@
 
 package utils.navigators
 
+import java.time.LocalDate
+
 import base.SpecBase
 import controllers.register.company.routes
 import identifiers.register.company._
+import identifiers.register.company.directors.DirectorDetailsId
 import models._
+import models.register.company.directors.DirectorDetails
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import utils.UserAnswers
@@ -120,7 +124,50 @@ class RegisterCompanyNavigatorSpec extends SpecBase with MockitoSugar {
         navigator.nextPage(ContactDetailsId, NormalMode)(mock[UserAnswers]) mustBe
           routes.CheckYourAnswersController.onPageLoad()
       }
+
+      "Go to the correct index of directors" must {
+
+        "Go to 'Director Details' page with an index  of (1) if there has been an director already added" in {
+          val directorDetails = DirectorDetails("fName", Some("mName"), "lName", LocalDate.of(2012, 12, 31))
+          val userAnswers = UserAnswers().set(DirectorDetailsId(0))(directorDetails).asOpt.value
+
+          navigator.nextPage(AddCompanyDirectorsId, NormalMode)(userAnswers) mustBe
+            controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, 1)
+        }
+
+        "Go to 'Director Details' page with an index  of (0) if there has been no director added" in {
+
+          navigator.nextPage(AddCompanyDirectorsId, NormalMode)(emptyAnswers) mustBe
+            controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, 0)
+        }
+      }
+
+      "Go to the correct page from 'Add Director' Boolean" must {
+
+        "Go to 'Director Details' page when user answers yes to 'Add Director" in {
+          val answers = UserAnswers(Json.obj())
+            .set(AddCompanyDirectorsId)(true)
+            .asOpt.value
+
+          navigator.nextPage(AddCompanyDirectorsId, NormalMode)(answers) mustBe
+            controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, 0)
+        }
+
+        "Go to 'Company Review' page when user answers no to 'Add Director" in {
+          val answers = UserAnswers(Json.obj())
+            .set(AddCompanyDirectorsId)(false)
+            .asOpt.value
+
+          navigator.nextPage(AddCompanyDirectorsId, NormalMode)(answers) mustBe
+            routes.CompanyReviewController.onPageLoad()
+        }
+
+        "Go to 'More than 10 Directors' page when there are 10 directors" in {
+
+        }
+      }
     }
+
     "in Check mode" must {
 
       "Go to the correct page from user's answer" must {
@@ -203,6 +250,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with MockitoSugar {
       "Go to the 'Check Your Answers' page from the 'Contact details' page" in {
         navigator.nextPage(ContactDetailsId, CheckMode)(mock[UserAnswers]) mustBe
           routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "Go back to 'Company review' page from the 'change company directors' page" in {
+        navigator.nextPage(AddCompanyDirectorsId, CheckMode)(mock[UserAnswers]) mustBe
+          routes.CompanyReviewController.onPageLoad()
       }
     }
   }
