@@ -194,7 +194,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {

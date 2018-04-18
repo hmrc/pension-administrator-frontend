@@ -21,6 +21,7 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.individual.CheckYourAnswersControllerSpec.{environment, frontendAppConfig}
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId}
 import models.register.company.directors.DirectorDetails
@@ -35,7 +36,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AddressFormProvider(FakeCountryOptions())
+  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider()
 
   val firstIndex = Index(0)
@@ -74,9 +75,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
 
   val dataWithAddresses = new FakeDataRetrievalAction(Some(directorsWithAddresses))
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
-
-  def countryOptions: CountryOptions = new CountryOptions(options)
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DirectorAddressController(
@@ -97,7 +96,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
     NormalMode,
     firstIndex,
     jonathanDoe.fullName,
-    options
+    countryOptions.options
   )(fakeRequest, messages).toString
 
   "directorAddress Controller" must {

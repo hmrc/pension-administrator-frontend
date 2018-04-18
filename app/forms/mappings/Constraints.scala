@@ -138,6 +138,7 @@ trait Constraints {
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
     Constraint {
       input =>
+        val x = countryOptions.options
         countryOptions.options
           .find(_.value == input)
           .map(_ => Valid)

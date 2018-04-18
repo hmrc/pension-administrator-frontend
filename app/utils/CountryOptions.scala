@@ -20,26 +20,28 @@ import javax.inject.{Inject, Singleton}
 
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
-import play.api.Environment
+import play.api.{Environment, Play}
 import play.api.libs.json.Json
 
 @Singleton
-class CountryOptions(val options: Seq[InputOption]) {
+class CountryOptions @Inject()(environment: Environment, config: FrontendAppConfig) {
 
-  @Inject()
-  def this(environment: Environment, config: FrontendAppConfig) {
-    this(
-      environment.resourceAsStream(config.locationCanonicalList).flatMap {
-        in =>
-          val locationJsValue = Json.parse(in)
-          Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
-            _.map { countryList =>
-              InputOption(countryList(1).replaceAll("country:", ""), countryList.head)
-            }
+  def options: Seq[InputOption] =  CountryOptions.getCountries(environment, config.locationCanonicalList)
+}
+
+object CountryOptions {
+
+  def getCountries(environment: Environment, fileName: String) = {
+    environment.resourceAsStream(fileName).flatMap {
+      in =>
+        val locationJsValue = Json.parse(in)
+        Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
+          _.map { countryList =>
+            InputOption(countryList(1).replaceAll("country:", ""), countryList.head)
           }
-      }.getOrElse{
-        throw new ConfigException.BadValue(config.locationCanonicalList, "country json does not exist")
-      }
-    )
+        }
+    }.getOrElse{
+      throw new ConfigException.BadValue(fileName, "country json does not exist")
+    }
   }
 }

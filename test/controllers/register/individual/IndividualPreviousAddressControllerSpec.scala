@@ -37,18 +37,17 @@ import views.html.address.manualAddress
 class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  def countryOptions: CountryOptions = new CountryOptions(options)
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val options = Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("country:AF", "Afghanistan"))
   val messagePrefix = "common.previousAddress"
   val firstIndex = Index(0)
 
-  val formProvider = new AddressFormProvider(FakeCountryOptions())
+  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider()
 
   val viewmodel = ManualAddressViewModel(
     postCall = routes.IndividualPreviousAddressController.onSubmit(NormalMode),
-    countryOptions = options,
+    countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading"),
     secondaryHeader = Some("common.individual.secondary.heading"),

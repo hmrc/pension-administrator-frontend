@@ -16,11 +16,13 @@
 
 package forms.mappings
 
+import base.SpecBase
+import forms.FormSpec
 import org.scalatest.{Matchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
-import utils.{CountryOptions, InputOption}
+import utils.{CountryOptions, FakeCountryOptions, InputOption}
 
-class ConstraintsSpec extends WordSpec with Matchers with Constraints with RegexBehaviourSpec {
+class ConstraintsSpec extends FormSpec with Matchers with Constraints with RegexBehaviourSpec {
 
   // scalastyle:off magic.number
 
@@ -366,12 +368,7 @@ class ConstraintsSpec extends WordSpec with Matchers with Constraints with Regex
 
     val keyInvalid = "error.invalid"
 
-    val countryOptions: CountryOptions = new CountryOptions(
-      Seq(
-        InputOption("GB", "United Kingdom"),
-        InputOption("PN", "Ponteland")
-      )
-    )
+    val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
     "return valid when the country code exists" in {
       val result = country(countryOptions, keyInvalid).apply("GB")
@@ -382,7 +379,5 @@ class ConstraintsSpec extends WordSpec with Matchers with Constraints with Regex
       val result = country(countryOptions, keyInvalid).apply("XXX")
       result shouldBe Invalid(keyInvalid)
     }
-
   }
-
 }

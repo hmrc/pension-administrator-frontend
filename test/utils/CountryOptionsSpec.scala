@@ -20,6 +20,7 @@ import base.SpecBase
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import org.scalatest.mockito.MockitoSugar
+import play.api.Environment
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 
@@ -32,7 +33,7 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
       val app =
         new GuiceApplicationBuilder()
           .configure(Map(
-            "location.canonical.list" -> "country-canonical-list-test.json",
+            "location.canonical.list.all" -> "country-canonical-list-test.json",
             "metrics.enabled" -> "false"
           )).build()
 
@@ -46,12 +47,12 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
     "throw the error if the country json does not exist" in {
       val builder = new GuiceApplicationBuilder()
         .configure(Map(
-          "location.canonical.list" -> "country-canonical-test.json",
+          "location.canonical.list.all" -> "country-canonical-test.json",
           "metrics.enabled" -> "false"
         ))
 
       an[ConfigException.BadValue] shouldBe thrownBy {
-        new CountryOptions(builder.environment, builder.injector.instanceOf[FrontendAppConfig])
+        new CountryOptions(builder.environment, builder.injector.instanceOf[FrontendAppConfig]).options
       }
     }
   }

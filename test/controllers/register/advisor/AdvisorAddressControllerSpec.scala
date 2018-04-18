@@ -101,7 +101,7 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
 object AdvisorAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  def countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val formProvider = new AddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider()
