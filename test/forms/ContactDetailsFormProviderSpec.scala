@@ -23,9 +23,9 @@ class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
 
   val form = new ContactDetailsFormProvider()
 
-  ".email" must {
+  ".emailAddress" must {
 
-    val fieldName = "email"
+    val fieldName = "emailAddress"
     val keyEmailRequired = "contactDetails.error.email.required"
     val keyEmailLength = "contactDetails.error.email.length"
     val keyEmailInvalid = "contactDetails.error.email.invalid"
@@ -40,8 +40,8 @@ class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
 
   }
 
-  ".phone" must {
-    val fieldName = "phone"
+  ".phoneNumber" must {
+    val fieldName = "phoneNumber"
     val keyPhoneNumberRequired = "contactDetails.error.phone.required"
     val keyPhoneNumberLength = "contactDetails.error.phone.length"
     val keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"

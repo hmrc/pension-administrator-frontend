@@ -49,6 +49,6 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.individual.routes.IndividualContactDetailsController.onSubmit(NormalMode).url, "email", "phone")
+    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.individual.routes.IndividualContactDetailsController.onSubmit(NormalMode).url, "emailAddress", "phoneNumber")
   }
 }

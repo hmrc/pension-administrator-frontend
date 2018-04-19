@@ -144,7 +144,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
           val request = FakeRequest().withFormUrlEncodedBody(
-            ("email", "test@test.com"), ("phone", "123456789")
+            ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
           )
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
