@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.register
 
 import views.behaviours.ViewBehaviours
 import views.html.register.duplicateRegistration
@@ -26,7 +26,7 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
   def createView = () => duplicateRegistration(frontendAppConfig)(fakeRequest, messages)
 
   "DuplicateRegistration view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView, messageKeyPrefix, "body")
 
     behave like pageWithBackLink(createView)
   }

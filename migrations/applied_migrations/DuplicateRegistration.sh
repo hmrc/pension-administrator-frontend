@@ -4,7 +4,7 @@ echo "Applying migration DuplicateRegistration"
 
 echo "Adding routes to register.routes"
 echo "" >> ../conf/register.routes
-echo "GET        /duplicateRegistration                       controllers.DuplicateRegistrationController.onPageLoad()" >> ../conf/register.routes
+echo "GET        /duplicateRegistration                       controllers.register.DuplicateRegistrationController.onPageLoad()" >> ../conf/register.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en

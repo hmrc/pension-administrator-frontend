@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.register
 
 import controllers.actions._
+import controllers.ControllerSpecBase
 import play.api.test.Helpers._
 import views.html.register.duplicateRegistration
 

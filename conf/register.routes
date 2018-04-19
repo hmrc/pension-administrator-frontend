@@ -21,4 +21,4 @@ POST       /declaration                       controllers.register.DeclarationCo
 GET        /confirmation                       controllers.register.ConfirmationController.onPageLoad()
 POST       /confirmation                       controllers.register.ConfirmationController.onSubmit()
 
-GET        /duplicateRegistration                       controllers.DuplicateRegistrationController.onPageLoad()
+GET        /duplicateRegistration                       controllers.register.DuplicateRegistrationController.onPageLoad()

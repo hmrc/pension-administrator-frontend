@@ -434,5 +434,6 @@ confirmation.whatYouNeedToKnow.heading = What you need to know
 confirmation.whatYouNeedToKnow.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
 
-duplicateRegistration.title = duplicateRegistration
-duplicateRegistration.heading = duplicateRegistration
+duplicateRegistration.title = You cannot register as a Pension Scheme Administrator using these details.
+duplicateRegistration.heading = You cannot register as a Pension Scheme Administrator using these details.
+duplicateRegistration.body = Someone from your organisation has already registered as a Pension Scheme Administrator.
