@@ -109,7 +109,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
-      val directors = Seq.fill(maxDirectors - 1)(johnDoe)
+      val directors = Seq.fill(maxDirectors - 2)(johnDoe)
       val getRelevantData = dataRetrievalAction(directors: _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))

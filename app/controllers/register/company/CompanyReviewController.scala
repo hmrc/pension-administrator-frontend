@@ -29,21 +29,22 @@ import models.NormalMode
 import models.register.company.directors.DirectorDetails
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
+import utils.annotations.RegisterCompany
 import views.html.register.company.companyReview
 
 import scala.concurrent.Future
 
 class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         navigator: Navigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction) extends FrontendController with Retrievals with I18nSupport {
+                                        override val messagesApi: MessagesApi,
+                                        @RegisterCompany navigator: Navigator,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       CompanyDetailsId.retrieve.right.map { companyDetails =>
-        val directors= request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil).map(_.fullName)
+        val directors= request.userAnswers.getAllRecursive[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil).map(_.fullName)
         Future.successful(Ok(companyReview(appConfig, companyDetails.companyName, directors)))
       }
   }

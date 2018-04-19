@@ -34,12 +34,11 @@ class UserAnswersSpec extends FlatSpec with Matchers with OptionValues {
 
   "UserAnswers" should "get all matching recursive results" in {
     val userAnswers = UserAnswers(establishers)
-    userAnswers.getAll[String](JsPath \ "establishers" \\ "name").value should contain allOf("foo", "bar")
+    userAnswers.getAllRecursive[String](JsPath \ "establishers" \\ "name").value should contain allOf("foo", "bar")
   }
 
   it should "return an empty list when no matches" in {
     val userAnswers = UserAnswers(establishers)
-    userAnswers.getAll[String](JsPath \ "establishers" \\ "address").value.size shouldBe 0
+    userAnswers.getAllRecursive[String](JsPath \ "establishers" \\ "address").value.size shouldBe 0
   }
-
 }

@@ -257,7 +257,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
 
   def companyAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressId) flatMap { x =>
     x map { address =>
-      AnswerRow("companyAddress.checkYourAnswersLabel", addressAnswer(address), false, controllers.register.company.routes.ConfirmCompanyDetailsController.onPageLoad().url)
+      AnswerRow("companyAddress.checkYourAnswersLabel", addressAnswer(address), false, None)
     }
   }
 

@@ -71,7 +71,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyNotFoundController.onPageLoad().url)
     }
 
     "data is removed on page load" in {
@@ -99,7 +99,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
+        redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
       }
     }
 

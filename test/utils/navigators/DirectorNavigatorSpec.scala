@@ -16,258 +16,85 @@
 
 package utils.navigators
 
+import java.time.LocalDate
+
 import base.SpecBase
 import controllers.register.company.directors.routes
 import identifiers.Identifier
+import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
-import models.{AddressYears, CheckMode, NormalMode}
+import models.register.company.directors.DirectorDetails
+import models.{AddressYears, CheckMode, Mode, NormalMode}
+import org.scalatest.OptionValues
 import org.scalatest.mockito.MockitoSugar
+import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import utils.UserAnswers
 
-class DirectorNavigatorSpec extends SpecBase with MockitoSugar {
+class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
+  import DirectorNavigatorSpec._
+  val navigator = new DirectorNavigator(frontendAppConfig)
 
-  val navigator = new DirectorNavigator()
+  private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id",                                        "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
+    (AddCompanyDirectorsId,                         addCompanyDirectorsFalse,       companyReviewPage,                    None),
+    (AddCompanyDirectorsId,                         addCompanyDirectorsMoreThan10,  moreThanTenDirectorsPage,             None),
+    (AddCompanyDirectorsId,                         addCompanyDirectorsTrue,        directorDetailsPage,                  None),
+    (MoreThanTenDirectorsId,                        emptyAnswers,                   companyReviewPage,                    None),
+    (DirectorDetailsId(0),                          emptyAnswers,                   directorNinoPage,                     Some(checkYourAnswersPage)),
+    (DirectorNinoId(0),                             emptyAnswers,                   directorUniqueTaxReferencePage,       Some(checkYourAnswersPage)),
+    (DirectorUniqueTaxReferenceId(0),               emptyAnswers,                   addressPostCodePage(NormalMode),      Some(checkYourAnswersPage)),
+    (CompanyDirectorAddressPostCodeLookupId(0),     emptyAnswers,                   addressListPage(NormalMode),          Some(addressListPage(CheckMode))),
+    (CompanyDirectorAddressListId(0),               emptyAnswers,                   addressPage(NormalMode),              Some(addressPage(CheckMode))),
+    (DirectorAddressId(0),                          emptyAnswers,                   directorAddressYearsPage,             Some(checkYourAnswersPage)),
+    (DirectorAddressYearsId(0),                     addressYearsOverAYear,          directorContactDetailsPage,           Some(checkYourAnswersPage)),
+    (DirectorAddressYearsId(0),                     addressYearsUnderAYear,         paPostCodePage(NormalMode),           Some(paPostCodePage(CheckMode))),
+    (DirectorAddressYearsId(0),                     emptyAnswers,                   sessionExpiredPage,                   None),
+    (DirectorPreviousAddressPostCodeLookupId(0),    emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
+    (DirectorPreviousAddressListId(0),              emptyAnswers,                   previousAddressPage(NormalMode),      Some(previousAddressPage(CheckMode))),
+    (DirectorPreviousAddressId(0),                  emptyAnswers,                   directorContactDetailsPage,           Some(checkYourAnswersPage)),
+    (DirectorContactDetailsId(0),                   emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage))
+  )
 
-  val emptyAnswers = new UserAnswers(Json.obj())
-  val testIndex = 0
-
-  "Navigator" when {
-
-    "in Normal mode" must {
-      "go to Index from an identifier that doesn't exist in the route map" in {
-        case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe controllers.routes.IndexController.onPageLoad()
-      }
-
-      "go to the DirectorNino page from the DirectorDetails page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorDetailsId(testIndex), NormalMode)(mock[UserAnswers]) mustBe routes.DirectorNinoController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorUtr page from the DirectorNino page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorNinoId(testIndex), NormalMode)(mock[UserAnswers]) mustBe routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorPostcodeLookup page from the DirectorUtr page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorUniqueTaxReferenceId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorAddressResults page from the DirectorPostcodeLookup page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(CompanyDirectorAddressPostCodeLookupId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorAddress page from the DirectorAddressResults page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(CompanyDirectorAddressListId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.DirectorAddressController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorAddressYears page from the DirectorAddress page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorAddressId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.DirectorAddressYearsController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the PreviousAddressPostcodeLookup page from the DirectorAddressYears page when the answer is less than twelve months" in {
-        (0 to 10).foreach {
-          index =>
-
-            val answers = UserAnswers(Json.obj())
-              .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear)
-              .asOpt.value
-
-            navigator.nextPage(DirectorAddressYearsId(testIndex), NormalMode)(answers) mustBe
-              routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorContactDetails page from the DirectorAddressYears page when the answer is more than twelve months" in {
-        (0 to 10).foreach {
-          index =>
-
-            val answers = UserAnswers(Json.obj())
-              .set(DirectorAddressYearsId(0))(AddressYears.OverAYear)
-              .asOpt.value
-
-            navigator.nextPage(DirectorAddressYearsId(testIndex), NormalMode)(answers) mustBe
-              routes.DirectorContactDetailsController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the PreviousAddressList page from the PreviousPostcodeLookup page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorPreviousAddressPostCodeLookupId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the PreviousAddress page from the PreviousAddressList page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorPreviousAddressListId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.DirectorPreviousAddressController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-
-      "go to the DirectorContactDetails page from the PreviousAddress page" in {
-        (0 to 10).foreach {
-          index =>
-            navigator.nextPage(DirectorPreviousAddressId(testIndex), NormalMode)(mock[UserAnswers]) mustBe
-              routes.DirectorContactDetailsController.onPageLoad(NormalMode, testIndex)
-        }
-      }
-    }
-
-    "in Check mode" must {
-      "go to CheckYourAnswers from an identifier that doesn't exist in the edit route map" in {
-        case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, CheckMode)(mock[UserAnswers]) mustBe controllers.routes.CheckYourAnswersController.onPageLoad()
-      }
-
-      ".nextPage(DirectorDetailsId)" must {
-        "return a `Call` to `CheckYourAnswers` page" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorDetailsId(index), CheckMode)(emptyAnswers)
-              result mustEqual controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorNinoId)" must {
-        "return a `Call` to `CheckYourAnswers` page" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorNinoId(index), CheckMode)(emptyAnswers)
-              result mustEqual controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorUtrId)" must {
-        "return a `Call` to `CheckYourAnswers` page" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorUniqueTaxReferenceId(index), CheckMode)(emptyAnswers)
-              result mustEqual controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorPostCodeLookupId)" must {
-        "return a `Call` to `DirectorAddressList` page" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(CompanyDirectorAddressPostCodeLookupId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorAddressListId)" must {
-        "return a `Call` to `DirectorAddress` page" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(CompanyDirectorAddressListId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.DirectorAddressController.onPageLoad(CheckMode, index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorAddressId)" must {
-        "return a `Call` to `DirectorCheckYourAnswers` page" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorAddressId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.CheckYourAnswersController.onPageLoad(index)
-          }
-        }
-      }
-
-      ".nextPage(AddressYears)" must {
-
-        "return a `Call` to `DirectorCheckYourAnswersPage` page when `DirectorAddressYears` is `more_than_twelve`" in {
-          val answers = UserAnswers(Json.obj())
-            .set(DirectorAddressYearsId(0))(AddressYears.OverAYear)
-            .asOpt.value
-
-          val result = navigator.nextPage(DirectorAddressYearsId(0), CheckMode)(answers)
-          result mustEqual routes.CheckYourAnswersController.onPageLoad(0)
-        }
-
-        "return a `Call` to `DirectorPreviousPostCodeLookup` page when `DirectorAddressYears` is `less_than_twelve`" in {
-          val answers = UserAnswers(Json.obj())
-            .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear)
-            .asOpt.value
-
-          val result = navigator.nextPage(DirectorAddressYearsId(0), CheckMode)(answers)
-          result mustEqual routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, 0)
-        }
-
-        "return a `Call` to `SessionExpired` page when `AddressYears` is undefined" in {
-          val result = navigator.nextPage(DirectorAddressYearsId(0), CheckMode)(emptyAnswers)
-          result mustEqual controllers.routes.SessionExpiredController.onPageLoad()
-        }
-      }
-
-      ".nextPage(DirectorPreviousAddressPostCodeLookup)" must {
-        "return a `Call` to `DirectorPreviousAddressList`" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorPreviousAddressPostCodeLookupId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorPreviousAddressList)" must {
-        "return a `Call` to `PreviousAddress`" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorPreviousAddressListId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorPreviousAddress)" must {
-        "return a `Call` to `CheckYourAnswers`" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorPreviousAddressId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.CheckYourAnswersController.onPageLoad(index)
-          }
-        }
-      }
-
-      ".nextPage(DirectorContactDetails)" must {
-        "return a `Call` to `CheckYourAnswers`" in {
-          (0 to 10).foreach {
-            index =>
-              val result = navigator.nextPage(DirectorContactDetailsId(index), CheckMode)(emptyAnswers)
-              result mustEqual routes.CheckYourAnswersController.onPageLoad(index)
-          }
-        }
-      }
-    }
+  navigator.getClass.getSimpleName must {
+    behave like navigatorWithRoutes(navigator, routes)
   }
+}
+
+object DirectorNavigatorSpec extends OptionValues {
+
+  val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(0)
+  val companyReviewPage = controllers.register.company.routes.CompanyReviewController.onPageLoad()
+  val moreThanTenDirectorsPage = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode)
+  val directorDetailsPage = routes.DirectorDetailsController.onPageLoad(NormalMode, 0)
+  val directorNinoPage = routes.DirectorNinoController.onPageLoad(NormalMode, 0)
+  val directorUniqueTaxReferencePage = routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, 0)
+  def addressPostCodePage(mode: Mode) = routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, 0)
+  def addressListPage(mode: Mode) = routes.CompanyDirectorAddressListController.onPageLoad(mode, 0)
+  def addressPage(mode: Mode) = routes.DirectorAddressController.onPageLoad(mode, 0)
+  val directorAddressYearsPage = routes.DirectorAddressYearsController.onPageLoad(NormalMode, 0)
+  val directorContactDetailsPage = routes.DirectorContactDetailsController.onPageLoad(NormalMode, 0)
+  def paPostCodePage(mode: Mode) = routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
+  def paAddressListPage(mode: Mode) = routes.DirectorPreviousAddressListController.onPageLoad(mode, 0)
+  def previousAddressPage(mode: Mode) = routes.DirectorPreviousAddressController.onPageLoad(mode, 0)
+
+  private def data = {
+    (0 to 9).map(index => Json.obj(
+      DirectorDetailsId.toString -> DirectorDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now))
+    ).toArray
+  }
+  val emptyAnswers = new UserAnswers(Json.obj())
+  val addressYearsOverAYear = UserAnswers(Json.obj())
+    .set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
+  val addressYearsUnderAYear = UserAnswers(Json.obj())
+    .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+  val addCompanyDirectorsFalse = UserAnswers(Json.obj())
+    .set(AddCompanyDirectorsId)(false).asOpt.value
+  val addCompanyDirectorsTrue = UserAnswers(Json.obj())
+    .set(AddCompanyDirectorsId)(true).asOpt.value
+
+  val addCompanyDirectorsMoreThan10 = UserAnswers(Json.obj(
+    "directors" -> data))
 }

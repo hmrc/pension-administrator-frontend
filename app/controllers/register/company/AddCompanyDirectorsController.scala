@@ -30,34 +30,34 @@ import identifiers.register.company.directors.DirectorDetailsId
 import models.Mode
 import models.register.company.directors.DirectorDetails
 import play.api.Logger
-import play.api.libs.json.JsResultException
+import play.api.libs.json.{JsPath, JsResultException}
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.CompanyDirector
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsController @Inject() (
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
-                                                     @RegisterCompany navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: AddCompanyDirectorsFormProvider
+                                                appConfig: FrontendAppConfig,
+                                                override val messagesApi: MessagesApi,
+                                                dataCacheConnector: DataCacheConnector,
+                                                @CompanyDirector navigator: Navigator,
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: AddCompanyDirectorsFormProvider
                                                    ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors= request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
+      val directors= request.userAnswers.getAllRecursive[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       Ok(addCompanyDirectors(appConfig, form, mode, directors))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
+      val directors = request.userAnswers.getAllRecursive[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode)(request.userAnswers))

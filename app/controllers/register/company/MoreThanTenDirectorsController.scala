@@ -27,21 +27,21 @@ import config.FrontendAppConfig
 import forms.register.company.MoreThanTenDirectorsFormProvider
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.Mode
-import utils.annotations.RegisterCompany
+import utils.annotations.CompanyDirector
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.moreThanTenDirectors
 
 import scala.concurrent.Future
 
 class MoreThanTenDirectorsController @Inject() (
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
-                                                     @RegisterCompany navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: MoreThanTenDirectorsFormProvider
+                                                 appConfig: FrontendAppConfig,
+                                                 override val messagesApi: MessagesApi,
+                                                 dataCacheConnector: DataCacheConnector,
+                                                 @CompanyDirector navigator: Navigator,
+                                                 authenticate: AuthAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: MoreThanTenDirectorsFormProvider
                                                    ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
