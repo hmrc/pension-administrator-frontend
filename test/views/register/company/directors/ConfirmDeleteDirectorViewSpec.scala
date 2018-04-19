@@ -49,11 +49,6 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", "directorName")
     }
 
-    "display language toggles" in {
-      val doc = asDocument(view())
-      assertRenderedById(doc, "cymraeg-switch")
-    }
-
     behave like pageWithBackLink(createView)
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
