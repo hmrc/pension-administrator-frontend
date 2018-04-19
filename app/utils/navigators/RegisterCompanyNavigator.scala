@@ -21,6 +21,7 @@ import controllers.register.company.routes
 import identifiers.Identifier
 import identifiers.register.company._
 import controllers.register.company.directors._
+import identifiers.register.BusinessTypeId
 import identifiers.register.company.directors.DirectorDetailsId
 import models._
 import models.register.company.directors.DirectorDetails
@@ -34,7 +35,12 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
 
   override protected val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case ConfirmCompanyAddressId => companyAddressIdRoutes
+    case BusinessTypeId =>
+      _ => routes.BusinessDetailsController.onPageLoad(NormalMode)
+    case BusinessDetailsId =>
+      _ => routes.ConfirmCompanyDetailsController.onPageLoad()
+    case ConfirmCompanyAddressId =>
+      _ => routes.WhatYouWillNeedController.onPageLoad()
     case WhatYouWillNeedId =>
       _ => routes.CompanyDetailsController.onPageLoad(NormalMode)
     case CompanyDetailsId =>
@@ -58,8 +64,8 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
   }
 
   override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case ConfirmCompanyAddressId => companyAddressCheckIdRoutes
-    case WhatYouWillNeedId => checkYourAnswers
+    /*case ConfirmCompanyAddressId => companyAddressCheckIdRoutes
+    case WhatYouWillNeedId => checkYourAnswers*/
     case CompanyDetailsId => checkYourAnswers
     case CompanyRegistrationNumberId => checkYourAnswers
     case CompanyAddressId => checkYourAnswers
@@ -91,13 +97,6 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
           controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index)
         }
       }
-    }
-  }
-
-  private def companyAddressIdRoutes(answers: UserAnswers): Call = {
-    answers.get(ConfirmCompanyAddressId) match {
-      case Some(_) => routes.WhatYouWillNeedController.onPageLoad()
-      case None => routes.CompanyUpdateDetailsController.onPageLoad()
     }
   }
 

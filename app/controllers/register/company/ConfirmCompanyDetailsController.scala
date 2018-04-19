@@ -77,13 +77,14 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                   }
                 }
               }
-            case false => Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode)(request.userAnswers)))
+            case false => Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
           }
         )
       }
   }
 
   def getCompanyDetails(mode: Mode)(fn: (BusinessDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+    println("\n\n\n coming here\n\n\n")
     (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
       case (businessDetails ~ businessType) =>
         val organisation = Organisation(businessDetails.companyName, businessType)
@@ -92,7 +93,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
             fn(businessDetails, response)
         } recoverWith {
           case _: NotFoundException =>
-            Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode)(request.userAnswers)))
+            Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))
         }
     }
   }
