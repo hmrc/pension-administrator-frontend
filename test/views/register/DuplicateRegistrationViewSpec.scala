@@ -27,7 +27,5 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
 
   "DuplicateRegistration view" must {
     behave like normalPage(createView, messageKeyPrefix, "body")
-
-    behave like pageWithBackLink(createView)
   }
 }
