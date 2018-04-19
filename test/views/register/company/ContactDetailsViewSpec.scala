@@ -17,8 +17,7 @@
 package views.register.company
 
 import forms.register.company.ContactDetailsFormProvider
-import models.NormalMode
-import models.register.company.ContactDetails
+import models.{ContactDetails, NormalMode}
 import org.jsoup.Jsoup
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
@@ -46,8 +45,8 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
       createViewUsingForm,
       messageKeyPrefix,
       controllers.register.company.routes.ContactDetailsController.onSubmit(NormalMode).url,
-      "email",
-      "phone"
+      "emailAddress",
+      "phoneNumber"
     )
 
     "display correct body text" in {

@@ -26,7 +26,7 @@ import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
 import models.register.company._
 import models.register.company.directors.DirectorDetails
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, ContactDetails}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -84,7 +84,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("email", "a@b.com"), ("phone", "1234567890"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "a@b.com"), ("phoneNumber", "1234567890"))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)
 
@@ -110,7 +110,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("email", "value 1"), ("phone", "value 2"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "value 1"), ("phoneNumber", "value 2"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode, index)(postRequest)
 
       status(result) mustBe SEE_OTHER
