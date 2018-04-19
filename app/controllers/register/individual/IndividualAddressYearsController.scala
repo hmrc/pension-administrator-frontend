@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
@@ -28,35 +27,36 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
+import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 
 class IndividualAddressYearsController @Inject()(
-                                        override val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        override val navigator: Navigator,
-                                        override val cacheConnector: DataCacheConnector,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider
-                                     ) extends controllers.address.AddressYearsController {
+                                                  @Individual override val navigator: Navigator,
+                                                  override val appConfig: FrontendAppConfig,
+                                                  override val messagesApi: MessagesApi,
+                                                  override val cacheConnector: DataCacheConnector,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: AddressYearsFormProvider
+                                                ) extends controllers.address.AddressYearsController {
 
   private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
     Retrieval(
-    implicit request =>
-      IndividualDetailsId.retrieve.right.map{
-        details =>
-          val questionText = "individualAddressYears.title"
-          AddressYearsViewModel(
-            postCall = routes.IndividualAddressYearsController.onSubmit(mode),
-            title = Message(questionText, details.fullName),
-            heading = Message(questionText, details.fullName),
-            legend = Message(questionText, details.fullName),
-            Some(Message("common.individual.secondary.heading"))
-          )
-      }
-  )
+      implicit request =>
+        IndividualDetailsId.retrieve.right.map {
+          details =>
+            val questionText = "individualAddressYears.title"
+            AddressYearsViewModel(
+              postCall = routes.IndividualAddressYearsController.onSubmit(mode),
+              title = Message(questionText, details.fullName),
+              heading = Message(questionText, details.fullName),
+              legend = Message(questionText, details.fullName),
+              Some(Message("common.individual.secondary.heading"))
+            )
+        }
+    )
 
   private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"))
 

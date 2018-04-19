@@ -48,7 +48,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
-    new IndividualAddressYearsController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeDataCacheConnector, FakeAuthAction,
+    new IndividualAddressYearsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   def viewAsString(form: Form[_] = form) = addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString

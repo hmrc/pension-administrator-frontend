@@ -39,17 +39,17 @@
         <p>@messages(viewmodel.legend)</p>
 
         @components.input_text(
-            field = form("email"),
+            field = form("emailAddress"),
             label = messages("contactDetails.email"),
             inputClass = Some("form-control-3-4")
         )
 
         @components.input_text(
-            field = form("phone"),
+            field = form("phoneNumber"),
             label = messages("contactDetails.phone"),
             inputClass = Some("form-control-3-4")
         )
 
-        @components.submit_button()
+        @components.submit_button("site.save_and_continue")
     }
 }

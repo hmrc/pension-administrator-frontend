@@ -18,18 +18,21 @@ package identifiers.register.company
 
 import identifiers._
 import models.AddressYears
-import utils.Cleanup
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
 case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
   self =>
   override def toString: String = "companyAddressYears"
 
-  implicit lazy val addressYears: Cleanup[self.type] =
-    Cleanup[AddressYears, self.type] {
-      case (CompanyAddressYearsId, Some(AddressYears.OverAYear), answers) =>
-        answers
+  override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(AddressYears.OverAYear) =>
+        userAnswers
           .remove(CompanyPreviousAddressPostCodeLookupId)
           .flatMap(_.remove(CompanyPreviousAddressId))
+      case _ => super.cleanup(value, userAnswers)
     }
+  }
 
 }

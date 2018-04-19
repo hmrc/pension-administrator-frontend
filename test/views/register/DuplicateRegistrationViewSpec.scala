@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package views.register
 
-import utils.{Enumerable, InputOption, WithName}
+import views.behaviours.ViewBehaviours
+import views.html.register.duplicateRegistration
 
-sealed trait AddressYears
+class DuplicateRegistrationViewSpec extends ViewBehaviours {
 
-object AddressYears extends Enumerable.Implicits {
+  val messageKeyPrefix = "duplicateRegistration"
 
-  case object UnderAYear extends WithName("under_a_year") with AddressYears
-  case object OverAYear extends WithName("over_a_year") with AddressYears
+  def createView = () => duplicateRegistration(frontendAppConfig)(fakeRequest, messages)
 
-  val values: Seq[AddressYears] = Seq(
-    UnderAYear, OverAYear
-  )
-
-  val options: Seq[InputOption] = values.map {
-    value =>
-      InputOption(value.toString, s"common.addressYears.${value.toString}")
+  "DuplicateRegistration view" must {
+    behave like normalPage(createView, messageKeyPrefix, "body")
   }
-
-  implicit val enumerable: Enumerable[AddressYears] =
-    Enumerable(values.map(v => v.toString -> v): _*)
 }

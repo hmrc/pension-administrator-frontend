@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-package identifiers
+package identifiers.register.company.directors
 
+import identifiers.TypedIdentifier
 import play.api.libs.json.JsPath
 
-import scala.language.implicitConversions
-import play.api.libs.json._
-import utils.UserAnswers
-
-trait Identifier {
-
-  def path: JsPath = __ \ toString
+case class DirectorId(index: Int) extends TypedIdentifier[Nothing] {
+  override def path: JsPath = JsPath \ DirectorId.toString \ index
 }
 
-object Identifier {
-
-  implicit def toString(i: Identifier): String =
-    i.toString
-}
-
-trait TypedIdentifier[A] extends TypedIdentifier.PathDependent {
-  type Data = A
-}
-
-object TypedIdentifier {
-
-  trait PathDependent extends Identifier {
-    type Data
-    def cleanup(value: Option[Data], userAnswers: UserAnswers): JsResult[UserAnswers] = JsSuccess(userAnswers)
-  }
+object DirectorId {
+  override def toString: String = "directors"
 }

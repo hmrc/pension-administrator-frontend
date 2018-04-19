@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
@@ -29,6 +28,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.Individual
 import utils.{CountryOptions, Navigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -36,7 +36,7 @@ import viewmodels.address.ManualAddressViewModel
 class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                     val messagesApi: MessagesApi,
                                                     val dataCacheConnector: DataCacheConnector,
-                                                    val navigator: Navigator,
+                                                    @Individual val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
@@ -53,22 +53,22 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
   protected val form: Form[Address] = formProvider()
 
   private def viewmodel(mode: Mode) = ManualAddressViewModel(
-              postCall(mode),
-              countryOptions.options,
-              title = Message(title),
-              heading = Message(heading),
-              hint = Some(Message(hint)),
-              secondaryHeader = Some(secondaryHeader)
-            )
+    postCall(mode),
+    countryOptions.options,
+    title = Message(title),
+    heading = Message(heading),
+    hint = Some(Message(hint)),
+    secondaryHeader = Some(secondaryHeader)
+  )
 
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-          get(IndividualPreviousAddressId, viewmodel(mode))
+      get(IndividualPreviousAddressId, viewmodel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-          post(IndividualPreviousAddressId, viewmodel(mode), mode)
+      post(IndividualPreviousAddressId, viewmodel(mode), mode)
   }
 }

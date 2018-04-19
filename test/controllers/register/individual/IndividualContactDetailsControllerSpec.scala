@@ -45,7 +45,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualContactDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new IndividualContactDetailsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   def viewAsString(form: Form[_] = form) = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
@@ -69,7 +69,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("email", "test@test.com"), ("phone", "123456789"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "test@test.com"), ("phoneNumber", "123456789"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -95,7 +95,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("email", "test@test.com"), ("phone", "123456789"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "test@test.com"), ("phoneNumber", "123456789"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

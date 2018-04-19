@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import javax.inject.Inject
-
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
@@ -26,15 +25,16 @@ import identifiers.register.individual.WhatYouWillNeedId
 import models.NormalMode
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         navigator: Navigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                          override val messagesApi: MessagesApi,
+                                          @Individual val navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,35 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package identifiers
+@import config.FrontendAppConfig
 
-import play.api.libs.json.JsPath
+@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
-import scala.language.implicitConversions
-import play.api.libs.json._
-import utils.UserAnswers
+@main_template(
+    title = messages("duplicateRegistration.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
 
-trait Identifier {
+    @components.heading("duplicateRegistration.heading")
 
-  def path: JsPath = __ \ toString
-}
-
-object Identifier {
-
-  implicit def toString(i: Identifier): String =
-    i.toString
-}
-
-trait TypedIdentifier[A] extends TypedIdentifier.PathDependent {
-  type Data = A
-}
-
-object TypedIdentifier {
-
-  trait PathDependent extends Identifier {
-    type Data
-    def cleanup(value: Option[Data], userAnswers: UserAnswers): JsResult[UserAnswers] = JsSuccess(userAnswers)
-  }
+    <p>@messages("duplicateRegistration.body")</p>
 }

@@ -23,8 +23,8 @@ import connectors.DataCacheConnector
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{AddressYears, ContactDetails, NormalMode}
-import org.mockito.Matchers.any
+import models.{ContactDetails, NormalMode}
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -37,7 +37,6 @@ import play.api.test.Helpers.{contentAsString, _}
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.ContactDetailsViewModel
 import views.html.contactDetails
-import org.mockito.Matchers.{eq => eqTo, _}
 
 import scala.concurrent.Future
 
@@ -139,13 +138,13 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
           val answers = UserAnswers().set(FakeIdentifier)(ContactDetails("test@test.com", "123456789")).get
           when(
-            cacheConnector.save[ContactDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any(), any())
+            cacheConnector.save[ContactDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
           val request = FakeRequest().withFormUrlEncodedBody(
-            ("email", "test@test.com"), ("phone", "123456789")
+            ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
           )
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)

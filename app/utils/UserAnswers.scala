@@ -21,7 +21,7 @@ import play.api.libs.json._
 
 import scala.language.implicitConversions
 
-case class UserAnswers(val json: JsValue = Json.obj()) {
+case class UserAnswers(json: JsValue = Json.obj()) {
 
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
     get[A](id.path)
@@ -59,20 +59,20 @@ case class UserAnswers(val json: JsValue = Json.obj()) {
     }
   }
 
-  def set[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data], cleanup: Cleanup[I]): JsResult[UserAnswers] = {
+  def set[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data]): JsResult[UserAnswers] = {
 
     val jsValue = Json.toJson(value)
 
     JsLens.fromPath(id.path)
       .set(jsValue, json)
-      .flatMap(json => cleanup(id)(Some(value), UserAnswers(json)))
+      .flatMap(json => id.cleanup(Some(value), UserAnswers(json)))
   }
 
-  def remove[I <: TypedIdentifier.PathDependent](id: I)(implicit cleanup: Cleanup[I]): JsResult[UserAnswers] = {
+  def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {
 
     JsLens.fromPath(id.path)
       .remove(json)
-      .flatMap(json => cleanup(id)(None, UserAnswers(json)))
+      .flatMap(json => id.cleanup(None, UserAnswers(json)))
   }
 
 }

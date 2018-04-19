@@ -137,7 +137,7 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
 
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](
             any(),
-            eqTo(FakeIdentifier), any())(any(), any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
