@@ -44,7 +44,7 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       CompanyDetailsId.retrieve.right.map { companyDetails =>
-        val directors= request.userAnswers.getAllRecursive[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil).map(_.fullName)
+        val directors= request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil).map(_.fullName)
         Future.successful(Ok(companyReview(appConfig, companyDetails.companyName, directors)))
       }
   }

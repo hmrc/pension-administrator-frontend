@@ -82,7 +82,7 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
         controllers.register.company.routes.CompanyReviewController.onPageLoad()
       }
       case _ => {
-        val index = answers.getAllRecursive(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
+        val index = answers.getAll(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
           case Some(seq@Seq(_*)) => seq.length
           case None => 0
         }
