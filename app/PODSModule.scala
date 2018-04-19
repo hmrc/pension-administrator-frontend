@@ -15,9 +15,8 @@
  */
 
 import com.google.inject.AbstractModule
+import utils.navigators._
 import utils.annotations._
-import utils.navigators.{DirectorNavigator, IndividualNavigator, RegisterCompanyNavigator}
-import utils.annotations.{CompanyDirector, RegisterCompany}
 import utils.Navigator
 
 class PODSModule extends AbstractModule {

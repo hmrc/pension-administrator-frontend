@@ -32,7 +32,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterCompanyNavigatorSpec._
 
-  val navigator = new RegisterCompanyNavigator(frontendAppConfig)
+  val navigator = new RegisterCompanyNavigator
 
   private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                      "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),

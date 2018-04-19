@@ -34,14 +34,14 @@ import views.html.register.company.contactDetails
 import scala.concurrent.Future
 
 class ContactDetailsController @Inject() (
-                                           appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           dataCacheConnector: DataCacheConnector,
-                                           @RegisterCompany navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: ContactDetailsFormProvider
+                                        appConfig: FrontendAppConfig,
+                                        override val messagesApi: MessagesApi,
+                                        dataCacheConnector: DataCacheConnector,
+                                        @RegisterCompany navigator: Navigator,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: ContactDetailsFormProvider
                                       ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()

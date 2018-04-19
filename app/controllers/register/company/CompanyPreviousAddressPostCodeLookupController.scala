@@ -35,15 +35,15 @@ import views.html.register.company.companyPreviousAddressPostCodeLookup
 import scala.concurrent.Future
 
 class CompanyPreviousAddressPostCodeLookupController @Inject() (
-                                                                 appConfig: FrontendAppConfig,
-                                                                 override val messagesApi: MessagesApi,
-                                                                 dataCacheConnector: DataCacheConnector,
-                                                                 addressLookupConnector: AddressLookupConnector,
-                                                                 @RegisterCompany navigator: Navigator,
-                                                                 authenticate: AuthAction,
-                                                                 getData: DataRetrievalAction,
-                                                                 requireData: DataRequiredAction,
-                                                                 formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
+                                        appConfig: FrontendAppConfig,
+                                        override val messagesApi: MessagesApi,
+                                        dataCacheConnector: DataCacheConnector,
+                                        addressLookupConnector: AddressLookupConnector,
+                                        @RegisterCompany navigator: Navigator,
+                                        authenticate: AuthAction,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
                                       ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()

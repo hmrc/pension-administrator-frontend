@@ -29,7 +29,7 @@ import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigator {
+class RegisterCompanyNavigator @Inject() extends Navigator {
 
   private def checkYourAnswers(answers: UserAnswers): Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()

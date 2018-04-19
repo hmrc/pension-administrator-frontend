@@ -34,14 +34,14 @@ import views.html.register.company.companyAddressYears
 import scala.concurrent.Future
 
 class CompanyAddressYearsController @Inject()(
-                                               appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               dataCacheConnector: DataCacheConnector,
-                                               @RegisterCompany navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: CompanyAddressYearsFormProvider
+                                       appConfig: FrontendAppConfig,
+                                       override val messagesApi: MessagesApi,
+                                       dataCacheConnector: DataCacheConnector,
+                                       @RegisterCompany navigator: Navigator,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       formProvider: CompanyAddressYearsFormProvider
                                      ) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
