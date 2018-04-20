@@ -28,6 +28,7 @@ import forms.register.company.CompanyPreviousAddressPostCodeLookupFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.Mode
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyPreviousAddressPostCodeLookup
 
@@ -38,7 +39,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject() (
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: DataCacheConnector,
                                         addressLookupConnector: AddressLookupConnector,
-                                        navigator: Navigator,
+                                        @RegisterCompany navigator: Navigator,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,

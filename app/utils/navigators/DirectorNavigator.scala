@@ -17,21 +17,27 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
+import config.FrontendAppConfig
 import controllers.register.company.directors.routes
 import identifiers.Identifier
+import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
 import models.{CheckMode, Mode, NormalMode}
 import models.AddressYears
+import models.register.company.directors.DirectorDetails
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class DirectorNavigator @Inject() extends Navigator {
+class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(index: Int)(answers: UserAnswers): Call =
     controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index)
 
   override protected val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
+    case AddCompanyDirectorsId => addCompanyDirectorRoutes
+    case MoreThanTenDirectorsId =>
+      _ => controllers.register.company.routes.CompanyReviewController.onPageLoad()
     case DirectorDetailsId(id) => _ => routes.DirectorNinoController.onPageLoad(NormalMode, id)
     case DirectorNinoId(id) => _ => routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, id)
     case DirectorUniqueTaxReferenceId(id) => _ => routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, id)
@@ -67,6 +73,25 @@ class DirectorNavigator @Inject() extends Navigator {
         routes.DirectorContactDetailsController.onPageLoad(NormalMode, index)
       case None =>
         controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def addCompanyDirectorRoutes(answers: UserAnswers): Call = {
+    answers.get(AddCompanyDirectorsId) match {
+      case Some(false) => {
+        controllers.register.company.routes.CompanyReviewController.onPageLoad()
+      }
+      case _ => {
+        val index = answers.getAll(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
+          case Some(seq@Seq(_*)) => seq.length
+          case None => 0
+        }
+        if (index >= appConfig.maxDirectors) {
+          controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode)
+        } else {
+          controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index)
+        }
+      }
     }
   }
 

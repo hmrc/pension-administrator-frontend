@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.company._
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models.register.company.BusinessDetails
@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,23 +70,22 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyNotFoundController.onPageLoad().url)
+    }
+
+    "data is removed on page load" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+
+      controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
+
+      FakeDataCacheConnector.verifyRemoved(ConfirmCompanyAddressId)
+    }
 
     "valid data is submitted" when {
-        "yes" which {
-          "upsert address and organisation name from api response" in {
-            val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-
-            val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(onwardRoute.url)
-          }
-        }
-        "no" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+      "yes" which {
+        "upsert address and organisation name from api response" in {
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
@@ -94,6 +93,15 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(onwardRoute.url)
         }
       }
+      "no" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+
+        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
+      }
+    }
 
     "redirect to Session Expired" when {
       "GET" when {

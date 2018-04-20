@@ -257,12 +257,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
 
   def companyAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressId) flatMap { x =>
     x map { address =>
-      AnswerRow("companyAddress.checkYourAnswersLabel", addressAnswer(address), false, controllers.register.company.routes.ConfirmCompanyDetailsController.onPageLoad().url)
+      AnswerRow("companyAddress.checkYourAnswersLabel", addressAnswer(address), false, None)
     }
   }
 
   def businessDetails: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) map {
-    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.company.routes.BusinessDetailsController.onPageLoad(CheckMode).url)
+    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"${x.uniqueTaxReferenceNumber}"), false, controllers.register.company.routes.BusinessDetailsController.onPageLoad(CheckMode).url)
   }
 
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {

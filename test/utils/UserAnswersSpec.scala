@@ -41,5 +41,4 @@ class UserAnswersSpec extends FlatSpec with Matchers with OptionValues {
     val userAnswers = UserAnswers(establishers)
     userAnswers.getAll[String](JsPath \ "establishers" \\ "address").value.size shouldBe 0
   }
-
 }

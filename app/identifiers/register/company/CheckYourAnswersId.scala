@@ -14,25 +14,10 @@
  * limitations under the License.
  */
 
-import com.google.inject.AbstractModule
-import utils.navigators._
-import utils.annotations._
-import utils.Navigator
+package identifiers.register.company
 
-class PODSModule extends AbstractModule {
+import identifiers._
 
-  override def configure(): Unit = {
-
-    bind(classOf[Navigator])
-      .annotatedWith(classOf[CompanyDirector])
-      .to(classOf[DirectorNavigator])
-
-    bind(classOf[Navigator])
-      .annotatedWith(classOf[Individual])
-      .to(classOf[IndividualNavigator])
-
-    bind(classOf[Navigator])
-      .annotatedWith(classOf[RegisterCompany])
-      .to(classOf[RegisterCompanyNavigator])
-  }
+case object CheckYourAnswersId extends Identifier {
+  override def toString: String = "checkYourAnswers"
 }

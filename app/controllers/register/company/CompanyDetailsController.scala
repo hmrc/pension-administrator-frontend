@@ -28,6 +28,7 @@ import forms.register.company.CompanyDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import models.Mode
 import models.register.company.CompanyDetails
+import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyDetails
 
@@ -37,7 +38,7 @@ class CompanyDetailsController @Inject() (
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
+                                        @RegisterCompany navigator: Navigator,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
