@@ -21,8 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.ContactDetailsFormProvider
 import identifiers.register.company.ContactDetailsId
-import models.NormalMode
-import models.register.company.ContactDetails
+import models.{ContactDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers.{contentAsString, _}
@@ -61,7 +60,7 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("email", "test@test.com"), ("phone", "34892374"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "test@test.com"), ("phoneNumber", "34892374"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -87,7 +86,7 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("email", "value 1"), ("phone", "value 2"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "value 1"), ("phoneNumber", "value 2"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

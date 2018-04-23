@@ -17,8 +17,7 @@
 package views.register.company.directors
 
 import forms.register.company.ContactDetailsFormProvider
-import models.register.company.ContactDetails
-import models.{Index, NormalMode}
+import models.{ContactDetails, Index, NormalMode}
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directors.directorContactDetails
@@ -43,6 +42,6 @@ class DirectorContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetai
 
     behave like pageWithSecondaryHeader(createView, directorName)
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.directors.routes.DirectorContactDetailsController.onSubmit(NormalMode, index).url, "email", "phone")
+    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.directors.routes.DirectorContactDetailsController.onSubmit(NormalMode, index).url, "emailAddress", "phoneNumber")
   }
 }
