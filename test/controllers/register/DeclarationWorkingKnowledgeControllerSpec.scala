@@ -28,6 +28,7 @@ import play.api.libs.json._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
 import models.NormalMode
+import models.register.DeclarationWorkingKnowledge
 import views.html.register.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
@@ -53,16 +54,16 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(DeclarationWorkingKnowledgeId.toString -> true)
+      val validData = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(true))
+      contentAsString(result) mustBe viewAsString(form.fill(DeclarationWorkingKnowledge.values.head))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -88,7 +89,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

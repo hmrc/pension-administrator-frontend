@@ -17,7 +17,6 @@
 package controllers.register
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -27,7 +26,7 @@ import config.FrontendAppConfig
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
 import models.Mode
-import utils.{Navigator, UserAnswers}
+import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.declarationWorkingKnowledge
 
 import scala.concurrent.Future
@@ -41,9 +40,9 @@ class DeclarationWorkingKnowledgeController @Inject() (
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: DeclarationWorkingKnowledgeFormProvider
-                                                   ) extends FrontendController with I18nSupport {
+                                                   ) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
-  private val form: Form[Boolean] = formProvider()
+  private val form = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>

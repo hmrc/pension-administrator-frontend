@@ -18,6 +18,7 @@ package identifiers.register
 
 import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressPostCodeLookupId, AdvisorDetailsId}
 import models.Address
+import models.register.DeclarationWorkingKnowledge
 import models.register.advisor.AdvisorDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import utils.{Enumerable, UserAnswers}
@@ -29,15 +30,15 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
    val address=Address("test-address-line1","test-address-line2", None,None, None,"test-country")
 
    val answersWithAdvisor = UserAnswers(Json.obj())
-     .set(DeclarationWorkingKnowledgeId)(true)
+     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
      .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("Arthur Daley", "a@a")))
      .flatMap(_.set(AdvisorAddressPostCodeLookupId)(Seq(address)))
      .flatMap(_.set(AdvisorAddressId)(address))
      .asOpt.value
 
 
-   "Declaration Working knowledge is set to false" must {
-     val result: UserAnswers = answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(false).asOpt.value
+   "where Declaration Working knowledge " must {
+     val result: UserAnswers = answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
 
      "remove the data for Postcode lookup" in {
        result.get(AdvisorAddressPostCodeLookupId) mustNot be(defined)
@@ -51,8 +52,8 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
      }
    }
 
-   "Declaration Working knowledge is set to true" must {
-     val result: UserAnswers = answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(true).asOpt.value
+   "Declaration has an advisor" must {
+     val result: UserAnswers = answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
 
      "not remove the data for Postcode lookup" in {
        result.get(AdvisorAddressPostCodeLookupId) mustBe defined
