@@ -1,24 +1,24 @@
-->         /company                                    company.Routes
-->         /individual                                 individual.Routes
-->         /advisor                                    advisor.Routes
+->          /company                    company.Routes
+->          /individual                 individual.Routes
+->          /advisor                    advisor.Routes
 
-GET        /business-type                               controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /business-type                               controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-business-type                        controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-business-type                        controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
+GET        /businessType                controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /businessType                controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /changeBusinessType          controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeBusinessType          controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /declaration-working-knowledge               controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration-working-knowledge               controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-declaration-working-knowledge        controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-declaration-working-knowledge        controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
+GET        /declarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
+POST       /declarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDeclarationWorkingKnowledge                       controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onPageLoad()
-POST       /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onSubmit()
+GET        /declarationFitAndProper                       controllers.register.DeclarationFitAndProperController.onPageLoad()
+POST       /declarationFitAndProper                       controllers.register.DeclarationFitAndProperController.onSubmit()
 
-GET        /declaration                                 controllers.register.DeclarationController.onPageLoad()
-POST       /declaration                                 controllers.register.DeclarationController.onSubmit()
+GET        /declaration                       controllers.register.DeclarationController.onPageLoad()
+POST       /declaration                       controllers.register.DeclarationController.onSubmit()
 
-GET        /confirmation                                controllers.register.ConfirmationController.onPageLoad()
-POST       /confirmation                                controllers.register.ConfirmationController.onSubmit()
+GET        /confirmation                       controllers.register.ConfirmationController.onPageLoad()
+POST       /confirmation                       controllers.register.ConfirmationController.onSubmit()
 
-GET        /duplicate-registration                      controllers.register.DuplicateRegistrationController.onPageLoad()
+GET        /duplicateRegistration                       controllers.register.DuplicateRegistrationController.onPageLoad()
