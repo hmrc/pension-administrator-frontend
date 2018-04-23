@@ -18,14 +18,15 @@ package controllers.register.individual
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.individual.CheckYourAnswersId
+import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId}
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{CheckYourAnswersFactory, Navigator}
-import viewmodels.AnswerSection
+import viewmodels.{AnswerSection, Message}
 import views.html.check_your_answers
 
 @Singleton
@@ -37,7 +38,7 @@ class CheckYourAnswersController @Inject()(
     navigator: Navigator,
     override val messagesApi: MessagesApi,
     checkYourAnswersFactory: CheckYourAnswersFactory
-) extends FrontendController with I18nSupport {
+) extends FrontendController with Retrievals with I18nSupport {
 
   import CheckYourAnswersController._
 
@@ -45,21 +46,26 @@ class CheckYourAnswersController @Inject()(
     implicit request =>
       val helper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
 
-      val section = AnswerSection(
-        None,
-        Seq(
-          helper.individualDetails,
-          helper.individualAddress,
-          helper.individualAddressYears,
-          helper.individualPreviousAddress,
-          helper.individualEmailAddress,
-          helper.individualPhoneNumber
-        ).flatten
-      )
+      val message = IndividualDetailsId.retrieve.right.map { details =>
+        Message("individualAddressYears.title", details.fullName).resolve
+      }.right.getOrElse(Message("cya.label.address.years").resolve)
 
-      val sections = Seq(section)
+        val section = AnswerSection(
+          None,
+          Seq(
+            helper.individualDetails,
+            helper.individualAddress,
+            helper.individualAddressYears(message),
+            helper.individualPreviousAddress,
+            helper.individualEmailAddress,
+            helper.individualPhoneNumber
+          ).flatten
+        )
 
-      Ok(check_your_answers(appConfig, sections, Some("site.secondaryHeader"), postUrl))
+        val sections = Seq(section)
+
+        Ok(check_your_answers(appConfig, sections, Some("site.secondaryHeader"), postUrl))
+
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

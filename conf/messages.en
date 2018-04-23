@@ -111,6 +111,7 @@ unauthorised.heading = You can’t access this service with this account
 cya.label.name = Name
 cya.label.address = Address
 cya.label.dob = Date of birth
+cya.label.address.years = Address years
 
 contactDetails.title = Contact details
 contactDetails.heading = Contact details

@@ -21,7 +21,7 @@ import identifiers.register.company.directors.{DirectorAddressId, DirectorPrevio
 import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
 import models.{Address, CheckMode, Nino, UniqueTaxReference}
-import viewmodels.AnswerRow
+import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
@@ -70,9 +70,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     }
   }
 
-  def individualAddressYears: Option[AnswerRow] = {
+  def individualAddressYears(message: String): Option[AnswerRow] = {
     userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) map { x =>
-      AnswerRow("individualAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
+      AnswerRow(message, Seq(s"common.addressYears.$x"), true, controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
     }
   }
 

@@ -24,7 +24,7 @@ import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{CheckYourAnswersFactory, CountryOptions, FakeNavigator, InputOption}
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Message}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -76,16 +76,32 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "render the view correctly on a GET request where there is data for the How Long at Address section" in {
       val addressYears = AddressYears.OverAYear
-      val sections = answerSections(
-        "individualAddressYears.checkYourAnswersLabel",
-        Seq(s"common.addressYears.${addressYears.toString}"),
-        answerIsMessageKey = true,
-        Some(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
+
+      val individual = TolerantIndividual(
+        Some("Joe"),
+        None,
+        Some("Bloggs")
       )
 
-      val retrievalAction = dataRetrievalAction(
-        IndividualAddressYearsId.toString -> addressYears.toString
+      val sections = Seq(
+        AnswerSection(
+          None,
+          Seq(
+            AnswerRow("individualDetailsCorrect.name", Seq(individual.fullName), false, None),
+            AnswerRow(
+              Message("individualAddressYears.title", "Joe Bloggs").resolve,
+              Seq(s"common.addressYears.${addressYears.toString}"),
+              answerIsMessageKey = true,
+              controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url
+            )
+          )
+        )
       )
+
+      val retrievalAction = new FakeDataRetrievalAction(Some(Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressYearsId.toString -> addressYears.toString
+      )))
 
       testRenderedView(sections, retrievalAction)
     }
@@ -181,7 +197,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
-  private def controller(getData: DataRetrievalAction = getEmptyData): CheckYourAnswersController = {
+  private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {
     new CheckYourAnswersController(
       appConfig = frontendAppConfig,
       authenticate = FakeAuthAction,
