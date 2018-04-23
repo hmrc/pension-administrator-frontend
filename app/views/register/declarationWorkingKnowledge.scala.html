@@ -35,14 +35,35 @@
 
         @components.heading("declarationWorkingKnowledge.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
-        @components.paragraph_text(messages("declarationWorkingKnowledge.body"))
+        <div class="form-field @if(form("value").hasErrors){form-field--error}">
+            <fieldset class="form-group" id="@{form("value").id}">
+                <legend>
+                    <span class="bold-small">@messages("declarationWorkingKnowledge.declare")</span>
+                    @form("value").errors.map { error =>
+                        <span class="error-notification" id="error-message-@{form("value").id}-input">@messages(error.message, error.args: _*)</span>
+                    }
+                </legend>
 
-        @components.input_yes_no(
-            field = form("value"),
-            label = messages("declarationWorkingKnowledge.heading"),
-            labelClass = Some("visually-hidden")
-        )
+                <div class="multiple-choice">
+                    <input id="@{form("value").id}-yes" type="radio" name="@{form("value").id}" value="true" @if(form("value").value.contains("true")){checked="checked"} />
+                    <label class="block-label selection-button-radio" for="@{form("value").id}-yes">
+                        @messages("declarationWorkingKnowledge.option1")
+                    </label>
+                </div>
+
+                <p>or</p>
+
+                <div class="multiple-choice">
+                    <input id="@{form("value").id}-no" type="radio" name="@{form("value").id}" value="false" @if(form("value").value.contains("false")){checked="checked"} />
+                    <label class="block-label selection-button-radio" for="@{form("value").id}-no">
+                        @messages("declarationWorkingKnowledge.option2")
+                    </label>
+                </div>
+
+            </fieldset>
+        </div>
 
         @components.submit_button("site.agree")
+
     }
 }

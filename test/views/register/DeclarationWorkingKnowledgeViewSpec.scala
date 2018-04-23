@@ -39,6 +39,12 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.DeclarationWorkingKnowledgeController.onSubmit(NormalMode).url)
+    behave like yesNoPage(
+      createViewUsingForm,
+      messageKeyPrefix,
+      routes.DeclarationWorkingKnowledgeController.onSubmit(NormalMode).url,
+      "declare"
+    )
+
   }
 }
