@@ -16,7 +16,8 @@
 
 package identifiers.register
 import identifiers._
+import models.register.DeclarationWorkingKnowledge
 
-case object DeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
+case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWorkingKnowledge] { self =>
   override def toString: String = "declarationWorkingKnowledge"
 }

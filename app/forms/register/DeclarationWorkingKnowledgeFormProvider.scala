@@ -18,13 +18,16 @@ package forms.register
 
 import forms.FormErrorHelper
 import forms.mappings.Mappings
-import javax.inject.Inject
+import com.google.inject.Inject
+import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-class DeclarationWorkingKnowledgeFormProvider @Inject() extends FormErrorHelper with Mappings {
+class DeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[DeclarationWorkingKnowledge] =
     Form(
-      "value" -> boolean("declarationWorkingKnowledge.error.required")
+      "value" -> enumerable[DeclarationWorkingKnowledge]("declarationWorkingKnowledge.error.required")
     )
 }
