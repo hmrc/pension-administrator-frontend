@@ -19,7 +19,7 @@ package forms.register.company
 import javax.inject.Inject
 
 import forms.mappings.{EmailMapping, PhoneNumberMapping}
-import models.register.company.ContactDetails
+import models.ContactDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -27,12 +27,12 @@ class ContactDetailsFormProvider @Inject() extends EmailMapping with PhoneNumber
 
    def apply(): Form[ContactDetails] = Form(
      mapping(
-      "email" -> emailMapping(
+      "emailAddress" -> emailMapping(
         "contactDetails.error.email.required",
         "contactDetails.error.email.length",
         "contactDetails.error.email.invalid"
       ),
-      "phone" -> phoneNumberMapping(
+      "phoneNumber" -> phoneNumberMapping(
         "contactDetails.error.phone.required",
         "contactDetails.error.phone.length",
         "contactDetails.error.phone.invalid"

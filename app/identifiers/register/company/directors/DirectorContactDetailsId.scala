@@ -17,7 +17,7 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.ContactDetails
+import models.ContactDetails
 import play.api.libs.json.JsPath
 
 case class DirectorContactDetailsId(index: Int) extends TypedIdentifier[ContactDetails] {

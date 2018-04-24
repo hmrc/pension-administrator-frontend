@@ -20,7 +20,8 @@ import java.time.LocalDate
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import models.Index
+import controllers.register.company.directors.routes._
+import models.{CheckMode, Index}
 import play.api.test.Helpers._
 import utils.{CheckYourAnswersFactory, CountryOptions, DateHelper, InputOption}
 import viewmodels.{AnswerRow, AnswerSection}
@@ -34,19 +35,19 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
-  val answersDD: Seq[AnswerRow] = Seq(
+  def answersDD: Seq[AnswerRow] = Seq(
     AnswerRow(
       "cya.label.name",
       Seq("test first name test last name"),
       false,
-      "/pension-administrator/register/company/directors/1/changeDirectorDetails"
-    ),
+      routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+      ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
       false,
-      "/pension-administrator/register/company/directors/1/changeDirectorDetails")
-  )
+      routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+  ))
 
   def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()
 
