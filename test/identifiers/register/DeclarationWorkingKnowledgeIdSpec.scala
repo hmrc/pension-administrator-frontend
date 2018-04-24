@@ -31,14 +31,16 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
 
    val answersWithAdvisor = UserAnswers(Json.obj())
      .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
-     .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("Arthur Daley", "a@a")))
+     .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("test name", "a@a")))
      .flatMap(_.set(AdvisorAddressPostCodeLookupId)(Seq(address)))
      .flatMap(_.set(AdvisorAddressId)(address))
      .asOpt.value
 
 
    "where Declaration Working knowledge " must {
-     val result: UserAnswers = answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
+     val result: UserAnswers =
+       answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
+         .asOpt.value
 
      "remove the data for Postcode lookup" in {
        result.get(AdvisorAddressPostCodeLookupId) mustNot be(defined)
