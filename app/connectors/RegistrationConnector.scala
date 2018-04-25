@@ -17,13 +17,12 @@
 package connectors
 
 import javax.inject.Singleton
-
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import models.{IndividualRegisterWithIdResponse, Organisation, OrganizationRegisterWithIdResponse}
+import models._
 import play.api.Logger
 import play.api.http.Status
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -34,18 +33,21 @@ import scala.util.Failure
 trait RegistrationConnector {
   def registerWithIdOrganisation
       (utr: String, organisation: Organisation)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse]
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
 
-  def registerWithIdIndividual()
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse]
+  def registerWithIdIndividual
+      (nino: String)
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
 }
 
 @Singleton
 class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends RegistrationConnector {
 
+  private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
+
   override def registerWithIdOrganisation
       (utr: String, organisation: Organisation)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
     val url = config.registerWithIdOrganisationUrl
 
@@ -58,8 +60,12 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     http.POST(url, body) map {response =>
       require(response.status == Status.OK, "The only valid response to registerWithIdOrganisation is 200 OK")
 
-      Json.parse(response.body).validate[OrganizationRegisterWithIdResponse] match {
-        case JsSuccess(value, _) => value
+      val json = Json.parse(response.body)
+
+      json.validate[OrganizationRegisterWithIdResponse] match {
+        case JsSuccess(value, _) =>
+          val info = registrationInfo(json, RegistrationLegalStatus.LimitedCompany, value.address, RegistrationIdType.UTR, utr)
+          OrganizationRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
@@ -70,22 +76,43 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   }
 
-  override def registerWithIdIndividual()
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
+  override def registerWithIdIndividual
+      (nino: String)
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
 
     http.POSTEmpty(url) map { response =>
       require(response.status == Status.OK, "The only valid response to registerWithIdIndividual is 200 OK")
 
-      Json.parse(response.body).validate[IndividualRegisterWithIdResponse] match {
-        case JsSuccess(value, _) => value
+      val json = Json.parse(response.body)
+
+      json.validate[IndividualRegisterWithIdResponse] match {
+        case JsSuccess(value, _) =>
+          val info = registrationInfo(json, RegistrationLegalStatus.Individual, value.address, RegistrationIdType.Nino, nino)
+          IndividualRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithIdIndividual", ex)
         ex
+    }
+
+  }
+
+  private def registrationInfo(
+                                json: JsValue,
+                                legalStatus: RegistrationLegalStatus,
+                                address: TolerantAddress,
+                                idType: RegistrationIdType,
+                                idNumber: String): RegistrationInfo = {
+
+    json.validate[String](readsSapNumber) match {
+      case JsSuccess(sapNumber, _) =>
+        val customerType = RegistrationCustomerType.fromAddress(address)
+        RegistrationInfo(legalStatus, sapNumber, false, customerType, idType, idNumber)
+      case JsError(errors) => throw JsResultException(errors)
     }
 
   }

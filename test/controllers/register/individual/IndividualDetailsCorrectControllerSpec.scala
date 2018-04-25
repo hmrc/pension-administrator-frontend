@@ -24,8 +24,11 @@ import controllers.actions._
 import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
-import models._
+import models.requests.AuthenticatedRequest
+import models.{RegistrationInfo, _}
+import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.register.individual.individualDetailsCorrect
 
@@ -37,6 +40,23 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
+
+  private val nino = "test-nino"
+  private val sapNumber = "test-sap-number"
+
+  private val fakeAuthAction = new AuthAction {
+    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), false)))
+  }
+
+  private val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.Individual,
+    sapNumber,
+    false,
+    RegistrationCustomerType.UK,
+    RegistrationIdType.Nino,
+    nino
+  )
 
   private val individual = TolerantIndividual(
     Some("John"),
@@ -57,11 +77,13 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
         (utr: String, organisation: Organisation)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = ???
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
-    override def registerWithIdIndividual()
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
-      Future.successful(IndividualRegisterWithIdResponse(individual, address))
+    override def registerWithIdIndividual
+        (nino: String)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
+
+      Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
     }
   }
 
@@ -69,10 +91,11 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = ???
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
-    override def registerWithIdIndividual()
-                                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
+    override def registerWithIdIndividual
+        (nino: String)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       throw new Exception("registerWithIdIndividual should not be called in this test")
     }
   }
@@ -83,7 +106,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      FakeAuthAction,
+      fakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
@@ -115,6 +138,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
 
       FakeDataCacheConnector.verify(IndividualDetailsId, individual)
       FakeDataCacheConnector.verify(IndividualAddressId, address)
+      FakeDataCacheConnector.verify(RegistrationInfoId, registrationInfo)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {

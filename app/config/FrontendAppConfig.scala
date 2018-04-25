@@ -41,7 +41,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-  lazy val pensionsSchemeUrl = baseUrl("pensions-scheme")
+  lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val authUrl: String = baseUrl("auth")
   lazy val loginUrl: String = loadConfig("urls.login")
   lazy val loginContinueUrl: String = loadConfig("urls.loginContinue")
@@ -66,7 +66,11 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdOrganisation")
 
   lazy val registerWithIdIndividualUrl: String =
-    baseUrl("pensions-scheme") +
+      baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdIndividual")
+
+  lazy val registerPsaUrl: String =
+      baseUrl("pensions-scheme") +
+      runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
 
 }
