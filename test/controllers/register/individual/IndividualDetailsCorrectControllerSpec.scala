@@ -16,22 +16,28 @@
 
 package controllers.register.individual
 
-import play.api.data.Form
-import utils.FakeNavigator
-import connectors.{FakeDataCacheConnector, RegistrationConnector}
+import connectors.{FakeDataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
-import play.api.libs.json._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.TypedIdentifier
+import identifiers.register.PsaNameId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import models._
+import org.scalatest.mockito.MockitoSugar
+import play.api.data.Form
+import play.api.libs.json.{Format, JsValue, Json}
+import play.api.libs.ws.WSClient
+import play.api.test.Helpers._
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.FakeNavigator
 import views.html.register.individual.individualDetailsCorrect
 
+import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
+class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -65,6 +71,20 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
     }
   }
 
+  object PSANameCacheConnector extends PSANameCacheConnector (
+    frontendAppConfig,
+    mock[WSClient],
+    injector.instanceOf[ApplicationCrypto]
+  ) with FakeDataCacheConnector {
+    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                       (implicit
+                                        ec: ExecutionContext,
+                                        hc: HeaderCarrier
+                                       ): Future[JsValue] = ???
+  }
+
+  private lazy val psaNameCacheConnector = PSANameCacheConnector
+
   private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
@@ -87,7 +107,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      registrationConnector
+      registrationConnector,
+      psaNameCacheConnector
     )
 
   private def viewAsString(form: Form[_] = form) =
@@ -108,13 +129,14 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
 
-    "save the individual and address details on a GET" in {
+    "save the individual and address details on a GET and individual name to PSA Name cache" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
 
       FakeDataCacheConnector.verify(IndividualDetailsId, individual)
       FakeDataCacheConnector.verify(IndividualAddressId, address)
+      psaNameCacheConnector.verify(PsaNameId, individual.fullName)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {

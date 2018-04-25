@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.{FakeDataCacheConnector, RegistrationConnector}
+import connectors.{FakeDataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
@@ -234,6 +234,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
   }
 
+  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
@@ -244,7 +246,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
-      formProvider
+      formProvider,
+      psaNameCacheConnector
     )
 
   private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =

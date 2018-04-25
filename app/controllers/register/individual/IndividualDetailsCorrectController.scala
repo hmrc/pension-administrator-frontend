@@ -23,6 +23,7 @@ import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnec
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.register.PsaNameId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import models.Mode
 import play.api.data.Form
@@ -45,7 +46,7 @@ class IndividualDetailsCorrectController @Inject()(
                                                     requireData: DataRequiredAction,
                                                     formProvider: IndividualDetailsCorrectFormProvider,
                                                     registrationConnector: RegistrationConnector,
-                                                    pSANameCacheConnector: PSANameCacheConnector
+                                                    psaNameCacheConnector: PSANameCacheConnector
                                                   ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -66,7 +67,7 @@ class IndividualDetailsCorrectController @Inject()(
             response <- registrationConnector.registerWithIdIndividual()
             _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, response.individual)
             _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, response.address)
-            _ <- pSANameCacheConnector.save(request.externalId, IndividualDetailsId, response.individual)
+            _ <- psaNameCacheConnector.save(request.externalId, PsaNameId, response.individual.fullName)
           } yield {
             Ok(individualDetailsCorrect(appConfig, preparedForm, mode, response.individual, response.address))
           }

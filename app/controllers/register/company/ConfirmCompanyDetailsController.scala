@@ -24,7 +24,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.BusinessTypeId
+import identifiers.register.{BusinessTypeId, PsaNameId}
 import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
 import models._
 import models.register.company.BusinessDetails
@@ -71,7 +71,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmCompanyDetails(appConfig, formWithErrors, response.address, response.organisation.organisationName))), {
             case true =>
-              psaNameCacheConnector.save(request.externalId, )
+              psaNameCacheConnector.save(request.externalId, PsaNameId, response.organisation.organisationName)
               upsert(request.userAnswers, ConfirmCompanyAddressId)(response.address) { userAnswers =>
                 upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)) { userAnswers =>
                   dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
