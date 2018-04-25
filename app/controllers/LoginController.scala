@@ -32,12 +32,9 @@ import utils.annotations.RegisterCompany
 class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
                                 dataCacheConnector: DataCacheConnector,
-                                @RegisterCompany navigator: Navigator,
-                                authenticate: AuthAction,
-                                getData: DataRetrievalAction,
-                                requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                authenticate: AuthAction) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate).async{
+  def onPageLoad: Action[AnyContent] = authenticate.async{
     implicit request =>
       dataCacheConnector.save(request.externalId, IndexId, "").map { _ =>
         request.userType match {

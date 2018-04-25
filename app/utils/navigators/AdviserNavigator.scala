@@ -20,9 +20,10 @@ import javax.inject.{Inject, Singleton}
 
 import identifiers.Identifier
 import identifiers.register.advisor._
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
+import controllers.register.advisor._
 
 @Singleton
 class AdviserNavigator @Inject() extends Navigator {
@@ -32,13 +33,13 @@ class AdviserNavigator @Inject() extends Navigator {
 
   override def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case AdvisorDetailsId =>
-      _ => controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode)
+      _ => routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode)
     case AdvisorAddressPostCodeLookupId =>
-      _ => controllers.register.advisor.routes.AdvisorAddressListController.onPageLoad(NormalMode)
+      _ => routes.AdvisorAddressListController.onPageLoad(NormalMode)
     case AdvisorAddressListId =>
-      _ => controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(NormalMode)
+      _ => routes.AdvisorAddressController.onPageLoad(NormalMode)
     case AdvisorAddressId =>
-      _ => controllers.register.advisor.routes.CheckYourAnswersController.onPageLoad()
+      _ => routes.CheckYourAnswersController.onPageLoad()
     case CheckYourAnswersId =>
       _ => controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
   }
@@ -47,9 +48,9 @@ class AdviserNavigator @Inject() extends Navigator {
     case AdvisorDetailsId =>
       checkYourAnswers()
     case AdvisorAddressPostCodeLookupId =>
-      _ => controllers.register.advisor.routes.AdvisorAddressListController.onPageLoad(NormalMode)
+      _ => routes.AdvisorAddressListController.onPageLoad(CheckMode)
     case AdvisorAddressListId =>
-      _ => controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(NormalMode)
+      _ => routes.AdvisorAddressController.onPageLoad(CheckMode)
     case AdvisorAddressId =>
       checkYourAnswers()
   }

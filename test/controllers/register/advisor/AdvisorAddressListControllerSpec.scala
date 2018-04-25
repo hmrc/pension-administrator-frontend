@@ -18,7 +18,7 @@ package controllers.register.advisor
 
 import base.CSRFRequest
 import play.api.libs.json.Json
-import utils.UserAnswers
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.actions._
 import play.api.test.Helpers._
@@ -31,6 +31,7 @@ import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
+import utils.annotations.Adviser
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -77,7 +78,7 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
       )
     }
 
-    "redirect to the next page on POST of valid data" ignore {
+    "redirect to the next page on POST of valid data" in {
 
       requestResult(
         implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onSubmit(NormalMode))
@@ -114,6 +115,7 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
 }
 
 object AdvisorAddressListControllerSpec extends ControllerSpecBase {
+  val onwardRoute = routes.AdvisorAddressController.onPageLoad(NormalMode)
   private val addresses = Seq(
     Address(
       "Address 1 Line 1",
@@ -158,7 +160,8 @@ object AdvisorAddressListControllerSpec extends ControllerSpecBase {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
-      bind[DataRetrievalAction].toInstance(data)
+      bind[DataRetrievalAction].toInstance(data),
+      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
     )) { app =>
       val req = request(app)
       val result = route[T](app, req).value
