@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
-import models.{Address, NormalMode}
+import models.{Address, NormalMode, UserType}
 import models.requests.DataRequest
 import org.scalatest.{Matchers, WordSpec}
 import play.api.Application
@@ -139,7 +139,7 @@ object AddressListControllerSpec {
 
       get(
         viewModel
-      )(DataRequest(FakeRequest(), "cacheId", UserAnswers()))
+      )(DataRequest(FakeRequest(), "cacheId", UserType.Organisation, false, UserAnswers()))
 
     }
 
@@ -152,7 +152,7 @@ object AddressListControllerSpec {
         fakeId,
         fakeId,
         NormalMode
-      )(DataRequest(request, "cacheId", UserAnswers()))
+      )(DataRequest(request, "cacheId", UserType.Organisation, false, UserAnswers()))
 
     }
 

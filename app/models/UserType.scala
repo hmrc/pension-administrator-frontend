@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package models
 
-import models.UserType
-import play.api.mvc.{Request, Result}
-import models.requests.AuthenticatedRequest
-
-import scala.concurrent.Future
-
-object FakeAuthAction extends AuthAction {
-  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, "id", UserType.Organisation, false))
+object UserType extends Enumeration {
+  type UserType = Value
+  val Individual, Organisation = Value
 }
-

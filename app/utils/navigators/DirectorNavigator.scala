@@ -35,34 +35,59 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
     controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index)
 
   override protected val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AddCompanyDirectorsId => addCompanyDirectorRoutes
+    case AddCompanyDirectorsId =>
+      addCompanyDirectorRoutes
     case MoreThanTenDirectorsId =>
       _ => controllers.register.company.routes.CompanyReviewController.onPageLoad()
-    case DirectorDetailsId(id) => _ => routes.DirectorNinoController.onPageLoad(NormalMode, id)
-    case DirectorNinoId(id) => _ => routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, id)
-    case DirectorUniqueTaxReferenceId(id) => _ => routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, id)
-    case CompanyDirectorAddressPostCodeLookupId(id) => _ => routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, id)
-    case CompanyDirectorAddressListId(id) => _ => routes.DirectorAddressController.onPageLoad(NormalMode, id)
-    case DirectorAddressId(id) => _ => routes.DirectorAddressYearsController.onPageLoad(NormalMode, id)
-    case DirectorAddressYearsId(id) => directorAddressYearsRoutes(id)
-    case DirectorPreviousAddressPostCodeLookupId(id) => _ => routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, id)
-    case DirectorPreviousAddressListId(id) => _ => routes.DirectorPreviousAddressController.onPageLoad(NormalMode, id)
-    case DirectorPreviousAddressId(id) => _ => routes.DirectorContactDetailsController.onPageLoad(NormalMode, id)
-    case DirectorContactDetailsId(id) => checkYourAnswers(id)
+    case DirectorDetailsId(id) =>
+      _ => routes.DirectorNinoController.onPageLoad(NormalMode, id)
+    case DirectorNinoId(id) =>
+      _ => routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, id)
+    case DirectorUniqueTaxReferenceId(id) =>
+      _ => routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, id)
+    case CompanyDirectorAddressPostCodeLookupId(id) =>
+      _ => routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, id)
+    case CompanyDirectorAddressListId(id) =>
+      _ => routes.DirectorAddressController.onPageLoad(NormalMode, id)
+    case DirectorAddressId(id) =>
+      _ => routes.DirectorAddressYearsController.onPageLoad(NormalMode, id)
+    case DirectorAddressYearsId(id) =>
+      directorAddressYearsRoutes(id)
+    case DirectorPreviousAddressPostCodeLookupId(id) =>
+      _ => routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, id)
+    case DirectorPreviousAddressListId(id) =>
+      _ => routes.DirectorPreviousAddressController.onPageLoad(NormalMode, id)
+    case DirectorPreviousAddressId(id) =>
+      _ => routes.DirectorContactDetailsController.onPageLoad(NormalMode, id)
+    case DirectorContactDetailsId(id) =>
+      checkYourAnswers(id)
   }
 
   override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case DirectorDetailsId(id) => checkYourAnswers(id)
-    case DirectorNinoId(id) => checkYourAnswers(id)
-    case DirectorUniqueTaxReferenceId(id) => checkYourAnswers(id)
-    case CompanyDirectorAddressPostCodeLookupId(id) => _ => routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, id)
-    case CompanyDirectorAddressListId(id) => _ => routes.DirectorAddressController.onPageLoad(CheckMode, id)
-    case DirectorAddressId(id) => checkYourAnswers(id)
-    case DirectorAddressYearsId(id) => directorAddressYearsCheckRoutes(id)
-    case DirectorPreviousAddressPostCodeLookupId(id) => _ => routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, id)
-    case DirectorPreviousAddressListId(id) => _ => routes.DirectorPreviousAddressController.onPageLoad(CheckMode, id)
-    case DirectorPreviousAddressId(id) => checkYourAnswers(id)
-    case DirectorContactDetailsId(id) => checkYourAnswers(id)
+    case AddCompanyDirectorsId =>
+      addCompanyDirectorRoutes
+    case DirectorDetailsId(id) =>
+      checkYourAnswers(id)
+    case DirectorNinoId(id) =>
+      checkYourAnswers(id)
+    case DirectorUniqueTaxReferenceId(id) =>
+      checkYourAnswers(id)
+    case CompanyDirectorAddressPostCodeLookupId(id) =>
+      _ => routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, id)
+    case CompanyDirectorAddressListId(id) =>
+      _ => routes.DirectorAddressController.onPageLoad(CheckMode, id)
+    case DirectorAddressId(id) =>
+      checkYourAnswers(id)
+    case DirectorAddressYearsId(id) =>
+      directorAddressYearsCheckRoutes(id)
+    case DirectorPreviousAddressPostCodeLookupId(id) =>
+      _ => routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, id)
+    case DirectorPreviousAddressListId(id) =>
+      _ => routes.DirectorPreviousAddressController.onPageLoad(CheckMode, id)
+    case DirectorPreviousAddressId(id) =>
+      checkYourAnswers(id)
+    case DirectorContactDetailsId(id) =>
+      checkYourAnswers(id)
   }
 
   private def directorAddressYearsRoutes(index: Int)(answers: UserAnswers): Call = {

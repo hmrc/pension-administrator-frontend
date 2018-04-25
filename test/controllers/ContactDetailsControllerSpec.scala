@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{ContactDetails, NormalMode}
+import models.{ContactDetails, NormalMode, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -53,11 +53,13 @@ object ContactDetailsControllerSpec {
                                 ) extends ContactDetailsController {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId", answers))
+      get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
+        UserType.Organisation, false, answers))
     }
 
     def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId", answers))
+      post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
+        UserType.Organisation, false, answers))
     }
   }
 
@@ -67,7 +69,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
   import ContactDetailsControllerSpec._
 
-  val viewmodel =ContactDetailsViewModel(
+  val viewmodel = ContactDetailsViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",

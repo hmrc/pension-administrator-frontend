@@ -28,20 +28,21 @@ import forms.register.advisor.AdvisorDetailsFormProvider
 import identifiers.register.advisor.AdvisorDetailsId
 import models.Mode
 import models.register.advisor.AdvisorDetails
+import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.advisor.advisorDetails
 
 import scala.concurrent.Future
 
 class AdvisorDetailsController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AdvisorDetailsFormProvider
+                                           appConfig: FrontendAppConfig,
+                                           override val messagesApi: MessagesApi,
+                                           dataCacheConnector: DataCacheConnector,
+                                           @Adviser navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: AdvisorDetailsFormProvider
                                       ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()

@@ -19,3 +19,4 @@ GET        /changeAdvisorDetails                       controllers.register.advi
 POST       /changeAdvisorDetails                       controllers.register.advisor.AdvisorDetailsController.onSubmit(mode: Mode = CheckMode)
 
 GET        /checkYourAnswers                       controllers.register.advisor.CheckYourAnswersController.onPageLoad()
+POST       /checkYourAnswers                       controllers.register.advisor.CheckYourAnswersController.onSubmit()

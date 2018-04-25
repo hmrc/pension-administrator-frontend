@@ -25,8 +25,10 @@ import scala.concurrent.Future
 class FakeDataRetrievalAction(json: Option[JsValue]) extends DataRetrievalAction {
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = json match {
     case None =>
-      Future.successful(OptionalDataRequest(request.request, request.externalId, None))
+      Future.successful(OptionalDataRequest(request.request, request.externalId, request.userType,
+        request.isExistingPSA, None))
     case Some(cacheMap) =>
-      Future.successful(OptionalDataRequest(request.request, request.externalId, Some(new UserAnswers(cacheMap))))
+      Future.successful(OptionalDataRequest(request.request, request.externalId, request.userType,
+        request.isExistingPSA, Some(new UserAnswers(cacheMap))))
   }
 }

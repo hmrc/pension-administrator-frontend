@@ -28,6 +28,7 @@ import identifiers.register.advisor.AdvisorAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
 import utils.Navigator
+import utils.annotations.Adviser
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 
@@ -35,7 +36,7 @@ class AdvisorAddressPostCodeLookupController @Inject()(
                                                         override val appConfig: FrontendAppConfig,
                                                         override val cacheConnector: DataCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
-                                                        override val navigator: Navigator,
+                                                        @Adviser override val navigator: Navigator,
                                                         override val messagesApi: MessagesApi,
                                                         authenticate: AuthAction,
                                                         getData: DataRetrievalAction,
