@@ -19,7 +19,7 @@ package controllers.register.company
 import javax.inject.Inject
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
@@ -50,7 +50,8 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 registrationConnector: RegistrationConnector,
-                                                formProvider: CompanyAddressFormProvider
+                                                formProvider: CompanyAddressFormProvider,
+                                                psaNameCacheConnector: PSANameCacheConnector
                                                ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -70,6 +71,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmCompanyDetails(appConfig, formWithErrors, response.address, response.organisation.organisationName))), {
             case true =>
+              psaNameCacheConnector.save(request.externalId, )
               upsert(request.userAnswers, ConfirmCompanyAddressId)(response.address) { userAnswers =>
                 upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(response.organisation.organisationName)) { userAnswers =>
                   dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>

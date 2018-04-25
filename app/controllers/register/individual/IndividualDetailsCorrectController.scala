@@ -17,8 +17,9 @@
 package controllers.register.individual
 
 import javax.inject.Inject
+
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
@@ -43,7 +44,8 @@ class IndividualDetailsCorrectController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: IndividualDetailsCorrectFormProvider,
-                                                    registrationConnector: RegistrationConnector
+                                                    registrationConnector: RegistrationConnector,
+                                                    pSANameCacheConnector: PSANameCacheConnector
                                                   ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -64,6 +66,7 @@ class IndividualDetailsCorrectController @Inject()(
             response <- registrationConnector.registerWithIdIndividual()
             _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, response.individual)
             _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, response.address)
+            _ <- pSANameCacheConnector.save(request.externalId, IndividualDetailsId, response.individual)
           } yield {
             Ok(individualDetailsCorrect(appConfig, preparedForm, mode, response.individual, response.address))
           }
