@@ -18,29 +18,43 @@
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.Message
 
-@(appConfig: FrontendAppConfig, psaId: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, psaId: String,isExistingPsa:Boolean)(implicit request: Request[_], messages: Messages)
 
 @registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-    title = messages("confirmation.title"),
+   title= if(isExistingPsa)
+    {
+      messages("confirmation.existingPSA.title")
+    } else {
+       messages("confirmation.newPSA.title")
+    }
+    ,
     appConfig = appConfig,
     bodyClasses = None) {
 
     <div class="govuk-box-highlight">
-        @components.heading("confirmation.heading")
+         @if(isExistingPsa){
+              @components.heading("confirmation.existingPSA.heading")
 
-        <p class="font-large">
-            @messages("confirmation.psaIdNumber")
-            <strong class="bold">@psaId</strong>
-        </p>
+         } else {
+                @components.heading("confirmation.newPSA.heading")
 
+              <p class="font-large">
+                 @messages("confirmation.psaIdNumber")
+                 <strong class="bold">@psaId</strong>
+              </p>
+
+        }
     </div>
 
     <h2 class="heading-large">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
-    <p id="what-you-need-to-know">
-        @Html(Message("confirmation.whatYouNeedToKnow.detail").withArgs(registerSchemeLink))
+    <p id="what-you-need-to-know">@if(isExistingPsa){
+           @Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))
+        } else {
+           @Html(Message("confirmation.whatYouNeedToKnow.newPSA.detail").withArgs(registerSchemeLink))
+        }
     </p>
 
     @helpers.form(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {

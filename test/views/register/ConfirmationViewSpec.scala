@@ -21,13 +21,49 @@ import views.html.register.confirmation
 
 class ConfirmationViewSpec extends ViewBehaviours {
 
-  private val messageKeyPrefix = "confirmation"
-  private val psaId: String = "A1234567"
-  private def createView = () => confirmation(frontendAppConfig, psaId)(fakeRequest, messages)
+  "Confirmation view where user is existing PSA" must {
+     val messageKeyPrefix = "confirmation.existingPSA"
+     val psaId: String = "A1234567"
+     def createView() = () => confirmation(frontendAppConfig, psaId,isExistingPsa=true)(fakeRequest, messages)
+     behave like normalPage(createView(), messageKeyPrefix)
 
-  "Confirmation view" must {
+    "display the PSA ID number text" in {
+      createView mustNot haveDynamicText("confirmation.psaIdNumber")
+    }
 
-    behave like normalPage(createView, messageKeyPrefix)
+    "display the PSA ID number" in {
+      createView mustNot haveDynamicText(psaId)
+    }
+
+    "display the 'what you need to know' heading " in {
+      createView must haveDynamicText("confirmation.whatYouNeedToKnow.heading")
+    }
+
+    "display the 'what you need to know' detail " in {
+      createView must haveElementWithText(
+        "what-you-need-to-know",
+        "confirmation.whatYouNeedToKnow.existingPSA.detail",
+        messages("confirmation.whatYouNeedToKnow.schemeLink")
+      )
+    }
+
+    "have a link to register scheme" in {
+      createView must haveLink(frontendAppConfig.registerSchemeUrl, "register-scheme-link")
+    }
+
+    behave like pageWithSubmitButton(  createView())
+
+    "have a link to 'print this screen'" in {
+      createView must haveLinkOnClick("window.print();return false;", "print-this-page-link")
+    }
+
+  }
+
+  "Confirmation view where user is new PSA" must {
+    val messageKeyPrefix = "confirmation.newPSA"
+    val psaId: String = "A1234567"
+    def createView() = () => confirmation(frontendAppConfig, psaId,isExistingPsa=false)(fakeRequest, messages)
+    behave like normalPage(createView(), messageKeyPrefix)
 
     "display the PSA ID number text" in {
       createView must haveDynamicText("confirmation.psaIdNumber")
@@ -44,7 +80,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     "display the 'what you need to know' detail " in {
       createView must haveElementWithText(
         "what-you-need-to-know",
-        "confirmation.whatYouNeedToKnow.detail",
+        "confirmation.whatYouNeedToKnow.newPSA.detail",
         messages("confirmation.whatYouNeedToKnow.schemeLink")
       )
     }
@@ -53,7 +89,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
       createView must haveLink(frontendAppConfig.registerSchemeUrl, "register-scheme-link")
     }
 
-    behave like pageWithSubmitButton(createView)
+    behave like pageWithSubmitButton(  createView())
 
     "have a link to 'print this screen'" in {
       createView must haveLinkOnClick("window.print();return false;", "print-this-page-link")

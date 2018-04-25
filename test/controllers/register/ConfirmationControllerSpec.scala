@@ -85,6 +85,6 @@ object ConfirmationControllerSpec extends ControllerSpecBase {
       fakeNavigator
     )
 
-  private def viewAsString() = confirmation(frontendAppConfig, psaId)(fakeRequest, messages).toString
+  private def viewAsString() = confirmation(frontendAppConfig, psaId,false)(fakeRequest, messages).toString
 
 }
