@@ -139,7 +139,7 @@ object AddressListControllerSpec {
 
       get(
         viewModel
-      )(DataRequest(FakeRequest(), "cacheId", UserAnswers()))
+      )(DataRequest(FakeRequest(), "cacheId", false,UserAnswers()))
 
     }
 
@@ -152,7 +152,7 @@ object AddressListControllerSpec {
         fakeId,
         fakeId,
         NormalMode
-      )(DataRequest(request, "cacheId", UserAnswers()))
+      )(DataRequest(request, "cacheId",false, UserAnswers()))
 
     }
 

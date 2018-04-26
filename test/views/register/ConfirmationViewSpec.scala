@@ -16,6 +16,9 @@
 
 package views.register
 
+import controllers.register.ConfirmationControllerSpec.fakeRequest
+import models.requests.DataRequest
+import utils.UserAnswers
 import views.behaviours.ViewBehaviours
 import views.html.register.confirmation
 
@@ -24,7 +27,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
   "Confirmation view where user is existing PSA" must {
      val messageKeyPrefix = "confirmation.existingPSA"
      val psaId: String = "A1234567"
-     def createView() = () => confirmation(frontendAppConfig, psaId,isExistingPsa=true)(fakeRequest, messages)
+     def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",true, UserAnswers()), messages)
      behave like normalPage(createView(), messageKeyPrefix)
 
     "display the PSA ID number text" in {
@@ -62,7 +65,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
   "Confirmation view where user is new PSA" must {
     val messageKeyPrefix = "confirmation.newPSA"
     val psaId: String = "A1234567"
-    def createView() = () => confirmation(frontendAppConfig, psaId,isExistingPsa=false)(fakeRequest, messages)
+    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",false, UserAnswers()), messages)
     behave like normalPage(createView(), messageKeyPrefix)
 
     "display the PSA ID number text" in {

@@ -40,10 +40,9 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      //request.isExistingPSA
-   //   PsaSubscriptionResponseId.retrieve.right.map { response =>
-        Future.successful(Ok(confirmation(appConfig, "response.psaId")))
-    //  }
+      PsaSubscriptionResponseId.retrieve.right.map { response =>
+        Future.successful(Ok(confirmation(appConfig, response.psaId)))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

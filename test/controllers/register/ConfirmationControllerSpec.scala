@@ -20,9 +20,10 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
 import models.register.PsaSubscriptionResponse
+import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.confirmation
 
 class ConfirmationControllerSpec extends ControllerSpecBase {
@@ -85,6 +86,6 @@ object ConfirmationControllerSpec extends ControllerSpecBase {
       fakeNavigator
     )
 
-  private def viewAsString() = confirmation(frontendAppConfig, psaId,false)(fakeRequest, messages).toString
+  private def viewAsString() = confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",false, UserAnswers()), messages).toString
 
 }
