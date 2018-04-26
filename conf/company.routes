@@ -57,7 +57,7 @@ GET        /confirm-company-details                     controllers.register.com
 POST       /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
 GET        /review                                      controllers.register.company.CompanyReviewController.onPageLoad()
-POST       /review                                      controllers.register.company.CompanyReviewController.onPageLoad()
+POST       /review                                      controllers.register.company.CompanyReviewController.onSubmit()
 
 GET        /update-company-details                      controllers.register.company.CompanyUpdateDetailsController.onPageLoad()
 

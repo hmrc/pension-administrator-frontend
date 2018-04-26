@@ -23,53 +23,58 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.{Journey, JourneyType}
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationFitAndProperId
-import models.NormalMode
+import models.{NormalMode, UserType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.Register
 import utils.{Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
 import scala.concurrent.Future
 
 class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         navigator: Navigator,
-                                         formProvider: DeclarationFormProvider,
-                                         dataCacheConnector: DataCacheConnector,
-                                         journey: Journey) extends FrontendController with I18nSupport {
+                                                  override val messagesApi: MessagesApi,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  @Register navigator: Navigator,
+                                                  formProvider: DeclarationFormProvider,
+                                                  dataCacheConnector: DataCacheConnector) extends FrontendController with
+  I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-      implicit request =>
-        journey.withJourneyType {
-          case JourneyType.Individual =>
-            Future.successful(Ok(declarationFitAndProper(appConfig, form, controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad())))
-          case JourneyType.Company =>
-            Future.successful(Ok(declarationFitAndProper(appConfig, form, controllers.register.company.routes.WhatYouWillNeedController.onPageLoad())))
-        }
+    implicit request =>
+      request.user.userType match {
+        case UserType.Individual =>
+          Future.successful(Ok(
+            declarationFitAndProper(appConfig, form, individual.routes.WhatYouWillNeedController.onPageLoad())))
+
+        case UserType.Organisation =>
+          Future.successful(Ok(
+            declarationFitAndProper(appConfig, form, company.routes.WhatYouWillNeedController.onPageLoad())))
+      }
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        errors => journey.withJourneyType {
-          case JourneyType.Individual =>
-            Future.successful(BadRequest(declarationFitAndProper(appConfig, errors, controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad())))
-          case JourneyType.Company =>
-            Future.successful(BadRequest(declarationFitAndProper(appConfig, errors, controllers.register.company.routes.WhatYouWillNeedController.onPageLoad())))
-        },
+        errors =>
+          request.user.userType match {
+            case UserType.Individual =>
+              Future.successful(BadRequest(
+                declarationFitAndProper(appConfig, errors, individual.routes.WhatYouWillNeedController.onPageLoad())))
+
+            case UserType.Organisation =>
+              Future.successful(BadRequest(
+                declarationFitAndProper(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
+          },
         success => dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { cacheMap =>
           Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
         }
       )
   }
-
-
 }

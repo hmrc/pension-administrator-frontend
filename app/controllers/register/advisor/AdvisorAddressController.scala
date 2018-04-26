@@ -28,6 +28,7 @@ import forms.AddressFormProvider
 import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressListId}
 import models.{Address, Mode}
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.Adviser
 import utils.{CountryOptions, Navigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -36,7 +37,7 @@ class AdvisorAddressController @Inject()(
                                           override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           override val dataCacheConnector: DataCacheConnector,
-                                          override val navigator: Navigator,
+                                          @Adviser override val navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

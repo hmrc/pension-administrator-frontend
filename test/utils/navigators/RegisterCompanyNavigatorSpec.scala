@@ -45,11 +45,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressId,                            emptyAnswers,                   companyAddressYearsPage,              Some(checkYourAnswersPage)),
     (CompanyAddressYearsId,                       addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
     (CompanyAddressYearsId,                       addressYearsUnderAYear,         paPostCodePage(NormalMode),           Some(paPostCodePage(CheckMode))),
-    (CompanyAddressYearsId,                       emptyAnswers,                   sessionExpiredPage,                   None),
+    (CompanyAddressYearsId,                       emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
     (CompanyPreviousAddressPostCodeLookupId,      emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
     (CompanyAddressListId,                        emptyAnswers,                   previousAddressPage(NormalMode),      Some(previousAddressPage(CheckMode))),
     (CompanyPreviousAddressId,                    emptyAnswers,                   contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (ContactDetailsId,                            emptyAnswers,                   checkYourAnswersPage,                 None),
+    (ContactDetailsId,                            emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
     (CompanyReviewId,                             emptyAnswers,                   declarationPage,                      None)
   )
 

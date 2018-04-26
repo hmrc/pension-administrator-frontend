@@ -25,23 +25,24 @@ import config.FrontendAppConfig
 import identifiers.register.advisor.CheckYourAnswersId
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent}
+import utils.annotations.Adviser
 import utils.{CheckYourAnswersFactory, Navigator}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         navigator: Navigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with I18nSupport {
+                                           override val messagesApi: MessagesApi,
+                                           @Adviser navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val helper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
       val sections = Seq(AnswerSection(None, helper.advisorDetails ++ helper.advisorAddress))
-      Ok(check_your_answers(appConfig, sections, Some("common.advisor.secondary.heading"), routes.CheckYourAnswersController.onPageLoad()))
+      Ok(check_your_answers(appConfig, sections, Some("common.advisor.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {

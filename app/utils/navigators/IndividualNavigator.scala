@@ -39,6 +39,7 @@ class IndividualNavigator @Inject() extends Navigator {
     case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(NormalMode)
     case IndividualPreviousAddressId => _ => routes.IndividualContactDetailsController.onPageLoad(NormalMode)
     case IndividualContactDetailsId => checkYourAnswers()
+    case CheckYourAnswersId => _ => controllers.register.routes.DeclarationController.onPageLoad()
   }
 
   override protected def editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
