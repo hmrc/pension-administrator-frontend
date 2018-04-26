@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
-import models.{Address, AddressRecord, NormalMode}
+import models.{NormalMode, TolerantAddress}
 import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -45,7 +45,7 @@ import scala.concurrent.Future
 
 object PostcodeLookupControllerSpec {
 
-  object FakeIdentifier extends TypedIdentifier[Seq[Address]]
+  object FakeIdentifier extends TypedIdentifier[Seq[TolerantAddress]]
 
   val postCall: Call = Call("POST", "www.example.com")
   val manualCall: Call = Call("GET", "www.example.com")
@@ -117,10 +117,10 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
       val cacheConnector: DataCacheConnector = mock[DataCacheConnector]
       val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-      val address = Address("", "", None, None, None, "GB")
+      val address = TolerantAddress(Some(""), Some(""), None, None, None, Some("GB"))
 
       when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn Future.successful {
-        Some(Seq(AddressRecord(address)))
+        Some(Seq(address))
       }
 
       when(cacheConnector.save(eqTo("cacheId"), eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())) thenReturn Future.successful {

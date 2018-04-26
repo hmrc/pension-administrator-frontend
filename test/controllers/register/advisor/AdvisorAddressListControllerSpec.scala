@@ -22,7 +22,7 @@ import utils.UserAnswers
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.actions._
 import play.api.test.Helpers._
-import models.{Address, NormalMode}
+import models.{NormalMode, TolerantAddress}
 import controllers.ControllerSpecBase
 import forms.address.AddressListFormProvider
 import identifiers.register.advisor.AdvisorAddressPostCodeLookupId
@@ -115,21 +115,21 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
 
 object AdvisorAddressListControllerSpec extends ControllerSpecBase {
   private val addresses = Seq(
-    Address(
-      "Address 1 Line 1",
-      "Address 1 Line 2",
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      Some("Address 1 Line 2"),
       Some("Address 1 Line 3"),
       Some("Address 1 Line 4"),
       Some("A1 1PC"),
-      "GB"
+      Some("GB")
     ),
-    Address(
-      "Address 2 Line 1",
-      "Address 2 Line 2",
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      Some("Address 2 Line 2"),
       Some("Address 2 Line 3"),
       Some("Address 2 Line 4"),
       Some("123"),
-      "FR"
+      Some("FR")
     )
   )
 
@@ -140,7 +140,7 @@ object AdvisorAddressListControllerSpec extends ControllerSpecBase {
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
-  private def addressListViewModel(addresses: Seq[Address]): AddressListViewModel = {
+  private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
       routes.AdvisorAddressListController.onSubmit(NormalMode),
       routes.AdvisorAddressController.onPageLoad(NormalMode),

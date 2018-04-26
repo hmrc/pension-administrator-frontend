@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyPreviousAddressPostCodeLookupFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.{Address, AddressRecord, NormalMode}
+import models.{Address, AddressRecord, NormalMode, TolerantAddress}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -48,13 +48,13 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
   private def viewAsString(form: Form[_] = form) = companyPreviousAddressPostCodeLookup(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  private def fakeAddress(postCode: String) = Address(
-    "Address Line 1",
-    "Address Line 2",
+  private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
+    Some("Address Line 1"),
+    Some("Address Line 2"),
     Some("Address Line 3"),
     Some("Address Line 4"),
     Some(postCode),
-    "GB"
+    Some("GB")
   )
 
   private val testAnswer = "AB12 1AB"
@@ -84,7 +84,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Seq(AddressRecord(fakeAddress(testAnswer))))))
+        .thenReturn(Future.successful(Some(Seq(fakeAddress(testAnswer)))))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -97,7 +97,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val expected = Seq(fakeAddress(testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Seq(AddressRecord(fakeAddress(testAnswer))))))
+        .thenReturn(Future.successful(Some(Seq(fakeAddress(testAnswer)))))
 
       controller().onSubmit(NormalMode)(postRequest)
 

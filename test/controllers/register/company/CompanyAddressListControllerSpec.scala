@@ -24,11 +24,10 @@ import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.CompanyAddressListFormProvider
 import identifiers.register.company.{CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
-import models.NormalMode
+import models.{NormalMode, TolerantAddress}
 import models.register.company.CompanyDetails
 import views.html.register.company.companyAddressList
 import controllers.ControllerSpecBase
-import models.Address
 
 class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
@@ -44,13 +43,13 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
   val addressObject = Json.obj(CompanyPreviousAddressPostCodeLookupId.toString -> addresses)
 
-  def address(postCode: String): Address = Address(
-    "address line 1",
-    "address line 2",
+  def address(postCode: String): TolerantAddress = TolerantAddress(
+    Some("address line 1"),
+    Some("address line 2"),
     Some("test town"),
     Some("test county"),
-    postcode = Some(postCode),
-    country = "United Kingdom"
+    Some(postCode),
+    Some("United Kingdom")
   )
 
   val form: Form[Int] = formProvider(Seq(0))
@@ -147,7 +146,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
       controller(dataRetrieval).onSubmit(NormalMode)(postRequest)
 
-      FakeDataCacheConnector.verify(CompanyPreviousAddressId, address("test post code 2").copy(country = "GB"))
+      FakeDataCacheConnector.verify(CompanyPreviousAddressId, address("test post code 2").toAddress.copy(country = "GB"))
 
     }
 

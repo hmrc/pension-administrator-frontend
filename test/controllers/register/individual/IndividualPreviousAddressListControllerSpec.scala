@@ -21,7 +21,7 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
-import models.{Address, NormalMode}
+import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -36,21 +36,21 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
 
 
   private val addresses = Seq(
-    Address(
-      "Address 1 Line 1",
-      "Address 1 Line 2",
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      Some("Address 1 Line 2"),
       Some("Address 1 Line 3"),
       Some("Address 1 Line 4"),
       Some("A1 1PC"),
-      "GB"
+      Some("GB")
     ),
-    Address(
-      "Address 2 Line 1",
-      "Address 2 Line 2",
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      Some("Address 2 Line 2"),
       Some("Address 2 Line 3"),
       Some("Address 2 Line 4"),
       Some("123"),
-      "FR"
+      Some("FR")
     )
   )
 
@@ -180,7 +180,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
 
   }
 
-  private def addressListViewModel(addresses: Seq[Address]): AddressListViewModel = {
+  private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
       routes.IndividualPreviousAddressListController.onSubmit(NormalMode),
       routes.IndividualPreviousAddressController.onPageLoad(NormalMode),
