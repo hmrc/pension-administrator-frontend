@@ -62,7 +62,7 @@ class CompanyDirectorAddressListController @Inject()(
             (formWithErrors: Form[_]) =>
               Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, directorDetails.fullName, addresses))),
             (value) =>
-              dataCacheConnector.save(request.externalId, DirectorAddressId(index), addresses(value).copy(country = "GB")).map(cacheMap =>
+              dataCacheConnector.save(request.externalId, DirectorAddressId(index), addresses(value).toAddress.copy(country = "GB")).map(cacheMap =>
                 Redirect(navigator.nextPage(CompanyDirectorAddressListId(index), mode)(new UserAnswers(cacheMap))))
           )
       }.left.map(_ => Future.successful(Redirect(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))

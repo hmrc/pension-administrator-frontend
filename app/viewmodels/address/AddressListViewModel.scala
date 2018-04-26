@@ -16,17 +16,17 @@
 
 package viewmodels.address
 
-import models.Address
+import models.TolerantAddress
 import play.api.mvc.Call
 import viewmodels.Message
 
 case class AddressListViewModel(
-    postCall: Call,
-    manualInputCall: Call,
-    addresses: Seq[Address],
-    title: Message = Message("common.selectAddress.title"),
-    heading: Message = Message("common.selectAddress.heading"),
-    subHeading: Option[Message] = None,
-    selectAddress: Message = Message("common.selectAddress.text"),
-    selectAddressLink: Message = Message("common.selectAddress.link")
+                                 postCall: Call,
+                                 manualInputCall: Call,
+                                 addresses: Seq[TolerantAddress],
+                                 title: Message = Message("common.selectAddress.title"),
+                                 heading: Message = Message("common.selectAddress.heading"),
+                                 subHeading: Option[Message] = None,
+                                 selectAddress: Message = Message("common.selectAddress.text"),
+                                 selectAddressLink: Message = Message("common.selectAddress.link")
 )

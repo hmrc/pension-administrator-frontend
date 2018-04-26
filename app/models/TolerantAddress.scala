@@ -39,7 +39,23 @@ case class TolerantAddress(addressLine1: Option[String],
     ).flatten(s => s)
   }
 
+  def print: String = {
+    lines.mkString(", ")
+  }
+
+  def toAddress:Address = {
+    Address(
+      addressLine1.getOrElse(" "),
+      addressLine2.getOrElse(" "),
+      addressLine3,
+      addressLine4,
+      postcode,
+      country.getOrElse(" ")
+    )
+  }
 }
+
+
 
 object TolerantAddress {
 

@@ -18,8 +18,7 @@ package views.register.company
 
 import play.api.data.Form
 import forms.register.company.CompanyAddressListFormProvider
-import models.NormalMode
-import models.Address
+import models.{Address, NormalMode, TolerantAddress}
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyAddressList
 
@@ -33,9 +32,14 @@ class CompanyAddressListViewSpec extends ViewBehaviours {
     address("test post code 2")
   )
 
-  def address(postCode: String): Address = Address("address line 1", "address line 2", Some("test town"),
-    Some("test county"), postcode = Some(postCode), country = "United Kingdom")
-
+  def address(postCode: String): TolerantAddress = TolerantAddress(
+    Some("address line 1"),
+    Some("address line 2"),
+    Some("test town"),
+    Some("test county"),
+    Some(postCode),
+    Some("United Kingdom")
+  )
   val form = new CompanyAddressListFormProvider()(Seq.empty)
 
   def createView = () => companyAddressList(frontendAppConfig, form, NormalMode, companyName, addresses)(fakeRequest, messages)

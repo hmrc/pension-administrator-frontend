@@ -61,7 +61,8 @@ class DirectorPreviousAddressListController @Inject()(
     implicit request =>
       retrieveDirectorName(index) { name =>
         request.userAnswers.get(DirectorPreviousAddressPostCodeLookupId(index)) match {
-          case None => Future.successful(Redirect(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, index)))
+          case None =>
+            Future.successful(Redirect(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, index)))
           case Some(addresses) =>
             formProvider(addresses).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>
@@ -70,7 +71,7 @@ class DirectorPreviousAddressListController @Inject()(
                 dataCacheConnector.save(
                   request.externalId,
                   DirectorPreviousAddressId(index),
-                  addresses(value).copy(country = "GB")
+                  addresses(value).toAddress.copy(country = "GB")
                 ).map(cacheMap =>
                   Redirect(navigator.nextPage(DirectorPreviousAddressListId(index), mode)(new UserAnswers(cacheMap)))
                 )

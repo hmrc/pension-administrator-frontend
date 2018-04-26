@@ -73,7 +73,7 @@ class CompanyAddressListController @Inject()(
                 dataCacheConnector.save(
                   request.externalId,
                   CompanyPreviousAddressId,
-                  addresses(value).copy(country = "GB")
+                  addresses(value).toAddress.copy(country = "GB")
                 ).map( cacheMap =>
                   Redirect(navigator.nextPage(CompanyAddressListId, mode)(new UserAnswers(cacheMap)))
                 )

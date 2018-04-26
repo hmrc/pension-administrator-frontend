@@ -35,5 +35,12 @@ class AddressSpec extends WordSpec with MustMatchers {
 
       model.print mustEqual "a, b"
     }
+//
+//    "successfully print address with only one address line" in {
+//
+//      val model = TolerantAddress(Some("a"), None, None, None, None, Some("UK"))
+//
+//      mode
+//    }
   }
 }

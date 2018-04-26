@@ -17,8 +17,8 @@
 package identifiers.register.company
 
 import identifiers._
-import models.Address
+import models.TolerantAddress
 
-case object CompanyPreviousAddressPostCodeLookupId extends TypedIdentifier[Seq[Address]] {
+case object CompanyPreviousAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
   override def toString: String = "companyPreviousAddressPostCodeLookup"
 }
