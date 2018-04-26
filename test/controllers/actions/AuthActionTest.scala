@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package models.requests
+package controllers.actions
 
-import models.PSAUser
-import play.api.mvc.{Request, WrappedRequest}
-import utils.UserAnswers
+class AuthActionTest {
 
-case class OptionalDataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
-
-case class DataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                           userAnswers: UserAnswers) extends WrappedRequest[A](request)
+}

@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{ContactDetails, NormalMode, UserType}
+import models.{ContactDetails, NormalMode, PSAUser, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -54,12 +54,12 @@ object ContactDetailsControllerSpec {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        UserType.Organisation, false, answers))
+        PSAUser(UserType.Organisation, None, false), answers))
     }
 
     def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        UserType.Organisation, false, answers))
+        PSAUser(UserType.Organisation, None, false), answers))
     }
   }
 

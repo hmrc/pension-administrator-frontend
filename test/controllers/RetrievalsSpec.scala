@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import identifiers.TypedIdentifier
-import models.UserType
+import models.{PSAUser, UserType}
 import models.requests.DataRequest
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class RetrievalsSpec extends ControllerSpecBase with FrontendController with Retrievals with EitherValues with ScalaFutures {
 
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-    UserType.Organisation, false, UserAnswers(data))
+    PSAUser(UserType.Organisation, None, false), UserAnswers(data))
 
   class TestController extends FrontendController with Retrievals
 

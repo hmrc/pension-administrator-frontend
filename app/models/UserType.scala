@@ -16,6 +16,10 @@
 
 package models
 
+import models.UserType.UserType
+
+case class PSAUser(userType: UserType, nino: Option[String], isExistingPSA: Boolean)
+
 object UserType extends Enumeration {
   type UserType = Value
   val Individual, Organisation = Value

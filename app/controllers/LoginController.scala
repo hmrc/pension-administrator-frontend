@@ -37,7 +37,7 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = authenticate.async{
     implicit request =>
       dataCacheConnector.save(request.externalId, IndexId, "").map { _ =>
-        request.userType match {
+        request.user.userType match {
           case UserType.Individual =>
             Redirect(controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
           case UserType.Organisation =>

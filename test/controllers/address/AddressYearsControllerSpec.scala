@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{AddressYears, NormalMode, UserType}
+import models.{AddressYears, NormalMode, PSAUser, UserType}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -54,12 +54,12 @@ object AddressYearsControllerSpec {
 
     def onPageLoad(viewmodel: AddressYearsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider("error"), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        UserType.Organisation, false, answers))
+        PSAUser(UserType.Organisation, None, false), answers))
     }
 
     def onSubmit(viewmodel: AddressYearsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, NormalMode, formProvider("error"), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        UserType.Organisation, false, answers))
+        PSAUser(UserType.Organisation, None, false), answers))
     }
   }
 

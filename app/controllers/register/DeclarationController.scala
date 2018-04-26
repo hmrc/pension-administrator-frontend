@@ -49,7 +49,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      request.userType match {
+      request.user.userType match {
         case UserType.Individual =>
           Future.successful(Ok(declaration(appConfig, form, individual.routes.WhatYouWillNeedController.onPageLoad())))
         case UserType.Organisation =>
@@ -60,15 +60,16 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        errors => request.userType match {
-          case UserType.Individual =>
-            Future.successful(BadRequest(
-              declaration(appConfig, errors, individual.routes.WhatYouWillNeedController.onPageLoad())))
+        errors =>
+          request.user.userType match {
+            case UserType.Individual =>
+              Future.successful(BadRequest(
+                declaration(appConfig, errors, individual.routes.WhatYouWillNeedController.onPageLoad())))
 
-          case UserType.Organisation =>
-            Future.successful(BadRequest(
-              declaration(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
-        },
+            case UserType.Organisation =>
+              Future.successful(BadRequest(
+                declaration(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
+          },
         success => dataCacheConnector.save(request.externalId, DeclarationId, success).map { cacheMap =>
           Redirect(navigator.nextPage(DeclarationId, NormalMode)(UserAnswers(cacheMap)))
         }

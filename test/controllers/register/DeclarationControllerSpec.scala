@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
-import models.UserType
+import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import play.api.data.Form
@@ -120,7 +120,7 @@ object DeclarationControllerSpec extends ControllerSpecBase {
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", userType, false))
+      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false)))
   }
 
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()

@@ -48,7 +48,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      request.userType match {
+      request.user.userType match {
         case UserType.Individual =>
           Future.successful(Ok(
             declarationFitAndProper(appConfig, form, individual.routes.WhatYouWillNeedController.onPageLoad())))
@@ -63,7 +63,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       form.bindFromRequest().fold(
         errors =>
-          request.userType match {
+          request.user.userType match {
             case UserType.Individual =>
               Future.successful(BadRequest(
                 declarationFitAndProper(appConfig, errors, individual.routes.WhatYouWillNeedController.onPageLoad())))

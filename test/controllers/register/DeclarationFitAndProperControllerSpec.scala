@@ -25,11 +25,12 @@ import views.html.register.declarationFitAndProper
 import controllers.ControllerSpecBase
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationFitAndProperId
-import models.UserType
+import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
@@ -127,7 +128,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
   private def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", userType, false))
+      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false)))
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType = UserType.Organisation) =

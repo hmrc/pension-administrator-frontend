@@ -18,7 +18,7 @@ package controllers
 
 import connectors.FakeDataCacheConnector
 import controllers.actions.AuthAction
-import models.{NormalMode, UserType}
+import models.{NormalMode, PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{Request, Result}
@@ -34,7 +34,7 @@ class LoginControllerSpec extends ControllerSpecBase {
 
   def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", userType, false))
+      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false)))
   }
 
   "Login Controller" must {
