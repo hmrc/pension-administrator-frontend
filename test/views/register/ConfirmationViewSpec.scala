@@ -16,7 +16,6 @@
 
 package views.register
 
-import controllers.register.ConfirmationControllerSpec.fakeRequest
 import models.requests.DataRequest
 import utils.UserAnswers
 import views.behaviours.ViewBehaviours
@@ -92,7 +91,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
       createView must haveLink(frontendAppConfig.registerSchemeUrl, "register-scheme-link")
     }
 
-    behave like pageWithSubmitButton(  createView())
+    behave like pageWithSubmitButton(createView())
 
     "have a link to 'print this screen'" in {
       createView must haveLinkOnClick("window.print();return false;", "print-this-page-link")
