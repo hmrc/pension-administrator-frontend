@@ -23,6 +23,7 @@ import connectors.{AddressLookupConnector, DataCacheConnector}
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
 import models.{NormalMode, TolerantAddress}
+import models._
 import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -60,10 +61,11 @@ object PostcodeLookupControllerSpec {
                                  ) extends PostcodeLookupController {
 
     def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
-      get(viewmodel)(DataRequest(FakeRequest(), "cacheId", answers))
+      get(viewmodel)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, false), answers))
 
     def onSubmit(viewmodel: PostcodeLookupViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(FakeIdentifier, viewmodel, NormalMode, invalidError, noResultError)(DataRequest(request, "cacheId", answers))
+      post(FakeIdentifier, viewmodel, NormalMode, invalidError, noResultError)(DataRequest(request,
+        "cacheId", PSAUser(UserType.Organisation, None, false), answers))
 
     private val invalidError: Message = "foo"
 

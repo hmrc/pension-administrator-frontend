@@ -38,9 +38,9 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 
   private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                        "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (AddCompanyDirectorsId,                         addCompanyDirectorsFalse,       companyReviewPage,                    None),
-    (AddCompanyDirectorsId,                         addCompanyDirectorsMoreThan10,  moreThanTenDirectorsPage,             None),
-    (AddCompanyDirectorsId,                         addCompanyDirectorsTrue,        directorDetailsPage,                  None),
+    (AddCompanyDirectorsId,                         addCompanyDirectorsFalse,       companyReviewPage,                    Some(companyReviewPage)),
+    (AddCompanyDirectorsId,                         addCompanyDirectorsMoreThan10,  moreThanTenDirectorsPage,             Some(moreThanTenDirectorsPage)),
+    (AddCompanyDirectorsId,                         addCompanyDirectorsTrue,        directorDetailsPage,                  Some(directorDetailsPage)),
     (MoreThanTenDirectorsId,                        emptyAnswers,                   companyReviewPage,                    None),
     (DirectorDetailsId(0),                          emptyAnswers,                   directorNinoPage,                     Some(checkYourAnswersPage)),
     (DirectorNinoId(0),                             emptyAnswers,                   directorUniqueTaxReferencePage,       Some(checkYourAnswersPage)),
@@ -50,7 +50,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (DirectorAddressId(0),                          emptyAnswers,                   directorAddressYearsPage,             Some(checkYourAnswersPage)),
     (DirectorAddressYearsId(0),                     addressYearsOverAYear,          directorContactDetailsPage,           Some(checkYourAnswersPage)),
     (DirectorAddressYearsId(0),                     addressYearsUnderAYear,         paPostCodePage(NormalMode),           Some(paPostCodePage(CheckMode))),
-    (DirectorAddressYearsId(0),                     emptyAnswers,                   sessionExpiredPage,                   None),
+    (DirectorAddressYearsId(0),                     emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
     (DirectorPreviousAddressPostCodeLookupId(0),    emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
     (DirectorPreviousAddressListId(0),              emptyAnswers,                   previousAddressPage(NormalMode),      Some(previousAddressPage(CheckMode))),
     (DirectorPreviousAddressId(0),                  emptyAnswers,                   directorContactDetailsPage,           Some(checkYourAnswersPage)),

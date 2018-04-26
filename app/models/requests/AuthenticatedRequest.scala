@@ -16,6 +16,8 @@
 
 package models.requests
 
+import models.PSAUser
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedRequest[A] (request: Request[A], externalId: String) extends WrappedRequest[A](request)
+case class AuthenticatedRequest[A] (request: Request[A], externalId: String, user: PSAUser) extends
+  WrappedRequest[A](request)

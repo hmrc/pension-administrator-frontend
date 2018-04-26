@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
+import models.{Address, NormalMode, PSAUser, UserType}
 import models.{Address, NormalMode, TolerantAddress}
 import models.requests.DataRequest
 import org.scalatest.{Matchers, WordSpec}
@@ -139,7 +140,7 @@ object AddressListControllerSpec {
 
       get(
         viewModel
-      )(DataRequest(FakeRequest(), "cacheId", UserAnswers()))
+      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, false), UserAnswers()))
 
     }
 
@@ -152,7 +153,7 @@ object AddressListControllerSpec {
         fakeAddressListId,
         fakeAddressId,
         NormalMode
-      )(DataRequest(request, "cacheId", UserAnswers()))
+      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, false), UserAnswers()))
 
     }
 

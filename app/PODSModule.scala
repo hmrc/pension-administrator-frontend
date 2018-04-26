@@ -24,6 +24,10 @@ class PODSModule extends AbstractModule {
   override def configure(): Unit = {
 
     bind(classOf[Navigator])
+      .annotatedWith(classOf[Register])
+      .to(classOf[RegisterNavigator])
+
+    bind(classOf[Navigator])
       .annotatedWith(classOf[CompanyDirector])
       .to(classOf[DirectorNavigator])
 
@@ -34,5 +38,9 @@ class PODSModule extends AbstractModule {
     bind(classOf[Navigator])
       .annotatedWith(classOf[RegisterCompany])
       .to(classOf[RegisterCompanyNavigator])
+
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[Adviser])
+      .to(classOf[AdviserNavigator])
   }
 }

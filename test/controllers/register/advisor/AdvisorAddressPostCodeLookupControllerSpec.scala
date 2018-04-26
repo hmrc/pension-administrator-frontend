@@ -30,6 +30,7 @@ import play.api.inject.bind
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.annotations.Adviser
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -95,7 +96,7 @@ object AdvisorAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].toInstance(fakeNavigator),
+      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

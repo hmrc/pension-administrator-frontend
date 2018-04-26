@@ -26,14 +26,14 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.UserAnswers
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
+import utils.annotations.Individual
 import viewmodels.Message
 
 class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
-
 
   private val addresses = Seq(
     TolerantAddress(
@@ -115,12 +115,13 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
 
     }
 
-    "redirect to the next page on POST of valid data" ignore {
-
+    "redirect to the next page on POST of valid data" in {
+      val onwardRoute = controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(NormalMode)
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
         bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
-        bind[DataRetrievalAction].toInstance(dataRetrievalAction)
+        bind[DataRetrievalAction].toInstance(dataRetrievalAction),
+        bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
         val request =
           addToken(
@@ -131,7 +132,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(onwardRoute.url)
       }
 
     }

@@ -45,17 +45,15 @@ case class TolerantAddress(addressLine1: Option[String],
 
   def toAddress:Address = {
     Address(
-      addressLine1.getOrElse(" "),
-      addressLine2.getOrElse(" "),
+      addressLine1.getOrElse(""),
+      addressLine2.getOrElse(""),
       addressLine3,
       addressLine4,
       postcode,
-      country.getOrElse(" ")
+      country.getOrElse("")
     )
   }
 }
-
-
 
 object TolerantAddress {
 
