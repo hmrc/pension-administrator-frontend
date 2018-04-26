@@ -38,10 +38,11 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        requireData: DataRequiredAction,
                                        navigator: Navigator) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData /*andThen requireData*/).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      //request.isExistingPSA
    //   PsaSubscriptionResponseId.retrieve.right.map { response =>
-        Future.successful(Ok(confirmation(appConfig, "response.psaId",false)))
+        Future.successful(Ok(confirmation(appConfig, "response.psaId")))
     //  }
   }
 

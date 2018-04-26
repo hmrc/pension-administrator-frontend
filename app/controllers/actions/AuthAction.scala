@@ -38,7 +38,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
     authorised().retrieve(Retrievals.externalId) {
       _.map {
-        externalId => block(AuthenticatedRequest(request, externalId))
+        externalId => block(AuthenticatedRequest(request, externalId,false)) //TODO
       }.getOrElse(throw new UnauthorizedException("Unable to retrieve external Id"))
     } recover {
       case ex: NoActiveSession =>

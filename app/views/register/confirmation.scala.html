@@ -17,14 +17,15 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.Message
+@import models.requests._
 
-@(appConfig: FrontendAppConfig, psaId: String,isExistingPsa:Boolean)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, psaId: String)(implicit request: DataRequest[_], messages: Messages)
 
 @registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-   title= if(isExistingPsa)
+   title= if(request.isExistingPSA)
     {
       messages("confirmation.existingPSA.title")
     } else {
@@ -35,7 +36,7 @@
     bodyClasses = None) {
 
     <div class="govuk-box-highlight">
-         @if(isExistingPsa){
+         @if(request.isExistingPSA){
               @components.heading("confirmation.existingPSA.heading")
 
          } else {
@@ -50,7 +51,7 @@
     </div>
 
     <h2 class="heading-large">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
-    <p id="what-you-need-to-know">@if(isExistingPsa){
+    <p id="what-you-need-to-know">@if(request.isExistingPSA){
            @Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))
         } else {
            @Html(Message("confirmation.whatYouNeedToKnow.newPSA.detail").withArgs(registerSchemeLink))
