@@ -45,7 +45,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
   val companyName = "test company name"
 
   val validData = Json.obj(
-    CompanyDetailsId.toString -> CompanyDetails(companyName, None, None),
+    CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->

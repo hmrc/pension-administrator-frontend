@@ -27,16 +27,6 @@ class CompanyDetailsFormProvider @Inject() extends Mappings with PayeMapping wit
 
   def apply(): Form[CompanyDetails] = Form(
     mapping(
-      "companyName" -> text("companyDetails.error.companyName.required")
-        .verifying(
-          firstError(
-            maxLength(
-              CompanyDetailsFormProvider.companyNameLength,
-              "companyDetails.error.companyName.length"
-            ),
-            safeText("companyDetails.error.companyName.invalid")
-          )
-        ),
       "vatRegistrationNumber" -> optional(
         vatMapping(
           "companyDetails.error.vatRegistrationNumber.length",

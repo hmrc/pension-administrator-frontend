@@ -46,7 +46,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
   val address = Address("test address line 1", "test address line 2", None, None, None, "GB")
 
   val validData = Json.obj(
-    CompanyDetailsId.toString -> CompanyDetails(companyName, None, None),
+    CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
