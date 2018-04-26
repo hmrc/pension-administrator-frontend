@@ -19,10 +19,12 @@ package controllers.register
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
+import models.{PSAUser, UserType}
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.confirmation
 
@@ -75,7 +77,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-
+  private val psaUser=PSAUser(UserType.Individual,None,false)
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
       frontendAppConfig,
@@ -86,6 +88,8 @@ object ConfirmationControllerSpec extends ControllerSpecBase {
       fakeNavigator
     )
 
-  private def viewAsString() = confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",false, UserAnswers()), messages).toString
+  private def viewAsString() =
+    confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",psaUser, UserAnswers()), messages).toString
+
 
 }

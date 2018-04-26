@@ -25,7 +25,7 @@
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-   title= if(request.isExistingPSA)
+   title= if(request.user.isExistingPSA)
     {
       messages("confirmation.existingPSA.title")
     } else {
@@ -36,7 +36,7 @@
     bodyClasses = None) {
 
     <div class="govuk-box-highlight">
-         @if(request.isExistingPSA){
+         @if(request.user.isExistingPSA){
               @components.heading("confirmation.existingPSA.heading")
 
          } else {
@@ -51,7 +51,7 @@
     </div>
 
     <h2 class="heading-large">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
-    <p id="what-you-need-to-know">@if(request.isExistingPSA){
+    <p id="what-you-need-to-know">@if(request.user.isExistingPSA){
            @Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))
         } else {
            @Html(Message("confirmation.whatYouNeedToKnow.newPSA.detail").withArgs(registerSchemeLink))
