@@ -20,13 +20,16 @@ import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import play.api.mvc.Results._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals
 import config.FrontendAppConfig
 import controllers.routes
+import models.UserType.UserType
+import models.{PSAUser, UserType}
 import models.requests.AuthenticatedRequest
 import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.auth.core.retrieve.{Retrievals, ~}
+import uk.gov.hmrc.auth.core.AffinityGroup._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,24 +39,62 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(Retrievals.externalId) {
-      _.map {
-        externalId => block(AuthenticatedRequest(request, externalId,false)) //TODO
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve external Id"))
-    } recover {
-      case ex: NoActiveSession =>
-        Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case ex: InsufficientEnrolments =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: InsufficientConfidenceLevel =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedAuthProvider =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedAffinityGroup =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedCredentialRole =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
+    authorised().retrieve(
+      Retrievals.externalId and
+        Retrievals.confidenceLevel and
+        Retrievals.affinityGroup and
+        Retrievals.nino and
+        Retrievals.authorisedEnrolments) {
+
+      case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
+        block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+
+      case _ =>
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+
+    } recover handleFailure
+  }
+
+  private def handleFailure: PartialFunction[Throwable, Result] = {
+    case _: NoActiveSession =>
+      Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+    case _: InsufficientEnrolments =>
+      Redirect(routes.UnauthorisedController.onPageLoad)
+    case _: InsufficientConfidenceLevel =>
+      Redirect(routes.UnauthorisedController.onPageLoad)
+    case _: UnsupportedAuthProvider =>
+      Redirect(routes.UnauthorisedController.onPageLoad)
+    case _: UnsupportedAffinityGroup =>
+      Redirect(routes.UnauthorisedController.onPageLoad)
+    case _: UnsupportedCredentialRole =>
+      Redirect(routes.UnauthorisedController.onPageLoad)
+    case _: UnauthorizedException =>
+      Redirect(routes.UnauthorisedController.onPageLoad)
+  }
+
+  private def allowedIndividual(confidenceLevel: ConfidenceLevel): Boolean =
+    confidenceLevel.compare(ConfidenceLevel.L200) >= 0
+
+  private def allowedOrganisation(confidenceLevel: ConfidenceLevel): Boolean =
+    confidenceLevel.compare(ConfidenceLevel.L50) >= 0
+
+  private def isExistingPSA(enrolments: Enrolments): Boolean =
+    enrolments.getEnrolment("HMRC-PSA-ORG").nonEmpty
+
+  private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
+    affinityGroup match {
+      case Individual if allowedIndividual(cl) =>
+        UserType.Individual
+      case Organisation if allowedOrganisation(cl) =>
+        UserType.Organisation
+      case _ =>
+        throw new UnauthorizedException("Unable to authorise the user")
     }
+  }
+
+  private def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
+                      nino: Option[String], enrolments: Enrolments): PSAUser = {
+    PSAUser(userType(affinityGroup, cl), nino, isExistingPSA(enrolments))
   }
 }
 

@@ -19,11 +19,11 @@ package controllers
 import java.time.LocalDate
 
 import identifiers.TypedIdentifier
+import models.{PSAUser, UserType}
 import models.requests.DataRequest
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,7 +34,8 @@ import scala.concurrent.Future
 
 class RetrievalsSpec extends ControllerSpecBase with FrontendController with Retrievals with EitherValues with ScalaFutures {
 
-  def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "", false, UserAnswers(data))
+  def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
+    PSAUser(UserType.Organisation, None, false), UserAnswers(data))
 
   class TestController extends FrontendController with Retrievals
 

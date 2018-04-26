@@ -30,7 +30,7 @@ import views.html.check_your_answers
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
-  def postCall = controllers.register.advisor.routes.CheckYourAnswersController.onPageLoad()
+  def postCall = controllers.register.advisor.routes.CheckYourAnswersController.onSubmit()
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val advDetails = AdvisorDetails("test advisor name", "test@test.com")

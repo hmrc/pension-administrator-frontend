@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.PSAUser
-import play.api.mvc.{Request, WrappedRequest}
-import utils.UserAnswers
+import models.UserType.UserType
 
-case class OptionalDataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+case class PSAUser(userType: UserType, nino: Option[String], isExistingPSA: Boolean)
 
-case class DataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                           userAnswers: UserAnswers) extends WrappedRequest[A](request)
+object UserType extends Enumeration {
+  type UserType = Value
+  val Individual, Organisation = Value
+}

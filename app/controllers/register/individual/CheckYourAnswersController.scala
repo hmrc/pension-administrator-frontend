@@ -25,20 +25,21 @@ import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.Individual
 import utils.{CheckYourAnswersFactory, Navigator}
 import viewmodels.{AnswerSection, Message}
 import views.html.check_your_answers
 
 @Singleton
 class CheckYourAnswersController @Inject()(
-    appConfig: FrontendAppConfig,
-    authenticate: AuthAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    navigator: Navigator,
-    override val messagesApi: MessagesApi,
-    checkYourAnswersFactory: CheckYourAnswersFactory
-) extends FrontendController with Retrievals with I18nSupport {
+                                            appConfig: FrontendAppConfig,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            @Individual navigator: Navigator,
+                                            override val messagesApi: MessagesApi,
+                                            checkYourAnswersFactory: CheckYourAnswersFactory
+                                          ) extends FrontendController with Retrievals with I18nSupport {
 
   import CheckYourAnswersController._
 
