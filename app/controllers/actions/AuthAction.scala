@@ -44,7 +44,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
         Retrievals.nino and
-        Retrievals.authorisedEnrolments) {
+        Retrievals.allEnrolments) {
 
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
         block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
