@@ -19,6 +19,7 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.TolerantAddress
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -30,6 +31,8 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
     val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
 
     val addressLookupUrl = s"${config.addressLookUp}/v2/uk/addresses?postcode=$postcode"
+
+    implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     http.GET[Seq[TolerantAddress]](addressLookupUrl)(implicitly, schemeHc, implicitly).map(Some(_)) recoverWith {
       case _ => Future.successful(None)
