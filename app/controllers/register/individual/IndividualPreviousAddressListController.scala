@@ -45,8 +45,9 @@ class IndividualPreviousAddressListController @Inject()(
                                                          requireData: DataRequiredAction) extends AddressListController with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      viewmodel(mode).right.map(get)
+    implicit request => {
+      println(viewmodel(mode).right.get)
+      viewmodel(mode).right.map(get)}
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
