@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import utils.{FakeNavigator, UserAnswers}
+import utils.FakeNavigator
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -202,7 +202,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
   val companyDetails = BusinessDetails("MyCompany", validLimitedCompanyUtr)
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
-  val data = Json.obj(
+  private val data = Json.obj(
     BusinessTypeId.toString -> LimitedCompany.toString,
     BusinessDetailsId.toString -> companyDetails
   )

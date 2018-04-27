@@ -19,47 +19,10 @@ package forms.register.company
 import forms.behaviours.{PayeBehaviours, StringFieldBehaviours, VatBehaviours}
 import forms.mappings.Constraints
 import org.scalatest.OptionValues
-import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
 
 class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with OptionValues with PayeBehaviours with VatBehaviours {
 
   val form = new CompanyDetailsFormProvider()()
-
-  ".companyName" must {
-
-    val fieldName = "companyName"
-    val requiredKey = "companyDetails.error.companyName.required"
-    val lengthKey = "companyDetails.error.companyName.length"
-    val invalidKey = "companyDetails.error.companyName.invalid"
-    val maxLength = CompanyDetailsFormProvider.companyNameLength
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      RegexpGen.from(safeTextRegex)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like fieldWithRegex(
-      form,
-      fieldName,
-      "[invalid]",
-      error = FormError(fieldName, invalidKey, Seq(safeTextRegex))
-    )
-  }
 
   ".vatRegistrationNumber" must {
     val fieldName = "vatRegistrationNumber"

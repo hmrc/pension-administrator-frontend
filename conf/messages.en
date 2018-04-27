@@ -131,7 +131,7 @@ businessDetails.title = What are your business details?
 businessDetails.heading = What are your business details?
 businessDetails.companyName = Registered company name
 businessDetails.utr = Unique Taxpayer Reference number
-businessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’. ’UTR’ or ’Offical Use’
+businessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’. ’UTR’ or ’Official Use’
 businessDetails.companyName.hint = This is the registered name on your company’s incorporation certificate.
 businessDetails.checkYourAnswersLabel = What are your business details?
 businessDetails.error.companyName.required = Enter the registered company name
@@ -309,9 +309,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-companyAddress.title = Are these details correct?
-companyAddress.heading = Are these details correct?
-companyAddress.checkYourAnswersLabel = Address
+confirmCompanyAddress.title = Are these details correct?
+confirmCompanyAddress.heading = Company address
 
 whatYouWillNeed.title = What you’ll need
 whatYouWillNeed.heading = What you’ll need
@@ -369,11 +368,11 @@ businessType.error.required = Select your business type
 companyAddress.title = Company address
 companyAddress.heading = Company address
 companyAddress.error.required = You must make a selection
-
+companyAddress.checkYourAnswersLabel = Address
 
 companyUpdateDetails.title = You need to update your details before registering
 companyUpdateDetails.heading = You need to update your details before registering
-companyUpdateDetails.text = If you are a company or a limited liability partnership that is registered with companies house you need to inform you need to inform {0}Companies House{1} and {2}HMRC{1}
+companyUpdateDetails.text = If you are a company or a limited liability partnership that is registered with companies house you need to inform {0}Companies House{1} and {2}HMRC{1}
 
 companyNotFound.title = Business details not found
 companyNotFound.heading = Business details not found
@@ -381,7 +380,7 @@ companyNotFound.lede = There could be a number of reasons why we cannot find you
 companyNotFound.businessNameExactMatch = Your business name isn’t an exact match
 companyNotFound.businessNameExactMatch.description = Your business name should match the name written on letters you have from HMRC. Check the capital letters and spaces in your business name. You should also check if your business name uses ‘limited’ or ‘LTD’.
 companyNotFound.businessNameChanged = Your business name has changed
-companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with companies house you need to inform you need to inform {0}Companies House{1} and {2}HMRC{1}
+companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with companies house you need to inform {0}Companies House{1} and {2}HMRC{1}
 companyNotFound.businessNameChanged.individual = If you are an individual or partnership and are not registered with Companies House {0}you only need to inform HMRC{1}
 companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number doesn’t match
 companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference number is made up of 10 or 13 numbers. If it is 13, only enter the last 10.

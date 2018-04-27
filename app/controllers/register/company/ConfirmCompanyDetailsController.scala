@@ -85,7 +85,9 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def getCompanyDetails(mode: Mode)(fn: (BusinessDetails, OrganizationRegisterWithIdResponse) => Future[Result])(implicit request: DataRequest[AnyContent]) = {
+  private def getCompanyDetails(mode: Mode)
+                               (fn: (BusinessDetails, OrganizationRegisterWithIdResponse) => Future[Result])
+                               (implicit request: DataRequest[AnyContent]) = {
     (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
       case (businessDetails ~ businessType) =>
         val organisation = Organisation(businessDetails.companyName, businessType)

@@ -18,7 +18,7 @@ package models.register.company
 
 import play.api.libs.json._
 
-case class CompanyDetails (companyName: String, vatRegistrationNumber: Option[String], payeEmployerReferenceNumber: Option[String])
+case class CompanyDetails (vatRegistrationNumber: Option[String], payeEmployerReferenceNumber: Option[String])
 
 object CompanyDetails {
   implicit val format = Json.format[CompanyDetails]
