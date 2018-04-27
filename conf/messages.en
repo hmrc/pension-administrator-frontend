@@ -131,7 +131,7 @@ businessDetails.title = What are your business details?
 businessDetails.heading = What are your business details?
 businessDetails.companyName = Registered company name
 businessDetails.utr = Unique Taxpayer Reference number
-businessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’. ’UTR’ or ’Offical Use’
+businessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’. ’UTR’ or ’Official Use’
 businessDetails.companyName.hint = This is the registered name on your company’s incorporation certificate.
 businessDetails.checkYourAnswersLabel = What are your business details?
 businessDetails.error.companyName.required = Enter the registered company name
@@ -431,11 +431,14 @@ advisorAddressPostCodeLookup.formLabel = Postcode
 advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
 advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup
 
-confirmation.title = Your registration to become a Pension Scheme Administrator has been successful
-confirmation.heading = Your registration to become a Pension Scheme Administrator has been successful.
+confirmation.newPSA.title = Your registration to become a Pension Scheme Administrator has been successful
+confirmation.existingPSA.title=You are now registered as a Pension Scheme Administrator on the new service.
+confirmation.newPSA.heading = Your registration to become a Pension Scheme Administrator has been successful.
+confirmation.existingPSA.heading =You are now registered as a Pension Scheme Administrator on the new service.
 confirmation.psaIdNumber = Your PSA ID number is
 confirmation.whatYouNeedToKnow.heading = What you need to know
-confirmation.whatYouNeedToKnow.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
+confirmation.whatYouNeedToKnow.existingPSA.detail=Your administrator ID has not changed. You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
+confirmation.whatYouNeedToKnow.newPSA.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
 
 duplicateRegistration.title = You cannot register as a Pension Scheme Administrator using these details.
