@@ -17,14 +17,11 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.company.routes
 import identifiers.Identifier
-import identifiers.register.company._
 import identifiers.register.BusinessTypeId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company._
 import models._
-import models.register.company.directors.DirectorDetails
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
@@ -63,7 +60,6 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
   }
 
   override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case BusinessDetailsId => checkYourAnswers
     case CompanyDetailsId => checkYourAnswers
     case CompanyRegistrationNumberId => checkYourAnswers
     case CompanyAddressId => checkYourAnswers

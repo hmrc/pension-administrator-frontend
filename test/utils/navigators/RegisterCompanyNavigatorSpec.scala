@@ -16,19 +16,18 @@
 
 package utils.navigators
 
-import base.SpecBase
 import controllers.register.company.routes
 import identifiers.Identifier
 import identifiers.register.BusinessTypeId
 import identifiers.register.company._
 import models._
-import org.scalatest.OptionValues
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.UserAnswers
 
-class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
+class RegisterCompanyNavigatorSpec extends WordSpec with MustMatchers with NavigatorBehaviour {
 
   import RegisterCompanyNavigatorSpec._
 
@@ -37,7 +36,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                      "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
     (BusinessTypeId,                              emptyAnswers,                   businessDetailsPage,                  None),
-    (BusinessDetailsId,                           emptyAnswers,                   confirmCompanyDetailsPage,            Some(checkYourAnswersPage)),
+    (BusinessDetailsId,                           emptyAnswers,                   confirmCompanyDetailsPage,            None),
     (ConfirmCompanyAddressId,                     emptyAnswers,                   whatYouWillNeedPage,                  None),
     (WhatYouWillNeedId,                           emptyAnswers,                   companyDetailsPage,                   None),
     (CompanyDetailsId,                            emptyAnswers,                   companyRegistrationNumberPage,        Some(checkYourAnswersPage)),
@@ -60,24 +59,24 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
 
-  val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  val businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
-  val confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
-  val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
-  val companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
-  val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-  val companyAddressPage = routes.CompanyAddressController.onPageLoad()
-  val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
-  val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
-  def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
-  def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
-  def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
-  val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  private val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  private val businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
+  private val confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
+  private val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+  private val companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
+  private val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
+  private val companyAddressPage = routes.CompanyAddressController.onPageLoad()
+  private val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
+  private val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
+  private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
+  private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
+  private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
+  private val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
 
-  val emptyAnswers = UserAnswers(Json.obj())
-  val addressYearsOverAYear = UserAnswers(Json.obj())
+  private val emptyAnswers = UserAnswers(Json.obj())
+  private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
-  val addressYearsUnderAYear = UserAnswers(Json.obj())
+  private val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
 }

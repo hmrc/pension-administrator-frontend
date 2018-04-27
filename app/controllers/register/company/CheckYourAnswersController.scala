@@ -44,12 +44,11 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
-        Seq(
-          checkYourAnswerHelper.companyDetails,
+        checkYourAnswerHelper.businessDetails
+        ++ Seq(
           checkYourAnswerHelper.vatRegistrationNumber,
           checkYourAnswerHelper.payeEmployerReferenceNumber,
-          checkYourAnswerHelper.companyRegistrationNumber,
-          checkYourAnswerHelper.businessDetails
+          checkYourAnswerHelper.companyRegistrationNumber
         ).flatten
       )
 

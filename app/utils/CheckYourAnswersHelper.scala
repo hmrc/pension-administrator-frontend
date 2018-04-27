@@ -220,15 +220,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     )
   }
 
-  def companyDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) map { x =>
-    AnswerRow(
-      "companyDetails.checkYourAnswersLabel",
-      Seq(x.companyName),
-      false,
-      controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
-    )
-  }
-
   def vatRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) flatMap { x =>
     x.vatRegistrationNumber map { vatRegNo =>
       AnswerRow(
@@ -261,8 +252,12 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     }
   }
 
-  def businessDetails: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) map {
-    x => AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"${x.uniqueTaxReferenceNumber}"), false, controllers.register.company.routes.BusinessDetailsController.onPageLoad(CheckMode).url)
+  def businessDetails: Seq[AnswerRow] = userAnswers.get(BusinessDetailsId) match {
+    case Some(x) => Seq(
+      AnswerRow("businessDetails.companyName", Seq(s"${x.companyName}"), false, None),
+      AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"${x.uniqueTaxReferenceNumber}"), false, None)
+    )
+    case _ => Seq.empty[AnswerRow]
   }
 
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {
