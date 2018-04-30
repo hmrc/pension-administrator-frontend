@@ -28,6 +28,7 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
 
   private val data: mutable.HashMap[String, JsValue] = mutable.HashMap()
   private val removed: mutable.ListBuffer[String] = mutable.ListBuffer()
+  private var json: Option[JsValue] = None
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
@@ -57,6 +58,7 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
   }
 
   override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
+    json = Some(value)
     Future.successful(value)
   }
 
@@ -71,6 +73,9 @@ class FakeDataCacheConnector extends DataCacheConnector with Matchers {
   def verifyNot(id: TypedIdentifier[_]): Unit = {
     data should not contain key (id.toString)
   }
+
+  def lastUpsert: Option[JsValue] = json
+
 }
 
 object FakeDataCacheConnector extends FakeDataCacheConnector
