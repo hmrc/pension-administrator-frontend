@@ -24,7 +24,7 @@ import views.html.register.company.confirmCompanyDetails
 
 class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviours with YesNoViewBehaviours{
 
-  private val messageKeyPrefix = "companyAddress"
+  private val messageKeyPrefix = "confirmCompanyAddress"
 
   private val testAddress = TolerantAddress(
     Some("Some Building"),
@@ -39,9 +39,21 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
   val form: Form[Boolean] = formProvider()
 
-  private def createView(address: TolerantAddress = testAddress) = () => confirmCompanyDetails(frontendAppConfig, form, address, "MyCo")(fakeRequest, messages)
+  private def createView(address: TolerantAddress = testAddress) =
+    () => confirmCompanyDetails(
+      frontendAppConfig,
+      form,
+      address,
+      "MyCo"
+    )(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => confirmCompanyDetails(frontendAppConfig, form, testAddress, "MyCo")(fakeRequest, messages)
+  private def createViewUsingForm =
+    (form: Form[_]) => confirmCompanyDetails(
+      frontendAppConfig,
+      form,
+      testAddress,
+      "MyCo"
+    )(fakeRequest, messages)
 
   "CompanyAddress view" must {
     behave like normalPage(createView(), messageKeyPrefix)
@@ -52,7 +64,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", "title")
   }
 
 }

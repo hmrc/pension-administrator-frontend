@@ -16,32 +16,33 @@
 
 package controllers.register.company
 
-import play.api.data.Form
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
-import play.api.libs.json._
 import forms.register.company.CompanyAddressListFormProvider
 import identifiers.register.company.{CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.{NormalMode, TolerantAddress}
-import models.register.company.CompanyDetails
+import models.register.company.BusinessDetails
+import play.api.data.Form
+import play.api.libs.json._
+import play.api.test.Helpers._
+import utils.FakeNavigator
 import views.html.register.company.companyAddressList
-import controllers.ControllerSpecBase
 
 class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyAddressListFormProvider()
-  val companyName = "ThisCompanyName"
-  val companyDetails = Json.obj("companyDetails" -> CompanyDetails(companyName, None, None))
-  val addresses = Seq(
+  private val formProvider = new CompanyAddressListFormProvider()
+  private val companyName = "ThisCompanyName"
+  private val companyDetails = Json.obj("businessDetails" -> BusinessDetails(companyName, "Test UTR"))
+
+  private val addresses = Seq(
     address("test post code 1"),
     address("test post code 2")
   )
 
-  val addressObject = Json.obj(CompanyPreviousAddressPostCodeLookupId.toString -> addresses)
+  private val addressObject = Json.obj(CompanyPreviousAddressPostCodeLookupId.toString -> addresses)
 
   def address(postCode: String): TolerantAddress = TolerantAddress(
     Some("address line 1"),
@@ -58,7 +59,14 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     new CompanyAddressListController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = companyAddressList(frontendAppConfig, form, NormalMode, companyName, addresses)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) =
+    companyAddressList(
+      frontendAppConfig,
+      form,
+      NormalMode,
+      companyName,
+      addresses
+    )(fakeRequest, messages).toString
 
   "CompanyAddressList Controller" must {
 

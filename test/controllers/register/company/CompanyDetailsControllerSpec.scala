@@ -16,32 +16,31 @@
 
 package controllers.register.company
 
-import play.api.data.Form
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
 import forms.register.company.CompanyDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import models.NormalMode
 import models.register.company.CompanyDetails
+import play.api.data.Form
+import play.api.libs.json.Json
+import play.api.test.Helpers._
+import utils.FakeNavigator
 import views.html.register.company.companyDetails
-import controllers.ControllerSpecBase
 
 class CompanyDetailsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyDetailsFormProvider()
-  val form = formProvider()
+  private val formProvider = new CompanyDetailsFormProvider()
+  private val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = companyDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = companyDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "CompanyDetails Controller" must {
 
@@ -53,16 +52,22 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyDetailsId.toString -> CompanyDetails("value 1", Some("123456789"), Some("A1")))
+      val validData = Json.obj(CompanyDetailsId.toString -> CompanyDetails(Some("123456789"), Some("A1")))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(CompanyDetails("value 1", Some("123456789"), Some("A1"))))
+      contentAsString(result) mustBe viewAsString(form.fill(CompanyDetails(Some("123456789"), Some("A1"))))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", "value 1"), ("vatRegistrationNumber", "123456789"), ("payeEmployerReferenceNumber", "123A"))
+      val postRequest =
+        fakeRequest
+          .withFormUrlEncodedBody(
+            ("companyName", "value 1"),
+            ("vatRegistrationNumber", "123456789"),
+            ("payeEmployerReferenceNumber", "123A")
+          )
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -71,8 +76,8 @@ class CompanyDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("vatRegistrationNumber", "xxx"))
+      val boundForm = form.bind(Map("vatRegistrationNumber" -> "xxx"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

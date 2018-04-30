@@ -20,9 +20,9 @@ import java.time.LocalDate
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.company.CompanyDetailsId
+import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
-import models.register.company.CompanyDetails
+import models.register.company.BusinessDetails
 import models.register.company.directors.DirectorDetails
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -41,8 +41,8 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
   )
 
   val validData: JsObject = Json.obj(
-        CompanyDetailsId.toString ->
-          CompanyDetails(companyName, Some("123456"), Some("abcd")),
+        BusinessDetailsId.toString ->
+          BusinessDetails(companyName, "test utr"),
         "directors" -> Json.arr(director("a"), director("b"), director("c"))
   )
 
@@ -50,7 +50,7 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
     new CompanyReviewController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl)
 
-  def viewAsString() = companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages).toString
+  private def viewAsString() = companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages).toString
 
   "CompanyReview Controller" must {
 

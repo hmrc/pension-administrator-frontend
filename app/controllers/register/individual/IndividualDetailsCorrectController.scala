@@ -22,6 +22,7 @@ import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import models.Mode
 import play.api.data.Form
@@ -60,12 +61,18 @@ class IndividualDetailsCorrectController @Inject()(
         case Right(individual ~ address) =>
           Future.successful(Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address)))
         case _ =>
-          for {
-            response <- registrationConnector.registerWithIdIndividual()
-            _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, response.individual)
-            _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, response.address)
-          } yield {
-            Ok(individualDetailsCorrect(appConfig, preparedForm, mode, response.individual, response.address))
+          request.user.nino match {
+            case Some(nino) =>
+              for {
+                registration <- registrationConnector.registerWithIdIndividual(nino)
+                _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, registration.response.individual)
+                _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
+                _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
+              } yield {
+                Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address))
+              }
+            case _ =>
+              Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
           }
       }
 
@@ -80,7 +87,7 @@ class IndividualDetailsCorrectController @Inject()(
               Future.successful(BadRequest(individualDetailsCorrect(appConfig, formWithErrors, mode, individual, address)))
           }
         },
-        (value) =>
+        value =>
           dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
             Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode)(UserAnswers(cacheMap))))
       )

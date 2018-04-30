@@ -33,9 +33,9 @@
 
     @helpers.form(action = routes.DeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.paragraph_text(messages("declarationFitAndProper.declaration") + ":")
+        @components.paragraph_text(messages("declarationFitAndProper.declaration"))
 
-        <ol class="list-number">
+        <ul class="list-bullet">
             <li>
                 @components.paragraph_text(messages("declarationFitAndProper.statement1"))
             </li>
@@ -54,7 +54,7 @@
             <li>
                 @components.paragraph_text(messages("declarationFitAndProper.statement6"))
             </li>
-        </ol>
+        </ul>
 
         <div class="form-group">
             <div class="form-field @if(form("agree").hasErrors){form-field--error}">

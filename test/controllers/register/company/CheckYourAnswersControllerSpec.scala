@@ -18,7 +18,7 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import models.register.company.CompanyDetails
+import models.register.company.BusinessDetails
 import models.{CheckMode, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -41,9 +41,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       checkYourAnswersFactory
     )
 
-  def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()
+  private def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()
 
-  def viewAsString(answers: Seq[AnswerSection]) = check_your_answers(
+  private def viewAsString(answers: Seq[AnswerSection]) = check_your_answers(
     frontendAppConfig,
     answers,
     Some(messages("site.secondaryHeader")),
@@ -55,17 +55,24 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "return OK and the correct view for a GET" in {
 
       val companyName = "companyName"
+      val utr = "test-utr"
 
-      val companyDetailsJson = Json.obj("companyDetails" -> CompanyDetails("companyName", None, None))
+      val companyDetailsJson = Json.obj("businessDetails" -> BusinessDetails(companyName, utr))
 
       val companyDetailsSection = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
         Seq(
           AnswerRow(
-            "companyDetails.checkYourAnswersLabel",
+            "businessDetails.companyName",
             Seq(companyName),
             false,
-            controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+            None
+          ),
+          AnswerRow(
+            "companyUniqueTaxReference.checkYourAnswersLabel",
+            Seq(utr),
+            false,
+            None
           )
         )
       )

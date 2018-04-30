@@ -16,11 +16,11 @@
 
 package controllers.register.company
 
-import connectors.{FakeDataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
-import identifiers.register.BusinessTypeId
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import identifiers.register.company._
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
@@ -85,12 +85,32 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     "valid data is submitted" when {
       "yes" which {
         "upsert address and organisation name from api response" in {
+          val dataCacheConnector = new FakeDataCacheConnector()
+
+          val info = RegistrationInfo(
+            RegistrationLegalStatus.LimitedCompany,
+            sapNumber,
+            false,
+            RegistrationCustomerType.UK,
+            RegistrationIdType.UTR,
+            validLimitedCompanyUtr
+          )
+
+          val expectedJson =
+            UserAnswers(data)
+              .set(ConfirmCompanyAddressId)(testLimitedCompanyAddress)
+              .flatMap(_.set(RegistrationInfoId)(info))
+              .asOpt
+              .value
+              .json
+
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
+          dataCacheConnector.lastUpsert.value mustBe expectedJson
         }
       }
       "no" in {
@@ -198,11 +218,12 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
   private val validLimitedCompanyUtr = "1234567890"
   private val validBusinessPartnershipUtr = "0987654321"
   private val invalidUtr = "INVALID"
+  private val sapNumber = "test-sap-number"
 
   val companyDetails = BusinessDetails("MyCompany", validLimitedCompanyUtr)
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
-  val data = Json.obj(
+  private val data = Json.obj(
     BusinessTypeId.toString -> LimitedCompany.toString,
     BusinessDetailsId.toString -> companyDetails
   )
@@ -215,14 +236,23 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = {
+        (utr: String, organisation: Organisation)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+
+      val info = RegistrationInfo(
+        RegistrationLegalStatus.LimitedCompany,
+        sapNumber,
+        false,
+        RegistrationCustomerType.UK,
+        RegistrationIdType.UTR,
+        utr
+      )
 
       if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
-        Future.successful(OrganizationRegisterWithIdResponse(testLimitedCompanyAddress, organisation))
+        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
       }
       else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
-        Future.successful(OrganizationRegisterWithIdResponse(testBusinessPartnershipAddress, organisation))
+        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {
         Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
@@ -230,15 +260,16 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     }
 
     //noinspection NotImplementedCode
-    def registerWithIdIndividual()
-                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = ???
+    def registerWithIdIndividual
+        (nino: String)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

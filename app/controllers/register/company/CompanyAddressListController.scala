@@ -17,7 +17,6 @@
 package controllers.register.company
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -25,7 +24,7 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.CompanyAddressListFormProvider
-import identifiers.register.company.{CompanyAddressListId, CompanyDetailsId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
+import identifiers.register.company._
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyAddressList
 import models.Mode
@@ -59,7 +58,7 @@ class CompanyAddressListController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveCompanyName { companyName =>
         request.userAnswers.get(CompanyPreviousAddressPostCodeLookupId) match {
@@ -75,7 +74,7 @@ class CompanyAddressListController @Inject()(
                   CompanyPreviousAddressId,
                   addresses(value).toAddress.copy(country = "GB")
                 ).map( cacheMap =>
-                  Redirect(navigator.nextPage(CompanyAddressListId, mode)(new UserAnswers(cacheMap)))
+                  Redirect(navigator.nextPage(CompanyAddressListId, mode)(UserAnswers(cacheMap)))
                 )
             )
         }
@@ -84,7 +83,7 @@ class CompanyAddressListController @Inject()(
 
   private def retrieveCompanyName(block: String => Future[Result])
                                      (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.get(CompanyDetailsId) match {
+    request.userAnswers.get(BusinessDetailsId) match {
       case Some(value) =>
         block(value.companyName)
       case _ =>

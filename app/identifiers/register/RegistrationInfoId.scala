@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.register.company
+package identifiers.register
 
-import play.api.libs.json._
+import identifiers.TypedIdentifier
+import models.RegistrationInfo
 
-case class CompanyDetails (vatRegistrationNumber: Option[String], payeEmployerReferenceNumber: Option[String])
-
-object CompanyDetails {
-  implicit val format = Json.format[CompanyDetails]
+case object RegistrationInfoId extends TypedIdentifier[RegistrationInfo] {
+  override def toString: String = "registrationInfo"
 }

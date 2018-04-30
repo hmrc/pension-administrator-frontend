@@ -16,13 +16,13 @@
 
 @import config.FrontendAppConfig
 @import controllers.register.company.routes._
-@import models.TolerantAddress
+@import models.{Mode, TolerantAddress}
 @import uk.gov.hmrc.play.views.html._
 
 @(appConfig: FrontendAppConfig, form: Form[_], address: TolerantAddress, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("companyAddress.title"),
+    title = messages("confirmCompanyAddress.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -31,7 +31,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("companyAddress.heading")
+        @components.heading("confirmCompanyAddress.heading")
 
         <p>
             <div>@name,</div>
@@ -40,8 +40,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("companyAddress.title"),
-            labelClass = Some("visually-hidden")
+            label = messages("confirmCompanyAddress.title")
         )
 
         @components.submit_button("site.save_and_continue")

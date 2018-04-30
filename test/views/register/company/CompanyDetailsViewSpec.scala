@@ -42,9 +42,7 @@ class CompanyDetailsViewSpec extends QuestionViewBehaviours[CompanyDetails] {
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url, "companyName", "vatRegistrationNumber", "payeEmployerReferenceNumber")
-
-    behave like pageWithLabel(createViewUsingForm, "companyName", messages("companyDetails.companyName"))
+    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url, "vatRegistrationNumber", "payeEmployerReferenceNumber")
 
     behave like pageWithLabel(createViewUsingForm, "vatRegistrationNumber", messages("companyDetails.vatRegistrationNumber"))
 
