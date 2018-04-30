@@ -117,7 +117,7 @@ contactDetails.title = Contact details
 contactDetails.heading = Contact details
 contactDetails.email = Email address
 contactDetails.phone = Phone number
-contactDetails.body = We will use this information to contact the PSA about the schemes they manage.
+contactDetails.body = We will use this information to contact you about your schemes. You can enter a group or individual email.
 contactDetails.email.checkYourAnswersLabel = Email address
 contactDetails.phone.checkYourAnswersLabel = Phone number
 contactDetails.error.email.required = Enter an email address
@@ -144,7 +144,7 @@ companyRegistrationNumber.title = Company Registration number
 companyRegistrationNumber.heading = Company Registration number
 companyRegistrationNumber.checkYourAnswersLabel = Company Registration number
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = This is issued by Companies House. It is 7 or 8 characters, typically 7 numbers or a combination of 2 letters followed by 6 digits, for example AB123456.
+companyRegistrationNumber.hint = This is issued by Companies House. It is 8 characters, typically 8 numbers or a combination of 2 letters followed by 6 numbers. For example, AB123456.
 companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
 companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number
 
@@ -185,7 +185,7 @@ companyPreviousAddressPostCodeLookup.error.invalid = Enter a valid postal code
 companyPreviousAddressPostCodeLookup.error.noResults = No results found for that postal code
 companyPreviousAddressPostCodeLookup.postalCode = Postal code
 companyPreviousAddressPostCodeLookup.postalCode.hint = For example NE12 8ER
-companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, 
 companyPreviousAddressPostCodeLookup.enterManually = enter the address manually
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
@@ -258,7 +258,7 @@ companyDirectorAddressPostCodeLookup.enterManually = enter the address manually
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
-directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register your business or for Self assessment.
+directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
 directorUniqueTaxReference.checkYourAnswersLabel = Does the director have a Self Assessment Unique Taxpayer Reference number?
 directorUniqueTaxReference.checkYourAnswersLabel.utr = Unique Taxpayer Reference number
 directorUniqueTaxReference.checkYourAnswersLabel.reason = Why the director does not have a UTR
@@ -282,7 +282,7 @@ directorPreviousAddressPostCodeLookup.error.required = Enter the postcode
 directorPreviousAddressPostCodeLookup.error.length = Enter a valid postcode
 directorPreviousAddressPostCodeLookup.error.invalid = Enter a valid postcode
 directorPreviousAddressPostCodeLookup.error.noResults = No results found for that postal code
-directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, 
 directorPreviousAddressPostCodeLookup.enterManually = enter the address manually
 directorPreviousAddressPostCodeLookup.submit.button = Find address
 
@@ -351,7 +351,7 @@ companyReview.directors.editLink = Add, delete or edit company directors
 individualPreviousAddressPostCodeLookup.title = Previous address
 individualPreviousAddressPostCodeLookup.heading = Previous address
 individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
-individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0} enter the address manually {1}
+individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 individualPreviousAddressPostCodeLookup.formHint = Example, NE12 8ER
 
