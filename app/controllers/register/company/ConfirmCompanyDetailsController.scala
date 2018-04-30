@@ -18,12 +18,12 @@ package controllers.register.company
 
 import javax.inject.Inject
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
 import models._
 import models.register.company.BusinessDetails
@@ -49,7 +49,8 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 registrationConnector: RegistrationConnector,
-                                                formProvider: CompanyAddressFormProvider
+                                                formProvider: CompanyAddressFormProvider,
+                                                psaNameCacheConnector: PSANameCacheConnector
                                                ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -79,6 +80,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
             ),
           {
             case true =>
+              psaNameCacheConnector.save(request.externalId, PsaNameId, registration.response.organisation.organisationName)
               upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
                 upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
                   upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>

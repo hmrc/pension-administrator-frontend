@@ -17,11 +17,13 @@
 package controllers.register.individual
 
 import javax.inject.Inject
+
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.register.PsaNameId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import models.Mode
@@ -44,7 +46,8 @@ class IndividualDetailsCorrectController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: IndividualDetailsCorrectFormProvider,
-                                                    registrationConnector: RegistrationConnector
+                                                    registrationConnector: RegistrationConnector,
+                                                    psaNameCacheConnector: PSANameCacheConnector
                                                   ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -68,6 +71,7 @@ class IndividualDetailsCorrectController @Inject()(
                 _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, registration.response.individual)
                 _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
+                _ <- psaNameCacheConnector.save(request.externalId, PsaNameId, registration.response.individual.fullName)
               } yield {
                 Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address))
               }

@@ -16,12 +16,12 @@
 
 package controllers.register.company
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import identifiers.register.company._
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models.register.company.BusinessDetails
@@ -85,7 +85,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     "valid data is submitted" when {
       "yes" which {
         "upsert address and organisation name from api response" in {
-          val dataCacheConnector = new FakeDataCacheConnector()
+          val dataCacheConnector = FakeDataCacheConnector
 
           val info = RegistrationInfo(
             RegistrationLegalStatus.LimitedCompany,
@@ -265,6 +265,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
+  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
@@ -275,7 +277,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
-      formProvider
+      formProvider,
+      psaNameCacheConnector
     )
 
   private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
