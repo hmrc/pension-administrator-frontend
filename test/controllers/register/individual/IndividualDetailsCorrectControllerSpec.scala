@@ -21,20 +21,21 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.PsaNameId
+import identifiers.register.{PsaNameId, RegistrationInfoId}
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
-import models._
+import models.requests.AuthenticatedRequest
+import models.{RegistrationInfo, _}
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{Format, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSClient
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator
 import views.html.register.individual.individualDetailsCorrect
 
-import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with MockitoSugar {
@@ -43,6 +44,23 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
+
+  private val nino = "test-nino"
+  private val sapNumber = "test-sap-number"
+
+  private val fakeAuthAction = new AuthAction {
+    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), false)))
+  }
+
+  private val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.Individual,
+    sapNumber,
+    false,
+    RegistrationCustomerType.UK,
+    RegistrationIdType.Nino,
+    nino
+  )
 
   private val individual = TolerantIndividual(
     Some("John"),
@@ -63,11 +81,13 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
         (utr: String, organisation: Organisation)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = ???
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
-    override def registerWithIdIndividual()
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
-      Future.successful(IndividualRegisterWithIdResponse(individual, address))
+    override def registerWithIdIndividual
+        (nino: String)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
+
+      Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
     }
   }
 
@@ -89,10 +109,11 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegisterWithIdResponse] = ???
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
-    override def registerWithIdIndividual()
-                                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegisterWithIdResponse] = {
+    override def registerWithIdIndividual
+        (nino: String)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       throw new Exception("registerWithIdIndividual should not be called in this test")
     }
   }
@@ -103,7 +124,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      FakeAuthAction,
+      fakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
@@ -136,6 +157,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
       FakeDataCacheConnector.verify(IndividualDetailsId, individual)
       FakeDataCacheConnector.verify(IndividualAddressId, address)
+      FakeDataCacheConnector.verify(RegistrationInfoId, registrationInfo)
       psaNameCacheConnector.verify(PsaNameId, individual.fullName)
     }
 

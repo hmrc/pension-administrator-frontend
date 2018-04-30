@@ -17,19 +17,21 @@
 package controllers.register
 
 import play.api.data.Form
-import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
+import utils.{FakeNavigator, UserAnswers}
+import connectors.{FakeDataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import controllers.actions._
 import play.api.test.Helpers.{contentAsString, _}
 import views.html.register.declarationFitAndProper
 import controllers.ControllerSpecBase
 import forms.register.DeclarationFormProvider
-import identifiers.register.DeclarationFitAndProperId
+import identifiers.register.{DeclarationFitAndProperId, PsaSubscriptionResponseId}
 import models.{PSAUser, UserType}
 import models.UserType.UserType
+import models.register.PsaSubscriptionResponse
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -114,8 +116,25 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
         contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
       }
+
+      "save the PSA Subscription response on a valid request" in {
+        val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+        val result = controller().onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        FakeDataCacheConnector.verify(PsaSubscriptionResponseId, validPsaResponse)
+      }
+
+      "redirect to Duplicate Registration if a registration already exists for the organization" in {
+        val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+        val result = controller(pensionsSchemeConnector = duplicateRegistrationPensionsSchemeConnector).onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
+      }
     }
   }
+
 }
 
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
@@ -131,7 +150,28 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
       block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false)))
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType = UserType.Organisation) =
+  private val validPsaResponse = PsaSubscriptionResponse("test-psa-id")
+
+  private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
+    override def registerPsa
+        (answers: UserAnswers)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+      Future.successful(validPsaResponse)
+    }
+  }
+
+  private val duplicateRegistrationPensionsSchemeConnector = new PensionsSchemeConnector {
+    override def registerPsa
+        (answers: UserAnswers)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+      Future.failed(InvalidBusinessPartnerException())
+    }
+  }
+
+  private def controller(
+                          dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                          userType: UserType = UserType.Organisation,
+                          pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,
@@ -140,7 +180,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       fakeNavigator,
       new DeclarationFormProvider(),
-      FakeDataCacheConnector
+      FakeDataCacheConnector,
+      pensionsSchemeConnector
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =

@@ -17,14 +17,13 @@
 package controllers.register
 
 import javax.inject.Inject
-
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.{DataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import forms.register.DeclarationFormProvider
-import identifiers.register.DeclarationFitAndProperId
+import identifiers.register.{DeclarationFitAndProperId, PsaSubscriptionResponseId}
 import models.{NormalMode, UserType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
@@ -41,7 +40,8 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   requireData: DataRequiredAction,
                                                   @Register navigator: Navigator,
                                                   formProvider: DeclarationFormProvider,
-                                                  dataCacheConnector: DataCacheConnector) extends FrontendController with
+                                                  dataCacheConnector: DataCacheConnector,
+                                                  pensionsSchemeConnector: PensionsSchemeConnector) extends FrontendController with
   I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
@@ -72,9 +72,16 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               Future.successful(BadRequest(
                 declarationFitAndProper(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
           },
-        success => dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { cacheMap =>
-          Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+        success => dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
+          pensionsSchemeConnector.registerPsa(UserAnswers(cacheMap)).flatMap { psaResponse =>
+            dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse).map { cacheMap =>
+              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+            }
+          } recoverWith {
+            case _: InvalidBusinessPartnerException => Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+          }
         }
       )
   }
+
 }

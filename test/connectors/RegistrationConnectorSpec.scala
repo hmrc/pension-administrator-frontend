@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{Organisation, OrganisationTypeEnum, TolerantAddress, TolerantIndividual}
+import models._
 import org.scalatest._
 import play.api.http.Status
 import play.api.libs.json.{JsResultException, Json}
@@ -33,7 +33,9 @@ class RegistrationConnectorSpec ()
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
-  private val utr = "1234567890"
+  private val utr = "test-utr"
+  private val nino = "test-nino"
+  private val sapNumber = "test-sap-number"
 
   private val organizationPath = "/pensions-scheme/register-with-id/organisation"
   private val individualPath = "/pensions-scheme/register-with-id/individual"
@@ -46,17 +48,27 @@ class RegistrationConnectorSpec ()
     Some("Doe")
   )
 
-  private val expectedAddress = TolerantAddress(
+  private def expectedAddress(uk: Boolean) = TolerantAddress(
     Some("Building Name"),
     Some("1 Main Street"),
     Some("Some Village"),
     Some("Some Town"),
-    Some("GB"),
-    Some("ZZ1 1ZZ")
+    Some("ZZ1 1ZZ"),
+    if (uk) Some("GB") else Some("XX")
   )
 
-  private val validOrganizationResponse = Json.obj(
+  private def expectedAddressJson(address: TolerantAddress) = Json.obj(
+    "addressLine1" -> address.addressLine1.value,
+    "addressLine2" -> address.addressLine2.value,
+    "addressLine3" -> address.addressLine3.value,
+    "addressLine4" -> address.addressLine4.value,
+    "countryCode" -> address.country.value,
+    "postalCode" -> address.postcode.value
+  )
+
+  private def validOrganizationResponse(uk: Boolean) = Json.obj(
     "safeId" -> "",
+    "sapNumber" -> sapNumber,
     "isEditable" -> false,
     "isAnAgent" -> false,
     "isAnIndividual" -> false,
@@ -64,19 +76,13 @@ class RegistrationConnectorSpec ()
       "organisationName" -> organisation.organisationName,
       "organisationType" -> organisation.organisationType.toString
     ),
-    "address" -> Json.obj(
-      "addressLine1" -> expectedAddress.addressLine1.value,
-      "addressLine2" -> expectedAddress.addressLine2.value,
-      "addressLine3" -> expectedAddress.addressLine3.value,
-      "addressLine4" -> expectedAddress.addressLine4.value,
-      "countryCode" -> expectedAddress.country.value,
-      "postalCode" -> expectedAddress.postcode.value
-    ),
+    "address" -> expectedAddressJson(expectedAddress(uk)),
     "contactDetails" -> Json.obj()
   )
 
-  private val validIndividualResponse = Json.obj(
+  private def validIndividualResponse(uk: Boolean) = Json.obj(
     "safeId" -> "",
+    "sapNumber" -> sapNumber,
     "isEditable" -> false,
     "isAnAgent" -> false,
     "isAnIndividual" -> true,
@@ -86,14 +92,7 @@ class RegistrationConnectorSpec ()
       "lastName" -> expectedIndividual.lastName.value,
       "dateOfBirth" -> ""
     ),
-    "address" -> Json.obj(
-      "addressLine1" -> expectedAddress.addressLine1.value,
-      "addressLine2" -> expectedAddress.addressLine2.value,
-      "addressLine3" -> expectedAddress.addressLine3.value,
-      "addressLine4" -> expectedAddress.addressLine4.value,
-      "countryCode" -> expectedAddress.country.value,
-      "postalCode" -> expectedAddress.postcode.value
-    ),
+    "address" -> expectedAddressJson(expectedAddress(uk)),
     "contactDetails" -> Json.obj()
   )
 
@@ -109,13 +108,69 @@ class RegistrationConnectorSpec ()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validOrganizationResponse))
+            .withBody(Json.stringify(validOrganizationResponse(true)))
         )
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation).map { response =>
-      response.address shouldBe expectedAddress
+    connector.registerWithIdOrganisation(utr, organisation).map { registration =>
+      registration.response.address shouldBe expectedAddress(true)
+    }
+
+  }
+
+  it should "return the registration info for a company with a UK address" in {
+
+    val info = RegistrationInfo(
+      RegistrationLegalStatus.LimitedCompany,
+      sapNumber,
+      false,
+      RegistrationCustomerType.UK,
+      RegistrationIdType.UTR,
+      utr
+    )
+
+    server.stubFor(
+      post(urlEqualTo(organizationPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validOrganizationResponse(true)))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithIdOrganisation(utr, organisation).map { registration =>
+      registration.info shouldBe info
+    }
+
+  }
+
+  it should "return the registration info for a company with a non-UK address" in {
+
+    val info = RegistrationInfo(
+      RegistrationLegalStatus.LimitedCompany,
+      sapNumber,
+      false,
+      RegistrationCustomerType.NonUK,
+      RegistrationIdType.UTR,
+      utr
+    )
+
+    server.stubFor(
+      post(urlEqualTo(organizationPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validOrganizationResponse(false)))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithIdOrganisation(utr, organisation).map { registration =>
+      registration.info shouldBe info
     }
 
   }
@@ -128,7 +183,7 @@ class RegistrationConnectorSpec ()
           aResponse()
             .withStatus(Status.ACCEPTED)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validOrganizationResponse))
+            .withBody(Json.stringify(validOrganizationResponse(true)))
         )
     )
 
@@ -187,7 +242,7 @@ class RegistrationConnectorSpec ()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validOrganizationResponse))
+            .withBody(Json.stringify(validOrganizationResponse(true)))
         )
     )
 
@@ -210,14 +265,70 @@ class RegistrationConnectorSpec ()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validIndividualResponse))
+            .withBody(Json.stringify(validIndividualResponse(true)))
         )
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdIndividual().map { response =>
-      response.individual shouldBe expectedIndividual
-      response.address shouldBe expectedAddress
+    connector.registerWithIdIndividual(nino).map { registration =>
+      registration.response.individual shouldBe expectedIndividual
+      registration.response.address shouldBe expectedAddress(true)
+    }
+
+  }
+
+  it should "return the registration info for an individual with a UK address" in {
+
+    val info = RegistrationInfo(
+      RegistrationLegalStatus.Individual,
+      sapNumber,
+      false,
+      RegistrationCustomerType.UK,
+      RegistrationIdType.Nino,
+      nino
+    )
+
+    server.stubFor(
+      post(urlEqualTo(individualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validIndividualResponse(true)))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithIdIndividual(nino).map { registration =>
+      registration.info shouldBe info
+    }
+
+  }
+
+  it should "return the registration info for an individual with a Non-UK address" in {
+
+    val info = RegistrationInfo(
+      RegistrationLegalStatus.Individual,
+      sapNumber,
+      false,
+      RegistrationCustomerType.NonUK,
+      RegistrationIdType.Nino,
+      nino
+    )
+
+    server.stubFor(
+      post(urlEqualTo(individualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validIndividualResponse(false)))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithIdIndividual(nino).map { registration =>
+      registration.info shouldBe info
     }
 
   }
@@ -230,13 +341,13 @@ class RegistrationConnectorSpec ()
           aResponse()
             .withStatus(Status.ACCEPTED)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validIndividualResponse))
+            .withBody(Json.stringify(validIndividualResponse(true)))
         )
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[IllegalArgumentException] {
-      connector.registerWithIdIndividual()
+      connector.registerWithIdIndividual(nino)
     }
 
   }
@@ -253,7 +364,7 @@ class RegistrationConnectorSpec ()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[NotFoundException] {
-      connector.registerWithIdIndividual()
+      connector.registerWithIdIndividual(nino)
     }
 
   }
@@ -272,7 +383,7 @@ class RegistrationConnectorSpec ()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[JsResultException] {
-      connector.registerWithIdIndividual()
+      connector.registerWithIdIndividual(nino)
     }
 
   }
@@ -289,7 +400,7 @@ class RegistrationConnectorSpec ()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validIndividualResponse))
+            .withBody(Json.stringify(validIndividualResponse(true)))
         )
     )
 
@@ -298,7 +409,7 @@ class RegistrationConnectorSpec ()
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
     val ec: ExecutionContext = implicitly[ExecutionContext]
 
-    connector.registerWithIdIndividual()(hc, ec).map { _ =>
+    connector.registerWithIdIndividual(nino)(hc, ec).map { _ =>
       succeed
     }
 
