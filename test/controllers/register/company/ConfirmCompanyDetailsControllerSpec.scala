@@ -85,7 +85,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     "valid data is submitted" when {
       "yes" which {
         "upsert address and organisation name from api response" in {
-          val dataCacheConnector = new FakeDataCacheConnector()
+          val dataCacheConnector = FakeDataCacheConnector
 
           val info = RegistrationInfo(
             RegistrationLegalStatus.LimitedCompany,
