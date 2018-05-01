@@ -18,31 +18,37 @@ package forms.register.advisor
 
 import javax.inject.Inject
 
-import forms.mappings.EmailMapping
+import forms.mappings.{EmailMapping, PhoneNumberMapping}
 import models.register.advisor.AdvisorDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-class AdvisorDetailsFormProvider @Inject() extends EmailMapping {
+class AdvisorDetailsFormProvider @Inject() extends EmailMapping with PhoneNumberMapping {
 
-   def apply(): Form[AdvisorDetails] = Form(
+  def apply(): Form[AdvisorDetails] = Form(
     mapping(
       "name" -> text("advisorDetails.error.name.required")
         .verifying(
-            maxLength(
-              AdvisorDetailsFormProvider.nameLength,
-              "advisorDetails.error.name.length"
-            )
+          maxLength(
+            AdvisorDetailsFormProvider.nameLength,
+            "advisorDetails.error.name.length"
+          )
         ),
 
       "email" -> emailMapping(
         "contactDetails.error.email.required",
         "contactDetails.error.email.length",
         "contactDetails.error.email.invalid"
+      ),
+
+      "phoneNumber" -> phoneNumberMapping(
+        "contactDetails.error.phone.required",
+        "contactDetails.error.phone.length",
+        "contactDetails.error.phone.invalid"
       )
     )(AdvisorDetails.apply)(AdvisorDetails.unapply)
-   )
- }
+  )
+}
 
 object AdvisorDetailsFormProvider {
   val nameLength: Int = 107

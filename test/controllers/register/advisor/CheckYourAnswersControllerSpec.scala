@@ -33,7 +33,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   def postCall = controllers.register.advisor.routes.CheckYourAnswersController.onSubmit()
   val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
-  val advDetails = AdvisorDetails("test advisor name", "test@test.com")
+  val advDetails = AdvisorDetails("test advisor name", "test@test.com", "01234567890")
   val address = Address(
     "address-line-1",
     "address-line-2",
@@ -61,7 +61,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   ))
 
   def advisorDetails = Seq(AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(
+      advDetails.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
   def sections = Seq(AnswerSection(None, advisorDetails ++ advisorAddress))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

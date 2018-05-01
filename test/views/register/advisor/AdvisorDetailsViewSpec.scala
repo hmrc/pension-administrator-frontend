@@ -42,6 +42,7 @@ class AdvisorDetailsViewSpec extends QuestionViewBehaviours[AdvisorDetails] {
 
     behave like pageWithSecondaryHeader(createView, messages("advisorDetails.secondary.heading"))
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.advisor.routes.AdvisorDetailsController.onSubmit(NormalMode).url, "name", "email")
+    behave like pageWithTextFields(
+      createViewUsingForm, messageKeyPrefix, controllers.register.advisor.routes.AdvisorDetailsController.onSubmit(NormalMode).url, "name", "email", "phoneNumber")
   }
 }
