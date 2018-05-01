@@ -61,8 +61,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   ))
 
   def advisorDetails = Seq(AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(
-      advDetails.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
   def sections = Seq(AnswerSection(None, advisorDetails ++ advisorAddress))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
