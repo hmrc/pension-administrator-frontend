@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package connectors
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import javax.inject.Inject
 
-@main_template(
-    title = messages("duplicateRegistration.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+import config.FrontendAppConfig
+import play.api.libs.ws.WSClient
+import uk.gov.hmrc.crypto.ApplicationCrypto
 
-    @components.heading("duplicateRegistration.heading")
+class PSANameCacheConnector @Inject() (
+                                       config: FrontendAppConfig,
+                                       http: WSClient,
+                                       crypto: ApplicationCrypto
+                                     ) extends MicroserviceCacheConnector(config, http, crypto) {
 
-    <p>@messages("duplicateRegistration.body")</p>
+  override protected def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/psa-name/$id"
+
 }
-N

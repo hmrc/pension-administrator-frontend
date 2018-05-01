@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataCacheConnector extends DataCacheConnector with Matchers {
+trait FakeDataCacheConnector extends DataCacheConnector with Matchers {
 
   private val data: mutable.HashMap[String, JsValue] = mutable.HashMap()
   private val removed: mutable.ListBuffer[String] = mutable.ListBuffer()
