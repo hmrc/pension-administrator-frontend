@@ -44,39 +44,6 @@ case class Address(addressLine1: String,
 
 object Address {
 
-  implicit val readAddress: Reads[Address] = {
-    import play.api.libs.json._
-    import play.api.libs.functional.syntax._
+  implicit val formatsAddress: Format[Address] = Json.format[Address]
 
-    (
-      (__ \ "lines").read[Seq[String]] and
-        (__ \ "town").readNullable[String] and
-        (__ \ "county").readNullable[String] and
-        (__ \ "postcode").readNullable[String] and
-        (__ \ "country" \ "name").read[String]
-      ) { (lines, town, county, postcode, country) =>
-      val line1 = lines.head
-      val line2 = lines.tail.head
-      Address(line1, line2, town, county, postcode, country)
-    }
-  }
-
-  implicit val writeAddress: Writes[Address] = {
-    import play.api.libs.json._
-    import play.api.libs.functional.syntax._
-    (
-      (__ \ "lines").write[Seq[String]] and
-        (__ \ "town").writeNullable[String] and
-        (__ \ "county").writeNullable[String] and
-        (__ \ "postcode").writeNullable[String] and
-        (__ \ "country" \ "name").write[String]
-      ) { model =>
-      (
-        Seq(model.addressLine1, model.addressLine2),
-        model.addressLine3,
-        model.addressLine4,
-        model.postcode,
-        model.country)
-    }
-  }
 }
