@@ -19,6 +19,7 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.AddressRecord
+import play.api.Logger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -32,7 +33,9 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
     val addressLookupUrl = s"${config.addressLookUp}/v2/uk/addresses?postcode=$postcode"
 
     http.GET[Seq[AddressRecord]](addressLookupUrl)(implicitly, schemeHc, implicitly).map(Some(_)) recoverWith {
-      case _ => Future.successful(None)
+      case t: Throwable =>
+        Logger.error("cannot connect to address lookup service", t)
+        Future.successful(None)
     }
   }
 }
