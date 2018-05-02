@@ -62,7 +62,7 @@ class AdvisorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "test@test.com"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "test@test.com"), ("phone", "01234567890"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -71,8 +71,8 @@ class AdvisorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "@test.com"))
-      val boundForm = form.bind(Map("name" -> "test advisor name", "email" -> "@test.com"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "@test.com"), ("phone", "01234567890"))
+      val boundForm = form.bind(Map("name" -> "test advisor name", "email" -> "@test.com", "phone" -> "01234567890"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -88,7 +88,7 @@ class AdvisorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "test@test.com"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "test@test.com"), ("phone", "01234567890"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

@@ -66,4 +66,20 @@ class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
     )
 
   }
+
+  ".phoneNumber" must {
+    val fieldName = "phone"
+    val keyPhoneNumberRequired = "contactDetails.error.phone.required"
+    val keyPhoneNumberLength = "contactDetails.error.phone.length"
+    val keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
+
+    behave like formWithPhoneNumberField(
+      form,
+      fieldName,
+      keyPhoneNumberRequired,
+      keyPhoneNumberLength,
+      keyPhoneNumberInvalid
+    )
+
+  }
 }

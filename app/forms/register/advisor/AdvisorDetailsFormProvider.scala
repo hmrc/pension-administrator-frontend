@@ -39,6 +39,12 @@ class AdvisorDetailsFormProvider @Inject() extends EmailMapping {
         "contactDetails.error.email.required",
         "contactDetails.error.email.length",
         "contactDetails.error.email.invalid"
+      ),
+
+      "phone" -> phoneNumberMapping(
+        "contactDetails.error.phone.required",
+        "contactDetails.error.phone.length",
+        "contactDetails.error.phone.invalid"
       )
     )(AdvisorDetails.apply)(AdvisorDetails.unapply)
    )
