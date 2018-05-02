@@ -21,8 +21,9 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import models.register.KnownFacts
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import play.api.http.Status._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +32,12 @@ class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAp
   val url = config.enrolmentStoreUrl("HMRC-PSA-ORG")
 
   def enrol(knownFacts: KnownFacts)
-           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.PUT(url, knownFacts)
-  }
+           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+
+    http.PUT(url, knownFacts) flatMap {
+      case response if response.status equals NO_CONTENT => Future.successful(response)
+      case response => Future.failed(new HttpException(response.body, response.status))
+    }
 
   def constructKnownFacts: KnownFacts = ???
 
