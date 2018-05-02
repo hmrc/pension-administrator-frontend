@@ -16,17 +16,17 @@
 
 package models.register
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json}
 
 
 case class KnownFact(key: String, value: String)
 
 object KnownFact {
-  implicit val format = Json.format[KnownFact]
+  implicit val format: Format[KnownFact] = Json.format[KnownFact]
 }
 
 case class KnownFacts(verifiers: Set[KnownFact])
 
 object KnownFacts {
-  implicit val format = Json.format[KnownFacts]
+  implicit val format: Format[KnownFacts] = Json.format[KnownFacts]
 }
