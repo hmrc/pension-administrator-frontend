@@ -46,6 +46,11 @@
             label = messages("advisorDetails.email")
         )
 
+        @components.input_text(
+            field = form("phone"),
+            label = messages("advisorDetails.phone")
+        )
+
         @components.submit_button("site.save_and_continue")
     }
 }

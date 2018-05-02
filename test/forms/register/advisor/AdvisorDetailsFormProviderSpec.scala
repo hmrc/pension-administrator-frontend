@@ -16,10 +16,10 @@
 
 package forms.register.advisor
 
-import forms.behaviours.{EmailBehaviours, StringFieldBehaviours}
+import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 
-class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours  {
+class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours  {
 
   val form = new AdvisorDetailsFormProvider()()
 
@@ -63,6 +63,22 @@ class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
       keyEmailRequired,
       keyEmailLength,
       keyEmailInvalid
+    )
+
+  }
+
+  ".phoneNumber" must {
+    val fieldName = "phone"
+    val keyPhoneNumberRequired = "contactDetails.error.phone.required"
+    val keyPhoneNumberLength = "contactDetails.error.phone.length"
+    val keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
+
+    behave like formWithPhoneNumberField(
+      form,
+      fieldName,
+      keyPhoneNumberRequired,
+      keyPhoneNumberLength,
+      keyPhoneNumberInvalid
     )
 
   }
