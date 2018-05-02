@@ -18,12 +18,12 @@ package forms.register.advisor
 
 import javax.inject.Inject
 
-import forms.mappings.EmailMapping
+import forms.mappings.{EmailMapping, PhoneNumberMapping}
 import models.register.advisor.AdvisorDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-class AdvisorDetailsFormProvider @Inject() extends EmailMapping {
+class AdvisorDetailsFormProvider @Inject() extends EmailMapping with PhoneNumberMapping {
 
    def apply(): Form[AdvisorDetails] = Form(
     mapping(

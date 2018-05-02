@@ -16,10 +16,10 @@
 
 package forms.register.advisor
 
-import forms.behaviours.{EmailBehaviours, StringFieldBehaviours}
+import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 
-class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours  {
+class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours {
 
   val form = new AdvisorDetailsFormProvider()()
 
