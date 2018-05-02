@@ -34,7 +34,7 @@ class LoginControllerSpec extends ControllerSpecBase {
 
   def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false)))
+      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
   }
 
   "Login Controller" must {

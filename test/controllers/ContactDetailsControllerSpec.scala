@@ -54,12 +54,12 @@ object ContactDetailsControllerSpec {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, false), answers))
+        PSAUser(UserType.Organisation, None, false, None), answers))
     }
 
     def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, false), answers))
+        PSAUser(UserType.Organisation, None, false, None), answers))
     }
   }
 

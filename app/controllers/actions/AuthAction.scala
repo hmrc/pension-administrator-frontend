@@ -16,6 +16,8 @@
 
 package controllers.actions
 
+import java.net.URLEncoder
+
 import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import play.api.mvc.Results._
@@ -47,8 +49,15 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.allEnrolments) {
 
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
-
+        if (affinityGroup == Individual && !allowedIndividual(cl)) {
+          val redirectUrl = s"${config.ivUpliftUrl}?origin=PODS&" +
+            s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
+            s"failureURL=${URLEncoder.encode(config.psaHost + controllers.routes.UnauthorisedController.onPageLoad(), "UTF-8")}" +
+            s"&confidenceLevel=${ConfidenceLevel.L200.level}"
+          Future.successful(Redirect(redirectUrl))
+        } else {
+          block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+        }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
 
@@ -78,8 +87,8 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   private def allowedOrganisation(confidenceLevel: ConfidenceLevel): Boolean =
     confidenceLevel.compare(ConfidenceLevel.L50) >= 0
 
-  private def isExistingPSA(enrolments: Enrolments): Boolean =
-    enrolments.getEnrolment("HMRC-PSA-ORG").nonEmpty
+  private def existingPSA(enrolments: Enrolments): Option[String] =
+    enrolments.getEnrolment("HMRC-PSA-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
 
   private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
@@ -94,7 +103,9 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
                       nino: Option[String], enrolments: Enrolments): PSAUser = {
-    PSAUser(userType(affinityGroup, cl), nino, isExistingPSA(enrolments))
+
+    val psa = existingPSA(enrolments)
+    PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
   }
 }
 
