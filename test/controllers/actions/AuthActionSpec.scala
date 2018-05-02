@@ -54,7 +54,7 @@ class AuthActionSpec extends SpecBase {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
           s"completionURL=${URLEncoder.encode(frontendAppConfig.loginContinueUrl, "UTF-8")}&" +
-          s"failureURL=${URLEncoder.encode(frontendAppConfig.psaHost + controllers.routes.UnauthorisedController.onPageLoad(), "UTF-8")}" +
+          s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
         val controller = new Harness(authAction)

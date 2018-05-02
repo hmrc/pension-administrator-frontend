@@ -52,7 +52,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         if (affinityGroup == Individual && !allowedIndividual(cl)) {
           val redirectUrl = s"${config.ivUpliftUrl}?origin=PODS&" +
             s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
-            s"failureURL=${URLEncoder.encode(config.psaHost + controllers.routes.UnauthorisedController.onPageLoad(), "UTF-8")}" +
+            s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
             s"&confidenceLevel=${ConfidenceLevel.L200.level}"
           Future.successful(Redirect(redirectUrl))
         } else {
