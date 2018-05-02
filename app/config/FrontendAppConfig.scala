@@ -42,7 +42,6 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
   lazy val ivUpliftUrl = loadConfig("urls.ivUpliftUrl")
-  lazy val psaHost = s"${baseUrl("pension-administrator-frontend")}"
 
   lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val authUrl: String = baseUrl("auth")
