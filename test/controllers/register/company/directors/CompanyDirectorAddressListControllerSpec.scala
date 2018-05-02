@@ -24,7 +24,7 @@ import controllers.actions._
 import forms.register.company.directors.CompanyDirectorAddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
 import models.register.company.directors.DirectorDetails
-import models.{Address, Index, NormalMode}
+import models.{Address, Index, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -47,13 +47,13 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
     address("test post code 2")
   )
 
-  def address(postCode: String): Address = Address(
-    "address line 1",
-    "address line 2",
+  def address(postCode: String): TolerantAddress = TolerantAddress(
+    Some("address line 1"),
+    Some("address line 2"),
     Some("test town"),
     Some("test county"),
-    postcode = Some(postCode),
-    country = "United Kingdom"
+    Some(postCode),
+    Some("United Kingdom")
   )
 
   val validData: JsValue = Json.obj(

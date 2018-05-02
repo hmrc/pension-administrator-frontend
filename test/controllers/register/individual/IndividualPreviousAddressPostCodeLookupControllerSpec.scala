@@ -21,7 +21,7 @@ import connectors.{AddressLookupConnector, DataCacheConnector, FakeDataCacheConn
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
-import models.{Address, AddressRecord, NormalMode}
+import models.{Address, AddressRecord, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -74,18 +74,18 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
 
   private val validPostcode = "ZZ1 1ZZ"
 
-  private val address = Address(
-    "test-address-line-1",
-    "test-address-line-2",
+  private val address = TolerantAddress(
+    Some("test-address-line-1"),
+    Some("test-address-line-2"),
     None,
     None,
     Some(validPostcode),
-    "GB"
+    Some("GB")
   )
 
   private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[AddressRecord]]] = {
-      Future.successful(Some(Seq(AddressRecord(address))))
+    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[TolerantAddress]]] = {
+      Future.successful(Some(Seq(address)))
     }
   }
 

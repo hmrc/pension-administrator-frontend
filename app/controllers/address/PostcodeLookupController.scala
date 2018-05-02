@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.{Address, Mode}
+import models.{Address, Mode, TolerantAddress}
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -51,7 +51,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
   }
 
   protected def post(
-                      id: TypedIdentifier[Seq[Address]],
+                      id: TypedIdentifier[Seq[TolerantAddress]],
                       viewmodel: PostcodeLookupViewModel,
                       mode: Mode,
                       invalidPostcode: Message = invalidPostcode,
@@ -68,7 +68,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
   }
 
   private def lookupPostcode(
-                              id: TypedIdentifier[Seq[Address]],
+                              id: TypedIdentifier[Seq[TolerantAddress]],
                               viewmodel: PostcodeLookupViewModel,
                               invalidPostcode: Message,
                               noResults: Message,
@@ -86,7 +86,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
         cacheConnector.save(
           request.externalId,
           id,
-          addresses.map(_.address)
+          addresses
         ).map {
           json =>
             Redirect(navigator.nextPage(id, mode)(UserAnswers(json)))

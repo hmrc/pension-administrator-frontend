@@ -92,8 +92,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
                     )
                   )
                 )
-              case Some(addressRecords) =>
-                val addresses = addressRecords.map(_.address)
+              case Some(addresses) =>
 
                 dataCacheConnector
                   .save(

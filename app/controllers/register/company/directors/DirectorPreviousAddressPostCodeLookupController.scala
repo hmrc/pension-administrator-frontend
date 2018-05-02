@@ -71,9 +71,8 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
                 Future.successful(BadRequest(directorPreviousAddressPostCodeLookup(appConfig, formWithError("directorPreviousAddressPostCodeLookup.error.invalid"), mode, index, directorName)))
               case Some(Nil) =>
                 Future.successful(BadRequest(directorPreviousAddressPostCodeLookup(appConfig, formWithError("directorPreviousAddressPostCodeLookup.error.noResults"), mode, index, directorName)))
-              case Some(addressRecords) =>
-                val address = addressRecords.map(_.address)
-                dataCacheConnector.save(request.externalId, DirectorPreviousAddressPostCodeLookupId(index), address).map(cacheMap =>
+              case Some(addresses) =>
+                dataCacheConnector.save(request.externalId, DirectorPreviousAddressPostCodeLookupId(index), addresses).map(cacheMap =>
                   Redirect(navigator.nextPage(DirectorPreviousAddressPostCodeLookupId(index), mode)(UserAnswers(cacheMap))))
             }
         )

@@ -17,7 +17,7 @@
 package views.address
 
 import forms.address.AddressListFormProvider
-import models.Address
+import models.{Address, TolerantAddress}
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -39,15 +39,14 @@ class AddressListSpec extends ViewBehaviours {
 
   private val viewModel = AddressListViewModel(call, call, addresses, subHeading = Some(Message(subHeading)))
 
-  private def address(postCode: String): Address =
-    Address(
-      "address line 1",
-      "address line 2",
-      Some("test town"),
-      Some("test county"),
-      Some(postCode),
-      "GB"
-    )
+  def address(postCode: String): TolerantAddress = TolerantAddress(
+    Some("address line 1"),
+    Some("address line 2"),
+    Some("test town"),
+    Some("test county"),
+    Some(postCode),
+    Some("United Kingdom")
+  )
 
   private def createView: () => HtmlFormat.Appendable =
     () =>

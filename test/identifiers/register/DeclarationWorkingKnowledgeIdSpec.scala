@@ -17,7 +17,7 @@
 package identifiers.register
 
 import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressPostCodeLookupId, AdvisorDetailsId}
-import models.Address
+import models.{Address, TolerantAddress}
 import models.register.DeclarationWorkingKnowledge
 import models.register.advisor.AdvisorDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -27,13 +27,18 @@ import play.api.libs.json.Json
 class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
  "Cleanup" when {
 
-   val address=Address("test-address-line1","test-address-line2", None,None, None,"test-country")
+   val address=TolerantAddress(Some("test-address-line1"),
+     Some("test-address-line2"),
+     None,
+     None,
+     None,
+     Some("test-country"))
 
    val answersWithAdvisor = UserAnswers(Json.obj())
      .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
      .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("test name", "a@a")))
      .flatMap(_.set(AdvisorAddressPostCodeLookupId)(Seq(address)))
-     .flatMap(_.set(AdvisorAddressId)(address))
+     .flatMap(_.set(AdvisorAddressId)(address.toAddress))
      .asOpt.value
 
 

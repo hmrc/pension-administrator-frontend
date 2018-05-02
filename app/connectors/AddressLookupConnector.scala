@@ -18,7 +18,8 @@ package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import models.AddressRecord
+import models.TolerantAddress
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -26,12 +27,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends AddressLookupConnector {
 
-  override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[AddressRecord]]] = {
+  override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[TolerantAddress]]] = {
     val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
 
     val addressLookupUrl = s"${config.addressLookUp}/v2/uk/addresses?postcode=$postcode"
 
-    http.GET[Seq[AddressRecord]](addressLookupUrl)(implicitly, schemeHc, implicitly).map(Some(_)) recoverWith {
+    implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
+
+    http.GET[Seq[TolerantAddress]](addressLookupUrl)(implicitly, schemeHc, implicitly).map(Some(_)) recoverWith {
       case _ => Future.successful(None)
     }
   }
@@ -39,5 +42,5 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
 
 @ImplementedBy(classOf[AddressLookupConnectorImpl])
 trait AddressLookupConnector {
-  def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[AddressRecord]]]
+  def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[TolerantAddress]]]
 }
