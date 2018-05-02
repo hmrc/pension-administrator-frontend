@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package models
 
-import models.{PSAUser, UserType}
-import play.api.mvc.{Request, Result}
-import models.requests.AuthenticatedRequest
+import play.api.libs.json.{Format, Json}
 
-import scala.concurrent.Future
+case class ExistingPSA(isExistingPSA: Boolean, existingPSAId: Option[String])
 
-object FakeAuthAction extends AuthAction {
-  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, "id", PSAUser(UserType.Organisation, None, false, None)))
+object ExistingPSA {
+  implicit lazy val formats: Format[ExistingPSA] = Json.format[ExistingPSA]
 }
-

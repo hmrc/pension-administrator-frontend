@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class RetrievalsSpec extends ControllerSpecBase with FrontendController with Retrievals with EitherValues with ScalaFutures {
 
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-    PSAUser(UserType.Organisation, None, false), UserAnswers(data))
+    PSAUser(UserType.Organisation, None, false, None), UserAnswers(data))
 
   class TestController extends FrontendController with Retrievals
 
