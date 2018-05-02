@@ -407,7 +407,6 @@ advisorDetails.heading = Provide details of your pension advisor
 advisorDetails.secondary.heading = Pension advisor
 advisorDetails.name = Name
 advisorDetails.email = Email address
-advisorDetails.phone = Phone Number
 advisorDetails.checkYourAnswersLabel = Advisor details
 advisorDetails.error.name.required = Enter the name of your advisor
 advisorDetails.error.name.length = The name cannot be more than 107 characters
