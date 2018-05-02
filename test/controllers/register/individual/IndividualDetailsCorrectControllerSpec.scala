@@ -50,7 +50,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   private val fakeAuthAction = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), false)))
+      block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), false, None)))
   }
 
   private val registrationInfo = RegistrationInfo(

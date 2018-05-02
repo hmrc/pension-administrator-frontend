@@ -16,14 +16,19 @@
 
 package controllers.actions
 
+import java.net.URLEncoder
+
 import play.api.mvc.Controller
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.SpecBase
+import com.google.inject.Inject
+import config.FrontendAppConfig
 import controllers.routes
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -45,14 +50,17 @@ class AuthActionSpec extends SpecBase {
         status(result) mustBe OK
       }
 
-      "redirect to UnAuthorised page if they have confidence level less than 200" in {
+      "redirect to IV if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
-
+        val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
+          s"completionURL=${URLEncoder.encode(frontendAppConfig.loginContinueUrl, "UTF-8")}&" +
+          s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
+          s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(redirectUrl)
       }
     }
 
@@ -178,4 +186,5 @@ object AuthActionSpec {
   class Harness(authAction: AuthAction) extends Controller {
     def onPageLoad() = authAction { request => Ok }
   }
+
 }

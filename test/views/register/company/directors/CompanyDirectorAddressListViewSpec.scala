@@ -17,7 +17,7 @@
 package views.register.company.directors
 
 import forms.register.company.directors.CompanyDirectorAddressListFormProvider
-import models.{Address, Index, NormalMode}
+import models.{Address, Index, NormalMode, TolerantAddress}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.companyDirectorAddressList
@@ -37,8 +37,14 @@ class CompanyDirectorAddressListViewSpec extends ViewBehaviours {
     address("test post code 2")
   )
 
-  def address(postCode: String): Address = Address("address line 1", "address line 2", Some("test town"),
-    Some("test county"), postcode = Some(postCode), country = "United Kingdom")
+  def address(postCode: String): TolerantAddress = TolerantAddress(
+    Some("address line 1"),
+    Some("address line 2"),
+    Some("test town"),
+    Some("test county"),
+    Some(postCode),
+    Some("United Kingdom")
+  )
 
   def createView = () => companyDirectorAddressList(
     frontendAppConfig,

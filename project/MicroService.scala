@@ -86,7 +86,7 @@ trait MicroService {
         "metrics.enabled" -> "false",
         "auditing.enabled" -> "false",
         "play.server.http.port" -> "8201",
-        "urls.loginContinue" -> "http://localhost:8201/pension-administrator"
+        "urls.loginContinue" -> "http://localhost:8201/register-as-pension-scheme-administrator"
       )
     )
 }

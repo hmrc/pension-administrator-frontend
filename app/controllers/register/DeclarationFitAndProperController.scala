@@ -23,8 +23,8 @@ import controllers.actions._
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import forms.register.DeclarationFormProvider
-import identifiers.register.{DeclarationFitAndProperId, PsaSubscriptionResponseId}
-import models.{NormalMode, UserType}
+import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
+import models.{ExistingPSA, NormalMode, UserType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
 import utils.annotations.Register
@@ -73,15 +73,17 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                 declarationFitAndProper(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
           },
         success => dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
-          pensionsSchemeConnector.registerPsa(UserAnswers(cacheMap)).flatMap { psaResponse =>
+          val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(request.user.isExistingPSA,
+            request.user.existingPSAId)).asOpt.getOrElse(UserAnswers(cacheMap))
+          pensionsSchemeConnector.registerPsa(answers).flatMap { psaResponse =>
             dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse).map { cacheMap =>
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
             }
           } recoverWith {
-            case _: InvalidBusinessPartnerException => Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+            case _: InvalidBusinessPartnerException => Future.successful(Redirect(controllers.register.routes
+              .DuplicateRegistrationController.onPageLoad()))
           }
         }
       )
   }
-
 }

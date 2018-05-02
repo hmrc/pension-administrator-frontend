@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package identifiers.register
 
-import models.UserType.UserType
+import identifiers.TypedIdentifier
+import models.ExistingPSA
 
-case class PSAUser(userType: UserType, nino: Option[String], isExistingPSA: Boolean)
-
-object UserType extends Enumeration {
-  type UserType = Value
-  val Individual, Organisation = Value
+case object ExistingPSAId extends TypedIdentifier[ExistingPSA] {
+  override def toString: String = "existingPSA"
 }

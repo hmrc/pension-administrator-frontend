@@ -17,7 +17,7 @@
 package models
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, JsPath}
+import play.api.libs.json._
 
 import scala.language.implicitConversions
 
@@ -39,9 +39,55 @@ case class TolerantAddress(addressLine1: Option[String],
     ).flatten(s => s)
   }
 
+  def print: String = {
+    lines.mkString(", ")
+  }
+
+  def toAddress:Address = {
+    Address(
+      addressLine1.getOrElse(""),
+      addressLine2.getOrElse(""),
+      addressLine3,
+      addressLine4,
+      postcode,
+      country.getOrElse("")
+    )
+  }
 }
 
 object TolerantAddress {
+
+  val postCodeLookupAddressReads : Reads[TolerantAddress] = (
+    (JsPath \ "address" \ "lines").read[List[String]] and
+      (JsPath \ "address" \ "postcode").read[String] and
+      (JsPath \ "address" \ "country" \ "code").read[String]
+    )((lines,postCode,countryCode) => {
+    val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
+      lines.size match {
+        case 1 => (Some(lines(0)),None,None,None)
+        case 2 => (Some(lines(0)),Some(lines(1)),None,None)
+        case 3 => (Some(lines(0)),Some(lines(1)),Some(lines(2)),None)
+        case 4 => (Some(lines(0)),Some(lines(1)),Some(lines(2)),Some(lines(3)))
+      }
+    }
+    TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
+  })
+
+
+
+  val postCodeLookupReads : Reads[Seq[TolerantAddress]] = Reads {
+    json =>
+      json.validate[Seq[JsValue]].flatMap(addresses => {
+        addresses.foldLeft[JsResult[List[TolerantAddress]]](JsSuccess(List.empty)){
+          (addresses,currentAddress) => {
+            for {
+              sequenceOfAddressess <- addresses
+              address <- currentAddress.validate[TolerantAddress](postCodeLookupAddressReads)
+            } yield sequenceOfAddressess :+ address
+          }
+        }
+      })
+  }
 
   implicit lazy val formatsTolerantAddress: Format[TolerantAddress] = (
     (JsPath \ "addressLine1").formatNullable[String] and
