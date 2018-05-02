@@ -33,7 +33,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
 
   def advisorDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.advisor.AdvisorDetailsId) match {
     case Some(x) => Seq(AnswerRow("cya.label.name", Seq(x.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-                        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
+                        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
+                        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 

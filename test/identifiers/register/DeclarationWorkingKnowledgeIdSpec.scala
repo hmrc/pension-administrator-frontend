@@ -36,7 +36,7 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
 
    val answersWithAdvisor = UserAnswers(Json.obj())
      .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
-     .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("test name", "a@a")))
+     .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("test name", "a@a", "01234567890")))
      .flatMap(_.set(AdvisorAddressPostCodeLookupId)(Seq(address)))
      .flatMap(_.set(AdvisorAddressId)(address.toAddress))
      .asOpt.value
