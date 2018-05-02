@@ -77,7 +77,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val psaUser=PSAUser(UserType.Individual,None,false)
+  private val psaUser = PSAUser(UserType.Individual, None, false, None)
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
       frontendAppConfig,
