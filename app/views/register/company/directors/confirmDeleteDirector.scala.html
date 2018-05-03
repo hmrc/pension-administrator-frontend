@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.directors.routes._
+@import models.NormalMode
 
 @(appConfig: FrontendAppConfig, index: Int, fullName: String)(implicit request: Request[_], messages: Messages)
 
@@ -36,7 +37,7 @@
 
         @components.submit_button("site.confirm")
 
-        <a id="cancel" href="">
+        <a id="cancel" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
             @messages("site.cancel")
         </a>
 

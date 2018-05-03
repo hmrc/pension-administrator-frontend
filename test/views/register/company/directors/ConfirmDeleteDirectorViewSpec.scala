@@ -16,7 +16,8 @@
 
 package views.register.company.directors
 
-import models.Index
+import controllers.register.company.directors.routes
+import models.{Index, NormalMode}
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.confirmDeleteDirector
 
@@ -58,9 +59,8 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       assertRenderedById(doc, "submit")
     }
 
-    "have a cancel button" in {
-      val doc = asDocument(createView())
-      assertRenderedById(doc, "cancel")
+    "have a cancel link" in {
+      createView must haveLink(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "cancel")
     }
   }
 }

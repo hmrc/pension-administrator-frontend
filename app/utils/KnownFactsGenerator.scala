@@ -16,22 +16,18 @@
 
 package utils
 
+import models.UserType
 import models.register.KnownFacts
+import models.requests.DataRequest
+import play.api.mvc.AnyContent
 
 class KnownFactsGenerator {
 
-  def constructKnownFacts(userType: UserType): KnownFacts = {
-    userType match {
-      case Individual => ???
-      case CompanyUK => ???
-      case CompanyNonUK => ???
+  def constructKnownFacts(implicit request: DataRequest[AnyContent]): KnownFacts = {
+    request.user.userType match {
+      case UserType.Individual => ???
+      case UserType.Organisation => ???
     }
   }
 
 }
-
-sealed trait UserType
-
-case object Individual extends UserType
-case object CompanyUK extends UserType
-case object CompanyNonUK extends UserType
