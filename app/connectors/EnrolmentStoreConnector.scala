@@ -20,12 +20,14 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import models.register.KnownFacts
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import play.api.Logger
 import play.api.http.Status._
+import play.api.libs.json.Writes
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Try}
 
 class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) {
 
@@ -33,11 +35,16 @@ class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAp
 
   def enrol(knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-
     http.PUT(url, knownFacts) flatMap {
-      case response: HttpResponse if response.status equals NO_CONTENT => Future.successful(response)
+      case response if response.status equals NO_CONTENT => Future.successful(response)
       case response => Future.failed(new HttpException(response.body, response.status))
+    } andThen {
+      logExceptions()
     }
+
+  private def logExceptions(): PartialFunction[Try[HttpResponse], Unit] = {
+    case Failure(t: Throwable) => Logger.error("Unable to connect to Tax Enrolments", t)
+  }
 
   def constructKnownFacts: KnownFacts = ???
 
