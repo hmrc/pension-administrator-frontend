@@ -22,6 +22,7 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models.{Address, NormalMode, PSAUser, UserType}
+import models.{Address, NormalMode, TolerantAddress}
 import models.requests.DataRequest
 import org.scalatest.{Matchers, WordSpec}
 import play.api.Application
@@ -102,7 +103,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, 0)
 
         status(result) shouldBe SEE_OTHER
-        FakeDataCacheConnector.verify(fakeId, viewModel.addresses.head)
+        FakeDataCacheConnector.verify(fakeAddressId, viewModel.addresses.head.toAddress)
       }
 
     }
@@ -149,8 +150,8 @@ object AddressListControllerSpec {
 
       post(
         viewModel,
-        fakeId,
-        fakeId,
+        fakeAddressListId,
+        fakeAddressId,
         NormalMode
       )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, false, None), UserAnswers()))
 
@@ -160,31 +161,32 @@ object AddressListControllerSpec {
 
   val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val fakeId: TypedIdentifier[Address] = new TypedIdentifier[Address]() {}
+  val fakeAddressListId: TypedIdentifier[Seq[TolerantAddress]] = new TypedIdentifier[Seq[TolerantAddress]]() {}
+  val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address]() {}
 
   private lazy val postCall = controllers.routes.IndexController.onPageLoad()
   private lazy val manualInputCall = controllers.routes.SessionExpiredController.onPageLoad()
 
-  val addresses = Seq(
-    Address(
-      "Address 1 Line 1",
-      "Address 1 Line 2",
+  private val addresses = Seq(
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      Some("Address 1 Line 2"),
       Some("Address 1 Line 3"),
       Some("Address 1 Line 4"),
       Some("A1 1PC"),
-      "GB"
+      Some("GB")
     ),
-    Address(
-      "Address 2 Line 1",
-      "Address 2 Line 2",
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      Some("Address 2 Line 2"),
       Some("Address 2 Line 3"),
       Some("Address 2 Line 4"),
       Some("123"),
-      "FR"
+      Some("FR")
     )
   )
 
-  def addressListViewModel(addresses: Seq[Address] = addresses): AddressListViewModel =
+  def addressListViewModel(addresses: Seq[TolerantAddress] = addresses): AddressListViewModel =
     AddressListViewModel(
       postCall,
       manualInputCall,

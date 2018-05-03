@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.register.{KnownFact, KnownFacts}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -37,7 +37,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val url: String = s"/enrolment-store/enrolments/HMRC-PSA-ORG"
+  private def url: String = s"/enrolment-store/enrolments/HMRC-PSA-ORG"
 
   private lazy val connector = injector.instanceOf[EnrolmentStoreConnector]
 
@@ -52,7 +52,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
           )
 
           server.stubFor(
-            get(urlEqualTo(url))
+            put(urlEqualTo(url))
               .willReturn(
                 aResponse()
                   .withStatus(NO_CONTENT)

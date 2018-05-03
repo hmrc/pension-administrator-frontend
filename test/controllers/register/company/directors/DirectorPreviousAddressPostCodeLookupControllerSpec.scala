@@ -26,7 +26,7 @@ import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
 import models.register.company.CompanyDetails
 import models.register.company.directors.DirectorDetails
-import models.{Address, AddressRecord, Index, NormalMode}
+import models._
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -59,13 +59,13 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
   def viewAsString(form: Form[_] = form) = directorPreviousAddressPostCodeLookup(frontendAppConfig,
     form, NormalMode, index, directorName)(fakeRequest, messages).toString
 
-  private def fakeAddress(postCode: String) = Address(
-    "Address Line 1",
-    "Address Line 2",
+  private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
+    Some("Address Line 1"),
+    Some("Address Line 2"),
     Some("Address Line 3"),
     Some("Address Line 4"),
     Some(postCode),
-    "GB"
+    Some("GB")
   )
 
   val validData = Json.obj(
@@ -104,7 +104,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Seq(AddressRecord(fakeAddress(testAnswer))))))
+        .thenReturn(Future.successful(Some(Seq(fakeAddress(testAnswer)))))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)
 

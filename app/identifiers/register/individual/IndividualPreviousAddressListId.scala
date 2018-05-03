@@ -17,8 +17,8 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
-import models.Address
+import models.TolerantAddress
 
-case object IndividualPreviousAddressListId extends TypedIdentifier[Address] {
+case object IndividualPreviousAddressListId extends TypedIdentifier[TolerantAddress] {
   override def toString: String = "individualPreviousAddressList"
 }
