@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package models.register
+package utils
 
-import play.api.libs.json.{Format, Json}
+import models.register.KnownFacts
 
-case class KnownFact(key: String, value: String)
+class KnownFactsGenerator {
 
-object KnownFact {
-  implicit val format: Format[KnownFact] = Json.format[KnownFact]
+  def constructKnownFacts(userType: UserType): KnownFacts = {
+    userType match {
+      case Individual => ???
+      case CompanyUK => ???
+      case CompanyNonUK => ???
+    }
+  }
+
 }
 
-case class KnownFacts(verifiers: Set[KnownFact])
+sealed trait UserType
 
-object KnownFacts {
-  implicit val format: Format[KnownFacts] = Json.format[KnownFacts]
-}
+case object Individual extends UserType
+case object CompanyUK extends UserType
+case object CompanyNonUK extends UserType

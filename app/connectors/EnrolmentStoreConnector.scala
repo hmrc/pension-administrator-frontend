@@ -46,6 +46,4 @@ class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAp
     case Failure(t: Throwable) => Logger.error("Unable to connect to Tax Enrolments", t)
   }
 
-  def constructKnownFacts: KnownFacts = ???
-
 }
