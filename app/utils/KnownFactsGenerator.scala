@@ -16,18 +16,38 @@
 
 package utils
 
-import models.UserType
-import models.register.KnownFacts
+import identifiers.register.company.ConfirmCompanyAddressId
+import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId}
+import models.RegistrationCustomerType.UK
+import models.RegistrationLegalStatus.{Individual, LimitedCompany}
+import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 
 class KnownFactsGenerator {
 
   def constructKnownFacts(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
-    request.user.userType match {
-      case UserType.Individual => ???
-      case UserType.Organisation => ???
+
+    val knownFacts: Option[Seq[KnownFact]] = for {
+      psaSubscriptionResponse <- request.userAnswers.get(PsaSubscriptionResponseId)
+      confirmCompanyAddress  <- request.userAnswers.get(ConfirmCompanyAddressId)
+      registrationInfo <- request.userAnswers.get(RegistrationInfoId)
+    } yield {
+
+      registrationInfo.legalStatus match {
+        case Individual => Seq(KnownFact("", ""))
+        case LimitedCompany if registrationInfo.customerType equals UK => Seq(KnownFact("", ""))
+        case LimitedCompany => Seq(KnownFact("", ""))
+        case _ => Seq.empty[KnownFact]
+      }
+
     }
+
+    knownFacts match {
+      case Some(kf @ _::_) => Some(KnownFacts(kf))
+      case _ => None
+    }
+
   }
 
 }

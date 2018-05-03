@@ -24,7 +24,7 @@ object KnownFact {
   implicit val format: Format[KnownFact] = Json.format[KnownFact]
 }
 
-case class KnownFacts(verifiers: Set[KnownFact])
+case class KnownFacts(verifiers: Seq[KnownFact])
 
 object KnownFacts {
   implicit val format: Format[KnownFacts] = Json.format[KnownFacts]

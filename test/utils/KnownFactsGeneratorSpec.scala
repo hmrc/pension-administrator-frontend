@@ -17,14 +17,10 @@
 package utils
 
 import base.SpecBase
-import com.sun.corba.se.impl.ior.ObjectAdapterIdNumber
-import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId}
 import identifiers.register.company.ConfirmCompanyAddressId
-import models.RegistrationCustomerType.UK
-import models.RegistrationLegalStatus.Individual
-import models.UserType.UserType
-import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
+import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId}
 import models._
+import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
@@ -75,7 +71,7 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
           val generator = app.injector.instanceOf[KnownFactsGenerator]
 
-          generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+          generator.constructKnownFacts mustEqual Some(KnownFacts(Seq(
             KnownFact("PSA ID", psa),
             KnownFact("NINO", nino)
           )))
@@ -118,7 +114,7 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
             val generator = app.injector.instanceOf[KnownFactsGenerator]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+            generator.constructKnownFacts mustEqual Some(KnownFacts(Seq(
               KnownFact("PSA ID", psa),
               KnownFact("CT UTR", utr)
             )))
@@ -157,7 +153,7 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
             val generator = app.injector.instanceOf[KnownFactsGenerator]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+            generator.constructKnownFacts mustEqual Some(KnownFacts(Seq(
               KnownFact("PSA ID", psa),
               KnownFact("Country Code", nonUk)
             )))

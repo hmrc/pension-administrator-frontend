@@ -48,7 +48,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
         "means the enrolment was updated or created successfully" in {
 
           val knownFacts = KnownFacts(
-            Set(KnownFact("NINO", "JJ123456P"))
+            Seq(KnownFact("NINO", "JJ123456P"))
           )
 
           server.stubFor(
@@ -71,7 +71,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
       "enrolments returns BAD_REQUEST" which {
         "means the POST body wasn't as expected" in {
 
-          val knownFacts = KnownFacts(Set.empty[KnownFact])
+          val knownFacts = KnownFacts(Seq.empty[KnownFact])
 
           server.stubFor(
             put(urlEqualTo(url))
@@ -91,7 +91,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
         "means admin credentials are not valid" in {
 
           val knownFacts = KnownFacts(
-            Set(KnownFact("NINO", "JJ123456P"))
+            Seq(KnownFact("NINO", "JJ123456P"))
           )
 
           server.stubFor(
