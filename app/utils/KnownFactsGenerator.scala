@@ -23,7 +23,7 @@ import play.api.mvc.AnyContent
 
 class KnownFactsGenerator {
 
-  def constructKnownFacts(implicit request: DataRequest[AnyContent]): KnownFacts = {
+  def constructKnownFacts(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
     request.user.userType match {
       case UserType.Individual => ???
       case UserType.Organisation => ???

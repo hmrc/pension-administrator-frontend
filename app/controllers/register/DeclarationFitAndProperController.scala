@@ -73,8 +73,10 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                 declarationFitAndProper(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
           },
         success => dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
-          val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(request.user.isExistingPSA,
-            request.user.existingPSAId)).asOpt.getOrElse(UserAnswers(cacheMap))
+          val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(
+            request.user.isExistingPSA,
+            request.user.existingPSAId
+          )).asOpt.getOrElse(UserAnswers(cacheMap))
           pensionsSchemeConnector.registerPsa(answers).flatMap { psaResponse =>
             dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse).map { cacheMap =>
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
