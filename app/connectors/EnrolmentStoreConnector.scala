@@ -35,7 +35,7 @@ class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAp
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
 
     http.PUT(url, knownFacts) flatMap {
-      case response if response.status equals NO_CONTENT => Future.successful(response)
+      case response: HttpResponse if response.status equals NO_CONTENT => Future.successful(response)
       case response => Future.failed(new HttpException(response.body, response.status))
     }
 

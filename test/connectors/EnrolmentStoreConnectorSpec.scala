@@ -19,9 +19,9 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.register.{KnownFact, KnownFacts}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.{MustMatchers, RecoverMethods, WordSpec}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -29,9 +29,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class EnrolmentStoreConnectorSpec extends WordSpec
   with MustMatchers
   with WireMockHelper
-  with OptionValues
   with ScalaFutures
-  with IntegrationPatience {
+  with IntegrationPatience
+  with RecoverMethods {
 
   override protected def portConfigKey: String = "microservice.services.enrolment-store-proxy.port"
 
@@ -61,7 +61,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
 
           whenReady(connector.enrol(knownFacts)) {
             result =>
-              result must be(HttpResponse(NO_CONTENT))
+              result.status mustEqual NO_CONTENT
           }
 
         }
@@ -71,10 +71,40 @@ class EnrolmentStoreConnectorSpec extends WordSpec
       "enrolments returns BAD_REQUEST" which {
         "means the POST body wasn't as expected" in {
 
+          val knownFacts = KnownFacts(Set.empty[KnownFact])
+
+          server.stubFor(
+            put(urlEqualTo(url))
+              .willReturn(
+                aResponse()
+                  .withStatus(BAD_REQUEST)
+              )
+          )
+
+          recoverToSucceededIf[HttpException] {
+            connector.enrol(knownFacts)
+          }
+
         }
       }
       "enrolments returns SERVICE_UNAVAILABLE" which {
         "means admin credentials are not valid" in {
+
+          val knownFacts = KnownFacts(
+            Set(KnownFact("NINO", "JJ123456P"))
+          )
+
+          server.stubFor(
+            put(urlEqualTo(url))
+              .willReturn(
+                aResponse()
+                  .withStatus(SERVICE_UNAVAILABLE)
+              )
+          )
+
+          recoverToSucceededIf[HttpException] {
+            connector.enrol(knownFacts)
+          }
 
         }
       }
