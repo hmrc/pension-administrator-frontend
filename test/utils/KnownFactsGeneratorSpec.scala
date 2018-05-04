@@ -34,6 +34,7 @@ class KnownFactsGeneratorSpec extends SpecBase {
   private val psa = "test-psa"
   private val externalId = "test-externalId"
   private val nonUk = "test-non-uk"
+  private val postalCode = "test-postal-code"
 
   "constructKnownFacts" must {
 
@@ -155,7 +156,47 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
             generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
               KnownFact("PSAID", psa),
-              KnownFact("Country Code", nonUk)
+              KnownFact("NonUKPostalCode", psa),
+              KnownFact("CountryCode", nonUk)
+            )))
+          }
+
+        }
+
+        "comprise of PSA ID and Country Code" when {
+
+          "company is Non-UK and Postal ID does not exist" in {
+
+            val registration = RegistrationInfo(
+              RegistrationLegalStatus.LimitedCompany,
+              sapNumber,
+              false,
+              RegistrationCustomerType.NonUK,
+              RegistrationIdType.UTR,
+              utr
+            )
+
+            implicit val request: DataRequest[AnyContent] = DataRequest(
+              FakeRequest(),
+              externalId,
+              PSAUser(UserType.Organisation, None, false, None),
+              UserAnswers(Json.obj(
+                PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psa),
+                ConfirmCompanyAddressId.toString -> TolerantAddress(
+                  Some("1 Street"),
+                  Some("Somewhere"),
+                  None, None, None,
+                  Some(nonUk)
+                ),
+                RegistrationInfoId.toString -> registration
+              ))
+            )
+
+            val generator = app.injector.instanceOf[KnownFactsGenerator]
+
+            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+              KnownFact("PSAID", psa),
+              KnownFact("CountryCode", nonUk)
             )))
           }
 

@@ -28,6 +28,9 @@ class KnownFactsGenerator {
 
   private val psaIdKey = "PSAID"
   private val ninoKey = "NINO"
+  private val ctutrKey = "CTUTR"
+  private val postalKey = "NonUKPostalCode"
+  private val countryKey = "CountryCode"
 
   def constructKnownFacts(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
 
@@ -41,9 +44,11 @@ class KnownFactsGenerator {
         case Individual =>
           Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ninoKey, registrationInfo.idNumber))
         case LimitedCompany if registrationInfo.customerType equals UK =>
-          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact("", ""))
-        case LimitedCompany =>
-          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact("", ""))
+          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ctutrKey, registrationInfo.idNumber))
+        case LimitedCompany => {
+          val knownFacts = Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(countryKey, confirmCompanyAddress.toAddress.country))
+          knownFacts
+        }
         case _ =>
           Set.empty[KnownFact]
       }
