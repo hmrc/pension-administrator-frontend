@@ -34,31 +34,30 @@ class KnownFactsRetrieval {
 
   def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
 
-    val knownFacts: Option[Set[KnownFact]] = for {
+    (for {
       psaSubscriptionResponse <- request.userAnswers.get(PsaSubscriptionResponseId)
-      confirmCompanyAddress  <- request.userAnswers.get(ConfirmCompanyAddressId)
-      country <- confirmCompanyAddress.country
       registrationInfo <- request.userAnswers.get(RegistrationInfoId)
     } yield {
       registrationInfo.legalStatus match {
         case Individual =>
-          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ninoKey, registrationInfo.idNumber))
+          Some(KnownFacts(Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ninoKey, registrationInfo.idNumber))))
         case LimitedCompany if registrationInfo.customerType equals UK =>
-          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ctutrKey, registrationInfo.idNumber))
+          Some(KnownFacts(Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ctutrKey, registrationInfo.idNumber))))
         case LimitedCompany =>
-          val knownFacts = Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(countryKey, country))
-          confirmCompanyAddress.postcode.fold(knownFacts){ postalCode =>
-            knownFacts + KnownFact(postalKey, postalCode)
+          for {
+            address <- request.userAnswers.get(ConfirmCompanyAddressId)
+            country <- address.country
+          } yield {
+            val knownFacts = Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(countryKey, country))
+            KnownFacts(
+              address.postcode.fold(knownFacts){ postalCode =>
+                knownFacts + KnownFact(postalKey, postalCode)
+              }
+            )
           }
-        case _ =>
-          Set.empty[KnownFact]
+        case _ => None
       }
-    }
-
-    knownFacts match {
-      case Some(kf) if kf.nonEmpty => Some(KnownFacts(kf))
-      case _ => None
-    }
+    }).flatten
 
   }
 
