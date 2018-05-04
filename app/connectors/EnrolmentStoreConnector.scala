@@ -18,6 +18,7 @@ package connectors
 
 import javax.inject.Inject
 
+import com.google.inject.{ImplementedBy, Singleton}
 import config.FrontendAppConfig
 import models.register.KnownFacts
 import play.api.Logger
@@ -29,7 +30,15 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) {
+@ImplementedBy(classOf[EnrolmentStoreConnectorImpl])
+trait EnrolmentStoreConnector {
+
+  def enrol(knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
+
+}
+
+@Singleton
+class EnrolmentStoreConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends EnrolmentStoreConnector {
 
   val url = config.enrolmentStoreUrl("HMRC-PSA-ORG")
 

@@ -24,7 +24,7 @@ import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 
-class KnownFactsGenerator {
+class KnownFactsRetrieval {
 
   private val psaIdKey = "PSAID"
   private val ninoKey = "NINO"
@@ -32,7 +32,7 @@ class KnownFactsGenerator {
   private val postalKey = "NonUKPostalCode"
   private val countryKey = "CountryCode"
 
-  def constructKnownFacts(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
+  def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
 
     val knownFacts: Option[Set[KnownFact]] = for {
       psaSubscriptionResponse <- request.userAnswers.get(PsaSubscriptionResponseId)

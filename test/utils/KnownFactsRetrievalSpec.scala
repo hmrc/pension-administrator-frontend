@@ -26,7 +26,7 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 
-class KnownFactsGeneratorSpec extends SpecBase {
+class KnownFactsRetrievalSpec extends SpecBase {
 
   private val utr = "test-utr"
   private val nino = "test-nino"
@@ -36,7 +36,7 @@ class KnownFactsGeneratorSpec extends SpecBase {
   private val nonUk = "test-non-uk"
   private val postalCode = "test-postal-code"
 
-  "constructKnownFacts" must {
+  "retrieve" must {
 
     "return set of known facts" when {
 
@@ -70,9 +70,9 @@ class KnownFactsGeneratorSpec extends SpecBase {
             ))
           )
 
-          val generator = app.injector.instanceOf[KnownFactsGenerator]
+          val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
-          generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+          generator.retrieve mustEqual Some(KnownFacts(Set(
             KnownFact("PSAID", psa),
             KnownFact("NINO", nino)
           )))
@@ -113,9 +113,9 @@ class KnownFactsGeneratorSpec extends SpecBase {
               ))
             )
 
-            val generator = app.injector.instanceOf[KnownFactsGenerator]
+            val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+            generator.retrieve mustEqual Some(KnownFacts(Set(
               KnownFact("PSAID", psa),
               KnownFact("CTUTR", utr)
             )))
@@ -153,9 +153,9 @@ class KnownFactsGeneratorSpec extends SpecBase {
               ))
             )
 
-            val generator = app.injector.instanceOf[KnownFactsGenerator]
+            val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+            generator.retrieve mustEqual Some(KnownFacts(Set(
               KnownFact("PSAID", psa),
               KnownFact("NonUKPostalCode", postalCode),
               KnownFact("CountryCode", nonUk)
@@ -193,9 +193,9 @@ class KnownFactsGeneratorSpec extends SpecBase {
               ))
             )
 
-            val generator = app.injector.instanceOf[KnownFactsGenerator]
+            val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+            generator.retrieve mustEqual Some(KnownFacts(Set(
               KnownFact("PSAID", psa),
               KnownFact("CountryCode", nonUk)
             )))
