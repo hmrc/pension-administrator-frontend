@@ -64,16 +64,14 @@ object TolerantAddress {
     )((lines,postCode,countryCode) => {
     val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
       lines.size match {
-        case 1 => (Some(lines(0)),None,None,None)
-        case 2 => (Some(lines(0)),Some(lines(1)),None,None)
-        case 3 => (Some(lines(0)),Some(lines(1)),Some(lines(2)),None)
-        case 4 => (Some(lines(0)),Some(lines(1)),Some(lines(2)),Some(lines(3)))
+        case 1 => (Some(lines.head),None,None,None)
+        case 2 => (Some(lines.head),Some(lines(1)),None,None)
+        case 3 => (Some(lines.head),Some(lines(1)),Some(lines(2)),None)
+        case 4 => (Some(lines.head),Some(lines(1)),Some(lines(2)),Some(lines(3)))
       }
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
   })
-
-
 
   val postCodeLookupReads : Reads[Seq[TolerantAddress]] = Reads {
     json =>

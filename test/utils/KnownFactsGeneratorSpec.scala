@@ -145,7 +145,8 @@ class KnownFactsGeneratorSpec extends SpecBase {
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
-                  None, None, None,
+                  None, None,
+                  Some(postalCode),
                   Some(nonUk)
                 ),
                 RegistrationInfoId.toString -> registration
@@ -156,7 +157,7 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
             generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
               KnownFact("PSAID", psa),
-              KnownFact("NonUKPostalCode", psa),
+              KnownFact("NonUKPostalCode", postalCode),
               KnownFact("CountryCode", nonUk)
             )))
           }
