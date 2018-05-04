@@ -16,44 +16,28 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import utils.FormHelpers
-@import controllers.register.company.directors.routes._
+@import controllers.register.individual.routes._
 @import models.Mode
-@import models.register.company.directors.DirectorDetails
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Int)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("directorDetails.title"),
+    title = messages("individualDateOfBirth.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = DirectorDetailsController.onSubmit(mode, index), 'autoComplete -> "off") {
+    @helpers.form(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("directorDetails.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
-
-        @components.input_text(
-            field = form("firstName"),
-            label = messages("directorDetails.firstName")
-        )
-
-        @components.input_text(
-            field = form("middleName"),
-            label = messages("directorDetails.middleName")
-        )
-
-        @components.input_text(
-            field = form("lastName"),
-            label = messages("directorDetails.lastName")
-        )
+        @components.heading("individualDateOfBirth.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @components.input_date(
             field = form("dateOfBirth"),
             label = messages("common.dateOfBirth"),
+            legendClass = "visuallyhidden",
             hint = Some(messages("common.dateOfBirth.hint"))
         )
 

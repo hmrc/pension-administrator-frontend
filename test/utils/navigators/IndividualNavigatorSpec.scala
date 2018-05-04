@@ -37,7 +37,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualDetailsCorrectId,                individualDetailsCorrect,       whatYouWillNeedPage,                  None),
     (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
     (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
-    (WhatYouWillNeedId,                         emptyAnswers,                   individualAddressYearsPage,           None),
+    (WhatYouWillNeedId,                         emptyAnswers,                   individualDateOfBirthPage,            None),
+    (IndividualDateOfBirthId,                   emptyAnswers,                   individualAddressYearsPage,           Some(checkYourAnswersPage)),
     (IndividualAddressYearsId,                  addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
     (IndividualAddressYearsId,                  addressYearsUnderAYear,         paPostCodeLookupPage(NormalMode),     Some(paPostCodeLookupPage(CheckMode))),
     (IndividualAddressYearsId,                  emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
@@ -57,6 +58,7 @@ object IndividualNavigatorSpec extends OptionValues {
   val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
   val individualAddressYearsPage = routes.IndividualAddressYearsController.onPageLoad(NormalMode)
   def paPostCodeLookupPage(mode: Mode) = routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode)
   val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)

@@ -2,6 +2,11 @@
 GET        /what-you-will-need                  controllers.register.individual.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                  controllers.register.individual.WhatYouWillNeedController.onSubmit()
 
+GET        /individualDateOfBirth               controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /individualDateOfBirth               controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /changeIndividualDateOfBirth         controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeIndividualDateOfBirth         controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode = CheckMode)
+
 GET        /personal-details                    controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode = NormalMode)
 POST       /personal-details                    controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode = NormalMode)
 GET        /change-personal-details             controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode = CheckMode)
