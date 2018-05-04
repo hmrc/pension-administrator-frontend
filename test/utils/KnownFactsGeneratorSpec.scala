@@ -71,8 +71,8 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
           val generator = app.injector.instanceOf[KnownFactsGenerator]
 
-          generator.constructKnownFacts mustEqual Some(KnownFacts(Seq(
-            KnownFact("PSA ID", psa),
+          generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+            KnownFact("PSAID", psa),
             KnownFact("NINO", nino)
           )))
 
@@ -114,9 +114,9 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
             val generator = app.injector.instanceOf[KnownFactsGenerator]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Seq(
-              KnownFact("PSA ID", psa),
-              KnownFact("CT UTR", utr)
+            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+              KnownFact("PSAID", psa),
+              KnownFact("CTUTR", utr)
             )))
           }
 
@@ -153,8 +153,8 @@ class KnownFactsGeneratorSpec extends SpecBase {
 
             val generator = app.injector.instanceOf[KnownFactsGenerator]
 
-            generator.constructKnownFacts mustEqual Some(KnownFacts(Seq(
-              KnownFact("PSA ID", psa),
+            generator.constructKnownFacts mustEqual Some(KnownFacts(Set(
+              KnownFact("PSAID", psa),
               KnownFact("Country Code", nonUk)
             )))
           }

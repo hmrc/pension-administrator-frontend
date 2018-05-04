@@ -26,25 +26,32 @@ import play.api.mvc.AnyContent
 
 class KnownFactsGenerator {
 
+  private val psaIdKey = "PSAID"
+  private val ninoKey = "NINO"
+
   def constructKnownFacts(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = {
 
-    val knownFacts: Option[Seq[KnownFact]] = for {
+    val knownFacts: Option[Set[KnownFact]] = for {
       psaSubscriptionResponse <- request.userAnswers.get(PsaSubscriptionResponseId)
       confirmCompanyAddress  <- request.userAnswers.get(ConfirmCompanyAddressId)
       registrationInfo <- request.userAnswers.get(RegistrationInfoId)
     } yield {
 
       registrationInfo.legalStatus match {
-        case Individual => Seq(KnownFact("", ""))
-        case LimitedCompany if registrationInfo.customerType equals UK => Seq(KnownFact("", ""))
-        case LimitedCompany => Seq(KnownFact("", ""))
-        case _ => Seq.empty[KnownFact]
+        case Individual =>
+          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact(ninoKey, registrationInfo.idNumber))
+        case LimitedCompany if registrationInfo.customerType equals UK =>
+          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact("", ""))
+        case LimitedCompany =>
+          Set(KnownFact(psaIdKey, psaSubscriptionResponse.psaId), KnownFact("", ""))
+        case _ =>
+          Set.empty[KnownFact]
       }
 
     }
 
     knownFacts match {
-      case Some(kf @ _::_) => Some(KnownFacts(kf))
+      case Some(kf) if kf.nonEmpty => Some(KnownFacts(kf))
       case _ => None
     }
 
