@@ -15,11 +15,10 @@
  */
 
 import com.google.inject.AbstractModule
-import utils.navigators._
-import utils.annotations._
 import utils.Navigator
-import utils._
-import utils.countryOptions.CountryOptionsEUAndEEA
+import utils.annotations._
+import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
+import utils.navigators._
 
 class PODSModule extends AbstractModule {
 

@@ -21,6 +21,7 @@ import identifiers.register.company.directors.{DirectorAddressId, DirectorPrevio
 import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
 import models.{Address, CheckMode, Nino, UniqueTaxReference}
+import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {

@@ -20,7 +20,8 @@ import base.SpecBase
 import forms.FormSpec
 import org.scalatest.{Matchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
-import utils.{CountryOptions, FakeCountryOptions, InputOption}
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, InputOption}
 
 class ConstraintsSpec extends FormSpec with Matchers with Constraints with RegexBehaviourSpec {
 

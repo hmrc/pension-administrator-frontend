@@ -23,7 +23,8 @@ import identifiers.register.individual._
 import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CheckYourAnswersFactory, CountryOptions, FakeNavigator, InputOption}
+import utils._
+import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Message}
 import views.html.check_your_answers
 

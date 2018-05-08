@@ -21,11 +21,12 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.CompanyPreviousAddressId
-import utils.{CountryOptions, FakeCountryOptions, FakeNavigator, InputOption}
+import utils.{FakeCountryOptions, FakeNavigator, InputOption}
 import models.{Address, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import utils.countryOptions.CountryOptions
 import views.html.register.company.companyPreviousAddress
 
 class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {

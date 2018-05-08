@@ -29,7 +29,8 @@ import models.{Address, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CountryOptions, FakeCountryOptions, FakeNavigator, InputOption}
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, FakeNavigator, InputOption}
 import views.html.register.company.directors.directorAddress
 
 class DirectorAddressControllerSpec extends ControllerSpecBase {

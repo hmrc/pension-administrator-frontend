@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import play.api.Environment
+import utils.countryOptions.CountryOptions
 
 class FakeCountryOptions @Inject() (
                                    environment: Environment,

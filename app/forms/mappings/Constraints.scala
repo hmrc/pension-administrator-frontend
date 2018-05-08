@@ -18,7 +18,7 @@ package forms.mappings
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
-import utils.CountryOptions
+import utils.countryOptions.CountryOptions
 
 trait Constraints {
 

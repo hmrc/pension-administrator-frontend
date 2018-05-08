@@ -22,7 +22,8 @@ import models.register.company.BusinessDetails
 import models.{CheckMode, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CheckYourAnswersFactory, CountryOptions, FakeCountryOptions, InputOption}
+import utils.countryOptions.CountryOptions
+import utils.{CheckYourAnswersFactory, FakeCountryOptions, InputOption}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 

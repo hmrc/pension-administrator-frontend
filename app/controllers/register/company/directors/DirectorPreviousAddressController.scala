@@ -29,7 +29,8 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
-import utils.{CountryOptions, Navigator, UserAnswers}
+import utils.countryOptions.CountryOptions
+import utils.{Navigator, UserAnswers}
 import views.html.register.company.directors.directorPreviousAddress
 
 import scala.concurrent.Future

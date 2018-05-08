@@ -21,7 +21,7 @@ import javax.inject.Singleton
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import play.api.Environment
-import utils.{CountryOptions, InputOption}
+import utils.InputOption
 
 @Singleton
 class CountryOptionsEUAndEEA @Inject()(

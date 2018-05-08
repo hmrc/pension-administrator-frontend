@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package utils
+package utils.countryOptions
 
 import base.SpecBase
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import org.scalatest.mockito.MockitoSugar
-import play.api.Environment
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
+import utils.InputOption
 
-class CountryOptionsSpec extends SpecBase with MockitoSugar {
+class CountryOptionsEUAndEEASpec extends SpecBase with MockitoSugar {
 
   "Country Options" must {
 
-    "build correctly the InputOptions with country list and country code" in {
+    "build correctly the InputOptions with EU and EEA country list and country code" in {
 
       val app =
         new GuiceApplicationBuilder()
           .configure(Map(
-            "location.canonical.list.all" -> "country-canonical-list-test.json",
+            "location.canonical.list.EUAndEEA" -> "eu-eea-countries-canonical-list-test.json",
             "metrics.enabled" -> "false"
           )).build()
 
       running(app) {
-        val countryOption: CountryOptions = app.injector.instanceOf[CountryOptions]
-        countryOption.options mustEqual Seq(InputOption("territory:AE-AZ", "Abu Dhabi"), InputOption("AF", "Afghanistan"))
+        val countryOption: CountryOptions = app.injector.instanceOf[CountryOptionsEUAndEEA]
+        countryOption.options mustEqual Seq(InputOption("AT", "Austria"), InputOption("BE", "Belgium"))
       }
 
     }
@@ -57,3 +57,6 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
     }
   }
 }
+
+
+
