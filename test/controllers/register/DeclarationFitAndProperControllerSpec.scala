@@ -199,7 +199,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): EnrolmentStoreConnector = {
     new EnrolmentStoreConnector {
-      override def enrol(knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
+      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
           case ex => Future.failed(new HttpException("Fail", ex))

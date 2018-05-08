@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.register.{KnownFact, KnownFacts}
+import models.register.{Enrol, KnownFact, KnownFacts}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{MustMatchers, RecoverMethods, WordSpec}
 import play.api.test.Helpers._
@@ -37,7 +37,9 @@ class EnrolmentStoreConnectorSpec extends WordSpec
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private def url: String = s"/enrolment-store/enrolments/HMRC-PSA-ORG"
+  private val testPsaId = "test-psa-id"
+
+  private def url: String = s"/enrolment-store-proxy/enrolment-store/enrolments/${Enrol(testPsaId).key}"
 
   private lazy val connector = injector.instanceOf[EnrolmentStoreConnector]
 
@@ -57,7 +59,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
               )
           )
 
-          whenReady(connector.enrol(knownFacts)) {
+          whenReady(connector.enrol(testPsaId, knownFacts)) {
             result =>
               result.status mustEqual NO_CONTENT
           }
@@ -80,7 +82,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
           )
 
           recoverToSucceededIf[HttpException] {
-            connector.enrol(knownFacts)
+            connector.enrol(testPsaId, knownFacts)
           }
 
         }
@@ -99,7 +101,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
           )
 
           recoverToSucceededIf[HttpException] {
-            connector.enrol(knownFacts)
+            connector.enrol(testPsaId, knownFacts)
           }
 
         }

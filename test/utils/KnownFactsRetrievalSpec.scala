@@ -31,7 +31,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
   private val utr = "test-utr"
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
-  private val psa = "test-psa"
   private val externalId = "test-externalId"
   private val nonUk = "test-non-uk"
   private val postalCode = "test-postal-code"
@@ -58,7 +57,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
             externalId,
             PSAUser(UserType.Individual, Some(nino), false, None),
             UserAnswers(Json.obj(
-              PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psa),
               ConfirmCompanyAddressId.toString -> TolerantAddress(
                 Some("1 Street"),
                 Some("Somewhere"),
@@ -73,7 +71,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
           val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
           generator.retrieve mustEqual Some(KnownFacts(Set(
-            KnownFact("PSAID", psa),
             KnownFact("NINO", nino)
           )))
 
@@ -101,7 +98,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
               externalId,
               PSAUser(UserType.Organisation, None, false, None),
               UserAnswers(Json.obj(
-                PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psa),
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
@@ -116,7 +112,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
             generator.retrieve mustEqual Some(KnownFacts(Set(
-              KnownFact("PSAID", psa),
               KnownFact("CTUTR", utr)
             )))
           }
@@ -141,7 +136,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
               externalId,
               PSAUser(UserType.Organisation, None, false, None),
               UserAnswers(Json.obj(
-                PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psa),
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
@@ -156,7 +150,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
             generator.retrieve mustEqual Some(KnownFacts(Set(
-              KnownFact("PSAID", psa),
               KnownFact("NonUKPostalCode", postalCode),
               KnownFact("CountryCode", nonUk)
             )))
@@ -182,7 +175,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
               externalId,
               PSAUser(UserType.Organisation, None, false, None),
               UserAnswers(Json.obj(
-                PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psa),
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
@@ -196,7 +188,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
             generator.retrieve mustEqual Some(KnownFacts(Set(
-              KnownFact("PSAID", psa),
               KnownFact("CountryCode", nonUk)
             )))
           }
