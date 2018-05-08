@@ -104,6 +104,10 @@ common.postcodeLookup.enterPostcode = Enter the postcode below, or {0} enter the
 common.advisor.secondary.heading = Pension adviser
 common.advisor.address.heading = Pension adviser’s address
 common.advisor.address.title = Pension adviser’s address
+common.error.dateOfBirth.required = Enter the date of birth
+common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
+common.dateOfBirth = Date of birth
+common.dateOfBirth.hint = Example 30 09 1990
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -219,8 +223,6 @@ directorDetails.heading = Company director
 directorDetails.firstName = First name
 directorDetails.middleName = Middle name
 directorDetails.lastName = Last name
-directorDetails.dateOfBirth = Date of birth
-directorDetails.dateOfBirth.hint = Example 30 09 1990
 directorDetails.checkYourAnswersLabel = Company director
 directorDetails.error.firstName.required = Enter the first name
 directorDetails.error.firstName.length = The first name cannot be more than 35 characters
@@ -230,8 +232,6 @@ directorDetails.error.middleName.invalid = The middle name must start with an al
 directorDetails.error.lastName.required = Enter the last name
 directorDetails.error.lastName.length = The last name cannot be more than 35 characters
 directorDetails.error.lastName.invalid = The last name must start with an alphabetic character
-directorDetails.error.dateOfBirth.required = Enter the date of birth
-directorDetails.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 
 directorNino.title = Does the director have a National Insurance number?
 directorNino.heading = Does the director have a National Insurance number?
@@ -444,3 +444,6 @@ confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
 duplicateRegistration.title = You cannot register as a Pension Scheme Administrator using these details.
 duplicateRegistration.heading = You cannot register as a Pension Scheme Administrator using these details.
 duplicateRegistration.body = Someone from your organisation has already registered as a Pension Scheme Administrator.
+
+individualDateOfBirth.title = Date Of Birth
+individualDateOfBirth.heading = Date Of Birth

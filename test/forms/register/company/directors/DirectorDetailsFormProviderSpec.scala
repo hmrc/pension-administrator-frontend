@@ -179,8 +179,8 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
   ".dateOfBirth" must {
 
     val fieldName = "dateOfBirth"
-    val requiredKey = "directorDetails.error.dateOfBirth.required"
-    val invalidKey = "directorDetails.error.dateOfBirth.invalid"
+    val requiredKey = "common.error.dateOfBirth.required"
+    val invalidKey = "common.error.dateOfBirth.invalid"
 
     behave like dateFieldThatBindsValidData(
       form,
