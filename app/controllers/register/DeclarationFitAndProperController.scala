@@ -84,20 +84,20 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               request.user.existingPSAId
             )).asOpt.getOrElse(UserAnswers(cacheMap))
 
-            knownFactsRetrieval.retrieve map { knownFacts =>
-              (for {
-                psaResponse <- pensionsSchemeConnector.registerPsa(answers)
-                _ <- enrolments.enrol(knownFacts)
-                cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
-              } yield {
-                Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
-              }) recoverWith {
-                case _: HttpException => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-                case _: InvalidBusinessPartnerException => Future.successful(
-                  Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad())
-                )
+            pensionsSchemeConnector.registerPsa(answers) flatMap { psaResponse =>
+              dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse) flatMap { cacheMap =>
+                knownFactsRetrieval.retrieve map { knownFacts =>
+                  enrolments.enrol(knownFacts) map { _ =>
+                    Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+                  }
+                } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
               }
-            } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+            } recoverWith {
+              case _: HttpException =>
+                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+              case _: InvalidBusinessPartnerException =>
+                Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+            }
 
           }
       )
