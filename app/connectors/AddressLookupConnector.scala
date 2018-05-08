@@ -20,6 +20,7 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.TolerantAddress
 import play.api.libs.json.Reads
+import play.api.Logger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -35,7 +36,9 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     http.GET[Seq[TolerantAddress]](addressLookupUrl)(implicitly, schemeHc, implicitly).map(Some(_)) recoverWith {
-      case _ => Future.successful(None)
+      case t: Throwable =>
+        Logger.error("cannot connect to address lookup service", t)
+        Future.successful(None)
     }
   }
 }
