@@ -61,7 +61,7 @@ class DirectorDetailsFormProvider @Inject() extends Mappings with Transforms {
               name("directorDetails.error.lastName.invalid")
             )
           ),
-      "dateOfBirth" -> date("directorDetails.error.dateOfBirth.required", "directorDetails.error.dateOfBirth.invalid")
+      "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
     )(DirectorDetails.apply)(DirectorDetails.unapply)
   )
 

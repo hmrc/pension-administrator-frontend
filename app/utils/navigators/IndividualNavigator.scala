@@ -24,7 +24,6 @@ import utils.{Navigator, UserAnswers}
 import controllers.register.individual.routes
 import models.{AddressYears, CheckMode, NormalMode}
 
-
 @Singleton
 class IndividualNavigator @Inject() extends Navigator {
 
@@ -33,7 +32,8 @@ class IndividualNavigator @Inject() extends Navigator {
 
   override protected def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case IndividualDetailsCorrectId => detailsCorrect
-    case WhatYouWillNeedId => _ => routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+    case WhatYouWillNeedId => _ => routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
+    case IndividualDateOfBirthId => _ => routes.IndividualAddressYearsController.onPageLoad(NormalMode)
     case IndividualAddressYearsId => addressYearsRoutes
     case IndividualPreviousAddressPostCodeLookupId => _ => routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
     case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(NormalMode)
@@ -43,6 +43,7 @@ class IndividualNavigator @Inject() extends Navigator {
   }
 
   override protected def editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
+    case IndividualDateOfBirthId => checkYourAnswers()
     case IndividualAddressYearsId => addressYearsRouteCheckMode
     case IndividualPreviousAddressPostCodeLookupId => _ => routes.IndividualPreviousAddressListController.onPageLoad(CheckMode)
     case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(CheckMode)

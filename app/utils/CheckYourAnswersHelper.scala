@@ -25,6 +25,11 @@ import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
+  def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
+    AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
+      controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)
+  }
+
   def advisorAddress: Seq[AnswerRow] = userAnswers.get(AdvisorAddressId) match {
     case Some(x) => Seq(AnswerRow("cya.label.address", addressAnswer(x), false,
       controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(CheckMode).url))
