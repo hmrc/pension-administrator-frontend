@@ -51,33 +51,28 @@ class CheckYourAnswersController @Inject()(
         Message("individualAddressYears.title", details.fullName).resolve
       }.right.getOrElse(Message("cya.label.address.years").resolve)
 
-        val section = AnswerSection(
-          None,
-          Seq(
-            helper.individualDetails,
-            helper.individualAddress,
-            helper.individualAddressYears(message),
-            helper.individualPreviousAddress,
-            helper.individualEmailAddress,
-            helper.individualPhoneNumber
-          ).flatten
-        )
-
-        val sections = Seq(section)
-
-        Ok(check_your_answers(appConfig, sections, Some("site.secondaryHeader"), postUrl))
-
+      val section = AnswerSection(
+        None,
+        Seq(
+          helper.individualDetails,
+          helper.individualAddress,
+          helper.individualDateOfBirth,
+          helper.individualAddressYears(message),
+          helper.individualPreviousAddress,
+          helper.individualEmailAddress,
+          helper.individualPhoneNumber
+        ).flatten
+      )
+      val sections = Seq(section)
+      Ok(check_your_answers(appConfig, sections, Some("site.secondaryHeader"), postUrl))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     request =>
       Redirect(navigator.nextPage(CheckYourAnswersId, mode)(request.userAnswers))
   }
-
 }
 
 object CheckYourAnswersController {
-
   lazy val postUrl: Call = routes.CheckYourAnswersController.onSubmit()
-
 }

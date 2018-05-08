@@ -53,8 +53,8 @@ class DirectorDetailsViewSpec extends QuestionViewBehaviours[DirectorDetails] {
     behave like pageWithDateField(
       createViewUsingForm,
       "dateOfBirth",
-      messages("directorDetails.dateOfBirth"),
-      Some(messages("directorDetails.dateOfBirth.hint"))
+      messages("common.dateOfBirth"),
+      Some(messages("common.dateOfBirth.hint"))
     )
 
   }
