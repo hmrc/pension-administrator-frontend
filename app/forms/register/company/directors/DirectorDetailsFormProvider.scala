@@ -62,6 +62,7 @@ class DirectorDetailsFormProvider @Inject() extends Mappings with Transforms {
             )
           ),
       "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
+        .verifying(nonFutureDate("common.error.dateOfBirth.future"))
     )(DirectorDetails.apply)(DirectorDetails.unapply)
   )
 
