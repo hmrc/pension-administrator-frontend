@@ -21,12 +21,12 @@ sealed trait EnrolmentKey {
   protected val identifier: String
   protected val value: String
 
-
   def key: String = s"$serviceName~$identifier~$value"
+
 }
 
 case class Enrol(PsaId: String) extends EnrolmentKey {
-  override protected val serviceName: String = "HMRC-PSA-ORG"
+  override protected val serviceName: String = "HMRC-PODS-ORG"
   override protected val identifier: String = "PSAID"
   override protected val value: String = PsaId
 }

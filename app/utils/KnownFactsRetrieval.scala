@@ -27,7 +27,8 @@ import play.api.mvc.AnyContent
 class KnownFactsRetrieval {
 
   private val ninoKey = "NINO"
-  private val ctutrKey = "CTUTR"
+  private val ctUtrKey = "CTUTR"
+  private val saUtrKey = "SAUTR"
   private val postalKey = "NonUKPostalCode"
   private val countryKey = "CountryCode"
 
@@ -37,7 +38,7 @@ class KnownFactsRetrieval {
         case Individual =>
           Some(KnownFacts(Set(KnownFact(ninoKey, registrationInfo.idNumber))))
         case LimitedCompany if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(ctutrKey, registrationInfo.idNumber))))
+          Some(KnownFacts(Set(KnownFact(ctUtrKey, registrationInfo.idNumber))))
         case LimitedCompany =>
           for {
             address <- request.userAnswers.get(ConfirmCompanyAddressId)
