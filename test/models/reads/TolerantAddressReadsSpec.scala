@@ -70,6 +70,19 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
         result.head.country mustBe tolerantAddressSample.country
       }
+
+      "we have a & in the address" in {
+        val tolerantAddressSample = TolerantAddress(Some("line1 and line1"), Some("line2 and line2"), Some("line3 and line3"), Some("line4 and line4"),Some("ZZ1 1ZZ"),Some("UK"))
+        val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1 & line1"), JsString("line2 & line2"), JsString("line3 & line3"), JsString("line4 & line4"))),
+          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK")))
+
+        val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+
+        result.addressLine1 mustBe tolerantAddressSample.addressLine1
+        result.addressLine2 mustBe tolerantAddressSample.addressLine2
+        result.addressLine3 mustBe tolerantAddressSample.addressLine3
+        result.addressLine4 mustBe tolerantAddressSample.addressLine4
+      }
     }
   }
 
