@@ -66,7 +66,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
         Future.successful {
           BadRequest(postcodeLookup(appConfig, formWithErrors, viewmodel))
         },
-        lookupPostcode(id, viewmodel, invalidPostcode, noResults, mode)
+      lookupPostcode(id, viewmodel, invalidPostcode, noResults, mode)
     )
   }
 
@@ -76,36 +76,30 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
                               invalidPostcode: Message,
                               noResults: Message,
                               mode: Mode
-                            )(postcode: String)(implicit request: DataRequest[AnyContent]):Future[Result] = {
+                            )(postcode: String)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-  addressLookupConnector.addressLookupByPostCode(postcode).flatMap{
+    addressLookupConnector.addressLookupByPostCode(postcode).flatMap {
 
-        case Nil => {println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  Nil")
-          Future.successful(Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel)))
+      case Nil => Future.successful(Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel)))
+
+      case addresses => {
+        cacheConnector.save(
+          request.externalId,
+          id,
+          addresses
+        ).map {
+          json =>
+            Redirect(navigator.nextPage(id, mode)(UserAnswers(json)))
         }
-        case addresses => {
-
-          println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  FOUND" + addresses)
-          cacheConnector.save(
-            request.externalId,
-            id,
-            addresses
-          ).map {
-            json =>
-              Redirect(navigator.nextPage(id, mode)(UserAnswers(json)))
-          }
-        }
+      }
     } recoverWith {
 
-        case _ =>
-          {
-            println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  RECOVER")
-            Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel)))
-          }
+      case _ => {
+        Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel)))
+      }
 
     }
-    }
-
+  }
 
 
   protected def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {

@@ -27,7 +27,6 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.http.Status._
 
-import scala.util.{Failure, Try}
 class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends AddressLookupConnector {
 
   override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
@@ -40,17 +39,11 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
     http.GET[HttpResponse](addressLookupUrl)(implicitly, schemeHc, implicitly) flatMap {
       case response if response.status equals OK => Future.successful(response.json.as[Seq[TolerantAddress]])
       case response => {
-
-        val exceptions=new HttpException(response.body, response.status)
+        val exception=new HttpException(response.body, response.status)
+        Logger.error(s"Exception in AddressLookup",exception)
         Future.failed(new HttpException(response.body, response.status))
       }
     }
-  } andThen {
-    logExceptions()
-  }
-
-  private def logExceptions(): PartialFunction[Try[Seq[TolerantAddress]], Unit] = {
-    case Failure(t: Throwable) => Logger.error("Unable to connect to Tax Enrolments", t)
   }
 }
 
