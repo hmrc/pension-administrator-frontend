@@ -29,7 +29,8 @@ import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressListId}
 import models.{Address, Mode}
 import play.api.mvc.{Action, AnyContent}
 import utils.annotations.Adviser
-import utils.{CountryOptions, Navigator}
+import utils.Navigator
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 

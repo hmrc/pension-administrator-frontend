@@ -22,7 +22,7 @@ import forms.mappings.AddressMapping
 import models.Address
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import utils.CountryOptions
+import utils.countryOptions.CountryOptions
 
 class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
 

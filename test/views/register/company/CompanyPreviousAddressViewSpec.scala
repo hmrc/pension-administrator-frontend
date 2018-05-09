@@ -27,7 +27,7 @@ class CompanyPreviousAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val messageKeyPrefix = "companyPreviousAddress"
 
-  override val form = new AddressFormProvider(FakeCountryOptions())()
+  override val form = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
 
   def createView = () => companyPreviousAddress(frontendAppConfig, form, NormalMode, Seq.empty)(fakeRequest, messages)
 

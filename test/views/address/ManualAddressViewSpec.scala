@@ -41,10 +41,10 @@ class ManualAddressViewSpec extends QuestionViewBehaviours[Address] {
     Some("site.secondaryHeader")
   )
 
-  override val form = new AddressFormProvider(FakeCountryOptions())()
+  override val form = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
 
   def createView: () => _root_.play.twirl.api.HtmlFormat.Appendable = () =>
-    manualAddress(frontendAppConfig, new AddressFormProvider(FakeCountryOptions()).apply(), viewModel)(fakeRequest, messages)
+    manualAddress(frontendAppConfig, new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig)).apply(), viewModel)(fakeRequest, messages)
 
   def createViewUsingForm: (Form[_]) => _root_.play.twirl.api.HtmlFormat.Appendable = (form: Form[_]) =>
     manualAddress(frontendAppConfig, form, viewModel)(fakeRequest, messages)

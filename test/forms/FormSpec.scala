@@ -16,10 +16,15 @@
 
 package forms
 
+import config.FrontendAppConfig
 import org.scalatest.{Matchers, OptionValues, WordSpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Environment
 import play.api.data.{Form, FormError}
+import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
 
-trait FormSpec extends WordSpec with OptionValues with Matchers {
+trait FormSpec extends WordSpec with OptionValues with Matchers with GuiceOneAppPerSuite{
 
   def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) = {
 
@@ -37,4 +42,13 @@ trait FormSpec extends WordSpec with OptionValues with Matchers {
   def error(key: String, value: String, args: Any*) = Seq(FormError(key, value, args))
 
   lazy val emptyForm = Map[String, String]()
+
+  override lazy val app = new GuiceApplicationBuilder()
+    .build()
+
+  def injector: Injector = app.injector
+
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  def environment: Environment = injector.instanceOf[Environment]
 }
