@@ -107,7 +107,7 @@ common.advisor.address.title = Pension adviser’s address
 common.error.dateOfBirth.required = Enter the date of birth
 common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.dateOfBirth = Date of birth
-common.dateOfBirth.hint = Example 30 09 1990
+common.dateOfBirth.hint = Example 30 9 1990
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -445,5 +445,5 @@ duplicateRegistration.title = You cannot register as a Pension Scheme Administra
 duplicateRegistration.heading = You cannot register as a Pension Scheme Administrator using these details.
 duplicateRegistration.body = Someone from your organisation has already registered as a Pension Scheme Administrator.
 
-individualDateOfBirth.title = Date Of Birth
-individualDateOfBirth.heading = Date Of Birth
+individualDateOfBirth.title = Your date of birth
+individualDateOfBirth.heading = Your date of birth
