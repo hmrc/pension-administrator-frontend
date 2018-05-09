@@ -19,21 +19,22 @@ package base
 import config.FrontendAppConfig
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
+import play.api.Environment
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.{Injector, bind}
+import play.api.inject.{Injector}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import utils.CountryOptions
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   override lazy val app = new GuiceApplicationBuilder()
-    .overrides(bind[CountryOptions].to(new CountryOptions(Seq.empty)))
     .build()
 
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  def environment: Environment = injector.instanceOf[Environment]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 

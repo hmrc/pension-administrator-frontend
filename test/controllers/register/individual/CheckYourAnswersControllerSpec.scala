@@ -23,7 +23,8 @@ import identifiers.register.individual._
 import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CheckYourAnswersFactory, CountryOptions, FakeNavigator, InputOption}
+import utils._
+import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Message}
 import views.html.check_your_answers
 
@@ -194,7 +195,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {

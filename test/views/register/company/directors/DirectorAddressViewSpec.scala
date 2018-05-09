@@ -33,7 +33,7 @@ class DirectorAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val options = Seq.empty[InputOption]
 
-  override val form = new AddressFormProvider(FakeCountryOptions())()
+  override val form = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
 
   def createView = () => directorAddress(frontendAppConfig, form, NormalMode, firstIndex, fullName, options)(fakeRequest, messages)
 

@@ -23,7 +23,8 @@ import controllers.actions._
 import controllers.register.company.directors.routes._
 import models.{CheckMode, Index}
 import play.api.test.Helpers._
-import utils.{CheckYourAnswersFactory, CountryOptions, DateHelper, InputOption}
+import utils._
+import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
@@ -32,7 +33,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val index = Index(0)
   val companyName = "Test Company Name"
   val directorName = "test first name test middle name test last name"
-  val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   def answersDD: Seq[AnswerRow] = Seq(

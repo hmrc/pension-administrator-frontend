@@ -18,12 +18,14 @@ package controllers.register.advisor
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.advisor.AdvisorAddressControllerSpec.{environment, frontendAppConfig}
 import identifiers.register.advisor.{AdvisorAddressId, AdvisorDetailsId}
 import models.{Address, CheckMode, NormalMode}
 import models.register.advisor.AdvisorDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils._
+import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
@@ -31,7 +33,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
   def postCall = controllers.register.advisor.routes.CheckYourAnswersController.onSubmit()
-  val countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val advDetails = AdvisorDetails("test advisor name", "test@test.com", "01234567890")
   val address = Address(

@@ -18,7 +18,7 @@ package forms.mappings
 
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
-import utils.CountryOptions
+import utils.countryOptions.CountryOptions
 
 trait Constraints {
 
@@ -138,6 +138,7 @@ trait Constraints {
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
     Constraint {
       input =>
+        val x = countryOptions.options
         countryOptions.options
           .find(_.value == input)
           .map(_ => Valid)

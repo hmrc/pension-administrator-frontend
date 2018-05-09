@@ -17,6 +17,7 @@
 package controllers.register.individual
 
 import javax.inject.Inject
+
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
@@ -28,8 +29,9 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.annotations.Individual
-import utils.{CountryOptions, Navigator}
+import utils.annotations.{EUAndEEA, Individual}
+import utils.Navigator
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 
@@ -41,7 +43,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
-                                                    val countryOptions: CountryOptions
+                                                    @EUAndEEA val countryOptions: CountryOptions
                                                    ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _

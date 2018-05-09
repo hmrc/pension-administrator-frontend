@@ -53,7 +53,8 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val registerSchemeUrl: String = loadConfig("urls.registerScheme")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
-  lazy val locationCanonicalList: String = loadConfig("location.canonical.list")
+  lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
+  lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
 
   def languageMap: Map[String, Lang] = Map(
