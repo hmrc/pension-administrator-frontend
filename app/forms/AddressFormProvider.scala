@@ -26,14 +26,14 @@ import utils.countryOptions.CountryOptions
 
 class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
 
-  def apply(): Form[Address] = Form(
+  def apply(requiredCountry: String = "error.country.invalid"): Form[Address] = Form(
     mapping(
       "addressLine1" -> addressLineMapping("error.address_line_1.required", "error.address_line_1.length", "error.address_line_1.invalid"),
       "addressLine2" -> addressLineMapping("error.address_line_2.required", "error.address_line_2.length", "error.address_line_2.invalid"),
       "addressLine3" -> optionalAddressLineMapping("error.address_line_3.length", "error.address_line_3.invalid"),
       "addressLine4" -> optionalAddressLineMapping("error.address_line_4.length", "error.address_line_4.invalid"),
       "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid"),
-      "country" -> countryMapping(countryOptions, "error.country.required", "error.country.invalid")
+      "country" -> countryMapping(countryOptions, requiredCountry, "error.country.invalid")
     )(Address.apply)(Address.unapply)
   )
 
