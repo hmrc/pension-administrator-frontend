@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
-
+import com.github.tomakehurst.wiremock.client.WireMock._
 
 class AddressLookupConnectorSpec extends WordSpec
   with MustMatchers
@@ -66,29 +66,61 @@ class AddressLookupConnectorSpec extends WordSpec
 
     "returns an ok and Seq of Addresses" which {
       "means the AddressLookup has found data for the postcode" in {
-        val payload = JsArray(Seq(Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"), JsString("line4"))),
-          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK")))))
 
-        val addresses = PlainText(Json.stringify(payload)).value
+       val payload =
+          """[{"uprn":990091234524,
+            |"localCustodian":{"code":121,"name":"North Somerset","J":""},
+            |"id":"GB990091234524",
+            |"language":"en",
+            |"B":"",
+            |"address":{"postcode":"ZZ1 1ZZ","F":"",
+            |"country":{"code":"UK","name":"United Kingdom","R":""},
+            |"county":"Somerset",
+            |"subdivision":{"code":"GB-ENG","name":"England","B":""},
+            |"town":"Anytown",
+            |"lines":["10 Other Place","Some District"]}
+            |},
+            |{"Y":"",
+            |"uprn":990091234514,
+            |"localCustodian":{"code":121,"name":"North Somerset","H":""},
+            |"id":"GB990091234514",
+            |"language":"en",
+            |"address":{"postcode":"ZZ1 1ZZ",
+            |"country":{"code":"UK","name":"United Kingdom","U":""},
+            |"county":"Somerset",
+            |"subdivision":{"code":"GB-ENG","name":"England","R":""},
+            |"town":"Anytown",
+            |"lines":["2 Other Place","Some District"],"D":""}
+            |}
+            |]
+            |""".stripMargin
 
-        val tolerantAddressSample = TolerantAddress(Some("line1"), Some("line2"), Some("line3"), Some("line4"), Some("ZZ1 1ZZ"), Some("UK"))
+
+
+        val tolerantAddressSample = Seq(
+          TolerantAddress(Some("10 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK")),
+          TolerantAddress(Some("2 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK"))
+        )
+
+
         server.stubFor(
-          get(urlEqualTo(url)).willReturn
+          get(urlEqualTo(url))
+            .withHeader("user-agent", matching(".+"))
+              .willReturn
           (
             aResponse().withStatus(OK)
-              .withBody(addresses)
+              .withBody(payload)
           )
         )
         whenReady(connector.addressLookupByPostCode("ZZ11ZZ")) {
           result =>
-            result mustEqual Seq(tolerantAddressSample)
+            result mustEqual tolerantAddressSample
         }
       }
     }
     "returns an exception" which {
       "means the Address Lookup has returned a non 200 response " in {
 
-        val tolerantAddressSample = TolerantAddress(Some("line1"), Some("line2"), Some("line3"), Some("line4"), Some("ZZ1 1ZZ"), Some("UK"))
         server.stubFor(
           get(urlEqualTo(url)).willReturn
           (
