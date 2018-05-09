@@ -41,6 +41,7 @@ import play.api.inject._
 import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => eqTo, _}
 import play.api.libs.json.Json
+import uk.gov.hmrc.http.HttpException
 
 import scala.concurrent.Future
 
@@ -122,7 +123,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
       val address = TolerantAddress(Some(""), Some(""), None, None, None, Some("GB"))
 
       when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn Future.successful {
-        Some(Seq(address))
+        Seq(address)
       }
 
       when(cacheConnector.save(eqTo("cacheId"), eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())) thenReturn Future.successful {
@@ -153,9 +154,8 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
         val cacheConnector: DataCacheConnector = mock[DataCacheConnector]
         val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-        when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn Future.successful {
-          None
-        }
+        when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn
+          Future.failed(new HttpException("Failed",INTERNAL_SERVER_ERROR))
 
         running(_.overrides(
           bind[Navigator].toInstance(FakeNavigator),
@@ -218,7 +218,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
           when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn Future.successful {
-            Some(Seq.empty)
+            Seq.empty
           }
 
           running(_.overrides(

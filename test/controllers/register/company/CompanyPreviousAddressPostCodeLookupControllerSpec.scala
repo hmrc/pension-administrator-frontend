@@ -28,6 +28,7 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpException
 import utils.FakeNavigator
 import views.html.register.company.companyPreviousAddressPostCodeLookup
 
@@ -84,7 +85,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Seq(fakeAddress(testAnswer)))))
+        .thenReturn(Future.successful(Seq(fakeAddress(testAnswer))))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -97,7 +98,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val expected = Seq(fakeAddress(testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Seq(fakeAddress(testAnswer)))))
+        .thenReturn(Future.successful(Seq(fakeAddress(testAnswer))))
 
       controller().onSubmit(NormalMode)(postRequest)
 
@@ -135,7 +136,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(None))
+        .thenReturn(Future.failed(new HttpException("Failed",INTERNAL_SERVER_ERROR)))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -148,7 +149,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Nil)))
+        .thenReturn(Future.successful(Nil))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

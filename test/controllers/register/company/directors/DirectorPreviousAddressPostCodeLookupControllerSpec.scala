@@ -104,7 +104,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some(Seq(fakeAddress(testAnswer)))))
+        .thenReturn(Future.successful(Seq(fakeAddress(testAnswer))))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)
 
