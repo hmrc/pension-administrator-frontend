@@ -35,7 +35,7 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val formProvider = new AddressFormProvider(countryOptions)
-  val form = formProvider()
+  val form = formProvider("error.country.invalid.eueea")
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyPreviousAddressController(

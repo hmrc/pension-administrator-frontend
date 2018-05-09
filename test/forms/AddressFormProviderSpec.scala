@@ -61,7 +61,7 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec with AddressB
     behave like formWithCountry(
       form,
       "country",
-      "error.country.required",
+      "error.country.invalid",
       "error.country.invalid",
       countryOptions,
       Map(
