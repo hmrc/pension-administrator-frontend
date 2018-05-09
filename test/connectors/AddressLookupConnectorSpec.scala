@@ -35,7 +35,7 @@ class AddressLookupConnectorSpec extends WordSpec
   with IntegrationPatience
   with RecoverMethods {
 
-  private def url = s"/v2/uk/addresses?postcode=ZZ11ZZ"
+  private def url = s"/v2/uk/addresses?postcode=ZZ1%201ZZ"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -53,7 +53,7 @@ class AddressLookupConnectorSpec extends WordSpec
               .withBody("[]")
           )
         )
-        whenReady(connector.addressLookupByPostCode("ZZ11ZZ")) {
+        whenReady(connector.addressLookupByPostCode("ZZ1 1ZZ")) {
           result =>
             result mustEqual Nil
         }
@@ -109,7 +109,7 @@ class AddressLookupConnectorSpec extends WordSpec
               .withBody(payload)
           )
         )
-        whenReady(connector.addressLookupByPostCode("ZZ11ZZ")) {
+        whenReady(connector.addressLookupByPostCode("ZZ1 1ZZ")) {
           result =>
             result mustEqual tolerantAddressSample
         }
@@ -127,7 +127,7 @@ class AddressLookupConnectorSpec extends WordSpec
 
         recoverToSucceededIf[HttpException] {
 
-          connector.addressLookupByPostCode("ZZ11ZZ")
+          connector.addressLookupByPostCode("ZZ1 1ZZ")
 
         }
       }
