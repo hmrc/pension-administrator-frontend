@@ -20,13 +20,10 @@ package connectors
 import org.scalatest.RecoverMethods
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tomakehurst.wiremock.client.WireMock._
 import models.TolerantAddress
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -98,8 +95,8 @@ class AddressLookupConnectorSpec extends WordSpec
 
 
         val tolerantAddressSample = Seq(
-          TolerantAddress(Some("10 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK")),
-          TolerantAddress(Some("2 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK"))
+          TolerantAddress(Some("10 Other Place"),Some("Some District"),None,None,Some("ZZ1 1ZZ"),Some("UK")),
+          TolerantAddress(Some("2 Other Place"),Some("Some District"),None,None,Some("ZZ1 1ZZ"),Some("UK"))
         )
 
 
