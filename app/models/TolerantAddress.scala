@@ -62,12 +62,13 @@ object TolerantAddress {
       (JsPath \ "address" \ "postcode").read[String] and
       (JsPath \ "address" \ "country" \ "code").read[String]
     )((lines,postCode,countryCode) => {
+    val linesWithNoAmpersand = lines.map(line => line.replace("&","and"))
     val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
       lines.size match {
-        case 1 => (Some(lines(0)),None,None,None)
-        case 2 => (Some(lines(0)),Some(lines(1)),None,None)
-        case 3 => (Some(lines(0)),Some(lines(1)),Some(lines(2)),None)
-        case 4 => (Some(lines(0)),Some(lines(1)),Some(lines(2)),Some(lines(3)))
+        case 1 => (Some(linesWithNoAmpersand(0)),None,None,None)
+        case 2 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),None,None)
+        case 3 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),None)
+        case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
