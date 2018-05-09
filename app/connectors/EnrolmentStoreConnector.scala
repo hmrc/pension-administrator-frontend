@@ -45,7 +45,6 @@ class EnrolmentStoreConnectorImpl @Inject()(val http: HttpClient, config: Fronte
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    println(">>>>>>>>>>>>>>" + knownFacts)
     http.PUT(url(enrolmentKey), knownFacts) flatMap {
       case response if response.status equals NO_CONTENT => Future.successful(response)
       case response => Future.failed(new HttpException(response.body, response.status))
@@ -56,7 +55,6 @@ class EnrolmentStoreConnectorImpl @Inject()(val http: HttpClient, config: Fronte
 
   private def logExceptions(knownFacts: KnownFacts): PartialFunction[Try[HttpResponse], Unit] = {
     case Failure(t: Throwable) => {
-      println("<<<<<<<<<<<<<<<<<<<<<<<< " + Json.toJson(knownFacts))
       Logger.error("Unable to connect to Tax Enrolments", t)
     }
   }
