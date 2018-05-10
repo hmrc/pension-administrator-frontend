@@ -226,7 +226,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
       }
 
-      
+
       "we have a list of addresses" in {
         val addresses = JsArray(Seq(payload,payload))
 

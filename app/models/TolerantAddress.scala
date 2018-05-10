@@ -78,11 +78,9 @@ object TolerantAddress {
         }
         case 3 => {
           val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
+          val townOrCountyValue = if (townOrCounty._2.isDefined) townOrCounty._2 else townOrCounty._1
 
-          val meh = if (townOrCounty._2.isDefined) townOrCounty._2 else townOrCounty._1
-
-
-          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),meh)
+          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),townOrCountyValue)
         }
         case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }
@@ -120,12 +118,9 @@ object TolerantAddress {
       }
       case _ => (None, None)
     }
-
   }
 
   private def replaceAmpersanWithAnd(data : String) : String = (data.replace("&","and"))
-
-
 
   val postCodeLookupReads : Reads[Seq[TolerantAddress]] = Reads {
     json =>
