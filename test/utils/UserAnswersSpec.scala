@@ -17,7 +17,7 @@
 package utils
 
 import org.scalatest.{FlatSpec, Matchers, OptionValues}
-import play.api.libs.json.{JsPath, Json}
+import play.api.libs.json.{JsPath, JsResultException, Json}
 
 class UserAnswersSpec extends FlatSpec with Matchers with OptionValues {
 
@@ -35,6 +35,13 @@ class UserAnswersSpec extends FlatSpec with Matchers with OptionValues {
   "UserAnswers" should "get all matching recursive results" in {
     val userAnswers = UserAnswers(establishers)
     userAnswers.getAll[String](JsPath \ "establishers" \\ "name").value should contain allOf("foo", "bar")
+  }
+
+  it should "throw JsResultException if Js Value is not of correct type" in {
+    val userAnswers = UserAnswers(establishers)
+    intercept[JsResultException]{
+      userAnswers.getAll[Boolean](JsPath \ "establishers" \\ "name")
+    }
   }
 
   it should "return an empty list when no matches" in {
