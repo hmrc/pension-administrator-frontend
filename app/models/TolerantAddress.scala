@@ -60,14 +60,43 @@ object TolerantAddress {
   val postCodeLookupAddressReads : Reads[TolerantAddress] = (
     (JsPath \ "address" \ "lines").read[List[String]] and
       (JsPath \ "address" \ "postcode").read[String] and
-      (JsPath \ "address" \ "country" \ "code").read[String]
-    )((lines,postCode,countryCode) => {
+      (JsPath \ "address" \ "country" \ "code").read[String] and
+      (JsPath \ "address" \ "town").readNullable[String] and
+      (JsPath \ "address" \ "county").readNullable[String]
+    )((lines,postCode,countryCode,town,county) => {
     val linesWithNoAmpersand = lines.map(line => line.replace("&","and"))
     val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
       lines.size match {
-        case 1 => (Some(linesWithNoAmpersand(0)),None,None,None)
-        case 2 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),None,None)
-        case 3 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),None)
+        case 1 => {
+          val countyOrTown = {
+            (town,county) match {
+              case (Some(town),None) => Some(town.replace("&","and"))
+              case (None,Some(county)) => Some(county.replace("&","and"))
+              case _ => None
+            }
+          }
+          (Some(linesWithNoAmpersand(0)),countyOrTown,None,None)
+        }
+        case 2 => {
+          val countyOrTown = {
+            (town,county) match {
+              case (Some(town),None) => Some(town.replace("&","and"))
+              case (None,Some(county)) => Some(county.replace("&","and"))
+              case _ => None
+            }
+          }
+          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),countyOrTown,None)
+        }
+        case 3 => {
+          val countyOrTown = {
+            (town,county) match {
+              case (Some(town),None) => Some(town.replace("&","and"))
+              case (None,Some(county)) => Some(county.replace("&","and"))
+              case _ => None
+            }
+          }
+          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),countyOrTown)
+        }
         case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }
     }

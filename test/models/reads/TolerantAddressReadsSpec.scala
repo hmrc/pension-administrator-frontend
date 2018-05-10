@@ -63,6 +63,66 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         result.country mustBe tolerantAddressSample.country
       }
 
+      "we have a town" which {
+        "maps to line2" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine2 = Some("Tyne and Wear"))
+
+          result.addressLine2 mustBe expectedAddress.addressLine2
+        }
+
+        "maps to line3" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"))
+
+          result.addressLine3 mustBe expectedAddress.addressLine3
+        }
+
+        "maps to line4" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("line3"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine4 = Some("Tyne and Wear"))
+
+          result.addressLine4 mustBe expectedAddress.addressLine4
+        }
+      }
+
+      "we have a county" which {
+        "maps to line2" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine2 = Some("Tyne and Wear"))
+
+          result.addressLine2 mustBe expectedAddress.addressLine2
+        }
+
+        "maps to line3" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"))
+
+          result.addressLine3 mustBe expectedAddress.addressLine3
+        }
+
+        "maps to line4" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("line3"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine4 = Some("Tyne and Wear"))
+
+          result.addressLine4 mustBe expectedAddress.addressLine4
+        }
+      }
+
+      
+
       "we have a list of addresses" in {
         val addresses = JsArray(Seq(payload,payload))
 
