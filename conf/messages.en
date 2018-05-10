@@ -309,8 +309,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-confirmCompanyAddress.title = Company address
-confirmCompanyAddress.heading = Company address
+confirmCompanyAddress.title = Are these details correct?
+confirmCompanyAddress.heading = Company details
 
 whatYouWillNeed.title = What you’ll need
 whatYouWillNeed.heading = What you’ll need
