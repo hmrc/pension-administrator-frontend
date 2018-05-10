@@ -133,6 +133,7 @@ trait Constraints {
       case _ => Invalid(invalidKey)
     }
   }
+
   protected def name(errorKey: String): Constraint[String] = regexp(nameRegex, errorKey)
 
   protected def addressLine(errorKey: String): Constraint[String] = regexp(addressLineRegex, errorKey)

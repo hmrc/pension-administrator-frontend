@@ -45,11 +45,12 @@ class KnownFactsRetrieval {
             country <- address.country
           } yield {
             val knownFacts = Set(KnownFact(countryKey, country))
-            KnownFacts(
-              address.postcode.fold(knownFacts) { postalCode =>
-                knownFacts + KnownFact(postalKey, postalCode)
+            KnownFacts {
+              address.postcode match {
+                case Some(postalCode) if postalCode.length > 0 & postalCode.length < 11 => knownFacts + KnownFact(postalKey, postalCode)
+                case _ => knownFacts
               }
-            )
+            }
           }
         case _ => None
       }
