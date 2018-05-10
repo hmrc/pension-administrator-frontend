@@ -44,7 +44,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
   val firstIndex = Index(0)
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider()
+  val form: Form[Address] = formProvider("error.country.invalid.eueea")
 
   val viewmodel = ManualAddressViewModel(
     postCall = routes.IndividualPreviousAddressController.onSubmit(NormalMode),

@@ -46,7 +46,7 @@ class CompanyPreviousAddressController @Inject() (
                                         @EUAndEEA countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport {
 
-  private val form: Form[Address] = formProvider()
+  private val form: Form[Address] = formProvider("error.country.invalid.eueea")
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
