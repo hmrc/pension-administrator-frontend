@@ -16,16 +16,17 @@
 
 package models.register
 
-import play.api.libs.json.{Format, Json}
+sealed trait EnrolmentKey {
+  protected val serviceName: String
+  protected val identifier: String
+  protected val value: String
 
-case class KnownFact(key: String, value: String)
+  def key: String = s"$serviceName~$identifier~$value"
 
-object KnownFact {
-  implicit val format: Format[KnownFact] = Json.format[KnownFact]
 }
 
-case class KnownFacts(verifiers: Set[KnownFact])
-
-object KnownFacts {
-  implicit val format: Format[KnownFacts] = Json.format[KnownFacts]
+case class Enrol(PsaId: String) extends EnrolmentKey {
+  override protected val serviceName: String = "HMRC-PODS-ORG"
+  override protected val identifier: String = "PSAID"
+  override protected val value: String = PsaId
 }

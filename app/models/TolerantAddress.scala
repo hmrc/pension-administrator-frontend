@@ -65,16 +65,14 @@ object TolerantAddress {
     val linesWithNoAmpersand = lines.map(line => line.replace("&","and"))
     val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
       lines.size match {
-        case 1 => (Some(linesWithNoAmpersand(0)),None,None,None)
-        case 2 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),None,None)
-        case 3 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),None)
-        case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
+        case 1 => (Some(linesWithNoAmpersand.head),None,None,None)
+        case 2 => (Some(linesWithNoAmpersand.head),Some(linesWithNoAmpersand(1)),None,None)
+        case 3 => (Some(linesWithNoAmpersand.head),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),None)
+        case 4 => (Some(linesWithNoAmpersand.head),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
   })
-
-
 
   val postCodeLookupReads : Reads[Seq[TolerantAddress]] = Reads {
     json =>
