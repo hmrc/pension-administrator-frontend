@@ -68,30 +68,33 @@ object TolerantAddress {
     val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
       lines.size match {
         case 1 => {
-          val countyOrTown = {
+          val townOrCounty : (Option[String],Option[String]) = {
             (town,county) match {
-              case (Some(town),None) => Some(town.replace("&","and"))
-              case (None,Some(county)) => Some(county.replace("&","and"))
-              case _ => None
+              case (Some(town),None) => (Some(replaceAmpersanWithAnd(town)),None)
+              case (None,Some(county)) => (Some(replaceAmpersanWithAnd(county)),None)
+              case (Some(town),Some(county)) => (Some(replaceAmpersanWithAnd(town)),Some(replaceAmpersanWithAnd(county)))
+              case _ => (None,None)
             }
           }
-          (Some(linesWithNoAmpersand(0)),countyOrTown,None,None)
+          (Some(linesWithNoAmpersand(0)),townOrCounty._1,townOrCounty._2,None)
         }
         case 2 => {
-          val countyOrTown = {
+          val townOrCounty : (Option[String],Option[String]) = {
             (town,county) match {
-              case (Some(town),None) => Some(town.replace("&","and"))
-              case (None,Some(county)) => Some(county.replace("&","and"))
-              case _ => None
+              case (Some(town),None) => (Some(replaceAmpersanWithAnd(town)),None)
+              case (None,Some(county)) => (Some(replaceAmpersanWithAnd(county)),None)
+              case (Some(town),Some(county)) => (Some(replaceAmpersanWithAnd(town)),Some(replaceAmpersanWithAnd(county)))
+              case _ => (None,None)
             }
           }
-          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),countyOrTown,None)
+          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),townOrCounty._1,townOrCounty._2)
         }
         case 3 => {
           val countyOrTown = {
             (town,county) match {
-              case (Some(town),None) => Some(town.replace("&","and"))
-              case (None,Some(county)) => Some(county.replace("&","and"))
+              case (Some(town),None) => Some(replaceAmpersanWithAnd(town))
+              case (None,Some(county)) => Some(replaceAmpersanWithAnd(county))
+              case (Some(_),Some(county)) => Some(replaceAmpersanWithAnd(county))
               case _ => None
             }
           }
@@ -102,6 +105,8 @@ object TolerantAddress {
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
   })
+
+  private def replaceAmpersanWithAnd(data : String) : String = (data.replace("&","and"))
 
 
 

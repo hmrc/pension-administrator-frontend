@@ -121,7 +121,39 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
       }
 
-      
+      "we have a town and county" which {
+        "maps town to line 2 and county to line 3" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine2 = Some("Tyne and Wear"), addressLine3 = Some("County Test"))
+
+          result.addressLine2 mustBe expectedAddress.addressLine2
+          result.addressLine3 mustBe expectedAddress.addressLine3
+        }
+
+        "maps town to line 3 and county to line 4" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"), addressLine4 = Some("County Test"))
+
+          result.addressLine3 mustBe expectedAddress.addressLine3
+          result.addressLine4 mustBe expectedAddress.addressLine4
+        }
+
+        "maps county to line 4" in {
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("line3"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine4 = Some("County Test"))
+
+          result.addressLine3 mustBe expectedAddress.addressLine3
+          result.addressLine4 mustBe expectedAddress.addressLine4
+        }
+      }
+
+
 
       "we have a list of addresses" in {
         val addresses = JsArray(Seq(payload,payload))
