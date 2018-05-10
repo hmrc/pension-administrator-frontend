@@ -79,7 +79,10 @@ object TolerantAddress {
         case 3 => {
           val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
 
-          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),townOrCounty._1)
+          val meh = if (townOrCounty._2.isDefined) townOrCounty._2 else townOrCounty._1
+
+
+          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),meh)
         }
         case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }

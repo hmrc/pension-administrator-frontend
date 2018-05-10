@@ -217,16 +217,16 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
         "county is already in lines so we don't map it to line 4" in {
           val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("County Test"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
+          val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("County Test"))
 
-          result.addressLine3 mustBe tolerantAddressSample.addressLine3
+          result.addressLine3 mustBe expectedAddress.addressLine3
           result.addressLine4 mustBe None
         }
       }
 
-
-
+      
       "we have a list of addresses" in {
         val addresses = JsArray(Seq(payload,payload))
 
