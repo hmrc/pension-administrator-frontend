@@ -16,6 +16,8 @@
 
 package forms.mappings
 
+import java.time.LocalDate
+
 import base.SpecBase
 import forms.FormSpec
 import org.scalatest.{Matchers, WordSpec}
@@ -380,5 +382,22 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       val result = country(countryOptions, keyInvalid).apply("XXX")
       result shouldBe Invalid(keyInvalid)
     }
+  }
+
+  "nonFutureDate" must {
+
+    val keyInvalid = "error.invalid"
+    "return valid when date is today's date" in {
+      nonFutureDate(keyInvalid).apply(LocalDate.now) shouldBe Valid
+    }
+
+    "return valid when date is in the past" in {
+      nonFutureDate(keyInvalid).apply(LocalDate.now.minusDays(1)) shouldBe Valid
+    }
+
+    "return invalid when date is in the future" in {
+      nonFutureDate(keyInvalid).apply(LocalDate.now.plusDays(1)) shouldBe Invalid(keyInvalid)
+    }
+
   }
 }

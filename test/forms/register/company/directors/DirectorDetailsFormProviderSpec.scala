@@ -222,6 +222,19 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
       ).errors shouldBe Seq(FormError(fieldName, invalidKey))
     }
 
+    val futureDate = LocalDate.now().plusDays(1)
+    "not accept a future date" in {
+      form.bind(
+        Map(
+          "firstName" -> johnDoe.firstName,
+          "lastName" -> johnDoe.lastName,
+          "dateOfBirth.day" -> futureDate.getDayOfMonth.toString,
+          "dateOfBirth.month" -> futureDate.getMonthValue.toString,
+          "dateOfBirth.year" -> futureDate.getYear.toString
+        )
+      ).errors shouldBe Seq(FormError(fieldName, "common.error.dateOfBirth.future"))
+    }
+
   }
 
   "DirectorDetailsFormProvider" must {
