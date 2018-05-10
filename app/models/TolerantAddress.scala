@@ -68,43 +68,57 @@ object TolerantAddress {
     val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
       lines.size match {
         case 1 => {
-          val townOrCounty : (Option[String],Option[String]) = {
-            (town,county) match {
-              case (Some(town),None) => (Some(replaceAmpersanWithAnd(town)),None)
-              case (None,Some(county)) => (Some(replaceAmpersanWithAnd(county)),None)
-              case (Some(town),Some(county)) => (Some(replaceAmpersanWithAnd(town)),Some(replaceAmpersanWithAnd(county)))
-              case _ => (None,None)
-            }
-          }
+          val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
           (Some(linesWithNoAmpersand(0)),townOrCounty._1,townOrCounty._2,None)
         }
         case 2 => {
-          val townOrCounty : (Option[String],Option[String]) = {
-            (town,county) match {
-              case (Some(town),None) => (Some(replaceAmpersanWithAnd(town)),None)
-              case (None,Some(county)) => (Some(replaceAmpersanWithAnd(county)),None)
-              case (Some(town),Some(county)) => (Some(replaceAmpersanWithAnd(town)),Some(replaceAmpersanWithAnd(county)))
-              case _ => (None,None)
-            }
-          }
+          val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
+
           (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),townOrCounty._1,townOrCounty._2)
         }
         case 3 => {
-          val countyOrTown = {
-            (town,county) match {
-              case (Some(town),None) => Some(replaceAmpersanWithAnd(town))
-              case (None,Some(county)) => Some(replaceAmpersanWithAnd(county))
-              case (Some(_),Some(county)) => Some(replaceAmpersanWithAnd(county))
-              case _ => None
-            }
-          }
-          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),countyOrTown)
+          val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
+
+          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),townOrCounty._1)
         }
         case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
   })
+
+  private def checkIfElementAlreadyExistsInLines(linesWithNoAmpersand: List[String], elementToCheck: String) = {
+    linesWithNoAmpersand.mkString("").toLowerCase().contains(elementToCheck.trim().toLowerCase())
+  }
+
+  private def getTownOrCounty(town: Option[String], county: Option[String], addressLines: List[String]) = {
+
+    (town, county) match {
+      case (Some(town), None) => {
+        val formattedTown = replaceAmpersanWithAnd(town)
+        (if (checkIfElementAlreadyExistsInLines(addressLines,formattedTown)) None else Some(formattedTown), None)
+      }
+      case (None, Some(county)) => {
+        val formattedCounty = replaceAmpersanWithAnd(county)
+        (if (checkIfElementAlreadyExistsInLines(addressLines,formattedCounty)) None else Some(formattedCounty), None)
+      }
+      case (Some(town), Some(county)) => {
+        val formattedTown = replaceAmpersanWithAnd(town)
+        val formattedCounty = replaceAmpersanWithAnd(county)
+        val townAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines,formattedTown)
+        val countyAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines,formattedCounty)
+
+        (townAlreadyExists,countyAlreadyExists) match {
+          case (true,false) => (Some(replaceAmpersanWithAnd(county)), None)
+          case (false,true) => (Some(replaceAmpersanWithAnd(town)), None)
+          case (true,true) => (None, None)
+          case _ => (Some(replaceAmpersanWithAnd(town)), Some(replaceAmpersanWithAnd(county)))
+        }
+      }
+      case _ => (None, None)
+    }
+
+  }
 
   private def replaceAmpersanWithAnd(data : String) : String = (data.replace("&","and"))
 
