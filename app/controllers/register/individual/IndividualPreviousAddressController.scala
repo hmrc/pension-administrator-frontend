@@ -52,7 +52,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
   private[controllers] val hint: Message = "common.previousAddress.lede"
   private[controllers] val secondaryHeader: Message = "common.individual.secondary.heading"
 
-  protected val form: Form[Address] = formProvider()
+  protected val form: Form[Address] = formProvider("error.country.invalid.eueea")
 
   private def viewmodel(mode: Mode) = ManualAddressViewModel(
     postCall(mode),

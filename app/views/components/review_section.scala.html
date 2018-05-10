@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.register.individual
+@(
+heading: String,
+linkMessage: String,
+linkId: String,
+link: Call,
+list: Option[Seq[String]] = None
+)(implicit messages: Messages)
 
-import java.time.LocalDate
+<h2>@messages(heading)</h2>
+<p>
+    <a id="@linkId" href="@link">
+        @messages(linkMessage)
+    </a>
+</p>
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
+<ul>
+    @list.map { list =>
+    @for(listItem <- list){
+    <li>@listItem</li>
+    }
 
-import play.api.data.Form
+    }
+</ul>
 
-class IndividualDateOfBirthFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[LocalDate] =
-    Form(
-      "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
-        .verifying(nonFutureDate("common.error.dateOfBirth.future"))
-    )
-}
+
