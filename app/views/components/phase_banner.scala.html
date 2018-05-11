@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.register.individual
+<div class="phase-banner">
 
-import java.time.LocalDate
+    <p>
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
+        <strong class="phase-tag">ALPHA</strong>
 
-import play.api.data.Form
+        <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
 
-class IndividualDateOfBirthFormProvider @Inject() extends FormErrorHelper with Mappings {
+    </p>
 
-  def apply(): Form[LocalDate] =
-    Form(
-      "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
-        .verifying(nonFutureDate("common.error.dateOfBirth.future"))
-    )
-}
+</div>

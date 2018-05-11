@@ -16,6 +16,8 @@
 
 package forms.register.individual
 
+import java.time.LocalDate
+
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
@@ -62,6 +64,17 @@ class IndividualDateOfBirthFormProviderSpec extends StringFieldBehaviours {
           "dateOfBirth.year" -> "0"
         )
       ).errors shouldBe Seq(FormError(fieldName, invalidKey))
+    }
+
+    val futureDate = LocalDate.now().plusDays(1)
+    "not accept a future date" in {
+      form.bind(
+        Map(
+          "dateOfBirth.day" -> futureDate.getDayOfMonth.toString,
+          "dateOfBirth.month" -> futureDate.getMonthValue.toString,
+          "dateOfBirth.year" -> futureDate.getYear.toString
+        )
+      ).errors shouldBe Seq(FormError(fieldName, "common.error.dateOfBirth.future"))
     }
   }
 }

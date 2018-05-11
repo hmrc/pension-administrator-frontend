@@ -97,7 +97,7 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
       implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test1" -> "result"))
 
       whenReady(testIdentifier.retrieve.left.value) {
-        _ mustEqual (Redirect(routes.SessionExpiredController.onPageLoad()))
+        _ mustEqual Redirect(routes.SessionExpiredController.onPageLoad())
       }
     }
 

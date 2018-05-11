@@ -88,6 +88,7 @@ object TolerantAddress {
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
   })
 
+
   private def checkIfElementAlreadyExistsInLines(linesWithNoAmpersand: List[String], elementToCheck: String) = {
     linesWithNoAmpersand.mkString("").toLowerCase().contains(elementToCheck.trim().toLowerCase())
   }
@@ -121,6 +122,7 @@ object TolerantAddress {
   }
 
   private def replaceAmpersanWithAnd(data : String) : String = (data.replace("&","and"))
+
 
   val postCodeLookupReads : Reads[Seq[TolerantAddress]] = Reads {
     json =>

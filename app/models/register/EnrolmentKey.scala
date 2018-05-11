@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package forms.register.individual
+package models.register
 
-import java.time.LocalDate
+sealed trait EnrolmentKey {
+  protected val serviceName: String
+  protected val identifier: String
+  protected val value: String
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
+  def key: String = s"$serviceName~$identifier~$value"
 
-import play.api.data.Form
+}
 
-class IndividualDateOfBirthFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(): Form[LocalDate] =
-    Form(
-      "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
-        .verifying(nonFutureDate("common.error.dateOfBirth.future"))
-    )
+case class Enrol(PsaId: String) extends EnrolmentKey {
+  override protected val serviceName: String = "HMRC-PODS-ORG"
+  override protected val identifier: String = "PSAID"
+  override protected val value: String = PsaId
 }

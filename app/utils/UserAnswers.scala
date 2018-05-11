@@ -38,8 +38,19 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       .getAll(json)
       .asOpt
       .flatMap(vs =>
-        Some(vs.map(v => v.as[A]))
-      )
+        Some(vs.map(v =>
+          validate[A](v)
+      )))
+  }
+
+  private def validate[A](jsValue: JsValue)(implicit rds: Reads[A]): A = {
+    jsValue.validate[A].fold(
+      invalid =
+        errors =>
+          throw JsResultException(errors),
+      valid =
+        response => response
+    )
   }
 
   def set[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data]): JsResult[UserAnswers] = {

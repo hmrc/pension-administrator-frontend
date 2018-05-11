@@ -17,18 +17,20 @@
 package controllers.register
 
 import javax.inject.Inject
+
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
+import connectors.{DataCacheConnector, EnrolmentStoreConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
 import models.{ExistingPSA, NormalMode, UserType}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HttpException
 import utils.annotations.Register
-import utils.{Navigator, UserAnswers}
+import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
 import scala.concurrent.Future
@@ -41,8 +43,10 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   @Register navigator: Navigator,
                                                   formProvider: DeclarationFormProvider,
                                                   dataCacheConnector: DataCacheConnector,
-                                                  pensionsSchemeConnector: PensionsSchemeConnector) extends FrontendController with
-  I18nSupport {
+                                                  pensionsSchemeConnector: PensionsSchemeConnector,
+                                                  knownFactsRetrieval: KnownFactsRetrieval,
+                                                  enrolments: EnrolmentStoreConnector
+                                                 ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -72,18 +76,30 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               Future.successful(BadRequest(
                 declarationFitAndProper(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
           },
-        success => dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
-          val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(request.user.isExistingPSA,
-            request.user.existingPSAId)).asOpt.getOrElse(UserAnswers(cacheMap))
-          pensionsSchemeConnector.registerPsa(answers).flatMap { psaResponse =>
-            dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse).map { cacheMap =>
-              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+        success =>
+          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
+
+            val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(
+              request.user.isExistingPSA,
+              request.user.existingPSAId
+            )).asOpt.getOrElse(UserAnswers(cacheMap))
+
+            pensionsSchemeConnector.registerPsa(answers) flatMap { psaResponse =>
+              dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse) flatMap { cacheMap =>
+                knownFactsRetrieval.retrieve map { knownFacts =>
+                  enrolments.enrol(psaResponse.psaId, knownFacts) map { _ =>
+                    Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+                  }
+                } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+              }
+            } recoverWith {
+              case _: HttpException =>
+                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+              case _: InvalidBusinessPartnerException =>
+                Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
             }
-          } recoverWith {
-            case _: InvalidBusinessPartnerException => Future.successful(Redirect(controllers.register.routes
-              .DuplicateRegistrationController.onPageLoad()))
+
           }
-        }
       )
   }
 }
