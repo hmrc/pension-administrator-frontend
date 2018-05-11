@@ -95,8 +95,8 @@ class AddressLookupConnectorSpec extends WordSpec
 
 
         val tolerantAddressSample = Seq(
-          TolerantAddress(Some("10 Other Place"),Some("Some District"),None,None,Some("ZZ1 1ZZ"),Some("UK")),
-          TolerantAddress(Some("2 Other Place"),Some("Some District"),None,None,Some("ZZ1 1ZZ"),Some("UK"))
+          TolerantAddress(Some("10 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK")),
+          TolerantAddress(Some("2 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK"))
         )
 
 
