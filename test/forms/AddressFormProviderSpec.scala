@@ -16,6 +16,7 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.{AddressBehaviours, FormBehaviours}
 import forms.mappings.AddressMapping
 import models.Address
@@ -34,7 +35,7 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec with AddressB
   private val addressLine4 = alphaString()
   private val postCode = "ZZ1 1ZZ"
 
-  private val countryOptions = FakeCountryOptions()
+  private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val validData: Map[String, String] = Map(
     "addressLine1" -> addressLine1,
@@ -60,7 +61,7 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec with AddressB
     behave like formWithCountry(
       form,
       "country",
-      "error.country.required",
+      "error.country.invalid",
       "error.country.invalid",
       countryOptions,
       Map(

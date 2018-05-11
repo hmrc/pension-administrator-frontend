@@ -15,9 +15,10 @@
  */
 
 import com.google.inject.AbstractModule
-import utils.navigators._
-import utils.annotations._
 import utils.Navigator
+import utils.annotations._
+import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
+import utils.navigators._
 
 class PODSModule extends AbstractModule {
 
@@ -42,5 +43,9 @@ class PODSModule extends AbstractModule {
     bind(classOf[Navigator])
       .annotatedWith(classOf[Adviser])
       .to(classOf[AdviserNavigator])
+
+    bind(classOf[CountryOptions])
+      .annotatedWith(classOf[EUAndEEA])
+      .to(classOf[CountryOptionsEUAndEEA])
   }
 }

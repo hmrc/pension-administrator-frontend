@@ -16,11 +16,16 @@
 
 package forms.mappings
 
+import java.time.LocalDate
+
+import base.SpecBase
+import forms.FormSpec
 import org.scalatest.{Matchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
-import utils.{CountryOptions, InputOption}
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, InputOption}
 
-class ConstraintsSpec extends WordSpec with Matchers with Constraints with RegexBehaviourSpec {
+class ConstraintsSpec extends FormSpec with Matchers with Constraints with RegexBehaviourSpec {
 
   // scalastyle:off magic.number
 
@@ -366,12 +371,7 @@ class ConstraintsSpec extends WordSpec with Matchers with Constraints with Regex
 
     val keyInvalid = "error.invalid"
 
-    val countryOptions: CountryOptions = new CountryOptions(
-      Seq(
-        InputOption("GB", "United Kingdom"),
-        InputOption("PN", "Ponteland")
-      )
-    )
+    val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
     "return valid when the country code exists" in {
       val result = country(countryOptions, keyInvalid).apply("GB")
@@ -382,7 +382,22 @@ class ConstraintsSpec extends WordSpec with Matchers with Constraints with Regex
       val result = country(countryOptions, keyInvalid).apply("XXX")
       result shouldBe Invalid(keyInvalid)
     }
-
   }
 
+  "nonFutureDate" must {
+
+    val keyInvalid = "error.invalid"
+    "return valid when date is today's date" in {
+      nonFutureDate(keyInvalid).apply(LocalDate.now) shouldBe Valid
+    }
+
+    "return valid when date is in the past" in {
+      nonFutureDate(keyInvalid).apply(LocalDate.now.minusDays(1)) shouldBe Valid
+    }
+
+    "return invalid when date is in the future" in {
+      nonFutureDate(keyInvalid).apply(LocalDate.now.plusDays(1)) shouldBe Invalid(keyInvalid)
+    }
+
+  }
 }

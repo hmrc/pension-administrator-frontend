@@ -41,6 +41,7 @@ error.address_line_3.invalid = The third line of the address contains invalid ch
 error.address_line_4.invalid = The fourth line of the address contains invalid characters
 error.country.required = Enter a country
 error.country.invalid = Enter a valid country
+error.country.invalid.eueea = Pension Scheme Administrators must be resident in the UK, EU or EEA
 error.addressYears.required = Select how long they have been at the current address
 
 error.postcode.required = Enter the postal code
@@ -106,8 +107,9 @@ common.advisor.address.heading = Pension adviser’s address
 common.advisor.address.title = Pension adviser’s address
 common.error.dateOfBirth.required = Enter the date of birth
 common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
+common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.dateOfBirth = Date of birth
-common.dateOfBirth.hint = Example 30 09 1990
+common.dateOfBirth.hint = Example 30 9 1990
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -309,8 +311,8 @@ directorContactDetails.checkYourAnswersLabel = Contact details for director
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-confirmCompanyAddress.title = Company address
-confirmCompanyAddress.heading = Company address
+confirmCompanyAddress.title = Are these details correct?
+confirmCompanyAddress.heading = Company details
 
 whatYouWillNeed.title = What you’ll need
 whatYouWillNeed.heading = What you’ll need
@@ -377,12 +379,12 @@ companyUpdateDetails.text = If you are a company or a limited liability partners
 companyNotFound.title = Business details not found
 companyNotFound.heading = Business details not found
 companyNotFound.lede = There could be a number of reasons why we cannot find your business details.
-companyNotFound.businessNameExactMatch = Your business name isn’t an exact match
+companyNotFound.businessNameExactMatch = Your business name is not an exact match
 companyNotFound.businessNameExactMatch.description = Your business name should match the name written on letters you have from HMRC. Check the capital letters and spaces in your business name. You should also check if your business name uses ‘limited’ or ‘LTD’.
 companyNotFound.businessNameChanged = Your business name has changed
 companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with companies house you need to inform {0}Companies House{1} and {2}HMRC{1}
-companyNotFound.businessNameChanged.individual = If you are an individual or partnership and are not registered with Companies House {0}you only need to inform HMRC{1}
-companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number doesn’t match
+companyNotFound.businessNameChanged.individual = If you are an individual or a partnership and are not registered with Companies House {0}you only need to inform HMRC{1}
+companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number does not match
 companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference number is made up of 10 or 13 numbers. If it is 13, only enter the last 10.
 
 declarationWorkingKnowledge.title = Do you have a working knowledge of pension scheme administrator duties?
@@ -445,5 +447,5 @@ duplicateRegistration.title = You cannot register as a Pension Scheme Administra
 duplicateRegistration.heading = You cannot register as a Pension Scheme Administrator using these details.
 duplicateRegistration.body = Someone from your organisation has already registered as a Pension Scheme Administrator.
 
-individualDateOfBirth.title = Date Of Birth
-individualDateOfBirth.heading = Date Of Birth
+individualDateOfBirth.title = Your date of birth
+individualDateOfBirth.heading = Your date of birth

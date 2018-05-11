@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+<div class="phase-banner">
 
-import com.google.inject.Inject
-import utils.countryOptions.CountryOptions
+    <p>
 
-class CheckYourAnswersFactory @Inject()(countryOptions: CountryOptions) {
+        <strong class="phase-tag">ALPHA</strong>
 
-  def checkYourAnswersHelper(userAnswers: UserAnswers): CheckYourAnswersHelper = {
-    new CheckYourAnswersHelper(userAnswers, countryOptions)
-  }
-}
+        <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
 
+    </p>
+
+</div>

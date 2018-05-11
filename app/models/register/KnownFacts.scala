@@ -18,7 +18,6 @@ package models.register
 
 import play.api.libs.json.{Format, Json}
 
-
 case class KnownFact(key: String, value: String)
 
 object KnownFact {

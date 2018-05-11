@@ -16,9 +16,11 @@
 
 package forms.mappings
 
+import java.time.LocalDate
+
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
-import utils.CountryOptions
+import utils.countryOptions.CountryOptions
 
 trait Constraints {
 
@@ -138,10 +140,17 @@ trait Constraints {
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
     Constraint {
       input =>
+        val x = countryOptions.options
         countryOptions.options
           .find(_.value == input)
           .map(_ => Valid)
           .getOrElse(Invalid(errorKey))
+    }
+
+  protected def nonFutureDate(errorKey: String): Constraint[LocalDate] =
+    Constraint {
+      case date if !LocalDate.now().isBefore(date) => Valid
+      case _ => Invalid(errorKey)
     }
 
 }

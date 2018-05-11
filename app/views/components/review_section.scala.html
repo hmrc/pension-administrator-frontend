@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,31 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@(
+heading: String,
+linkMessage: String,
+linkId: String,
+link: Call,
+list: Option[Seq[String]] = None
+)(implicit messages: Messages)
 
-import com.google.inject.Inject
-import utils.countryOptions.CountryOptions
+<h2>@messages(heading)</h2>
+<p>
+    <a id="@linkId" href="@link">
+        @messages(linkMessage)
+    </a>
+</p>
 
-class CheckYourAnswersFactory @Inject()(countryOptions: CountryOptions) {
+<ul>
+    @list.map { list =>
+    @for(listItem <- list){
+    <li>@listItem</li>
+    }
 
-  def checkYourAnswersHelper(userAnswers: UserAnswers): CheckYourAnswersHelper = {
-    new CheckYourAnswersHelper(userAnswers, countryOptions)
-  }
-}
+    }
+</ul>
+
+
 

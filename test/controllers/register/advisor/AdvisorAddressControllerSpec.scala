@@ -30,6 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import utils._
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -101,7 +102,7 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
 object AdvisorAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  def countryOptions: CountryOptions = new CountryOptions(Seq(InputOption("GB", "United Kingdom")))
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val formProvider = new AddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider()

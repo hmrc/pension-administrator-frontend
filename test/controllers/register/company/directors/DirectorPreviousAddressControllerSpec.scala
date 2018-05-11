@@ -30,18 +30,18 @@ import models.{Address, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{CountryOptions, FakeCountryOptions, FakeNavigator, InputOption}
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, FakeNavigator, InputOption}
 import views.html.register.company.directors.directorPreviousAddress
 
 class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  val formProvider = new AddressFormProvider(FakeCountryOptions())
+  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form = formProvider()
   val index = Index(0)
   val directorName = "test first name test middle name test last name"
-  val countryOptions: Seq[InputOption] = Seq(InputOption("country:AU", "Australia"), InputOption("territory:KY", "Cayman Islands"))
   val companyName = "test company name"
   val address = Address("test address line 1", "test address line 2", None, None, None, "GB")
 
@@ -64,10 +64,10 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider, new CountryOptions(countryOptions))
+      dataRetrievalAction, new DataRequiredActionImpl, formProvider, new FakeCountryOptions(environment, frontendAppConfig))
 
   def viewAsString(form: Form[_] = form) = directorPreviousAddress(
-    frontendAppConfig, form, NormalMode, index, directorName, countryOptions
+    frontendAppConfig, form, NormalMode, index, directorName, countryOptions.options
   )(fakeRequest, messages).toString
 
   "DirectorPreviousAddress Controller" must {

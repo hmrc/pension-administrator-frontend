@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package utils
+package models.register
 
-import com.google.inject.Inject
-import utils.countryOptions.CountryOptions
+sealed trait EnrolmentKey {
+  protected val serviceName: String
+  protected val identifier: String
+  protected val value: String
 
-class CheckYourAnswersFactory @Inject()(countryOptions: CountryOptions) {
+  def key: String = s"$serviceName~$identifier~$value"
 
-  def checkYourAnswersHelper(userAnswers: UserAnswers): CheckYourAnswersHelper = {
-    new CheckYourAnswersHelper(userAnswers, countryOptions)
-  }
 }
 
+case class Enrol(PsaId: String) extends EnrolmentKey {
+  override protected val serviceName: String = "HMRC-PODS-ORG"
+  override protected val identifier: String = "PSAID"
+  override protected val value: String = PsaId
+}
