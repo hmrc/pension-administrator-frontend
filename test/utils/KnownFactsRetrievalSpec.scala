@@ -33,7 +33,9 @@ class KnownFactsRetrievalSpec extends SpecBase {
   private val sapNumber = "test-sap-number"
   private val externalId = "test-externalId"
   private val nonUk = "test-non-uk"
-  private val postalCode = "test-postal-code"
+  private val postalCode = "test-pcode"
+
+  lazy val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
   "retrieve" must {
 
@@ -41,7 +43,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
       "user is individual" which {
 
-        "comprise of PSA ID and NINO" in {
+        "comprise of NINO" in {
 
           val registration = RegistrationInfo(
             RegistrationLegalStatus.Individual,
@@ -68,8 +70,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
             ))
           )
 
-          val generator = app.injector.instanceOf[KnownFactsRetrieval]
-
           generator.retrieve mustEqual Some(KnownFacts(Set(
             KnownFact("NINO", nino)
           )))
@@ -80,7 +80,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
       "user is company" which {
 
-        "comprise of PSA ID and CTR UTR" when {
+        "comprise of CTR UTR" when {
 
           "company is UK" in {
 
@@ -109,8 +109,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
               ))
             )
 
-            val generator = app.injector.instanceOf[KnownFactsRetrieval]
-
             generator.retrieve mustEqual Some(KnownFacts(Set(
               KnownFact("CTUTR", utr)
             )))
@@ -118,7 +116,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
         }
 
-        "comprise of PSA ID, Postal ID and Country Code" when {
+        "comprise of Postal ID and Country Code" when {
 
           "company is Non-UK" in {
 
@@ -146,8 +144,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
                 RegistrationInfoId.toString -> registration
               ))
             )
-
-            val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
             generator.retrieve mustEqual Some(KnownFacts(Set(
               KnownFact("NonUKPostalCode", postalCode),
@@ -185,11 +181,77 @@ class KnownFactsRetrievalSpec extends SpecBase {
               ))
             )
 
-            val generator = app.injector.instanceOf[KnownFactsRetrieval]
-
             generator.retrieve mustEqual Some(KnownFacts(Set(
               KnownFact("CountryCode", nonUk)
             )))
+          }
+
+          "company is Non-UK and Postal ID does exist but is not the required length" when {
+
+            "less than 1" in {
+
+              val registration = RegistrationInfo(
+                RegistrationLegalStatus.LimitedCompany,
+                sapNumber,
+                false,
+                RegistrationCustomerType.NonUK,
+                RegistrationIdType.UTR,
+                utr
+              )
+
+              implicit val request: DataRequest[AnyContent] = DataRequest(
+                FakeRequest(),
+                externalId,
+                PSAUser(UserType.Organisation, None, false, None),
+                UserAnswers(Json.obj(
+                  ConfirmCompanyAddressId.toString -> TolerantAddress(
+                    Some("1 Street"),
+                    Some("Somewhere"),
+                    None, None,
+                    Some(""),
+                    Some(nonUk)
+                  ),
+                  RegistrationInfoId.toString -> registration
+                ))
+              )
+
+              generator.retrieve mustEqual Some(KnownFacts(Set(
+                KnownFact("CountryCode", nonUk)
+              )))
+            }
+
+            "greater than 10" in {
+
+              val registration = RegistrationInfo(
+                RegistrationLegalStatus.LimitedCompany,
+                sapNumber,
+                false,
+                RegistrationCustomerType.NonUK,
+                RegistrationIdType.UTR,
+                utr
+              )
+
+              implicit val request: DataRequest[AnyContent] = DataRequest(
+                FakeRequest(),
+                externalId,
+                PSAUser(UserType.Organisation, None, false, None),
+                UserAnswers(Json.obj(
+                  ConfirmCompanyAddressId.toString -> TolerantAddress(
+                    Some("1 Street"),
+                    Some("Somewhere"),
+                    None, None,
+                    Some(postalCode * 3),
+                    Some(nonUk)
+                  ),
+                  RegistrationInfoId.toString -> registration
+                ))
+              )
+
+              generator.retrieve mustEqual Some(KnownFacts(Set(
+                KnownFact("CountryCode", nonUk)
+              )))
+            }
+
           }
 
         }

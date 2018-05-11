@@ -215,7 +215,6 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, payeRegex)
   }
 
-
   "email" must {
 
     val validEmail = Table(
@@ -292,7 +291,8 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "postCode",
       "1",
       "1234567890",
-      "1-2-3"
+      "1-2-3",
+      "98765434567898765"
     )
 
     val invalidPostCode = Table(
