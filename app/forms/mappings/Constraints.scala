@@ -27,6 +27,9 @@ trait Constraints {
   protected val crnRegex = """^[A-Za-z0-9 -]{7,8}$"""
   protected val utrRegex = """^\d{10}$"""
   protected val emailRegex = """^[^@'<>"]+@[^@'<>"]+$"""
+  protected val regexEmailRestrictive = "^(?:[a-z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&*+\\/=?^_`{|}~-]+)*)" +
+    "@(?:[a-z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&*+\\/=?^_`{|}~-]+)*)$"
+
   protected val phoneNumberRegex = """^[0-9 ()+--]{1,24}$"""
   protected val vatRegex = """^\d{9}$"""
   protected val payeRegex = """^[0-9]{3}[0-9A-Za-z]{1,13}$"""
@@ -114,6 +117,8 @@ trait Constraints {
   protected def uniqueTaxReference(errorKey: String): Constraint[String] = regexp(utrRegex, errorKey)
 
   protected def emailAddress(errorKey: String): Constraint[String] = regexp(emailRegex, errorKey)
+
+  protected def emailAddressRestrictive(errorKey: String): Constraint[String] = regexp(regexEmailRestrictive, errorKey)
 
   protected def phoneNumber(errorKey: String): Constraint[String] = regexp(phoneNumberRegex, errorKey)
 
