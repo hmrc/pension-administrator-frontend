@@ -47,7 +47,8 @@ class KnownFactsRetrieval {
             val knownFacts = Set(KnownFact(countryKey, country))
             KnownFacts {
               address.postcode match {
-                case Some(postalCode) if postalCode.length > 0 & postalCode.length < 11 => knownFacts + KnownFact(postalKey, postalCode)
+                case Some(postalCode) if postalCode.length > 0 & postalCode.length < 11 =>
+                  knownFacts + KnownFact(postalKey, transformNonUKPostalCode(postalCode))
                 case _ => knownFacts
               }
             }
@@ -56,5 +57,7 @@ class KnownFactsRetrieval {
       }
 
   }
+
+  private val transformNonUKPostalCode: String => String = _.replaceAll(" ", "").toUpperCase
 
 }
