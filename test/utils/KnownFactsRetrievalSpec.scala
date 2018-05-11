@@ -33,7 +33,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
   private val sapNumber = "test-sap-number"
   private val externalId = "test-externalId"
   private val nonUk = "test-non-uk"
-  private val postalCode = "test-pcode"
+  private val postalCode = "test pcode"
 
   lazy val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
@@ -146,7 +146,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             )
 
             generator.retrieve mustEqual Some(KnownFacts(Set(
-              KnownFact("NonUKPostalCode", postalCode),
+              KnownFact("NonUKPostalCode", "TESTPCODE"),
               KnownFact("CountryCode", nonUk)
             )))
           }
