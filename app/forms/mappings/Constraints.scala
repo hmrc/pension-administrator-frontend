@@ -27,8 +27,8 @@ trait Constraints {
   protected val crnRegex = """^[A-Za-z0-9 -]{7,8}$"""
   protected val utrRegex = """^\d{10}$"""
   protected val emailRegex = """^[^@'<>"]+@[^@'<>"]+$"""
-  protected val emailRestrictiveRegex = "^(?:[a-z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&*+\\/=?^_`{|}~-]+)*)" +
-    "@(?:[a-z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&*+\\/=?^_`{|}~-]+)*)$"
+  protected val emailRestrictiveRegex = "^(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)" +
+    "@(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)$"
 
   protected val phoneNumberRegex = """^[0-9 ()+--]{1,24}$"""
   protected val vatRegex = """^\d{9}$"""
