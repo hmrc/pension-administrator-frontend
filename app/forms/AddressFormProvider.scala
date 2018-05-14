@@ -32,7 +32,7 @@ class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends Addr
       "addressLine2" -> addressLineMapping("error.address_line_2.required", "error.address_line_2.length", "error.address_line_2.invalid"),
       "addressLine3" -> optionalAddressLineMapping("error.address_line_3.length", "error.address_line_3.invalid"),
       "addressLine4" -> optionalAddressLineMapping("error.address_line_4.length", "error.address_line_4.invalid"),
-      "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid"),
+      "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid", "error.postcode.nonUK.length"),
       "country" -> countryMapping(countryOptions, requiredCountry, "error.country.invalid")
     )(Address.apply)(Address.unapply)
   )

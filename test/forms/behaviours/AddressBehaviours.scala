@@ -139,6 +139,7 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
                                      form: Form[T],
                                      keyRequired: String,
                                      keyInvalid: String,
+                                     keyNonUKLength: String,
                                      validOtherData: Map[String, String],
                                      getPostCode: (T) => String): Unit = {
 
@@ -158,6 +159,12 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
         val result = form.bind(validOtherData ++ Map("country" -> "GB", "postCode" -> ""))
 
         result.errors shouldBe Seq(FormError("postCode", keyRequired))
+      }
+
+      "fail to bind when country is NON UK and postCode is more than 10 characters" in {
+        val result = form.bind(validOtherData ++ Map("country" -> "IN", "postCode" -> "12345678911"))
+
+        result.errors shouldBe Seq(FormError("postCode", keyNonUKLength))
       }
 
       Seq("A 1223", "1234 A23", "AA1 BBB", "AA 8989").foreach { testPostCode =>
