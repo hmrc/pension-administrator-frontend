@@ -30,14 +30,17 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
-
+import scala.util.{Failure, Success}
 import scala.concurrent.Future
 
 trait PostcodeLookupController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
+
   protected def cacheConnector: DataCacheConnector
+
   protected def addressLookupConnector: AddressLookupConnector
+
   protected def navigator: Navigator
 
   protected def form: Form[String]
@@ -76,13 +79,10 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
                             )(postcode: String)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     addressLookupConnector.addressLookupByPostCode(postcode).flatMap {
-      case None => Future.successful {
-        BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel))
-      }
-      case Some(Nil) => Future.successful {
-        Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel))
-      }
-      case Some(addresses) =>
+
+      case Nil => Future.successful(Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel)))
+
+      case addresses => {
         cacheConnector.save(
           request.externalId,
           id,
@@ -91,8 +91,16 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
           json =>
             Redirect(navigator.nextPage(id, mode)(UserAnswers(json)))
         }
+      }
+    } recoverWith {
+
+      case _ => {
+        Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel)))
+      }
+
     }
   }
+
 
   protected def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {
     form.withError("value", message.resolve)

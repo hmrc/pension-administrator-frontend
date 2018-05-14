@@ -84,8 +84,8 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   )
 
   private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Seq[TolerantAddress]]] = {
-      Future.successful(Some(Seq(address)))
+    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
+      Future.successful(Seq(address))
     }
   }
 
