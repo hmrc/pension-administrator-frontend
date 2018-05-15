@@ -249,7 +249,7 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "email@.com",
       "32..423423432423",
       "123 2@3",
-      "@@@@@@"
+      "xyz;a@v"
     )
 
     val invalidMsg = "contactDetails.error.email.valid"
