@@ -130,7 +130,7 @@ class AddressLookupConnectorSpec extends WordSpec
           connector.addressLookupByPostCode("ZZ1 1ZZ")
 
         }
-      }
+      }.value
 
     }
   }
