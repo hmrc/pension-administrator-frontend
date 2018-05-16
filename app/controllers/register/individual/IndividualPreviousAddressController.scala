@@ -43,7 +43,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
-                                                    @EUAndEEA val countryOptions: CountryOptions
+                                                    val countryOptions: CountryOptions
                                                    ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
