@@ -46,10 +46,8 @@ class KnownFactsRetrieval {
           } yield {
             val knownFacts = Set(KnownFact(countryKey, country))
             KnownFacts {
-              address.postcode match {
-                case Some(postalCode) if postalCode.length > 0 & postalCode.length < 11 =>
-                  knownFacts + KnownFact(postalKey, transformNonUKPostalCode(postalCode))
-                case _ => knownFacts
+              address.postcode.fold(knownFacts){ postalCode =>
+                knownFacts + KnownFact(postalKey, transformNonUKPostalCode(postalCode))
               }
             }
           }

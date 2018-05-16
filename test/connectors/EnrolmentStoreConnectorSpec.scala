@@ -83,7 +83,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
 
           recoverToSucceededIf[HttpException] {
             connector.enrol(testPsaId, knownFacts)
-          }
+          }.value
 
         }
       }
@@ -102,7 +102,7 @@ class EnrolmentStoreConnectorSpec extends WordSpec
 
           recoverToSucceededIf[HttpException] {
             connector.enrol(testPsaId, knownFacts)
-          }
+          }.value
 
         }
       }
