@@ -312,7 +312,7 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val validName = Table(
       "name",
-      "A",
+      "AÀ",
       "a"
     )
 
@@ -323,7 +323,9 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "1A",
       " a",
       "_a",
-      "1a"
+      "1a",
+      "A/",
+      "a\\"
     )
 
     val invalidMsg = "Invalid name"
@@ -335,36 +337,39 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val validAddress = Table(
       "address",
-      "1 Main St."
+      "1 Main St.",
+      "Apt/12"
     )
 
     val invalidAddress = Table(
       "address",
-      "Apt [12]"
+      "Apt [12]",
+      "Apt\\12",
+      "Street À"
     )
 
     val invalidMsg = "Invalid address"
 
     behave like regexWithValidAndInvalidExamples(addressLine, validAddress, invalidAddress, invalidMsg, addressLineRegex)
-
   }
 
   "safeText" must {
 
     val validText = Table(
       "text",
-      "some valid text"
+      "some valid text À ÿ",
+      "!$%&*()[]@@'~#;:,./?^"
     )
 
     val invalidText = Table(
       "text",
-      "[invalid text]"
+      "{invalid text}",
+      "<invalid>"
     )
 
     val invalidMsg = "Invalid text"
 
     behave like regexWithValidAndInvalidExamples(safeText, validText, invalidText, invalidMsg, safeTextRegex)
-
   }
 
   "country" must {
@@ -399,5 +404,25 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       nonFutureDate(keyInvalid).apply(LocalDate.now.plusDays(1)) shouldBe Invalid(keyInvalid)
     }
 
+  }
+
+  "companyName" must {
+    val validText = Table(
+      "text",
+      "xyz 2nd Ltd",
+      "xyz/private"
+    )
+
+    val invalidText = Table(
+      "text",
+      "company\\Ltd",
+      "[company ltd]",
+      "company, Ltd",
+      "company Ltd."
+    )
+
+    val invalidMsg = "Invalid text"
+
+    behave like regexWithValidAndInvalidExamples(companyName, validText, invalidText, invalidMsg, companyNameRegex)
   }
 }
