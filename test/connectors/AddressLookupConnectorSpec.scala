@@ -103,7 +103,7 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       }
     }
     "returns an exception" which {
-      "means the Address Lookup has returned a non 200 response " in {
+      "means the Address Lookup has returned a response not in the 200 range" in {
 
         server.stubFor(
           get(urlEqualTo(url)).willReturn(

@@ -21,11 +21,12 @@ import config.FrontendAppConfig
 import models.TolerantAddress
 import play.api.Logger
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{HttpException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.http.Status._
+
 
 class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends AddressLookupConnector {
 
@@ -37,17 +38,26 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     http.GET[HttpResponse](addressLookupUrl)(implicitly, schemeHc, implicitly) flatMap {
-      case response if response.status equals OK => Future.successful(response.json.as[Seq[TolerantAddress]])
-      case response => {
-        val exception=new HttpException(response.body, response.status)
-        Logger.error(s"Exception in AddressLookup",exception)
-        Future.failed(new HttpException(response.body, response.status))
+      case response if response.status equals OK => {
+        Future.successful(response.json.as[Seq[TolerantAddress]])
       }
+      case response => {
+        val message=s"Address Lookup failed with status ${response.status} Response body :${response.body}"
+        Future.failed(new HttpException(message, response.status))
+      }
+    } recoverWith logExceptions
+  }
+
+
+  private def logExceptions: PartialFunction[Throwable, Future[Seq[TolerantAddress]]] = {
+    case (t: Throwable) => {
+      Logger.error("Exception in AddressLookup", t)
+      Future.failed(t)
     }
   }
 }
 
 @ImplementedBy(classOf[AddressLookupConnectorImpl])
 trait AddressLookupConnector {
-  def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext):Future[Seq[TolerantAddress]]
+  def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]]
 }
