@@ -25,7 +25,8 @@ trait EmailMapping extends Mappings {
       .verifying(
         returnOnFirstFailure(
           maxLength(EmailMapping.maxEmailLength, keyEmailLength),
-          emailAddress(keyEmailInvalid)
+          emailAddress(keyEmailInvalid),
+          emailAddressRestrictive(keyEmailInvalid)
         )
       )
   }

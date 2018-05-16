@@ -34,17 +34,17 @@ import views.html.register.company.companyPreviousAddressPostCodeLookup
 
 import scala.concurrent.Future
 
-class CompanyPreviousAddressPostCodeLookupController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        addressLookupConnector: AddressLookupConnector,
-                                        @RegisterCompany navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
-                                      ) extends FrontendController with I18nSupport {
+class CompanyPreviousAddressPostCodeLookupController @Inject()(
+                                                                appConfig: FrontendAppConfig,
+                                                                override val messagesApi: MessagesApi,
+                                                                dataCacheConnector: DataCacheConnector,
+                                                                addressLookupConnector: AddressLookupConnector,
+                                                                @RegisterCompany navigator: Navigator,
+                                                                authenticate: AuthAction,
+                                                                getData: DataRetrievalAction,
+                                                                requireData: DataRequiredAction,
+                                                                formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
+                                                              ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
@@ -64,17 +64,8 @@ class CompanyPreviousAddressPostCodeLookupController @Inject() (
           Future.successful(BadRequest(companyPreviousAddressPostCodeLookup(appConfig, formWithErrors, mode))),
         (value) =>
           addressLookupConnector.addressLookupByPostCode(value).flatMap {
-            case None =>
-              Future.successful(
-                BadRequest(
-                  companyPreviousAddressPostCodeLookup(
-                    appConfig,
-                    formWithError("companyPreviousAddressPostCodeLookup.error.invalid"),
-                    mode
-                  )
-                )
-              )
-            case Some(Nil) =>
+
+            case Nil => {
               Future.successful(
                 BadRequest(
                   companyPreviousAddressPostCodeLookup(
@@ -84,7 +75,8 @@ class CompanyPreviousAddressPostCodeLookupController @Inject() (
                   )
                 )
               )
-            case Some(addresses) =>
+            }
+            case addresses =>
 
               dataCacheConnector
                 .save(
@@ -97,6 +89,16 @@ class CompanyPreviousAddressPostCodeLookupController @Inject() (
                     navigator.nextPage(CompanyPreviousAddressPostCodeLookupId, mode)(UserAnswers(cacheMap))
                   )
                 )
+          }.recoverWith {
+            case _ => Future.successful(
+              BadRequest(
+                companyPreviousAddressPostCodeLookup(
+                  appConfig,
+                  formWithError("companyPreviousAddressPostCodeLookup.error.invalid"),
+                  mode
+                )
+              )
+            )
           }
       )
   }

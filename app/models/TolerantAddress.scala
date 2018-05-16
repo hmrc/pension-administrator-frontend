@@ -82,7 +82,7 @@ object TolerantAddress {
 
           (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),townOrCountyValue)
         }
-        case 4 => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
+        case numberOfLines if (numberOfLines >= 4) => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
       }
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
