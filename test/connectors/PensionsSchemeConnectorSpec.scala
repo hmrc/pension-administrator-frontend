@@ -39,10 +39,8 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         .withHeader("Content-Type", equalTo("application/json"))
         .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
         .willReturn(
-          aResponse()
-            .withStatus(Status.OK)
+          ok(validResponse)
             .withHeader("Content-Type", "application/json")
-            .withBody(validResponse)
         )
     )
 
@@ -59,8 +57,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-          aResponse()
-            .withStatus(Status.CREATED)
+          created
             .withHeader("Content-Type", "application/json")
             .withBody(validResponse)
         )
@@ -79,10 +76,8 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-          aResponse()
-            .withStatus(Status.OK)
-            .withHeader("Content-Type", "application/json")
-            .withBody("this-is-not-valid-json")
+            ok("this-is-not-valid-json")
+              .withHeader("Content-Type", "application/json")
         )
     )
 
@@ -99,10 +94,8 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-          aResponse()
-            .withStatus(Status.OK)
+          ok("{}")
             .withHeader("Content-Type", "application/json")
-            .withBody("{}")
         )
     )
 
@@ -119,8 +112,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-          aResponse()
-            .withStatus(Status.BAD_REQUEST)
+          badRequest
             .withHeader("Content-Type", "application/json")
             .withBody(invalidPayloadResponse)
         )
@@ -139,10 +131,9 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-          aResponse()
-            .withStatus(Status.BAD_REQUEST)
-            .withHeader("Content-Type", "application/json")
-            .withBody(invalidCorrelationIdResponse)
+            badRequest
+              .withHeader("Content-Type", "application/json")
+              .withBody(invalidCorrelationIdResponse)
         )
     )
 
@@ -159,8 +150,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-          aResponse()
-            .withStatus(Status.FORBIDDEN)
+          forbidden
             .withHeader("Content-Type", "application/json")
             .withBody(invalidBusinessPartnerResponse)
         )

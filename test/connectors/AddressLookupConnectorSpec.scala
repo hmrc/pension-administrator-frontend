@@ -17,23 +17,15 @@
 package connectors
 
 
-import org.scalatest.RecoverMethods
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.TolerantAddress
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.test.Helpers._
+import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
-import com.github.tomakehurst.wiremock.client.WireMock._
 
-class AddressLookupConnectorSpec extends WordSpec
-  with MustMatchers
-  with WireMockHelper
-  with ScalaFutures
-  with IntegrationPatience
-  with RecoverMethods {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   private def url = s"/v2/uk/addresses?postcode=ZZ1%201ZZ"
 
@@ -47,13 +39,11 @@ class AddressLookupConnectorSpec extends WordSpec
     "returns an Ok and empty list" which {
       "means the AddressLookup has found no data for postcode" in {
         server.stubFor(
-          get(urlEqualTo(url)).willReturn
-          (
-            aResponse().withStatus(OK)
-              .withBody("[]")
+          get(urlEqualTo(url)).willReturn(
+            ok("[]")
           )
         )
-        whenReady(connector.addressLookupByPostCode("ZZ1 1ZZ")) {
+        connector.addressLookupByPostCode("ZZ1 1ZZ") map {
           result =>
             result mustEqual Nil
         }
@@ -99,17 +89,14 @@ class AddressLookupConnectorSpec extends WordSpec
           TolerantAddress(Some("2 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK"))
         )
 
-
         server.stubFor(
           get(urlEqualTo(url))
             .withHeader("user-agent", matching(".+"))
-              .willReturn
-          (
-            aResponse().withStatus(OK)
-              .withBody(payload)
+            .willReturn(
+              ok(payload)
           )
         )
-        whenReady(connector.addressLookupByPostCode("ZZ1 1ZZ")) {
+        connector.addressLookupByPostCode("ZZ1 1ZZ") map {
           result =>
             result mustEqual tolerantAddressSample
         }
@@ -119,16 +106,13 @@ class AddressLookupConnectorSpec extends WordSpec
       "means the Address Lookup has returned a non 200 response " in {
 
         server.stubFor(
-          get(urlEqualTo(url)).willReturn
-          (
-            aResponse().withStatus(NOT_FOUND).withBody("Something is wrong")
+          get(urlEqualTo(url)).willReturn(
+            notFound.withBody("Something is wrong")
           )
         )
 
         recoverToSucceededIf[HttpException] {
-
           connector.addressLookupByPostCode("ZZ1 1ZZ")
-
         }
       }
 

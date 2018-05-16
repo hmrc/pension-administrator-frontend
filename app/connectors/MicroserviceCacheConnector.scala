@@ -94,17 +94,18 @@ class MicroserviceCacheConnector @Inject() (
 
     http.url(url(id))
       .withHeaders(hc.headers: _*)
-      .get().flatMap {
-      response =>
-        response.status match {
-          case NOT_FOUND =>
-            Future.successful(None)
-          case OK =>
-            val decrypted = crypto.JsonCrypto.decrypt(Crypted(response.body))
-            Future.successful(Some(Json.parse(decrypted.value)))
-          case _ =>
-            Future.failed(new HttpException(response.body, response.status))
-        }
-    }
+      .get()
+      .flatMap {
+        response =>
+          response.status match {
+            case NOT_FOUND =>
+              Future.successful(None)
+            case OK =>
+              val decrypted = crypto.JsonCrypto.decrypt(Crypted(response.body))
+              Future.successful(Some(Json.parse(decrypted.value)))
+            case _ =>
+              Future.failed(new HttpException(response.body, response.status))
+          }
+      }
   }
 }
