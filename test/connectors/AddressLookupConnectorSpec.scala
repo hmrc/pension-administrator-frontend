@@ -17,18 +17,17 @@
 package connectors
 
 
-import org.scalatest.RecoverMethods
+import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods, WordSpec}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.TolerantAddress
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 import com.github.tomakehurst.wiremock.client.WireMock._
 
-class AddressLookupConnectorSpec extends WordSpec
+class AddressLookupConnectorSpec extends AsyncWordSpec
   with MustMatchers
   with WireMockHelper
   with ScalaFutures
@@ -116,12 +115,28 @@ class AddressLookupConnectorSpec extends WordSpec
       }
     }
     "returns an exception" which {
-      "means the Address Lookup has returned a non 200 response " in {
+      "means the Address Lookup has returned a response not in the 200 range" in {
 
         server.stubFor(
           get(urlEqualTo(url)).willReturn
           (
             aResponse().withStatus(NOT_FOUND).withBody("Something is wrong")
+          )
+        )
+
+        recoverToSucceededIf[HttpException] {
+
+          connector.addressLookupByPostCode("ZZ1 1ZZ")
+
+        }
+      }
+
+      "means the Address Lookup has returned a response in 200 range but not an OK" in {
+
+        server.stubFor(
+          get(urlEqualTo(url)).willReturn
+          (
+            aResponse().withStatus(NO_CONTENT)
           )
         )
 
