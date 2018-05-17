@@ -46,6 +46,7 @@ error.addressYears.required = Select how long they have been at the current addr
 
 error.postcode.required = Enter the postal code
 error.postcode.length = The postal code cannot be more than 8 characters
+error.postcode.nonUK.length = The postal code cannot be more than 10 characters
 error.postcode.invalid = There is a problem with the postcode address finder. Try again in a few minutes, or enter the address manually.
 error.postcode.noResults = No results found for that postal code
 

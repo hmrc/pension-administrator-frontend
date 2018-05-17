@@ -35,7 +35,7 @@ class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mapping
               BusinessDetailsFormProvider.BusinessNameLength,
               "businessDetails.error.companyName.length"
             ),
-            safeText("businessDetails.error.companyName.invalid")
+            companyName("businessDetails.error.companyName.invalid")
           )
         ),
 

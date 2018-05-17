@@ -63,7 +63,8 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
       "data",
       Map("utr.hasUtr" -> "true", "utr.utr" -> "123456789"),
       Map("utr.hasUtr" -> "true", "utr.utr" -> "12345678901"),
-      Map("utr.hasUtr" -> "true", "utr.utr" -> "A234567890")
+      Map("utr.hasUtr" -> "true", "utr.utr" -> "A234567890"),
+      Map("utr.hasUtr" -> "false", "utr.reason" -> "{Not known}")
     )
 
     behave like formWithRegex(testForm, valid, invalid)
