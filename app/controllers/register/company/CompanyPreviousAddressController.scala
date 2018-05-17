@@ -27,7 +27,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.{EUAndEEA, RegisterCompany}
+import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyPreviousAddress
@@ -46,7 +46,7 @@ class CompanyPreviousAddressController @Inject() (
                                         countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport {
 
-  private val form: Form[Address] = formProvider("error.country.invalid.eueea")
+  private val form: Form[Address] = formProvider("error.country.invalid")
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
