@@ -65,7 +65,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   private val companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
   private val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-  private val companyAddressPage = routes.CompanyAddressController.onPageLoad()
   private val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
   private val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
