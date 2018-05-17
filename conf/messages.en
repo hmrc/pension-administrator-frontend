@@ -349,6 +349,7 @@ companyReview.heading = Review the company details
 companyReview.editLink = Edit company details
 companyReview.directors.heading = Company directors
 companyReview.directors.editLink = Add, delete or edit company directors
+companyReview.directors.changeLink = Add, delete or edit company directors
 
 individualPreviousAddressPostCodeLookup.title = Previous address
 individualPreviousAddressPostCodeLookup.heading = Previous address
