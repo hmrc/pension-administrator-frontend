@@ -29,7 +29,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.annotations.{EUAndEEA, Individual}
+import utils.annotations.Individual
 import utils.Navigator
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -43,7 +43,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
-                                                    @EUAndEEA val countryOptions: CountryOptions
+                                                    val countryOptions: CountryOptions
                                                    ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
@@ -52,7 +52,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
   private[controllers] val hint: Message = "common.previousAddress.lede"
   private[controllers] val secondaryHeader: Message = "common.individual.secondary.heading"
 
-  protected val form: Form[Address] = formProvider("error.country.invalid.eueea")
+  protected val form: Form[Address] = formProvider("error.country.invalid")
 
   private def viewmodel(mode: Mode) = ManualAddressViewModel(
     postCall(mode),
