@@ -215,27 +215,6 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, payeRegex)
   }
 
-  "email" must {
-
-    val validEmail = Table(
-      "email",
-      "a@email.com",
-      "a@bc",
-      "123@456"
-    )
-
-    val invalidEmail = Table(
-      "email",
-      "32423423432423",
-      "12323",
-      "@@@@@@"
-    )
-
-    val invalidMsg = "contactDetails.error.email.valid"
-
-    behave like regexWithValidAndInvalidExamples(emailAddress, validEmail, invalidEmail, invalidMsg, emailRegex)
-  }
-
   "emailAddressRestrictive" must {
 
     val validEmail = Table(

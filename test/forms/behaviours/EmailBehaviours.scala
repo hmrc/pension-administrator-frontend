@@ -32,12 +32,11 @@ trait EmailBehaviours extends FormSpec with StringFieldBehaviours with Constrain
   ): Unit = {
 
     "behave like a form with an email field" should {
-      val testRegexString = """^[a-zA-Z0-9!#$%&*+/=?^_`{|}~-]{1,65}@[a-zA-Z0-9!#$%&*+=/?^_`{|}~-]{1,65}$"""
 
       behave like fieldThatBindsValidData(
         form,
         fieldName,
-        RegexpGen.from(testRegexString)
+        "ab@test.com"
       )
 
       behave like fieldWithMaxLength(
@@ -57,7 +56,7 @@ trait EmailBehaviours extends FormSpec with StringFieldBehaviours with Constrain
         form,
         fieldName,
         "ABC",
-        FormError(fieldName, keyEmailInvalid, Seq(emailRegex))
+        FormError(fieldName, keyEmailInvalid, Seq(emailRestrictiveRegex))
       )
 
     }
