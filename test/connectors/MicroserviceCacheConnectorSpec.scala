@@ -30,17 +30,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
 
-  private object FakeIdentifier extends TypedIdentifier[String] {
+  protected object FakeIdentifier extends TypedIdentifier[String] {
     override def toString: String = "fake-identifier"
   }
 
   override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
+  protected implicit val hc: HeaderCarrier = HeaderCarrier()
+  protected def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
 
-  private lazy val connector = injector.instanceOf[MicroserviceCacheConnector]
-  private lazy val crypto = injector.instanceOf[ApplicationCrypto].JsonCrypto
+  protected lazy val connector: DataCacheConnector = injector.instanceOf[MicroserviceCacheConnector]
+  protected lazy val crypto = injector.instanceOf[ApplicationCrypto].JsonCrypto
 
   ".fetch" must {
 
