@@ -46,6 +46,7 @@ error.addressYears.required = Select how long they have been at the current addr
 
 error.postcode.required = Enter the postal code
 error.postcode.length = The postal code cannot be more than 8 characters
+error.postcode.nonUK.length = The postal code cannot be more than 10 characters
 error.postcode.invalid = There is a problem with the postcode address finder. Try again in a few minutes, or enter the address manually.
 error.postcode.noResults = No results found for that postal code
 
@@ -316,7 +317,7 @@ confirmCompanyAddress.heading = Company details
 
 whatYouWillNeed.title = What you’ll need
 whatYouWillNeed.heading = What you’ll need
-whatYouWillNeed.body.text = To register as a pension scheme administrator (PSA) with HMRC you will need:
+whatYouWillNeed.body.text = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
 whatYouWillNeed.body.item2 = your contact telephone number and email address
 whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company

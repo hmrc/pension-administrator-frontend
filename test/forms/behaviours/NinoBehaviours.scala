@@ -17,12 +17,12 @@
 package forms.behaviours
 
 import forms.FormSpec
-import forms.mappings.NinoMapping
+import forms.mappings.{Constraints, NinoMapping}
 import models.Nino
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.{Form, FormError}
 
-class NinoBehaviours extends FormSpec with NinoMapping {
+class NinoBehaviours extends FormSpec with NinoMapping with Constraints {
 
   def formWithNino(testForm: Form[Nino]): Unit = {
     "behvae like a form with a NINO mapping" should {
@@ -47,6 +47,12 @@ class NinoBehaviours extends FormSpec with NinoMapping {
         val testString = RandomStringUtils.randomAlphabetic(NinoMapping.reasonMaxLength + 1)
         val result = testForm.bind(Map("nino.hasNino" -> "false", "nino.reason" -> testString))
         result.errors shouldBe Seq(FormError("nino.reason", "directorNino.error.reason.length", Seq(NinoMapping.reasonMaxLength)))
+      }
+
+      "fail to bind when no is selected and reason contains invalid characters" in {
+        val testString = "{invalid reason}"
+        val result = testForm.bind(Map("nino.hasNino" -> "false", "nino.reason" -> testString))
+        result.errors shouldBe Seq(FormError("nino.reason", "common.error.reason.invalid", Seq(safeTextRegex)))
       }
     }
   }

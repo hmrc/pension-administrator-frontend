@@ -18,20 +18,14 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.register.{Enrol, KnownFact, KnownFacts}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{MustMatchers, RecoverMethods, WordSpec}
+import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EnrolmentStoreConnectorSpec extends WordSpec
-  with MustMatchers
-  with WireMockHelper
-  with ScalaFutures
-  with IntegrationPatience
-  with RecoverMethods {
+class EnrolmentStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   override protected def portConfigKey: String = "microservice.services.enrolment-store-proxy.port"
 
@@ -54,12 +48,11 @@ class EnrolmentStoreConnectorSpec extends WordSpec
           server.stubFor(
             put(urlEqualTo(url))
               .willReturn(
-                aResponse()
-                  .withStatus(NO_CONTENT)
+                noContent
               )
           )
 
-          whenReady(connector.enrol(testPsaId, knownFacts)) {
+          connector.enrol(testPsaId, knownFacts) map {
             result =>
               result.status mustEqual NO_CONTENT
           }
@@ -76,12 +69,11 @@ class EnrolmentStoreConnectorSpec extends WordSpec
           server.stubFor(
             put(urlEqualTo(url))
               .willReturn(
-                aResponse()
-                  .withStatus(BAD_REQUEST)
+                badRequest
               )
           )
 
-          recoverToSucceededIf[HttpException] {
+          recoverToSucceededIf[BadRequestException] {
             connector.enrol(testPsaId, knownFacts)
           }
 
@@ -95,12 +87,11 @@ class EnrolmentStoreConnectorSpec extends WordSpec
           server.stubFor(
             put(urlEqualTo(url))
               .willReturn(
-                aResponse()
-                  .withStatus(SERVICE_UNAVAILABLE)
+                serviceUnavailable
               )
           )
 
-          recoverToSucceededIf[HttpException] {
+          recoverToSucceededIf[Upstream5xxResponse] {
             connector.enrol(testPsaId, knownFacts)
           }
 

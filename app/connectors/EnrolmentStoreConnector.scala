@@ -23,7 +23,7 @@ import config.FrontendAppConfig
 import models.register.{Enrol, KnownFacts}
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.Writes
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

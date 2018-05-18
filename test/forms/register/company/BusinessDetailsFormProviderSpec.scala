@@ -37,7 +37,7 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(safeTextRegex)
+      "valid company name"
     )
 
     behave like fieldWithMaxLength(
@@ -57,7 +57,7 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
       form,
       fieldName,
       "[invalid]",
-      error = FormError(fieldName, invalidKey, Seq(safeTextRegex))
+      error = FormError(fieldName, invalidKey, Seq(companyNameRegex))
     )
   }
 

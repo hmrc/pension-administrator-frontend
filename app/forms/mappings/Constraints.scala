@@ -26,18 +26,20 @@ trait Constraints {
 
   protected val crnRegex = """^[A-Za-z0-9 -]{7,8}$"""
   protected val utrRegex = """^\d{10}$"""
-  protected val emailRegex = """^[^@'<>"]+@[^@'<>"]+$"""
-  protected val emailRestrictiveRegex = "^(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)" +
-    "@(?:[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&*+\\/=?^_`{|}~-]+)*)$"
-
+  protected val emailRestrictiveRegex = "^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
+    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" +
+    "@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|" +
+    "\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:" +
+    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$"
   protected val phoneNumberRegex = """^[0-9 ()+--]{1,24}$"""
   protected val vatRegex = """^\d{9}$"""
   protected val payeRegex = """^[0-9]{3}[0-9A-Za-z]{1,13}$"""
   protected val postCodeRegex = """^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?[ ]?[0-9][A-Za-z]{2}$"""
   protected val postCodeNonUkRegex = """^([0-9]+-)*[0-9]+$"""
   protected val nameRegex = """^[a-zA-Z\u00C0-\u00FF'‘’\u2014\u2013\u2010\u002d]{1,35}$"""
-  protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’\"“”«»()*+,./:;=?@\\[\\]|~£€¥\\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
+  protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   protected val addressLineRegex = """^[A-Za-z0-9 !'‘’"“”(),./\u2014\u2013\u2010\u002d]{1,35}$"""
+  protected val companyNameRegex = """^[a-zA-Z0-9 '&\/]{1,105}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -116,8 +118,6 @@ trait Constraints {
 
   protected def uniqueTaxReference(errorKey: String): Constraint[String] = regexp(utrRegex, errorKey)
 
-  protected def emailAddress(errorKey: String): Constraint[String] = regexp(emailRegex, errorKey)
-
   protected def emailAddressRestrictive(errorKey: String): Constraint[String] = regexp(emailRestrictiveRegex, errorKey)
 
   protected def phoneNumber(errorKey: String): Constraint[String] = regexp(phoneNumberRegex, errorKey)
@@ -131,6 +131,8 @@ trait Constraints {
   protected def postCodeNonUk(errorKey: String): Constraint[String] = regexp(postCodeNonUkRegex, errorKey)
 
   protected def safeText(errorKey: String): Constraint[String] = regexp(safeTextRegex, errorKey)
+
+  protected def companyName(errorKey: String): Constraint[String] = regexp(companyNameRegex, errorKey)
 
   protected def validNino(invalidKey: String) : Constraint[String] = {
     Constraint {
