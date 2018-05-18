@@ -19,16 +19,14 @@ package controllers
 import javax.inject.Inject
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
 import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-class LogOutController @Inject()(appConfig: FrontendAppConfig,
-                                override val messagesApi: MessagesApi,
-                                dataCacheConnector: DataCacheConnector,
-                                authenticate: AuthAction) extends FrontendController with I18nSupport {
+class LogoutController @Inject()(appConfig: FrontendAppConfig,
+                                 override val messagesApi: MessagesApi,
+                                 authenticate: AuthAction) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>
