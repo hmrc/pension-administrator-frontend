@@ -47,14 +47,11 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.affinityGroup and
         Retrievals.nino and
         Retrievals.allEnrolments) {
-
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        if (affinityGroup == Individual && !allowedIndividual(cl)) {
-          val redirectUrl = s"${config.ivUpliftUrl}?origin=PODS&" +
-            s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
-            s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
-            s"&confidenceLevel=${ConfidenceLevel.L200.level}"
-          Future.successful(Redirect(redirectUrl))
+        if (alreadyEnrolledInPODS(enrolments)) {
+          Future.successful(Redirect(config.registerSchemeUrl))
+        } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
+          Future.successful(Redirect(ivUpliftUrl))
         } else {
           block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
         }
@@ -81,6 +78,11 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       Redirect(routes.UnauthorisedController.onPageLoad)
   }
 
+  private def ivUpliftUrl: String = s"${config.ivUpliftUrl}?origin=PODS&" +
+    s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
+    s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
+    s"&confidenceLevel=${ConfidenceLevel.L200.level}"
+
   private def allowedIndividual(confidenceLevel: ConfidenceLevel): Boolean =
     confidenceLevel.compare(ConfidenceLevel.L200) >= 0
 
@@ -89,6 +91,9 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def existingPSA(enrolments: Enrolments): Option[String] =
     enrolments.getEnrolment("HMRC-PSA-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
+
+  private def alreadyEnrolledInPODS(enrolments: Enrolments) =
+    enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
   private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
