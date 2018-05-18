@@ -19,19 +19,16 @@ package connectors
 import com.fasterxml.jackson.core.JsonParseException
 import com.github.tomakehurst.wiremock.client.WireMock._
 import identifiers.TypedIdentifier
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest._
+import play.api.http.Status
 import play.api.libs.json.Json
-import play.api.test.Helpers._
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MicroserviceCacheConnectorSpec extends WordSpec
-  with MustMatchers with WireMockHelper with OptionValues
-  with ScalaFutures with IntegrationPatience {
+class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
 
   private object FakeIdentifier extends TypedIdentifier[String] {
     override def toString: String = "fake-identifier"
@@ -52,12 +49,11 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(NOT_FOUND)
+            notFound
           )
       )
 
-      whenReady(connector.fetch("foo")) {
+      connector.fetch("foo") map {
         result =>
           result mustNot be(defined)
       }
@@ -70,13 +66,11 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(crypto.encrypt(plaintext).value)
+            ok(crypto.encrypt(plaintext).value)
           )
       )
 
-      whenReady(connector.fetch("foo")) {
+      connector.fetch("foo") map {
         result =>
           result.value mustEqual Json.obj()
       }
@@ -89,16 +83,14 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(crypto.encrypt(plaintext).value)
+            ok(crypto.encrypt(plaintext).value)
           )
       )
 
-      whenReady(connector.fetch("foo").failed) {
-        exception =>
-          exception mustBe a[JsonParseException]
+      recoverToSucceededIf[JsonParseException] {
+        connector.fetch("foo")
       }
+
     }
 
     "return a failed future on upstream error" in {
@@ -106,15 +98,16 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(INTERNAL_SERVER_ERROR)
+            serverError
           )
       )
 
-      whenReady(connector.fetch("foo").failed) {
-        case exception: HttpException =>
-          exception.responseCode mustEqual INTERNAL_SERVER_ERROR
+      recoverToExceptionIf[HttpException]{
+        connector.fetch("foo")
+      } map {
+        _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
+
     }
   }
 
@@ -131,8 +124,7 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(NOT_FOUND)
+            notFound
           )
       )
 
@@ -140,12 +132,11 @@ class MicroserviceCacheConnectorSpec extends WordSpec
         post(urlEqualTo(url("foo")))
           .withRequestBody(equalTo(cryptoText))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
+            ok
           )
       )
 
-      whenReady(connector.save("foo", FakeIdentifier, "foobar")) {
+      connector.save("foo", FakeIdentifier, "foobar") map {
         _ mustEqual json
       }
     }
@@ -167,9 +158,7 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(cryptoText)
+            ok(cryptoText)
           )
       )
 
@@ -177,12 +166,11 @@ class MicroserviceCacheConnectorSpec extends WordSpec
         post(urlEqualTo(url("foo")))
           .withRequestBody(equalTo(updatedCrypto))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
+            ok
           )
       )
 
-      whenReady(connector.save("foo", FakeIdentifier, "foobar")) {
+      connector.save("foo", FakeIdentifier, "foobar") map {
         _ mustEqual updatedJson
       }
     }
@@ -203,9 +191,7 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(cryptoText)
+            ok(cryptoText)
           )
       )
 
@@ -213,12 +199,11 @@ class MicroserviceCacheConnectorSpec extends WordSpec
         post(urlEqualTo(url("foo")))
           .withRequestBody(equalTo(updatedCrypto))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
+            ok
           )
       )
 
-      whenReady(connector.save("foo", FakeIdentifier, "foobar")) {
+      connector.save("foo", FakeIdentifier, "foobar") map {
         _ mustEqual updatedJson
       }
     }
@@ -239,9 +224,7 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(cryptoText)
+            ok(cryptoText)
           )
       )
 
@@ -249,15 +232,17 @@ class MicroserviceCacheConnectorSpec extends WordSpec
         post(urlEqualTo(url("foo")))
           .withRequestBody(equalTo(updatedCrypto))
           .willReturn(
-            aResponse()
-              .withStatus(INTERNAL_SERVER_ERROR)
+            serverError
           )
       )
 
-      whenReady(connector.save("foo", FakeIdentifier, "foobar").failed) {
-        case exception: HttpException =>
-          exception.responseCode mustEqual INTERNAL_SERVER_ERROR
+
+      recoverToExceptionIf[HttpException]{
+        connector.save("foo", FakeIdentifier, "foobar")
+      } map {
+        _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
+
     }
   }
 
@@ -278,9 +263,7 @@ class MicroserviceCacheConnectorSpec extends WordSpec
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
-              .withBody(cryptoText)
+            ok(cryptoText)
           )
       )
 
@@ -288,12 +271,11 @@ class MicroserviceCacheConnectorSpec extends WordSpec
         post(urlEqualTo(url("foo")))
           .withRequestBody(equalTo(updatedCrypto))
           .willReturn(
-            aResponse()
-              .withStatus(OK)
+            ok
           )
       )
 
-      whenReady(connector.remove("foo", FakeIdentifier)) {
+      connector.remove("foo", FakeIdentifier) map {
         _ mustEqual updatedJson
       }
     }
