@@ -46,6 +46,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val authUrl: String = baseUrl("auth")
   lazy val loginUrl: String = loadConfig("urls.login")
+  lazy val serviceSignOut = loadConfig("urls.signOut")
   lazy val loginContinueUrl: String = loadConfig("urls.loginContinue")
   lazy val tellHMRCChangesUrl: String = loadConfig("urls.tellHMRCChanges")
   lazy val tellCompaniesHouseCompanyChangesUrl: String = loadConfig("urls.companyChangesCompaniesHouse")
