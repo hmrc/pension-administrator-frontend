@@ -26,8 +26,11 @@ class CompanyReviewViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "companyReview"
   val companyName = "test company name"
   val directors = Seq("director a", "director b", "director c")
+  val tenDirectors = Seq("director a", "director b", "director c", "director d", "director e",
+    "director f", "director g", "director h", "director i", "director j")
 
   def createView = () => companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages)
+  def createSecView = () => companyReview(frontendAppConfig, companyName, tenDirectors)(fakeRequest, messages)
 
   "CompanyReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -45,10 +48,18 @@ class CompanyReviewViewSpec extends ViewBehaviours {
     )
   }
 
-  "have link to edit director details" in {
+  "have link to edit director details when there are less than 10 directors" in {
     createView must haveLink(
       routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "edit-director-details"
     )
+    createView must haveDynamicText("companyReview.directors.editLink")
+  }
+
+  "have link to edit directors when there are 10 directors" in {
+    createView must haveLink(
+      routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "edit-director-details"
+    )
+    createSecView must haveDynamicText("companyReview.directors.changeLink")
   }
 
   "contain list of directors" in {
