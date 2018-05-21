@@ -43,9 +43,9 @@ class AuthActionSpec extends SpecBase {
 
       "return OK if they have Confidence level 200 or higher and affinity group Individual" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L200, AffinityGroup.Individual)
-
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
         val controller = new Harness(authAction)
+
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe OK
       }
@@ -58,9 +58,21 @@ class AuthActionSpec extends SpecBase {
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
         val controller = new Harness(authAction)
+
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(redirectUrl)
+      }
+
+      "redirect to pension scheme frontend if the user is already enrolled in PODS" in {
+        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(frontendAppConfig.registerSchemeUrl)
       }
     }
 
@@ -176,11 +188,13 @@ object AuthActionSpec {
     }
   }
 
-  def authRetrievals(confidenceLevel: ConfidenceLevel, affinityGroup: AffinityGroup) = Future.successful(new ~(new ~(new ~(new ~(
+  def authRetrievals(confidenceLevel: ConfidenceLevel = ConfidenceLevel.L50,
+                     affinityGroup: AffinityGroup = AffinityGroup.Organisation,
+                     enrolments: Enrolments = Enrolments(Set())) = Future.successful(new ~(new ~(new ~(new ~(
     Some("id"), confidenceLevel),
     Some(affinityGroup)),
     Some("nino")),
-    Enrolments(Set(Enrolment("enrolment-value"))))
+    enrolments)
   )
 
   class Harness(authAction: AuthAction) extends Controller {
