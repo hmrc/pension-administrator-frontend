@@ -20,9 +20,9 @@ import forms.behaviours.AddressBehaviours
 
 class CompanyPreviousAddressPostCodeLookupFormProviderSpec extends AddressBehaviours {
 
-  private val requiredKey = "companyPreviousAddressPostCodeLookup.error.required"
-  private val lengthKey = "companyPreviousAddressPostCodeLookup.error.length"
-  private val invalid = "companyPreviousAddressPostCodeLookup.error.invalid"
+  private val requiredKey = "error.postcode.required"
+  private val lengthKey = "error.postcode.length"
+  private val invalid = "error.postcode.invalid"
   private val fieldName = "value"
 
   val form = new CompanyPreviousAddressPostCodeLookupFormProvider()()

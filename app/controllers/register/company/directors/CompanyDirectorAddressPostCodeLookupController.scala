@@ -73,7 +73,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
                   BadRequest(
                     companyDirectorAddressPostCodeLookup(
                       appConfig,
-                      formWithError("companyDirectorAddressPostCodeLookup.error.noResults"),
+                      formWithError("error.postcode.noResults"),
                       mode,
                       index,
                       directorName
@@ -81,9 +81,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
                   )
                 )
 
-
               case addresses =>
-
                 dataCacheConnector
                   .save(
                     request.externalId,
@@ -95,13 +93,13 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
                       navigator.nextPage(CompanyDirectorAddressPostCodeLookupId(index), mode)(UserAnswers(cacheMap))
                     )
                   )
-            }.recoverWith{
+            }.recoverWith {
               case _ =>
                 Future.successful(
                   BadRequest(
                     companyDirectorAddressPostCodeLookup(
                       appConfig,
-                      formWithError("companyDirectorAddressPostCodeLookup.error.invalid"),
+                      formWithError("error.postcode.failed"),
                       mode,
                       index,
                       directorName

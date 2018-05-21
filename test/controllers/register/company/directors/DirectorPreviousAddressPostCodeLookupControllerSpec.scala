@@ -30,9 +30,10 @@ import models._
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpException
 import utils.FakeNavigator
 import views.html.register.company.directors.directorPreviousAddressPostCodeLookup
 
@@ -136,6 +137,32 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       "invalid data as invalid postcode is submitted " in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "12AB AB1"))
         val boundForm = form.bind(Map("value" -> "12AB AB1"))
+
+        val result = controller().onSubmit(NormalMode, index)(postRequest)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) mustBe viewAsString(boundForm)
+      }
+
+      "post code lookup fails" in {
+        val boundForm = form.withError(FormError("value", "error.postcode.failed"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+
+        when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.failed(new HttpException("Failed",INTERNAL_SERVER_ERROR)))
+
+        val result = controller().onSubmit(NormalMode, index)(postRequest)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) mustBe viewAsString(boundForm)
+      }
+
+      "post code lookup returns zero results" in {
+        val boundForm = form.withError(FormError("value", "error.postcode.noResults"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+
+        when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(Nil))
 
         val result = controller().onSubmit(NormalMode, index)(postRequest)
 

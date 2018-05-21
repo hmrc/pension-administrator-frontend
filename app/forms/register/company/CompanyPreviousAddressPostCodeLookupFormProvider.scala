@@ -27,9 +27,9 @@ class CompanyPreviousAddressPostCodeLookupFormProvider @Inject() extends FormErr
   def apply(): Form[String] =
     Form(
       "value" -> postCodeMapping(
-        "companyPreviousAddressPostCodeLookup.error.required",
-        "companyPreviousAddressPostCodeLookup.error.length",
-        "companyPreviousAddressPostCodeLookup.error.invalid"
+        "error.postcode.required",
+        "error.postcode.length",
+        "error.postcode.invalid"
       )
     )
 
