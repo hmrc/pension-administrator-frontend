@@ -20,9 +20,10 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.CompanyAddressYearsFormProvider
-import identifiers.register.company.CompanyAddressYearsId
+import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,27 +43,31 @@ class CompanyAddressYearsController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: CompanyAddressYearsFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      CompanyAddressId.retrieve.right.map { address =>
+        val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+        Future.successful(Ok(companyAddressYears(appConfig, address, preparedForm, mode)))
       }
-      Ok(companyAddressYears(appConfig, preparedForm, mode))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyAddressYears(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(CompanyAddressYearsId, mode)(new UserAnswers(cacheMap))))
-    )
+      CompanyAddressId.retrieve.right.map { address =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(companyAddressYears(appConfig, address, formWithErrors, mode))),
+          (value) =>
+            dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
+              Redirect(navigator.nextPage(CompanyAddressYearsId, mode)(new UserAnswers(cacheMap))))
+        )
+      }
   }
 }

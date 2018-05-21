@@ -65,6 +65,3 @@ GET        /company-not-found                           controllers.register.com
 
 GET        /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onSubmit()
-
-GET        /company-address                             controllers.register.company.CompanyAddressController.onPageLoad()
-POST       /company-address                             controllers.register.company.CompanyAddressController.onSubmit()
