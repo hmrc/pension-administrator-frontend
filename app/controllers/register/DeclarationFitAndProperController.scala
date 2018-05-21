@@ -22,18 +22,20 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, EnrolmentStoreConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
+import connectors._
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
+import models.requests.DataRequest
 import models.{ExistingPSA, NormalMode, UserType}
+import play.api.Logger
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
@@ -45,7 +47,8 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
-                                                  enrolments: EnrolmentStoreConnector
+                                                  enrolments: EnrolmentStoreConnector,
+                                                  authenticator: AuthenticatorConnector
                                                  ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
@@ -84,27 +87,33 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               request.user.existingPSAId
             )).asOpt.getOrElse(UserAnswers(cacheMap))
 
-            pensionsSchemeConnector.registerPsa(answers) flatMap { psaResponse =>
-              dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse) flatMap { cacheMap =>
-                knownFactsRetrieval.retrieve map { knownFacts =>
-                  enrolments.enrol(psaResponse.psaId, knownFacts) map { _ =>
-                    Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
-                  }
-                } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-              }
-            } recoverWith {
-              case _: HttpException =>
-                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+            (for {
+              psaResponse <- pensionsSchemeConnector.registerPsa(answers)
+              cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+              _ <- enrol(psaResponse.psaId)
+            } yield {
+              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+            }) recoverWith {
               case _: InvalidBusinessPartnerException =>
                 Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+              case _ =>
+                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
             }
 
           }
       )
   }
 
-  def enrol = {
-    ???
+  private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+    knownFactsRetrieval.retrieve map { knownFacts =>
+      enrolments.enrol(psaId, knownFacts) flatMap { _ =>
+        authenticator.refreshProfile
+      }
+    } getOrElse Future.failed(KnownFactsRetrievalException())
+  }
+
+  case class KnownFactsRetrievalException() extends Exception {
+    def apply(): Unit = Logger.error("Could not retrieve Known Facts")
   }
 
 }
