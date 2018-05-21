@@ -102,4 +102,9 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
           }
       )
   }
+
+  def enrol = {
+    ???
+  }
+
 }
