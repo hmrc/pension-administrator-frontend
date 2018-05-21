@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import identifiers.Identifier
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.{ConfirmationId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import org.scalatest.OptionValues
@@ -38,7 +38,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationWorkingKnowledgeId,       haveDeclarationWorkingKnowledge,      declarationFitAndProperPage,            None),
     (DeclarationWorkingKnowledgeId,       haveAnAdviser,                        adviserDetailsPage,                     None),
     (DeclarationWorkingKnowledgeId,       emptyAnswers,                         sessionExpiredPage,                     None),
-    (DeclarationFitAndProperId,           emptyAnswers,                         confirmationPage,                       None)
+    (DeclarationFitAndProperId,           emptyAnswers,                         confirmationPage,                       None),
+    (ConfirmationId,                      emptyAnswers,                         surveyPage,                             None)
   )
 
   navigator.getClass.getSimpleName must {
@@ -53,6 +54,8 @@ object RegisterNavigatorSpec extends OptionValues {
   val declarationFitAndProperPage = routes.DeclarationFitAndProperController.onPageLoad()
   val adviserDetailsPage = controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(NormalMode)
   val confirmationPage = routes.ConfirmationController.onPageLoad()
+  val surveyPage = controllers.routes.LogoutController.onPageLoad()
+
 
   val haveDeclarationWorkingKnowledge = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
