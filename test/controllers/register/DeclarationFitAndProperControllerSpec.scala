@@ -209,8 +209,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
     }
   }
 
-  private def fakeAuthenticator(response: HttpResponse = HttpResponse(NO_CONTENT)): AuthenticatorConnector = {
-    new AuthenticatorConnector {
+  private def fakeAuthenticator(response: HttpResponse = HttpResponse(NO_CONTENT)): AuthenticationConnector = {
+    new AuthenticationConnector {
       override def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
         setHttpResponse(response)
     }
@@ -222,7 +222,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
                           enrolments: EnrolmentStoreConnector = fakeEnrolmentStoreConnector(),
-                          authenticator: AuthenticatorConnector = fakeAuthenticator()) =
+                          authenticator: AuthenticationConnector = fakeAuthenticator()) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,

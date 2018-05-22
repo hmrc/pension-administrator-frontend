@@ -25,15 +25,15 @@ import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AuthenticatorConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
+class AuthenticationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   override protected def portConfigKey: String = "microservice.services.government-gateway-authentication.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private def url: String = "/government-gateway-authentication/government-gateway-authentication/refresh-profile"
+  private def url: String = "/government-gateway-authentication/refresh-profile"
 
-  private lazy val connector = injector.instanceOf[AuthenticatorConnector]
+  private lazy val connector = injector.instanceOf[AuthenticationConnector]
 
   ".refreshProfile" must {
 

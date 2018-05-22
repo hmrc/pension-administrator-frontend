@@ -27,25 +27,25 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-@ImplementedBy(classOf[AuthenticatorConnectorImpl])
-trait AuthenticatorConnector {
+@ImplementedBy(classOf[AuthenticationConnectorImpl])
+trait AuthenticationConnector {
   def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 }
 
 @Singleton
-class AuthenticatorConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends AuthenticatorConnector {
+class AuthenticationConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends AuthenticationConnector {
 
   val url = config.authenticationUrl
 
   def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext) =
     http.POSTEmpty(url) map { response =>
-      Logger.info("[AuthenticatorConnector] Current user profile was refreshed")
+      Logger.info("[AuthenticationConnector] Current user profile was refreshed")
       response
     } andThen {
       logExceptions
     }
 
   private def logExceptions: PartialFunction[Try[HttpResponse], Unit] = {
-    case Failure(t: Throwable) => Logger.error("Unable to connect to Refresh Auth Profile", t)
+    case Failure(t: Throwable) => Logger.error(s"Unable to connect to Refresh Auth Profile: ${t.getLocalizedMessage}", t)
   }
 }

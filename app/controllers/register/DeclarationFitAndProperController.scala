@@ -35,7 +35,7 @@ import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
@@ -48,7 +48,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
                                                   enrolments: EnrolmentStoreConnector,
-                                                  authenticator: AuthenticatorConnector
+                                                  authenticator: AuthenticationConnector
                                                  ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
