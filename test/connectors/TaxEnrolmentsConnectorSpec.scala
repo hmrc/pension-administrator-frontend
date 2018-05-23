@@ -33,7 +33,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
   private val testPsaId = "test-psa-id"
 
-  private def url: String = s"/tax-enrolments/enrolments/${Enrol(testPsaId).key}"
+  private def url: String = s"/tax-enrolments/service/HMRC-PODS-ORG/enrolment"
 
   private lazy val connector = injector.instanceOf[TaxEnrolmentsConnector]
 
@@ -43,7 +43,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       "enrolments returns code NO_CONTENT" which {
         "means the enrolment was updated or created successfully" in {
 
-          val knownFacts = KnownFacts(Set(KnownFact("NINO", "JJ123456P")))
+          val knownFacts = KnownFacts(Set(KnownFact("PSAID", "psa-id")), Set(KnownFact("NINO", "JJ123456P")))
 
           server.stubFor(
             put(urlEqualTo(url))
@@ -64,7 +64,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       "enrolments returns BAD_REQUEST" which {
         "means the POST body wasn't as expected" in {
 
-          val knownFacts = KnownFacts(Set.empty[KnownFact])
+          val knownFacts = KnownFacts(Set(KnownFact("PSAID", "psa-id")), Set.empty[KnownFact])
 
           server.stubFor(
             put(urlEqualTo(url))
@@ -82,7 +82,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       "enrolments returns UNAUTHORISED" which {
         "means missing or incorrect MDTP bearer token" in {
 
-          val knownFacts = KnownFacts(Set(KnownFact("NINO", "JJ123456P")))
+          val knownFacts = KnownFacts(Set(KnownFact("PSAID", "psa-id")), Set(KnownFact("NINO", "JJ123456P")))
 
           server.stubFor(
             put(urlEqualTo(url))

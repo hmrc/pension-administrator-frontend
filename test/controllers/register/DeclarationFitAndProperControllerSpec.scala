@@ -172,9 +172,9 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
   }
 
   private val validPsaResponse = PsaSubscriptionResponse("test-psa-id")
-  private val knownFacts = Some(KnownFacts(Set(
-    KnownFact("PSAID", "test-psa"),
-    KnownFact("NINO", "test-nino")
+  private val knownFacts = Some(KnownFacts(
+    Set(KnownFact("PSAID", "test-psa")),
+    Set(KnownFact("NINO", "test-nino")
   )))
 
   private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
@@ -194,7 +194,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
   }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
-    override def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
+    override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
   }
 
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
