@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, EnrolmentStoreConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
+import connectors.{DataCacheConnector, TaxEnrolmentsConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
 import models.{ExistingPSA, NormalMode, UserType}
@@ -45,7 +45,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
-                                                  enrolments: EnrolmentStoreConnector
+                                                  enrolments: TaxEnrolmentsConnector
                                                  ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
