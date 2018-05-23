@@ -20,22 +20,22 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.register.{Enrol, KnownFact, KnownFacts}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
+class EnrolmentStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
-  override protected def portConfigKey: String = "microservice.services.tax-enrolments.port"
+  override protected def portConfigKey: String = "microservice.services.enrolment-store-proxy.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val testPsaId = "test-psa-id"
 
-  private def url: String = s"/tax-enrolments/enrolments/${Enrol(testPsaId).key}"
+  private def url: String = s"/enrolment-store-proxy/enrolment-store/enrolments/${Enrol(testPsaId).key}"
 
-  private lazy val connector = injector.instanceOf[TaxEnrolmentsConnector]
+  private lazy val connector = injector.instanceOf[EnrolmentStoreConnector]
 
   ".enrol" must {
 
@@ -79,19 +79,19 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
         }
       }
-      "enrolments returns UNAUTHORISED" which {
-        "means missing or incorrect MDTP bearer token" in {
+      "enrolments returns SERVICE_UNAVAILABLE" which {
+        "means admin credentials are not valid" in {
 
           val knownFacts = KnownFacts(Set(KnownFact("NINO", "JJ123456P")))
 
           server.stubFor(
             put(urlEqualTo(url))
               .willReturn(
-                unauthorized
+                serviceUnavailable
               )
           )
 
-          recoverToSucceededIf[Upstream4xxResponse] {
+          recoverToSucceededIf[Upstream5xxResponse] {
             connector.enrol(testPsaId, knownFacts)
           }
 

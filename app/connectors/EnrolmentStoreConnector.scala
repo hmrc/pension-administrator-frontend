@@ -30,8 +30,8 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-@ImplementedBy(classOf[TaxEnrolmentsConnectorImpl])
-trait TaxEnrolmentsConnector {
+@ImplementedBy(classOf[EnrolmentStoreConnectorImpl])
+trait EnrolmentStoreConnector {
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
@@ -39,9 +39,9 @@ trait TaxEnrolmentsConnector {
 }
 
 @Singleton
-class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends TaxEnrolmentsConnector {
+class EnrolmentStoreConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends EnrolmentStoreConnector {
 
-  def url(enrolmentKey: String): String = config.taxEnrolmentsUrl(Enrol(enrolmentKey).key)
+  def url(enrolmentKey: String) = config.enrolmentStoreUrl(Enrol(enrolmentKey).key)
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
@@ -54,8 +54,9 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: Fronten
   }
 
   private def logExceptions(knownFacts: KnownFacts): PartialFunction[Try[HttpResponse], Unit] = {
-    case Failure(t: Throwable) =>
+    case Failure(t: Throwable) => {
       Logger.error("Unable to connect to Tax Enrolments", t)
+    }
   }
 
 }

@@ -18,7 +18,7 @@ package controllers.register
 
 import play.api.data.Form
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
-import connectors.{TaxEnrolmentsConnector, FakeDataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
+import connectors.{EnrolmentStoreConnector, FakeDataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import controllers.actions._
 import play.api.test.Helpers.{contentAsString, _}
 import views.html.register.declarationFitAndProper
@@ -197,8 +197,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
     override def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
   }
 
-  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
-    new TaxEnrolmentsConnector {
+  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): EnrolmentStoreConnector = {
+    new EnrolmentStoreConnector {
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
@@ -212,7 +212,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
                           userType: UserType = UserType.Organisation,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()) =
+                          enrolments: EnrolmentStoreConnector = fakeEnrolmentStoreConnector()) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,
