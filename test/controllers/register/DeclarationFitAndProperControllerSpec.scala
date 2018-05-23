@@ -18,7 +18,7 @@ package controllers.register
 
 import play.api.data.Form
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
-import connectors._
+import connectors.{EnrolmentStoreConnector, FakeDataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import controllers.actions._
 import play.api.test.Helpers.{contentAsString, _}
 import views.html.register.declarationFitAndProper
@@ -197,22 +197,13 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
     override def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
   }
 
-  private def setHttpResponse(response: HttpResponse) = response.status match {
-    case NO_CONTENT => Future.successful(response)
-    case ex => Future.failed(new HttpException("Fail", ex))
-  }
-
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): EnrolmentStoreConnector = {
     new EnrolmentStoreConnector {
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
-        setHttpResponse(enrolResponse)
-    }
-  }
-
-  private def fakeAuthenticator(response: HttpResponse = HttpResponse(NO_CONTENT)): AuthenticationConnector = {
-    new AuthenticationConnector {
-      override def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-        setHttpResponse(response)
+        enrolResponse.status match {
+          case NO_CONTENT => Future.successful(enrolResponse)
+          case ex => Future.failed(new HttpException("Fail", ex))
+        }
     }
   }
 
@@ -221,8 +212,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
                           userType: UserType = UserType.Organisation,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: EnrolmentStoreConnector = fakeEnrolmentStoreConnector(),
-                          authenticator: AuthenticationConnector = fakeAuthenticator()) =
+                          enrolments: EnrolmentStoreConnector = fakeEnrolmentStoreConnector()) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,
@@ -234,8 +224,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
       FakeDataCacheConnector,
       pensionsSchemeConnector,
       knownFactsRetrieval,
-      enrolments,
-      authenticator
+      enrolments
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =
