@@ -70,7 +70,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
                 BadRequest(
                   companyPreviousAddressPostCodeLookup(
                     appConfig,
-                    formWithError("companyPreviousAddressPostCodeLookup.error.noResults"),
+                    formWithError("error.postcode.noResults"),
                     mode
                   )
                 )
@@ -94,7 +94,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
               BadRequest(
                 companyPreviousAddressPostCodeLookup(
                   appConfig,
-                  formWithError("companyPreviousAddressPostCodeLookup.error.invalid"),
+                  formWithError("error.postcode.failed"),
                   mode
                 )
               )
