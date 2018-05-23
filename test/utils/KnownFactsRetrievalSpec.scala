@@ -28,7 +28,6 @@ import play.api.test.FakeRequest
 
 class KnownFactsRetrievalSpec extends SpecBase {
 
-  private val psa = "psa-id"
   private val utr = "test-utr"
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
@@ -36,7 +35,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
   private val nonUk = "test-non-uk"
   private val postalCode = "test pcode"
 
-  private lazy val generator = app.injector.instanceOf[KnownFactsRetrieval]
+  lazy val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
   "retrieve" must {
 
@@ -71,9 +70,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
             ))
           )
 
-          generator.retrieve(psa) mustEqual Some(KnownFacts(
-            Set(KnownFact("PSAID", psa)),
-            Set(KnownFact("NINO", nino)
+          generator.retrieve mustEqual Some(KnownFacts(Set(
+            KnownFact("NINO", nino)
           )))
 
         }
@@ -111,9 +109,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               ))
             )
 
-            generator.retrieve(psa) mustEqual Some(KnownFacts(
-              Set(KnownFact("PSAID", psa)),
-              Set(KnownFact("CTUTR", utr)
+            generator.retrieve mustEqual Some(KnownFacts(Set(
+              KnownFact("CTUTR", utr)
             )))
           }
 
@@ -148,12 +145,10 @@ class KnownFactsRetrievalSpec extends SpecBase {
               ))
             )
 
-            generator.retrieve(psa) mustEqual Some(KnownFacts(
-              Set(KnownFact("PSAID", psa)),
-              Set(
-                KnownFact("NonUKPostalCode", "TESTPCODE"),
-                KnownFact("CountryCode", nonUk)
-              )))
+            generator.retrieve mustEqual Some(KnownFacts(Set(
+              KnownFact("NonUKPostalCode", "TESTPCODE"),
+              KnownFact("CountryCode", nonUk)
+            )))
           }
 
         }
@@ -186,9 +181,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               ))
             )
 
-            generator.retrieve(psa) mustEqual Some(KnownFacts(
-              Set(KnownFact("PSAID", psa)),
-              Set(KnownFact("CountryCode", nonUk)
+            generator.retrieve mustEqual Some(KnownFacts(Set(
+              KnownFact("CountryCode", nonUk)
             )))
           }
 
