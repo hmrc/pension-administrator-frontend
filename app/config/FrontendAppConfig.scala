@@ -77,8 +77,8 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
       baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
 
-  def taxEnrolmentsUrl(key: String) = baseUrl("tax-enrolments") +
-    runModeConfiguration.underlying.getString("urls.tax-enrolments") +
+  def enrolmentStoreUrl(key: String) = baseUrl("enrolment-store-proxy") +
+    runModeConfiguration.underlying.getString("urls.enrolments") +
     key
 
 }
