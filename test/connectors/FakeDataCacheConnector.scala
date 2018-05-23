@@ -19,8 +19,9 @@ package connectors
 import identifiers.TypedIdentifier
 import org.scalatest.Matchers
 import play.api.libs.json._
+import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
-
+import play.api.mvc.Results._
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -75,6 +76,9 @@ trait FakeDataCacheConnector extends DataCacheConnector with Matchers {
   }
 
   def lastUpsert: Option[JsValue] = json
+
+  override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
+    Future.successful(Ok)
 
 }
 

@@ -38,8 +38,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationWorkingKnowledgeId,       haveDeclarationWorkingKnowledge,      declarationFitAndProperPage,            None),
     (DeclarationWorkingKnowledgeId,       haveAnAdviser,                        adviserDetailsPage,                     None),
     (DeclarationWorkingKnowledgeId,       emptyAnswers,                         sessionExpiredPage,                     None),
-    (DeclarationFitAndProperId,           emptyAnswers,                         confirmationPage,                       None),
-    (ConfirmationId,                      emptyAnswers,                         surveyPage,                             None)
+    (DeclarationFitAndProperId,           emptyAnswers,                         confirmationPage,                       None)
   )
 
   navigator.getClass.getSimpleName must {

@@ -19,6 +19,8 @@ package connectors
 import com.google.inject.Inject
 import identifiers.TypedIdentifier
 import play.api.libs.json._
+import play.api.mvc.Result
+import play.api.mvc.Results.Ok
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.UserAnswers
@@ -75,6 +77,10 @@ class MongoCacheConnector @Inject() (
   ): Future[Option[JsValue]] = {
 
     sessionRepository().get(cacheId)
+  }
+
+  override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+    sessionRepository().remove(cacheId).map(_ => Ok)
   }
 
 }
