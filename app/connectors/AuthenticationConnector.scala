@@ -23,7 +23,6 @@ import config.FrontendAppConfig
 import play.api.Logger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import play.api.http.Status._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
@@ -36,18 +35,14 @@ trait AuthenticationConnector {
 @Singleton
 class AuthenticationConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends AuthenticationConnector {
 
-  val url: String = config.authenticationUrl
+  val url = config.authenticationUrl
 
-  def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    if(config.refreshProfileSwitch) {
-      http.POSTEmpty(url) map { response =>
-        Logger.info("[AuthenticationConnector] Current user profile was refreshed")
-        response
-      } andThen {
-        logExceptions
-      }
-    } else {
-      Future.successful(HttpResponse(NO_CONTENT))
+  def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+    http.POSTEmpty(url) map { response =>
+      Logger.info("[AuthenticationConnector] Current user profile was refreshed")
+      response
+    } andThen {
+      logExceptions
     }
 
   private def logExceptions: PartialFunction[Try[HttpResponse], Unit] = {

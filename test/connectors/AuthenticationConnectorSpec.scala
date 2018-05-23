@@ -17,12 +17,10 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.matching.UrlPattern
-import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods, Succeeded}
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import models.register.{Enrol, KnownFact, KnownFacts}
+import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream4xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,19 +31,9 @@ class AuthenticationConnectorSpec extends AsyncWordSpec with MustMatchers with W
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private def urlMapping: UrlPattern = urlEqualTo("/government-gateway-authentication/refresh-profile")
+  private def url: String = "/government-gateway-authentication/refresh-profile"
 
-  protected def configuration(switch: Boolean): Map[String, Any] = Map(
-    portConfigKey -> server.port().toString,
-    "auditing.enabled" -> false,
-    "metrics.enabled" -> false,
-    "microservice.services.feature-switches.refresh-profile" -> switch
-  )
-
-  protected def app(switch: Boolean = true): Application =
-    new GuiceApplicationBuilder()
-      .configure(configuration(switch))
-      .build()
+  private lazy val connector = injector.instanceOf[AuthenticationConnector]
 
   ".refreshProfile" must {
 
@@ -53,10 +41,8 @@ class AuthenticationConnectorSpec extends AsyncWordSpec with MustMatchers with W
       "authenticator returns code NO_CONTENT" which {
         "means the auth profile has been refreshed" in {
 
-          val connector = app().injector.instanceOf[AuthenticationConnector]
-
           server.stubFor(
-            post(urlMapping)
+            post(urlEqualTo(url))
               .willReturn(
                 noContent
               )
@@ -64,27 +50,7 @@ class AuthenticationConnectorSpec extends AsyncWordSpec with MustMatchers with W
 
           connector.refreshProfile map {
             result =>
-              server.verify(1, postRequestedFor(urlMapping))
               result.status mustEqual NO_CONTENT
-          }
-
-        }
-      }
-      "feature switch is off" which {
-        "means API is not called" in {
-
-          val connector = app(false).injector.instanceOf[AuthenticationConnector]
-
-          server.stubFor(
-            post(urlMapping)
-              .willReturn(
-                noContent
-              )
-          )
-
-          connector.refreshProfile map { _ =>
-            server.verify(0, postRequestedFor(urlMapping))
-            Succeeded
           }
 
         }
@@ -95,10 +61,8 @@ class AuthenticationConnectorSpec extends AsyncWordSpec with MustMatchers with W
       "authenticator returns UNAUTHORISED" which {
         "means bearer token is missing or invalid" in {
 
-          val connector = app().injector.instanceOf[AuthenticationConnector]
-
           server.stubFor(
-            post(urlMapping)
+            post(urlEqualTo(url))
               .willReturn(
                 unauthorized
               )
@@ -113,10 +77,8 @@ class AuthenticationConnectorSpec extends AsyncWordSpec with MustMatchers with W
       "authenticator returns FORBIDDEN" which {
         "user is not a GG user" in {
 
-          val connector = app().injector.instanceOf[AuthenticationConnector]
-
           server.stubFor(
-            post(urlMapping)
+            post(urlEqualTo(url))
               .willReturn(
                 forbidden
               )
