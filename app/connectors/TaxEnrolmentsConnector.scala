@@ -41,11 +41,11 @@ trait TaxEnrolmentsConnector {
 @Singleton
 class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends TaxEnrolmentsConnector {
 
-  def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
+  def url(enrolmentKey: String): String = config.taxEnrolmentsUrl(Enrol(enrolmentKey).key)
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.PUT(url, knownFacts) flatMap {
+    http.PUT(url(enrolmentKey), knownFacts) flatMap {
       case response if response.status equals NO_CONTENT => Future.successful(response)
       case response => Future.failed(new HttpException(response.body, response.status))
     } andThen {

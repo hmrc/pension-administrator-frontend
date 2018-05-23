@@ -86,7 +86,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
 
             pensionsSchemeConnector.registerPsa(answers) flatMap { psaResponse =>
               dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse) flatMap { cacheMap =>
-                knownFactsRetrieval.retrieve(psaResponse.psaId) map { knownFacts =>
+                knownFactsRetrieval.retrieve map { knownFacts =>
                   enrolments.enrol(psaResponse.psaId, knownFacts) map { _ =>
                     Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
                   }
