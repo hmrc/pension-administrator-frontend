@@ -20,8 +20,8 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressYearsFormProvider
-import identifiers.register.company.CompanyAddressYearsId
-import models.{AddressYears, NormalMode}
+import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
+import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
@@ -35,11 +35,19 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   val formProvider = new CompanyAddressYearsFormProvider()
   val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  val address = TolerantAddress(
+    Some("add1"), Some("add2"),
+    None, None,
+    Some("NE11NE"), Some("GB")
+  )
+
+  val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyAddressId.toString -> address)))
+
+  def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new CompanyAddressYearsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = companyAddressYears(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages).toString
 
   "CompanyAddressYears Controller" must {
 
@@ -51,7 +59,10 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyAddressYearsId.toString -> JsString(AddressYears.values.head.toString))
+      val validData = Json.obj(
+        CompanyAddressId.toString -> address,
+        CompanyAddressYearsId.toString -> JsString(AddressYears.values.head.toString)
+      )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)

@@ -40,8 +40,7 @@ class RegisterCompanyNavigatorSpec extends WordSpec with MustMatchers with Navig
     (ConfirmCompanyAddressId,                     emptyAnswers,                   whatYouWillNeedPage,                  None),
     (WhatYouWillNeedId,                           emptyAnswers,                   companyDetailsPage,                   None),
     (CompanyDetailsId,                            emptyAnswers,                   companyRegistrationNumberPage,        Some(checkYourAnswersPage)),
-    (CompanyRegistrationNumberId,                 emptyAnswers,                   companyAddressPage,                   Some(checkYourAnswersPage)),
-    (CompanyAddressId,                            emptyAnswers,                   companyAddressYearsPage,              Some(checkYourAnswersPage)),
+    (CompanyRegistrationNumberId,                 emptyAnswers,                   companyAddressYearsPage,              Some(checkYourAnswersPage)),
     (CompanyAddressYearsId,                       addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
     (CompanyAddressYearsId,                       addressYearsUnderAYear,         paPostCodePage(NormalMode),           Some(paPostCodePage(CheckMode))),
     (CompanyAddressYearsId,                       emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
@@ -66,7 +65,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   private val companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
   private val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-  private val companyAddressPage = routes.CompanyAddressController.onPageLoad()
   private val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
   private val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)

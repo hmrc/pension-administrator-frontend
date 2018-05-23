@@ -27,6 +27,7 @@ import identifiers.register.{ConfirmationId, PsaSubscriptionResponseId}
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
+import utils.annotations.Register
 import views.html.register.confirmation
 
 import scala.concurrent.Future
@@ -36,7 +37,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       navigator: Navigator) extends FrontendController with I18nSupport with Retrievals {
+                                       @Register navigator: Navigator) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

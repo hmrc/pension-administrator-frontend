@@ -43,8 +43,6 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
     case CompanyDetailsId =>
       _ => routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
     case CompanyRegistrationNumberId =>
-      _ => routes.CompanyAddressController.onPageLoad()
-    case CompanyAddressId =>
       _ => routes.CompanyAddressYearsController.onPageLoad(NormalMode)
     case CompanyAddressYearsId => companyAddressYearsIdRoutes
     case CompanyPreviousAddressPostCodeLookupId =>
