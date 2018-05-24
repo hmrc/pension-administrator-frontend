@@ -172,9 +172,9 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
   }
 
   private val validPsaResponse = PsaSubscriptionResponse("test-psa-id")
-  private val knownFacts = Some(KnownFacts(Set(
-    KnownFact("PSAID", "test-psa"),
-    KnownFact("NINO", "test-nino")
+  private val knownFacts = Some(KnownFacts(
+    Set(KnownFact("PSAID", "test-psa")),
+    Set(KnownFact("NINO", "test-nino")
   )))
 
   private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
@@ -194,25 +194,16 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
   }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
-    override def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
+    override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
   }
 
-  private def setHttpResponse(response: HttpResponse) = response.status match {
-    case NO_CONTENT => Future.successful(response)
-    case ex => Future.failed(new HttpException("Fail", ex))
-  }
-
-  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): EnrolmentStoreConnector = {
-    new EnrolmentStoreConnector {
+  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
+    new TaxEnrolmentsConnector {
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
-        setHttpResponse(enrolResponse)
-    }
-  }
-
-  private def fakeAuthenticator(response: HttpResponse = HttpResponse(NO_CONTENT)): AuthenticationConnector = {
-    new AuthenticationConnector {
-      override def refreshProfile(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-        setHttpResponse(response)
+        enrolResponse.status match {
+          case NO_CONTENT => Future.successful(enrolResponse)
+          case ex => Future.failed(new HttpException("Fail", ex))
+        }
     }
   }
 
@@ -221,8 +212,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
                           userType: UserType = UserType.Organisation,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: EnrolmentStoreConnector = fakeEnrolmentStoreConnector(),
-                          authenticator: AuthenticationConnector = fakeAuthenticator()) =
+                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,
@@ -234,8 +224,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
       FakeDataCacheConnector,
       pensionsSchemeConnector,
       knownFactsRetrieval,
-      enrolments,
-      authenticator
+      enrolments
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =
