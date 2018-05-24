@@ -182,7 +182,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
     }
 
     "return a Bad Request when post code lookup fails" in {
-      val boundForm = form.withError(FormError("value", "error.postcode.invalid"))
+      val boundForm = form.withError(FormError("value", "error.postcode.failed"))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
