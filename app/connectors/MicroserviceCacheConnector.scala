@@ -112,8 +112,8 @@ class MicroserviceCacheConnector @Inject() (
   }
 
   override def removeAll(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    http.url(s"${config.pensionsSchemeUrl}/pensions-scheme/journey-cache/psa/removeAll/$id")
+    http.url(url(id))
       .withHeaders(hc.headers: _*)
-      .post(Json.obj()).map(_ => Ok)
+      .delete().map(_ => Ok)
   }
 }

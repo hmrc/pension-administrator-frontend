@@ -284,7 +284,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
 
   ".removeAll" must {
     "remove all the data" in {
-      server.stubFor(post(urlEqualTo(url("removeAll/foo"))).
+      server.stubFor(delete(urlEqualTo(url("foo"))).
         willReturn(ok)
       )
 
