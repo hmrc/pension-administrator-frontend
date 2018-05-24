@@ -23,7 +23,7 @@ import config.FrontendAppConfig
 import models.register.{Enrol, KnownFacts}
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.Writes
+import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -56,6 +56,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: Fronten
   private def logExceptions(knownFacts: KnownFacts): PartialFunction[Try[HttpResponse], Unit] = {
     case Failure(t: Throwable) =>
       Logger.error("Unable to connect to Tax Enrolments", t)
+      Logger.debug(s"Known Facts: ${Json.toJson(knownFacts)}")
   }
 
 }
