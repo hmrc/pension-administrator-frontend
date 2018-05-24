@@ -34,8 +34,6 @@ class RegisterNavigator @Inject() extends Navigator {
       declarationWorkingKnowledgeRoutes()
     case DeclarationFitAndProperId =>
       _ => controllers.register.routes.ConfirmationController.onPageLoad()
-    case ConfirmationId =>
-      _ => controllers.routes.LogoutController.onPageLoad()
   }
 
   private def declarationWorkingKnowledgeRoutes()(userAnswers: UserAnswers): Call = {

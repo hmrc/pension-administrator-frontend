@@ -16,17 +16,23 @@
 
 package controllers.register
 
+import connectors.DataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
 import models.{PSAUser, UserType}
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import utils.{FakeNavigator, UserAnswers}
+import utils.UserAnswers
 import views.html.register.confirmation
+import org.mockito.Mockito._
+import org.mockito.Matchers._
+import play.api.mvc.Results._
+
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpecBase {
 
@@ -38,12 +44,14 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       val data = Json.obj(
         PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psaId)
       )
+      when(fakeDataCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
       val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+      verify(fakeDataCacheConnector, times(1)).removeAll(any())(any(), any())
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
@@ -59,24 +67,14 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
-
-    "redirect to Session Expired on a POST when no data exists" in {
-      val result = controller(dontGetAnyData).onSubmit()(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
-
   }
-
 }
 
-object ConfirmationControllerSpec extends ControllerSpecBase {
+object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaId: String = "A1234567"
-
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val fakeDataCacheConnector = mock[DataCacheConnector]
+  private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
   private val psaUser = PSAUser(UserType.Individual, None, false, None)
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
@@ -85,7 +83,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeNavigator
+      fakeDataCacheConnector
     )
 
   private def viewAsString() =

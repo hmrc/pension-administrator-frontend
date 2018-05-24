@@ -92,6 +92,11 @@ class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
         }
     }
   }
+
+  def remove(id: String): Future[Boolean] = {
+    val selector = BSONDocument("id" -> id)
+    collection.remove(selector).map(_.ok)
+  }
 }
 
 @Singleton

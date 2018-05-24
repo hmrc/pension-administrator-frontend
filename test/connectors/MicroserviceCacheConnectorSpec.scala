@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.mvc.Results._
 
 class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
 
@@ -277,6 +278,18 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
 
       connector.remove("foo", FakeIdentifier) map {
         _ mustEqual updatedJson
+      }
+    }
+  }
+
+  ".removeAll" must {
+    "remove all the data" in {
+      server.stubFor(delete(urlEqualTo(url("foo"))).
+        willReturn(ok)
+      )
+
+      connector.removeAll("foo").map{
+        _ mustEqual Ok
       }
     }
   }

@@ -18,6 +18,7 @@ package connectors
 
 import identifiers.TypedIdentifier
 import play.api.libs.json._
+import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,4 +44,6 @@ trait DataCacheConnector {
   ): Future[Option[JsValue]]
 
   def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
+
+  def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
 }
