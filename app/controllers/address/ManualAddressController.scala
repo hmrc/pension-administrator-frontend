@@ -61,7 +61,8 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
                       id: TypedIdentifier[Address],
                       selectedId: TypedIdentifier[TolerantAddress],
                       viewModel: ManualAddressViewModel,
-                      mode: Mode
+                      mode: Mode,
+                      context: String
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => Future.successful(BadRequest(manualAddress(appConfig, formWithError, viewModel))),
@@ -69,7 +70,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
         val existingAddress = request.userAnswers.get(id)
         val selectedAddress = request.userAnswers.get(selectedId)
 
-        val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress)
+        val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress, context)
 
         dataCacheConnector.save(
           request.externalId,

@@ -17,22 +17,30 @@
 package audit
 
 import models.{Address, TolerantAddress}
+import play.api.libs.json.Json
 
-case class AddressEvent(externalId: String, action: AddressAction.Value) extends AuditEvent {
+case class AddressEvent(externalId: String, action: AddressAction.Value, context: String, address: Address) extends AuditEvent {
 
   override def auditType: String = "AddressEvent"
 
   override def details: Map[String, String] =
     Map(
       "externalId" -> externalId,
-      "action" -> action.toString
+      "action" -> action.toString,
+      "context" -> context,
+      "address" -> Json.stringify(Json.toJson(address))
     )
-
 }
 
 object AddressEvent {
 
-  def addressEntryEvent(externalId: String, address: Address, was: Option[Address], selected: Option[TolerantAddress]): Option[AddressEvent] = {
+  def addressEntryEvent(
+                         externalId: String,
+                         address: Address,
+                         was: Option[Address],
+                         selected: Option[TolerantAddress],
+                         context: String
+                       ): Option[AddressEvent] = {
 
     val hasChanged = (address, was) match {
       case (a, Some(w)) if a == w => false
@@ -47,20 +55,19 @@ object AddressEvent {
         }
 
         if(matchesSelected) {
-          Some(AddressEvent(externalId, AddressAction.Lookup))
+          Some(AddressEvent(externalId, AddressAction.Lookup, context, address))
         }
         else {
-          Some(AddressEvent(externalId, AddressAction.LookupChanged))
+          Some(AddressEvent(externalId, AddressAction.LookupChanged, context, address))
         }
       }
       else {
-        Some(AddressEvent(externalId, AddressAction.Manual))
+        Some(AddressEvent(externalId, AddressAction.Manual, context, address))
       }
     }
     else {
       None
     }
-
   }
 
 }

@@ -177,7 +177,16 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
           auditService.verifySent(
             AddressEvent(
               FakeAuthAction.externalId,
-              AddressAction.LookupChanged
+              AddressAction.LookupChanged,
+              s"Company Director Address: ${jonathanDoe.fullName}",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
             )
           )
       }

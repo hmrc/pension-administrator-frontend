@@ -174,7 +174,16 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
           auditService.verifySent(
             AddressEvent(
               FakeAuthAction.externalId,
-              AddressAction.LookupChanged
+              AddressAction.LookupChanged,
+              s"Company Director Previous Address: $directorName",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
             )
           )
       }

@@ -71,7 +71,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode)
+      post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode, "Individual Previous Address")
   }
 
 }

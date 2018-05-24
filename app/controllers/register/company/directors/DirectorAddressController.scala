@@ -68,8 +68,16 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          post(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
+          val vm = addressViewModel(mode, index, directorName)
+          post(DirectorAddressId(index), CompanyDirectorAddressListId(index), vm, mode, context(vm))
       }
+  }
+
+  private def context(viewModel: ManualAddressViewModel): String = {
+    viewModel.secondaryHeader match {
+      case Some(name) => s"Company Director Address: $name"
+      case _ => "Company Director Address"
+    }
   }
 
 }

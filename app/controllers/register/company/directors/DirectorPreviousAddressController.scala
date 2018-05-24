@@ -60,7 +60,8 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName), mode)
+          val vm = addressViewModel(mode, index, directorName)
+          post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, context(vm))
       }
   }
 
@@ -73,46 +74,11 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
       Some(Message(directorName))
     )
 
-}
-
-/*
-class DirectorPreviousAddressController @Inject()(
-                                                   appConfig: FrontendAppConfig,
-                                                   override val messagesApi: MessagesApi,
-                                                   dataCacheConnector: DataCacheConnector,
-                                                   @CompanyDirector navigator: Navigator,
-                                                   authenticate: AuthAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: AddressFormProvider,
-                                                   countryOptions: CountryOptions
-                                                 ) extends FrontendController with Retrievals with I18nSupport {
-
-  private val form = formProvider()
-
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val preparedForm = request.userAnswers.get(DirectorPreviousAddressId(index)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-        Future.successful(Ok(directorPreviousAddress(appConfig, preparedForm, mode, index, directorName, countryOptions.options)))
-      }
-  }
-
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorPreviousAddress(appConfig, formWithErrors, mode, index, directorName, countryOptions.options))),
-          (value) =>
-            dataCacheConnector.save(request.externalId, DirectorPreviousAddressId(index), value).map(cacheMap =>
-              Redirect(navigator.nextPage(DirectorPreviousAddressId(index), mode)(new UserAnswers(cacheMap))))
-        )
-      }
+  private def context(viewModel: ManualAddressViewModel): String = {
+    viewModel.secondaryHeader match {
+      case Some(name) => s"Company Director Previous Address: $name"
+      case _ => "Company Director Previous Address"
+    }
   }
 
 }
-*/

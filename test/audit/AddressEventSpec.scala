@@ -24,49 +24,49 @@ class AddressEventSpec extends FlatSpec with Matchers {
   import AddressEventSpec._
 
   "addressEntryEvent" should "return a Manual Address Event when there is no previous or selected address" in {
-    val expected = Some(AddressEvent(externalId, AddressAction.Manual))
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, None, None)
+    val expected = Some(AddressEvent(externalId, AddressAction.Manual, context, address1))
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, None, None, context)
 
     actual shouldBe expected
   }
 
   it should "return a Manual Address Event when address has changed and there is no selected address" in {
-    val expected = Some(AddressEvent(externalId, AddressAction.Manual))
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address2), None)
+    val expected = Some(AddressEvent(externalId, AddressAction.Manual, context, address1))
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address2), None, context)
 
     actual shouldBe expected
   }
 
   it should "return a Lookup Address Event when there is no previous address and address matches selected" in {
-    val expected = Some(AddressEvent(externalId, AddressAction.Lookup))
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, None, Some(tolerant(address1)))
+    val expected = Some(AddressEvent(externalId, AddressAction.Lookup, context, address1))
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, None, Some(tolerant(address1)), context)
 
     actual shouldBe expected
   }
 
   it should "return a Lookup Address Event when address has changed and address matches selected" in {
-    val expected = Some(AddressEvent(externalId, AddressAction.Lookup))
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address2), Some(tolerant(address1)))
+    val expected = Some(AddressEvent(externalId, AddressAction.Lookup, context, address1))
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address2), Some(tolerant(address1)), context)
 
     actual shouldBe expected
   }
 
   it should "return a LookupChanged Address Event when there is no previous address and address and selected differ" in {
-    val expected = Some(AddressEvent(externalId, AddressAction.LookupChanged))
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, None, Some(tolerant(address2)))
+    val expected = Some(AddressEvent(externalId, AddressAction.LookupChanged, context, address1))
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, None, Some(tolerant(address2)), context)
 
     actual shouldBe expected
   }
 
   it should "return a LookupChanged Address Event when address has changed and address and selected differ" in {
-    val expected = Some(AddressEvent(externalId, AddressAction.LookupChanged))
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address2), Some(tolerant(address2)))
+    val expected = Some(AddressEvent(externalId, AddressAction.LookupChanged, context, address1))
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address2), Some(tolerant(address2)), context)
 
     actual shouldBe expected
   }
 
   it should "return None when address and previous address match" in {
-    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address1), None)
+    val actual = AddressEvent.addressEntryEvent(externalId, address1, Some(address1), None, context)
 
     actual shouldBe None
   }
@@ -76,6 +76,7 @@ class AddressEventSpec extends FlatSpec with Matchers {
 object AddressEventSpec {
 
   val externalId: String = "test-external-id"
+  val context: String = "test-context"
 
   val address1 = Address(
     "address-1-line-1",
