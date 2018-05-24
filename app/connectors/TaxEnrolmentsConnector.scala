@@ -23,15 +23,15 @@ import config.FrontendAppConfig
 import models.register.{Enrol, KnownFacts}
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.Writes
+import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-@ImplementedBy(classOf[EnrolmentStoreConnectorImpl])
-trait EnrolmentStoreConnector {
+@ImplementedBy(classOf[TaxEnrolmentsConnectorImpl])
+trait TaxEnrolmentsConnector {
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
@@ -39,13 +39,13 @@ trait EnrolmentStoreConnector {
 }
 
 @Singleton
-class EnrolmentStoreConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends EnrolmentStoreConnector {
+class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends TaxEnrolmentsConnector {
 
-  def url(enrolmentKey: String) = config.enrolmentStoreUrl(Enrol(enrolmentKey).key)
+  def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.PUT(url(enrolmentKey), knownFacts) flatMap {
+    http.PUT(url, knownFacts) flatMap {
       case response if response.status equals NO_CONTENT => Future.successful(response)
       case response => Future.failed(new HttpException(response.body, response.status))
     } andThen {
@@ -54,9 +54,9 @@ class EnrolmentStoreConnectorImpl @Inject()(val http: HttpClient, config: Fronte
   }
 
   private def logExceptions(knownFacts: KnownFacts): PartialFunction[Try[HttpResponse], Unit] = {
-    case Failure(t: Throwable) => {
+    case Failure(t: Throwable) =>
       Logger.error("Unable to connect to Tax Enrolments", t)
-    }
+      Logger.debug(s"Known Facts: ${Json.toJson(knownFacts)}")
   }
 
 }

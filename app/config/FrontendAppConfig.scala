@@ -63,8 +63,6 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
     "cymraeg" -> Lang("cy"))
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  lazy val refreshProfileSwitch: Boolean = getConfBool("feature-switches.refresh-profile", false)
-
   lazy val addressLookUp: String = baseUrl("address-lookup")
 
   lazy val registerWithIdOrganisationUrl: String =
@@ -79,13 +77,9 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
       baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
 
-  lazy val authenticationUrl: String =
-      baseUrl("government-gateway-authentication") +
-      runModeConfiguration.underlying.getString("urls.authentication")
-
-  def enrolmentStoreUrl(key: String): String = baseUrl("enrolment-store-proxy") +
-    runModeConfiguration.underlying.getString("urls.enrolments") +
-    key
+  def taxEnrolmentsUrl(serviceName: String) = baseUrl("tax-enrolments") +
+    runModeConfiguration.underlying.getString("urls.tax-enrolments") +
+    s"service/$serviceName/enrolment"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 

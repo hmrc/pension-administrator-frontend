@@ -26,30 +26,29 @@ import play.api.mvc.AnyContent
 
 class KnownFactsRetrieval {
 
+  private val psaKey = "PSAID"
   private val ninoKey = "NINO"
   private val ctUtrKey = "CTUTR"
   private val saUtrKey = "SAUTR"
   private val postalKey = "NonUKPostalCode"
   private val countryKey = "CountryCode"
 
-  def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
+  def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
     request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
       registrationInfo.legalStatus match {
         case Individual =>
-          Some(KnownFacts(Set(KnownFact(ninoKey, registrationInfo.idNumber))))
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, registrationInfo.idNumber))))
         case LimitedCompany if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(ctUtrKey, registrationInfo.idNumber))))
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, registrationInfo.idNumber))))
         case LimitedCompany =>
           for {
             address <- request.userAnswers.get(ConfirmCompanyAddressId)
             country <- address.country
           } yield {
-            val knownFacts = Set(KnownFact(countryKey, country))
-            KnownFacts {
+            val knownFacts = KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
               address.postcode.fold(knownFacts){ postalCode =>
-                knownFacts + KnownFact(postalKey, transformNonUKPostalCode(postalCode))
+                KnownFacts(knownFacts.identifiers, knownFacts.verifiers + KnownFact(postalKey, transformNonUKPostalCode(postalCode)))
               }
-            }
           }
         case _ => None
       }

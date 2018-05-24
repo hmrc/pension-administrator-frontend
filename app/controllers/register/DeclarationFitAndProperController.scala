@@ -47,8 +47,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
-                                                  enrolments: EnrolmentStoreConnector,
-                                                  authenticator: AuthenticationConnector
+                                                  enrolments: TaxEnrolmentsConnector
                                                  ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
@@ -105,10 +104,8 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
-    knownFactsRetrieval.retrieve map { knownFacts =>
-      enrolments.enrol(psaId, knownFacts) flatMap { _ =>
-        authenticator.refreshProfile
-      }
+    knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
+      enrolments.enrol(psaId, knownFacts)
     } getOrElse Future.failed(KnownFactsRetrievalException())
   }
 
