@@ -27,3 +27,4 @@ You'll then need to touch these areas yourself as needed (and the order is less 
 * If you added an `optionsPage` you can change the available options in `forms\<YourClass>Form`
 * If you added a `questionPage` you'll need to change `models\<YourClass>`, `forms\<YourClass>Form` and `views\<yourClass>` as needed, along with the relevant tests and messages
 * If you added an `intPage` you may want to change the validation in `forms\<YourClass>Form` - by default it expects non-negative numbers (0 or greater) which you may want to change, or you may need to add a maximum value etc.
+
