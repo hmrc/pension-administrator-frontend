@@ -19,9 +19,9 @@ package controllers.address
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import forms.address.AddressListFormProvider
-import identifiers.{Identifier, TypedIdentifier}
-import models.{Address, Mode}
+import identifiers.TypedIdentifier
 import models.requests.DataRequest
+import models.{Address, Mode, TolerantAddress}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -45,16 +45,25 @@ trait AddressListController extends FrontendController with I18nSupport {
     Future.successful(Ok(addressList(appConfig, form, viewModel)))
   }
 
-  protected def post(viewModel: AddressListViewModel, navigatorId: Identifier, dataId: TypedIdentifier[Address], mode: Mode)
+  protected def post(viewModel: AddressListViewModel, navigatorId: TypedIdentifier[TolerantAddress], dataId: TypedIdentifier[Address], mode: Mode)
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     formProvider(viewModel.addresses).bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(addressList(appConfig, formWithErrors, viewModel))),
-      addressIndex =>
-        cacheConnector.save(request.externalId, dataId, viewModel.addresses(addressIndex).toAddress.copy(country = "GB")).map(
-          json => Redirect(navigator.nextPage(navigatorId, mode)(UserAnswers(json)))
-        )
+      addressIndex => {
+        val address = viewModel.addresses(addressIndex).copy(country = Some("GB"))
+
+        cacheConnector.remove(request.externalId, dataId).flatMap {
+          _ =>
+            cacheConnector.save(request.externalId, navigatorId, address).map {
+              json =>
+                Redirect(navigator.nextPage(navigatorId, mode)(UserAnswers(json)))
+            }
+        }
+      }
     )
+
   }
+
 }

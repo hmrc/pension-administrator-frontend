@@ -16,12 +16,14 @@
 
 package controllers.register.advisor
 
+import audit.{AddressAction, AddressEvent}
+import audit.testdoubles.StubSuccessfulAuditService
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.advisor.AdvisorAddressId
-import models.{Address, NormalMode}
+import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -71,6 +73,48 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
+    "send an audit event when valid data is submitted" in {
+
+      val existingAddress = Address(
+        "existing-line-1",
+        "existing-line-2",
+        None,
+        None,
+        None,
+        "existing-country"
+      )
+
+      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
+
+      val data =
+        UserAnswers()
+          .advisorAddress(existingAddress)
+          .advisorAddressList(selectedAddress)
+          .dataRetrievalAction
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE"),
+        "country" -> "GB"
+      )
+
+      fakeAuditService.reset()
+
+      val result = controller(data).onSubmit(NormalMode)(postRequest)
+
+      whenReady(result) {
+        _ =>
+          fakeAuditService.verifySent(
+            AddressEvent(
+              FakeAuthAction.externalId,
+              AddressAction.LookupChanged
+            )
+          )
+      }
+
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -115,10 +159,12 @@ object AdvisorAddressControllerSpec extends ControllerSpecBase {
     secondaryHeader = Some("common.advisor.secondary.heading")
   )
 
+  val fakeAuditService = new StubSuccessfulAuditService()
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new AdvisorAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-      countryOptions)
+      countryOptions, fakeAuditService)
 
   def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, addressViewModel)(fakeRequest, messages).toString
 }

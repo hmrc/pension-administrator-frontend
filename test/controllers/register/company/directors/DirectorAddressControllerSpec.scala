@@ -18,37 +18,41 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
+import audit.{AddressAction, AddressEvent}
+import audit.testdoubles.StubSuccessfulAuditService
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.individual.CheckYourAnswersControllerSpec.{environment, frontendAppConfig}
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId}
 import models.register.company.directors.DirectorDetails
-import models.{Address, Index, NormalMode}
+import models.{Address, Index, NormalMode, TolerantAddress}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, InputOption}
-import views.html.register.company.directors.directorAddress
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import viewmodels.Message
+import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
 
-class DirectorAddressControllerSpec extends ControllerSpecBase {
+class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider()
+  private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  private val form: Form[Address] = formProvider()
 
-  val firstIndex = Index(0)
+  private val firstIndex = Index(0)
 
-  val jonathanDoe = DirectorDetails("Jonathan", None, "Doe", LocalDate.now())
-  val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.now())
+  private val jonathanDoe = DirectorDetails("Jonathan", None, "Doe", LocalDate.now())
+  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.now())
 
-  val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
-  val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")
+  private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
+  private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")
 
-  val directors = Json.obj(
+  private val directors = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString -> jonathanDoe
@@ -59,9 +63,9 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
     )
   )
 
-  val data = new FakeDataRetrievalAction(Some(directors))
+  private val data = new FakeDataRetrievalAction(Some(directors))
 
-  val directorsWithAddresses = Json.obj(
+  private val directorsWithAddresses = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString -> jonathanDoe,
@@ -74,11 +78,13 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
     )
   )
 
-  val dataWithAddresses = new FakeDataRetrievalAction(Some(directorsWithAddresses))
+  private val dataWithAddresses = new FakeDataRetrievalAction(Some(directorsWithAddresses))
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private val auditService = new StubSuccessfulAuditService()
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DirectorAddressController(
       frontendAppConfig,
       messagesApi,
@@ -88,17 +94,24 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      auditService
     )
 
-  def viewAsString(form: Form[_] = form) = directorAddress(
-    frontendAppConfig,
-    form,
-    NormalMode,
-    firstIndex,
-    jonathanDoe.fullName,
-    countryOptions.options
-  )(fakeRequest, messages).toString
+  private val viewModel = ManualAddressViewModel(
+    routes.DirectorAddressController.onSubmit(NormalMode, firstIndex),
+    countryOptions.options,
+    Message("directorAddress.title"),
+    Message("directorAddress.heading"),
+    Some(Message(jonathanDoe.fullName))
+  )
+
+  private def viewAsString(form: Form[_] = form) =
+    manualAddress(
+      frontendAppConfig,
+      form,
+      viewModel
+    )(fakeRequest, messages).toString
 
   "directorAddress Controller" must {
 
@@ -127,6 +140,48 @@ class DirectorAddressControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "send an audit event when valid data is submitted" in {
+
+      val existingAddress = Address(
+        "existing-line-1",
+        "existing-line-2",
+        None,
+        None,
+        None,
+        "existing-country"
+      )
+
+      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
+
+      val data =
+        UserAnswers()
+          .directorAddress(firstIndex, existingAddress)
+          .companyDirectorAddressList(firstIndex, selectedAddress)
+          .dataRetrievalAction
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE"),
+        "country" -> "GB"
+      )
+
+      auditService.reset()
+
+      val result = controller(data).onSubmit(NormalMode, firstIndex)(postRequest)
+
+      whenReady(result) {
+        _ =>
+          auditService.verifySent(
+            AddressEvent(
+              FakeAuthAction.externalId,
+              AddressAction.LookupChanged
+            )
+          )
+      }
+
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

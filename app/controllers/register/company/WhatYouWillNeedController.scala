@@ -16,8 +16,8 @@
 
 package controllers.register.company
 
+import audit.{AuditService, PSAStartEvent}
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.company.WhatYouWillNeedId
@@ -34,7 +34,8 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           @RegisterCompany navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                          requireData: DataRequiredAction,
+                                          auditService: AuditService) extends FrontendController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
@@ -42,7 +43,8 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    request =>
+    implicit request =>
+        PSAStartEvent.sendEvent(auditService)
         Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
   }
 

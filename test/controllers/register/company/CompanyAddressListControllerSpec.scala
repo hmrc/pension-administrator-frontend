@@ -19,21 +19,23 @@ package controllers.register.company
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.CompanyAddressListFormProvider
-import identifiers.register.company.{CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
-import models.{NormalMode, TolerantAddress}
+import forms.address.AddressListFormProvider
+import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.register.company.BusinessDetails
+import models.{NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.companyAddressList
+import viewmodels.Message
+import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
 class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new CompanyAddressListFormProvider()
+  private val formProvider = new AddressListFormProvider()
   private val companyName = "ThisCompanyName"
   private val companyDetails = Json.obj("businessDetails" -> BusinessDetails(companyName, "Test UTR"))
 
@@ -56,17 +58,33 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
   val form: Form[Int] = formProvider(Seq(0))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyAddressListController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new CompanyAddressListController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl
+    )
+
+  private lazy val viewModel = AddressListViewModel(
+    postCall = routes.CompanyAddressListController.onSubmit(NormalMode),
+    manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
+    addresses = addresses,
+    Message("common.previousAddressList.title"),
+    Message("common.previousAddressList.heading"),
+    Some(Message("site.secondaryHeader")),
+    Message("common.selectAddress.text"),
+    Message("common.selectAddress.link")
+  )
 
   private def viewAsString(form: Form[_] = form) =
-    companyAddressList(
+    addressList(
       frontendAppConfig,
       form,
-      NormalMode,
-      companyName,
-      addresses
-    )(fakeRequest, messages).toString
+      viewModel
+    )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
   "CompanyAddressList Controller" must {
 
@@ -138,25 +156,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
       }
-
-      "company name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-    }
-
-    "save to CompanyPreviousAddressId" in {
-
-      val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails ++ addressObject))
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1"))
-
-      controller(dataRetrieval).onSubmit(NormalMode)(postRequest)
-
-      FakeDataCacheConnector.verify(CompanyPreviousAddressId, address("test post code 2").toAddress.copy(country = "GB"))
-
     }
 
   }
+
 }

@@ -16,8 +16,8 @@
 
 package forms.register.company.directors
 
+import forms.address.AddressListFormProvider
 import forms.behaviours.FormBehaviours
-import forms.register.company.CompanyAddressListFormProvider
 
 class CompanyDirectorAddressListFormProviderSpec extends FormBehaviours {
 
@@ -25,7 +25,7 @@ class CompanyDirectorAddressListFormProviderSpec extends FormBehaviours {
     "value" -> "0"
   )
 
-  val form = new CompanyAddressListFormProvider()(Seq(0, 1))
+  val form = new AddressListFormProvider()(Seq(0, 1))
 
   "CompanyAddressListForm" must {
 
@@ -46,4 +46,5 @@ class CompanyDirectorAddressListFormProviderSpec extends FormBehaviours {
       checkForError(form, Map("value" -> "2"), expectedError)
     }
   }
+
 }

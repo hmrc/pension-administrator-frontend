@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector

@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-package forms.register.company.directors
+package audit
 
-import javax.inject.Inject
-
-import forms.FormErrorHelper
-import forms.mappings.AddressMapping
-import play.api.data.Form
-
-class DirectorPreviousAddressPostCodeLookupFormProvider @Inject() extends FormErrorHelper with AddressMapping {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> postCodeMapping(
-        "directorPreviousAddressPostCodeLookup.error.required",
-        "directorPreviousAddressPostCodeLookup.error.length",
-        "directorPreviousAddressPostCodeLookup.error.invalid"
-      )
-    )
-
+trait AuditEvent {
+  def auditType: String
+  def details: Map[String, String]
 }

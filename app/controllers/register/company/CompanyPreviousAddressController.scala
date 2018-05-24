@@ -16,55 +16,53 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
-
+import audit.AuditService
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.actions._
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.company.CompanyPreviousAddressId
+import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
 import models.{Address, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
 import utils.annotations.RegisterCompany
+import utils.Navigator
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.companyPreviousAddress
+import viewmodels.Message
+import viewmodels.address.ManualAddressViewModel
 
-import scala.concurrent.Future
+class CompanyPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
+                                                 override val messagesApi: MessagesApi,
+                                                 override val dataCacheConnector: DataCacheConnector,
+                                                 @RegisterCompany override val navigator: Navigator,
+                                                 authenticate: AuthAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: AddressFormProvider,
+                                                 val countryOptions: CountryOptions,
+                                                 val auditService: AuditService) extends ManualAddressController {
 
-class CompanyPreviousAddressController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        @RegisterCompany navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AddressFormProvider,
-                                        countryOptions: CountryOptions
-                                      ) extends FrontendController with I18nSupport {
+  override protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private val form: Form[Address] = formProvider("error.country.invalid")
+  private def addressViewModel(mode: Mode) = ManualAddressViewModel(
+    routes.CompanyPreviousAddressController.onSubmit(mode),
+    countryOptions.options,
+    Message("companyPreviousAddress.title"),
+    Message("companyPreviousAddress.heading"),
+    Some(Message("site.secondaryHeader"))
+  )
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CompanyPreviousAddressId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(companyPreviousAddress(appConfig, preparedForm, mode, countryOptions.options))
+      get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyPreviousAddress(appConfig, formWithErrors, mode, countryOptions.options))),
-        (value) =>
-          dataCacheConnector.save(request.externalId, CompanyPreviousAddressId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(CompanyPreviousAddressId, mode)(new UserAnswers(cacheMap))))
-    )
+      post(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode), mode)
   }
+
 }

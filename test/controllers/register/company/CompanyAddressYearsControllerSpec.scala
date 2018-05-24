@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.CompanyAddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
 import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
@@ -32,8 +32,8 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyAddressYearsFormProvider()
-  val form = formProvider()
+  val formProvider = new AddressYearsFormProvider()
+  val form = formProvider("companyAddressYears.error.required")
 
   val address = TolerantAddress(
     Some("add1"), Some("add2"),

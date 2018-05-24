@@ -16,55 +16,59 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
-import controllers.actions._
-import forms.register.company.directors.CompanyDirectorAddressListFormProvider
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.AddressListController
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorDetailsId}
-import models.{Index, Mode, NormalMode}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import models.requests.DataRequest
+import models.{Index, Mode}
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, Result}
+import utils.Navigator
 import utils.annotations.CompanyDirector
-import utils.{Enumerable, Navigator, UserAnswers}
-import views.html.register.company.directors.companyDirectorAddressList
+import viewmodels.Message
+import viewmodels.address.AddressListViewModel
 
 import scala.concurrent.Future
 
-class CompanyDirectorAddressListController @Inject()(
-                                                      appConfig: FrontendAppConfig,
-                                                      override val messagesApi: MessagesApi,
-                                                      dataCacheConnector: DataCacheConnector,
-                                                      @CompanyDirector navigator: Navigator,
-                                                      authenticate: AuthAction,
-                                                      getData: DataRetrievalAction,
-                                                      requireData: DataRequiredAction,
-                                                      formProvider: CompanyDirectorAddressListFormProvider
-                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+class CompanyDirectorAddressListController @Inject()(override val appConfig: FrontendAppConfig,
+                                                     override val messagesApi: MessagesApi,
+                                                     override val cacheConnector: DataCacheConnector,
+                                                     @CompanyDirector override val navigator: Navigator,
+                                                     authenticate: AuthAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction) extends AddressListController with Retrievals {
 
-
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (DirectorDetailsId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
-        case (directorDetails ~ addresses) =>
-          Future.successful(Ok(companyDirectorAddressList(appConfig, formProvider(addresses), NormalMode, index, directorDetails.fullName, addresses)))
-      }.left.map(_ => Future.successful(Redirect(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))
+      viewModel(mode, index).right.map(get)
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (DirectorDetailsId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
-        case (directorDetails ~ addresses) =>
-          formProvider(addresses).bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(companyDirectorAddressList(appConfig, formWithErrors, mode, index, directorDetails.fullName, addresses))),
-            (value) =>
-              dataCacheConnector.save(request.externalId, DirectorAddressId(index), addresses(value).toAddress.copy(country = "GB")).map(cacheMap =>
-                Redirect(navigator.nextPage(CompanyDirectorAddressListId(index), mode)(new UserAnswers(cacheMap))))
-          )
-      }.left.map(_ => Future.successful(Redirect(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))))
+      viewModel(mode, index).right.map(vm => post(vm, CompanyDirectorAddressListId(index), DirectorAddressId(index), mode))
   }
+
+  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+    CompanyDirectorAddressPostCodeLookupId(index).retrieve.right.flatMap {
+      addresses =>
+        DirectorDetailsId(index).retrieve.right.map {
+          director =>
+            AddressListViewModel(
+              postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
+              manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
+              addresses = addresses,
+              Message("common.selectAddress.title"),
+              Message("common.selectAddress.heading"),
+              Some(Message(director.fullName)),
+              Message("common.selectAddress.text"),
+              Message("common.selectAddress.link")
+            )
+        }
+    }.left.map(_ => Future.successful(Redirect(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))))
+  }
+
 }

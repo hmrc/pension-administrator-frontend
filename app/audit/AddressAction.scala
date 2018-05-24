@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package audit
 
-import javax.inject.Inject
+object AddressAction extends Enumeration {
+  type AddressAction = Value
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import play.api.data.Form
-
-class CompanyAddressListFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(addresses: Seq[_]): Form[Int] =
-    Form(
-      "value" -> int("common.previousAddressList.error.required")
-        .verifying(minimumValue(0, "error.invalid"))
-        .verifying(maximumValue(addresses.length - 1, "error.invalid"))
-    )
+  val Lookup: AddressAction.Value = Value("lookup")
+  val Manual: AddressAction.Value = Value("manual")
+  val LookupChanged: AddressAction.Value = Value("lookup-changed")
 }
