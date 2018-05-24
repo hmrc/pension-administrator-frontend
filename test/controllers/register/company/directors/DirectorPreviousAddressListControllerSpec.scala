@@ -21,33 +21,35 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.directors.DirectorPreviousAddressListFormProvider
+import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
 import models.register.company.directors.DirectorDetails
-import models.{Address, Index, NormalMode, TolerantAddress}
+import models.{Index, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.directors.directorPreviousAddressList
+import viewmodels.Message
+import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
 class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorPreviousAddressListFormProvider()
-  val form: Form[Int] = formProvider(Seq.empty)
+  private val formProvider = new AddressListFormProvider()
+  private val form: Form[Int] = formProvider(Seq.empty)
 
-  val firstIndex = Index(0)
-  val director = DirectorDetails("firstName", Some("middle"), "lastName", LocalDate.now())
+  private val firstIndex = Index(0)
+  private val director = DirectorDetails("firstName", Some("middle"), "lastName", LocalDate.now())
 
-  val addresses = Seq(
+  private val addresses = Seq(
     address("test post code 1"),
     address("test post code 2")
   )
 
-  def address(postCode: String): TolerantAddress = TolerantAddress(
+  private def address(postCode: String): TolerantAddress = TolerantAddress(
     Some("address line 1"),
     Some("address line 2"),
     Some("test town"),
@@ -56,7 +58,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
     Some("United Kingdom")
   )
 
-  val validData: JsValue = Json.obj(
+  private val validData: JsValue = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString -> director,
@@ -65,9 +67,9 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
     )
   )
 
-  val data = new FakeDataRetrievalAction(Some(validData))
+  private val data = new FakeDataRetrievalAction(Some(validData))
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DirectorPreviousAddressListController(
       frontendAppConfig,
       messagesApi,
@@ -75,18 +77,27 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider
+      new DataRequiredActionImpl
     )
 
-  def viewAsString(form: Form[_] = form): String = directorPreviousAddressList(
-    frontendAppConfig,
-    form,
-    NormalMode,
-    firstIndex,
-    director.fullName,
-    addresses
-  )(fakeRequest, messages).toString
+  private lazy val viewModel =
+    AddressListViewModel(
+      postCall = routes.DirectorPreviousAddressListController.onSubmit(NormalMode, firstIndex),
+      manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(NormalMode, firstIndex),
+      addresses = addresses,
+      Message("common.previousAddressList.title"),
+      Message("common.previousAddressList.heading"),
+      Some(Message(director.fullName)),
+      Message("common.selectAddress.text"),
+      Message("common.selectAddress.link")
+    )
+
+  private def viewAsString(form: Form[_] = form): String =
+    addressList(
+      frontendAppConfig,
+      form,
+      viewModel
+    )(fakeRequest, messages).toString
 
   "DirectorPreviousAddressList Controller" must {
 

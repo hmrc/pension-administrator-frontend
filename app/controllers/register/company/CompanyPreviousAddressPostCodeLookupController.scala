@@ -16,90 +16,62 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
-
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.{AddressLookupConnector, DataCacheConnector}
-import controllers.actions._
+import com.google.inject.Inject
 import config.FrontendAppConfig
-import forms.register.company.CompanyPreviousAddressPostCodeLookupFormProvider
+import connectors.{AddressLookupConnector, DataCacheConnector}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.PostcodeLookupController
+import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.Mode
+import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.companyPreviousAddressPostCodeLookup
-
-import scala.concurrent.Future
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 
 class CompanyPreviousAddressPostCodeLookupController @Inject()(
-                                                                appConfig: FrontendAppConfig,
+                                                                override val appConfig: FrontendAppConfig,
+                                                                override val cacheConnector: DataCacheConnector,
+                                                                override val addressLookupConnector: AddressLookupConnector,
+                                                                @RegisterCompany override val navigator: Navigator,
                                                                 override val messagesApi: MessagesApi,
-                                                                dataCacheConnector: DataCacheConnector,
-                                                                addressLookupConnector: AddressLookupConnector,
-                                                                @RegisterCompany navigator: Navigator,
                                                                 authenticate: AuthAction,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
-                                                                formProvider: CompanyPreviousAddressPostCodeLookupFormProvider
-                                                              ) extends FrontendController with I18nSupport {
+                                                                formProvider: PostCodeLookupFormProvider
+                                                              ) extends PostcodeLookupController {
 
-  private val form = formProvider()
+  import CompanyPreviousAddressPostCodeLookupController._
 
-  def formWithError(messageKey: String): Form[String] = {
-    form.withError("value", messageKey)
-  }
+  override protected def form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Ok(companyPreviousAddressPostCodeLookup(appConfig, form, mode))
+      get(viewModel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyPreviousAddressPostCodeLookup(appConfig, formWithErrors, mode))),
-        (value) =>
-          addressLookupConnector.addressLookupByPostCode(value).flatMap {
-
-            case Nil => {
-              Future.successful(
-                BadRequest(
-                  companyPreviousAddressPostCodeLookup(
-                    appConfig,
-                    formWithError("companyPreviousAddressPostCodeLookup.error.noResults"),
-                    mode
-                  )
-                )
-              )
-            }
-            case addresses =>
-
-              dataCacheConnector
-                .save(
-                  request.externalId,
-                  CompanyPreviousAddressPostCodeLookupId,
-                  addresses
-                )
-                .map(cacheMap =>
-                  Redirect(
-                    navigator.nextPage(CompanyPreviousAddressPostCodeLookupId, mode)(UserAnswers(cacheMap))
-                  )
-                )
-          }.recoverWith {
-            case _ => Future.successful(
-              BadRequest(
-                companyPreviousAddressPostCodeLookup(
-                  appConfig,
-                  formWithError("companyPreviousAddressPostCodeLookup.error.invalid"),
-                  mode
-                )
-              )
-            )
-          }
-      )
+      post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode), mode)
   }
+
+}
+
+object CompanyPreviousAddressPostCodeLookupController {
+
+  def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
+    routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
+    routes.CompanyPreviousAddressController.onPageLoad(mode),
+    Message("companyPreviousAddressPostCodeLookup.title"),
+    Message("companyPreviousAddressPostCodeLookup.heading"),
+    Some(Message("site.secondaryHeader")),
+    Message("companyPreviousAddressPostCodeLookup.lede"),
+    Message("companyPreviousAddressPostCodeLookup.enterPostcode"),
+    Message("companyPreviousAddressPostCodeLookup.postalCode"),
+    Message("companyPreviousAddressPostCodeLookup.postalCode.hint")
+  )
+
 }

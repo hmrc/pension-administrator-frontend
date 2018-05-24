@@ -41,7 +41,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-  lazy val ivUpliftUrl = loadConfig("urls.ivUpliftUrl")
+  lazy val ivUpliftUrl: String = loadConfig("urls.ivUpliftUrl")
 
   lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val authUrl: String = baseUrl("auth")
@@ -86,5 +86,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   def enrolmentStoreUrl(key: String): String = baseUrl("enrolment-store-proxy") +
     runModeConfiguration.underlying.getString("urls.enrolments") +
     key
+
+  lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
 }

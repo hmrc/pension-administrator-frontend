@@ -16,17 +16,17 @@
 
 package controllers.register.individual
 
-import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
+import audit.{AuditService, PSAStartEvent}
 import config.FrontendAppConfig
+import controllers.actions._
 import identifiers.register.individual.WhatYouWillNeedId
+import javax.inject.Inject
 import models.NormalMode
-import play.api.libs.json.Json
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.Individual
-import utils.{Navigator, UserAnswers}
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
@@ -34,16 +34,18 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           @Individual val navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                          requireData: DataRequiredAction,
+                                          auditService: AuditService) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       Ok(whatYouWillNeed(appConfig))
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData) {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val userAnswers = request.userAnswers.getOrElse(new UserAnswers(Json.obj()))
-      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(userAnswers))
+      PSAStartEvent.sendEvent(auditService)
+      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
   }
+
 }

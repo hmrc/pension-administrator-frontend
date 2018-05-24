@@ -16,8 +16,8 @@
 
 package controllers.register.advisor
 
+import audit.AuditService
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import connectors.DataCacheConnector
@@ -43,7 +43,8 @@ class AdvisorAddressController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: AddressFormProvider,
-                                          val countryOptions: CountryOptions
+                                          val countryOptions: CountryOptions,
+                                          val auditService: AuditService
                                         ) extends ManualAddressController {
 
   protected val form: Form[Address] = formProvider()
@@ -58,11 +59,11 @@ class AdvisorAddressController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(AdvisorAddressId, addressViewModel(mode))
+      get(AdvisorAddressId, AdvisorAddressListId, addressViewModel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdvisorAddressId, addressViewModel(mode), mode)
+      post(AdvisorAddressId, AdvisorAddressListId, addressViewModel(mode), mode)
   }
 }

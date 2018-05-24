@@ -21,22 +21,24 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.directors.CompanyDirectorAddressListFormProvider
+import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
 import models.register.company.directors.DirectorDetails
-import models.{Address, Index, NormalMode, TolerantAddress}
+import models.{Index, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.directors.companyDirectorAddressList
+import viewmodels.Message
+import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
 class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyDirectorAddressListFormProvider()
+  val formProvider = new AddressListFormProvider()
   val form: Form[Int] = formProvider(Seq.empty)
 
   val firstIndex = Index(0)
@@ -75,18 +77,27 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider
+      new DataRequiredActionImpl
     )
 
-  def viewAsString(form: Form[_] = form): String = companyDirectorAddressList(
-    frontendAppConfig,
-    form,
-    NormalMode,
-    firstIndex,
-    director.fullName,
-    addresses
-  )(fakeRequest, messages).toString
+  private lazy val viewModel =
+    AddressListViewModel(
+      postCall = routes.CompanyDirectorAddressListController.onSubmit(NormalMode, firstIndex),
+      manualInputCall = routes.DirectorAddressController.onPageLoad(NormalMode, firstIndex),
+      addresses = addresses,
+      Message("common.selectAddress.title"),
+      Message("common.selectAddress.heading"),
+      Some(Message(director.fullName)),
+      Message("common.selectAddress.text"),
+      Message("common.selectAddress.link")
+    )
+
+  def viewAsString(form: Form[_] = form): String =
+    addressList(
+      frontendAppConfig,
+      form,
+      viewModel
+    )(fakeRequest, messages).toString
 
   "CompanyDirectorAddressList Controller" must {
 

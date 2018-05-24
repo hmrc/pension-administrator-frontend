@@ -69,11 +69,12 @@ class IndividualAddressYearsController @Inject()(
         }
     }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map {
         vm =>
           post(IndividualAddressYearsId, mode, form, vm)
       }
   }
+
 }

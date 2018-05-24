@@ -16,24 +16,73 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.Retrievals
-import controllers.actions._
-import forms.register.company.directors.CompanyDirectorAddressPostCodeLookupFormProvider
-import identifiers.register.company.directors.CompanyDirectorAddressPostCodeLookupId
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.PostcodeLookupController
+import forms.address.PostCodeLookupFormProvider
+import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
+import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, Result}
+import utils.Navigator
 import utils.annotations.CompanyDirector
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.directors.companyDirectorAddressPostCodeLookup
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 
 import scala.concurrent.Future
+
+class CompanyDirectorAddressPostCodeLookupController @Inject()(
+                                                                override val appConfig: FrontendAppConfig,
+                                                                override val cacheConnector: DataCacheConnector,
+                                                                override val addressLookupConnector: AddressLookupConnector,
+                                                                @CompanyDirector override val navigator: Navigator,
+                                                                override val messagesApi: MessagesApi,
+                                                                authenticate: AuthAction,
+                                                                getData: DataRetrievalAction,
+                                                                requireData: DataRequiredAction,
+                                                                formProvider: PostCodeLookupFormProvider
+                                                              ) extends PostcodeLookupController with Retrievals {
+
+  override protected def form: Form[String] = formProvider()
+
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+      viewModel(mode, index).right.map(get)
+  }
+
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+      viewModel(mode, index).right.map(
+        viewModel =>
+          post(CompanyDirectorAddressPostCodeLookupId(index), viewModel, mode)
+      )
+  }
+
+  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], PostcodeLookupViewModel] = {
+    DirectorDetailsId(index).retrieve.right.map {
+      director =>
+        PostcodeLookupViewModel(
+          routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode, index),
+          routes.DirectorAddressController.onPageLoad(mode, index),
+          Message("companyDirectorAddressPostCodeLookup.title"),
+          Message("companyDirectorAddressPostCodeLookup.heading"),
+          Some(Message(director.fullName)),
+          Message("companyDirectorAddressPostCodeLookup.body"),
+          Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
+          Message("companyDirectorAddressPostCodeLookup.postcode"),
+          Message("companyDirectorAddressPostCodeLookup.postcode.hint")
+        )
+    }
+  }
+
+}
+
+/*
 
 class CompanyDirectorAddressPostCodeLookupController @Inject()(
                                                                 appConfig: FrontendAppConfig,
@@ -113,3 +162,4 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
       }
   }
 }
+*/

@@ -17,12 +17,11 @@
 package controllers.register.company
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.company.CompanyAddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
 import models.Mode
 import play.api.data.Form
@@ -42,10 +41,10 @@ class CompanyAddressYearsController @Inject()(
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       formProvider: CompanyAddressYearsFormProvider
+                                       formProvider: AddressYearsFormProvider
                                      ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
-  private val form = formProvider()
+  private val form = formProvider("companyAddressYears.error.required")
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>

@@ -16,15 +16,15 @@
 
 package controllers.register.individual
 
+import audit.AuditService
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
-import identifiers.register.individual.IndividualPreviousAddressId
+import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,7 +43,8 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
-                                                    val countryOptions: CountryOptions
+                                                    val countryOptions: CountryOptions,
+                                                    val auditService: AuditService
                                                    ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
@@ -63,14 +64,14 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     secondaryHeader = Some(secondaryHeader)
   )
 
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(IndividualPreviousAddressId, viewmodel(mode))
+      get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, viewmodel(mode), mode)
+      post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode)
   }
+
 }
