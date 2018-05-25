@@ -140,7 +140,16 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
           fakeAuditService.verifySent(
             AddressEvent(
               FakeAuthAction.externalId,
-              AddressAction.LookupChanged
+              AddressAction.LookupChanged,
+              "Company Previous Address",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
             )
           )
       }

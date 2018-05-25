@@ -142,7 +142,16 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
           fakeAuditService.verifySent(
             AddressEvent(
               FakeAuthAction.externalId,
-              AddressAction.LookupChanged
+              AddressAction.LookupChanged,
+              "Individual Previous Address",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
             )
           )
       }

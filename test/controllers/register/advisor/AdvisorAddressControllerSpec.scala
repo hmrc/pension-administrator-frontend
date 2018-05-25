@@ -108,7 +108,16 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
           fakeAuditService.verifySent(
             AddressEvent(
               FakeAuthAction.externalId,
-              AddressAction.LookupChanged
+              AddressAction.LookupChanged,
+              "Adviser Address",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
             )
           )
       }

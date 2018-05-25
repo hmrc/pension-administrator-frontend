@@ -64,6 +64,7 @@ class AdvisorAddressController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdvisorAddressId, AdvisorAddressListId, addressViewModel(mode), mode)
+      post(AdvisorAddressId, AdvisorAddressListId, addressViewModel(mode), mode, "Adviser Address")
   }
+
 }
