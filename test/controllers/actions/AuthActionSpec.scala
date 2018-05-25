@@ -83,6 +83,16 @@ class AuthActionSpec extends SpecBase {
         val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.confirmationUri))
         status(result) mustBe OK
       }
+
+      "return OK if the user is already enrolled in PODS but coming from duplicate registration" in {
+        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.duplicateRegUri))
+        status(result) mustBe OK
+      }
     }
 
     "called for Company user" must {

@@ -95,8 +95,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   private def alreadyEnrolledInPODS(enrolments: Enrolments) =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
-  private def notConfirmation[A](request: Request[A]): Boolean =
-    request.uri != config.confirmationUri
+  private def notConfirmation[A](request: Request[A]): Boolean = {
+    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri)
+    !confirmationSeq.contains(request.uri)
+  }
 
   private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
