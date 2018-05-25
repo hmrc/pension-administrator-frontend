@@ -57,6 +57,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
+  lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
