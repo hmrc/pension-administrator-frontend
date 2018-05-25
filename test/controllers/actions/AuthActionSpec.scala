@@ -24,9 +24,8 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.SpecBase
-import com.google.inject.Inject
-import config.FrontendAppConfig
 import controllers.routes
+import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -64,15 +63,35 @@ class AuthActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(redirectUrl)
       }
 
-      "redirect to pension scheme frontend if the user is already enrolled in PODS" in {
+      "redirect to pension scheme frontend if the user is already enrolled in PODS and not coming from confirmation" in {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
         val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
+        val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(frontendAppConfig.registerSchemeUrl)
+      }
+
+      "return OK if the user is already enrolled in PODS but coming from confirmation" in {
+        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.confirmationUri))
+        status(result) mustBe OK
+      }
+
+      "return OK if the user is already enrolled in PODS but coming from duplicate registration" in {
+        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.duplicateRegUri))
+        status(result) mustBe OK
       }
     }
 
