@@ -71,7 +71,7 @@ class AuthActionSpec extends SpecBase {
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(frontendAppConfig.registerSchemeUrl)
+        redirectLocation(result) mustBe Some(frontendAppConfig.schemesOverviewUrl)
       }
 
       "return OK if the user is already enrolled in PODS but coming from confirmation" in {
