@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import audit.AuditService
 import javax.inject.Inject
@@ -25,7 +25,7 @@ import controllers.actions._
 import config.FrontendAppConfig
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressListId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import models.{Address, Mode}
 import play.api.mvc.{Action, AnyContent}
 import utils.annotations.Adviser
@@ -34,7 +34,7 @@ import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 
-class AdvisorAddressController @Inject()(
+class AdviserAddressController @Inject()(
                                           override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           override val dataCacheConnector: DataCacheConnector,
@@ -50,21 +50,21 @@ class AdvisorAddressController @Inject()(
   protected val form: Form[Address] = formProvider()
 
   private def addressViewModel(mode: Mode) = ManualAddressViewModel(
-    routes.AdvisorAddressController.onSubmit(mode),
+    routes.AdviserAddressController.onSubmit(mode),
     countryOptions.options,
-    Message("common.advisor.address.title"),
-    Message("common.advisor.address.heading"),
-    Some(Message("common.advisor.secondary.heading"))
+    Message("common.adviser.address.title"),
+    Message("common.adviser.address.heading"),
+    Some(Message("common.adviser.secondary.heading"))
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(AdvisorAddressId, AdvisorAddressListId, addressViewModel(mode))
+      get(AdviserAddressId, AdviserAddressListId, addressViewModel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdvisorAddressId, AdvisorAddressListId, addressViewModel(mode), mode, "Adviser Address")
+      post(AdviserAddressId, AdviserAddressListId, addressViewModel(mode), mode, "Adviser Address")
   }
 
 }

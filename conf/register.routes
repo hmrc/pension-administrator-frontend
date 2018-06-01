@@ -1,6 +1,6 @@
 ->         /company                                 company.Routes
 ->         /individual                              individual.Routes
-->         /advisor                                 advisor.Routes
+->         /adviser                                 adviser.Routes
 
 GET        /business-type                           controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
 POST       /business-type                           controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)

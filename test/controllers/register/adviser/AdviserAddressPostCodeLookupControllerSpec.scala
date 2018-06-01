@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import base.CSRFRequest
 import utils.{FakeNavigator, Navigator}
@@ -35,16 +35,16 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdvisorAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import AdvisorAddressPostCodeLookupController._
-  import AdvisorAddressPostCodeLookupControllerSpec._
+  import AdviserAddressPostCodeLookupController._
+  import AdviserAddressPostCodeLookupControllerSpec._
 
-  "AdvisorAddressPostCodeLookup Controller" must {
+  "AdviserAddressPostCodeLookup Controller" must {
 
     "render the view correctly on a GET request" in {
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode))),
+        implicit app => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
           contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode))(request, messages).toString()
@@ -54,7 +54,7 @@ class AdvisorAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
 
     "redirect to the next page on a POST request" in {
       requestResult(
-        implicit App => addToken(FakeRequest(routes.AdvisorAddressPostCodeLookupController.onSubmit(NormalMode))
+        implicit App => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode))
           .withFormUrlEncodedBody("value" -> validPostcode)),
         (_, result) => {
           status(result) mustBe SEE_OTHER
@@ -65,7 +65,7 @@ class AdvisorAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
   }
 }
 
-object AdvisorAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
+object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()

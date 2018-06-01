@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import audit.{AddressAction, AddressEvent}
 import audit.testdoubles.StubSuccessfulAuditService
@@ -22,7 +22,7 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.advisor.AdvisorAddressId
+import identifiers.register.adviser.AdviserAddressId
 import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -37,11 +37,11 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
+class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
-  import AdvisorAddressControllerSpec._
+  import AdviserAddressControllerSpec._
 
-  "AdvisorAddress Controller" must {
+  "AdviserAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -51,7 +51,7 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(AdvisorAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
+      val validData = Json.obj(AdviserAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -88,8 +88,8 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
 
       val data =
         UserAnswers()
-          .advisorAddress(existingAddress)
-          .advisorAddressList(selectedAddress)
+          .adviserAddress(existingAddress)
+          .adviserAddressList(selectedAddress)
           .dataRetrievalAction
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(
@@ -152,7 +152,7 @@ class AdvisorAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
   }
 }
 
-object AdvisorAddressControllerSpec extends ControllerSpecBase {
+object AdviserAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
@@ -161,17 +161,17 @@ object AdvisorAddressControllerSpec extends ControllerSpecBase {
   val form: Form[Address] = formProvider()
 
   val addressViewModel = ManualAddressViewModel(
-    postCall = routes.AdvisorAddressController.onSubmit(NormalMode),
+    postCall = routes.AdviserAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    title = Message("common.advisor.address.title"),
-    heading = Message("common.advisor.address.heading"),
-    secondaryHeader = Some("common.advisor.secondary.heading")
+    title = Message("common.adviser.address.title"),
+    heading = Message("common.adviser.address.heading"),
+    secondaryHeader = Some("common.adviser.secondary.heading")
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new AdvisorAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
+    new AdviserAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
       countryOptions, fakeAuditService)
 

@@ -17,38 +17,38 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
-@import controllers.register.advisor.routes._
+@import controllers.register.adviser.routes._
 @import models.Mode
-@import models.register.advisor.AdvisorDetails
+@import models.register.adviser.AdviserDetails
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("advisorDetails.title"),
+    title = messages("adviserDetails.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = AdvisorDetailsController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = AdviserDetailsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("advisorDetails.heading", secondaryHeaderKey = Some("advisorDetails.secondary.heading"))
+        @components.heading("adviserDetails.heading", secondaryHeaderKey = Some("adviserDetails.secondary.heading"))
 
         @components.input_text(
             field = form("name"),
-            label = messages("advisorDetails.name")
+            label = messages("adviserDetails.name")
         )
 
         @components.input_text(
             field = form("email"),
-            label = messages("advisorDetails.email")
+            label = messages("adviserDetails.email")
         )
 
         @components.input_text(
             field = form("phone"),
-            label = messages("advisorDetails.phone")
+            label = messages("adviserDetails.phone")
         )
 
         @components.submit_button("site.save_and_continue")

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.advisor.AdvisorAddressControllerSpec.{environment, frontendAppConfig}
-import identifiers.register.advisor.{AdvisorAddressId, AdvisorDetailsId}
+import controllers.register.adviser.AdviserAddressControllerSpec.{environment, frontendAppConfig}
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import models.{Address, CheckMode, NormalMode}
-import models.register.advisor.AdvisorDetails
+import models.register.adviser.AdviserDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils._
@@ -32,10 +32,10 @@ import views.html.check_your_answers
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
-  def postCall = controllers.register.advisor.routes.CheckYourAnswersController.onSubmit()
+  def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit()
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
-  val advDetails = AdvisorDetails("test advisor name", "test@test.com", "01234567890")
+  val advDetails = AdviserDetails("test adviser name", "test@test.com", "01234567890")
   val address = Address(
     "address-line-1",
     "address-line-2",
@@ -46,11 +46,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   )
 
   val validData = Json.obj(
-    AdvisorDetailsId.toString -> advDetails,
-    AdvisorAddressId.toString -> address
+    AdviserDetailsId.toString -> advDetails,
+    AdviserAddressId.toString -> address
   )
 
-  def advisorAddress = Seq(AnswerRow(
+  def adviserAddress = Seq(AnswerRow(
     "cya.label.address",
     Seq(
       s"${address.addressLine1},",
@@ -59,20 +59,20 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       address.country
     ),
     false,
-    controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(CheckMode).url
+    controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url
   ))
 
-  def advisorDetails = Seq(
-    AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(advDetails.phone), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
-  def sections = Seq(AnswerSection(None, advisorDetails ++ advisorAddress))
+  def adviserDetails = Seq(
+    AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(advDetails.phone), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))
+  def sections = Seq(AnswerSection(None, adviserDetails ++ adviserAddress))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, checkYourAnswersFactory)
 
-  def viewAsString() = check_your_answers(frontendAppConfig, sections, Some("common.advisor.secondary.heading"), postCall)(fakeRequest, messages).toString
+  def viewAsString() = check_your_answers(frontendAppConfig, sections, Some("common.adviser.secondary.heading"), postCall)(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
 

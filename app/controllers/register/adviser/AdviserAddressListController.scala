@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
-import identifiers.register.advisor._
+import identifiers.register.adviser._
 import models.requests.DataRequest
 import models.Mode
 import play.api.i18n.MessagesApi
@@ -35,7 +35,7 @@ import viewmodels.address.AddressListViewModel
 
 import scala.concurrent.Future
 
-class AdvisorAddressListController @Inject()(override val appConfig: FrontendAppConfig,
+class AdviserAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                              override val messagesApi: MessagesApi,
                                              override val cacheConnector: DataCacheConnector,
                                              @Adviser override val navigator: Navigator,
@@ -50,22 +50,22 @@ class AdvisorAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, AdvisorAddressListId, AdvisorAddressId, mode))
+      viewmodel(mode).right.map(vm => post(vm, AdviserAddressListId, AdviserAddressId, mode))
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    AdvisorAddressPostCodeLookupId.retrieve.right.map {
+    AdviserAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
-          postCall = routes.AdvisorAddressListController.onSubmit(mode),
-          manualInputCall = routes.AdvisorAddressController.onPageLoad(mode),
+          postCall = routes.AdviserAddressListController.onSubmit(mode),
+          manualInputCall = routes.AdviserAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("common.selectAddress.title"),
           Message("common.selectAddress.heading"),
-          Some(Message("common.advisor.secondary.heading")),
+          Some(Message("common.adviser.secondary.heading")),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )
-    }.left.map(_ => Future.successful(Redirect(routes.AdvisorAddressPostCodeLookupController.onPageLoad(mode))))
+    }.left.map(_ => Future.successful(Redirect(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))))
   }
 }

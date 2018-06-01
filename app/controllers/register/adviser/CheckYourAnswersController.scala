@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import identifiers.register.advisor.CheckYourAnswersId
+import identifiers.register.adviser.CheckYourAnswersId
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent}
 import utils.annotations.Adviser
@@ -41,8 +41,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val helper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-      val sections = Seq(AnswerSection(None, helper.advisorDetails ++ helper.advisorAddress))
-      Ok(check_your_answers(appConfig, sections, Some("common.advisor.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
+      val sections = Seq(AnswerSection(None, helper.adviserDetails ++ helper.adviserAddress))
+      Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {

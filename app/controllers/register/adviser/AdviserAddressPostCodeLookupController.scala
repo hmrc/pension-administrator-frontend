@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import javax.inject.Inject
 
@@ -24,7 +24,7 @@ import controllers.actions._
 import config.FrontendAppConfig
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.advisor.AdvisorAddressPostCodeLookupId
+import identifiers.register.adviser.AdviserAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
 import utils.Navigator
@@ -32,7 +32,7 @@ import utils.annotations.Adviser
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 
-class AdvisorAddressPostCodeLookupController @Inject()(
+class AdviserAddressPostCodeLookupController @Inject()(
                                                         override val appConfig: FrontendAppConfig,
                                                         override val cacheConnector: DataCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
@@ -46,7 +46,7 @@ class AdvisorAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  import AdvisorAddressPostCodeLookupController._
+  import AdviserAddressPostCodeLookupController._
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -55,22 +55,22 @@ class AdvisorAddressPostCodeLookupController @Inject()(
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdvisorAddressPostCodeLookupId, viewModel(mode), mode)
+      post(AdviserAddressPostCodeLookupId, viewModel(mode), mode)
   }
 }
 
-object AdvisorAddressPostCodeLookupController {
+object AdviserAddressPostCodeLookupController {
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
-    controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onSubmit(mode),
-    controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(mode),
-    Message("common.advisor.address.title"),
-    Message("common.advisor.address.heading"),
-    Some(Message("common.advisor.secondary.heading")),
-    Message("advisorAddressPostCodeLookup.hint"),
-    Message("advisorAddressPostCodeLookup.enterPostcode"),
-    Message("advisorAddressPostCodeLookup.formLabel"),
-    Message("advisorAddressPostCodeLookup.formHint")
+    controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
+    controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
+    Message("common.adviser.address.title"),
+    Message("common.adviser.address.heading"),
+    Some(Message("common.adviser.secondary.heading")),
+    Message("adviserAddressPostCodeLookup.hint"),
+    Message("adviserAddressPostCodeLookup.enterPostcode"),
+    Message("adviserAddressPostCodeLookup.formLabel"),
+    Message("adviserAddressPostCodeLookup.formHint")
   )
 }
 

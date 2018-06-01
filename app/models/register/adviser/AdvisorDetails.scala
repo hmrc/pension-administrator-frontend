@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package identifiers.register.advisor
+package models.register.adviser
 
-import identifiers._
-import models.TolerantAddress
+import play.api.libs.json._
 
-case object AdvisorAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
-  override def toString: String = "advisorAddressPostCodeLookup"
+case class AdviserDetails (name: String, email: String, phone: String)
+
+object AdviserDetails {
+  implicit val format = Json.format[AdviserDetails]
 }

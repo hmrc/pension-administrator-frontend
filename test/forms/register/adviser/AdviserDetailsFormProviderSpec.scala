@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package forms.register.advisor
+package forms.register.adviser
 
 import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 
-class AdvisorDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours {
+class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours {
 
-  val form = new AdvisorDetailsFormProvider()()
+  val form = new AdviserDetailsFormProvider()()
 
   ".name" must {
 
     val fieldName = "name"
-    val requiredKey = "advisorDetails.error.name.required"
-    val lengthKey = "advisorDetails.error.name.length"
-    val maxLength = AdvisorDetailsFormProvider.nameLength
+    val requiredKey = "adviserDetails.error.name.required"
+    val lengthKey = "adviserDetails.error.name.length"
+    val maxLength = AdviserDetailsFormProvider.nameLength
 
     behave like fieldThatBindsValidData(
       form,

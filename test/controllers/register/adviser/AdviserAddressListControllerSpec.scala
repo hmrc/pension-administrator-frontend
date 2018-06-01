@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import base.CSRFRequest
 import play.api.libs.json.Json
@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import models.{NormalMode, TolerantAddress}
 import controllers.ControllerSpecBase
 import forms.address.AddressListFormProvider
-import identifiers.register.advisor.AdvisorAddressPostCodeLookupId
+import identifiers.register.adviser.AdviserAddressPostCodeLookupId
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -38,18 +38,18 @@ import views.html.address.addressList
 
 import scala.concurrent.Future
 
-class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import AdvisorAddressListControllerSpec._
+  import AdviserAddressListControllerSpec._
 
-  "Advisor Address List Controller" must {
+  "Adviser Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
       val viewModel: AddressListViewModel = addressListViewModel(addresses)
       val form = new AddressListFormProvider()(viewModel.addresses)
 
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onPageLoad(NormalMode))), dataRetrievalAction,
+        implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onPageLoad(NormalMode))), dataRetrievalAction,
         (request, result) => {
           status(result) mustBe OK
           contentAsString(result) mustBe addressList(frontendAppConfig, form, addressListViewModel(addresses))(request, messages).toString()
@@ -57,12 +57,12 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
       )
     }
 
-    "redirect to Advisor Address Post Code Lookup if no address data on a GET request" in {
+    "redirect to Adviser Address Post Code Lookup if no address data on a GET request" in {
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onPageLoad(NormalMode))), getEmptyData,
+        implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onPageLoad(NormalMode))), getEmptyData,
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
         }
       )
     }
@@ -70,7 +70,7 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
     "redirect to Session Expired controller when no session data exists on a GET request" in {
 
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onPageLoad(NormalMode))), dontGetAnyData,
+        implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onPageLoad(NormalMode))), dontGetAnyData,
         (_, result) => {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -81,18 +81,18 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
     "redirect to the next page on POST of valid data" in {
 
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onSubmit(NormalMode))
+        implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onSubmit(NormalMode))
           .withFormUrlEncodedBody(("value", "0"))), dataRetrievalAction,
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.AdvisorAddressController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.AdviserAddressController.onPageLoad(NormalMode).url)
         }
       )
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onSubmit(NormalMode))
+        implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onSubmit(NormalMode))
           .withFormUrlEncodedBody(("value", "0"))), dontGetAnyData,
         (_, result) => {
           status(result) mustBe SEE_OTHER
@@ -101,21 +101,21 @@ class AdvisorAddressListControllerSpec extends ControllerSpecBase with CSRFReque
       )
     }
 
-    "redirect to Advisor Address Post Code Lookup if no address data on a POST request" in {
+    "redirect to Adviser Address Post Code Lookup if no address data on a POST request" in {
       requestResult(
-        implicit app => addToken(FakeRequest(routes.AdvisorAddressListController.onSubmit(NormalMode))
+        implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onSubmit(NormalMode))
           .withFormUrlEncodedBody(("value", "0"))), getEmptyData,
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
         }
       )
     }
   }
 }
 
-object AdvisorAddressListControllerSpec extends ControllerSpecBase {
-  val onwardRoute = routes.AdvisorAddressController.onPageLoad(NormalMode)
+object AdviserAddressListControllerSpec extends ControllerSpecBase {
+  val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
   private val addresses = Seq(
     TolerantAddress(
       Some("Address 1 Line 1"),
@@ -137,19 +137,19 @@ object AdvisorAddressListControllerSpec extends ControllerSpecBase {
 
   private val data =
     UserAnswers(Json.obj())
-      .set(AdvisorAddressPostCodeLookupId)(addresses)
+      .set(AdviserAddressPostCodeLookupId)(addresses)
       .asOpt.map(_.json)
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
-      routes.AdvisorAddressListController.onSubmit(NormalMode),
-      routes.AdvisorAddressController.onPageLoad(NormalMode),
+      routes.AdviserAddressListController.onSubmit(NormalMode),
+      routes.AdviserAddressController.onPageLoad(NormalMode),
       addresses,
       Message("common.selectAddress.title"),
       Message("common.selectAddress.heading"),
-      Some(Message("common.advisor.secondary.heading")),
+      Some(Message("common.adviser.secondary.heading")),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

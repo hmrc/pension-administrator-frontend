@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import javax.inject.Inject
 
@@ -24,17 +24,17 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.register.advisor.AdvisorDetailsFormProvider
-import identifiers.register.advisor.AdvisorDetailsId
+import forms.register.adviser.AdviserDetailsFormProvider
+import identifiers.register.adviser.AdviserDetailsId
 import models.Mode
-import models.register.advisor.AdvisorDetails
+import models.register.adviser.AdviserDetails
 import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
-import views.html.register.advisor.advisorDetails
+import views.html.register.adviser.adviserDetails
 
 import scala.concurrent.Future
 
-class AdvisorDetailsController @Inject() (
+class AdviserDetailsController @Inject() (
                                            appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
                                            dataCacheConnector: DataCacheConnector,
@@ -42,28 +42,28 @@ class AdvisorDetailsController @Inject() (
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           formProvider: AdvisorDetailsFormProvider
+                                           formProvider: AdviserDetailsFormProvider
                                       ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AdvisorDetailsId) match {
+      val preparedForm = request.userAnswers.get(AdviserDetailsId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(advisorDetails(appConfig, preparedForm, mode))
+      Ok(adviserDetails(appConfig, preparedForm, mode))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(advisorDetails(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save(request.externalId, AdvisorDetailsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AdvisorDetailsId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save(request.externalId, AdviserDetailsId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(AdviserDetailsId, mode)(new UserAnswers(cacheMap))))
     )
   }
 }

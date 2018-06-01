@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package models.register.advisor
+package identifiers.register.adviser
 
-import play.api.libs.json._
+import identifiers._
 
-case class AdvisorDetails (name: String, email: String, phone: String)
-
-object AdvisorDetails {
-  implicit val format = Json.format[AdvisorDetails]
+case object CheckYourAnswersId extends Identifier {
+  override def toString: String = "checkYourAnswers"
 }

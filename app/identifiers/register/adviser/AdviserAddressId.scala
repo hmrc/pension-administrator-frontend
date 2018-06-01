@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package identifiers.register.advisor
+package identifiers.register.adviser
 
-import identifiers.TypedIdentifier
-import models.TolerantAddress
+import identifiers._
+import models.Address
 
-case object AdvisorAddressListId extends TypedIdentifier[TolerantAddress] {
-  override def toString: String = "advisorAddressList"
+case object AdviserAddressId extends TypedIdentifier[Address] {
+  override def toString: String = "adviserAddress"
 }

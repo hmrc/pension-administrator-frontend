@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.advisor
+package controllers.register.adviser
 
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -23,27 +23,27 @@ import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import play.api.test.Helpers._
-import forms.register.advisor.AdvisorDetailsFormProvider
-import identifiers.register.advisor.AdvisorDetailsId
+import forms.register.adviser.AdviserDetailsFormProvider
+import identifiers.register.adviser.AdviserDetailsId
 import models.NormalMode
-import models.register.advisor.AdvisorDetails
-import views.html.register.advisor.advisorDetails
+import models.register.adviser.AdviserDetails
+import views.html.register.adviser.adviserDetails
 import controllers.ControllerSpecBase
 
-class AdvisorDetailsControllerSpec extends ControllerSpecBase {
+class AdviserDetailsControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new AdvisorDetailsFormProvider()
+  val formProvider = new AdviserDetailsFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new AdvisorDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new AdviserDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = advisorDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  "AdvisorDetails Controller" must {
+  "AdviserDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -53,16 +53,16 @@ class AdvisorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(AdvisorDetailsId.toString -> AdvisorDetails("test advisor name", "test@test.com", "01234567890"))
+      val validData = Json.obj(AdviserDetailsId.toString -> AdviserDetails("test adviser name", "test@test.com", "01234567890"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(AdvisorDetails("test advisor name", "test@test.com", "01234567890")))
+      contentAsString(result) mustBe viewAsString(form.fill(AdviserDetails("test adviser name", "test@test.com", "01234567890")))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "test@test.com"), ("phone", "01234567890"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test adviser name"), ("email", "test@test.com"), ("phone", "01234567890"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -71,8 +71,8 @@ class AdvisorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "@test.com"), ("phone", "01234567890"))
-      val boundForm = form.bind(Map("name" -> "test advisor name", "email" -> "@test.com", "phone" -> "01234567890"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test adviser name"), ("email", "@test.com"), ("phone", "01234567890"))
+      val boundForm = form.bind(Map("name" -> "test adviser name", "email" -> "@test.com", "phone" -> "01234567890"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -88,7 +88,7 @@ class AdvisorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test advisor name"), ("email", "test@test.com"), ("phone", "01234567890"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test adviser name"), ("email", "test@test.com"), ("phone", "01234567890"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
