@@ -24,10 +24,12 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.routes
+import play.api.Configuration
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -63,10 +65,21 @@ class AuthActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(redirectUrl)
       }
 
-      "redirect to pension scheme frontend if the user is already enrolled in PODS and not coming from confirmation" in {
+      "redirect to pension scheme frontend if the user is already enrolled in PODS, not coming from confirmation and scheme overview toggle is disabled" in {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
-        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig())
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(frontendAppConfig.registerSchemeUrl)
+      }
+
+      "redirect to scheme overview page if the user is already enrolled in PODS, not coming from confirmation and scheme overview toggle is enabled" in {
+        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(true))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -200,16 +213,22 @@ class AuthActionSpec extends SpecBase {
 }
 
 object AuthActionSpec {
-  def fakeAuthConnector(stubbedRetrievalResult: Future[_]) = new AuthConnector {
+  private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) = new AuthConnector {
 
     def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = {
       stubbedRetrievalResult.map(_.asInstanceOf[A])
     }
   }
 
-  def authRetrievals(confidenceLevel: ConfidenceLevel = ConfidenceLevel.L50,
-                     affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                     enrolments: Enrolments = Enrolments(Set())) = Future.successful(new ~(new ~(new ~(new ~(
+  private def appConfig(isSchemeOverviewEnabled: Boolean = false) = {
+    val application = new GuiceApplicationBuilder()
+      .configure(Configuration("microservice.services.features.scheme-overview" -> isSchemeOverviewEnabled))
+    application.injector.instanceOf[FrontendAppConfig]
+  }
+
+  private def authRetrievals(confidenceLevel: ConfidenceLevel = ConfidenceLevel.L50,
+                             affinityGroup: AffinityGroup = AffinityGroup.Organisation,
+                             enrolments: Enrolments = Enrolments(Set())) = Future.successful(new ~(new ~(new ~(new ~(
     Some("id"), confidenceLevel),
     Some(affinityGroup)),
     Some("nino")),
@@ -217,7 +236,7 @@ object AuthActionSpec {
   )
 
   class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad() = authAction { request => Ok }
+    def onPageLoad() = authAction { _ => Ok }
   }
 
 }
