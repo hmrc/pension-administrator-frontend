@@ -16,14 +16,14 @@
 
 package connectors
 
-import javax.inject.Singleton
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import javax.inject.Singleton
 import models._
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,6 +69,9 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
+      case Failure(ex: NotFoundException) =>
+        Logger.warn("Organisation not found with registerWithIdOrganisation", ex)
+        ex
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithIdOrganisation", ex)
         ex
@@ -94,6 +97,9 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
+      case Failure(ex: NotFoundException) =>
+        Logger.warn("Individual not found with registerWithIdIndividual", ex)
+        ex
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithIdIndividual", ex)
         ex
