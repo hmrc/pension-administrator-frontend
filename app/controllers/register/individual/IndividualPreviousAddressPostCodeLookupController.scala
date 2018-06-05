@@ -71,8 +71,7 @@ object IndividualPreviousAddressPostCodeLookupController {
     Some(Message("site.secondaryHeader")),
     Message("individualPreviousAddressPostCodeLookup.hint"),
     Message("individualPreviousAddressPostCodeLookup.enterPostcode"),
-    Message("individualPreviousAddressPostCodeLookup.formLabel"),
-    Message("individualPreviousAddressPostCodeLookup.formHint")
+    Message("individualPreviousAddressPostCodeLookup.formLabel")
   )
 
 }

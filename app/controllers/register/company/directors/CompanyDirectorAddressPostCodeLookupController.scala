@@ -74,92 +74,9 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
           Some(Message(director.fullName)),
           Message("companyDirectorAddressPostCodeLookup.body"),
           Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
-          Message("companyDirectorAddressPostCodeLookup.postcode"),
-          Message("companyDirectorAddressPostCodeLookup.postcode.hint")
+          Message("companyDirectorAddressPostCodeLookup.postcode")
         )
     }
   }
 
 }
-
-/*
-
-class CompanyDirectorAddressPostCodeLookupController @Inject()(
-                                                                appConfig: FrontendAppConfig,
-                                                                override val messagesApi: MessagesApi,
-                                                                dataCacheConnector: DataCacheConnector,
-                                                                addressLookupConnector: AddressLookupConnector,
-                                                                @CompanyDirector navigator: Navigator,
-                                                                authenticate: AuthAction,
-                                                                getData: DataRetrievalAction,
-                                                                requireData: DataRequiredAction,
-                                                                formProvider: CompanyDirectorAddressPostCodeLookupFormProvider
-                                                              ) extends FrontendController with Retrievals with I18nSupport {
-
-  private val form = formProvider()
-
-  def formWithError(messageKey: String): Form[String] = {
-    form.withError("value", messageKey)
-  }
-
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        Future.successful(Ok(companyDirectorAddressPostCodeLookup(appConfig, form, mode, index, directorName)))
-      }
-  }
-
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyDirectorAddressPostCodeLookup(appConfig, formWithErrors, mode, index, directorName))),
-          (value) =>
-            addressLookupConnector.addressLookupByPostCode(value).flatMap {
-              case Nil =>
-                Future.successful(
-                  BadRequest(
-                    companyDirectorAddressPostCodeLookup(
-                      appConfig,
-                      formWithError("companyDirectorAddressPostCodeLookup.error.noResults"),
-                      mode,
-                      index,
-                      directorName
-                    )
-                  )
-                )
-
-
-              case addresses =>
-
-                dataCacheConnector
-                  .save(
-                    request.externalId,
-                    CompanyDirectorAddressPostCodeLookupId(index),
-                    addresses
-                  )
-                  .map(cacheMap =>
-                    Redirect(
-                      navigator.nextPage(CompanyDirectorAddressPostCodeLookupId(index), mode)(UserAnswers(cacheMap))
-                    )
-                  )
-            }.recoverWith{
-              case _ =>
-                Future.successful(
-                  BadRequest(
-                    companyDirectorAddressPostCodeLookup(
-                      appConfig,
-                      formWithError("companyDirectorAddressPostCodeLookup.error.invalid"),
-                      mode,
-                      index,
-                      directorName
-                    )
-                  )
-                )
-            }
-        )
-      }
-  }
-}
-*/
