@@ -439,6 +439,7 @@ duplicateRegistration.body = Someone from your organisation has already register
 individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = Your date of birth
 
+submissionInvalid.title = There has been a problem sending your details
 submissionInvalid.heading = There has been a problem sending your details
 submissionInvalid.body1 = Your details could not be submitted. None of your data has been lost.
 submissionInvalid.body2 = You should use the 'Get help with this page' link below to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.

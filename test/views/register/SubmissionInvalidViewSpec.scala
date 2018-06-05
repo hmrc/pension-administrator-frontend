@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package views.register
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import views.behaviours.ViewBehaviours
+import views.html.register.submissionInvalid
 
-@main_template(
-    title = messages("submissionInvalid.title"),
-    appConfig = appConfig,
-    bodyClasses = None
-) {
+class SubmissionInvalidViewSpec extends ViewBehaviours {
 
-    <h1 class="heading-xlarge">@messages("submissionInvalid.heading")</h1>
+  val messageKeyPrefix = "submissionInvalid"
 
-    <p>@messages("submissionInvalid.body1")</p>
+  def createView = () => submissionInvalid(frontendAppConfig)(fakeRequest, messages)
 
-    <p>@messages("submissionInvalid.body2")</p>
-
+  "SubmissionInvalid view" must {
+    behave like normalPage(createView, messageKeyPrefix, "body1", "body2")
+  }
 }
