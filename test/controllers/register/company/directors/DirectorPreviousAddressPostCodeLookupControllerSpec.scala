@@ -75,8 +75,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       Some(Message(directorName)),
       Message("directorPreviousAddressPostCodeLookup.text"),
       Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
-      Message("directorPreviousAddressPostCodeLookup.input.text"),
-      Message("directorPreviousAddressPostCodeLookup.input.hint")
+      Message("directorPreviousAddressPostCodeLookup.input.text")
     )
 
   private def viewAsString(form: Form[_] = form) =

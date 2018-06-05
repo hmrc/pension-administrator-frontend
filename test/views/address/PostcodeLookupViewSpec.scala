@@ -37,8 +37,7 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     Some("test.sub-heading"),
     "test.hint",
     "test.enter-postcode",
-    "test.form-label",
-    "test.form-hint"
+    "test.form-label"
   )
 
   private def createView: () => HtmlFormat.Appendable =
