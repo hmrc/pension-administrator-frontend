@@ -32,7 +32,7 @@ import models.requests.{AuthenticatedRequest, DataRequest}
 import play.api.libs.json.Writes
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, BadRequestException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -124,18 +124,21 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
         }
       }
 
-      "set cancel link correctly to Individual What You Will Need page" in {
-        val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-        val result = controller(userType = UserType.Individual).onSubmit()(fakeRequest)
+      "set cancel link to What You Will Need page" when {
 
-        contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
-      }
+        "Individual" in {
+          val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+          val result = controller(userType = UserType.Individual).onSubmit()(fakeRequest)
 
-      "set cancel link correctly to Company What You Will Need page" in {
-        val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-        val result = controller().onSubmit()(fakeRequest)
+          contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
+        }
 
-        contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
+        "Company" in {
+          val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+          val result = controller().onSubmit()(fakeRequest)
+
+          contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
+        }
       }
 
       "save the PSA Subscription response on a valid request" in {
@@ -152,6 +155,16 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
+      }
+
+      "redirect to Submission Invalid" when {
+        "response is BAD_REQUEST from downstream" in {
+          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
+        }
       }
     }
   }
@@ -190,6 +203,14 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
         (answers: UserAnswers)
         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidBusinessPartnerException())
+    }
+  }
+
+  private val submissionInvalidPensionsSchemeConnector = new PensionsSchemeConnector {
+    override def registerPsa
+        (answers: UserAnswers)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+      Future.failed(InvalidPayloadException())
     }
   }
 

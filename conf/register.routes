@@ -22,3 +22,5 @@ GET        /confirmation                            controllers.register.Confirm
 POST       /confirmation                            controllers.register.ConfirmationController.onSubmit()
 
 GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad()
+
+GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
