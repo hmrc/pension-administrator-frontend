@@ -17,7 +17,6 @@
 package controllers.register
 
 import javax.inject.Inject
-
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
@@ -30,7 +29,7 @@ import models.{ExistingPSA, NormalMode, UserType}
 import play.api.Logger
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
@@ -93,6 +92,8 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
             }) recoverWith {
+              case _: InvalidPayloadException =>
+                Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
               case _: InvalidBusinessPartnerException =>
                 Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
               case _ =>
