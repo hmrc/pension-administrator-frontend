@@ -65,7 +65,7 @@ class AuthActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(redirectUrl)
       }
 
-      "redirect to pension scheme frontend if the user is already enrolled in PODS and not coming from confirmation and scheme overview toggle is disabled" in {
+      "redirect to pension scheme frontend if the user is already enrolled in PODS, not coming from confirmation and scheme overview toggle is disabled" in {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig())
@@ -76,7 +76,7 @@ class AuthActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(frontendAppConfig.registerSchemeUrl)
       }
 
-      "redirect to scheme overview page if the user is already enrolled in PODS and not coming from confirmation and scheme overview toggle is enabled" in {
+      "redirect to scheme overview page if the user is already enrolled in PODS, not coming from confirmation and scheme overview toggle is enabled" in {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(true))
