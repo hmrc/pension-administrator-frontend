@@ -70,8 +70,7 @@ object CompanyPreviousAddressPostCodeLookupController {
     Some(Message("site.secondaryHeader")),
     Message("companyPreviousAddressPostCodeLookup.lede"),
     Message("companyPreviousAddressPostCodeLookup.enterPostcode"),
-    Message("companyPreviousAddressPostCodeLookup.postalCode"),
-    Message("companyPreviousAddressPostCodeLookup.postalCode.hint")
+    Message("companyPreviousAddressPostCodeLookup.postalCode")
   )
 
 }

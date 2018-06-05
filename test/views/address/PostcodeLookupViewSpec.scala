@@ -26,7 +26,7 @@ import views.html.address.postcodeLookup
 
 class PostcodeLookupViewSpec extends StringViewBehaviours {
 
-  private val messageKeyPrifix = "test"
+  private val messageKeyPrefix = "test"
   val form = new PostCodeLookupFormProvider()()
 
   private val viewModel = PostcodeLookupViewModel(
@@ -37,8 +37,7 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     Some("test.sub-heading"),
     "test.hint",
     "test.enter-postcode",
-    "test.form-label",
-    "test.form-hint"
+    "test.form-label"
   )
 
   private def createView: () => HtmlFormat.Appendable =
@@ -56,7 +55,7 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     )(fakeRequest, messages)
 
   "PostcodeLookup view" must {
-    behave like normalPage(createView, messageKeyPrifix)
+    behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)
 
@@ -67,7 +66,7 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
       assertContainsText(doc, viewModel.hint.resolve)
     }
 
-    behave like stringPage(createViewUsingForm, messageKeyPrifix, "", Some("test.form-hint"), "form-label")
+    behave like stringPage(createViewUsingForm, messageKeyPrefix, "", None, "form-label")
 
     behave like pageWithSubmitButton(createView)
   }

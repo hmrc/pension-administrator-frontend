@@ -86,8 +86,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
     Some("test-sub-heading"),
     "test-hint",
     "test-enter-postcode",
-    "test-form-label",
-    "test-form-hint"
+    "test-form-label"
   )
 
   import PostcodeLookupControllerSpec._

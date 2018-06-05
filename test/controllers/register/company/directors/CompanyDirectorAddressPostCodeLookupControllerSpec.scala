@@ -82,8 +82,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
     Some(Message(directorName)),
     Message("companyDirectorAddressPostCodeLookup.body"),
     Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
-    Message("companyDirectorAddressPostCodeLookup.postcode"),
-    Message("companyDirectorAddressPostCodeLookup.postcode.hint")
+    Message("companyDirectorAddressPostCodeLookup.postcode")
   )
 
   private def viewAsString(form: Form[_] = form) =
