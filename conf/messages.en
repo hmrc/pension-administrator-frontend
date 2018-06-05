@@ -420,7 +420,6 @@ advisorAddressPostCodeLookup.hint = This is usually the registered business addr
 advisorAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
 advisorAddressPostCodeLookup.formLabel = Postcode
 advisorAddressPostCodeLookup.formHint = Example, NE12 8ER
-advisorAddressPostCodeLookup.checkYourAnswersLabel = advisorAddressPostCodeLookup
 
 confirmation.newPSA.title = Your registration to become a Pension Scheme Administrator has been successful
 confirmation.existingPSA.title=You are now registered as a Pension Scheme Administrator on the new service.
@@ -442,4 +441,4 @@ individualDateOfBirth.heading = Your date of birth
 submissionInvalid.title = There has been a problem sending your details
 submissionInvalid.heading = There has been a problem sending your details
 submissionInvalid.body1 = Your details could not be submitted. None of your data has been lost.
-submissionInvalid.body2 = You should use the 'Get help with this page' link below to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.
+submissionInvalid.body2 = You should {0} get help with this page {1} to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.

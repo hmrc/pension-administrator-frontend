@@ -15,8 +15,13 @@
  *@
 
 @import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
 
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+
+    @openLink = { <a href="@appConfig.reportAProblemNonJSUrl"> }
+
+    @closeLink = { </a> }
 
 @main_template(
     title = messages("submissionInvalid.title"),
@@ -28,6 +33,6 @@
 
     <p>@messages("submissionInvalid.body1")</p>
 
-    <p>@messages("submissionInvalid.body2")</p>
+    <p>@Html(messages("submissionInvalid.body2", openLink, closeLink))</p>
 
 }
