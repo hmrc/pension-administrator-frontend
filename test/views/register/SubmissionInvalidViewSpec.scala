@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package viewmodels.address
+package views.register
 
-import play.api.mvc.Call
-import viewmodels.Message
+import views.behaviours.ViewBehaviours
+import views.html.register.submissionInvalid
 
-case class PostcodeLookupViewModel(
-                                    postCall: Call,
-                                    manualInputCall: Call,
-                                    title: Message,
-                                    heading: Message,
-                                    subHeading: Option[Message],
-                                    hint: Message,
-                                    enterPostcode: Message,
-                                    formLabel: Message
-                                  )
+class SubmissionInvalidViewSpec extends ViewBehaviours {
+
+  val messageKeyPrefix = "submissionInvalid"
+
+  def createView = () => submissionInvalid(frontendAppConfig)(fakeRequest, messages)
+
+  "SubmissionInvalid view" must {
+    behave like normalPage(createView, messageKeyPrefix, "body1")
+  }
+}

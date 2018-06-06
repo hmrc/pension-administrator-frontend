@@ -69,8 +69,7 @@ object AdviserAddressPostCodeLookupController {
     Some(Message("common.adviser.secondary.heading")),
     Message("adviserAddressPostCodeLookup.hint"),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
-    Message("adviserAddressPostCodeLookup.formLabel"),
-    Message("adviserAddressPostCodeLookup.formHint")
+    Message("adviserAddressPostCodeLookup.formLabel")
   )
 }
 

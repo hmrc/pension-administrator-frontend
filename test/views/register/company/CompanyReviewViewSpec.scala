@@ -44,7 +44,7 @@ class CompanyReviewViewSpec extends ViewBehaviours {
 
   "have link to edit company details" in {
     createView must haveLink(
-      routes.CompanyDetailsController.onPageLoad(CheckMode).url, "edit-company-details"
+      routes.CheckYourAnswersController.onPageLoad.url, "edit-company-details"
     )
   }
 

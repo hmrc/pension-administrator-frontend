@@ -16,7 +16,6 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.routes._
 @import models.{Mode, CheckMode}
 @import controllers.register.company.routes._
 
@@ -35,7 +34,7 @@
         heading = companyName,
         linkMessage = "companyReview.editLink",
         linkId = "edit-company-details",
-        link = CompanyDetailsController.onPageLoad(CheckMode)
+        link = CheckYourAnswersController.onPageLoad
     )
 
     @components.review_section(
