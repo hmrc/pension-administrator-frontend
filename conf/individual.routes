@@ -42,7 +42,7 @@ POST        /change-previous-address-results        controllers.register.individ
 GET         /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onPageLoad()
 POST        /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
-GET         /address-correspondence                 controllers.register.individual.IndividualCorrespondenceAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /address-correspondence                 controllers.register.individual.IndividualCorrespondenceAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /change-address-correspondence          controllers.register.individual.IndividualCorrespondenceAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-address-correspondence          controllers.register.individual.IndividualCorrespondenceAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+GET         /what-is-the-contact-address                 controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-is-the-contact-address                 controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /change-what-is-the-contact-address          controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-what-is-the-contact-address          controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
