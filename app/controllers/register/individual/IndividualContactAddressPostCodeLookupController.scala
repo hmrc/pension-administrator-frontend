@@ -22,7 +22,7 @@ import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
+import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -33,7 +33,7 @@ import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 
 @Singleton
-class IndividualCorrespondenceAddressPostCodeLookupController @Inject()(
+class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                    @Individual override val navigator: Navigator,
                                                                    override val appConfig: FrontendAppConfig,
                                                                    override val cacheConnector: DataCacheConnector,
@@ -45,7 +45,7 @@ class IndividualCorrespondenceAddressPostCodeLookupController @Inject()(
                                                                    formProvider: PostCodeLookupFormProvider
                                                                  ) extends PostcodeLookupController {
 
-  import IndividualCorrespondenceAddressPostCodeLookupController._
+  import IndividualContactAddressPostCodeLookupController._
 
   override protected def form: Form[String] = formProvider()
 
@@ -56,16 +56,16 @@ class IndividualCorrespondenceAddressPostCodeLookupController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressPostCodeLookupId, viewModel(mode), mode)
+      post(IndividualContactAddressPostCodeLookupId, viewModel(mode), mode)
   }
 
 }
 
-object IndividualCorrespondenceAddressPostCodeLookupController {
+object IndividualContactAddressPostCodeLookupController {
 
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
-    routes.IndividualCorrespondenceAddressPostCodeLookupController.onSubmit(mode),
-    routes.IndividualCorrespondenceAddressPostCodeLookupController.onPageLoad(mode),
+    routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
+    routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode),
     Message("individualCorrespondenceAddressPostCodeLookup.title"),
     Message("individualCorrespondenceAddressPostCodeLookup.heading"),
     Some(Message("site.secondaryHeader")),

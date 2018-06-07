@@ -19,6 +19,6 @@ package identifiers.register.individual
 import identifiers.TypedIdentifier
 import models.TolerantAddress
 
-case object IndividualCorrespondenceAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]]{
-  override def toString: String = "individualCorrespondenceAddressPostCodeLookup"
+case object IndividualContactAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]]{
+  override def toString: String = "individualContactAddressPostCodeLookup"
 }

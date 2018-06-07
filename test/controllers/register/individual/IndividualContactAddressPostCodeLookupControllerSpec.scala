@@ -34,14 +34,14 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Individual
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualCorrespondenceAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import IndividualCorrespondenceAddressPostCodeLookupController._
-  import IndividualCorrespondenceAddressPostCodeLookupControllerSpec._
+  import IndividualContactAddressPostCodeLookupController._
+  import IndividualContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
     requestResult(
-      implicit app => addToken(FakeRequest(routes.IndividualCorrespondenceAddressPostCodeLookupController.onPageLoad(NormalMode))),
+      implicit app => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
         contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode))(request, messages).toString()
@@ -51,7 +51,7 @@ class IndividualCorrespondenceAddressPostCodeLookupControllerSpec extends Contro
 
   "redirect to the next page on a POST request" in {
     requestResult(
-      implicit App => addToken(FakeRequest(routes.IndividualCorrespondenceAddressPostCodeLookupController.onSubmit(NormalMode))
+      implicit App => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onSubmit(NormalMode))
         .withFormUrlEncodedBody("value" -> validPostcode)),
       (_, result) => {
         status(result) mustBe SEE_OTHER
@@ -61,12 +61,12 @@ class IndividualCorrespondenceAddressPostCodeLookupControllerSpec extends Contro
   }
 }
 
-object IndividualCorrespondenceAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
+object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val validPostcode = "ZZ1 1ZZ"
 
-  private val onwardRoute = controllers.register.individual.routes.IndividualCorrespondenceAddressPostCodeLookupController.onPageLoad(NormalMode)
+  private val onwardRoute = controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val address = TolerantAddress(
     Some("test-address-line-1"),
