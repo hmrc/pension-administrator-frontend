@@ -21,7 +21,7 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
-import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -55,7 +55,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
 
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    IndividualPreviousAddressPostCodeLookupId.retrieve.right.map {
+    IndividualContactAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.IndividualContactAddressListController.onSubmit(mode),
@@ -67,7 +67,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )
-    }.left.map(_ => Future.successful(Redirect(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode))))
+    }.left.map(_ => Future.successful(Redirect(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))))
   }
 
 
