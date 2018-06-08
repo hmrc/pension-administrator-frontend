@@ -67,7 +67,6 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
   private val validPostcode = "ZZ1 1ZZ"
 
   private val onwardRoute = controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val address = TolerantAddress(
     Some("test-address-line-1"),
     Some("test-address-line-2"),

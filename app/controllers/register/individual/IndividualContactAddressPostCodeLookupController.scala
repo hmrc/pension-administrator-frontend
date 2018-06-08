@@ -66,12 +66,12 @@ object IndividualContactAddressPostCodeLookupController {
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
     routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
     routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode),
-    Message("individualCorrespondenceAddressPostCodeLookup.title"),
-    Message("individualCorrespondenceAddressPostCodeLookup.heading"),
+    Message("individualContactAddressPostCodeLookup.title"),
+    Message("individualContactAddressPostCodeLookup.heading"),
     Some(Message("site.secondaryHeader")),
-    Message("individualCorrespondenceAddressPostCodeLookup.hint"),
-    Message("individualCorrespondenceAddressPostCodeLookup.enterPostcode"),
-    Message("individualCorrespondenceAddressPostCodeLookup.formLabel")
+    Message("individualContactAddressPostCodeLookup.hint"),
+    Message("individualContactAddressPostCodeLookup.enterPostcode"),
+    Message("individualContactAddressPostCodeLookup.formLabel")
   )
 }
 
