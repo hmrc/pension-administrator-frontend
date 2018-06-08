@@ -51,7 +51,7 @@ object RegisterNavigatorSpec extends OptionValues {
   val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   val declarationWorkingKnowledgePage = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   val declarationFitAndProperPage = routes.DeclarationFitAndProperController.onPageLoad()
-  val adviserDetailsPage = controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(NormalMode)
+  val adviserDetailsPage = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
   val confirmationPage = routes.ConfirmationController.onPageLoad()
   val surveyPage = controllers.routes.LogoutController.onPageLoad()
 

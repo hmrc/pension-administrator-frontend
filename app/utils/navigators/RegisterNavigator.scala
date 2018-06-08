@@ -19,7 +19,7 @@ package utils.navigators
 import javax.inject.Inject
 
 import identifiers.Identifier
-import identifiers.register.{ConfirmationId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.mvc.Call
@@ -41,7 +41,7 @@ class RegisterNavigator @Inject() extends Navigator {
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
         controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
       case Some(DeclarationWorkingKnowledge.Adviser) =>
-        controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(NormalMode)
+        controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
       case None =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }

@@ -17,11 +17,11 @@
 package utils.navigators
 
 import base.SpecBase
-import identifiers.register.advisor._
+import identifiers.register.adviser._
 import models.{CheckMode, Mode, NormalMode}
 import play.api.libs.json.Json
 import utils.UserAnswers
-import controllers.register.advisor._
+import controllers.register.adviser._
 
 class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -31,10 +31,10 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   private val routes = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    (AdvisorDetailsId, emptyAnswers, adviserPostCodeLookUpPage, Some(checkYourAnswersPage)),
-    (AdvisorAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), Some(adviserAddressListPage(CheckMode))),
-    (AdvisorAddressListId, emptyAnswers, adviserAddressPage(NormalMode), Some(adviserAddressPage(CheckMode))),
-    (AdvisorAddressId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
+    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage, Some(checkYourAnswersPage)),
+    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), Some(adviserAddressListPage(CheckMode))),
+    (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), Some(adviserAddressPage(CheckMode))),
+    (AdviserAddressId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
     (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, None)
   )
 
@@ -45,11 +45,11 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object AdviserNavigatorSpec {
   val emptyAnswers = new UserAnswers(Json.obj())
-  val adviserPostCodeLookUpPage = routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode)
+  val adviserPostCodeLookUpPage = routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
 
-  def adviserAddressListPage(mode: Mode) = routes.AdvisorAddressListController.onPageLoad(mode)
+  def adviserAddressListPage(mode: Mode) = routes.AdviserAddressListController.onPageLoad(mode)
 
-  def adviserAddressPage(mode: Mode) = routes.AdvisorAddressController.onPageLoad(mode)
+  def adviserAddressPage(mode: Mode) = routes.AdviserAddressController.onPageLoad(mode)
 
   val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   val declarationFitAndProperPage = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
