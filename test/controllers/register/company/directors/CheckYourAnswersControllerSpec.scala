@@ -50,7 +50,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
   ))
 
-  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()
+  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(0)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
@@ -95,5 +95,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
+
+
   }
 }
