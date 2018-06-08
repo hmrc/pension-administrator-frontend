@@ -184,7 +184,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
       routes.IndividualContactAddressListController.onSubmit(NormalMode),
-      routes.IndividualContactAddressListController.onPageLoad(NormalMode),
+      routes.IndividualContactAddressController.onPageLoad(NormalMode),
       addresses,
       Message("common.contactAddressList.title"),
       Message("common.contactAddressList.heading"),
