@@ -21,14 +21,14 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
+import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator, UserAnswers}
 import utils.annotations.Individual
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -56,7 +56,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
   private val data =
     UserAnswers(Json.obj())
-      .set(IndividualPreviousAddressPostCodeLookupId)(addresses)
+      .set(IndividualContactAddressPostCodeLookupId)(addresses)
       .asOpt.map(_.json)
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(data)
@@ -94,7 +94,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
       }
 
     }
@@ -174,7 +174,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
       }
 
     }
