@@ -16,29 +16,28 @@
 
 package controllers.register.individual
 
-import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import play.api.data.Form
-import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import audit.testdoubles.StubSuccessfulAuditService
 import connectors.FakeDataCacheConnector
-import controllers.actions._
-import play.api.test.Helpers._
-import forms.register.individual.IndividualContactAddressFormProvider
-import identifiers.register.individual.{IndividualContactAddressId, IndividualPreviousAddressId}
-import models.{Address, Index, NormalMode, TolerantAddress}
-import views.html.register.individual.individualContactAddress
-import play.api.libs.json._
 import controllers.ControllerSpecBase
+import controllers.actions._
 import forms.AddressFormProvider
+import identifiers.register.individual.IndividualContactAddressId
+import models.{Address, Index, NormalMode, TolerantAddress}
+import org.scalatest.OptionValues
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
+import play.api.data.Form
+import play.api.libs.json._
 import play.api.mvc.Call
+import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class IndividualContactAddressControllerSpec extends ControllerSpecBase {
+class IndividualContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues{
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
@@ -106,6 +105,57 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "send an audit event when valid data is submitted" in {
+
+      val existingAddress = Address(
+        "existing-line-1",
+        "existing-line-2",
+        None,
+        None,
+        None,
+        "existing-country"
+      )
+
+      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
+
+      val data =
+        UserAnswers()
+          .individualContactAddress(existingAddress)
+          .individualContactAddressList(selectedAddress)
+          .dataRetrievalAction
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE"),
+        "country" -> "GB"
+      )
+
+      fakeAuditService.reset()
+
+      val result = controller(data).onSubmit(NormalMode)(postRequest)
+
+      whenReady(result) {
+        _ =>
+          fakeAuditService.verifySent(
+            AddressEvent(
+              FakeAuthAction.externalId,
+              AddressAction.LookupChanged,
+              "Individual Previous Address",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
+            )
+          )
+      }
+
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

@@ -59,7 +59,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
       addresses =>
         AddressListViewModel(
           postCall = routes.IndividualContactAddressListController.onSubmit(mode),
-          manualInputCall = routes.IndividualContactAddressListController.onPageLoad(mode),
+          manualInputCall = routes.IndividualContactAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("common.contactAddressList.title"),
           Message("common.contactAddressList.heading"),
