@@ -22,20 +22,16 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import forms.register.individual.IndividualContactAddressFormProvider
-import identifiers.register.individual.{IndividualContactAddressId, IndividualPreviousAddressListId}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-
-import scala.concurrent.Future
 
 class IndividualContactAddressController @Inject() (
                                         val appConfig: FrontendAppConfig,
@@ -69,11 +65,11 @@ class IndividualContactAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(IndividualContactAddressId, IndividualPreviousAddressListId, viewmodel(mode))
+      get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode, "Individual Previous Address")
+      post(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode), mode, "Individual Previous Address")
   }
 }

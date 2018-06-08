@@ -65,7 +65,7 @@ object IndividualContactAddressPostCodeLookupController {
 
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
     routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
-    routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode),
+    routes.IndividualContactAddressController.onPageLoad(mode),
     Message("individualCorrespondenceAddressPostCodeLookup.title"),
     Message("individualCorrespondenceAddressPostCodeLookup.heading"),
     Some(Message("site.secondaryHeader")),
