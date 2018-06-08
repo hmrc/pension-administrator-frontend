@@ -16,22 +16,34 @@
 
 package utils
 
-import com.google.inject.ImplementedBy
+import com.google.inject.{ImplementedBy, Inject}
+import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import play.api.libs.json.{JsBoolean, JsValue, Json}
+import play.api.libs.json.{JsBoolean, JsResultException, JsValue, Json}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent._
 
 @ImplementedBy(classOf[SectionCompleteImpl])
 trait SectionComplete {
 
-  def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers): Future[UserAnswers]
+  def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers]
 
 }
 
-class SectionCompleteImpl extends SectionComplete {
+class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) extends SectionComplete {
 
-  override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers): Future[UserAnswers] = {
-    Future.successful(UserAnswers(Json.obj("DummyId"->JsBoolean(true))))
+  override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
+
+    userAnswers.set(id)(true).fold(
+      invalid => Future.failed(JsResultException(invalid)),
+      valid => Future.successful(valid)
+    )
+
+    dataCacheConnector.save("", id, true).map{ cacheMap =>
+      UserAnswers(cacheMap)
+    }
   }
+
+
 }

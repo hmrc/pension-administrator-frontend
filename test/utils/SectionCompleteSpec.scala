@@ -16,23 +16,61 @@
 
 package utils
 
+import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.TypedIdentifier
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.HeaderCarrier
+import org.mockito.Mockito._
+import org.mockito.Matchers.{eq => eqTo, _}
 
-class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionValues{
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionValues with MockitoSugar{
 
   private val dummyId=new TypedIdentifier[Boolean]{
     override def toString="DummyId"
-
   }
+  private val existingId=new TypedIdentifier[String]{
+    override def toString="existingId"
+  }
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  val dataCacheConnector = mock[DataCacheConnector]
+
+  val userAnswers = UserAnswers(Json.obj(existingId.toString -> "testId"))
 
   "set Complete" must {
     "set the isComplete identifier to true" in {
-      val userAnswers=UserAnswers()
-      val result=new SectionCompleteImpl().setComplete(dummyId,userAnswers)
+
+      val expected = userAnswers.set(dummyId)(true).asOpt.value
+      reset(dataCacheConnector)
+      when(dataCacheConnector.save(any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(expected.json))
+
+      val result=new SectionCompleteImpl(dataCacheConnector).setComplete(dummyId, UserAnswers())
+
       result.map{answers=>
-        answers.get(dummyId).value mustBe true
+        answers mustBe expected
       }
     }
+
+    "save userAnswers to mongo" in {
+      val expected = userAnswers.set(dummyId)(true).asOpt.value
+
+      reset(dataCacheConnector)
+      when(dataCacheConnector.save(any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(expected.json))
+
+      val result=new SectionCompleteImpl(dataCacheConnector).setComplete(dummyId, userAnswers)
+      result.map{
+        _ => verify(dataCacheConnector).save(any(), eqTo(dummyId), eqTo(true))(any(), any(), any())
+          succeed
+      }
+    }
+
+
   }
 }
