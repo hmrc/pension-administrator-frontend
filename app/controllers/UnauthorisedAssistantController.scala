@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -26,10 +25,10 @@ import views.html.unauthorisedAssistant
 
 class UnauthorisedAssistantController @Inject()(
                                                  appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
-                                                 authenticate: AuthAction) extends FrontendController with I18nSupport {
+                                                 override val messagesApi: MessagesApi
+                                               ) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authenticate {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
       Ok(unauthorisedAssistant(appConfig))
   }
