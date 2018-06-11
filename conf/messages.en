@@ -147,6 +147,7 @@ businessDetails.error.companyName.required = Enter the registered company name
 businessDetails.error.utr.required = Enter the Unique Taxpayer Reference number
 businessDetails.error.companyName.invalid = Enter a valid registered company name
 businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference number
+businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot be more than 10 characters
 businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
 companyRegistrationNumber.title = Company Registration number
