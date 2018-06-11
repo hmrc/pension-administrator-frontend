@@ -117,6 +117,12 @@ common.dateOfBirth.hint = Example 30 9 1990
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+unauthorised.assistant.title = You cannot use this service
+unauthorised.assistant.heading = You cannot use this service
+unauthorised.assistant.lede = You have credentials as an assistant with this Government Gateway account.
+unauthorised.assistant.info = You will need to create a new Government Gateway account and then register as a pension scheme administrator to use this digital service.
+unauthorised.assistant.submit = Create a new Government Gateway account
+
 cya.label.name = Name
 cya.label.address = Address
 cya.label.dob = Date of birth

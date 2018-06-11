@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
-  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised().retrieve(
@@ -56,7 +56,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
           block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
         }
       case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
 
     } recover handleFailure
   }
@@ -73,17 +73,17 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: InsufficientEnrolments =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: InsufficientConfidenceLevel =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedAuthProvider =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedAffinityGroup =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedCredentialRole =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnauthorizedException =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
   }
 
   private def ivUpliftUrl: String = s"${config.ivUpliftUrl}?origin=PODS&" +
