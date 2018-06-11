@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.{Address, Mode, TolerantAddress}
 import models.requests.DataRequest
+import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -62,12 +62,50 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
     form.bindFromRequest().fold(
       (formWithError) => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
       value => {
-          dataCacheConnector.save(request.externalId,id,value).map {
+        value match {
+          case false => dataCacheConnector.save (request.externalId, id, value).map {
             cacheMap =>
-              Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+              Redirect (navigator.nextPage (id, mode) (UserAnswers (cacheMap) ) )
+          }
+          case true =>
+            dataCacheConnector.save (request.externalId, id, value).flatMap {
+              _ =>
+                getResolvedAddress (viewModel.address) match {
+                case None =>
+                  dataCacheConnector.save (request.externalId, addressId, viewModel.address).map {
+                    cacheMap =>
+                      Redirect (navigator.nextPage (id, mode) (UserAnswers (cacheMap) ) )
+                  }
+                case Some (address) =>
+                  dataCacheConnector.save (request.externalId, contactId, address).map {
+                    cacheMap =>
+                      Redirect (navigator.nextPage (id, mode) (UserAnswers (cacheMap) ) )
+                  }
+                }
+            }
         }
       }
     )
   }
+
+
+  protected def getResolvedAddress(tolerantAddress: TolerantAddress): Option[Address] = {
+    tolerantAddress.addressLine1 match {
+      case None => None
+      case Some(aLine1) =>
+        tolerantAddress.addressLine2 match {
+          case None => None
+          case Some(aLine2) => Some(Address(
+            aLine1,
+            aLine2,
+            tolerantAddress.addressLine3,
+            tolerantAddress.addressLine4,
+            tolerantAddress.postcode,
+            tolerantAddress.country.getOrElse("GB")
+          ))
+        }
+    }
+  }
+
 
 }
