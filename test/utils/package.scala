@@ -18,13 +18,22 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
-import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualPreviousAddressId, IndividualPreviousAddressListId}
 import models.{Address, TolerantAddress}
 import org.scalatest.OptionValues
 
 package object utils {
 
   implicit class UserAnswerOps(answers: UserAnswers) extends OptionValues {
+
+    // Individual PSA Contact
+    def individualContactAddress(address: Address): UserAnswers = {
+      answers.set(IndividualContactAddressId)(address).asOpt.value
+    }
+
+    def individualContactAddressList(address: TolerantAddress): UserAnswers = {
+      answers.set(IndividualContactAddressListId)(address).asOpt.value
+    }
 
     // Individual PSA
     def individualPreviousAddress(address: Address): UserAnswers = {

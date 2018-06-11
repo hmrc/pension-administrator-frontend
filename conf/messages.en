@@ -452,3 +452,7 @@ individualCorrespondenceAddressPostCodeLookup.heading = What is your contact add
 individualCorrespondenceAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
 individualCorrespondenceAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually {1} if the address is overseas.
 individualCorrespondenceAddressPostCodeLookup.formLabel = Postcode
+
+common.contactAddress.title = What is your contact address?
+common.contactAddress.heading = What is your contact address?
+common.contactAddress.lede = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
