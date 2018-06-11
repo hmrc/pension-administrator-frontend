@@ -17,7 +17,25 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
 case object IndividualSameContactAddressId extends TypedIdentifier[Boolean] {
   override def toString: String = "individualSameContactAddress"
+
+  override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(true) =>
+        answers
+          .remove(IndividualContactAddressId)
+          .flatMap(_.remove(IndividualContactAddressPostCodeLookupId))
+          .flatMap(_.remove(IndividualPreviousAddressPostCodeLookupId))
+          .flatMap(_.remove(IndividualPreviousAddressId))
+      case Some(false) =>
+        answers
+          .remove(IndividualContactAddressId)
+          .flatMap(_.remove(IndividualContactAddressPostCodeLookupId))
+      case _ => super.cleanup(value, answers)
+    }
+  }
 }
