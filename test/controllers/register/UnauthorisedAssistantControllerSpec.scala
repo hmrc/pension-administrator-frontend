@@ -27,9 +27,7 @@ class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
     new UnauthorisedAssistantController(
       frontendAppConfig,
       messagesApi,
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl
+      FakeAuthAction
     )
 
   def viewAsString() = unauthorisedAssistant(frontendAppConfig)(fakeRequest, messages).toString

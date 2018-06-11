@@ -27,12 +27,9 @@ import views.html.unauthorisedAssistant
 class UnauthorisedAssistantController @Inject()(
                                                  appConfig: FrontendAppConfig,
                                                  override val messagesApi: MessagesApi,
-                                                 authenticate: AuthAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction
-                                               ) extends FrontendController with I18nSupport {
+                                                 authenticate: AuthAction) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>
       Ok(unauthorisedAssistant(appConfig))
   }
