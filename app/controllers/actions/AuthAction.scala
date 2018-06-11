@@ -30,7 +30,7 @@ import models.requests.AuthenticatedRequest
 import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.auth.core.retrieve.{Retrievals, ~}
+import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.AffinityGroup._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +41,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(
+    authorised(User or Admin).retrieve(
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
@@ -81,7 +81,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     case _: UnsupportedAffinityGroup =>
       Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedCredentialRole =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedAssistantController.onPageLoad())
     case _: UnauthorizedException =>
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
@@ -121,7 +121,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
                       nino: Option[String], enrolments: Enrolments): PSAUser = {
-
     val psa = existingPSA(enrolments)
     PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
   }
