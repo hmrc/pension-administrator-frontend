@@ -15,7 +15,7 @@
  */
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressListId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
 import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
@@ -61,13 +61,13 @@ package object utils {
       answers.set(DirectorPreviousAddressListId(index))(address).asOpt.value
     }
 
-    // Advisor
-    def advisorAddress(address: Address): UserAnswers = {
-      answers.set(AdvisorAddressId)(address).asOpt.value
+    // Adviser
+    def adviserAddress(address: Address): UserAnswers = {
+      answers.set(AdviserAddressId)(address).asOpt.value
     }
 
-    def advisorAddressList(address: TolerantAddress): UserAnswers = {
-      answers.set(AdvisorAddressListId)(address).asOpt.value
+    def adviserAddressList(address: TolerantAddress): UserAnswers = {
+      answers.set(AdviserAddressListId)(address).asOpt.value
     }
 
     // Converters

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package identifiers.register.adviser
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import identifiers._
+import models.register.adviser.AdviserDetails
 
-@main_template(
-    title = messages("duplicateRegistration.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
-
-    @components.heading("duplicateRegistration.heading")
-
-    <p>@messages("duplicateRegistration.body")</p>
+case object AdviserDetailsId extends TypedIdentifier[AdviserDetails] {
+  override def toString: String = "adviserDetails"
 }
