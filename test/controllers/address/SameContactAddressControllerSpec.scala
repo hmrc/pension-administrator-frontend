@@ -73,21 +73,21 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
   import SameContactAddressControllerSpec._
 
-  val testAddress = TolerantAddress(
+  def testAddress(line2: Option[String]) = TolerantAddress(
     Some("address line 1"),
-    Some("address line 2"),
+    line2,
     Some("test town"),
     Some("test county"),
     Some("test post code"), Some("GB")
   )
 
-  val viewmodel = SameContactAddressViewModel(
+  def viewmodel(line2: Option[String]=Some("address line 2")) = SameContactAddressViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
     secondaryHeader = Some("secondaryHeader"),
     hint = Some("hint"),
-    address = testAddress
+    address = testAddress(line2)
   )
 
   "get" must {
@@ -101,10 +101,10 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onPageLoad(viewmodel, UserAnswers())
+          val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual sameContactAddress(appConfig, formProvider(), viewmodel)(request, messages).toString
+          contentAsString(result) mustEqual sameContactAddress(appConfig, formProvider(), viewmodel())(request, messages).toString
       }
     }
 
@@ -118,13 +118,13 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
           val answers = UserAnswers().set(FakeIdentifier)(true).asOpt.value
-          val result = controller.onPageLoad(viewmodel, answers)
+          val result = controller.onPageLoad(viewmodel(), answers)
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual sameContactAddress(
             appConfig,
             formProvider().fill(true),
-            viewmodel
+            viewmodel()
           )(request, messages).toString
       }
     }
@@ -147,11 +147,46 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
+          when(cacheConnector.save[Address, ContactAddressIdentifier.type](
+            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
           )
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+          val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+      }
+    }
+
+
+    "return a redirect when the submitted data is valid and address does not have line 2" in {
+
+      import play.api.inject._
+
+      val cacheConnector = mock[DataCacheConnector]
+
+      running(_.overrides(
+        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+          when(cacheConnector.save[Boolean, FakeIdentifier.type](
+            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          when(cacheConnector.save[TolerantAddress, RegAddressIdentifier.type](
+            any(), eqTo(RegAddressIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          val request = FakeRequest().withFormUrlEncodedBody(
+            "value" -> "true"
+          )
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel(None), UserAnswers(), request)
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
@@ -167,13 +202,13 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+          val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
 
           status(result) mustEqual BAD_REQUEST
           contentAsString(result) mustEqual sameContactAddress(
             appConfig,
             formProvider().bind(Map.empty[String, String]),
-            viewmodel
+            viewmodel()
           )(request, messages).toString
       }
     }

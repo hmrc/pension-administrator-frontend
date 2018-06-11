@@ -77,7 +77,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        post(IndividualSameContactAddressId, IndividualAddressId, IndividualContactAddressId, vm, mode)
+        post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode)
       }
   }
 
