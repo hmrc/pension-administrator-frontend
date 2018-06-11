@@ -16,10 +16,10 @@
 
 package controllers.register
 
-import controllers.ControllerSpecBase
+import controllers.{ControllerSpecBase, UnauthorisedAssistantController}
 import controllers.actions._
 import play.api.test.Helpers._
-import views.html.register.unauthorisedAssistant
+import views.html.unauthorisedAssistant
 
 class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
 

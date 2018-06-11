@@ -26,4 +26,15 @@
     @components.back_link()
 
     @components.heading("unauthorised.assistant.heading")
+
+    <p class="lede">@messages("unauthorised.assistant.lede")</p>
+
+    <p>@messages("unauthorised.assistant.info")</p>
+
+    @components.button_link(
+        "unauthorised.assistant.continue",
+        appConfig.governmentGatewayUrl,
+        "continue-to-gg"
+    )
+
 }

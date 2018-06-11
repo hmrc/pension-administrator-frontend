@@ -24,5 +24,3 @@ POST       /confirmation                            controllers.register.Confirm
 GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad()
 
 GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
-
-GET        /unauthorisedAssistant                   controllers.register.UnauthorisedAssistantController.onPageLoad()

@@ -4,7 +4,7 @@ echo "Applying migration UnauthorisedAssistant"
 
 echo "Adding routes to register.routes"
 echo "" >> ../conf/register.routes
-echo "GET        /unauthorisedAssistant                       controllers.register.UnauthorisedAssistantController.onPageLoad()" >> ../conf/register.routes
+echo "GET        /unauthorisedAssistant                       controllers.UnauthorisedAssistantController.onPageLoad()" >> ../conf/register.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en

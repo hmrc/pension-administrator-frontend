@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.register
+package views
 
 import views.behaviours.ViewBehaviours
-import views.html.register.unauthorisedAssistant
+import views.html.unauthorisedAssistant
 
 class UnauthorisedAssistantViewSpec extends ViewBehaviours {
 
@@ -26,8 +26,10 @@ class UnauthorisedAssistantViewSpec extends ViewBehaviours {
   def createView = () => unauthorisedAssistant(frontendAppConfig)(fakeRequest, messages)
 
   "UnauthorisedAssistant view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView, messageKeyPrefix, "lede", "info", "continue")
 
     behave like pageWithBackLink(createView)
+
+    behave like pageWithContinueButton(createView, frontendAppConfig.governmentGatewayUrl, "continue-to-gg")
   }
 }
