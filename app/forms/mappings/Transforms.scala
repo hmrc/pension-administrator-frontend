@@ -32,6 +32,10 @@ trait Transforms {
     strip(value).toUpperCase
   }
 
+  def payeTransform(value: String):String={
+    value.replaceAll("[\\\\/]","").trim
+  }
+
   protected def strip(value: String): String = {
     value.replaceAll(" ", "")
   }
