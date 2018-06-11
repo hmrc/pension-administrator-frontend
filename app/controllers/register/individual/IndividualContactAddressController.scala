@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
+import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -37,7 +38,7 @@ class IndividualContactAddressController @Inject() (
                                         val appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         val dataCacheConnector: DataCacheConnector,
-                                        val navigator: Navigator,
+                                        @Individual val navigator: Navigator,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
