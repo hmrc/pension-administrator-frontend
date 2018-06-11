@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package views
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import views.behaviours.ViewBehaviours
+import views.html.unauthorisedAssistant
 
-@main_template(
-    title = messages("duplicateRegistration.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+class UnauthorisedAssistantViewSpec extends ViewBehaviours {
 
-    @components.heading("duplicateRegistration.heading")
+  val messageKeyPrefix = "unauthorised.assistant"
 
-    <p>@messages("duplicateRegistration.body")</p>
+  def createView = () => unauthorisedAssistant(frontendAppConfig)(fakeRequest, messages)
+
+  "UnauthorisedAssistant view" must {
+    behave like normalPage(createView, messageKeyPrefix, "lede", "info", "continue")
+
+    behave like pageWithBackLink(createView)
+
+    behave like pageWithContinueButton(createView, frontendAppConfig.governmentGatewayUrl, "continue-to-gg")
+  }
 }

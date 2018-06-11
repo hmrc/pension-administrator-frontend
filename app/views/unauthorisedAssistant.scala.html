@@ -19,11 +19,22 @@
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("duplicateRegistration.title"),
+    title = messages("unauthorised.assistant.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.heading("duplicateRegistration.heading")
+    @components.back_link()
 
-    <p>@messages("duplicateRegistration.body")</p>
+    @components.heading("unauthorised.assistant.heading")
+
+    <p class="lede">@messages("unauthorised.assistant.lede")</p>
+
+    <p>@messages("unauthorised.assistant.info")</p>
+
+    @components.button_link(
+        "unauthorised.assistant.continue",
+        appConfig.governmentGatewayUrl,
+        "continue-to-gg"
+    )
+
 }
