@@ -41,7 +41,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(
+    authorised(Assistant).retrieve(
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
@@ -81,7 +81,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     case _: UnsupportedAffinityGroup =>
       Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedCredentialRole =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedAssistantController.onPageLoad())
     case _: UnauthorizedException =>
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
