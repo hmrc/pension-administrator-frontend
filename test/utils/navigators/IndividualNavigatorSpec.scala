@@ -81,7 +81,13 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
   )
 
+    s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
+      behave like navigatorWithRoutes(navigatorToggled, toggledRoutes)
+    }
 
+    s"When contact address journey is toggled off ${navigator.getClass.getSimpleName}" must {
+      behave like navigatorWithRoutes(navigator, routes)
+    }
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
