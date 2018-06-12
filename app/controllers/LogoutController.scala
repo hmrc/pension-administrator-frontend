@@ -24,11 +24,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-class LogoutController @Inject()(appConfig: FrontendAppConfig,
-                                 override val messagesApi: MessagesApi,
-                                 authenticate: AuthAction) extends FrontendController with I18nSupport {
+class LogoutController @Inject()(
+                                  appConfig: FrontendAppConfig,
+                                  override val messagesApi: MessagesApi
+                                ) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authenticate {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
       Redirect(appConfig.serviceSignOut).withNewSession
   }
