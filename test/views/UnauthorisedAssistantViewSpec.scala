@@ -28,8 +28,6 @@ class UnauthorisedAssistantViewSpec extends ViewBehaviours {
   "UnauthorisedAssistant view" must {
     behave like normalPage(createView, messageKeyPrefix, "lede", "info", "continue")
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithContinueButton(createView, frontendAppConfig.governmentGatewayUrl, "continue-to-gg")
   }
 }
