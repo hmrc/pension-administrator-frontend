@@ -43,7 +43,7 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyPreviousAddressPostCodeLookupController(
+    new CompanyContactAddressPostCodeLookupController(
       frontendAppConfig,
       FakeDataCacheConnector,
       fakeAddressLookupConnector,
