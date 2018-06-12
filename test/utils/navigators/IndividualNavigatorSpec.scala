@@ -67,6 +67,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
     (IndividualSameContactAddressId,            individualSameContactAddress,   individualAddressYearsPage(NormalMode), Some(individualAddressYearsPage(CheckMode))),
     (IndividualSameContactAddressId,            individualDiffContactAddress,   individualCAPostCodeLookupPage(NormalMode), Some(individualCAPostCodeLookupPage(CheckMode))),
+    (IndividualSameContactAddressId,            individualSameCAIncomplete,   individualContactAddressPage(NormalMode), Some(individualContactAddressPage(CheckMode))),
     (IndividualContactAddressPostCodeLookupId,  emptyAnswers,                   individualContactAddressListPage(NormalMode), Some(individualContactAddressListPage(CheckMode))),
     (IndividualContactAddressListId,            emptyAnswers,                   individualContactAddressPage(NormalMode), Some(individualContactAddressPage(CheckMode))),
     (IndividualContactAddressId,                emptyAnswers,                   individualAddressYearsPage(NormalMode), Some(individualAddressYearsPage(CheckMode))),
@@ -128,7 +129,10 @@ object IndividualNavigatorSpec extends OptionValues {
     IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
     .asOpt.value
-
+  val individualSameCAIncomplete = UserAnswers(Json.obj()).set(
+    IndividualSameContactAddressId)(true)
+    .flatMap(_.set(IndividualContactAddressListId)(TolerantAddress(Some("foo"), None, None, None, None, Some("GB"))))
+    .asOpt.value
   val individualDiffContactAddress = UserAnswers(Json.obj()).set(
     IndividualSameContactAddressId)(false).asOpt.value
   val addressYearsOverAYear = UserAnswers(Json.obj())
