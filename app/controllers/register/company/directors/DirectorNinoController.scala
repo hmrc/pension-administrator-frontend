@@ -67,7 +67,7 @@ class DirectorNinoController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
-          (value) =>
+          value =>
             dataCacheConnector.save(request.externalId, DirectorNinoId(index), value).map(json =>
               Redirect(navigator.nextPage(DirectorNinoId(index), mode)(UserAnswers(json))))
         )

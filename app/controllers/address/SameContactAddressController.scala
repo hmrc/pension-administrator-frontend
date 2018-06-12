@@ -60,7 +60,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
                       mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithError) => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
+      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
       value => {
         value match {
           case false => dataCacheConnector.save (request.externalId, id, value).map {
