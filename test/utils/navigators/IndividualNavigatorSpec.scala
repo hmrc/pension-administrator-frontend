@@ -39,8 +39,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     application.injector.instanceOf[FrontendAppConfig]
   }
 
-  val navigator = new IndividualNavigator(appConfig(false))
-  val navigatorToggled = new IndividualNavigator(appConfig(true))
+    val navigator = new IndividualNavigator(appConfig(false))
+    val navigatorToggled = new IndividualNavigator(appConfig(true))
   val navigatorx = new IndividualNavigator(frontendAppConfig)
 
   private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
@@ -80,12 +80,13 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
   )
 
+    s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
+      behave like navigatorWithRoutes(navigatorToggled, toggledRoutes)
+    }
 
-  navigator.getClass.getSimpleName must {
-    behave like navigatorWithRoutes(navigator, routes)
-//    behave like navigatorWithRoutes(navigatorToggled, toggledRoutes)
-  }
-
+    s"When contact address journey is toggled off ${navigator.getClass.getSimpleName}" must {
+      behave like navigatorWithRoutes(navigator, routes)
+    }
 
 }
 
