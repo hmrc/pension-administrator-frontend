@@ -66,12 +66,12 @@ class IndividualSameContactAddressIdSpec extends WordSpec with MustMatchers with
         result.get(IndividualContactAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "not remove the data for `PreviousPostCodeLookup`" in {
-        result.get(IndividualPreviousAddressPostCodeLookupId) mustBe defined
+      "remove the data for `PreviousPostCodeLookup`" in {
+        result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "not remove the data for `PreviousAddress`" in {
-        result.get(IndividualPreviousAddressId) mustBe defined
+      "remove the data for `PreviousAddress`" in {
+        result.get(IndividualPreviousAddressId) mustNot be(defined)
       }
     }
 
@@ -79,12 +79,12 @@ class IndividualSameContactAddressIdSpec extends WordSpec with MustMatchers with
 
       val result: UserAnswers = answersWithContactAddress.remove(IndividualSameContactAddressId).asOpt.value
 
-      "not remove the data for `PreviousPostCodeLookup`" in {
-        result.get(IndividualPreviousAddressPostCodeLookupId) mustBe defined
+      "remove the data for `PreviousPostCodeLookup`" in {
+        result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "not remove the data for `PreviousAddress`" in {
-        result.get(IndividualPreviousAddressId) mustBe defined
+      "remove the data for `PreviousAddress`" in {
+        result.get(IndividualPreviousAddressId) mustNot be(defined)
       }
     }
   }
