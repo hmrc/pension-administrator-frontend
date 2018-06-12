@@ -17,7 +17,6 @@
 package viewmodels.address
 
 import play.api.mvc.Call
-import uk.gov.hmrc.urls.Link
 import viewmodels.Message
 
 case class PostcodeLookupViewModel(
@@ -28,6 +27,6 @@ case class PostcodeLookupViewModel(
                                     subHeading: Option[Message],
                                     hint: Message,
                                     enterPostcode: Message,
-                                    enterPostCodeLink: Option[Message] = None,
+                                    enterPostCodeLink: Option[Message],
                                     formLabel: Message
                                   )

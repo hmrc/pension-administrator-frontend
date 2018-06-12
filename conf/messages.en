@@ -199,7 +199,7 @@ companyPreviousAddressPostCodeLookup.heading = Previous address of the company
 companyPreviousAddressPostCodeLookup.lede = This is usually the registered business address but you can enter any address you have for this company.
 companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
 companyPreviousAddressPostCodeLookup.postalCode = Postal code
-companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address,
+companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
@@ -258,7 +258,7 @@ companyDirectorAddressPostCodeLookup.heading = Director’s address
 companyDirectorAddressPostCodeLookup.body = This is usually the director’s residential address.
 companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = Director’s address
 companyDirectorAddressPostCodeLookup.postcode = Postcode
-companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or
+companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0}
 companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
@@ -282,7 +282,7 @@ directorPreviousAddressPostCodeLookup.heading = Director’s previous address
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
 directorPreviousAddressPostCodeLookup.input.text = Postcode
 directorPreviousAddressPostCodeLookup.checkYourAnswersLabel = Director’s previous address post code
-directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address,
+directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 directorPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 directorPreviousAddressPostCodeLookup.submit.button = Find address
 
@@ -352,7 +352,7 @@ companyReview.directors.changeLink = Change company directors
 individualPreviousAddressPostCodeLookup.title = Previous address
 individualPreviousAddressPostCodeLookup.heading = Previous address
 individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
-individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address,
+individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 
@@ -427,7 +427,7 @@ declarationFitAndProper.statement6 = I have not been disqualified from acting as
 adviserAddressPostCodeLookup.title = Pension adviser’s address
 adviserAddressPostCodeLookup.heading = Pension adviser’s address
 adviserAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
-adviserAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address,
+adviserAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 adviserAddressPostCodeLookup.enterPostcode.link = enter the address manually
 adviserAddressPostCodeLookup.formLabel = Postcode
 
