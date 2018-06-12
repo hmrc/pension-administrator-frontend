@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
+import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
-import identifiers.register.company.{CompanyAddressId, CompanyAddressListId, CompanyContactAddressId, CompanySameContactAddressId}
+import identifiers.register.company._
 import javax.inject.{Inject, Singleton}
 import models.Mode
 import play.api.data.Form
@@ -31,7 +32,6 @@ import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
-import routes.CompanySameContactAddressController
 
 @Singleton()
 class CompanySameContactAddressController @Inject()(
@@ -57,13 +57,13 @@ class CompanySameContactAddressController @Inject()(
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        CompanyAddressId.retrieve.right.map {
-          address =>
+        (CompanyAddressId and BusinessDetailsId).retrieve.right.map {
+          case address ~ details =>
             SameContactAddressViewModel(
               postCall(mode),
               title = Message(title),
-              heading = Message(heading),
-              hint = Some(Message(hint)),
+              heading = Message(heading).withArgs(details.companyName),
+              hint = Some(Message(hint).withArgs(details.companyName)),
               secondaryHeader = Some(secondaryHeader),
               address = address
             )
