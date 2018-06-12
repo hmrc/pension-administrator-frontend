@@ -27,17 +27,18 @@ import viewmodels.{AnswerRow, Message}
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
   def individualContactAddress:Option[AnswerRow]={
-    userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map { x=>
-      AnswerRow("cya.label.individual.contact.address", addressAnswer(x), false, None)
+    userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map {answer =>
+      AnswerRow("cya.label.individual.contact.address", addressAnswer(answer), false, None)
     }
   }
 
   def individualSameContactAddress: Option[AnswerRow] = {
-    userAnswers.get(identifiers.register.individual.IndividualSameContactAddressId) map { x =>
-      AnswerRow("cya.label.individual.same.contact.address", Seq(if(x) "site.yes" else "site.no"), true, Some(
+    userAnswers.get(identifiers.register.individual.IndividualSameContactAddressId) map {answer =>
+      AnswerRow("cya.label.individual.same.contact.address", Seq(if(answer) "site.yes" else "site.no"), true, Some(
         controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url))
     }
   }
+
   def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
       controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)
