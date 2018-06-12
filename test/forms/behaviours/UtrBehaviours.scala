@@ -56,7 +56,7 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
 
     val valid = Table(
       "data",
-      Map("utr.hasUtr" -> "true", "utr.utr" -> "1234567890")
+      Map("utr.hasUtr" -> "true", "utr.utr" -> " 1234567890 ")
     )
 
     val invalid = Table(

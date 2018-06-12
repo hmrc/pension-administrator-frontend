@@ -18,6 +18,7 @@ package forms.register.company
 
 import forms.behaviours.{PayeBehaviours, StringFieldBehaviours, VatBehaviours}
 import forms.mappings.Constraints
+import models.register.company.CompanyDetails
 import org.scalatest.OptionValues
 
 class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with OptionValues with PayeBehaviours with VatBehaviours {
@@ -51,6 +52,17 @@ class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constrai
       keyPayeInvalid
     )
 
+  }
+
+  "form" must {
+    val rawData = Map("vatRegistrationNumber" -> " GB1 2 3 456789 ", "payeEmployerReferenceNumber" -> " 123\\/4567898765 ")
+    val expectedData = CompanyDetails(Some("123456789"), Some("1234567898765"))
+
+    behave like formWithTransform[CompanyDetails](
+      form,
+      rawData,
+      expectedData
+    )
   }
 
 }

@@ -18,6 +18,7 @@ package forms.register.company
 
 import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
 import forms.mappings.Constraints
+import models.ContactDetails
 
 class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours with Constraints {
 
@@ -54,6 +55,17 @@ class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
       keyPhoneNumberInvalid
     )
 
+  }
+
+  "form" must {
+    val rawData = Map("emailAddress" -> "test@test.com", "phoneNumber" -> " 123456789012345678901234 ")
+    val expectedData = ContactDetails("test@test.com", "123456789012345678901234")
+
+    behave like formWithTransform(
+      form,
+      rawData,
+      expectedData
+    )
   }
 
 }
