@@ -79,4 +79,12 @@ trait ViewBehaviours extends ViewSpecBase {
     }
   }
 
+  def pageWithContinueButton(view: () => HtmlFormat.Appendable, url: String, id: String): Unit = {
+    "behave like a page with a continue button" in {
+      val doc = asDocument(view())
+      assertRenderedByCssSelector(doc, "a.button")
+      assertLink(doc, id, url)
+    }
+  }
+
 }

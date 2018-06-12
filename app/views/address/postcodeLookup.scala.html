@@ -18,15 +18,15 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.{Mode, Index}
 @import viewmodels.address.PostcodeLookupViewModel
+@import uk.gov.hmrc.urls.Link
 
 @(appConfig: FrontendAppConfig, form: Form[_], viewmodel: PostcodeLookupViewModel)(implicit request: Request[_], messages: Messages)
 
-@openLink = {
-    <a id="manual-address-link" href="@viewmodel.manualInputCall">
-}
-
-@closeLink = {
-    </a>
+@link = {
+    @Link.toInternalPage(
+        url = viewmodel.manualInputCall.url,
+        value = viewmodel.enterPostCodeLink.map(_.resolve)
+    ).toHtml
 }
 
 @main_template(
@@ -44,7 +44,7 @@
 
         <p>@viewmodel.hint.resolve</p>
 
-        <p>@Html(viewmodel.enterPostcode.withArgs(openLink, closeLink))</p>
+        <p>@Html(viewmodel.enterPostcode.withArgs(link))</p>
 
         @components.input_text(
             field = form("value"),

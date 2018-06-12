@@ -19,39 +19,39 @@ package utils.navigators
 import javax.inject.{Inject, Singleton}
 
 import identifiers.Identifier
-import identifiers.register.advisor._
+import identifiers.register.adviser._
 import models.{CheckMode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
-import controllers.register.advisor._
+import controllers.register.adviser._
 
 @Singleton
 class AdviserNavigator @Inject() extends Navigator {
 
   private def checkYourAnswers()(answers: UserAnswers): Call =
-    controllers.register.advisor.routes.CheckYourAnswersController.onPageLoad()
+    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()
 
   override def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AdvisorDetailsId =>
-      _ => routes.AdvisorAddressPostCodeLookupController.onPageLoad(NormalMode)
-    case AdvisorAddressPostCodeLookupId =>
-      _ => routes.AdvisorAddressListController.onPageLoad(NormalMode)
-    case AdvisorAddressListId =>
-      _ => routes.AdvisorAddressController.onPageLoad(NormalMode)
-    case AdvisorAddressId =>
+    case AdviserDetailsId =>
+      _ => routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
+    case AdviserAddressPostCodeLookupId =>
+      _ => routes.AdviserAddressListController.onPageLoad(NormalMode)
+    case AdviserAddressListId =>
+      _ => routes.AdviserAddressController.onPageLoad(NormalMode)
+    case AdviserAddressId =>
       _ => routes.CheckYourAnswersController.onPageLoad()
     case CheckYourAnswersId =>
       _ => controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
   }
 
   override protected def editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AdvisorDetailsId =>
+    case AdviserDetailsId =>
       checkYourAnswers()
-    case AdvisorAddressPostCodeLookupId =>
-      _ => routes.AdvisorAddressListController.onPageLoad(CheckMode)
-    case AdvisorAddressListId =>
-      _ => routes.AdvisorAddressController.onPageLoad(CheckMode)
-    case AdvisorAddressId =>
+    case AdviserAddressPostCodeLookupId =>
+      _ => routes.AdviserAddressListController.onPageLoad(CheckMode)
+    case AdviserAddressListId =>
+      _ => routes.AdviserAddressController.onPageLoad(CheckMode)
+    case AdviserAddressId =>
       checkYourAnswers()
   }
 }

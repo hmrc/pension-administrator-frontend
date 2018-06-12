@@ -46,3 +46,18 @@ GET         /what-is-the-contact-address                 controllers.register.in
 POST        /what-is-the-contact-address                 controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET         /change-what-is-the-contact-address          controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-what-is-the-contact-address          controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET         /select-contact-address                       controllers.register.individual.IndividualContactAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST        /select-contact-address                       controllers.register.individual.IndividualContactAddressListController.onSubmit(mode: Mode = NormalMode)
+GET         /change-select-contact-address                       controllers.register.individual.IndividualContactAddressListController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-select-contact-address                       controllers.register.individual.IndividualContactAddressListController.onSubmit(mode: Mode = CheckMode)
+
+GET         /enter-contact-address               controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-contact-address               controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-enter-contact-address                        controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-enter-contact-address                        controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET         /is-this-the-contact-address            controllers.register.individual.IndividualSameContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-this-the-contact-address            controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-is-this-the-contact-address     controllers.register.individual.IndividualSameContactAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-is-this-the-contact-address     controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = CheckMode)

@@ -25,12 +25,13 @@ import forms.address.PostCodeLookupFormProvider
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
+import uk.gov.hmrc.urls.Link
 
 @Singleton
 class IndividualContactAddressPostCodeLookupController @Inject()(
@@ -65,12 +66,13 @@ object IndividualContactAddressPostCodeLookupController {
 
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
     routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
-    routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode),
+    routes.IndividualContactAddressController.onPageLoad(mode),
     Message("individualContactAddressPostCodeLookup.title"),
     Message("individualContactAddressPostCodeLookup.heading"),
     Some(Message("site.secondaryHeader")),
     Message("individualContactAddressPostCodeLookup.hint"),
     Message("individualContactAddressPostCodeLookup.enterPostcode"),
+    Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
     Message("individualContactAddressPostCodeLookup.formLabel")
   )
 }

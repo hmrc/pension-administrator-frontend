@@ -74,6 +74,7 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
           Some(Message(director.fullName)),
           Message("directorPreviousAddressPostCodeLookup.text"),
           Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
+          Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
           Message("directorPreviousAddressPostCodeLookup.input.text")
         )
     }
