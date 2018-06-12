@@ -36,7 +36,7 @@ trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints
       behave like fieldThatBindsValidData(
         form,
         fieldName,
-        RegexpGen.from(crnRegex)
+        " 1234567 "
       )
 
       behave like fieldWithMaxLength(

@@ -18,10 +18,12 @@ package forms.mappings
 
 import play.api.data.{Forms, Mapping}
 
-trait PayeMapping extends Mappings {
+trait PayeMapping extends Mappings with Transforms{
 
   def payeMapping(keyPayeLength: String, keyPayeInvalid: String): Mapping[String] = {
-    Forms.text.verifying(
+    Forms.text.
+      transform(payeTransform, noTransform).
+      verifying(
       firstError(
         maxLength(PayeMapping.maxPayeLength, keyPayeLength),
         payeEmployerReferenceNumber(keyPayeInvalid))
