@@ -16,33 +16,32 @@
 
 package controllers.register
 
+import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import controllers.actions._
+import forms.register.DeclarationWorkingKnowledgeFormProvider
+import identifiers.register.DeclarationWorkingKnowledgeId
 import javax.inject.Inject
-
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
-import config.FrontendAppConfig
-import forms.register.DeclarationWorkingKnowledgeFormProvider
-import identifiers.register.DeclarationWorkingKnowledgeId
-import models.Mode
 import utils.annotations.Register
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator2, UserAnswers}
 import views.html.register.declarationWorkingKnowledge
 
 import scala.concurrent.Future
 
-class DeclarationWorkingKnowledgeController @Inject() (
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
-                                                     @Register navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: DeclarationWorkingKnowledgeFormProvider
-                                                   ) extends FrontendController with I18nSupport with Enumerable.Implicits {
+class DeclarationWorkingKnowledgeController @Inject()(
+                                                       appConfig: FrontendAppConfig,
+                                                       override val messagesApi: MessagesApi,
+                                                       dataCacheConnector: DataCacheConnector,
+                                                       @Register navigator: Navigator2,
+                                                       authenticate: AuthAction,
+                                                       getData: DataRetrievalAction,
+                                                       requireData: DataRequiredAction,
+                                                       formProvider: DeclarationWorkingKnowledgeFormProvider
+                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
@@ -62,7 +61,7 @@ class DeclarationWorkingKnowledgeController @Inject() (
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
         (value) =>
           dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode)(new UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, new UserAnswers(cacheMap))))
       )
   }
 }
