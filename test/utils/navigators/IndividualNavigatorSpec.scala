@@ -93,7 +93,7 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
-  lazy val individualAddressYearsPage = routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+  def individualAddressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
   def individualContactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)
   def individualContactAddressListPage(mode: Mode) = routes.IndividualContactAddressListController.onPageLoad(mode)
   def individualCAPostCodeLookupPage(mode: Mode) = routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
@@ -112,6 +112,8 @@ object IndividualNavigatorSpec extends OptionValues {
     UserAnswers()
     .lastPage(LastPage(lastPage.method, lastPage.url))
     .set(IndividualDetailsCorrectId)(true).asOpt.value
+  val individualDetailsCorrect = UserAnswers(Json.obj()).set(
+    IndividualDetailsCorrectId)(true).asOpt.value
   val individualDetailsInCorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(false).asOpt.value
   val individualSameContactAddress = UserAnswers(Json.obj()).set(

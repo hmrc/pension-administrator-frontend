@@ -17,13 +17,13 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import identifiers.{Identifier, LastPageId}
 import config.FrontendAppConfig
+import controllers.register.individual.routes
 import identifiers.register.individual._
+import identifiers.{Identifier, LastPageId}
+import models.{AddressYears, CheckMode, Mode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
-import controllers.register.individual.routes
-import models.{AddressYears, CheckMode, Mode, NormalMode}
 
 @Singleton
 class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
@@ -64,12 +64,11 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator
       case Some(true) =>
         answers.get(LastPageId) match {
           case Some(lastPage) => Call(lastPage.method, lastPage.url)
-          case _ => routes.WhatYouWillNeedController.onPageLoad()
-        }
-        if (config.contactAddressEnabled) {
-          routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
-        } else {
-          routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+          case _ => if (config.contactAddressEnabled) {
+            routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
+          } else {
+            routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+          }
         }
       case Some(false) =>
         routes.YouWillNeedToUpdateController.onPageLoad()
