@@ -33,34 +33,13 @@ import utils.UserAnswers
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import IndividualNavigatorSpec._
 
-  private def appConfig(isContactAddressEnabled: Boolean = false) = {
-    val application = new GuiceApplicationBuilder()
-      .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled))
-    application.injector.instanceOf[FrontendAppConfig]
-  }
-  
-  val navigator = new IndividualNavigator(appConfig(false))
-  val navigatorToggled = new IndividualNavigator(appConfig(true))
-  val navigatorx = new IndividualNavigator(frontendAppConfig)
-
-  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+  //Remove the routes and the corresponding tests once the toggle is removed
+  private def toggledRoute(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (IndividualDetailsCorrectId,                detailsCorrectNoLastPage,       whatYouWillNeedPage,                  None),
-    (IndividualDetailsCorrectId,                detailsCorrectLastPage,         lastPage,                             None),
-    (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
-    (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
-    (IndividualAddressYearsId,                  addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (IndividualAddressYearsId,                  addressYearsUnderAYear,         paPostCodeLookupPage(NormalMode),     Some(paPostCodeLookupPage(CheckMode))),
-    (IndividualAddressYearsId,                  emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
-    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
-    (IndividualPreviousAddressListId,           emptyAnswers,                   paAddressPage(NormalMode),            Some(paAddressPage(CheckMode))),
-    (IndividualPreviousAddressId,               emptyAnswers,                   contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (IndividualContactDetailsId,                emptyAnswers,                   individualDateOfBirthPage,            Some(checkYourAnswersPage)),
-    (IndividualDateOfBirthId,                   emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
-    (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
+    (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualAddressYearsPage(NormalMode),           None)
   )
 
-  private val toggledRoutes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
     (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualSameContactAddressPage(NormalMode),           None),
     (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
@@ -82,13 +61,18 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
   )
 
-    s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
-      behave like navigatorWithRoutes(navigatorToggled, toggledRoutes)
-    }
+  val navigatorToggled = new IndividualNavigator(appConfig(false))
+  s"When contact address journey is toggled off ${navigatorToggled.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigatorToggled, toggledRoute)
+  }
 
-    s"When contact address journey is toggled off ${navigator.getClass.getSimpleName}" must {
-      behave like navigatorWithRoutes(navigator, routes)
-    }
+  val navigator = new IndividualNavigator(appConfig(true))
+  s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigator, routes)
+  }
+  
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
@@ -97,6 +81,11 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object IndividualNavigatorSpec extends OptionValues {
+  private def appConfig(isContactAddressEnabled: Boolean = false) = {
+    val application = new GuiceApplicationBuilder()
+      .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled)).build()
+    application.injector.instanceOf[FrontendAppConfig]
+  }
 
   lazy val lastPage: Call = Call("GET", "http://www.test.com")
 
