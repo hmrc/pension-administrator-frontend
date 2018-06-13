@@ -58,4 +58,13 @@ trait StringFieldBehaviours extends FieldBehaviours {
     }
   }
 
+  def formWithTransform[A](form: Form[A],
+                           data: Map[String, String],
+                           expectedData: A): Unit = {
+    s"bind the form with the transformation" in {
+      val result = form.bind(data)
+      result.errors.size shouldBe 0
+      result.get shouldBe expectedData
+    }
+  }
 }

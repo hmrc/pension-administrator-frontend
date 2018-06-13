@@ -21,7 +21,7 @@ import play.api.data.Forms.tuple
 import play.api.data.Mapping
 import uk.gov.voa.play.form.ConditionalMappings.{mandatoryIfFalse, mandatoryIfTrue}
 
-trait NinoMapping extends Mappings {
+trait NinoMapping extends Mappings with Transforms {
 
   def ninoMapping(requiredKey: String,
                   requiredNinoKey: String = "common.error.nino.required",
@@ -35,6 +35,7 @@ trait NinoMapping extends Mappings {
       "nino" -> mandatoryIfTrue(
         "nino.hasNino",
         text(requiredNinoKey)
+          .transform(ninoTransform, noTransform)
           .verifying(validNino(invalidNinoKey))
       ),
       "reason" -> mandatoryIfFalse(
