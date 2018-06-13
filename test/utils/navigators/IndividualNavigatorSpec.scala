@@ -33,22 +33,13 @@ import utils.UserAnswers
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import IndividualNavigatorSpec._
 
-  private def appConfig(isContactAddressEnabled: Boolean = false) = {
-    val application = new GuiceApplicationBuilder()
-      .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled))
-    application.injector.instanceOf[FrontendAppConfig]
-  }
-
-    val navigator = new IndividualNavigator(appConfig(false))
-    val navigatorToggled = new IndividualNavigator(appConfig(true))
-   new IndividualNavigator(frontendAppConfig)
-
-  private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+  //Remove the routes and the corresponding tests once the toggle is removed
+  private def toggledRoute(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
     (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualAddressYearsPage(NormalMode),           None)
-    )
+  )
 
-  private val toggledRoutes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
     (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualSameContactAddressPage(NormalMode),           None),
     (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
@@ -70,32 +61,41 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
   )
 
-    s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
-      behave like navigatorWithRoutes(navigatorToggled, toggledRoutes)
-    }
+  val navigatorToggled = new IndividualNavigator(appConfig(false))
+  s"When contact address journey is toggled off ${navigatorToggled.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigatorToggled, toggledRoute)
+  }
 
-    s"When contact address journey is toggled off ${navigator.getClass.getSimpleName}" must {
-      behave like navigatorWithRoutes(navigator, routes)
-    }
-
+  val navigator = new IndividualNavigator(appConfig(true))
+  s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigator, routes)
+  }
 }
 
 object IndividualNavigatorSpec extends OptionValues {
-  val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
-  val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
-  val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
+  private def appConfig(isContactAddressEnabled: Boolean = false) = {
+    val application = new GuiceApplicationBuilder()
+      .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled)).build()
+    application.injector.instanceOf[FrontendAppConfig]
+  }
+
+  def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+  def youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
+  def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  def individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
   def individualSameContactAddressPage(mode: Mode) = routes.IndividualSameContactAddressController.onPageLoad(mode)
   def individualCAPostCodeLookupPage(mode: Mode) = routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
   def individualContactAddressListPage(mode: Mode) = routes.IndividualContactAddressListController.onPageLoad(mode)
   def individualContactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)
   def individualAddressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
   def paPostCodeLookupPage(mode: Mode) = routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode)
-  val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
+  def contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
   def paAddressListPage(mode: Mode) = routes.IndividualPreviousAddressListController.onPageLoad(mode)
   def paAddressPage(mode: Mode) = routes.IndividualPreviousAddressController.onPageLoad(mode)
-  val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  def declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
 
   val emptyAnswers = new UserAnswers(Json.obj())
   val individualDetailsCorrect = UserAnswers(Json.obj()).set(

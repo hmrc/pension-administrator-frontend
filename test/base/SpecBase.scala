@@ -41,4 +41,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
   def fakeRequest = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  def appRunning(): Unit = app
 }
