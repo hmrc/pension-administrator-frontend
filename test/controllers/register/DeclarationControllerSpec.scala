@@ -27,7 +27,7 @@ import models.requests.AuthenticatedRequest
 import play.api.data.Form
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, FakeNavigator2}
 import views.html.register.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -115,7 +115,7 @@ class DeclarationControllerSpec extends ControllerSpecBase {
 object DeclarationControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private def fakeAuthAction(userType: UserType) = new AuthAction {
