@@ -473,3 +473,6 @@ individualContactAddressPostCodeLookup.formLabel = Postcode
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
+
+company.contactAddressList.title = Select the contact address
+company.contactAddressList.heading = Select {0}’s contact address

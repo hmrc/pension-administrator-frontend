@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class CompanyContactAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     override val cacheConnector: DataCacheConnector,
-                                                    override val navigator: Navigator,
+                                                    @RegisterCompany override val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction) extends AddressListController with Retrievals{
@@ -52,14 +52,14 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    CompanyContactAddressPostCodeLookupId.retrieve.right.map {
-      addresses =>
+    (BusinessDetailsId and CompanyPreviousAddressPostCodeLookupId).retrieve.right.map {
+      case details ~ addresses =>
         AddressListViewModel(
           postCall = routes.CompanyContactAddressListController.onSubmit(mode),
           manualInputCall = routes.CompanyContactAddressListController.onPageLoad(mode),
           addresses = addresses,
-          Message("common.contactAddressList.title"),
-          Message("common.contactAddressList.heading"),
+          Message("company.contactAddressList.title"),
+          Message("company.contactAddressList.heading").withArgs(details.companyName),
           Some(Message("site.secondaryHeader")),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
