@@ -52,7 +52,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    (BusinessDetailsId and CompanyPreviousAddressPostCodeLookupId).retrieve.right.map {
+    (BusinessDetailsId and CompanyContactAddressPostCodeLookupId).retrieve.right.map {
       case details ~ addresses =>
         AddressListViewModel(
           postCall = routes.CompanyContactAddressListController.onSubmit(mode),
