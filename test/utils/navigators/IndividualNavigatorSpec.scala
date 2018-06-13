@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register.individual._
-import models.{AddressYears, CheckMode, Mode, NormalMode}
+import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
@@ -32,9 +32,10 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   val navigator = new IndividualNavigator()
 
-  private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (IndividualDetailsCorrectId,                individualDetailsCorrect,       whatYouWillNeedPage,                  None),
+    (IndividualDetailsCorrectId,                detailsCorrectNoLastPage,       whatYouWillNeedPage,                  None),
+    (IndividualDetailsCorrectId,                detailsCorrectLastPage,         lastPage,                             None),
     (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
     (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
     (WhatYouWillNeedId,                         emptyAnswers,                   individualDateOfBirthPage,            None),
@@ -50,26 +51,36 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   )
 
   navigator.getClass.getSimpleName must {
-    behave like navigatorWithRoutes(navigator, routes)
+    appRunning()
+    behave like nonMatchingNavigator(navigator)
+    behave like navigatorWithRoutes(navigator, routes())
   }
+
 }
 
 object IndividualNavigatorSpec extends OptionValues {
-  val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
-  val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
-  val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
-  val individualAddressYearsPage = routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+
+  lazy val lastPage: Call = Call("GET", "http://www.test.com")
+
+  lazy val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+  lazy val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
+  lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  lazy val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
+  lazy val individualAddressYearsPage = routes.IndividualAddressYearsController.onPageLoad(NormalMode)
   def paPostCodeLookupPage(mode: Mode) = routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode)
-  val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
+  lazy val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
   def paAddressListPage(mode: Mode) = routes.IndividualPreviousAddressListController.onPageLoad(mode)
   def paAddressPage(mode: Mode) = routes.IndividualPreviousAddressController.onPageLoad(mode)
-  val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  lazy val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
 
   val emptyAnswers = new UserAnswers(Json.obj())
-  val individualDetailsCorrect = UserAnswers(Json.obj()).set(
+  val detailsCorrectNoLastPage = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(true).asOpt.value
+  val detailsCorrectLastPage =
+    UserAnswers()
+    .lastPage(LastPage(lastPage.method, lastPage.url))
+    .set(IndividualDetailsCorrectId)(true).asOpt.value
   val individualDetailsInCorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(false).asOpt.value
 

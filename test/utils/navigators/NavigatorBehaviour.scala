@@ -20,7 +20,7 @@ import identifiers.Identifier
 import models.{CheckMode, NormalMode}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatest.prop.{PropertyChecks, TableFor4}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import utils.{Navigator, UserAnswers}
 
 trait NavigatorBehaviour extends PropertyChecks with OptionValues {
@@ -51,4 +51,25 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
       }
     }
   }
+
+  def nonMatchingNavigator(navigator: Navigator): Unit = {
+
+    val testId: Identifier = new Identifier {}
+
+    "behaviour like a navigator without routes" when {
+      "navigating in NormalMode" must {
+        "return a call given a non-configured Id" in {
+          navigator.nextPage(testId, NormalMode)(UserAnswers()) mustBe a[Call]
+        }
+      }
+
+      "navigating in CheckMode" must {
+        "return a call given a non-configured Id" in {
+          navigator.nextPage(testId, CheckMode)(UserAnswers()) mustBe a[Call]
+        }
+      }
+    }
+
+  }
+
 }

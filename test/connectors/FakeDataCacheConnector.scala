@@ -80,6 +80,11 @@ trait FakeDataCacheConnector extends DataCacheConnector with Matchers {
   override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
     Future.successful(Ok)
 
+  def reset(): Unit ={
+    data.clear()
+    removed.clear()
+    json = None
+  }
 }
 
 object FakeDataCacheConnector extends FakeDataCacheConnector
