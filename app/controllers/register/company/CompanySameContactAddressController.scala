@@ -53,8 +53,7 @@ class CompanySameContactAddressController @Inject()(
   private[controllers] val hint: Message = "company.same.contact.address.hint"
   private[controllers] val secondaryHeader: Message = "site.secondaryHeader"
 
-
-  private def viewmodel(mode: Mode) =
+  private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
         (CompanyAddressId and BusinessDetailsId).retrieve.right.map {

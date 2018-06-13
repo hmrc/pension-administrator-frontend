@@ -225,7 +225,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             )
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result) mustEqual Some(onwardRoute.url)
+            redirectLocation(result).get mustEqual onwardRoute.url
 
             val address = Address("value 1", "value 2", None, None, Some("AB1 1AB"), "GB")
 
