@@ -52,6 +52,10 @@ class IndividualSameContactAddressIdSpec extends WordSpec with MustMatchers with
       "remove the data for `PreviousAddress`" in {
         result.get(IndividualPreviousAddressId) mustNot be(defined)
       }
+
+      "remove the data for `AddressYears`" in {
+        result.get(IndividualAddressYearsId) mustNot be(defined)
+      }
     }
 
     "`IndividualSameContactAddress` is set to `false`" must {
@@ -73,6 +77,10 @@ class IndividualSameContactAddressIdSpec extends WordSpec with MustMatchers with
       "remove the data for `PreviousAddress`" in {
         result.get(IndividualPreviousAddressId) mustNot be(defined)
       }
+
+      "remove the data for `AddressYears`" in {
+        result.get(IndividualAddressYearsId) mustNot be(defined)
+      }
     }
 
     "`IndividualSameContactAddress` is removed" must {
@@ -85,6 +93,10 @@ class IndividualSameContactAddressIdSpec extends WordSpec with MustMatchers with
 
       "remove the data for `PreviousAddress`" in {
         result.get(IndividualPreviousAddressId) mustNot be(defined)
+      }
+
+      "remove the data for `AddressYears`" in {
+        result.get(IndividualAddressYearsId) mustNot be(defined)
       }
     }
   }

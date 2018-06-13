@@ -27,6 +27,7 @@ case object IndividualSameContactAddressId extends TypedIdentifier[Boolean] {
             answers
           .remove(IndividualContactAddressId)
           .flatMap(_.remove(IndividualContactAddressPostCodeLookupId))
+          .flatMap(_.remove(IndividualAddressYearsId))
           .flatMap(_.remove(IndividualPreviousAddressPostCodeLookupId))
           .flatMap(_.remove(IndividualPreviousAddressId))
   }
