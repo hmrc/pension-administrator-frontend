@@ -45,19 +45,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   private val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualAddressYearsPage(NormalMode),           None),
-    (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
-    (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
-    (IndividualAddressYearsId,                  addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (IndividualAddressYearsId,                  addressYearsUnderAYear,         paPostCodeLookupPage(NormalMode),     Some(paPostCodeLookupPage(CheckMode))),
-    (IndividualAddressYearsId,                  emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
-    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
-    (IndividualPreviousAddressListId,           emptyAnswers,                   paAddressPage(NormalMode),            Some(paAddressPage(CheckMode))),
-    (IndividualPreviousAddressId,               emptyAnswers,                   contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (IndividualContactDetailsId,                emptyAnswers,                   individualDateOfBirthPage,            Some(checkYourAnswersPage)),
-    (IndividualDateOfBirthId,                   emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
-    (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
-  )
+    (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualAddressYearsPage(NormalMode),           None)
+    )
 
   private val toggledRoutes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
