@@ -90,13 +90,13 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
   val viewModel = PostcodeLookupViewModel (
     routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
-    routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
+    routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode),
     Message("companyContactAddressPostCodeLookup.title"),
     Message("companyContactAddressPostCodeLookup.heading").withArgs(companyName),
     Some(Message("site.secondaryHeader")),
     Message("companyContactAddressPostCodeLookup.lede").withArgs(companyName),
-    Message("companyContactAddressPostCodeLookup.enterPostcode"),
-    Message("companyContactAddressPostCodeLookup.postalCode")
+    Message("common.postcodeLookup.enterPostcode"),
+    Message("address.postcode")
   )
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
