@@ -26,8 +26,6 @@ class UnauthorisedAssistantViewSpec extends ViewBehaviours {
   def createView = () => unauthorisedAssistant(frontendAppConfig)(fakeRequest, messages)
 
   "UnauthorisedAssistant view" must {
-    behave like normalPage(createView, messageKeyPrefix, "lede", "info", "continue")
-
-    behave like pageWithContinueButton(createView, frontendAppConfig.governmentGatewayUrl, "continue-to-gg")
+    behave like normalPage(createView, messageKeyPrefix, "lede", "info")
   }
 }
