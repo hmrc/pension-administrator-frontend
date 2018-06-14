@@ -16,15 +16,15 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
+import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
+import javax.inject.Inject
 import models._
 import models.register.company.BusinessDetails
 import models.requests.DataRequest
@@ -36,7 +36,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ import scala.concurrent.Future
 class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 dataCacheConnector: DataCacheConnector,
-                                                @RegisterCompany navigator: Navigator,
+                                                @RegisterCompany navigator: Navigator2,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
@@ -85,7 +85,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                 upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
                   upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
                     dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
-                      Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode)(userAnswers))
+                      Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, userAnswers))
                     }
                   }
                 }

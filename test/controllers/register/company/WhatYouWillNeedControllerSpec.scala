@@ -20,7 +20,7 @@ import audit.testdoubles.StubSuccessfulAuditService
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
@@ -33,7 +33,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
     new WhatYouWillNeedController(
       frontendAppConfig,
       messagesApi,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

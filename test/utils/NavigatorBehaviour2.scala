@@ -26,14 +26,14 @@ import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait NavigatorBehaviour2 extends PropertyChecks with OptionValues {
   this: WordSpec with MustMatchers =>
 
   def navigatorWithRoutes[A <: Identifier](navigator: Navigator2,
                                            dataCacheConnector: FakeDataCacheConnector,
-                                           routes: TableFor6[A, UserAnswers, Call, Boolean, Option[Call], Boolean])
-                                          (implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Unit = {
+                                           routes: TableFor6[A, UserAnswers, Call, Boolean, Option[Call], Boolean]): Unit = {
 
     "behave like a navigator" when {
 
@@ -82,7 +82,7 @@ trait NavigatorBehaviour2 extends PropertyChecks with OptionValues {
     }
   }
 
-  def nonMatchingNavigator(navigator: Navigator2)(implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Unit = {
+  def nonMatchingNavigator(navigator: Navigator2): Unit = {
 
     val testId: Identifier = new Identifier {}
 
@@ -101,5 +101,11 @@ trait NavigatorBehaviour2 extends PropertyChecks with OptionValues {
     }
 
   }
+
+  protected implicit val request: IdentifiedRequest = new IdentifiedRequest {
+    override def externalId: String = "test-external-id"
+  }
+
+  protected implicit val hc: HeaderCarrier = HeaderCarrier()
 
 }

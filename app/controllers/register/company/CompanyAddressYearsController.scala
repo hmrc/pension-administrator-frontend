@@ -16,37 +16,38 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
+import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator2, UserAnswers}
 import views.html.register.company.companyAddressYears
 
 import scala.concurrent.Future
 
 class CompanyAddressYearsController @Inject()(
-                                       appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       dataCacheConnector: DataCacheConnector,
-                                       @RegisterCompany navigator: Navigator,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddressYearsFormProvider
-                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                               appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               dataCacheConnector: DataCacheConnector,
+                                               @RegisterCompany navigator: Navigator2,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: AddressYearsFormProvider
+                                             ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form = formProvider("companyAddressYears.error.required")
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       CompanyAddressId.retrieve.right.map { address =>
         val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {
@@ -57,15 +58,15 @@ class CompanyAddressYearsController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       CompanyAddressId.retrieve.right.map { address =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(companyAddressYears(appConfig, address, formWithErrors, mode))),
-          (value) =>
+          value =>
             dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(CompanyAddressYearsId, mode)(new UserAnswers(cacheMap))))
+              Redirect(navigator.nextPage(CompanyAddressYearsId, mode, UserAnswers(cacheMap))))
         )
       }
   }

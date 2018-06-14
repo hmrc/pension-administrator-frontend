@@ -26,7 +26,7 @@ import models.register.company.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.businessDetails
 
 class BusinessDetailsControllerSpec extends ControllerSpecBase {
@@ -37,8 +37,16 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase {
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new BusinessDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new BusinessDetailsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
   def viewAsString(form: Form[_] = form) = businessDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
