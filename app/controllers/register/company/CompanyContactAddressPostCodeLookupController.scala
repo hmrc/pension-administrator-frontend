@@ -51,13 +51,13 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
       BusinessDetailsId.retrieve.right.map{ businessDetails =>
         PostcodeLookupViewModel (
           routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
-          routes.CompanyPreviousAddressController.onPageLoad(mode),
+          routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
           Message("companyContactAddressPostCodeLookup.title"),
           Message("companyContactAddressPostCodeLookup.heading").withArgs(businessDetails.companyName),
           Some(Message("site.secondaryHeader")),
           Message("companyContactAddressPostCodeLookup.lede").withArgs(businessDetails.companyName),
-          Message("companyContactAddressPostCodeLookup.enterPostcode"),
-          Message("companyContactAddressPostCodeLookup.postalCode")
+          Message("common.postcodeLookup.enterPostcode"),
+          Message("address.postcode")
         )
       }
   )

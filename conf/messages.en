@@ -204,9 +204,6 @@ companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if y
 companyContactAddressPostCodeLookup.title = What is the contact address?
 companyContactAddressPostCodeLookup.heading = What is {0}’s contact address?
 companyContactAddressPostCodeLookup.lede = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
-companyContactAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
-companyContactAddressPostCodeLookup.postalCode = Postal code
-companyContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually if the address is overseas.
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
