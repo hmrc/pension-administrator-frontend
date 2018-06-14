@@ -16,37 +16,37 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
-
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.company.CompanyRegistrationNumberId
+import javax.inject.Inject
 import models.Mode
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.company.companyRegistrationNumber
 
 import scala.concurrent.Future
 
-class CompanyRegistrationNumberController @Inject() (
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        @RegisterCompany navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CompanyRegistrationNumberFormProvider
-                                      ) extends FrontendController with I18nSupport {
+class CompanyRegistrationNumberController @Inject()(
+                                                     appConfig: FrontendAppConfig,
+                                                     override val messagesApi: MessagesApi,
+                                                     dataCacheConnector: DataCacheConnector,
+                                                     @RegisterCompany navigator: Navigator2,
+                                                     authenticate: AuthAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: CompanyRegistrationNumberFormProvider
+                                                   ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(CompanyRegistrationNumberId) match {
         case None => form
@@ -55,14 +55,14 @@ class CompanyRegistrationNumberController @Inject() (
       Ok(companyRegistrationNumber(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(companyRegistrationNumber(appConfig, formWithErrors, mode))),
-        (value) =>
+        value =>
           dataCacheConnector.save(request.externalId, CompanyRegistrationNumberId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(CompanyRegistrationNumberId, mode)(new UserAnswers(cacheMap))))
-    )
+            Redirect(navigator.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(cacheMap))))
+      )
   }
 }
