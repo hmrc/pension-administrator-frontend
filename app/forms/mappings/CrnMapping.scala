@@ -18,10 +18,10 @@ package forms.mappings
 
 import play.api.data.Mapping
 
-trait CrnMapping extends Mappings {
+trait CrnMapping extends Mappings with Transforms {
 
   def crnMapping(keyCrnRequired: String, keyCrnLength: String, keyCrnInvalid: String): Mapping[String] = {
-    text(keyCrnRequired)
+    text(keyCrnRequired).transform(standardTextTransform, noTransform)
       .verifying(firstError(
         maxLength(CrnMapping.maxCrnLength, keyCrnLength),
         companyRegistrationNumber(keyCrnInvalid)

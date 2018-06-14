@@ -19,11 +19,24 @@ package forms.register.company.directors
 import forms.behaviours.NinoBehaviours
 
 class DirectorNinoFormProviderSpec extends NinoBehaviours {
+  private val requiredKey = "directorNino.error.required"
+  private val requiredNinoKey = "common.error.nino.required"
+  private val requiredReasonKey = "directorNino.error.reason.required"
+  private val reasonLengthKey = "directorNino.error.reason.length"
+  private val invalidNinoKey = "common.error.nino.invalid"
+  private val invalidReasonKey = "common.error.reason.invalid"
 
   "DirectorNinoFormProviderSpec" should {
-    val testForm = new DirectorNinoFormProvider()()
 
-    behave like formWithNino(testForm)
+    val testForm = new DirectorNinoFormProvider().apply()
+
+    behave like formWithNino(testForm,
+      requiredKey,
+      requiredNinoKey,
+      requiredReasonKey,
+      reasonLengthKey,
+      invalidNinoKey,
+      invalidReasonKey)
   }
 
 }

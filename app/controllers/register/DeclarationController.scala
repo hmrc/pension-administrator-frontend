@@ -17,7 +17,6 @@
 package controllers.register
 
 import javax.inject.Inject
-
 import com.google.inject.Singleton
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
@@ -30,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator, Navigator2, UserAnswers}
 import views.html.register.declaration
 
 import scala.concurrent.Future
@@ -41,7 +40,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       authenticate: AuthAction,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
-                                      @Register navigator: Navigator,
+                                      @Register navigator: Navigator2,
                                       formProvider: DeclarationFormProvider,
                                       dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport {
 
@@ -71,7 +70,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                 declaration(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
           },
         success => dataCacheConnector.save(request.externalId, DeclarationId, success).map { cacheMap =>
-          Redirect(navigator.nextPage(DeclarationId, NormalMode)(UserAnswers(cacheMap)))
+          Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
         }
       )
   }

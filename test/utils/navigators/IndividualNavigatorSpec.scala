@@ -72,6 +72,12 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     appRunning()
     behave like navigatorWithRoutes(navigator, routes)
   }
+  
+  navigator.getClass.getSimpleName must {
+    appRunning()
+    behave like nonMatchingNavigator(navigator)
+    behave like navigatorWithRoutes(navigator, routes())
+  }
 }
 
 object IndividualNavigatorSpec extends OptionValues {
@@ -81,23 +87,31 @@ object IndividualNavigatorSpec extends OptionValues {
     application.injector.instanceOf[FrontendAppConfig]
   }
 
-  def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
-  def youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
-  def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  def individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
-  def individualSameContactAddressPage(mode: Mode) = routes.IndividualSameContactAddressController.onPageLoad(mode)
-  def individualCAPostCodeLookupPage(mode: Mode) = routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
-  def individualContactAddressListPage(mode: Mode) = routes.IndividualContactAddressListController.onPageLoad(mode)
-  def individualContactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)
+  lazy val lastPage: Call = Call("GET", "http://www.test.com")
+
+  lazy val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+  lazy val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
+  lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  lazy val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
   def individualAddressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
+  def individualContactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)
+  def individualContactAddressListPage(mode: Mode) = routes.IndividualContactAddressListController.onPageLoad(mode)
+  def individualCAPostCodeLookupPage(mode: Mode) = routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
+  def individualSameContactAddressPage(mode: Mode) = routes.IndividualSameContactAddressController.onPageLoad(mode)
   def paPostCodeLookupPage(mode: Mode) = routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode)
-  def contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
+  lazy val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
   def paAddressListPage(mode: Mode) = routes.IndividualPreviousAddressListController.onPageLoad(mode)
   def paAddressPage(mode: Mode) = routes.IndividualPreviousAddressController.onPageLoad(mode)
-  def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  def declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  lazy val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
 
   val emptyAnswers = new UserAnswers(Json.obj())
+  val detailsCorrectNoLastPage = UserAnswers(Json.obj()).set(
+    IndividualDetailsCorrectId)(true).asOpt.value
+  val detailsCorrectLastPage =
+    UserAnswers()
+    .lastPage(LastPage(lastPage.method, lastPage.url))
+    .set(IndividualDetailsCorrectId)(true).asOpt.value
   val individualDetailsCorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(true).asOpt.value
   val individualDetailsInCorrect = UserAnswers(Json.obj()).set(

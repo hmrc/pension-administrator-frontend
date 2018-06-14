@@ -18,12 +18,12 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import identifiers.Identifier
+import controllers.register.individual.routes
 import identifiers.register.individual._
+import identifiers.{Identifier, LastPageId}
+import models.{AddressYears, CheckMode, Mode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
-import controllers.register.individual.routes
-import models.{AddressYears, CheckMode, Mode, NormalMode}
 
 @Singleton
 class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
@@ -62,10 +62,13 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator
   def detailsCorrect(answers: UserAnswers): Call = {
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) =>
-        if (config.contactAddressEnabled) {
-          routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
-        } else {
-          routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+        answers.get(LastPageId) match {
+          case Some(lastPage) => Call(lastPage.method, lastPage.url)
+          case _ => if (config.contactAddressEnabled) {
+            routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
+          } else {
+            routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+          }
         }
       case Some(false) =>
         routes.YouWillNeedToUpdateController.onPageLoad()
