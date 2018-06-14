@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers.register.company
 
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase

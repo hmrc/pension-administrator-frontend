@@ -16,22 +16,24 @@
 
 package utils
 
-import play.api.mvc.Call
+import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.Identifier
 import models.{Mode, NormalMode}
+import play.api.mvc.Call
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class FakeNavigator2(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator2 {
 
   private[this] var userAnswers: Option[UserAnswers] = None
 
-  override def nextPage(controllerId: Identifier, mode: Mode): UserAnswers => Call = {
-    ua =>
-      userAnswers = Some(ua)
-      desiredRoute
-  }
-
   def lastUserAnswers: Option[UserAnswers] = userAnswers
 
+  override protected def dataCacheConnector: DataCacheConnector = FakeDataCacheConnector
+
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = NavigateTo.dontSave(desiredRoute)
+
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = None
 }
 
-object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)
+object FakeNavigator2 extends FakeNavigator2(Call("GET", "www.example.com"), NormalMode){
+
+}
