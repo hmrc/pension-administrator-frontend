@@ -19,16 +19,14 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeDataCacheConnector
 import controllers.register.company.routes
-import identifiers.Identifier
 import identifiers.register.BusinessTypeId
 import identifiers.register.company._
+import identifiers.{Identifier, LastPageId}
 import models._
-import models.requests.IdentifiedRequest
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import org.scalatest.prop.{TableFor4, TableFor6}
+import org.scalatest.OptionValues
+import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour2, UserAnswers}
 
 class RegisterCompanyNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
@@ -40,9 +38,10 @@ class RegisterCompanyNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                                   "User Answers",        "Next Page (Normal Mode)",        "Save(NormalMode)", "Next Page (Check Mode)",             "Save(CheckMode"),
-    (BusinessTypeId,                         emptyAnswers,           businessDetailsPage,             true,               None,                                 false),
-    (BusinessDetailsId,                      emptyAnswers,           confirmCompanyDetailsPage,       true,               None,                                 false),
+    (BusinessTypeId,                         emptyAnswers,           businessDetailsPage,             false,              None,                                 false),
+    (BusinessDetailsId,                      emptyAnswers,           confirmCompanyDetailsPage,       false,              None,                                 false),
     (ConfirmCompanyAddressId,                emptyAnswers,           whatYouWillNeedPage,             true,               None,                                 false),
+    (ConfirmCompanyAddressId,                lastPage,               testLastPage,                    false,              None,                                 false),
     (WhatYouWillNeedId,                      emptyAnswers,           companyDetailsPage,              true,               None,                                 false),
     (CompanyDetailsId,                       emptyAnswers,           companyRegistrationNumberPage,   true,               Some(checkYourAnswersPage),           false),
     (CompanyRegistrationNumberId,            emptyAnswers,           companyAddressYearsPage,         true,               Some(checkYourAnswersPage),           false),
@@ -66,6 +65,7 @@ class RegisterCompanyNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
 
 object RegisterCompanyNavigatorSpec2 extends OptionValues {
 
+  private lazy val testLastPage = Call("GET", "www.test.com")
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   private lazy val businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
@@ -75,14 +75,19 @@ object RegisterCompanyNavigatorSpec2 extends OptionValues {
   private lazy val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
   private lazy val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
   private lazy val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
-  private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
-  private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
-  private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
   private lazy val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+
+  private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
+
+  private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
+
+  private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
 
   private lazy val emptyAnswers = UserAnswers(Json.obj())
   private lazy val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private lazy val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+  private lazy val lastPage = UserAnswers(Json.obj())
+    .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
 }

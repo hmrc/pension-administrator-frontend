@@ -19,12 +19,12 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import connectors.DataCacheConnector
 import controllers.register.company.routes
-import identifiers.Identifier
+import identifiers.LastPageId
 import identifiers.register.BusinessTypeId
 import identifiers.register.company._
 import models._
 import play.api.mvc.Call
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 
 @Singleton
 class RegisterCompanyNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
@@ -34,9 +34,9 @@ class RegisterCompanyNavigator2 @Inject()(val dataCacheConnector: DataCacheConne
 
   //noinspection ScalaStyle
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessTypeId => NavigateTo.save(routes.BusinessDetailsController.onPageLoad(NormalMode))
-    case BusinessDetailsId => NavigateTo.save(routes.ConfirmCompanyDetailsController.onPageLoad())
-    case ConfirmCompanyAddressId => NavigateTo.save(routes.WhatYouWillNeedController.onPageLoad())
+    case BusinessTypeId => NavigateTo.dontSave(routes.BusinessDetailsController.onPageLoad(NormalMode))
+    case BusinessDetailsId => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+    case ConfirmCompanyAddressId => detailsCorrect(from.userAnswers)
     case WhatYouWillNeedId => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
     case CompanyDetailsId => NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(NormalMode))
@@ -59,6 +59,13 @@ class RegisterCompanyNavigator2 @Inject()(val dataCacheConnector: DataCacheConne
     case CompanyPreviousAddressId => NavigateTo.dontSave(checkYourAnswers)
     case ContactDetailsId => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(LastPageId) match {
+      case Some(lastPage) => NavigateTo.dontSave(Call(lastPage.method, lastPage.url))
+      case _ => NavigateTo.save(routes.WhatYouWillNeedController.onPageLoad())
+    }
   }
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
