@@ -16,23 +16,23 @@
 
 package controllers.register
 
-import play.api.data.Form
-import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import connectors._
-import controllers.actions._
-import play.api.test.Helpers.{contentAsString, _}
-import views.html.register.declarationFitAndProper
 import controllers.ControllerSpecBase
+import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, PsaSubscriptionResponseId}
-import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.{AuthenticatedRequest, DataRequest}
+import models.{PSAUser, UserType}
+import play.api.data.Form
 import play.api.libs.json.Writes
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, BadRequestException}
+import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
+import utils.{FakeNavigator2, KnownFactsRetrieval, UserAnswers}
+import views.html.register.declarationFitAndProper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -174,7 +174,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
@@ -188,28 +188,28 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
   private val knownFacts = Some(KnownFacts(
     Set(KnownFact("PSAID", "test-psa")),
     Set(KnownFact("NINO", "test-nino")
-  )))
+    )))
 
   private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
     override def registerPsa
-        (answers: UserAnswers)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+    (answers: UserAnswers)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.successful(validPsaResponse)
     }
   }
 
   private val duplicateRegistrationPensionsSchemeConnector = new PensionsSchemeConnector {
     override def registerPsa
-        (answers: UserAnswers)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+    (answers: UserAnswers)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidBusinessPartnerException())
     }
   }
 
   private val submissionInvalidPensionsSchemeConnector = new PensionsSchemeConnector {
     override def registerPsa
-        (answers: UserAnswers)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+    (answers: UserAnswers)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidPayloadException())
     }
   }
