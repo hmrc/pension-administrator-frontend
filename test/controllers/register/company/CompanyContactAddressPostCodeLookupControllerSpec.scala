@@ -96,6 +96,7 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
     Some(Message("site.secondaryHeader")),
     Message("companyContactAddressPostCodeLookup.lede").withArgs(companyName),
     Message("common.postcodeLookup.enterPostcode"),
+    Some(Message("common.postcodeLookup.enterPostcode.link")),
     Message("address.postcode")
   )
 
