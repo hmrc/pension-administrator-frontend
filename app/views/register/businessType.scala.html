@@ -27,7 +27,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = controllers.register.routes.BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = controllers.register.company.routes.BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 

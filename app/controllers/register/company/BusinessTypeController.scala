@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.register
-
-import javax.inject.Inject
+package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
 import identifiers.register.BusinessTypeId
+import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
