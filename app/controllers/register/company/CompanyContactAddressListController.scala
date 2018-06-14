@@ -56,7 +56,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
       case details ~ addresses =>
         AddressListViewModel(
           postCall = routes.CompanyContactAddressListController.onSubmit(mode),
-          manualInputCall = routes.CompanyContactAddressListController.onPageLoad(mode),
+          manualInputCall = routes.CompanyContactAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("company.contactAddressList.title"),
           Message("company.contactAddressList.heading").withArgs(details.companyName),
@@ -64,7 +64,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )
-    }.left.map(_ => Future.successful(Redirect(routes.CompanyContactAddressListController.onPageLoad(mode))))
+    }.left.map(_ => Future.successful(Redirect(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))))
   }
 
 

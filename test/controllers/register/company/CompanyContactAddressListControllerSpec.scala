@@ -107,7 +107,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
           .withFormUrlEncodedBody("value" -> "0")),
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.CompanyContactAddressListController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
         }
       )
     }
@@ -115,11 +115,11 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
 }
 
 object CompanyContactAddressListControllerSpec extends OptionValues {
-  val onwardRoute = routes.CompanyContactAddressListController.onPageLoad(NormalMode)
+  val onwardRoute = routes.CompanyContactAddressController.onPageLoad(NormalMode)
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
       routes.CompanyContactAddressListController.onSubmit(NormalMode),
-      routes.CompanyContactAddressListController.onPageLoad(NormalMode),
+      routes.CompanyContactAddressController.onPageLoad(NormalMode),
       addresses,
       Message("company.contactAddressList.title"),
       Message("company.contactAddressList.heading").withArgs("test company"),
