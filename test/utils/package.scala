@@ -18,12 +18,9 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
-import identifiers.register.company._
+import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, _}
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualPreviousAddressId, IndividualPreviousAddressListId}
 import models.register.company.BusinessDetails
-import models.{Address, TolerantAddress}
-import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
-import identifiers.register.individual._
 import models.{Address, LastPage, TolerantAddress}
 import org.scalatest.OptionValues
 

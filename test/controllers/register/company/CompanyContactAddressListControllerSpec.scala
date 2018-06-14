@@ -63,7 +63,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
           .withFormUrlEncodedBody("value" -> "0")),
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.CompanyContactAddressListController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
         }
       )
     }
