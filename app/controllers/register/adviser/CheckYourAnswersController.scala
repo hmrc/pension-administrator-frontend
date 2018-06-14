@@ -16,23 +16,22 @@
 
 package controllers.register.adviser
 
-import javax.inject.Inject
-
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
+import controllers.actions._
 import identifiers.register.adviser.CheckYourAnswersId
+import javax.inject.Inject
 import models.NormalMode
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Adviser
-import utils.{CheckYourAnswersFactory, Navigator}
+import utils.{CheckYourAnswersFactory, Navigator2}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
-                                           @Adviser navigator: Navigator,
+                                           @Adviser navigator: Navigator2,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
@@ -47,6 +46,6 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-    Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode)(request.userAnswers))
+      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
   }
 }

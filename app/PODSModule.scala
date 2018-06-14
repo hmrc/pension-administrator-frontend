@@ -44,6 +44,10 @@ class PODSModule extends AbstractModule {
       .annotatedWith(classOf[Adviser])
       .to(classOf[AdviserNavigator])
 
+    bind(classOf[Navigator2])
+      .annotatedWith(classOf[Adviser])
+      .to(classOf[AdviserNavigator2])
+
     bind(classOf[CountryOptions])
       .annotatedWith(classOf[EUAndEEA])
       .to(classOf[CountryOptionsEUAndEEA])
