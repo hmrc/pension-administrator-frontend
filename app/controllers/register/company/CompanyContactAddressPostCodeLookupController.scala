@@ -19,10 +19,11 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.company.CompanyContactAddressPostCodeLookupId
+import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressPostCodeLookupId, CompanyDetailsId}
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -42,35 +43,37 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
                                                                getData: DataRetrievalAction,
                                                                requireData: DataRequiredAction,
                                                                formProvider: PostCodeLookupFormProvider
-                                                              ) extends PostcodeLookupController {
+                                                              ) extends PostcodeLookupController with Retrievals {
 
-  import CompanyContactAddressPostCodeLookupController._
+
+  def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
+    implicit request =>
+      BusinessDetailsId.retrieve.right.map{ businessDetails =>
+        PostcodeLookupViewModel (
+          routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
+          routes.CompanyPreviousAddressController.onPageLoad(mode),
+          Message("companyContactAddressPostCodeLookup.title"),
+          Message("companyContactAddressPostCodeLookup.heading").withArgs(businessDetails.companyName),
+          Some(Message("site.secondaryHeader")),
+          Message("companyContactAddressPostCodeLookup.lede").withArgs(businessDetails.companyName),
+          Message("companyContactAddressPostCodeLookup.enterPostcode"),
+          Message("companyContactAddressPostCodeLookup.postalCode")
+        )
+      }
+  )
 
   override protected def form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode))
+      viewModel(mode).retrieve.right.map(get)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyContactAddressPostCodeLookupId, viewModel(mode), mode)
+      viewModel(mode).retrieve.right.map{ vm =>
+        post(CompanyContactAddressPostCodeLookupId, vm, mode)
+      }
   }
-
-}
-
-object CompanyContactAddressPostCodeLookupController {
-
-  def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
-    routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
-    routes.CompanyPreviousAddressController.onPageLoad(mode), //TODO change to manual entry page for contact address
-    Message("companyContactAddressPostCodeLookup.title"),
-    Message("companyContactAddressPostCodeLookup.heading"),
-    Some(Message("site.secondaryHeader")),
-    Message("companyContactAddressPostCodeLookup.lede"),
-    Message("companyContactAddressPostCodeLookup.enterPostcode"),
-    Message("companyContactAddressPostCodeLookup.postalCode")
-  )
 
 }
