@@ -18,6 +18,8 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
+import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyPreviousAddressId}
+import identifiers.register.individual._
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, CompanyPreviousAddressId}
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualPreviousAddressId, IndividualPreviousAddressListId}
 import models.register.company.BusinessDetails
@@ -60,6 +62,14 @@ package object utils {
 
     def companyAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(CompanyAddressListId)(address).asOpt.value
+    }
+
+    def companyContactAddress(address: Address): UserAnswers = {
+      answers.set(CompanyContactAddressId)(address).asOpt.value
+    }
+
+    def companyContactAddressList(address: TolerantAddress): UserAnswers = {
+      answers.set(CompanyContactAddressListId)(address).asOpt.value
     }
 
     // Company director

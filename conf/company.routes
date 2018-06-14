@@ -76,6 +76,11 @@ GET        /company-not-found                           controllers.register.com
 GET        /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onSubmit()
 
+GET        /enter-contact-address                 controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /enter-contact-address                 controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-enter-contact-address          controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-enter-contact-address          controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /select-contact-address            controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST       /select-contact-address            controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)
 GET        /change-select-contact-address     controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = CheckMode)

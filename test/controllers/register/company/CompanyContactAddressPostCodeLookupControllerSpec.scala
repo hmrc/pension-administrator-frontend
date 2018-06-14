@@ -90,7 +90,7 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
   val viewModel = PostcodeLookupViewModel (
     routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
-    routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode),
+    routes.CompanyContactAddressController.onPageLoad(NormalMode),
     Message("companyContactAddressPostCodeLookup.title"),
     Message("companyContactAddressPostCodeLookup.heading").withArgs(companyName),
     Some(Message("site.secondaryHeader")),
