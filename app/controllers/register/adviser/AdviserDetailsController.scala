@@ -17,7 +17,6 @@
 package controllers.register.adviser
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -27,9 +26,8 @@ import config.FrontendAppConfig
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
 import models.Mode
-import models.register.adviser.AdviserDetails
 import utils.annotations.Adviser
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.adviser.adviserDetails
 
 import scala.concurrent.Future
@@ -38,7 +36,7 @@ class AdviserDetailsController @Inject() (
                                            appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
                                            dataCacheConnector: DataCacheConnector,
-                                           @Adviser navigator: Navigator,
+                                           @Adviser navigator: Navigator2,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
@@ -63,7 +61,7 @@ class AdviserDetailsController @Inject() (
           Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
         (value) =>
           dataCacheConnector.save(request.externalId, AdviserDetailsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AdviserDetailsId, mode)(new UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
     )
   }
 }
