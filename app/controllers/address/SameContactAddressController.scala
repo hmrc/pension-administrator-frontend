@@ -59,30 +59,40 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
                       viewModel: SameContactAddressViewModel,
                       mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+
+    val existingValue = request.userAnswers.get(id)
     form.bindFromRequest().fold(
       (formWithError) => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
       value => {
-        value match {
-          case false => dataCacheConnector.save (request.externalId, id, value).map {
-            cacheMap =>
-              Redirect (navigator.nextPage (id, mode) (UserAnswers (cacheMap) ) )
-          }
-          case true =>
-            dataCacheConnector.save (request.externalId, id, value).flatMap {
-              _ =>
-                getResolvedAddress (viewModel.address) match {
-                  case None =>
-                    dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
-                      cacheMap =>
-                        Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+        val hasAnswerChanged = existingValue.map{ existing =>
+          existing != value
+        }
+        hasAnswerChanged match {
+          case Some(true) =>
+            value match {
+              case false => dataCacheConnector.save (request.externalId, id, value).map {
+                cacheMap =>
+                  Redirect (navigator.nextPage (id, mode) (UserAnswers (cacheMap) ) )
+              }
+              case true =>
+                dataCacheConnector.save (request.externalId, id, value).flatMap {
+                  _ =>
+                    getResolvedAddress (viewModel.address) match {
+                      case None =>
+                        dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
+                          cacheMap =>
+                            Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+                        }
+                      case Some(address) =>
+                        dataCacheConnector.save(request.externalId, contactId, address).map {
+                          cacheMap =>
+                            Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+                        }
                     }
-                  case Some(address) =>
-                    dataCacheConnector.save(request.externalId, contactId, address).map {
-                      cacheMap =>
-                        Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
-                  }
                 }
             }
+          case _ =>
+            Future.successful(Redirect(navigator.nextPage(id, mode)(request.userAnswers)))
         }
       }
     )
