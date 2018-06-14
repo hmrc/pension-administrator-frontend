@@ -36,14 +36,15 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //Remove the routes and the corresponding tests once the toggle is removed
   private def toggledRoute(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualAddressYearsPage(NormalMode),           None)
+    (WhatYouWillNeedId,                         emptyAnswers,                   individualAddressYearsPage(NormalMode),                   None)
   )
 
   private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (IndividualDetailsCorrectId,                individualDetailsCorrect,       individualSameContactAddressPage(NormalMode),           None),
+    (IndividualDetailsCorrectId,                individualDetailsCorrect,       whatYouWillNeedPage,           None),
     (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
     (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
+    (WhatYouWillNeedId,                         emptyAnswers,                   individualSameContactAddressPage(NormalMode),                   None),
     (IndividualSameContactAddressId,            individualSameContactAddress,   individualAddressYearsPage(NormalMode), Some(individualAddressYearsPage(CheckMode))),
     (IndividualSameContactAddressId,            individualDiffContactAddress,   individualCAPostCodeLookupPage(NormalMode), Some(individualCAPostCodeLookupPage(CheckMode))),
     (IndividualSameContactAddressId,            individualSameCAIncomplete,   individualContactAddressPage(NormalMode), Some(individualContactAddressPage(CheckMode))),

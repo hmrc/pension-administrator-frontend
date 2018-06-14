@@ -19,6 +19,7 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.individual.routes
+import identifiers.register.individual.WhatYouWillNeedId
 import identifiers.register.individual._
 import identifiers.{Identifier, LastPageId}
 import models.{AddressYears, CheckMode, Mode, NormalMode}
@@ -33,6 +34,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator
 
   override protected def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case IndividualDetailsCorrectId => detailsCorrect
+    case WhatYouWillNeedId => contactAddressToggle
     case IndividualSameContactAddressId => contactAddressRoutes(_)(NormalMode)
     case IndividualContactAddressPostCodeLookupId => _ => routes.IndividualContactAddressListController.onPageLoad(NormalMode)
     case IndividualContactAddressListId => _ => routes.IndividualContactAddressController.onPageLoad(NormalMode)
@@ -64,11 +66,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator
       case Some(true) =>
         answers.get(LastPageId) match {
           case Some(lastPage) => Call(lastPage.method, lastPage.url)
-          case _ => if (config.contactAddressEnabled) {
-            routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
-          } else {
-            routes.IndividualAddressYearsController.onPageLoad(NormalMode)
-          }
+          case _ => routes.WhatYouWillNeedController.onPageLoad()
         }
       case Some(false) =>
         routes.YouWillNeedToUpdateController.onPageLoad()
@@ -114,5 +112,13 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator
         controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
+
+  def contactAddressToggle(answers: UserAnswers): Call = {
+      if (config.contactAddressEnabled) {
+        routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
+      } else {
+        routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+      }
+    }
 
 }
