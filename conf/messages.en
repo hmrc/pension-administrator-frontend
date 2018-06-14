@@ -123,7 +123,7 @@ unauthorised.heading = You can’t access this service with this account
 unauthorised.assistant.title = You cannot use this service
 unauthorised.assistant.heading = You cannot use this service
 unauthorised.assistant.lede = You have credentials as an assistant with this Government Gateway account.
-unauthorised.assistant.info = You will need to create a new Government Gateway account and then register as a pension scheme administrator to use this digital service.
+unauthorised.assistant.info = Check with your organisation to find out more about changing your role so you can use this service.
 unauthorised.assistant.continue = Create a new Government Gateway account
 
 cya.label.name = Name
@@ -201,6 +201,10 @@ companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of
 companyPreviousAddressPostCodeLookup.postalCode = Postal code
 companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
+
+companyContactAddressPostCodeLookup.title = What is the contact address?
+companyContactAddressPostCodeLookup.heading = What is {0}’s contact address?
+companyContactAddressPostCodeLookup.lede = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 

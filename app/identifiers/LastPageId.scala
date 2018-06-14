@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package models.requests
+package identifiers
 
-import models.PSAUser
-import play.api.mvc.{Request, WrappedRequest}
-import utils.UserAnswers
+import models.LastPage
 
-case class OptionalDataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request) with IdentifiedRequest
-
-case class DataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                           userAnswers: UserAnswers) extends WrappedRequest[A](request) with IdentifiedRequest
+object LastPageId extends TypedIdentifier[LastPage] {
+  override def toString: String = "lastPage"
+}

@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package models.requests
+package identifiers.register.company
 
-import models.PSAUser
-import play.api.mvc.{Request, WrappedRequest}
-import utils.UserAnswers
+import identifiers._
+import models.TolerantAddress
 
-case class OptionalDataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request) with IdentifiedRequest
-
-case class DataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                           userAnswers: UserAnswers) extends WrappedRequest[A](request) with IdentifiedRequest
+case object CompanyContactAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def toString: String = "companyContactAddressPostCodeLookup"
+}

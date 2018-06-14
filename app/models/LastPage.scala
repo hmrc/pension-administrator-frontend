@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.PSAUser
-import play.api.mvc.{Request, WrappedRequest}
-import utils.UserAnswers
+import play.api.libs.json.{Format, Json}
 
-case class OptionalDataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request) with IdentifiedRequest
+case class LastPage(method: String, url: String)
 
-case class DataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                           userAnswers: UserAnswers) extends WrappedRequest[A](request) with IdentifiedRequest
+object LastPage {
+  implicit val formatsLastPage: Format[LastPage] = Json.format[LastPage]
+}

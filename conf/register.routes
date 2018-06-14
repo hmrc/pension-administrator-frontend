@@ -2,11 +2,6 @@
 ->         /individual                              individual.Routes
 ->         /adviser                                 adviser.Routes
 
-GET        /business-type                           controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /business-type                           controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-business-type                    controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-business-type                    controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
-
 GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
 GET        /change-declaration-working-knowledge    controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)

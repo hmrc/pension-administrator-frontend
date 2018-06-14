@@ -17,7 +17,7 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import identifiers.Identifier
+import identifiers.{Identifier, LastPageId}
 import identifiers.register.individual._
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
@@ -54,7 +54,10 @@ class IndividualNavigator @Inject() extends Navigator {
   def detailsCorrect(answers: UserAnswers): Call = {
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) =>
-        routes.WhatYouWillNeedController.onPageLoad()
+        answers.get(LastPageId) match {
+          case Some(lastPage) => Call(lastPage.method, lastPage.url)
+          case _ => routes.WhatYouWillNeedController.onPageLoad()
+        }
       case Some(false) =>
         routes.YouWillNeedToUpdateController.onPageLoad()
       case None =>

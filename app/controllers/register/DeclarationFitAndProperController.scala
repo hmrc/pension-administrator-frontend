@@ -16,22 +16,22 @@
 
 package controllers.register
 
-import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
 import connectors._
+import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
+import javax.inject.Inject
 import models.requests.DataRequest
 import models.{ExistingPSA, NormalMode, UserType}
 import play.api.Logger
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
+import utils.{KnownFactsRetrieval, Navigator2, UserAnswers}
 import views.html.register.declarationFitAndProper
 
 import scala.concurrent.Future
@@ -41,7 +41,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  @Register navigator: Navigator,
+                                                  @Register navigator: Navigator2,
                                                   formProvider: DeclarationFormProvider,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
@@ -90,7 +90,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
               _ <- enrol(psaResponse.psaId)
             } yield {
-              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
+              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
               case _: InvalidPayloadException =>
                 Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
