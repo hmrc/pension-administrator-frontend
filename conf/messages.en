@@ -123,7 +123,7 @@ unauthorised.heading = You can’t access this service with this account
 unauthorised.assistant.title = You cannot use this service
 unauthorised.assistant.heading = You cannot use this service
 unauthorised.assistant.lede = You have credentials as an assistant with this Government Gateway account.
-unauthorised.assistant.info = You will need to create a new Government Gateway account and then register as a pension scheme administrator to use this digital service.
+unauthorised.assistant.info = Check with your organisation to find out more about changing your role so you can use this service.
 unauthorised.assistant.continue = Create a new Government Gateway account
 
 cya.label.name = Name
