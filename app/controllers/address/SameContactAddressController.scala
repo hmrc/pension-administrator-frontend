@@ -64,11 +64,12 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
     form.bindFromRequest().fold(
       (formWithError) => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
       value => {
-        val hasAnswerChanged = existingValue.map{ existing =>
-          existing != value
+        val hasAnswerChanged = existingValue match{
+          case None => true
+          case Some(existing) => existing != value
         }
         hasAnswerChanged match {
-          case Some(true) =>
+          case true =>
             value match {
               case false => dataCacheConnector.save (request.externalId, id, value).map {
                 cacheMap =>

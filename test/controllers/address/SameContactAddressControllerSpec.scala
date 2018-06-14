@@ -45,7 +45,9 @@ import scala.concurrent.Future
 object SameContactAddressControllerSpec {
 
   object FakeIdentifier extends TypedIdentifier[Boolean]
+
   object RegAddressIdentifier extends TypedIdentifier[TolerantAddress]
+
   object ContactAddressIdentifier extends TypedIdentifier[Address]
 
   class TestController @Inject()(
@@ -83,7 +85,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     Some("test post code"), Some("GB")
   )
 
-  def viewmodel(line2: Option[String]=Some("address line 2")) = SameContactAddressViewModel(
+  def viewmodel(line2: Option[String] = Some("address line 2")) = SameContactAddressViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
@@ -157,10 +159,44 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
             "value" -> "true"
           )
           val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(false).asOpt.value, request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+      }
+    }
+
+    "return a redirect and save the data when the there is no existing data" in {
+
+      import play.api.inject._
+
+      val cacheConnector = mock[DataCacheConnector]
+      val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
+
+      running(_.overrides(
+        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
+      )) {
+        app =>
+
+          when(cacheConnector.save[Boolean, FakeIdentifier.type](
+            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          when(cacheConnector.save[Address, ContactAddressIdentifier.type](
+            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          val request = FakeRequest().withFormUrlEncodedBody(
+            "value" -> "true"
+          )
+          val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
+          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
       }
     }
 
@@ -182,7 +218,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
             "value" -> "true"
           )
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
+          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(true).asOpt.value, request)
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
