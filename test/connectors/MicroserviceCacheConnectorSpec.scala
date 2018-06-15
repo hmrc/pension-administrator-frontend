@@ -31,17 +31,17 @@ import play.api.mvc.Results._
 
 class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
 
-  protected object FakeIdentifier extends TypedIdentifier[String] {
+  private object FakeIdentifier extends TypedIdentifier[String] {
     override def toString: String = "fake-identifier"
   }
 
   override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
 
-  protected implicit val hc: HeaderCarrier = HeaderCarrier()
-  protected def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  private def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
 
-  protected lazy val connector: DataCacheConnector = injector.instanceOf[MicroserviceCacheConnector]
-  protected lazy val crypto = injector.instanceOf[ApplicationCrypto].JsonCrypto
+  private lazy val connector = injector.instanceOf[MicroserviceCacheConnector]
+  private lazy val crypto = injector.instanceOf[ApplicationCrypto].JsonCrypto
 
   ".fetch" must {
 
