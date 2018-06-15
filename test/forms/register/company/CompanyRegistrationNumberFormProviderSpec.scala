@@ -37,8 +37,8 @@ class CompanyRegistrationNumberFormProviderSpec extends CrnBehaviours {
   }
 
   "form" must {
-    val rawData = Map("value" -> " 1234567 ")
-    val expectedData = "1234567"
+    val rawData = Map("value" -> " 12345678 ")
+    val expectedData = "12345678"
 
     behave like formWithTransform(
       form,
