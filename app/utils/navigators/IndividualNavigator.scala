@@ -17,33 +17,43 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import identifiers.{Identifier, LastPageId}
+import config.FrontendAppConfig
+import controllers.register.individual.routes
+import identifiers.register.individual.WhatYouWillNeedId
 import identifiers.register.individual._
+import identifiers.{Identifier, LastPageId}
+import models.{AddressYears, CheckMode, Mode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
-import controllers.register.individual.routes
-import models.{AddressYears, CheckMode, NormalMode}
 
 @Singleton
-class IndividualNavigator @Inject() extends Navigator {
+class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers()(answers: UserAnswers): Call =
     routes.CheckYourAnswersController.onPageLoad()
 
   override protected def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case IndividualDetailsCorrectId => detailsCorrect
-    case WhatYouWillNeedId => _ => routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
-    case IndividualDateOfBirthId => _ => routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+    case WhatYouWillNeedId => contactAddressToggle
+    case IndividualSameContactAddressId => contactAddressRoutes(_)(NormalMode)
+    case IndividualContactAddressPostCodeLookupId => _ => routes.IndividualContactAddressListController.onPageLoad(NormalMode)
+    case IndividualContactAddressListId => _ => routes.IndividualContactAddressController.onPageLoad(NormalMode)
+    case IndividualContactAddressId => _ => routes.IndividualAddressYearsController.onPageLoad(NormalMode)
     case IndividualAddressYearsId => addressYearsRoutes
     case IndividualPreviousAddressPostCodeLookupId => _ => routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
     case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(NormalMode)
     case IndividualPreviousAddressId => _ => routes.IndividualContactDetailsController.onPageLoad(NormalMode)
-    case IndividualContactDetailsId => checkYourAnswers()
+    case IndividualContactDetailsId => _ => routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
+    case IndividualDateOfBirthId => checkYourAnswers()
     case CheckYourAnswersId => _ => controllers.register.routes.DeclarationController.onPageLoad()
   }
 
   override protected def editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
     case IndividualDateOfBirthId => checkYourAnswers()
+    case IndividualSameContactAddressId => contactAddressRoutes(_)(CheckMode)
+    case IndividualContactAddressPostCodeLookupId => _ => routes.IndividualContactAddressListController.onPageLoad(CheckMode)
+    case IndividualContactAddressListId => _ => routes.IndividualContactAddressController.onPageLoad(CheckMode)
+    case IndividualContactAddressId => _ => routes.IndividualAddressYearsController.onPageLoad(CheckMode)
     case IndividualAddressYearsId => addressYearsRouteCheckMode
     case IndividualPreviousAddressPostCodeLookupId => _ => routes.IndividualPreviousAddressListController.onPageLoad(CheckMode)
     case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(CheckMode)
@@ -86,4 +96,29 @@ class IndividualNavigator @Inject() extends Navigator {
         controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
+
+  def contactAddressRoutes(answers: UserAnswers)(mode: Mode): Call = {
+    answers.get(IndividualSameContactAddressId) match {
+      case Some(false) =>
+        routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
+      case Some(true) =>
+        answers.get(IndividualContactAddressId) match {
+          case None =>
+            routes.IndividualContactAddressController.onPageLoad(mode)
+          case Some(_) =>
+            routes.IndividualAddressYearsController.onPageLoad(mode)
+        }
+      case None =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  def contactAddressToggle(answers: UserAnswers): Call = {
+      if (config.contactAddressEnabled) {
+        routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
+      } else {
+        routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+      }
+    }
+
 }
