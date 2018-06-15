@@ -25,7 +25,7 @@ import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.companyAddressYears
 
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
@@ -44,8 +44,16 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyAddressId.toString -> address)))
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
-    new CompanyAddressYearsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new CompanyAddressYearsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
   def viewAsString(form: Form[_] = form) = companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages).toString
 

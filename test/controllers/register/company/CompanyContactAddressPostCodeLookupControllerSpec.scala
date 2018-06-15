@@ -14,44 +14,49 @@
  * limitations under the License.
  */
 
-package controllers.register.individual
+package controllers.register.company
 
 import base.CSRFRequest
 import connectors.{AddressLookupConnector, DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
+import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
+import identifiers.register.company.BusinessDetailsId
+import models.register.company.BusinessDetails
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.mvc.{Request, Result}
-import play.api.test.Helpers._
-import play.api.inject._
-import utils.{FakeNavigator, Navigator}
-import play.api.test._
-import views.html.address.postcodeLookup
 import play.api.http.Writeable
+import play.api.inject.bind
+import play.api.libs.json.Json
+import play.api.mvc.{Request, Result}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.annotations.Individual
+import utils.annotations.RegisterCompany
+import utils.{FakeNavigator, Navigator}
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
+import views.html.address.postcodeLookup
+
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import IndividualContactAddressPostCodeLookupController._
-  import IndividualContactAddressPostCodeLookupControllerSpec._
+  import CompanyContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
     requestResult(
-      implicit app => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
+      implicit app => addToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode))(request, messages).toString()
+        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, formProvider(), viewModel)(request, messages).toString()
       }
     )
   }
 
   "redirect to the next page on a POST request" in {
     requestResult(
-      implicit App => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onSubmit(NormalMode))
+      implicit App => addToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode))
         .withFormUrlEncodedBody("value" -> validPostcode)),
       (_, result) => {
         status(result) mustBe SEE_OTHER
@@ -61,12 +66,13 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
   }
 }
 
-object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
+object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val formProvider = new PostCodeLookupFormProvider()
-  private val form = formProvider()
   private val validPostcode = "ZZ1 1ZZ"
 
-  private val onwardRoute = controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)
+  private val companyName = "CompanyName"
+
+  private val onwardRoute = controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)
   private val address = TolerantAddress(
     Some("test-address-line-1"),
     Some("test-address-line-2"),
@@ -81,12 +87,29 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
       Future.successful(Seq(address))
     }
   }
+
+  val viewModel = PostcodeLookupViewModel (
+    routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
+    routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode),
+    Message("companyContactAddressPostCodeLookup.title"),
+    Message("companyContactAddressPostCodeLookup.heading").withArgs(companyName),
+    Some(Message("site.secondaryHeader")),
+    Message("companyContactAddressPostCodeLookup.lede").withArgs(companyName),
+    Message("common.postcodeLookup.enterPostcode"),
+    Some(Message("common.postcodeLookup.enterPostcode.link")),
+    Message("address.postcode")
+  )
+
+  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
+    BusinessDetailsId.toString -> BusinessDetails(companyName, "UTR")
+  )))
+
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getEmptyData),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+      bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>
@@ -96,3 +119,4 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
     }
   }
 }
+

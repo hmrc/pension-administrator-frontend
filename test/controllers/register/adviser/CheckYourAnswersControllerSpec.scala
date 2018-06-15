@@ -18,10 +18,9 @@ package controllers.register.adviser
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.adviser.AdviserAddressControllerSpec.{environment, frontendAppConfig}
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
-import models.{Address, CheckMode, NormalMode}
 import models.register.adviser.AdviserDetails
+import models.{Address, CheckMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils._
@@ -32,7 +31,9 @@ import views.html.check_your_answers
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
   def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit()
+
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val advDetails = AdviserDetails("test adviser name", "test@test.com", "01234567890")
@@ -66,10 +67,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(advDetails.phone), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))
+
   def sections = Seq(AnswerSection(None, adviserDetails ++ adviserAddress))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CheckYourAnswersController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new CheckYourAnswersController(frontendAppConfig, messagesApi, new FakeNavigator2(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, checkYourAnswersFactory)
 
   def viewAsString() = check_your_answers(frontendAppConfig, sections, Some("common.adviser.secondary.heading"), postCall)(fakeRequest, messages).toString

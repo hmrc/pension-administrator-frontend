@@ -61,6 +61,11 @@ POST       /change-other-directors                      controllers.register.com
 GET        /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
+GET        /what-is-the-contact-address                 controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-is-the-contact-address                 controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /change-what-is-the-contact-address          controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-what-is-the-contact-address          controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
 GET        /review                                      controllers.register.company.CompanyReviewController.onPageLoad()
 POST       /review                                      controllers.register.company.CompanyReviewController.onSubmit()
 

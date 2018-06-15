@@ -25,7 +25,7 @@ import models.{ContactDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers.{contentAsString, _}
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.contactDetails
 
 class ContactDetailsControllerSpec extends ControllerSpecBase {
@@ -36,8 +36,16 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new ContactDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new ContactDetailsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
   def viewAsString(form: Form[_] = form) = contactDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 

@@ -37,6 +37,7 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     Some("test.sub-heading"),
     "test.hint",
     "test.enter-postcode",
+    Some("test.enter-postcode-link"),
     "test.form-label"
   )
 

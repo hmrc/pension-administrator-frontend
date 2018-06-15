@@ -17,21 +17,21 @@
 package controllers.register.company
 
 import audit.{AuditService, PSAStartEvent}
-import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.company.WhatYouWillNeedId
+import javax.inject.Inject
 import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.RegisterCompany
 import views.html.register.company.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          @RegisterCompany navigator: Navigator,
+                                          @RegisterCompany navigator: Navigator2,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
@@ -44,8 +44,8 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-        PSAStartEvent.sendEvent(auditService)
-        Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
+      PSAStartEvent.sendEvent(auditService)
+      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }
 
 }

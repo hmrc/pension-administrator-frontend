@@ -16,37 +16,37 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.register.company.BusinessDetailsFormProvider
 import identifiers.register.company.BusinessDetailsId
+import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.company.businessDetails
 
 import scala.concurrent.Future
 
 class BusinessDetailsController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        @RegisterCompany navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: BusinessDetailsFormProvider
-                                      ) extends FrontendController with I18nSupport {
+                                           appConfig: FrontendAppConfig,
+                                           override val messagesApi: MessagesApi,
+                                           dataCacheConnector: DataCacheConnector,
+                                           @RegisterCompany navigator: Navigator2,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: BusinessDetailsFormProvider
+                                         ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(BusinessDetailsId) match {
         case None => form
@@ -55,14 +55,14 @@ class BusinessDetailsController @Inject()(
       Ok(businessDetails(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(businessDetails(appConfig, formWithErrors, mode))),
-        (value) =>
+        value =>
           dataCacheConnector.save(request.externalId, BusinessDetailsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(BusinessDetailsId, mode)(new UserAnswers(cacheMap))))
-    )
+            Redirect(navigator.nextPage(BusinessDetailsId, mode, UserAnswers(cacheMap))))
+      )
   }
 }

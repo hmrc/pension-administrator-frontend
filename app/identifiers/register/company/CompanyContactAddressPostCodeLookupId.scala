@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package identifiers.register.company
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import identifiers._
+import models.TolerantAddress
 
-@main_template(
-    title = messages("unauthorised.assistant.title"),
-    appConfig = appConfig,
-    bodyClasses = None
-) {
-
-    @components.heading("unauthorised.assistant.heading")
-
-    <p class="lede">@messages("unauthorised.assistant.lede")</p>
-
-    <p>@messages("unauthorised.assistant.info")</p>
-
+case object CompanyContactAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def toString: String = "companyContactAddressPostCodeLookup"
 }
