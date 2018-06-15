@@ -463,6 +463,15 @@ individual.same.contact.address.heading = Is this your contact address?
 individual.same.contact.address.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
 individual.same.contact.address.error = Select yes if these details are correct
 
+company.same.contact.address.title = Is this registered address the same as your correspondence address?
+company.same.contact.address.heading = Is this {0}’s contact address?
+company.same.contact.address.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+
+individualCorrespondenceAddressPostCodeLookup.title = What is the contact address
+individualCorrespondenceAddressPostCodeLookup.heading = What is your contact address?
+individualCorrespondenceAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individualCorrespondenceAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually {1} if the address is overseas.
+individualCorrespondenceAddressPostCodeLookup.formLabel = Postcode
 individualContactAddressPostCodeLookup.title = What is the contact address
 individualContactAddressPostCodeLookup.heading = What is your contact address?
 individualContactAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
