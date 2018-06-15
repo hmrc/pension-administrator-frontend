@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 
     if(document.querySelectorAll('select').length > 0){
-        var graphUrl = '/assets/javascripts/autocomplete/location-autocomplete-graph.json'
+        var graphUrl = '/register-as-pension-scheme-administrator/assets/javascripts/autocomplete/location-autocomplete-graph.json'
 
         openregisterLocationPicker({
             defaultValue: '',
@@ -36,9 +36,11 @@ $(document).ready(function() {
           })
 
           // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
-          $('input[role="combobox"]').on('keydown', function(){
-                var sel = document.querySelector('.autocomplete-wrapper select')
-                sel.value = "";
+          $('input[role="combobox"]').on('keydown', function(e){
+                if (e.which != 13 && e.which != 9) {
+                     var sel = document.querySelector('.autocomplete-wrapper select')
+                     sel.value = "";
+                }
           })
     }
 

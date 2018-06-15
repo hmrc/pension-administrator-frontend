@@ -21,7 +21,7 @@ import java.time.LocalDate
 import connectors.{AddressLookupConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.directors.DirectorPreviousAddressPostCodeLookupFormProvider
+import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
 import models.register.company.CompanyDetails
@@ -34,30 +34,57 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.directors.directorPreviousAddressPostCodeLookup
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
+import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
 
 class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorPreviousAddressPostCodeLookupFormProvider()
-  val form = formProvider()
+  private val formProvider = new PostCodeLookupFormProvider()
+  private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-  val index = Index(0)
-  val directorName = "test first name test middle name test last name"
+  private val index = Index(0)
+  private val directorName = "test first name test middle name test last name"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new DirectorPreviousAddressPostCodeLookupController(frontendAppConfig, messagesApi,
-      FakeDataCacheConnector, fakeAddressLookupConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
-  val companyName = "ThisCompanyName"
+  private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
+    new DirectorPreviousAddressPostCodeLookupController(
+      frontendAppConfig,
+      FakeDataCacheConnector,
+      fakeAddressLookupConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
+
   private val testAnswer = "AB12 1AB"
 
-  def viewAsString(form: Form[_] = form) = directorPreviousAddressPostCodeLookup(frontendAppConfig,
-    form, NormalMode, index, directorName)(fakeRequest, messages).toString
+  private lazy val viewModel =
+    PostcodeLookupViewModel(
+      routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(NormalMode, index),
+      routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index),
+      Message("directorPreviousAddressPostCodeLookup.title"),
+      Message("directorPreviousAddressPostCodeLookup.heading"),
+      Some(Message(directorName)),
+      Message("directorPreviousAddressPostCodeLookup.text"),
+      Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
+      Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
+      Message("directorPreviousAddressPostCodeLookup.input.text")
+    )
+
+  private def viewAsString(form: Form[_] = form) =
+    postcodeLookup(
+      frontendAppConfig,
+      form,
+      viewModel
+    )(fakeRequest, messages).toString
 
   private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
     Some("Address Line 1"),
@@ -68,7 +95,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     Some("GB")
   )
 
-  val validData = Json.obj(
+  private val validData = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(

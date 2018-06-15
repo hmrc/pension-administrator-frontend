@@ -16,19 +16,17 @@
 
 package controllers.register
 
-import play.api.data.Form
-import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
-import play.api.libs.json._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
+import play.api.data.Form
+import play.api.libs.json._
+import play.api.test.Helpers._
+import utils.FakeNavigator2
 import views.html.register.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
@@ -39,8 +37,16 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new DeclarationWorkingKnowledgeController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new DeclarationWorkingKnowledgeController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
   def viewAsString(form: Form[_] = form) = declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 

@@ -19,9 +19,9 @@ package controllers.register.company
 import connectors.{AddressLookupConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.CompanyPreviousAddressPostCodeLookupFormProvider
+import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.{Address, AddressRecord, NormalMode, TolerantAddress}
+import models.{NormalMode, TolerantAddress}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -30,7 +30,7 @@ import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
 import utils.FakeNavigator
-import views.html.register.company.companyPreviousAddressPostCodeLookup
+import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
 
@@ -38,16 +38,29 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new CompanyPreviousAddressPostCodeLookupFormProvider()
+  private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyPreviousAddressPostCodeLookupController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
-      fakeAddressLookupConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new CompanyPreviousAddressPostCodeLookupController(
+      frontendAppConfig,
+      FakeDataCacheConnector,
+      fakeAddressLookupConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      messagesApi,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  private def viewAsString(form: Form[_] = form) = companyPreviousAddressPostCodeLookup(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) =
+    postcodeLookup(
+      frontendAppConfig,
+      form,
+      CompanyPreviousAddressPostCodeLookupController.viewModel(NormalMode)
+    )(fakeRequest, messages).toString()
 
   private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
     Some("Address Line 1"),
@@ -132,7 +145,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     }
 
     "return a Bad Request when post code lookup fails" in {
-      val boundForm = form.withError(FormError("value", "companyPreviousAddressPostCodeLookup.error.invalid"))
+      val boundForm = form.withError(FormError("value", "error.postcode.failed"))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
@@ -144,8 +157,8 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
-    "return a Bad Request when post code lookup returns zero results" in {
-      val boundForm = form.withError(FormError("value", "companyPreviousAddressPostCodeLookup.error.noResults"))
+    "return an OK with a form error when post code lookup returns zero results" in {
+      val boundForm = form.withError(FormError("value", "error.postcode.noResults"))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
@@ -153,7 +166,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
-      status(result) mustBe BAD_REQUEST
+      status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 

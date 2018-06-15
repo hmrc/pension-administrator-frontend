@@ -41,21 +41,26 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-  lazy val ivUpliftUrl = loadConfig("urls.ivUpliftUrl")
+  lazy val ivUpliftUrl: String = loadConfig("urls.ivUpliftUrl")
 
+  lazy val governmentGatewayUrl: String = loadConfig("urls.government-gateway")
   lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val authUrl: String = baseUrl("auth")
   lazy val loginUrl: String = loadConfig("urls.login")
+  lazy val serviceSignOut: String = loadConfig("urls.logout")
   lazy val loginContinueUrl: String = loadConfig("urls.loginContinue")
   lazy val tellHMRCChangesUrl: String = loadConfig("urls.tellHMRCChanges")
   lazy val tellCompaniesHouseCompanyChangesUrl: String = loadConfig("urls.companyChangesCompaniesHouse")
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
-  lazy val registerSchemeUrl: String = loadConfig("urls.registerScheme")
-
+  lazy val registerSchemeUrl: String = loadConfig("urls.pensions-scheme-frontend.registerScheme")
+  lazy val schemesOverviewUrl: String = loadConfig("urls.pensions-scheme-frontend.schemesOverview")
+  lazy val schemeOverviewEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.scheme-overview").getOrElse(false)
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
+  lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
+  lazy val duplicateRegUri = "/register-as-pension-scheme-administrator/register/duplicate-registration"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -76,8 +81,10 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
       baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
 
-  def enrolmentStoreUrl(key: String) = baseUrl("enrolment-store-proxy") +
-    runModeConfiguration.underlying.getString("urls.enrolments") +
-    key
+  def taxEnrolmentsUrl(serviceName: String) = baseUrl("tax-enrolments") +
+    runModeConfiguration.underlying.getString("urls.tax-enrolments") +
+    s"service/$serviceName/enrolment"
+
+  lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
 }

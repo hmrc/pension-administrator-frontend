@@ -21,9 +21,8 @@ import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
-import models.{Address, NormalMode, PSAUser, UserType}
-import models.{Address, NormalMode, TolerantAddress}
 import models.requests.DataRequest
+import models._
 import org.scalatest.{Matchers, WordSpec}
 import play.api.Application
 import play.api.i18n.MessagesApi
@@ -103,7 +102,20 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, 0)
 
         status(result) shouldBe SEE_OTHER
-        FakeDataCacheConnector.verify(fakeAddressId, viewModel.addresses.head.toAddress)
+        FakeDataCacheConnector.verify(fakeAddressListId, viewModel.addresses.head)
+      }
+
+    }
+
+    "delete any existing address on submission of valid data" in {
+
+      running(_.overrides()) { app =>
+        val viewModel = addressListViewModel()
+        val controller = app.injector.instanceOf[TestController]
+        val result = controller.onSubmit(viewModel, 0)
+
+        status(result) shouldBe SEE_OTHER
+        FakeDataCacheConnector.verifyNot(fakeAddressId)
       }
 
     }
@@ -161,7 +173,7 @@ object AddressListControllerSpec {
 
   val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val fakeAddressListId: TypedIdentifier[Seq[TolerantAddress]] = new TypedIdentifier[Seq[TolerantAddress]]() {}
+  val fakeAddressListId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress]() {}
   val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address]() {}
 
   private lazy val postCall = controllers.routes.IndexController.onPageLoad()

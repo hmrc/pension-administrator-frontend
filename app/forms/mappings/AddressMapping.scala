@@ -90,19 +90,20 @@ trait AddressMapping extends Mappings with Transforms {
     value.map(s => strip(s).toUpperCase()).filter(_.nonEmpty)
   }
 
-  def postCodeWithCountryMapping(keyRequired: String, keyInvalid: String): Mapping[Option[String]] = {
+  def postCodeWithCountryMapping(keyRequired: String, keyInvalid: String, keyNonUKLength: String): Mapping[Option[String]] = {
 
     val fieldName = "postCode"
 
     def bind(data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val postCode = postCodeDataTransform(data.get(fieldName))
       val country = countryDataTransform(data.get("country"))
+      val maxLengthNonUKPostCode = 10
 
       (postCode, country) match {
         case (Some(zip), Some("GB")) if zip.matches(postCodeRegex) => Right(Some(postCodeValidTransform(zip)))
         case (Some(_), Some("GB")) => Left(Seq(FormError(fieldName, keyInvalid)))
-        case (Some(zip), Some(_)) if zip.matches(postCodeNonUkRegex) => Right(Some(zip))
-        case (Some(_), Some(_)) => Left(Seq(FormError(fieldName, keyInvalid)))
+        case (Some(zip), Some(_)) if zip.length <= maxLengthNonUKPostCode => Right(Some(zip))
+        case (Some(_), Some(_)) => Left(Seq(FormError(fieldName, keyNonUKLength)))
         case (Some(zip), None) => Right(Some(zip))
         case (None, Some("GB")) => Left(Seq(FormError(fieldName, keyRequired)))
         case _ => Right(None)

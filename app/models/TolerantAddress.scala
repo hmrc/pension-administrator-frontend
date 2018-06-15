@@ -43,7 +43,7 @@ case class TolerantAddress(addressLine1: Option[String],
     lines.mkString(", ")
   }
 
-  def toAddress:Address = {
+  def toAddress: Address = {
     Address(
       addressLine1.getOrElse(""),
       addressLine2.getOrElse(""),
@@ -53,6 +53,16 @@ case class TolerantAddress(addressLine1: Option[String],
       country.getOrElse("")
     )
   }
+
+  def equalsAddress(address: Address): Boolean = {
+    address.addressLine1 == addressLine1.getOrElse("") &&
+    address.addressLine2 == addressLine2.getOrElse("") &&
+    address.addressLine3 == addressLine3 &&
+    address.addressLine4 == addressLine4 &&
+    address.country == country.getOrElse("") &&
+    address.postcode == postcode
+  }
+
 }
 
 object TolerantAddress {
@@ -163,4 +173,15 @@ object TolerantAddress {
       )
     }
   }
+
+  def fromAddress(address: Address): TolerantAddress =
+    TolerantAddress(
+      Some(address.addressLine1),
+      Some(address.addressLine2),
+      address.addressLine3,
+      address.addressLine4,
+      address.postcode,
+      Some(address.country)
+    )
+
 }

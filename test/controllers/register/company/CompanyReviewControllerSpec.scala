@@ -27,7 +27,7 @@ import models.register.company.directors.DirectorDetails
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.companyReview
 
 class CompanyReviewControllerSpec extends ControllerSpecBase {
@@ -36,19 +36,26 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
 
   val companyName = "test company name"
   val directors = Seq("director a", "director b", "director c")
+
   def director(lastName: String): JsObject = Json.obj(
     DirectorDetailsId.toString -> DirectorDetails("director", None, lastName, LocalDate.now())
   )
 
   val validData: JsObject = Json.obj(
-        BusinessDetailsId.toString ->
-          BusinessDetails(companyName, "test utr"),
-        "directors" -> Json.arr(director("a"), director("b"), director("c"))
+    BusinessDetailsId.toString ->
+      BusinessDetails(companyName, "test utr"),
+    "directors" -> Json.arr(director("a"), director("b"), director("c"))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyReviewController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+    new CompanyReviewController(
+      frontendAppConfig,
+      messagesApi,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl
+    )
 
   private def viewAsString() = companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages).toString
 

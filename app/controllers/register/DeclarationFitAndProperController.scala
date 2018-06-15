@@ -16,21 +16,22 @@
 
 package controllers.register
 
-import javax.inject.Inject
-
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, EnrolmentStoreConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
+import connectors._
+import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
+import javax.inject.Inject
+import models.requests.DataRequest
 import models.{ExistingPSA, NormalMode, UserType}
+import play.api.Logger
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
+import utils.{KnownFactsRetrieval, Navigator2, UserAnswers}
 import views.html.register.declarationFitAndProper
 
 import scala.concurrent.Future
@@ -40,12 +41,12 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  @Register navigator: Navigator,
+                                                  @Register navigator: Navigator2,
                                                   formProvider: DeclarationFormProvider,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
-                                                  enrolments: EnrolmentStoreConnector
+                                                  enrolments: TaxEnrolmentsConnector
                                                  ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
@@ -84,22 +85,33 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               request.user.existingPSAId
             )).asOpt.getOrElse(UserAnswers(cacheMap))
 
-            pensionsSchemeConnector.registerPsa(answers) flatMap { psaResponse =>
-              dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse) flatMap { cacheMap =>
-                knownFactsRetrieval.retrieve map { knownFacts =>
-                  enrolments.enrol(psaResponse.psaId, knownFacts) map { _ =>
-                    Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode)(UserAnswers(cacheMap)))
-                  }
-                } getOrElse Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-              }
-            } recoverWith {
-              case _: HttpException =>
-                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+            (for {
+              psaResponse <- pensionsSchemeConnector.registerPsa(answers)
+              cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+              _ <- enrol(psaResponse.psaId)
+            } yield {
+              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
+            }) recoverWith {
+              case _: InvalidPayloadException =>
+                Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
               case _: InvalidBusinessPartnerException =>
                 Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+              case _ =>
+                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
             }
 
           }
       )
   }
+
+  private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+    knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
+      enrolments.enrol(psaId, knownFacts)
+    } getOrElse Future.failed(KnownFactsRetrievalException())
+  }
+
+  case class KnownFactsRetrievalException() extends Exception {
+    def apply(): Unit = Logger.error("Could not retrieve Known Facts")
+  }
+
 }

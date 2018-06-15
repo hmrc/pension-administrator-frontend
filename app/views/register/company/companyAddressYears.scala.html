@@ -20,7 +20,7 @@
 @import models.Mode
 @import models.AddressYears
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, address: TolerantAddress, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("companyAddressYears.title"),
@@ -34,6 +34,8 @@
         @components.error_summary(form.errors)
 
         @components.heading("companyAddressYears.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+
+        @components.tolerant_address("companyAddress", address)
 
         @components.input_radio(
             field = form("value"),

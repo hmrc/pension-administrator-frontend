@@ -37,7 +37,9 @@
     <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/pensionadministratorfrontend-app.css")' />
 }
 
-@headerNavLinks = {}
+@headerNavLinks = {
+    <li><a id="logOut" href="@routes.LogoutController.onPageLoad">@Messages("site.signOut")</a></li>
+}
 
 @insideHeader = {
     @uiLayouts.header_nav(
@@ -62,7 +64,7 @@
 @footerTop = {}
 @footerLinks = {}
 
-@phaseBanner = {@components.phase_banner()}
+@phaseBanner = {@components.phase_banner(appConfig)}
 
 @serviceInfo = {
     @uiLayouts.serviceInfo(

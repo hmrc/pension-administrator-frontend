@@ -16,12 +16,13 @@
 
 package controllers.address
 
+import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -37,34 +38,48 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
   protected def appConfig: FrontendAppConfig
   protected def dataCacheConnector: DataCacheConnector
   protected def navigator: Navigator
+  protected def auditService: AuditService
 
   protected val form: Form[Address]
 
   protected def get(
                      id: TypedIdentifier[Address],
+                     selectedId: TypedIdentifier[TolerantAddress],
                      viewModel: ManualAddressViewModel
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val preparedForm = request.userAnswers.get(id) match {
-      case None => form
+      case None => request.userAnswers.get(selectedId) match {
+        case Some(value) => form.fill(value.toAddress)
+        case None => form
+      }
       case Some(value) => form.fill(value)
     }
     Future.successful(Ok(manualAddress(appConfig, preparedForm, viewModel)))
   }
+
   protected def post(
                       id: TypedIdentifier[Address],
+                      selectedId: TypedIdentifier[TolerantAddress],
                       viewModel: ManualAddressViewModel,
-                      mode: Mode
+                      mode: Mode,
+                      context: String
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => Future.successful(BadRequest(manualAddress(appConfig, formWithError, viewModel))),
-      (value) => {
+      address => {
+        val existingAddress = request.userAnswers.get(id)
+        val selectedAddress = request.userAnswers.get(selectedId)
+
+        val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress, context)
+
         dataCacheConnector.save(
           request.externalId,
           id,
-          value
+          address
         ).map {
           cacheMap =>
-            Redirect(navigator.nextPage(id, mode)(new UserAnswers(cacheMap)))
+            auditEvent.foreach(auditService.sendEvent(_))
+            Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
         }
       }
     )

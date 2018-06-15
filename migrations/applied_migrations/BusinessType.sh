@@ -5,11 +5,11 @@ echo "Applying migration BusinessType"
 echo "Adding routes to conf/register.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /businessType               controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/register.routes
-echo "POST       /businessType               controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)" >> ../conf/register.routes
+echo "GET        /businessType               controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/register.routes
+echo "POST       /businessType               controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = NormalMode)" >> ../conf/register.routes
 
-echo "GET        /changeBusinessType               controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/register.routes
-echo "POST       /changeBusinessType               controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)" >> ../conf/register.routes
+echo "GET        /changeBusinessType               controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/register.routes
+echo "POST       /changeBusinessType               controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = CheckMode)" >> ../conf/register.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en

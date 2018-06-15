@@ -16,26 +16,33 @@
 
 package controllers.register.company
 
+import audit.testdoubles.StubSuccessfulAuditService
+import audit.{AddressAction, AddressEvent}
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.CompanyPreviousAddressId
-import utils.{FakeCountryOptions, FakeNavigator, InputOption}
-import models.{Address, NormalMode}
+import models.{Address, NormalMode, TolerantAddress}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import views.html.register.company.companyPreviousAddress
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import viewmodels.Message
+import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
 
-class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
+class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val formProvider = new AddressFormProvider(countryOptions)
-  val form = formProvider("error.country.invalid.eueea")
+  val form = formProvider("error.country.invalid")
+  val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyPreviousAddressController(
@@ -47,10 +54,24 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      fakeAuditService
     )
 
-  def viewAsString(form: Form[_] = form) = companyPreviousAddress(frontendAppConfig, form, NormalMode, countryOptions.options)(fakeRequest, messages).toString
+  private lazy val viewModel = ManualAddressViewModel(
+    routes.CompanyPreviousAddressController.onSubmit(NormalMode),
+    countryOptions.options,
+    Message("companyPreviousAddress.title"),
+    Message("companyPreviousAddress.heading"),
+    Some(Message("site.secondaryHeader"))
+  )
+
+  private def viewAsString(form: Form[_] = form) =
+    manualAddress(
+      frontendAppConfig,
+      form,
+      viewModel
+    )(fakeRequest, messages).toString()
 
   "CompanyPreviousAddress Controller" must {
 
@@ -82,6 +103,57 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "send an audit event when valid data is submitted" in {
+
+      val existingAddress = Address(
+        "existing-line-1",
+        "existing-line-2",
+        None,
+        None,
+        None,
+        "existing-country"
+      )
+
+      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
+
+      val data =
+        UserAnswers()
+          .companyPreviousAddress(existingAddress)
+          .companyAddressList(selectedAddress)
+          .dataRetrievalAction
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE"),
+        "country" -> "GB"
+      )
+
+      fakeAuditService.reset()
+
+      val result = controller(data).onSubmit(NormalMode)(postRequest)
+
+      whenReady(result) {
+        _ =>
+          fakeAuditService.verifySent(
+            AddressEvent(
+              FakeAuthAction.externalId,
+              AddressAction.LookupChanged,
+              "Company Previous Address",
+              Address(
+                "value 1",
+                "value 2",
+                None,
+                None,
+                Some("NE1 1NE"),
+                "GB"
+              )
+            )
+          )
+      }
+
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

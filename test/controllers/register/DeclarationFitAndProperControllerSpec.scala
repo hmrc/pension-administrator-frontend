@@ -16,23 +16,23 @@
 
 package controllers.register
 
-import play.api.data.Form
-import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
-import connectors.{EnrolmentStoreConnector, FakeDataCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
-import controllers.actions._
-import play.api.test.Helpers.{contentAsString, _}
-import views.html.register.declarationFitAndProper
+import connectors._
 import controllers.ControllerSpecBase
+import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.{DeclarationFitAndProperId, PsaSubscriptionResponseId}
-import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.{AuthenticatedRequest, DataRequest}
+import models.{PSAUser, UserType}
+import play.api.data.Form
 import play.api.libs.json.Writes
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
+import utils.{FakeNavigator2, KnownFactsRetrieval, UserAnswers}
+import views.html.register.declarationFitAndProper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -124,18 +124,21 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
         }
       }
 
-      "set cancel link correctly to Individual What You Will Need page" in {
-        val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-        val result = controller(userType = UserType.Individual).onSubmit()(fakeRequest)
+      "set cancel link to What You Will Need page" when {
 
-        contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
-      }
+        "Individual" in {
+          val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+          val result = controller(userType = UserType.Individual).onSubmit()(fakeRequest)
 
-      "set cancel link correctly to Company What You Will Need page" in {
-        val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-        val result = controller().onSubmit()(fakeRequest)
+          contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
+        }
 
-        contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
+        "Company" in {
+          val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+          val result = controller().onSubmit()(fakeRequest)
+
+          contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
+        }
       }
 
       "save the PSA Subscription response on a valid request" in {
@@ -153,6 +156,16 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
       }
+
+      "redirect to Submission Invalid" when {
+        "response is BAD_REQUEST from downstream" in {
+          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
+        }
+      }
     }
   }
 
@@ -161,7 +174,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
@@ -172,33 +185,41 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
   }
 
   private val validPsaResponse = PsaSubscriptionResponse("test-psa-id")
-  private val knownFacts = Some(KnownFacts(Set(
-    KnownFact("PSAID", "test-psa"),
-    KnownFact("NINO", "test-nino")
-  )))
+  private val knownFacts = Some(KnownFacts(
+    Set(KnownFact("PSAID", "test-psa")),
+    Set(KnownFact("NINO", "test-nino")
+    )))
 
   private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
     override def registerPsa
-        (answers: UserAnswers)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+    (answers: UserAnswers)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.successful(validPsaResponse)
     }
   }
 
   private val duplicateRegistrationPensionsSchemeConnector = new PensionsSchemeConnector {
     override def registerPsa
-        (answers: UserAnswers)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+    (answers: UserAnswers)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidBusinessPartnerException())
     }
   }
 
-  private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
-    override def retrieve(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
+  private val submissionInvalidPensionsSchemeConnector = new PensionsSchemeConnector {
+    override def registerPsa
+    (answers: UserAnswers)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+      Future.failed(InvalidPayloadException())
+    }
   }
 
-  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): EnrolmentStoreConnector = {
-    new EnrolmentStoreConnector {
+  private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
+    override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
+  }
+
+  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
+    new TaxEnrolmentsConnector {
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
@@ -212,7 +233,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
                           userType: UserType = UserType.Organisation,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: EnrolmentStoreConnector = fakeEnrolmentStoreConnector()) =
+                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,

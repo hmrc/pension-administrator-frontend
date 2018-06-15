@@ -16,61 +16,69 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
+import audit.AuditService
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.company.directors.DirectorPreviousAddressId
-import models.{Index, Mode}
+import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId}
+import models.{Address, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
+import utils.Navigator
 import utils.annotations.CompanyDirector
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.directors.directorPreviousAddress
+import viewmodels.Message
+import viewmodels.address.ManualAddressViewModel
 
-import scala.concurrent.Future
+class DirectorPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
+                                                  override val messagesApi: MessagesApi,
+                                                  override val dataCacheConnector: DataCacheConnector,
+                                                  @CompanyDirector override val navigator: Navigator,
+                                                  authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: AddressFormProvider,
+                                                  countryOptions: CountryOptions,
+                                                  val auditService: AuditService) extends ManualAddressController with Retrievals {
 
-class DirectorPreviousAddressController @Inject()(
-                                                   appConfig: FrontendAppConfig,
-                                                   override val messagesApi: MessagesApi,
-                                                   dataCacheConnector: DataCacheConnector,
-                                                   @CompanyDirector navigator: Navigator,
-                                                   authenticate: AuthAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: AddressFormProvider,
-                                                   countryOptions: CountryOptions
-                                                 ) extends FrontendController with Retrievals with I18nSupport {
+  override protected val form: Form[Address] = formProvider()
 
-  private val form = formProvider()
-
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val preparedForm = request.userAnswers.get(DirectorPreviousAddressId(index)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-        Future.successful(Ok(directorPreviousAddress(appConfig, preparedForm, mode, index, directorName, countryOptions.options)))
+      retrieveDirectorName(index) {
+        directorName =>
+          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName))
       }
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorPreviousAddress(appConfig, formWithErrors, mode, index, directorName, countryOptions.options))),
-          (value) =>
-            dataCacheConnector.save(request.externalId, DirectorPreviousAddressId(index), value).map(cacheMap =>
-              Redirect(navigator.nextPage(DirectorPreviousAddressId(index), mode)(new UserAnswers(cacheMap))))
-        )
+      retrieveDirectorName(index) {
+        directorName =>
+          val vm = addressViewModel(mode, index, directorName)
+          post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, context(vm))
       }
+  }
+
+  private def addressViewModel(mode: Mode, index: Index, directorName: String) =
+    ManualAddressViewModel(
+      routes.DirectorPreviousAddressController.onSubmit(mode, index),
+      countryOptions.options,
+      Message("directorPreviousAddress.title"),
+      Message("directorPreviousAddress.heading"),
+      Some(Message(directorName))
+    )
+
+  private def context(viewModel: ManualAddressViewModel): String = {
+    viewModel.secondaryHeader match {
+      case Some(name) => s"Company Director Previous Address: $name"
+      case _ => "Company Director Previous Address"
+    }
   }
 
 }

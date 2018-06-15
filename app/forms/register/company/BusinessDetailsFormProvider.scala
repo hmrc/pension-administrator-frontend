@@ -19,12 +19,12 @@ package forms.register.company
 import javax.inject.Inject
 
 import forms.FormErrorHelper
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Transforms}
 import models.register.company.BusinessDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mappings {
+class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mappings with Transforms {
 
   def apply(): Form[BusinessDetails] = Form(
     mapping(
@@ -35,12 +35,14 @@ class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mapping
               BusinessDetailsFormProvider.BusinessNameLength,
               "businessDetails.error.companyName.length"
             ),
-            safeText("businessDetails.error.companyName.invalid")
+            companyName("businessDetails.error.companyName.invalid")
           )
         ),
 
       "utr" -> text("businessDetails.error.utr.required")
+        .transform(standardTextTransform, noTransform)
         .verifying(firstError(
+          maxLength(BusinessDetailsFormProvider.utrMaxLength, "businessDetails.error.utr.length"),
           uniqueTaxReference("businessDetails.error.utr.invalid")
         )
         )
@@ -50,4 +52,5 @@ class BusinessDetailsFormProvider @Inject() extends FormErrorHelper with Mapping
 
 object BusinessDetailsFormProvider {
   val BusinessNameLength: Int = 105
+  val utrMaxLength: Int = 10
 }

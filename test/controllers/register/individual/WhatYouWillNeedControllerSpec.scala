@@ -16,26 +16,31 @@
 
 package controllers.register.individual
 
-import play.api.data.Form
-import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
-import connectors.FakeDataCacheConnector
+import audit.testdoubles.StubSuccessfulAuditService
+import controllers.ControllerSpecBase
 import controllers.actions._
 import play.api.test.Helpers._
-import models.NormalMode
+import utils.FakeNavigator
 import views.html.register.individual.whatYouWillNeed
-import controllers.ControllerSpecBase
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new WhatYouWillNeedController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+  private val auditService = new StubSuccessfulAuditService()
 
-  def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new WhatYouWillNeedController(
+      frontendAppConfig,
+      messagesApi,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      auditService
+    )
+
+  private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
@@ -53,5 +58,17 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
+
+    "send a PSAStart audit event" in {
+
+      auditService.reset()
+
+      val result = controller().onSubmit(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      auditService.verifyNothingSent() mustBe false
+    }
+
   }
+
 }

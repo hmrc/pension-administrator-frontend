@@ -18,13 +18,13 @@ package forms.register.company
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
+import models.register.company.BusinessDetails
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  val form = new BusinessDetailsFormProvider()()
-
+  val form = new BusinessDetailsFormProvider().apply()
 
   ".companyName" must {
 
@@ -37,7 +37,7 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      RegexpGen.from(safeTextRegex)
+      "valid company name"
     )
 
     behave like fieldWithMaxLength(
@@ -57,13 +57,14 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
       form,
       fieldName,
       "[invalid]",
-      error = FormError(fieldName, invalidKey, Seq(safeTextRegex))
+      error = FormError(fieldName, invalidKey, Seq(companyNameRegex))
     )
   }
 
   ".utr" must {
 
     val requiredKey = "businessDetails.error.utr.required"
+    val lengthKey = "businessDetails.error.utr.length"
     val invalid = "businessDetails.error.utr.invalid"
     val fieldName = "utr"
 
@@ -85,5 +86,23 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
       "ABC",
       FormError(fieldName, invalid, Seq(utrRegex))
     )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = BusinessDetailsFormProvider.utrMaxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(BusinessDetailsFormProvider.utrMaxLength))
+    )
   }
+  "form" must {
+    val rawData = Map("companyName" -> "test", "utr" -> " 1234567890 ")
+    val expectedData = BusinessDetails("test", "1234567890")
+
+    behave like formWithTransform[BusinessDetails](
+      form,
+      rawData,
+      expectedData
+    )
+  }
+
 }

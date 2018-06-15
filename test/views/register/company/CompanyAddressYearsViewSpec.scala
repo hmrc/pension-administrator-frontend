@@ -16,8 +16,8 @@
 
 package views.register.company
 
-import forms.register.company.CompanyAddressYearsFormProvider
-import models.{AddressYears, NormalMode}
+import forms.address.AddressYearsFormProvider
+import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyAddressYears
@@ -26,11 +26,17 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "companyAddressYears"
 
-  val form = new CompanyAddressYearsFormProvider()()
+  val address = TolerantAddress(
+    Some("add1"), Some("add2"),
+    None, None,
+    Some("NE11NE"), Some("GB")
+  )
 
-  def createView = () => companyAddressYears(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  val form = new AddressYearsFormProvider()("companyAddressYears.error.required")
 
-  def createViewUsingForm = (form: Form[_]) => companyAddressYears(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages)
+
+  def createViewUsingForm = (form: Form[_]) => companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages)
 
   "CompanyAddressYears view" must {
     behave like normalPage(createView, messageKeyPrefix)

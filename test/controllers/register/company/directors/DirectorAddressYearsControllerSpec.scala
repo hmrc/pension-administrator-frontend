@@ -21,7 +21,7 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.directors.DirectorAddressYearsFormProvider
+import forms.address.AddressYearsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
 import models.register.company.CompanyDetails
@@ -31,20 +31,20 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.directors.directorAddressYears
+import viewmodels.Message
+import viewmodels.address.AddressYearsViewModel
+import views.html.address.addressYears
 
 class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorAddressYearsFormProvider()
-  val form = formProvider()
-  val index = Index(0)
-  val directorName = "test first name test middle name test last name"
-  val companyName = "ThisCompanyName"
+  private val formProvider = new AddressYearsFormProvider()
+  private val form = formProvider(Message("error.addressYears.required"))
+  private val index = Index(0)
+  private val directorName = "test first name test middle name test last name"
 
-
-  val validData = Json.obj(
+  private val validData = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
@@ -59,11 +59,34 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
       )
     )
   )
-  def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new DirectorAddressYearsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = directorAddressYears(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
+  private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
+    new DirectorAddressYearsController(
+      new FakeNavigator(desiredRoute = onwardRoute),
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
+
+  private lazy val viewModel =
+    AddressYearsViewModel(
+      postCall = routes.DirectorAddressYearsController.onSubmit(NormalMode, index),
+      title = Message("directorAddressYears.title"),
+      heading = Message("directorAddressYears.heading"),
+      legend = Message("directorAddressYears.heading"),
+      Some(Message(directorName))
+    )
+
+  private def viewAsString(form: Form[_] = form) =
+    addressYears(
+      frontendAppConfig,
+      form,
+      viewModel
+    )(fakeRequest, messages).toString
 
   "DirectorAddressYears Controller" must {
 

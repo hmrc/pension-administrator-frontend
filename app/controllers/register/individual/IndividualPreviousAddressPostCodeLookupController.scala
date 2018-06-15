@@ -62,7 +62,6 @@ class IndividualPreviousAddressPostCodeLookupController @Inject()(
 }
 
 object IndividualPreviousAddressPostCodeLookupController {
-
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
     routes.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.IndividualPreviousAddressController.onPageLoad(mode),
@@ -71,8 +70,7 @@ object IndividualPreviousAddressPostCodeLookupController {
     Some(Message("site.secondaryHeader")),
     Message("individualPreviousAddressPostCodeLookup.hint"),
     Message("individualPreviousAddressPostCodeLookup.enterPostcode"),
-    Message("individualPreviousAddressPostCodeLookup.formLabel"),
-    Message("individualPreviousAddressPostCodeLookup.formHint")
+    Some(Message("individualPreviousAddressPostCodeLookup.enterPostcode.link")),
+    Message("individualPreviousAddressPostCodeLookup.formLabel")
   )
-
 }

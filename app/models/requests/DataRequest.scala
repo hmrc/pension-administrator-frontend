@@ -21,7 +21,7 @@ import play.api.mvc.{Request, WrappedRequest}
 import utils.UserAnswers
 
 case class OptionalDataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+                                   userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request) with IdentifiedRequest
 
 case class DataRequest[A] (request: Request[A], externalId: String, user: PSAUser,
-                           userAnswers: UserAnswers) extends WrappedRequest[A](request)
+                           userAnswers: UserAnswers) extends WrappedRequest[A](request) with IdentifiedRequest

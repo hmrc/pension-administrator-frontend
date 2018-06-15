@@ -16,10 +16,10 @@
 
 package identifiers.register
 
-import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressPostCodeLookupId, AdvisorDetailsId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
 import models.{Address, TolerantAddress}
 import models.register.DeclarationWorkingKnowledge
-import models.register.advisor.AdvisorDetails
+import models.register.adviser.AdviserDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import utils.{Enumerable, UserAnswers}
 import play.api.libs.json.Json
@@ -34,43 +34,43 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
      None,
      Some("test-country"))
 
-   val answersWithAdvisor = UserAnswers(Json.obj())
+   val answersWithAdviser = UserAnswers(Json.obj())
      .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
-     .flatMap(_.set(AdvisorDetailsId)(AdvisorDetails("test name", "a@a", "01234567890")))
-     .flatMap(_.set(AdvisorAddressPostCodeLookupId)(Seq(address)))
-     .flatMap(_.set(AdvisorAddressId)(address.toAddress))
+     .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
+     .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
+     .flatMap(_.set(AdviserAddressId)(address.toAddress))
      .asOpt.value
 
 
    "where Declaration Working knowledge " must {
      val result: UserAnswers =
-       answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
+       answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
          .asOpt.value
 
      "remove the data for Postcode lookup" in {
-       result.get(AdvisorAddressPostCodeLookupId) mustNot be(defined)
+       result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
      }
      "remove the data for address" in {
-       result.get(AdvisorAddressId) mustNot be(defined)
+       result.get(AdviserAddressId) mustNot be(defined)
      }
 
-     "remove date for advisor details" in {
-       result.get(AdvisorDetailsId) mustNot be(defined)
+     "remove date for adviser details" in {
+       result.get(AdviserDetailsId) mustNot be(defined)
      }
    }
 
-   "Declaration has an advisor" must {
-     val result: UserAnswers = answersWithAdvisor.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
+   "Declaration has an adviser" must {
+     val result: UserAnswers = answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
 
      "not remove the data for Postcode lookup" in {
-       result.get(AdvisorAddressPostCodeLookupId) mustBe defined
+       result.get(AdviserAddressPostCodeLookupId) mustBe defined
      }
      "not remove the data for address" in {
-       result.get(AdvisorAddressId) mustBe defined
+       result.get(AdviserAddressId) mustBe defined
      }
 
-     "not remove date for advisor details" in {
-       result.get(AdvisorDetailsId) mustBe defined
+     "not remove date for adviser details" in {
+       result.get(AdviserDetailsId) mustBe defined
      }
    }
  }

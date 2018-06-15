@@ -27,6 +27,6 @@ case class PostcodeLookupViewModel(
                                     subHeading: Option[Message],
                                     hint: Message,
                                     enterPostcode: Message,
-                                    formLabel: Message,
-                                    formHint: Message
+                                    enterPostCodeLink: Option[Message],
+                                    formLabel: Message
                                   )

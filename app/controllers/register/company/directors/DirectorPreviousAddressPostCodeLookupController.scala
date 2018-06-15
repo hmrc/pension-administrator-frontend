@@ -16,68 +16,68 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.Retrievals
-import controllers.actions._
-import forms.register.company.directors.DirectorPreviousAddressPostCodeLookupFormProvider
-import identifiers.register.company.directors.DirectorPreviousAddressPostCodeLookupId
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.PostcodeLookupController
+import forms.address.PostCodeLookupFormProvider
+import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
+import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, Result}
+import utils.Navigator
 import utils.annotations.CompanyDirector
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.directors.directorPreviousAddressPostCodeLookup
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 
 import scala.concurrent.Future
 
 class DirectorPreviousAddressPostCodeLookupController @Inject()(
-                                                                 appConfig: FrontendAppConfig,
+                                                                 override val appConfig: FrontendAppConfig,
+                                                                 override val cacheConnector: DataCacheConnector,
+                                                                 override val addressLookupConnector: AddressLookupConnector,
+                                                                 @CompanyDirector override val navigator: Navigator,
                                                                  override val messagesApi: MessagesApi,
-                                                                 dataCacheConnector: DataCacheConnector,
-                                                                 addressLookupConnector: AddressLookupConnector,
-                                                                 @CompanyDirector navigator: Navigator,
                                                                  authenticate: AuthAction,
                                                                  getData: DataRetrievalAction,
                                                                  requireData: DataRequiredAction,
-                                                                 formProvider: DirectorPreviousAddressPostCodeLookupFormProvider
-                                                               ) extends FrontendController with Retrievals with I18nSupport {
+                                                                 formProvider: PostCodeLookupFormProvider
+                                                               ) extends PostcodeLookupController with Retrievals {
 
-  private val form = formProvider()
+  override protected def form: Form[String] = formProvider()
 
-  def formWithError(messageKey: String): Form[String] = {
-    form.withError("value", messageKey)
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+      viewModel(mode, index).right.map(get)
   }
 
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        Future.successful(Ok(directorPreviousAddressPostCodeLookup(appConfig, form, mode, index, directorName)))
-      }
+      viewModel(mode, index).right.map(
+        viewModel =>
+          post(DirectorPreviousAddressPostCodeLookupId(index), viewModel, mode)
+      )
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorPreviousAddressPostCodeLookup(appConfig, formWithErrors, mode, index, directorName))),
-          (value) =>
-            addressLookupConnector.addressLookupByPostCode(value).flatMap {
-              case Nil =>
-                Future.successful(BadRequest(directorPreviousAddressPostCodeLookup(appConfig, formWithError("directorPreviousAddressPostCodeLookup.error.noResults"), mode, index, directorName)))
-              case addresses =>
-                dataCacheConnector.save(request.externalId, DirectorPreviousAddressPostCodeLookupId(index), addresses).map(cacheMap =>
-                  Redirect(navigator.nextPage(DirectorPreviousAddressPostCodeLookupId(index), mode)(UserAnswers(cacheMap))))
-            }.recoverWith {
-              case _ =>
-                Future.successful(BadRequest(directorPreviousAddressPostCodeLookup(appConfig, formWithError("directorPreviousAddressPostCodeLookup.error.invalid"), mode, index, directorName)))
-
-            }
+  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], PostcodeLookupViewModel] = {
+    DirectorDetailsId(index).retrieve.right.map {
+      director =>
+        PostcodeLookupViewModel(
+          routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
+          routes.DirectorPreviousAddressController.onPageLoad(mode, index),
+          Message("directorPreviousAddressPostCodeLookup.title"),
+          Message("directorPreviousAddressPostCodeLookup.heading"),
+          Some(Message(director.fullName)),
+          Message("directorPreviousAddressPostCodeLookup.text"),
+          Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
+          Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
+          Message("directorPreviousAddressPostCodeLookup.input.text")
         )
-      }
+    }
   }
+
 }

@@ -215,41 +215,23 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     behave like regexWithValidAndInvalidExamples(payeEmployerReferenceNumber, validPaye, invalidPaye, invalidMsg, payeRegex)
   }
 
-  "email" must {
-
-    val validEmail = Table(
-      "email",
-      "a@email.com",
-      "a@bc",
-      "123@456"
-    )
-
-    val invalidEmail = Table(
-      "email",
-      "32423423432423",
-      "12323",
-      "@@@@@@"
-    )
-
-    val invalidMsg = "contactDetails.error.email.valid"
-
-    behave like regexWithValidAndInvalidExamples(emailAddress, validEmail, invalidEmail, invalidMsg, emailRegex)
-  }
-
   "emailAddressRestrictive" must {
 
     val validEmail = Table(
       "ema.il@cd.com",
       "a@email.com",
-      "a@bc",
       "1.2.3@4.5.6"
     )
 
     val invalidEmail = Table(
       "email@.com",
       "32..423423432423",
-      "123 2@3",
-      "xyz;a@v"
+      "a@bc",
+      "@@@@@@",
+      ".df@com",
+      "123 2@s.com",
+      "xyz;a@v",
+      "AÀ@v.com"
     )
 
     val invalidMsg = "contactDetails.error.email.valid"
@@ -333,7 +315,7 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val validName = Table(
       "name",
-      "A",
+      "AÀ",
       "a"
     )
 
@@ -344,7 +326,9 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "1A",
       " a",
       "_a",
-      "1a"
+      "1a",
+      "A/",
+      "a\\"
     )
 
     val invalidMsg = "Invalid name"
@@ -356,36 +340,43 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val validAddress = Table(
       "address",
-      "1 Main St."
+      "1 Main St.",
+      "Apt/12",
+      "—–‐-"
     )
 
     val invalidAddress = Table(
       "address",
-      "Apt [12]"
+      "Apt [12]",
+      "Apt\\12",
+      "Street À",
+      "Street | 16"
     )
 
     val invalidMsg = "Invalid address"
 
     behave like regexWithValidAndInvalidExamples(addressLine, validAddress, invalidAddress, invalidMsg, addressLineRegex)
-
   }
 
   "safeText" must {
 
     val validText = Table(
       "text",
-      "some valid text"
+      "some valid text À ÿ",
+      "!$%&*()[]@@'~#;:,./?^",
+      "s\\as"
     )
 
     val invalidText = Table(
       "text",
-      "[invalid text]"
+      "{invalid text}",
+      "<invalid>",
+      "ltd ©"
     )
 
     val invalidMsg = "Invalid text"
 
     behave like regexWithValidAndInvalidExamples(safeText, validText, invalidText, invalidMsg, safeTextRegex)
-
   }
 
   "country" must {
@@ -420,5 +411,25 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       nonFutureDate(keyInvalid).apply(LocalDate.now.plusDays(1)) shouldBe Invalid(keyInvalid)
     }
 
+  }
+
+  "companyName" must {
+    val validText = Table(
+      "text",
+      "xyz 2nd's Ltd",
+      "xyz/private"
+    )
+
+    val invalidText = Table(
+      "text",
+      "company\\Ltd",
+      "[company ltd]",
+      "company, Ltd",
+      "company Ltd."
+    )
+
+    val invalidMsg = "Invalid text"
+
+    behave like regexWithValidAndInvalidExamples(companyName, validText, invalidText, invalidMsg, companyNameRegex)
   }
 }

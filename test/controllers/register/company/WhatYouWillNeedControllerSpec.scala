@@ -16,19 +16,29 @@
 
 package controllers.register.company
 
+import audit.testdoubles.StubSuccessfulAuditService
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
+  private val auditService = new StubSuccessfulAuditService()
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new WhatYouWillNeedController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+    new WhatYouWillNeedController(
+      frontendAppConfig,
+      messagesApi,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      auditService
+    )
 
   private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
 
@@ -46,6 +56,17 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "send a PSAStart audit event" in {
+
+      auditService.reset()
+
+      val result = controller().onSubmit()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      auditService.verifyNothingSent() mustBe false
+
     }
 
   }

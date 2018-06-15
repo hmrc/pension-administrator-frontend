@@ -30,7 +30,7 @@ import models.requests.AuthenticatedRequest
 import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.auth.core.retrieve.{Retrievals, ~}
+import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.AffinityGroup._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,48 +38,58 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
-  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(
+    authorised(User or Admin).retrieve(
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
         Retrievals.nino and
         Retrievals.allEnrolments) {
-
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        if (affinityGroup == Individual && !allowedIndividual(cl)) {
-          val redirectUrl = s"${config.ivUpliftUrl}?origin=PODS&" +
-            s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
-            s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
-            s"&confidenceLevel=${ConfidenceLevel.L200.level}"
-          Future.successful(Redirect(redirectUrl))
+        if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
+          Future.successful(Redirect(toggledPage))
+        } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
+          Future.successful(Redirect(ivUpliftUrl))
         } else {
           block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
         }
       case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
 
     } recover handleFailure
+  }
+
+  private def toggledPage: String = {
+    if (config.schemeOverviewEnabled) {
+      config.schemesOverviewUrl
+    } else {
+      config.registerSchemeUrl
+    }
   }
 
   private def handleFailure: PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: InsufficientEnrolments =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: InsufficientConfidenceLevel =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedAuthProvider =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedAffinityGroup =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
     case _: UnsupportedCredentialRole =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedAssistantController.onPageLoad())
     case _: UnauthorizedException =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      Redirect(routes.UnauthorisedController.onPageLoad())
   }
+
+  private def ivUpliftUrl: String = s"${config.ivUpliftUrl}?origin=PODS&" +
+    s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
+    s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
+    s"&confidenceLevel=${ConfidenceLevel.L200.level}"
 
   private def allowedIndividual(confidenceLevel: ConfidenceLevel): Boolean =
     confidenceLevel.compare(ConfidenceLevel.L200) >= 0
@@ -89,6 +99,14 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def existingPSA(enrolments: Enrolments): Option[String] =
     enrolments.getEnrolment("HMRC-PSA-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
+
+  private def alreadyEnrolledInPODS(enrolments: Enrolments) =
+    enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
+
+  private def notConfirmation[A](request: Request[A]): Boolean = {
+    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri)
+    !confirmationSeq.contains(request.uri)
+  }
 
   private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
@@ -103,7 +121,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
                       nino: Option[String], enrolments: Enrolments): PSAUser = {
-
     val psa = existingPSA(enrolments)
     PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
   }
