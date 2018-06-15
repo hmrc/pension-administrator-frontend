@@ -17,12 +17,15 @@
 package utils.navigators
 
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register.individual._
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor4
+import play.api.Configuration
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.UserAnswers
@@ -30,35 +33,60 @@ import utils.UserAnswers
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import IndividualNavigatorSpec._
 
-  val navigator = new IndividualNavigator()
+  //Remove the routes and the corresponding tests once the toggle is removed
+  private def toggledRoute(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
+    (WhatYouWillNeedId,                         emptyAnswers,                   individualAddressYearsPage(NormalMode),                   None)
+  )
 
   private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id",                                    "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (IndividualDetailsCorrectId,                detailsCorrectNoLastPage,       whatYouWillNeedPage,                  None),
-    (IndividualDetailsCorrectId,                detailsCorrectLastPage,         lastPage,                             None),
+    (IndividualDetailsCorrectId,                individualDetailsCorrect,       whatYouWillNeedPage,           None),
     (IndividualDetailsCorrectId,                individualDetailsInCorrect,     youWillNeedToUpdatePage,              None),
     (IndividualDetailsCorrectId,                emptyAnswers,                   sessionExpiredPage,                   None),
-    (WhatYouWillNeedId,                         emptyAnswers,                   individualDateOfBirthPage,            None),
-    (IndividualDateOfBirthId,                   emptyAnswers,                   individualAddressYearsPage,           Some(checkYourAnswersPage)),
+    (WhatYouWillNeedId,                         emptyAnswers,                   individualSameContactAddressPage(NormalMode),                   None),
+    (IndividualSameContactAddressId,            individualSameContactAddress,   individualAddressYearsPage(NormalMode), Some(individualAddressYearsPage(CheckMode))),
+    (IndividualSameContactAddressId,            individualDiffContactAddress,   individualCAPostCodeLookupPage(NormalMode), Some(individualCAPostCodeLookupPage(CheckMode))),
+    (IndividualSameContactAddressId,            individualSameCAIncomplete,   individualContactAddressPage(NormalMode), Some(individualContactAddressPage(CheckMode))),
+    (IndividualContactAddressPostCodeLookupId,  emptyAnswers,                   individualContactAddressListPage(NormalMode), Some(individualContactAddressListPage(CheckMode))),
+    (IndividualContactAddressListId,            emptyAnswers,                   individualContactAddressPage(NormalMode), Some(individualContactAddressPage(CheckMode))),
+    (IndividualContactAddressId,                emptyAnswers,                   individualAddressYearsPage(NormalMode), Some(individualAddressYearsPage(CheckMode))),
     (IndividualAddressYearsId,                  addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
     (IndividualAddressYearsId,                  addressYearsUnderAYear,         paPostCodeLookupPage(NormalMode),     Some(paPostCodeLookupPage(CheckMode))),
     (IndividualAddressYearsId,                  emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
     (IndividualPreviousAddressListId,           emptyAnswers,                   paAddressPage(NormalMode),            Some(paAddressPage(CheckMode))),
     (IndividualPreviousAddressId,               emptyAnswers,                   contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (IndividualContactDetailsId,                emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
+    (IndividualContactDetailsId,                emptyAnswers,                   individualDateOfBirthPage,            Some(checkYourAnswersPage)),
+    (IndividualDateOfBirthId,                   emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
     (CheckYourAnswersId,                        emptyAnswers,                   declarationPage,                      None)
   )
 
+  val navigatorToggled = new IndividualNavigator(appConfig(false))
+  s"When contact address journey is toggled off ${navigatorToggled.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigatorToggled, toggledRoute)
+  }
+
+  val navigator = new IndividualNavigator(appConfig(true))
+  s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigator, routes)
+  }
+  
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, routes())
   }
-
 }
 
 object IndividualNavigatorSpec extends OptionValues {
+  private def appConfig(isContactAddressEnabled: Boolean = false) = {
+    val application = new GuiceApplicationBuilder()
+      .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled)).build()
+    application.injector.instanceOf[FrontendAppConfig]
+  }
 
   lazy val lastPage: Call = Call("GET", "http://www.test.com")
 
@@ -66,7 +94,11 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
-  lazy val individualAddressYearsPage = routes.IndividualAddressYearsController.onPageLoad(NormalMode)
+  def individualAddressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
+  def individualContactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)
+  def individualContactAddressListPage(mode: Mode) = routes.IndividualContactAddressListController.onPageLoad(mode)
+  def individualCAPostCodeLookupPage(mode: Mode) = routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
+  def individualSameContactAddressPage(mode: Mode) = routes.IndividualSameContactAddressController.onPageLoad(mode)
   def paPostCodeLookupPage(mode: Mode) = routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode)
   lazy val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
   def paAddressListPage(mode: Mode) = routes.IndividualPreviousAddressListController.onPageLoad(mode)
@@ -81,9 +113,20 @@ object IndividualNavigatorSpec extends OptionValues {
     UserAnswers()
     .lastPage(LastPage(lastPage.method, lastPage.url))
     .set(IndividualDetailsCorrectId)(true).asOpt.value
+  val individualDetailsCorrect = UserAnswers(Json.obj()).set(
+    IndividualDetailsCorrectId)(true).asOpt.value
   val individualDetailsInCorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(false).asOpt.value
-
+  val individualSameContactAddress = UserAnswers(Json.obj()).set(
+    IndividualSameContactAddressId)(true)
+    .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
+    .asOpt.value
+  val individualSameCAIncomplete = UserAnswers(Json.obj()).set(
+    IndividualSameContactAddressId)(true)
+    .flatMap(_.set(IndividualContactAddressListId)(TolerantAddress(Some("foo"), None, None, None, None, Some("GB"))))
+    .asOpt.value
+  val individualDiffContactAddress = UserAnswers(Json.obj()).set(
+    IndividualSameContactAddressId)(false).asOpt.value
   val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(IndividualAddressYearsId)(AddressYears.OverAYear).asOpt.value
   val addressYearsUnderAYear = UserAnswers(Json.obj())

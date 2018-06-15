@@ -458,7 +458,7 @@ submissionInvalid.heading = There has been a problem sending your details
 submissionInvalid.body1 = Your details could not be submitted. None of your data has been lost.
 submissionInvalid.body2 = You should {0} get help with this page {1} to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.
 
-individual.same.contact.address.title = Is this registered address the same as your correspondence address?
+individual.same.contact.address.title = Is this your contact address?
 individual.same.contact.address.heading = Is this your contact address?
 individual.same.contact.address.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
 individual.same.contact.address.error = Select yes if these details are correct
@@ -473,3 +473,6 @@ individualContactAddressPostCodeLookup.formLabel = Postcode
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
+
+cya.label.individual.contact.address = Contact Address
+cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
