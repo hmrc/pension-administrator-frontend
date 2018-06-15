@@ -165,8 +165,7 @@ companyRegistrationNumber.heading = What is the company’s registration number?
 companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
 companyRegistrationNumber.error.required = Enter the Company Registration number
 companyRegistrationNumber.hint = This is an 8 character registration number given by Companies House when the company was first registered.
-companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
-companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number
+companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
 
