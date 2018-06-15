@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers.register.company
 
-import play.api.mvc.Call
-import identifiers.Identifier
-import models.{Mode, NormalMode}
+import identifiers.TypedIdentifier
+import models.Address
 
-class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
-
-  private[this] var userAnswers: Option[UserAnswers] = None
-
-  override def nextPage(controllerId: Identifier, mode: Mode): UserAnswers => Call = {
-    ua =>
-      userAnswers = Some(ua)
-      desiredRoute
+case object CompanyContactAddressId extends TypedIdentifier[Address] {self =>
+    override def toString = "companyContactAddressId"
   }
-
-  def lastUserAnswers: Option[UserAnswers] = userAnswers
-
-}
-
-object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)
