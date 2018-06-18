@@ -485,3 +485,9 @@ common.contactAddress.lede = This can be any address that can be used to contact
 
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
+
+interceptPSA.title = You have already registered as a pension scheme administrator
+interceptPSA.heading = You have already registered as a pension scheme administrator
+interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.
+interceptPSA.button = Continue to your pension schemes
+interceptPSA.exit = Exit to GOV.UK

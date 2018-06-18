@@ -43,6 +43,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
 
   lazy val ivUpliftUrl: String = loadConfig("urls.ivUpliftUrl")
 
+  lazy val govUkUrl: String = loadConfig("urls.gov-uk")
   lazy val governmentGatewayUrl: String = loadConfig("urls.government-gateway")
   lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val authUrl: String = baseUrl("auth")
