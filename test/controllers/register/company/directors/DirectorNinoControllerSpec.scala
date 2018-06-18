@@ -28,23 +28,24 @@ import models.register.company.CompanyDetails
 import models.register.company.directors.DirectorDetails
 import models.{Index, Nino, NormalMode}
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.directors.directorNino
 
 class DirectorNinoControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorNinoFormProvider()
-  val form = formProvider()
-  val index = Index(0)
-  val directorName = "test first name test middle name test last name"
-  val companyName = "ThisCompanyName"
+  private val formProvider = new DirectorNinoFormProvider()
+  private val form = formProvider()
+  private val index = Index(0)
+  private val directorName = "test first name test middle name test last name"
+  private val companyName = "ThisCompanyName"
 
 
-  val validData = Json.obj(
+  val validData: JsObject = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
@@ -61,11 +62,23 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new DirectorNinoController(frontendAppConfig, messagesApi,
-      FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new DirectorNinoController(frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = directorNino(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = directorNino(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    index,
+    directorName
+  )(fakeRequest, messages).toString
 
   "DirectorNino Controller" must {
 

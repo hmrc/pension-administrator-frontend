@@ -19,7 +19,7 @@ package controllers.register.company
 import java.time.LocalDate
 
 import play.api.data.Form
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -39,11 +39,11 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form = formProvider()
 
-  protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
+  protected def fakeNavigator() = new FakeNavigator2(desiredRoute = onwardRoute)
 
   protected def controller(
       dataRetrievalAction: DataRetrievalAction = getEmptyData,
-      navigator: FakeNavigator = fakeNavigator()) =
+      navigator: FakeNavigator2 = fakeNavigator()) =
 
     new AddCompanyDirectorsController(
         frontendAppConfig,
@@ -66,7 +66,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 
-  private def dataRetrievalAction(directors: DirectorDetails*) = {
+  private def dataRetrievalAction(directors: DirectorDetails*): FakeDataRetrievalAction = {
     val validData = Json.obj(
       "directors" -> directors.map(d => Json.obj(DirectorDetailsId.toString -> Json.toJson(d)))
     )

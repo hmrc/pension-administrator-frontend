@@ -26,31 +26,32 @@ import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
 import models.register.company._
 import models.register.company.directors.DirectorDetails
-import models.{Index, NormalMode, ContactDetails}
+import models.{ContactDetails, Index, NormalMode}
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.directors.directorContactDetails
 
 class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new ContactDetailsFormProvider()
-  val form = formProvider()
-  val index = Index(0)
-  val directorName = "test first name test middle name test last name"
-  val contactDetails = new ContactDetails("a@b.com", "1234567890")
-  val companyName = "test company name"
+  private val formProvider = new ContactDetailsFormProvider()
+  private val form = formProvider()
+  private val index = Index(0)
+  private val directorName = "test first name test middle name test last name"
+  private val contactDetails = new ContactDetails("a@b.com", "1234567890")
+  private val companyName = "test company name"
 
-  val validData = Json.obj(
+  private val validData: JsObject = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
-         DirectorContactDetailsId.toString ->
+        DirectorContactDetailsId.toString ->
           contactDetails
       ),
       Json.obj(
@@ -61,10 +62,24 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
-    new DirectorContactDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new DirectorContactDetailsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = directorContactDetails(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = directorContactDetails(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    index,
+    directorName
+  )(fakeRequest, messages).toString
 
   "DirectorContactDetails Controller" must {
 

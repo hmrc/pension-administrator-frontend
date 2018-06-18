@@ -18,8 +18,12 @@ package utils
 
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.Identifier
+import models.requests.IdentifiedRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Call
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext
 
 class FakeNavigator2(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator2 {
 
@@ -29,11 +33,16 @@ class FakeNavigator2(desiredRoute: Call, mode: Mode = NormalMode) extends Naviga
 
   override protected def dataCacheConnector: DataCacheConnector = FakeDataCacheConnector
 
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = NavigateTo.dontSave(desiredRoute)
+  override def nextPage(id: Identifier, mode: Mode, answers: UserAnswers)
+                       (implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
+    userAnswers = Some(answers)
+    desiredRoute
+  }
+
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
 
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = None
-}
-
-object FakeNavigator2 extends FakeNavigator2(Call("GET", "www.example.com"), NormalMode){
 
 }
+
+object FakeNavigator2 extends FakeNavigator2(Call("GET", "www.example.com"), NormalMode)

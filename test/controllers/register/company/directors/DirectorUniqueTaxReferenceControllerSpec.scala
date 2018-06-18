@@ -29,22 +29,23 @@ import models.register.company.directors.DirectorDetails
 import models.{Index, Nino, NormalMode, UniqueTaxReference}
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.directors.directorUniqueTaxReference
 
 class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorUniqueTaxReferenceFormProvider()
-  val form = formProvider()
-  val index = Index(0)
-  val directorName = "test first name test middle name test last name"
-  val companyName = "ThisCompanyName"
+  private val formProvider = new DirectorUniqueTaxReferenceFormProvider()
+  private val form = formProvider()
+  private val index = Index(0)
+  private val directorName = "test first name test middle name test last name"
+  private val companyName = "ThisCompanyName"
 
 
-  val validData = Json.obj(
+  private val validData = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
@@ -62,10 +63,21 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorUniqueTaxReferenceController(frontendAppConfig, messagesApi,
-      FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = directorUniqueTaxReference(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    index,
+    directorName
+  )(fakeRequest, messages).toString
 
   "DirectorUniqueTaxReference Controller" must {
 
