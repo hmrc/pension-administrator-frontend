@@ -23,19 +23,19 @@ import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{AddressYears, NormalMode, PSAUser, UserType}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator2, Navigator2, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
-import org.mockito.Mockito._
-import org.mockito.Matchers.{eq => eqTo, _}
-import play.api.libs.json.Json
 
 import scala.concurrent.Future
 
@@ -47,18 +47,18 @@ object AddressYearsControllerSpec {
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: DataCacheConnector,
-                                  override val navigator: Navigator,
+                                  override val navigator: Navigator2,
                                   formProvider: AddressYearsFormProvider
                                 ) extends AddressYearsController {
 
     def onPageLoad(viewmodel: AddressYearsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider("error"), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, false, None), answers))
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
     def onSubmit(viewmodel: AddressYearsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, NormalMode, formProvider("error"), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, false, None), answers))
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }
 
@@ -125,7 +125,7 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator].toInstance(FakeNavigator)
+        bind[Navigator2].toInstance(FakeNavigator2)
       )) {
         app =>
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](

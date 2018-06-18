@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
@@ -38,7 +38,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
 
   protected def dataCacheConnector: DataCacheConnector
 
-  protected def navigator: Navigator
+  protected def navigator: Navigator2
 
   protected val form: Form[Boolean]
 
@@ -78,23 +78,23 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
                   case None =>
                     dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
                       cacheMap =>
-                        Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
                     }
                   case Some(address) =>
                     dataCacheConnector.save(request.externalId, contactId, address).map {
                       cacheMap =>
-                        Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
                     }
                 }
             }
           } else {
             dataCacheConnector.save(request.externalId, id, value).map {
               cacheMap =>
-                Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+                Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
             }
           }
         } else {
-          Future.successful(Redirect(navigator.nextPage(id, mode)(request.userAnswers)))
+          Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))
         }
       }
     )

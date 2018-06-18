@@ -16,15 +16,15 @@
 
 package controllers.address
 
-import audit.{AddressAction, AddressEvent, AuditService}
 import audit.testdoubles.StubSuccessfulAuditService
+import audit.{AddressAction, AddressEvent, AuditService}
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.AddressFormProvider
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -44,7 +44,7 @@ import scala.concurrent.Future
 
 object ManualAddressControllerSpec {
 
-  val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address]{
+  val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address] {
     override def toString = "fakeAddressId"
   }
 
@@ -54,14 +54,14 @@ object ManualAddressControllerSpec {
 
   val externalId: String = "test-external-id"
 
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
   private val testContext = "test-context"
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: DataCacheConnector,
-                                  override val navigator: Navigator,
+                                  override val navigator: Navigator2,
                                   formProvider: AddressFormProvider,
                                   override val auditService: AuditService
                                 ) extends ManualAddressController {
@@ -106,7 +106,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[Navigator].to(FakeNavigator),
+          bind[Navigator2].to(FakeNavigator2),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -130,7 +130,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
       "data is retrieved" in {
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[Navigator].to(FakeNavigator),
+          bind[Navigator2].to(FakeNavigator2),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -162,7 +162,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[Navigator].to(FakeNavigator),
+          bind[Navigator2].to(FakeNavigator2),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -205,12 +205,12 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         val onwardRoute = Call("GET", "/")
 
-        val navigator = new FakeNavigator(onwardRoute, NormalMode)
+        val navigator = new FakeNavigator2(onwardRoute, NormalMode)
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
           bind[DataCacheConnector].to(FakeDataCacheConnector),
-          bind[Navigator].to(navigator),
+          bind[Navigator2].to(navigator),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -238,13 +238,13 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         val onwardRoute = Call("GET", "/")
 
-        val navigator = new FakeNavigator(onwardRoute, NormalMode)
+        val navigator = new FakeNavigator2(onwardRoute, NormalMode)
         val auditService = new StubSuccessfulAuditService()
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
           bind[DataCacheConnector].to(FakeDataCacheConnector),
-          bind[Navigator].to(navigator),
+          bind[Navigator2].to(navigator),
           bind[AuditService].toInstance(auditService)
         )) {
           app =>

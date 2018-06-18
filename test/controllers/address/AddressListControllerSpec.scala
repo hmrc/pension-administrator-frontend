@@ -21,15 +21,15 @@ import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import org.scalatest.{Matchers, WordSpec}
 import play.api.Application
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator2, Navigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -146,13 +146,13 @@ object AddressListControllerSpec {
 
     override protected def cacheConnector: DataCacheConnector = FakeDataCacheConnector
 
-    override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
+    override protected def navigator: Navigator2 = new FakeNavigator2(onwardRoute)
 
     def onPageLoad(viewModel: AddressListViewModel): Future[Result] = {
 
       get(
         viewModel
-      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, false, None), UserAnswers()))
+      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
 
     }
 
@@ -165,7 +165,7 @@ object AddressListControllerSpec {
         fakeAddressListId,
         fakeAddressId,
         NormalMode
-      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, false, None), UserAnswers()))
+      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
 
     }
 
