@@ -19,8 +19,10 @@ package controllers.address
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.individual.IndividualSameContactAddressId
 import models._
 import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
@@ -43,7 +45,9 @@ import scala.concurrent.Future
 object SameContactAddressControllerSpec {
 
   object FakeIdentifier extends TypedIdentifier[Boolean]
+
   object RegAddressIdentifier extends TypedIdentifier[TolerantAddress]
+
   object ContactAddressIdentifier extends TypedIdentifier[Address]
 
   class TestController @Inject()(
@@ -81,7 +85,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     Some("test post code"), Some("GB")
   )
 
-  def viewmodel(line2: Option[String]=Some("address line 2")) = SameContactAddressViewModel(
+  def viewmodel(line2: Option[String] = Some("address line 2")) = SameContactAddressViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
@@ -132,7 +136,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
   "post" must {
 
-    "return a redirect when the submitted data is valid" in {
+    "return a redirect when the submitted data is valid and the data is changed" in {
 
       import play.api.inject._
 
@@ -155,10 +159,70 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
             "value" -> "true"
           )
           val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(false).asOpt.value, request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+      }
+    }
+
+    "return a redirect and save the data when the there is no existing data" in {
+
+      import play.api.inject._
+
+      val cacheConnector = mock[DataCacheConnector]
+      val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
+
+      running(_.overrides(
+        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
+      )) {
+        app =>
+
+          when(cacheConnector.save[Boolean, FakeIdentifier.type](
+            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          when(cacheConnector.save[Address, ContactAddressIdentifier.type](
+            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          val request = FakeRequest().withFormUrlEncodedBody(
+            "value" -> "true"
+          )
+          val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
+          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
+      }
+    }
+
+    "return a redirect and don't save the data when the data is not changed" in {
+
+      import play.api.inject._
+
+      val cacheConnector = mock[DataCacheConnector]
+      val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
+
+      running(_.overrides(
+        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
+      )) {
+        app =>
+
+          val request = FakeRequest().withFormUrlEncodedBody(
+            "value" -> "true"
+          )
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(true).asOpt.value, request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+          verify(cacheConnector, never()).save(any(), any(), any())(any(), any(), any())
       }
     }
 

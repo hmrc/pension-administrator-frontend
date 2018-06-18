@@ -111,7 +111,7 @@ common.postcodeLookup.enterPostcode = Enter the postcode below, or {0}
 common.postcodeLookup.enterPostcode.link = enter the address manually
 common.adviser.secondary.heading = Pension adviser
 common.adviser.address.heading = Pension adviser’s address
-common.adviser.address.title = Pension adviser’s adress
+common.adviser.address.title = Pension adviser’s address
 common.error.dateOfBirth.required = Enter the date of birth
 common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
@@ -458,17 +458,20 @@ submissionInvalid.heading = There has been a problem sending your details
 submissionInvalid.body1 = Your details could not be submitted. None of your data has been lost.
 submissionInvalid.body2 = You should {0} get help with this page {1} to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.
 
-individualContactAddressPostCodeLookup.title = What is the contact address
-individualContactAddressPostCodeLookup.heading = What is your contact address?
-individualContactAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
-individualContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually {1} if the address is overseas.
-individualContactAddressPostCodeLookup.formLabel = Postcode
-
-individual.same.contact.address.title = Is this registered address the same as your correspondence address?
+individual.same.contact.address.title = Is this your contact address?
 individual.same.contact.address.heading = Is this your contact address?
 individual.same.contact.address.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
 individual.same.contact.address.error = Select yes if these details are correct
 
+company.same.contact.address.title = Is this registered address the same as your correspondence address?
+company.same.contact.address.heading = Is this {0}’s contact address?
+company.same.contact.address.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+
+individualCorrespondenceAddressPostCodeLookup.title = What is the contact address
+individualCorrespondenceAddressPostCodeLookup.heading = What is your contact address?
+individualCorrespondenceAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individualCorrespondenceAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually {1} if the address is overseas.
+individualCorrespondenceAddressPostCodeLookup.formLabel = Postcode
 individualContactAddressPostCodeLookup.title = What is the contact address
 individualContactAddressPostCodeLookup.heading = What is your contact address?
 individualContactAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
@@ -486,3 +489,5 @@ company.contactAddressList.heading = Select {0}’s contact address
 companyContactAddress.title = Enter the contact address
 companyContactAddress.heading = What is {0}’s contact address?
 companyContactAddress.lede = This can be any address that can be used to contact {0}. The PSA might receive letters from HMRC.
+cya.label.individual.contact.address = Contact Address
+cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
