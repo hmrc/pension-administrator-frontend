@@ -17,8 +17,10 @@
 package identifiers.register.company
 
 import identifiers._
-import models.Address
+import models.TolerantAddress
 
-case object CompanyContactAddressId extends TypedIdentifier[Address] {
-  override def toString: String = "companyContactAddress"
+case object CompanyContactAddressListId extends TypedIdentifier[TolerantAddress] {
+
+  override def toString: String = "companyContactAddressList"
+
 }

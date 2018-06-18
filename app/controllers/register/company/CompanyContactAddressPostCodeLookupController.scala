@@ -51,7 +51,7 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
       BusinessDetailsId.retrieve.right.map{ businessDetails =>
         PostcodeLookupViewModel (
           routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
-          routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
+          routes.CompanyContactAddressController.onSubmit(mode),
           Message("companyContactAddressPostCodeLookup.title"),
           Message("companyContactAddressPostCodeLookup.heading").withArgs(businessDetails.companyName),
           Some(Message("site.secondaryHeader")),
