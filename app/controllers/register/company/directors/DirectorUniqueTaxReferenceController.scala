@@ -16,20 +16,20 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
 import identifiers.register.company.directors.DirectorUniqueTaxReferenceId
-import models.{UniqueTaxReference, Index, Mode}
+import javax.inject.Inject
+import models.{Index, Mode, UniqueTaxReference}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator2, UserAnswers}
 import views.html.register.company.directors.directorUniqueTaxReference
 
 import scala.concurrent.Future
@@ -38,7 +38,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
                                                       appConfig: FrontendAppConfig,
                                                       override val messagesApi: MessagesApi,
                                                       dataCacheConnector: DataCacheConnector,
-                                                      @CompanyDirector navigator: Navigator,
+                                                      @CompanyDirector navigator: Navigator2,
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
@@ -47,7 +47,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
 
   private val form: Form[UniqueTaxReference] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
@@ -60,15 +60,15 @@ class DirectorUniqueTaxReferenceController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
-          (value) =>
+          value =>
             dataCacheConnector.save(request.externalId, DirectorUniqueTaxReferenceId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode)(new UserAnswers(json))))
+              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json))))
         )
       }
   }
