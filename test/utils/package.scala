@@ -101,8 +101,8 @@ package object utils {
       answers.set(BusinessDetailsId)(BusinessDetails("test company", "1111111111")).asOpt.value
     }
 
-    def companyContactAddressList(addresses: Seq[TolerantAddress]) = {
-      answers.set(CompanyContactAddressPostCodeLookupId)(addresses)
+    def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {
+      answers.set(CompanyContactAddressPostCodeLookupId)(addresses).asOpt.value
     }
 
     // Converters
