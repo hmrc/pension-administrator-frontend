@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
@@ -38,7 +38,7 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
 
   protected def cacheConnector: DataCacheConnector
 
-  protected def navigator: Navigator2
+  protected def navigator: Navigator
 
   protected def get(id: TypedIdentifier[AddressYears], form: Form[AddressYears], viewmodel: AddressYearsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {

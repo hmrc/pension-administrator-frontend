@@ -27,7 +27,7 @@ import models.register.company.directors.DirectorDetails
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import views.html.register.company.companyReview
 
 class CompanyReviewControllerSpec extends ControllerSpecBase {
@@ -51,7 +51,7 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
     new CompanyReviewController(
       frontendAppConfig,
       messagesApi,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl

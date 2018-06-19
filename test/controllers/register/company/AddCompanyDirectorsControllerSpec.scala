@@ -29,7 +29,7 @@ import models.register.company.directors.DirectorDetails
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
@@ -39,11 +39,11 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form = formProvider()
 
-  protected def fakeNavigator() = new FakeNavigator2(desiredRoute = onwardRoute)
+  protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
   protected def controller(
                             dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                            navigator: FakeNavigator2 = fakeNavigator()) =
+                            navigator: FakeNavigator = fakeNavigator()) =
 
     new AddCompanyDirectorsController(
       frontendAppConfig,

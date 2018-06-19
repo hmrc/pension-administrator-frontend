@@ -28,7 +28,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Individual
-import utils.{FakeNavigator2, Navigator2, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -121,7 +121,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[AuthAction].to(FakeAuthAction),
         bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
-        bind(classOf[Navigator2]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator2(desiredRoute = onwardRoute))
+        bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
         val request =
           addToken(

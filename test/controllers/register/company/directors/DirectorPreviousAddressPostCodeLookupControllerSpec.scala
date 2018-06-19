@@ -33,7 +33,7 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -56,7 +56,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       frontendAppConfig,
       FakeDataCacheConnector,
       fakeAddressLookupConnector,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,

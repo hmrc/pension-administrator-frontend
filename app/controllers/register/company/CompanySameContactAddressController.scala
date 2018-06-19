@@ -28,14 +28,14 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator2
+import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 
 @Singleton()
 class CompanySameContactAddressController @Inject()(
-                                                     @RegisterCompany val navigator: Navigator2,
+                                                     @RegisterCompany val navigator: Navigator,
                                                      val appConfig: FrontendAppConfig,
                                                      val messagesApi: MessagesApi,
                                                      val dataCacheConnector: DataCacheConnector,

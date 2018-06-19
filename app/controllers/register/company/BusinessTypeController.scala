@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
-import utils.{Enumerable, Navigator2, UserAnswers}
+import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.businessType
 
 import scala.concurrent.Future
@@ -37,7 +37,7 @@ class BusinessTypeController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: DataCacheConnector,
-                                        @RegisterCompany navigator: Navigator2,
+                                        @RegisterCompany navigator: Navigator,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,

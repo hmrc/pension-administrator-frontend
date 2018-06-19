@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
@@ -38,7 +38,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
 
   protected def dataCacheConnector: DataCacheConnector
 
-  protected def navigator: Navigator2
+  protected def navigator: Navigator
 
   protected val form: Form[Boolean]
 

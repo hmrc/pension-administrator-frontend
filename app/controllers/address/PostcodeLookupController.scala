@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -41,7 +41,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
   protected def addressLookupConnector: AddressLookupConnector
 
-  protected def navigator: Navigator2
+  protected def navigator: Navigator
 
   protected def form: Form[String]
 

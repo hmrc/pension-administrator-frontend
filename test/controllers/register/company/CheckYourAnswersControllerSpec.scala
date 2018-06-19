@@ -23,7 +23,7 @@ import models.register.company.BusinessDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{CheckYourAnswersFactory, FakeCountryOptions, FakeNavigator2}
+import utils.{CheckYourAnswersFactory, FakeCountryOptions, FakeNavigator}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
@@ -40,7 +40,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
       checkYourAnswersFactory
     )
