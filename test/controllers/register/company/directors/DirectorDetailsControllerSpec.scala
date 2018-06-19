@@ -28,19 +28,27 @@ import models.register.company.directors.DirectorDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.register.company.directors.directorDetails
 
 class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new DirectorDetailsFormProvider()
-  val form = formProvider()
+  private val formProvider = new DirectorDetailsFormProvider()
+  private val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new DirectorDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new DirectorDetailsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
   private def viewAsString(index: Int, form: Form[_] = form) =
     directorDetails(frontendAppConfig, form, NormalMode, index)(fakeRequest, messages).toString
