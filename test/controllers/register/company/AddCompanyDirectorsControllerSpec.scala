@@ -27,51 +27,14 @@ import play.api.test.Helpers._
 import play.api.libs.json._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
 import models.NormalMode
 import models.register.company.directors.DirectorDetails
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  private val formProvider = new AddCompanyDirectorsFormProvider()
-  private val form = formProvider()
-
-  protected def fakeNavigator() = new FakeNavigator2(desiredRoute = onwardRoute)
-
-  protected def controller(
-      dataRetrievalAction: DataRetrievalAction = getEmptyData,
-      navigator: FakeNavigator2 = fakeNavigator()) =
-
-    new AddCompanyDirectorsController(
-        frontendAppConfig,
-        messagesApi,
-        FakeDataCacheConnector,
-        navigator,
-        FakeAuthAction,
-        dataRetrievalAction,
-        new DataRequiredActionImpl,
-        formProvider
-    )
-
-  private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages).toString
-
-  // scalastyle:off magic.number
-  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
-  // scalastyle:on magic.number
-
-  private val maxDirectors = frontendAppConfig.maxDirectors
-
-  private def dataRetrievalAction(directors: DirectorDetails*): FakeDataRetrievalAction = {
-    val validData = Json.obj(
-      "directors" -> directors.map(d => Json.obj(DirectorDetailsId.toString -> Json.toJson(d)))
-    )
-    new FakeDataRetrievalAction(Some(validData))
-  }
+  import AddCompanyDirectorsControllerSpec._
 
   "AddCompanyDirectors Controller" must {
 
@@ -172,6 +135,52 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
+  }
+
+}
+
+object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSpec {
+
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  private val formProvider = new AddCompanyDirectorsFormProvider()
+  private val form = formProvider()
+
+  protected def fakeNavigator() = new FakeNavigator2(desiredRoute = onwardRoute)
+
+  protected def controller(
+                            dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                            navigator: FakeNavigator2 = fakeNavigator()
+                          ) =
+    new AddCompanyDirectorsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      navigator,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
+
+  private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors.map((_, true)))(fakeRequest, messages).toString
+
+  // scalastyle:off magic.number
+  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  // scalastyle:on magic.number
+
+  private val maxDirectors = frontendAppConfig.maxDirectors
+
+  private def dataRetrievalAction(directors: DirectorDetails*): FakeDataRetrievalAction = {
+    val validData = Json.obj("directors" ->
+      directors.map(d => Json.obj(
+        DirectorDetailsId.toString -> Json.toJson(d),
+        IsDirectorCompleteId.toString -> JsBoolean(true)
+      ))
+    )
+    new FakeDataRetrievalAction(Some(validData))
   }
 
 }

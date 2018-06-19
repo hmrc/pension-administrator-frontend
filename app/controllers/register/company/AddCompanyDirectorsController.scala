@@ -17,7 +17,6 @@
 package controllers.register.company
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -26,7 +25,7 @@ import controllers.actions._
 import config.FrontendAppConfig
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
 import models.Mode
 import models.register.company.directors.DirectorDetails
 import play.api.Logger
@@ -52,12 +51,15 @@ class AddCompanyDirectorsController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[DirectorDetails] = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
-      Ok(addCompanyDirectors(appConfig, form, mode, directors))
+      val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
+
+      Ok(addCompanyDirectors(appConfig, form, mode, directorsWithFlag(Seq(), directors, isComplete)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
+      val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
@@ -65,7 +67,7 @@ class AddCompanyDirectorsController @Inject() (
       else {
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors)),
+            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directorsWithFlag(Seq(), directors, isComplete))),
           value => {
             request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
               errors => {
@@ -77,5 +79,23 @@ class AddCompanyDirectorsController @Inject() (
           }
         )
       }
+  }
+
+  private def directorsWithFlag(
+                                 withFlag: Seq[(DirectorDetails, Boolean)],
+                                 directors: Seq[DirectorDetails],
+                                 flags: Seq[Boolean]
+                               ): Seq[(DirectorDetails, Boolean)] = {
+
+    if(directors.isEmpty){
+      withFlag
+    } else if (flags.isEmpty) {
+      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, false)
+      directorsWithFlag(withFlag :+ addWithFlag, directors.tail, Seq.empty)
+    } else {
+      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, flags.head)
+      directorsWithFlag(withFlag :+ addWithFlag, directors.tail, flags.tail)
+    }
+
   }
 }

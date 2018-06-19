@@ -21,7 +21,7 @@
 @import models.register.company.directors.DirectorDetails
 @import utils.FormHelpers
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[DirectorDetails])(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[(DirectorDetails, Boolean)])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("addCompanyDirectors.title"),
