@@ -25,10 +25,10 @@ import identifiers.register.individual._
 import identifiers.{Identifier, LastPageId}
 import models.{AddressYears, CheckMode, Mode, NormalMode}
 import play.api.mvc.Call
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 
 @Singleton
-class IndividualNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator2 {
+class IndividualNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(): Option[NavigateTo] =
     NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())

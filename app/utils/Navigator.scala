@@ -27,7 +27,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext
 import scala.util.Failure
 
-abstract class Navigator2 {
+abstract class Navigator {
 
   protected def dataCacheConnector: DataCacheConnector
 

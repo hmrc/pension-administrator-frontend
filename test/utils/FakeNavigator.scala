@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext
 
-class FakeNavigator2(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator2 {
+class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
 
   private[this] var userAnswers: Option[UserAnswers] = None
 
@@ -45,4 +45,4 @@ class FakeNavigator2(desiredRoute: Call, mode: Mode = NormalMode) extends Naviga
 
 }
 
-object FakeNavigator2 extends FakeNavigator2(Call("GET", "www.example.com"), NormalMode)
+object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

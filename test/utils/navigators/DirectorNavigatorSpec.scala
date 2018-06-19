@@ -33,13 +33,13 @@ import org.scalatest.prop.{TableFor4, TableFor6}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{NavigatorBehaviour2, UserAnswers}
+import utils.{NavigatorBehaviour, UserAnswers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DirectorNavigatorSpec2 extends SpecBase with MockitoSugar with NavigatorBehaviour2 {
-  import DirectorNavigatorSpec2._
-  val navigator = new DirectorNavigator2(FakeDataCacheConnector, frontendAppConfig)
+class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
+  import DirectorNavigatorSpec._
+  val navigator = new DirectorNavigator(FakeDataCacheConnector, frontendAppConfig)
 
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -73,7 +73,7 @@ class DirectorNavigatorSpec2 extends SpecBase with MockitoSugar with NavigatorBe
   }
 }
 
-object DirectorNavigatorSpec2 extends OptionValues {
+object DirectorNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(0)

@@ -26,9 +26,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Navigator2Spec extends WordSpec with MustMatchers {
+class NavigatorSpec extends WordSpec with MustMatchers {
 
-  import Navigator2Spec._
+  import NavigatorSpec._
 
   "Navigator" when {
 
@@ -80,7 +80,7 @@ class Navigator2Spec extends WordSpec with MustMatchers {
 
 }
 
-object Navigator2Spec {
+object NavigatorSpec {
 
   val testNotExistCall: Call = Call("GET", "http://www.test.com/not-exist")
   val testExistNormalModeCall: Call = Call("GET", "http://www.test.com/exist/normal-mode")
@@ -93,7 +93,7 @@ object Navigator2Spec {
   val testSaveId: TypedIdentifier[Nothing] = new TypedIdentifier[Nothing] {}
   val testNotSaveId: TypedIdentifier[Nothing] = new TypedIdentifier[Nothing] {}
 
-  class TestNavigator(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
+  class TestNavigator(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
     override protected def routeMap(from: NavigateFrom): Option[NavigateTo] =
       from.id match {

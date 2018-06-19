@@ -24,10 +24,10 @@ import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
 import models.register.company.directors.DirectorDetails
 import models.{AddressYears, CheckMode, NormalMode}
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 
 @Singleton
-class DirectorNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector, appConfig: FrontendAppConfig) extends Navigator2 {
+class DirectorNavigator @Inject()(val dataCacheConnector: DataCacheConnector, appConfig: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(index: Int): Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index))

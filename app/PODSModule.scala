@@ -15,7 +15,7 @@
  */
 
 import com.google.inject.AbstractModule
-import utils.Navigator2
+import utils.Navigator
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
 import utils.navigators._
@@ -24,25 +24,25 @@ class PODSModule extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[Navigator2])
+    bind(classOf[Navigator])
       .annotatedWith(classOf[Register])
       .to(classOf[RegisterNavigator])
 
-    bind(classOf[Navigator2])
+    bind(classOf[Navigator])
       .annotatedWith(classOf[CompanyDirector])
-      .to(classOf[DirectorNavigator2])
+      .to(classOf[DirectorNavigator])
 
-    bind(classOf[Navigator2])
+    bind(classOf[Navigator])
       .annotatedWith(classOf[Individual])
-      .to(classOf[IndividualNavigator2])
+      .to(classOf[IndividualNavigator])
 
-    bind(classOf[Navigator2])
+    bind(classOf[Navigator])
       .annotatedWith(classOf[RegisterCompany])
-      .to(classOf[RegisterCompanyNavigator2])
+      .to(classOf[RegisterCompanyNavigator])
 
-    bind(classOf[Navigator2])
+    bind(classOf[Navigator])
       .annotatedWith(classOf[Adviser])
-      .to(classOf[AdviserNavigator2])
+      .to(classOf[AdviserNavigator])
 
     bind(classOf[CountryOptions])
       .annotatedWith(classOf[EUAndEEA])

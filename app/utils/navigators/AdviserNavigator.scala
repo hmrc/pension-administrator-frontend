@@ -22,10 +22,10 @@ import identifiers.register.adviser._
 import javax.inject.{Inject, Singleton}
 import models.{CheckMode, NormalMode}
 import play.api.mvc.Call
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 
 @Singleton
-class AdviserNavigator2@Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
+class AdviserNavigator@Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
   private def checkYourAnswers(): Call =
     controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()

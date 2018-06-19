@@ -22,7 +22,7 @@ import identifiers.Identifier
 import identifiers.register.adviser._
 import models.{CheckMode, Mode, NormalMode}
 import play.api.libs.json.Json
-import utils.{NavigatorBehaviour2, UserAnswers}
+import utils.{NavigatorBehaviour, UserAnswers}
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
@@ -31,11 +31,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AdviserNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
+class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
-  import AdviserNavigatorSpec2._
+  import AdviserNavigatorSpec._
 
-  val navigator = new AdviserNavigator2(FakeDataCacheConnector)
+  val navigator = new AdviserNavigator(FakeDataCacheConnector)
 
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                           "User Answers", "Next Page (NormalMode)",          "Save(NormalMode)", "Next Page (CheckMode)",                 "Save(CheckMode"),
@@ -53,7 +53,7 @@ class AdviserNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
   }
 }
 
-object AdviserNavigatorSpec2 extends OptionValues {
+object AdviserNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val adviserPostCodeLookUpPage: Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
 

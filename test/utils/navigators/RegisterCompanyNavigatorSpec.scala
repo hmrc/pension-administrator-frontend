@@ -27,13 +27,13 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour2, UserAnswers}
+import utils.{NavigatorBehaviour, UserAnswers}
 
-class RegisterCompanyNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
+class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
-  import RegisterCompanyNavigatorSpec2._
+  import RegisterCompanyNavigatorSpec._
 
-  val navigator = new RegisterCompanyNavigator2(FakeDataCacheConnector)
+  val navigator = new RegisterCompanyNavigator(FakeDataCacheConnector)
 
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -64,7 +64,7 @@ class RegisterCompanyNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
   }
 }
 
-object RegisterCompanyNavigatorSpec2 extends OptionValues {
+object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private lazy val testLastPage = Call("GET", "www.test.com")
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()

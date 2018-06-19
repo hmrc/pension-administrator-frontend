@@ -29,11 +29,11 @@ import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{NavigatorBehaviour2, UserAnswers}
+import utils.{NavigatorBehaviour, UserAnswers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour2 {
+class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import RegisterNavigatorSpec._
   val navigator = new RegisterNavigator(FakeDataCacheConnector)
 

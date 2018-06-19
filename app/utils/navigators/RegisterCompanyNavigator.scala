@@ -24,10 +24,10 @@ import identifiers.register.BusinessTypeId
 import identifiers.register.company._
 import models._
 import play.api.mvc.Call
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
+class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()

@@ -29,10 +29,10 @@ import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour2, UserAnswers}
+import utils.{NavigatorBehaviour, UserAnswers}
 
-class IndividualNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
-  import IndividualNavigatorSpec2._
+class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
+  import IndividualNavigatorSpec._
 
   //Remove the routes and the corresponding tests once the toggle is removed
   def toggledRoute(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -64,13 +64,13 @@ class IndividualNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
     (CheckYourAnswersId,                        emptyAnswers,                 declarationPage,                        true,               None,                                        false)
   )
 
-  val navigatorToggled = new IndividualNavigator2(FakeDataCacheConnector, appConfig())
+  val navigatorToggled = new IndividualNavigator(FakeDataCacheConnector, appConfig())
   s"When contact address journey is toggled off ${navigatorToggled.getClass.getSimpleName}" must {
     appRunning()
     behave like navigatorWithRoutes(navigatorToggled, FakeDataCacheConnector, toggledRoute())
   }
 
-  val navigator = new IndividualNavigator2(FakeDataCacheConnector, appConfig(true))
+  val navigator = new IndividualNavigator(FakeDataCacheConnector, appConfig(true))
   s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
     appRunning()
     behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
@@ -83,7 +83,7 @@ class IndividualNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
   }
 }
 
-object IndividualNavigatorSpec2 extends OptionValues {
+object IndividualNavigatorSpec extends OptionValues {
   private def appConfig(isContactAddressEnabled: Boolean = false) = {
     val application = new GuiceApplicationBuilder()
       .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled)).build()
