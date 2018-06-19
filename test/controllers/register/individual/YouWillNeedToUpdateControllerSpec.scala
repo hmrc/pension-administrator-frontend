@@ -33,7 +33,7 @@ class YouWillNeedToUpdateControllerSpec extends ControllerSpecBase {
     new YouWillNeedToUpdateController(frontendAppConfig, messagesApi, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl)
 
-  def viewAsString() = youWillNeedToUpdate(frontendAppConfig)(fakeRequest, messages).toString
+  def viewAsString(): String = youWillNeedToUpdate(frontendAppConfig)(fakeRequest, messages).toString
 
   "YouWillNeedToUpdate Controller" must {
 
