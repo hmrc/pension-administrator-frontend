@@ -38,22 +38,32 @@ class RegisterCompanyNavigatorSpec extends WordSpec with MustMatchers with Navig
     (BusinessTypeId,                              emptyAnswers,                   businessDetailsPage,                  None),
     (BusinessDetailsId,                           emptyAnswers,                   confirmCompanyDetailsPage,            None),
     (ConfirmCompanyAddressId,                     emptyAnswers,                   whatYouWillNeedPage,                  None),
-    (WhatYouWillNeedId,                           emptyAnswers,                   companyDetailsPage,                   None),
-    (CompanyDetailsId,                            emptyAnswers,                   companyRegistrationNumberPage,        Some(checkYourAnswersPage)),
-    (CompanyRegistrationNumberId,                 emptyAnswers,                   companyAddressYearsPage,              Some(checkYourAnswersPage)),
+    (WhatYouWillNeedId,                           emptyAnswers,                   sameContactAddress(NormalMode),       None),
+    (CompanySameContactAddressId,                 isSameContactAddress,           companyAddressYearsPage(NormalMode),  Some(companyAddressYearsPage(CheckMode))),
+    (CompanySameContactAddressId,                 notSameContactAddress,          contactAddressPostCode(NormalMode),   Some(contactAddressPostCode(CheckMode))),
+    (CompanyContactAddressPostCodeLookupId,       emptyAnswers,                   ???,                                  ???),
+    (???,                                         emptyAnswers,                   ???,                                  ???),
+    (???,                                         emptyAnswers,                   companyAddressYearsPage(NormalMode),  Some(checkYourAnswersPage)),
+
     (CompanyAddressYearsId,                       addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
     (CompanyAddressYearsId,                       addressYearsUnderAYear,         paPostCodePage(NormalMode),           Some(paPostCodePage(CheckMode))),
     (CompanyAddressYearsId,                       emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
+
     (CompanyPreviousAddressPostCodeLookupId,      emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
     (CompanyAddressListId,                        emptyAnswers,                   previousAddressPage(NormalMode),      Some(previousAddressPage(CheckMode))),
     (CompanyPreviousAddressId,                    emptyAnswers,                   contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (ContactDetailsId,                            emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
+
+    (ContactDetailsId,                            emptyAnswers,                   companyDetailsPage,                   Some(checkYourAnswersPage)),
+    (CompanyDetailsId,                            emptyAnswers,                   companyRegistrationNumberPage,        Some(checkYourAnswersPage)),
+    (CompanyRegistrationNumberId,                 emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
+
     (CompanyReviewId,                             emptyAnswers,                   declarationPage,                      None)
   )
 
   navigator.getClass.getSimpleName must {
     behave like navigatorWithRoutes(navigator, routes)
   }
+
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
@@ -65,16 +75,21 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   private val companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
   private val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-  private val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
+  private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
   private val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
   private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
   private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
   private val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  private def sameContactAddress(mode: Mode) = routes.CompanySameContactAddressController.onPageLoad(mode)
+  private def contactAddressPostCode(mode: Mode) = routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
 
   private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+  private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
+  private val notSameContactAddress = UserAnswers().companySameContactAddress(false)
+
 }
