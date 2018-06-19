@@ -74,7 +74,7 @@ class IndividualNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector,
           case _ => NavigateTo.save(routes.WhatYouWillNeedController.onPageLoad())
         }
       case Some(false) =>
-        NavigateTo.save(routes.YouWillNeedToUpdateController.onPageLoad())
+        NavigateTo.dontSave(routes.YouWillNeedToUpdateController.onPageLoad())
       case None =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }

@@ -44,7 +44,7 @@ class IndividualNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                                      "User Answers",               "Next Page (Normal Mode)",              "Save(NormalMode)", "Next Page (CheckMode)",                     "Save(CheckMode"),
     (IndividualDetailsCorrectId,                detailsCorrect,               whatYouWillNeedPage,                    true,               None,                                        false),
-    (IndividualDetailsCorrectId,                detailsIncorrect,             youWillNeedToUpdatePage,                true,               None,                                        false),
+    (IndividualDetailsCorrectId,                detailsIncorrect,             youWillNeedToUpdatePage,                false,               None,                                        false),
     (IndividualDetailsCorrectId,                emptyAnswers,                 sessionExpiredPage,                     false,              None,                                        false),
     (WhatYouWillNeedId,                         emptyAnswers,                 sameContactAddressPage(NormalMode),     true,               None,                                        false),
     (IndividualSameContactAddressId,            sameContactAddress,           addressYearsPage(NormalMode),           true,               Some(addressYearsPage(CheckMode)),           true),
