@@ -18,12 +18,16 @@ package utils
 
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.TypedIdentifier
+import models.{PSAUser, UserType}
+import models.requests.DataRequest
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => eqTo, _}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -37,7 +41,15 @@ class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionVal
     override def toString="existingId"
   }
 
+  implicit val request: DataRequest[AnyContent] = DataRequest(
+    request = FakeRequest("", ""),
+    externalId = "cacheId",
+    user = PSAUser(UserType.Individual, None, false, None),
+    userAnswers = UserAnswers()
+  )
+
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
   val dataCacheConnector = mock[DataCacheConnector]
 
   val userAnswers = UserAnswers(Json.obj(existingId.toString -> "testId"))
