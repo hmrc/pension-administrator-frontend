@@ -27,6 +27,7 @@ import models.requests.DataRequest
 import models.{CheckMode, Index, NormalMode}
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.AnyContent
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
@@ -55,34 +56,35 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     AnswerRow(
       "cya.label.name",
       Seq("test first name test last name"),
-      false,
+      answerIsMessageKey = false,
       routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
-      ),
+    ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
-      false,
+      answerIsMessageKey = false,
       routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
-  ))
+    ))
 
   def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(0)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      FakeNavigator2,
+      messagesApi,
       checkYourAnswersFactory,
       FakeSectionComplete
     )
 
-  def viewAsString() = check_your_answers(
+  def viewAsString(): String = check_your_answers(
     frontendAppConfig,
     Seq(
-      AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"),answersDD),
-      AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"),Seq.empty)
+      AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"), answersDD),
+      AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"), Seq.empty)
     ),
     Some(directorName),
     call

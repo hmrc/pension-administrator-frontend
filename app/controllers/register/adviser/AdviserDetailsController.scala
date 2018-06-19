@@ -26,6 +26,7 @@ import config.FrontendAppConfig
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
 import models.Mode
+import play.api.mvc.{Action, AnyContent}
 import utils.annotations.Adviser
 import utils.{Navigator2, UserAnswers}
 import views.html.register.adviser.adviserDetails
@@ -45,7 +46,7 @@ class AdviserDetailsController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AdviserDetailsId) match {
         case None => form
@@ -54,12 +55,12 @@ class AdviserDetailsController @Inject() (
       Ok(adviserDetails(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
-        (value) =>
+        value =>
           dataCacheConnector.save(request.externalId, AdviserDetailsId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
     )

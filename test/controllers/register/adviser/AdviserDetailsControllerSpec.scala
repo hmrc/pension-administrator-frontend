@@ -16,23 +16,23 @@
 
 package controllers.register.adviser
 
-import play.api.data.Form
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{FakeNavigator, FakeNavigator2}
 import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
 import models.NormalMode
 import models.register.adviser.AdviserDetails
+import play.api.data.Form
+import play.api.libs.json.Json
+import play.api.mvc.Call
+import play.api.test.Helpers._
+import utils.FakeNavigator2
 import views.html.register.adviser.adviserDetails
-import controllers.ControllerSpecBase
 
 class AdviserDetailsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AdviserDetailsFormProvider()
   val form = formProvider()
@@ -41,7 +41,7 @@ class AdviserDetailsControllerSpec extends ControllerSpecBase {
     new AdviserDetailsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator2(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "AdviserDetails Controller" must {
 

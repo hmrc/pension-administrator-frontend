@@ -16,18 +16,18 @@
 
 package controllers.register.adviser
 
-import javax.inject.Inject
-
-import play.api.i18n.MessagesApi
+import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.actions._
-import config.FrontendAppConfig
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.adviser.AdviserAddressPostCodeLookupId
+import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
-import utils.Navigator
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
+import utils.Navigator2
 import utils.annotations.Adviser
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -36,7 +36,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
                                                         override val appConfig: FrontendAppConfig,
                                                         override val cacheConnector: DataCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
-                                                        @Adviser override val navigator: Navigator,
+                                                        @Adviser override val navigator: Navigator2,
                                                         override val messagesApi: MessagesApi,
                                                         authenticate: AuthAction,
                                                         getData: DataRetrievalAction,
@@ -48,12 +48,12 @@ class AdviserAddressPostCodeLookupController @Inject()(
 
   import AdviserAddressPostCodeLookupController._
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       get(viewModel(mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       post(AdviserAddressPostCodeLookupId, viewModel(mode), mode)
   }

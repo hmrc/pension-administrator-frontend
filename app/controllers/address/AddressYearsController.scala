@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
@@ -35,8 +35,10 @@ import scala.concurrent.Future
 trait AddressYearsController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
+
   protected def cacheConnector: DataCacheConnector
-  protected def navigator: Navigator
+
+  protected def navigator: Navigator2
 
   protected def get(id: TypedIdentifier[AddressYears], form: Form[AddressYears], viewmodel: AddressYearsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -59,7 +61,7 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
       addressYears =>
         cacheConnector.save(request.externalId, id, addressYears).map {
           answers =>
-            Redirect(navigator.nextPage(id, mode)(UserAnswers(answers)))
+            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
         }
     )
   }

@@ -17,25 +17,28 @@
 package controllers.register.company
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import models.NormalMode
+import identifiers.register.company.CheckYourAnswersId
+import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.CheckYourAnswersFactory
+import utils.{CheckYourAnswersFactory, Navigator2}
+import utils.annotations.RegisterCompany
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           checkYourAnswersFactory: CheckYourAnswersFactory
-                                          ) extends FrontendController with I18nSupport with Retrievals {
+class CheckYourAnswersController @Inject()(
+                                            appConfig: FrontendAppConfig,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            @RegisterCompany navigator: Navigator2,
+                                            override val messagesApi: MessagesApi,
+                                            checkYourAnswersFactory: CheckYourAnswersFactory
+                                          ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
@@ -77,8 +80,9 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       ))
   }
 
-  def onSubmit: Action[AnyContent] = authenticate {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Redirect(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
+      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+
   }
 }

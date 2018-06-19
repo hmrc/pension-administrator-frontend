@@ -18,8 +18,8 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import audit.{AddressAction, AddressEvent}
 import audit.testdoubles.StubSuccessfulAuditService
+import audit.{AddressAction, AddressEvent}
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -34,7 +34,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -42,6 +42,7 @@ import views.html.address.manualAddress
 class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form = formProvider()
@@ -73,7 +74,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

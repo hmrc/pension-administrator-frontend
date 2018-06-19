@@ -23,12 +23,12 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressPostCodeLookupId, CompanyDetailsId}
+import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressPostCodeLookupId}
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -37,19 +37,19 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
                                                                override val appConfig: FrontendAppConfig,
                                                                override val cacheConnector: DataCacheConnector,
                                                                override val addressLookupConnector: AddressLookupConnector,
-                                                               @RegisterCompany override val navigator: Navigator,
+                                                               @RegisterCompany override val navigator: Navigator2,
                                                                override val messagesApi: MessagesApi,
                                                                authenticate: AuthAction,
                                                                getData: DataRetrievalAction,
                                                                requireData: DataRequiredAction,
                                                                formProvider: PostCodeLookupFormProvider
-                                                              ) extends PostcodeLookupController with Retrievals {
+                                                             ) extends PostcodeLookupController with Retrievals {
 
 
   def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      BusinessDetailsId.retrieve.right.map{ businessDetails =>
-        PostcodeLookupViewModel (
+      BusinessDetailsId.retrieve.right.map { businessDetails =>
+        PostcodeLookupViewModel(
           routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
           routes.CompanyContactAddressController.onSubmit(mode),
           Message("companyContactAddressPostCodeLookup.title"),
@@ -72,7 +72,7 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map{ vm =>
+      viewModel(mode).retrieve.right.map { vm =>
         post(CompanyContactAddressPostCodeLookupId, vm, mode)
       }
   }

@@ -16,32 +16,38 @@
 
 package controllers.register.company
 
-import play.api.data.Form
-import play.api.libs.json.JsBoolean
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
-import play.api.libs.json._
 import forms.register.company.MoreThanTenDirectorsFormProvider
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.NormalMode
+import play.api.data.Form
+import play.api.libs.json._
+import play.api.mvc.Call
+import play.api.test.Helpers._
+import utils.FakeNavigator2
 import views.html.register.company.moreThanTenDirectors
 
 class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new MoreThanTenDirectorsFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new MoreThanTenDirectorsController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new MoreThanTenDirectorsController(frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = moreThanTenDirectors(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = moreThanTenDirectors(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "MoreThanTenDirectors Controller" must {
 
