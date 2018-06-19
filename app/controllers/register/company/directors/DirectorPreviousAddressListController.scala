@@ -23,11 +23,11 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import identifiers.register.company.directors._
-import models.{Index, Mode}
 import models.requests.DataRequest
+import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.CompanyDirector
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class DirectorPreviousAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                                       override val messagesApi: MessagesApi,
                                                       override val cacheConnector: DataCacheConnector,
-                                                      @CompanyDirector override val navigator: Navigator,
+                                                      @CompanyDirector override val navigator: Navigator2,
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction) extends AddressListController with Retrievals {

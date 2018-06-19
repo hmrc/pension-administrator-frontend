@@ -28,7 +28,7 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -36,12 +36,12 @@ import viewmodels.address.SameContactAddressViewModel
 class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                        val messagesApi: MessagesApi,
                                                        val dataCacheConnector: DataCacheConnector,
-                                                       @Individual val navigator: Navigator,
+                                                       @Individual val navigator: Navigator2,
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: SameContactAddressFormProvider
-                                                   ) extends SameContactAddressController with I18nSupport {
+                                                      ) extends SameContactAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualSameContactAddressController.onSubmit _
   private[controllers] val title: Message = "individual.same.contact.address.title"

@@ -16,23 +16,23 @@
 
 package controllers.register.individual
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
+import javax.inject.Inject
 import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 
 class IndividualAddressYearsController @Inject()(
-                                                  @Individual override val navigator: Navigator,
+                                                  @Individual override val navigator: Navigator2,
                                                   override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   override val cacheConnector: DataCacheConnector,

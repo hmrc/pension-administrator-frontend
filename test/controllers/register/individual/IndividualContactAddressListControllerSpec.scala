@@ -116,7 +116,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
     }
 
     "redirect to the next page on POST of valid data" in {
-      val onwardRoute = controllers.register.individual.routes.IndividualContactAddressListController.onPageLoad(NormalMode)
+      val onwardRoute = controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(NormalMode)
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
         bind[DataCacheConnector].toInstance(FakeDataCacheConnector),

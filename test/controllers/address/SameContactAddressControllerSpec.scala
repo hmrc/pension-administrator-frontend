@@ -32,6 +32,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
@@ -98,7 +99,9 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
     "return a successful result when there is no existing answer" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
@@ -114,7 +117,9 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
     "return a successful result when there is an existing answer" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
@@ -259,7 +264,9 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
     "return a bad request when the submitted data is invalid" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]

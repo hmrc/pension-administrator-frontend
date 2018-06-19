@@ -26,7 +26,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -62,7 +62,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl
@@ -120,13 +120,13 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page valid data is submitted" in {
-        val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails ++ addressObject))
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1"))
-        val result = controller(dataRetrieval).onSubmit(NormalMode)(postRequest)
+      val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails ++ addressObject))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1"))
+      val result = controller(dataRetrieval).onSubmit(NormalMode)(postRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
 
     "return a Bad Request and errors when invalid data is submitted" in {
       val dataRetrieval = new FakeDataRetrievalAction(Some(companyDetails ++ addressObject))

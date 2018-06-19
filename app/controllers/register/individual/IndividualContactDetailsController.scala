@@ -16,21 +16,22 @@
 
 package controllers.register.individual
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.individual.IndividualContactDetailsId
+import javax.inject.Inject
 import models.Mode
 import play.api.i18n.MessagesApi
-import utils.Navigator
+import play.api.mvc.{Action, AnyContent}
+import utils.Navigator2
 import utils.annotations.Individual
 import viewmodels.{ContactDetailsViewModel, Message}
 
 
 class IndividualContactDetailsController @Inject()(
-                                                    @Individual override val navigator: Navigator,
+                                                    @Individual override val navigator: Navigator2,
                                                     override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     override val cacheConnector: DataCacheConnector,
@@ -51,12 +52,12 @@ class IndividualContactDetailsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       get(IndividualContactDetailsId, form, viewmodel(mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       post(IndividualContactDetailsId, mode, form, viewmodel(mode))
   }

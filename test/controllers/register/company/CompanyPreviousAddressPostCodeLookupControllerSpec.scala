@@ -29,7 +29,7 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
@@ -47,7 +47,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       frontendAppConfig,
       FakeDataCacheConnector,
       fakeAddressLookupConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
@@ -62,7 +62,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       CompanyPreviousAddressPostCodeLookupController.viewModel(NormalMode)
     )(fakeRequest, messages).toString()
 
-  private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
+  private def fakeAddress(postCode: String): TolerantAddress = TolerantAddress(
     Some("Address Line 1"),
     Some("Address Line 2"),
     Some("Address Line 3"),
@@ -149,7 +149,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.failed(new HttpException("Failed",INTERNAL_SERVER_ERROR)))
+        .thenReturn(Future.failed(new HttpException("Failed", INTERNAL_SERVER_ERROR)))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

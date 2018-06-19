@@ -16,19 +16,18 @@
 
 package controllers.register.adviser
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import identifiers.register.adviser._
-import models.requests.DataRequest
+import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.Adviser
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -38,7 +37,7 @@ import scala.concurrent.Future
 class AdviserAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                              override val messagesApi: MessagesApi,
                                              override val cacheConnector: DataCacheConnector,
-                                             @Adviser override val navigator: Navigator,
+                                             @Adviser override val navigator: Navigator2,
                                              authenticate: AuthAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction) extends AddressListController with Retrievals {

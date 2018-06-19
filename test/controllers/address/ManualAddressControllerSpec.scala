@@ -301,7 +301,8 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
       running(_.overrides(
         bind[CountryOptions].to[FakeCountryOptions],
-        bind[AuditService].to[StubSuccessfulAuditService]
+        bind[AuditService].to[StubSuccessfulAuditService],
+        bind[Navigator2].toInstance(FakeNavigator2)
       )) {
         app =>
 

@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import audit.AuditService
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
@@ -25,12 +24,13 @@ import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
 import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
+import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import utils.Navigator2
 import utils.annotations.Individual
-import utils.Navigator
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -38,7 +38,7 @@ import viewmodels.address.ManualAddressViewModel
 class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                     val messagesApi: MessagesApi,
                                                     val dataCacheConnector: DataCacheConnector,
-                                                    @Individual val navigator: Navigator,
+                                                    @Individual val navigator: Navigator2,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,

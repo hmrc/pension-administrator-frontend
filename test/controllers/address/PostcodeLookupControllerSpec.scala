@@ -95,7 +95,9 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
   "get" must {
     "return a successful result" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
 
           implicit val mat: Materializer = app.materializer
