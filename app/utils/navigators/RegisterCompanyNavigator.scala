@@ -29,43 +29,77 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
-  private def checkYourAnswers: Call =
-    controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
-
-  //noinspection ScalaStyle
+  //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessTypeId => NavigateTo.dontSave(routes.BusinessDetailsController.onPageLoad(NormalMode))
-    case BusinessDetailsId => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
-    case ConfirmCompanyAddressId => detailsCorrect(from.userAnswers)
-    case WhatYouWillNeedId => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
-    case CompanyDetailsId => NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-    case CompanyRegistrationNumberId => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(NormalMode))
-    case CompanyAddressYearsId => companyAddressYearsIdRoutes(from.userAnswers)
-    case CompanyPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.CompanyAddressListController.onPageLoad(NormalMode))
-    case CompanyAddressListId => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
-    case CompanyPreviousAddressId => NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
-    case ContactDetailsId => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-    case CompanyReviewId => NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
-    case CheckYourAnswersId => NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    case BusinessTypeId =>
+      NavigateTo.dontSave(routes.BusinessDetailsController.onPageLoad(NormalMode))
+    case BusinessDetailsId =>
+      NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+    case ConfirmCompanyAddressId =>
+      detailsCorrect(from.userAnswers)
+    case WhatYouWillNeedId =>
+      NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+    case CompanySameContactAddressId =>
+      sameContactAddress(NormalMode, from.userAnswers)
+    case CompanyContactAddressPostCodeLookupId =>
+      NavigateTo.save(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+    case CompanyContactAddressListId =>
+      NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(NormalMode))
+    case CompanyContactAddressId =>
+      NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(NormalMode))
+    case CompanyAddressYearsId =>
+      companyAddressYearsIdRoutes(from.userAnswers)
+    case CompanyPreviousAddressPostCodeLookupId =>
+      NavigateTo.save(routes.CompanyAddressListController.onPageLoad(NormalMode))
+    case CompanyAddressListId =>
+      NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
+    case CompanyPreviousAddressId =>
+      NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
+    case ContactDetailsId =>
+      NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
+    case CompanyDetailsId =>
+      NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+    case CompanyRegistrationNumberId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case CompanyReviewId =>
+      NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
+    case _ => None
   }
 
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case CompanyDetailsId => NavigateTo.dontSave(checkYourAnswers)
-    case CompanyRegistrationNumberId => NavigateTo.dontSave(checkYourAnswers)
-    case CompanyAddressId => NavigateTo.dontSave(checkYourAnswers)
-    case CompanyAddressYearsId => companyAddressYearsCheckIdRoutes(from.userAnswers)
-    case CompanyPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.CompanyAddressListController.onPageLoad(CheckMode))
-    case CompanyAddressListId => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
-    case CompanyPreviousAddressId => NavigateTo.dontSave(checkYourAnswers)
-    case ContactDetailsId => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    case CompanySameContactAddressId =>
+      sameContactAddress(CheckMode, from.userAnswers)
+    case CompanyContactAddressPostCodeLookupId =>
+      NavigateTo.save(routes.CompanyContactAddressListController.onPageLoad(CheckMode))
+    case CompanyContactAddressListId =>
+      NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(CheckMode))
+    case CompanyContactAddressId =>
+      checkYourAnswers
+    case CompanyAddressYearsId =>
+      companyAddressYearsCheckIdRoutes(from.userAnswers)
+    case CompanyPreviousAddressPostCodeLookupId =>
+      NavigateTo.save(routes.CompanyAddressListController.onPageLoad(CheckMode))
+    case CompanyAddressListId =>
+      NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
+    case CompanyPreviousAddressId =>
+      checkYourAnswers
+    case ContactDetailsId =>
+      checkYourAnswers
+    case CompanyDetailsId =>
+      checkYourAnswers
+    case CompanyRegistrationNumberId =>
+      checkYourAnswers
+    case _ => None
   }
+  //scalastyle:on cyclomatic.complexity
+
+  private def checkYourAnswers: Option[NavigateTo] =
+    NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
 
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(LastPageId) match {
       case Some(lastPage) => NavigateTo.dontSave(Call(lastPage.method, lastPage.url))
-      case _ => NavigateTo.save(routes.WhatYouWillNeedController.onPageLoad())
+      case _ => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     }
   }
 
@@ -80,8 +114,17 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
   private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
-      case Some(AddressYears.OverAYear) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
+      case Some(AddressYears.OverAYear) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
+
+  private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(CompanySameContactAddressId) match {
+      case Some(true) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
+      case Some(false) => NavigateTo.save(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
 }
