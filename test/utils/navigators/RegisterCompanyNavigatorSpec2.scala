@@ -52,7 +52,8 @@ class RegisterCompanyNavigatorSpec2 extends SpecBase with NavigatorBehaviour2 {
     (CompanyAddressListId,                   emptyAnswers,           previousAddressPage(NormalMode), true,               Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId,               emptyAnswers,           contactDetailsPage,              true,               Some(checkYourAnswersPage),           false),
     (ContactDetailsId,                       emptyAnswers,           checkYourAnswersPage,            true,               Some(checkYourAnswersPage),           false),
-    (CompanyReviewId,                        emptyAnswers,           declarationPage,                 true,               None,                                 false)
+    (CompanyReviewId,                        emptyAnswers,           declarationPage,                 true,               None,                                 false),
+    (CheckYourAnswersId,                     emptyAnswers,           addDirectorsPage,                true,               None,                                 false)
   )
 
   //scalastyle:on line.size.limit
@@ -76,6 +77,7 @@ object RegisterCompanyNavigatorSpec2 extends OptionValues {
   private lazy val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
   private lazy val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
   private lazy val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  private lazy val addDirectorsPage = routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
 
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
 
