@@ -27,7 +27,6 @@ trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints
     form: Form[_],
     fieldName: String,
     keyCrnRequired: String,
-    keyCrnLength: String,
     keyCrnInvalid: String
   ): Unit = {
 
@@ -36,14 +35,7 @@ trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints
       behave like fieldThatBindsValidData(
         form,
         fieldName,
-        RegexpGen.from(crnRegex)
-      )
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = CrnMapping.maxCrnLength,
-        lengthError = FormError(fieldName, keyCrnLength, Seq(CrnMapping.maxCrnLength))
+        " 12345678 "
       )
 
       behave like mandatoryField(

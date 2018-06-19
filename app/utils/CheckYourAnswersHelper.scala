@@ -16,7 +16,7 @@
 
 package utils
 
-import identifiers.register.advisor.AdvisorAddressId
+import identifiers.register.adviser.AdviserAddressId
 import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
@@ -26,21 +26,34 @@ import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
+  def individualContactAddress:Option[AnswerRow]={
+    userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map {answer =>
+      AnswerRow("cya.label.individual.contact.address", addressAnswer(answer), false, None)
+    }
+  }
+
+  def individualSameContactAddress: Option[AnswerRow] = {
+    userAnswers.get(identifiers.register.individual.IndividualSameContactAddressId) map {answer =>
+      AnswerRow("cya.label.individual.same.contact.address", Seq(if(answer) "site.yes" else "site.no"), true, Some(
+        controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url))
+    }
+  }
+
   def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
       controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)
   }
 
-  def advisorAddress: Seq[AnswerRow] = userAnswers.get(AdvisorAddressId) match {
+  def adviserAddress: Seq[AnswerRow] = userAnswers.get(AdviserAddressId) match {
     case Some(x) => Seq(AnswerRow("cya.label.address", addressAnswer(x), false,
-      controllers.register.advisor.routes.AdvisorAddressController.onPageLoad(CheckMode).url))
+      controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 
-  def advisorDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.advisor.AdvisorDetailsId) match {
-    case Some(x) => Seq(AnswerRow("cya.label.name", Seq(x.name), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-                        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url),
-                        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false, controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(CheckMode).url))
+  def adviserDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.adviser.AdviserDetailsId) match {
+    case Some(x) => Seq(AnswerRow("cya.label.name", Seq(x.name), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
+                        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
+                        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 
@@ -49,8 +62,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
       AnswerRow("declarationWorkingKnowledge.checkYourAnswersLabel", Seq(s"declarationWorkingKnowledge.$x"), true, controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(CheckMode).url)
     }
   }
-  def advisorAddressPostCodeLookup: Seq[AnswerRow] = userAnswers.get(identifiers.register.advisor.AdvisorAddressPostCodeLookupId) match {
-    case Some(x) => Seq(AnswerRow("advisorAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.advisor.routes.AdvisorAddressPostCodeLookupController.onPageLoad(CheckMode).url))
+  def adviserAddressPostCodeLookup: Seq[AnswerRow] = userAnswers.get(identifiers.register.adviser.AdviserAddressPostCodeLookupId) match {
+    case Some(x) => Seq(AnswerRow("adviserAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(CheckMode).url))
     case _ => Nil
   }
 

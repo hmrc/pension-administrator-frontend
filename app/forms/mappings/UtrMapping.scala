@@ -21,7 +21,7 @@ import play.api.data.Forms.tuple
 import play.api.data.Mapping
 import uk.gov.voa.play.form.ConditionalMappings.{mandatoryIfFalse, mandatoryIfTrue}
 
-trait UtrMapping extends Mappings {
+trait UtrMapping extends Mappings with Transforms {
 
   protected def utrMapping(requiredKey: String,
                                    requiredUtrKey: String,
@@ -36,6 +36,7 @@ trait UtrMapping extends Mappings {
       "utr" -> mandatoryIfTrue(
         "utr.hasUtr",
         text(requiredUtrKey)
+          .transform(standardTextTransform,noTransform)
           .verifying(
             firstError(
               maxLength(UtrMapping.utrMaxLength, utrLengthKey),

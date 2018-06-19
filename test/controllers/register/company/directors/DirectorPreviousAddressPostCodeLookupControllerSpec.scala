@@ -75,6 +75,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       Some(Message(directorName)),
       Message("directorPreviousAddressPostCodeLookup.text"),
       Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
+      Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
       Message("directorPreviousAddressPostCodeLookup.input.text")
     )
 

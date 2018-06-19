@@ -16,34 +16,37 @@
 
 package utils.navigators
 
-import javax.inject.Inject
-
+import connectors.DataCacheConnector
 import identifiers.Identifier
-import identifiers.register.{ConfirmationId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import javax.inject.Inject
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.mvc.Call
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator, Navigator2, UserAnswers}
 
-class RegisterNavigator @Inject() extends Navigator {
+class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
 
-  override protected def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case DeclarationId =>
-      _ => controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
     case DeclarationWorkingKnowledgeId =>
-      declarationWorkingKnowledgeRoutes()
-    case DeclarationFitAndProperId =>
-      _ => controllers.register.routes.ConfirmationController.onPageLoad()
+      declarationWorkingKnowledgeRoutes(from.userAnswers)
+    case DeclarationFitAndProperId => NavigateTo.dontSave(controllers.register.routes.ConfirmationController.onPageLoad())
+    case _ => None
   }
 
-  private def declarationWorkingKnowledgeRoutes()(userAnswers: UserAnswers): Call = {
+  private def declarationWorkingKnowledgeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(DeclarationWorkingKnowledgeId) match {
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
-        controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+        NavigateTo.save(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
       case Some(DeclarationWorkingKnowledge.Adviser) =>
-        controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(NormalMode)
+        NavigateTo.save(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode))
       case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+  }
+
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case _ => None
   }
 }

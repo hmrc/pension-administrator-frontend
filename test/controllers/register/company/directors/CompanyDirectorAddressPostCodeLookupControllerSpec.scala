@@ -82,6 +82,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
     Some(Message(directorName)),
     Message("companyDirectorAddressPostCodeLookup.body"),
     Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
+    Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
     Message("companyDirectorAddressPostCodeLookup.postcode")
   )
 

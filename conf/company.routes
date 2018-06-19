@@ -1,5 +1,10 @@
 ->         /directors                                   directors.Routes
 
+GET        /business-type                               controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /business-type                               controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /change-business-type                        controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-business-type                        controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
+
 GET        /business-details                            controllers.register.company.BusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /business-details                            controllers.register.company.BusinessDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-business-details                     controllers.register.company.BusinessDetailsController.onPageLoad(mode: Mode = CheckMode)
@@ -56,6 +61,11 @@ POST       /change-other-directors                      controllers.register.com
 GET        /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
+GET        /what-is-the-contact-address                 controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-is-the-contact-address                 controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /change-what-is-the-contact-address          controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-what-is-the-contact-address          controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
 GET        /review                                      controllers.register.company.CompanyReviewController.onPageLoad()
 POST       /review                                      controllers.register.company.CompanyReviewController.onSubmit()
 
@@ -65,3 +75,18 @@ GET        /company-not-found                           controllers.register.com
 
 GET        /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onSubmit()
+
+GET         /is-this-the-contact-address                controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-this-the-contact-address                controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-is-this-the-contact-address         controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-is-this-the-contact-address         controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /enter-contact-address                 controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /enter-contact-address                 controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-enter-contact-address          controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-enter-contact-address          controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /select-contact-address            controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST       /select-contact-address            controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)
+GET        /change-select-contact-address     controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-select-contact-address     controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = CheckMode)

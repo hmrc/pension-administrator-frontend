@@ -95,6 +95,9 @@ common.error.reason.invalid = The reason contains invalid characters
 common.previousAddressList.title = Select the previous address
 common.previousAddressList.heading = Select the previous address
 common.previousAddressList.error.required = Select an address
+common.contactAddressList.title = Select your contact address
+common.contactAddressList.heading = Select your contact address
+common.contactAddressList.error = User must select one of the addresses offered or select the 'enter address manually' link
 common.addressYears.under_a_year = Less than 12 months
 common.addressYears.over_a_year = More than 12 months
 common.previousAddress.heading = Previous Address
@@ -104,10 +107,11 @@ common.individual.secondary.heading = Register as a new pension scheme administr
 common.manual.address.title = Address
 common.manual.address.heading = Address
 common.firstname = First name
-common.postcodeLookup.enterPostcode = Enter the postcode below, or {0} enter the address manually {1}
-common.advisor.secondary.heading = Pension adviser
-common.advisor.address.heading = Pension adviser’s address
-common.advisor.address.title = Pension adviser’s address
+common.postcodeLookup.enterPostcode = Enter the postcode below, or {0}
+common.postcodeLookup.enterPostcode.link = enter the address manually
+common.adviser.secondary.heading = Pension adviser
+common.adviser.address.heading = Pension adviser’s address
+common.adviser.address.title = Pension adviser’s address
 common.error.dateOfBirth.required = Enter the date of birth
 common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
@@ -116,6 +120,12 @@ common.dateOfBirth.hint = Example 30 9 1990
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+unauthorised.assistant.title = You cannot use this service
+unauthorised.assistant.heading = You cannot use this service
+unauthorised.assistant.lede = You have credentials as an assistant with this Government Gateway account.
+unauthorised.assistant.info = Check with your organisation to find out more about changing your role so you can use this service.
+unauthorised.assistant.continue = Create a new Government Gateway account
 
 cya.label.name = Name
 cya.label.address = Address
@@ -147,15 +157,15 @@ businessDetails.error.companyName.required = Enter the registered company name
 businessDetails.error.utr.required = Enter the Unique Taxpayer Reference number
 businessDetails.error.companyName.invalid = Enter a valid registered company name
 businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference number
+businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot be more than 10 characters
 businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
-companyRegistrationNumber.title = Company Registration number
-companyRegistrationNumber.heading = Company Registration number
-companyRegistrationNumber.checkYourAnswersLabel = Company Registration number
+companyRegistrationNumber.title = What is the company’s registration number?
+companyRegistrationNumber.heading = What is the company’s registration number?
+companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = This is issued by Companies House. It is 8 characters, typically 8 numbers or a combination of 2 letters followed by 6 numbers. For example, AB123456.
-companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
-companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number
+companyRegistrationNumber.hint = This is an 8 character registration number given by Companies House when the company was first registered.
+companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
 
@@ -189,7 +199,12 @@ companyPreviousAddressPostCodeLookup.heading = Previous address of the company
 companyPreviousAddressPostCodeLookup.lede = This is usually the registered business address but you can enter any address you have for this company.
 companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
 companyPreviousAddressPostCodeLookup.postalCode = Postal code
-companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
+companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
+
+companyContactAddressPostCodeLookup.title = What is the contact address?
+companyContactAddressPostCodeLookup.heading = What is {0}’s contact address?
+companyContactAddressPostCodeLookup.lede = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -247,7 +262,8 @@ companyDirectorAddressPostCodeLookup.heading = Director’s address
 companyDirectorAddressPostCodeLookup.body = This is usually the director’s residential address.
 companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = Director’s address
 companyDirectorAddressPostCodeLookup.postcode = Postcode
-companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0}enter the address manually {1}
+companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0}
+companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
@@ -270,7 +286,8 @@ directorPreviousAddressPostCodeLookup.heading = Director’s previous address
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
 directorPreviousAddressPostCodeLookup.input.text = Postcode
 directorPreviousAddressPostCodeLookup.checkYourAnswersLabel = Director’s previous address post code
-directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
+directorPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+directorPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 directorPreviousAddressPostCodeLookup.submit.button = Find address
 
 directorAddressYears.title = How long has the director lived at this address?
@@ -339,7 +356,8 @@ companyReview.directors.changeLink = Change company directors
 individualPreviousAddressPostCodeLookup.title = Previous address
 individualPreviousAddressPostCodeLookup.heading = Previous address
 individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
-individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
+individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 
 businessType.title = What is your business type?
@@ -389,16 +407,16 @@ declaration.statement4 = that where HMRC believes that a scheme administrator, o
 declaration.agree = I agree
 declaration.invalid = You need to agree to all the declarations before you can continue
 
-advisorDetails.title = Provide details of your pension advisor
-advisorDetails.heading = Provide details of your pension advisor
-advisorDetails.secondary.heading = Pension advisor
-advisorDetails.name = Name
-advisorDetails.email = Email address
-advisorDetails.phone = Phone Number
-advisorDetails.checkYourAnswersLabel = Advisor details
-advisorDetails.error.name.required = Enter the name of your advisor
-advisorDetails.error.name.length = The name cannot be more than 107 characters
-advisorDetails.error.name.invalid = The name contains invalid characters
+adviserDetails.title = Provide details of your pension adviser
+adviserDetails.heading = Provide details of your pension adviser
+adviserDetails.secondary.heading = Pension adviser
+adviserDetails.name = Name
+adviserDetails.email = Email address
+adviserDetails.phone = Phone Number
+adviserDetails.checkYourAnswersLabel = Adviser details
+adviserDetails.error.name.required = Enter the name of your adviser
+adviserDetails.error.name.length = The name cannot be more than 107 characters
+adviserDetails.error.name.invalid = The name contains invalid characters
 
 declarationFitAndProper.title = Fit and proper declaration
 declarationFitAndProper.heading = Fit and proper declaration
@@ -410,11 +428,12 @@ declarationFitAndProper.statement4 = I have not participated in, or been connect
 declarationFitAndProper.statement5 = I have not been disqualified from acting as a company director or are bankrupt
 declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
 
-advisorAddressPostCodeLookup.title = Pension adviser’s address
-advisorAddressPostCodeLookup.heading = Pension adviser’s address
-advisorAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
-advisorAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}enter the address manually {1}
-advisorAddressPostCodeLookup.formLabel = Postcode
+adviserAddressPostCodeLookup.title = Pension adviser’s address
+adviserAddressPostCodeLookup.heading = Pension adviser’s address
+adviserAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
+adviserAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+adviserAddressPostCodeLookup.enterPostcode.link = enter the address manually
+adviserAddressPostCodeLookup.formLabel = Postcode
 
 confirmation.newPSA.title = Your registration to become a Pension Scheme Administrator has been successful
 confirmation.existingPSA.title=You are now registered as a Pension Scheme Administrator on the new service.
@@ -437,3 +456,43 @@ submissionInvalid.title = There has been a problem sending your details
 submissionInvalid.heading = There has been a problem sending your details
 submissionInvalid.body1 = Your details could not be submitted. None of your data has been lost.
 submissionInvalid.body2 = You should {0} get help with this page {1} to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.
+
+individual.same.contact.address.title = Is this your contact address?
+individual.same.contact.address.heading = Is this your contact address?
+individual.same.contact.address.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individual.same.contact.address.error = Select yes if these details are correct
+
+company.same.contact.address.title = Is this registered address the same as your correspondence address?
+company.same.contact.address.heading = Is this {0}’s contact address?
+company.same.contact.address.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+
+individualCorrespondenceAddressPostCodeLookup.title = What is the contact address
+individualCorrespondenceAddressPostCodeLookup.heading = What is your contact address?
+individualCorrespondenceAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individualCorrespondenceAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually {1} if the address is overseas.
+individualCorrespondenceAddressPostCodeLookup.formLabel = Postcode
+individualContactAddressPostCodeLookup.title = What is the contact address
+individualContactAddressPostCodeLookup.heading = What is your contact address?
+individualContactAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individualContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
+individualContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
+individualContactAddressPostCodeLookup.formLabel = Postcode
+
+common.contactAddress.title = What is your contact address?
+common.contactAddress.heading = What is your contact address?
+common.contactAddress.lede = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
+
+company.contactAddressList.title = Select the contact address
+company.contactAddressList.heading = Select {0}’s contact address
+
+companyContactAddress.title = What is {0}’s contact address?
+companyContactAddress.heading = What is {0}’s contact address?
+companyContactAddress.lede = This can be any address that can be used to contact {0}. The PSA might receive letters from HMRC.
+cya.label.individual.contact.address = Contact Address
+cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
+
+interceptPSA.title = You have already registered as a pension scheme administrator
+interceptPSA.heading = You have already registered as a pension scheme administrator
+interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.
+interceptPSA.button = Continue to your pension schemes
+interceptPSA.exit = Exit to GOV.UK

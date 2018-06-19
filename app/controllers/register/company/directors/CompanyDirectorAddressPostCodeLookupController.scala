@@ -74,6 +74,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
           Some(Message(director.fullName)),
           Message("companyDirectorAddressPostCodeLookup.body"),
           Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
+          Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
           Message("companyDirectorAddressPostCodeLookup.postcode")
         )
     }

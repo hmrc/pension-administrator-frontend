@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator2, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -236,8 +236,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation
-        (utr: String, organisation: Organisation)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+    (utr: String, organisation: Organisation)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
       val info = RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany,
@@ -261,8 +261,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
     //noinspection NotImplementedCode
     def registerWithIdIndividual
-        (nino: String)
-        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+    (nino: String)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
   private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
@@ -272,7 +272,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       dataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

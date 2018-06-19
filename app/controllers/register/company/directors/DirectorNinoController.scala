@@ -16,21 +16,20 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.directors.DirectorNinoId
+import javax.inject.Inject
 import models.{Index, Mode, Nino}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator2, UserAnswers}
 import views.html.register.company.directors.directorNino
 
 import scala.concurrent.Future
@@ -39,7 +38,7 @@ class DirectorNinoController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: DataCacheConnector,
-                                        @CompanyDirector navigator: Navigator,
+                                        @CompanyDirector navigator: Navigator2,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
@@ -67,9 +66,9 @@ class DirectorNinoController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
-          (value) =>
+          value =>
             dataCacheConnector.save(request.externalId, DirectorNinoId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorNinoId(index), mode)(UserAnswers(json))))
+              Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(json))))
         )
       }
   }

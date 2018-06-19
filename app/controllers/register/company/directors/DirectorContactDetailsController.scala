@@ -16,20 +16,20 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.ContactDetailsFormProvider
 import identifiers.register.company.directors.DirectorContactDetailsId
+import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.company.directors.directorContactDetails
 
 import scala.concurrent.Future
@@ -38,7 +38,7 @@ class DirectorContactDetailsController @Inject()(
                                                   appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   dataCacheConnector: DataCacheConnector,
-                                                  @CompanyDirector navigator: Navigator,
+                                                  @CompanyDirector navigator: Navigator2,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
@@ -47,7 +47,7 @@ class DirectorContactDetailsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorContactDetailsId(index)) match {
@@ -58,15 +58,15 @@ class DirectorContactDetailsController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorContactDetails(appConfig, formWithErrors, mode, index, directorName))),
-          (value) =>
+          value =>
             dataCacheConnector.save(request.externalId, DirectorContactDetailsId(index), value).map(cacheMap =>
-              Redirect(navigator.nextPage(DirectorContactDetailsId(index), mode)(new UserAnswers(cacheMap))))
+              Redirect(navigator.nextPage(DirectorContactDetailsId(index), mode, UserAnswers(cacheMap))))
         )
       }
   }

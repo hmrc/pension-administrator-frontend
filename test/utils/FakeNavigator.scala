@@ -24,8 +24,8 @@ class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigat
 
   private[this] var userAnswers: Option[UserAnswers] = None
 
-  override def nextPage(controllerId: Identifier, mode: Mode): (UserAnswers) => Call = {
-    (ua) =>
+  override def nextPage(controllerId: Identifier, mode: Mode): UserAnswers => Call = {
+    ua =>
       userAnswers = Some(ua)
       desiredRoute
   }

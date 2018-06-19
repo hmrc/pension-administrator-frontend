@@ -19,5 +19,6 @@ POST       /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
+GET        /assistant-on-gg                             controllers.UnauthorisedAssistantController.onPageLoad()
 
-
+GET        /no-reg-as-psa                               controllers.InterceptPSAController.onPageLoad()

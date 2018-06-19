@@ -20,24 +20,31 @@ import forms.behaviours.CrnBehaviours
 import play.api.data.Form
 
 class CompanyRegistrationNumberFormProviderSpec extends CrnBehaviours {
+  val form: Form[String] = new CompanyRegistrationNumberFormProvider().apply()
 
   ".value" must {
 
     val fieldName = "value"
     val keyCrnRequired = "companyRegistrationNumber.error.required"
-    val keyCrnLength = "companyRegistrationNumber.error.length"
     val keyCrnInvalid = "companyRegistrationNumber.error.invalid"
-
-    val form: Form[String] = new CompanyRegistrationNumberFormProvider().apply()
 
     behave like formWithCrnField(
       form,
       fieldName,
       keyCrnRequired,
-      keyCrnLength,
       keyCrnInvalid
     )
+  }
 
+  "form" must {
+    val rawData = Map("value" -> " 12345678 ")
+    val expectedData = "12345678"
+
+    behave like formWithTransform(
+      form,
+      rawData,
+      expectedData
+    )
   }
 
 }

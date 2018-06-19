@@ -15,16 +15,31 @@
  */
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.register.advisor.{AdvisorAddressId, AdvisorAddressListId}
+import identifiers.LastPageId
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
-import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
-import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
-import models.{Address, TolerantAddress}
+import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, _}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualPreviousAddressId, IndividualPreviousAddressListId}
+import models.register.company.BusinessDetails
+import models.{Address, LastPage, TolerantAddress}
 import org.scalatest.OptionValues
 
 package object utils {
 
   implicit class UserAnswerOps(answers: UserAnswers) extends OptionValues {
+
+    def lastPage(page: LastPage): UserAnswers = {
+      answers.set(LastPageId)(page).asOpt.value
+    }
+
+    // Individual PSA Contact
+    def individualContactAddress(address: Address): UserAnswers = {
+      answers.set(IndividualContactAddressId)(address).asOpt.value
+    }
+
+    def individualContactAddressList(address: TolerantAddress): UserAnswers = {
+      answers.set(IndividualContactAddressListId)(address).asOpt.value
+    }
 
     // Individual PSA
     def individualPreviousAddress(address: Address): UserAnswers = {
@@ -44,6 +59,14 @@ package object utils {
       answers.set(CompanyAddressListId)(address).asOpt.value
     }
 
+    def companyContactAddress(address: Address): UserAnswers = {
+      answers.set(CompanyContactAddressId)(address).asOpt.value
+    }
+
+    def companyContactAddressList(address: TolerantAddress): UserAnswers = {
+      answers.set(CompanyContactAddressListId)(address).asOpt.value
+    }
+
     // Company director
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value
@@ -61,13 +84,21 @@ package object utils {
       answers.set(DirectorPreviousAddressListId(index))(address).asOpt.value
     }
 
-    // Advisor
-    def advisorAddress(address: Address): UserAnswers = {
-      answers.set(AdvisorAddressId)(address).asOpt.value
+    // Adviser
+    def adviserAddress(address: Address): UserAnswers = {
+      answers.set(AdviserAddressId)(address).asOpt.value
     }
 
-    def advisorAddressList(address: TolerantAddress): UserAnswers = {
-      answers.set(AdvisorAddressListId)(address).asOpt.value
+    def adviserAddressList(address: TolerantAddress): UserAnswers = {
+      answers.set(AdviserAddressListId)(address).asOpt.value
+    }
+
+    def businessDetails: UserAnswers = {
+      answers.set(BusinessDetailsId)(BusinessDetails("test company", "1111111111")).asOpt.value
+    }
+
+    def companyContactAddressList(addresses: Seq[TolerantAddress]) = {
+      answers.set(CompanyContactAddressPostCodeLookupId)(addresses)
     }
 
     // Converters

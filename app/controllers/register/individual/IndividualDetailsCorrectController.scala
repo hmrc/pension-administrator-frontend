@@ -16,29 +16,27 @@
 
 package controllers.register.individual
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
-import identifiers.register.PsaNameId
-import identifiers.register.RegistrationInfoId
+import identifiers.register.{PsaNameId, RegistrationInfoId}
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.Future
 
 class IndividualDetailsCorrectController @Inject()(
-                                                    @Individual navigator: Navigator,
+                                                    @Individual navigator: Navigator2,
                                                     appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     dataCacheConnector: DataCacheConnector,
@@ -93,7 +91,7 @@ class IndividualDetailsCorrectController @Inject()(
         },
         value =>
           dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode)(UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(cacheMap))))
       )
   }
 

@@ -28,7 +28,6 @@ class CompanyRegistrationNumberFormProvider @Inject() extends FormErrorHelper wi
     Form(
       "value" -> crnMapping(
         "companyRegistrationNumber.error.required",
-        "companyRegistrationNumber.error.length",
         "companyRegistrationNumber.error.invalid"
       )
     )

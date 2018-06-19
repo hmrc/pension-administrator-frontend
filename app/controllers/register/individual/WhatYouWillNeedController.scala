@@ -25,13 +25,13 @@ import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.Individual
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          @Individual val navigator: Navigator,
+                                          @Individual val navigator: Navigator2,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
@@ -45,7 +45,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       PSAStartEvent.sendEvent(auditService)
-      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode)(request.userAnswers))
+      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }
 
 }

@@ -17,47 +17,60 @@
 package utils.navigators
 
 import base.SpecBase
+import connectors.FakeDataCacheConnector
+import controllers.register.routes
 import identifiers.Identifier
-import identifiers.register.{ConfirmationId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
+import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.UserAnswers
-import controllers.register._
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.{NavigatorBehaviour2, UserAnswers}
 
-class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
- import RegisterNavigatorSpec._
-  val navigator = new RegisterNavigator
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  val routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id",                              "User Answers",                       "Next Page (Normal Mode)",             "Next Page (Check Mode)"),
-    (DeclarationId,                       emptyAnswers,                         declarationWorkingKnowledgePage,        None),
-    (DeclarationWorkingKnowledgeId,       haveDeclarationWorkingKnowledge,      declarationFitAndProperPage,            None),
-    (DeclarationWorkingKnowledgeId,       haveAnAdviser,                        adviserDetailsPage,                     None),
-    (DeclarationWorkingKnowledgeId,       emptyAnswers,                         sessionExpiredPage,                     None),
-    (DeclarationFitAndProperId,           emptyAnswers,                         confirmationPage,                       None)
+class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour2 {
+  import RegisterNavigatorSpec._
+  val navigator = new RegisterNavigator(FakeDataCacheConnector)
+
+  //scalastyle:off line.size.limit
+  def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id",                          "User Answers",                  "Next Page (Normal Mode)",       "Save(NormalMode)",  "Next Page (Check Mode)", "Save(CheckMode"),
+    (DeclarationId,                 emptyAnswers,                    declarationWorkingKnowledgePage, true,                None,                     false),
+    (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage,     true,                None,                     false),
+    (DeclarationWorkingKnowledgeId, haveAnAdviser,                   adviserDetailsPage,              true,                None,                     false),
+    (DeclarationWorkingKnowledgeId, emptyAnswers,                    sessionExpiredPage,              false,               None,                     false),
+    (DeclarationFitAndProperId,     emptyAnswers,                    confirmationPage,                false,               None,                     false)
   )
+  //scalastyle:on line.size.limit
 
   navigator.getClass.getSimpleName must {
-    behave like navigatorWithRoutes(navigator, routes)
+    appRunning()
+    behave like nonMatchingNavigator(navigator)
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
   }
+
 }
 
 object RegisterNavigatorSpec extends OptionValues {
-  val emptyAnswers = UserAnswers(Json.obj())
-  val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  val declarationWorkingKnowledgePage = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
-  val declarationFitAndProperPage = routes.DeclarationFitAndProperController.onPageLoad()
-  val adviserDetailsPage = controllers.register.advisor.routes.AdvisorDetailsController.onPageLoad(NormalMode)
-  val confirmationPage = routes.ConfirmationController.onPageLoad()
-  val surveyPage = controllers.routes.LogoutController.onPageLoad()
+  lazy val emptyAnswers = UserAnswers(Json.obj())
+  lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
+  lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
+  lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
+  lazy val confirmationPage: Call = routes.ConfirmationController.onPageLoad()
+  lazy val surveyPage: Call = controllers.routes.LogoutController.onPageLoad()
 
-
-  val haveDeclarationWorkingKnowledge = UserAnswers(Json.obj())
+  val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
-  val haveAnAdviser = UserAnswers(Json.obj())
+  val haveAnAdviser: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
+
+  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
 }
