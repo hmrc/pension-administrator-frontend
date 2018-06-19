@@ -31,7 +31,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, route, running, status, _}
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator2, Navigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -39,6 +39,7 @@ import views.html.address.addressList
 import scala.concurrent.Future
 
 class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+
   import CompanyContactAddressListControllerSpec._
 
   "company Contact Address List Controller" must {
@@ -116,6 +117,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
 
 object CompanyContactAddressListControllerSpec extends OptionValues {
   val onwardRoute = routes.CompanyContactAddressController.onPageLoad(NormalMode)
+
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
       routes.CompanyContactAddressListController.onSubmit(NormalMode),
@@ -128,6 +130,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
       Message("common.selectAddress.link")
     )
   }
+
   private val addresses = Seq(
     TolerantAddress(
       Some("Address 1 Line 1"),
@@ -150,14 +153,15 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
   private val data =
     UserAnswers().businessDetails.companyContactAddressList(addresses).asOpt.value.json
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
   private def requestResult[T](data: DataRetrievalAction = getEmptyData,
-                               request: (Application) => Request[T],
+                               request: Application => Request[T],
                                test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(data),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
-      bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
+      bind(classOf[Navigator2]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator2(desiredRoute = onwardRoute))
     )) {
       app =>
         val req = request(app)

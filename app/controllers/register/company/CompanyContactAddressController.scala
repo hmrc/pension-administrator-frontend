@@ -28,7 +28,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 class CompanyContactAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 override val dataCacheConnector: DataCacheConnector,
-                                                @RegisterCompany override val navigator: Navigator,
+                                                @RegisterCompany override val navigator: Navigator2,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
@@ -70,7 +70,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       addressViewModel(mode).retrieve.right.map(vm =>
-      post(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, "Company Contact Address"))
+        post(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, "Company Contact Address"))
   }
 
 }

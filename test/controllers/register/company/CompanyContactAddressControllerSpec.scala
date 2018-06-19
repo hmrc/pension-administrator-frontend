@@ -22,7 +22,7 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId, CompanyPreviousAddressId}
+import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId}
 import models.register.company.BusinessDetails
 import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.concurrent.ScalaFutures
@@ -31,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -41,6 +41,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
   val formProvider = new AddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
@@ -51,7 +52,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -60,7 +61,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
       fakeAuditService
     )
 
-  private lazy val viewModel =  ManualAddressViewModel(
+  private lazy val viewModel = ManualAddressViewModel(
     routes.CompanyContactAddressController.onSubmit(NormalMode),
     countryOptions.options,
     Message("companyContactAddress.title", companyName),
