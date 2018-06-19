@@ -18,15 +18,23 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.company.directors.routes._
-import models.{CheckMode, Index}
+import identifiers.TypedIdentifier
+import identifiers.register.company.directors.IsDirectorCompleteId
+import models.requests.DataRequest
+import models.{CheckMode, Index, NormalMode}
+import play.api.libs.json.{JsBoolean, Json}
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
@@ -35,6 +43,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val directorName = "test first name test middle name test last name"
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+
+  object FakeSectionComplete extends SectionComplete with FakeDataCacheConnector {
+    override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
+                            (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
+      save("cacheId", id, true) map UserAnswers
+    }
+  }
 
   def answersDD: Seq[AnswerRow] = Seq(
     AnswerRow(
@@ -50,7 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
   ))
 
-  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()
+  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(0)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
@@ -59,7 +74,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      checkYourAnswersFactory
+      checkYourAnswersFactory,
+      FakeSectionComplete
     )
 
   def viewAsString() = check_your_answers(
@@ -95,5 +111,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
+
+    "mark director as complete on submit" in {
+
+      val result = controller().onSubmit(index, NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      FakeSectionComplete.verify(IsDirectorCompleteId(index), true)
+
+    }
+
   }
 }

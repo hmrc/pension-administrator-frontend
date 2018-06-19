@@ -57,4 +57,4 @@ GET        /:index/change-directors-address-results             controllers.regi
 POST       /:index/change-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onSubmit(mode: Mode = CheckMode, index: Index)
 
 GET        /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onPageLoad(index: Index)
-POST       /check-your-answers                                  controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
+POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
