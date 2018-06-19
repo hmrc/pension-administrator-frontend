@@ -128,19 +128,19 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val validCrn = Table(
       "crn",
-      "1234567",
       "12345678",
-      "ABCDEFG",
       "ABCDEFGH",
-      "A1B2C3D",
       "A1B2C3D4"
     )
 
     val invalidCrn = Table(
       "crn",
       "123456",
+      "1234567",
       "123456789",
+      "ABCDEFG",
       "ABCDEF",
+      "A1B2C3D",
       "ABCDEFGHI"
     )
 

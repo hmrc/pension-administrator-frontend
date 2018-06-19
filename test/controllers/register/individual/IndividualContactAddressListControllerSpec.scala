@@ -83,7 +83,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
     }
 
-    "redirect to Company Address Post Code Lookup if no address data on a GET request" in {
+    "redirect to Individual Address Post Code Lookup if no address data on a GET request" in {
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),

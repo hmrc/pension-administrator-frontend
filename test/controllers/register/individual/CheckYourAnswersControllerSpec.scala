@@ -64,7 +64,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
 
       "render the view correctly for the Is this address same as your contact address" in {
-        val sections = answerSections("cya.label.individual.same.contact.address", Seq("site.yes"), true,
+        val sections = answerSections("cya.label.individual.same.contact.address", Seq("site.yes"), answerIsMessageKey = true,
           Some(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url
           ))
         val retrievalAction = dataRetrievalAction(
@@ -94,7 +94,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           AnswerSection(
             None,
             Seq(
-              AnswerRow("individualDetailsCorrect.name", Seq(individual.fullName), false, None),
+              AnswerRow("individualDetailsCorrect.name", Seq(individual.fullName), answerIsMessageKey = false, None),
               AnswerRow(
                 Message("individualAddressYears.title", "Joe Bloggs").resolve,
                 Seq(s"common.addressYears.${addressYears.toString}"),
@@ -185,7 +185,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+
+  private def fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
+
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val individual = TolerantIndividual(

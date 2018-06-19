@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package identifiers.register.company
 
-import forms.FormErrorHelper
-import forms.mappings.CrnMapping
-import javax.inject.Inject
+import identifiers._
+import models.TolerantAddress
 
-import play.api.data.Form
+case object CompanyContactAddressListId extends TypedIdentifier[TolerantAddress] {
 
-class CompanyRegistrationNumberFormProvider @Inject() extends FormErrorHelper with CrnMapping {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> crnMapping(
-        "companyRegistrationNumber.error.required",
-        "companyRegistrationNumber.error.invalid"
-      )
-    )
+  override def toString: String = "companyContactAddressList"
 
 }
