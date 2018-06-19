@@ -20,18 +20,17 @@ import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, DataCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.{Address, Mode, TolerantAddress}
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
-import scala.util.{Failure, Success}
 import scala.concurrent.Future
 
 trait PostcodeLookupController extends FrontendController with Retrievals with I18nSupport {

@@ -29,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.declaration
 
 import scala.concurrent.Future

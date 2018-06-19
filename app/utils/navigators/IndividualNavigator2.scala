@@ -25,7 +25,7 @@ import identifiers.register.individual._
 import identifiers.{Identifier, LastPageId}
 import models.{AddressYears, CheckMode, Mode, NormalMode}
 import play.api.mvc.Call
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 
 @Singleton
 class IndividualNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator2 {

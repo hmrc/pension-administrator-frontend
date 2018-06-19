@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.mvc.Call
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 
 class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
 

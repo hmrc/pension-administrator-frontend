@@ -15,7 +15,7 @@
  */
 
 import com.google.inject.AbstractModule
-import utils.{Navigator, Navigator2}
+import utils.Navigator2
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
 import utils.navigators._

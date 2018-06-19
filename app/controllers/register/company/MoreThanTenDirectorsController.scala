@@ -28,7 +28,7 @@ import identifiers.register.company.MoreThanTenDirectorsId
 import models.Mode
 import play.api.mvc.{Action, AnyContent}
 import utils.annotations.CompanyDirector
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import views.html.register.company.moreThanTenDirectors
 
 import scala.concurrent.Future
