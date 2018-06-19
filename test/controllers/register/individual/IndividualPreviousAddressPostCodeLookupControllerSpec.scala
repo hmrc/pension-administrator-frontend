@@ -21,7 +21,7 @@ import connectors.{AddressLookupConnector, DataCacheConnector, FakeDataCacheConn
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
-import models.{Address, AddressRecord, NormalMode, TolerantAddress}
+import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -29,7 +29,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator2, Navigator2}
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -90,7 +90,7 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   }
 
   private val onwardRoute = controllers.register.individual.routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
 
   private def requestResult[T](request: (Application) => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
 
@@ -98,7 +98,7 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].toInstance(fakeNavigator),
+      bind[Navigator2].toInstance(fakeNavigator),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

@@ -21,17 +21,17 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
+import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.annotations.Individual
+import utils.{FakeNavigator2, Navigator2, UserAnswers}
+import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
-import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
-import utils.annotations.Individual
-import viewmodels.Message
 
 class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
 
@@ -121,7 +121,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[AuthAction].to(FakeAuthAction),
         bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
-        bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
+        bind(classOf[Navigator2]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator2(desiredRoute = onwardRoute))
       )) { implicit app =>
         val request =
           addToken(

@@ -20,7 +20,6 @@ import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import models.register.company.BusinessDetails
@@ -33,7 +32,7 @@ import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, FakeNavigator2, Navigator, Navigator2}
+import utils.{FakeNavigator2, Navigator2}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress

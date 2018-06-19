@@ -20,17 +20,17 @@ import connectors.DataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
-import models.{PSAUser, UserType}
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
+import models.{PSAUser, UserType}
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
+import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.confirmation
-import org.mockito.Mockito._
-import org.mockito.Matchers._
-import play.api.mvc.Results._
 
 import scala.concurrent.Future
 
@@ -76,6 +76,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val fakeDataCacheConnector = mock[DataCacheConnector]
   private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
   private val psaUser = PSAUser(UserType.Individual, None, false, None)
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
       frontendAppConfig,
@@ -87,7 +88,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
     )
 
   private def viewAsString() =
-    confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",psaUser, UserAnswers()), messages).toString
+    confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages).toString
 
 
 }

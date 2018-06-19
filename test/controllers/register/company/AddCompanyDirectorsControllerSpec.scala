@@ -18,18 +18,18 @@ package controllers.register.company
 
 import java.time.LocalDate
 
-import play.api.data.Form
-import utils.FakeNavigator2
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
-import play.api.libs.json._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
 import models.NormalMode
 import models.register.company.directors.DirectorDetails
+import play.api.data.Form
+import play.api.libs.json._
+import play.api.test.Helpers._
+import utils.FakeNavigator2
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
@@ -42,18 +42,18 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
   protected def fakeNavigator() = new FakeNavigator2(desiredRoute = onwardRoute)
 
   protected def controller(
-      dataRetrievalAction: DataRetrievalAction = getEmptyData,
-      navigator: FakeNavigator2 = fakeNavigator()) =
+                            dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                            navigator: FakeNavigator2 = fakeNavigator()) =
 
     new AddCompanyDirectorsController(
-        frontendAppConfig,
-        messagesApi,
-        FakeDataCacheConnector,
-        navigator,
-        FakeAuthAction,
-        dataRetrievalAction,
-        new DataRequiredActionImpl,
-        formProvider
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      navigator,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
     )
 
   private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
