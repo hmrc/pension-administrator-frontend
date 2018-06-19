@@ -23,7 +23,7 @@ import models.{CheckMode, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{CheckYourAnswersFactory, FakeCountryOptions, InputOption}
+import utils.{CheckYourAnswersFactory, FakeCountryOptions, FakeNavigator2, InputOption}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
@@ -31,14 +31,16 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      messagesApi,
       checkYourAnswersFactory
     )
 
@@ -66,13 +68,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           AnswerRow(
             "businessDetails.companyName",
             Seq(companyName),
-            false,
+            answerIsMessageKey = false,
             None
           ),
           AnswerRow(
             "companyUniqueTaxReference.checkYourAnswersLabel",
             Seq(utr),
-            false,
+            answerIsMessageKey = false,
             None
           )
         )
@@ -102,12 +104,18 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
     }
 
-    "redirect to next page on submit" in {
+    "redirect to the next page" in {
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
-      val result = controller().onSubmit(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
 
-      redirectLocation(result) must be(Some(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url))
+    "redirect to Session expired if there is no cached data" in {
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
 }

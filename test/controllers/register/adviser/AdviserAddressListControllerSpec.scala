@@ -17,21 +17,21 @@
 package controllers.register.adviser
 
 import base.CSRFRequest
-import play.api.libs.json.Json
-import utils.{FakeNavigator, Navigator, UserAnswers}
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
-import controllers.actions._
-import play.api.test.Helpers._
-import models.{NormalMode, TolerantAddress}
 import controllers.ControllerSpecBase
+import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.adviser.AdviserAddressPostCodeLookupId
+import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import utils.annotations.Adviser
+import utils.{FakeNavigator2, Navigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -115,7 +115,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFReque
 }
 
 object AdviserAddressListControllerSpec extends ControllerSpecBase {
-  val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
+  private val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
   private val addresses = Seq(
     TolerantAddress(
       Some("Address 1 Line 1"),
@@ -155,13 +155,13 @@ object AdviserAddressListControllerSpec extends ControllerSpecBase {
     )
   }
 
-  private def requestResult[T](request: (Application) => Request[T], data: FakeDataRetrievalAction,
+  private def requestResult[T](request: Application => Request[T], data: FakeDataRetrievalAction,
                                test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
       bind[DataRetrievalAction].toInstance(data),
-      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
+      bind(classOf[Navigator2]).qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator2(desiredRoute = onwardRoute))
     )) { app =>
       val req = request(app)
       val result = route[T](app, req).value

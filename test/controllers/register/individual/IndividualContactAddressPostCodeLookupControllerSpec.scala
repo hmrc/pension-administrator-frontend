@@ -23,15 +23,16 @@ import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
+import play.api.http.Writeable
+import play.api.inject._
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import play.api.inject._
-import utils.{FakeNavigator, Navigator}
 import play.api.test._
-import views.html.address.postcodeLookup
-import play.api.http.Writeable
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Individual
+import utils.{FakeNavigator2, Navigator2}
+import views.html.address.postcodeLookup
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
@@ -81,12 +82,13 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
       Future.successful(Seq(address))
     }
   }
+
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+      bind[Navigator2].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator2(onwardRoute)),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

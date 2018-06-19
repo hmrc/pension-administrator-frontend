@@ -16,8 +16,8 @@
 
 package controllers.register.individual
 
-import audit.{AddressAction, AddressEvent}
 import audit.testdoubles.StubSuccessfulAuditService
+import audit.{AddressAction, AddressEvent}
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -32,14 +32,15 @@ import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class IndividualContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues{
+class IndividualContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val messagePrefix = "common.contactAddress"
@@ -64,7 +65,7 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

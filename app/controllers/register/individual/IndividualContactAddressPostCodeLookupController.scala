@@ -27,23 +27,23 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 
 @Singleton
 class IndividualContactAddressPostCodeLookupController @Inject()(
-                                                                   @Individual override val navigator: Navigator,
-                                                                   override val appConfig: FrontendAppConfig,
-                                                                   override val cacheConnector: DataCacheConnector,
-                                                                   override val addressLookupConnector: AddressLookupConnector,
-                                                                   override val messagesApi: MessagesApi,
-                                                                   authenticate: AuthAction,
-                                                                   getData: DataRetrievalAction,
-                                                                   requireData: DataRequiredAction,
-                                                                   formProvider: PostCodeLookupFormProvider
-                                                                 ) extends PostcodeLookupController {
+                                                                  @Individual override val navigator: Navigator2,
+                                                                  override val appConfig: FrontendAppConfig,
+                                                                  override val cacheConnector: DataCacheConnector,
+                                                                  override val addressLookupConnector: AddressLookupConnector,
+                                                                  override val messagesApi: MessagesApi,
+                                                                  authenticate: AuthAction,
+                                                                  getData: DataRetrievalAction,
+                                                                  requireData: DataRequiredAction,
+                                                                  formProvider: PostCodeLookupFormProvider
+                                                                ) extends PostcodeLookupController {
 
   import IndividualContactAddressPostCodeLookupController._
 

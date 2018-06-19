@@ -47,6 +47,7 @@ class DirectorNavigator2 @Inject()(val dataCacheConnector: DataCacheConnector, a
     case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index))
     case DirectorPreviousAddressId(index) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(NormalMode, index))
     case DirectorContactDetailsId(index) => checkYourAnswers(index)
+    case CheckYourAnswersId => NavigateTo.save(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 

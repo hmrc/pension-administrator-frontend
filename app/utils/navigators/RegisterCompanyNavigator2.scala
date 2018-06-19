@@ -46,6 +46,7 @@ class RegisterCompanyNavigator2 @Inject()(val dataCacheConnector: DataCacheConne
     case CompanyPreviousAddressId => NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
     case ContactDetailsId => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CompanyReviewId => NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
+    case CheckYourAnswersId => NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
