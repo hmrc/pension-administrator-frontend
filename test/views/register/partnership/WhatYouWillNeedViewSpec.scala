@@ -26,7 +26,7 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
   def createView = () => whatYouWillNeed(frontendAppConfig)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
-    behave like normalPage(createView, messageKeyPrefix, "body.text", "body.item1", "body.item2", "body.item3")
+    behave like normalPage(createView, messageKeyPrefix, "body.text1", "body.text2", "body.item1", "body.item2", "body.item3")
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 
