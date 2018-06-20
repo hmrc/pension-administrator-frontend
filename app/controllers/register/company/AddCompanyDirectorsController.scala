@@ -32,19 +32,19 @@ import models.register.company.directors.DirectorDetails
 import play.api.Logger
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator2
+import utils.Navigator
 import utils.annotations.CompanyDirector
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsController @Inject() (
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
-                                                     @CompanyDirector navigator: Navigator2,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: AddCompanyDirectorsFormProvider
+                                                appConfig: FrontendAppConfig,
+                                                override val messagesApi: MessagesApi,
+                                                dataCacheConnector: DataCacheConnector,
+                                                @CompanyDirector navigator: Navigator,
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: AddCompanyDirectorsFormProvider
                                                    ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()

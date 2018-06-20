@@ -31,7 +31,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, route, running, status, _}
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator2, Navigator2, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -161,7 +161,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(data),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
-      bind(classOf[Navigator2]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator2(desiredRoute = onwardRoute))
+      bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
     )) {
       app =>
         val req = request(app)

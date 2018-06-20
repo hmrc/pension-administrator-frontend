@@ -28,7 +28,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator2
+import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 class CompanyContactAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 override val dataCacheConnector: DataCacheConnector,
-                                                @RegisterCompany override val navigator: Navigator2,
+                                                @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,

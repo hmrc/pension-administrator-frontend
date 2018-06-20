@@ -25,13 +25,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Adviser
-import utils.{CheckYourAnswersFactory, Navigator2}
+import utils.{CheckYourAnswersFactory, Navigator}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
-                                           @Adviser navigator: Navigator2,
+                                           @Adviser navigator: Navigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,

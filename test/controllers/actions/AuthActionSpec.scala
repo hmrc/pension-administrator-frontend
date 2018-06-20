@@ -18,21 +18,21 @@ package controllers.actions
 
 import java.net.URLEncoder
 
-import play.api.mvc.Controller
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.SpecBase
 import config.FrontendAppConfig
 import controllers.routes
 import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Controller
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.{ExecutionContext, Future}
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.auth.core.retrieve.~
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase {
 

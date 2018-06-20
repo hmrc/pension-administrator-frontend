@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import viewmodels.ContactDetailsViewModel
 import views.html.contactDetails
 
@@ -37,7 +37,7 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
 
   protected def cacheConnector: DataCacheConnector
 
-  protected def navigator: Navigator2
+  protected def navigator: Navigator
 
   protected def get(id: TypedIdentifier[ContactDetails], form: Form[ContactDetails], viewmodel: ContactDetailsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {

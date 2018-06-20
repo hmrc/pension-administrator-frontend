@@ -28,10 +28,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait NavigatorBehaviour2 extends PropertyChecks with OptionValues {
+trait NavigatorBehaviour extends PropertyChecks with OptionValues {
   this: WordSpec with MustMatchers =>
 
-  def navigatorWithRoutes[A <: Identifier](navigator: Navigator2,
+  def navigatorWithRoutes[A <: Identifier](navigator: Navigator,
                                            dataCacheConnector: FakeDataCacheConnector,
                                            routes: TableFor6[A, UserAnswers, Call, Boolean, Option[Call], Boolean]): Unit = {
 
@@ -82,7 +82,7 @@ trait NavigatorBehaviour2 extends PropertyChecks with OptionValues {
     }
   }
 
-  def nonMatchingNavigator(navigator: Navigator2): Unit = {
+  def nonMatchingNavigator(navigator: Navigator): Unit = {
 
     val testId: Identifier = new Identifier {}
 

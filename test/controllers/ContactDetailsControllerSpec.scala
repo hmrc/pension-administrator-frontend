@@ -35,7 +35,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
-import utils.{FakeNavigator2, Navigator2, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.ContactDetailsViewModel
 import views.html.contactDetails
 
@@ -49,7 +49,7 @@ object ContactDetailsControllerSpec {
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: DataCacheConnector,
-                                  override val navigator: Navigator2,
+                                  override val navigator: Navigator,
                                   formProvider: ContactDetailsFormProvider
                                 ) extends ContactDetailsController {
 
@@ -82,7 +82,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
     "return a successful result when there is no existing answer" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
 
@@ -103,7 +103,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
     "return a successful result when there is an existing answer" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
 
@@ -137,7 +137,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
 
@@ -164,7 +164,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
     "return a bad request when the submitted data is invalid" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
 

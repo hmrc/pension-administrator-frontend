@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Individual
-import utils.{FakeNavigator2, Navigator2}
+import utils.{FakeNavigator, Navigator}
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -88,7 +88,7 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator2].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator2(onwardRoute)),
+      bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>
