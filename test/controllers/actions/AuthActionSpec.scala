@@ -65,15 +65,17 @@ class AuthActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(redirectUrl)
       }
 
-      "redirect to scheme overview page if the user is already enrolled in PODS, not coming from confirmation" in {
-        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
-        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
-        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(true))
-        val controller = new Harness(authAction)
+      "redirect to scheme overview page" when {
+        "already enrolled in PODS, not coming from confirmation" in {
+          val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+          val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+          val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(true))
+          val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(frontendAppConfig.schemesOverviewUrl)
+          val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.InterceptPSAController.onPageLoad().url)
+        }
       }
 
       "return OK if the user is already enrolled in PODS but coming from confirmation" in {
