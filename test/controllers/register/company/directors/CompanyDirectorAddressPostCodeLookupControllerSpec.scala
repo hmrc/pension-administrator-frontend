@@ -23,8 +23,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
-import models.register.company.directors.DirectorDetails
 import models._
+import models.register.company.directors.DirectorDetails
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -32,14 +32,14 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
 
-class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpecBase with MockitoSugar {
+class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -66,7 +66,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
       frontendAppConfig,
       FakeDataCacheConnector,
       fakeAddressLookupConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
@@ -74,7 +74,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
       formProvider
     )
 
-  private lazy val viewModel =         PostcodeLookupViewModel(
+  private lazy val viewModel = PostcodeLookupViewModel(
     routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(NormalMode, index),
     routes.DirectorAddressController.onPageLoad(NormalMode, index),
     Message("companyDirectorAddressPostCodeLookup.title"),
@@ -93,7 +93,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
       viewModel
     )(fakeRequest, messages).toString
 
-  private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
+  private def fakeAddress(postCode: String): TolerantAddress = TolerantAddress(
     Some("Address Line 1"),
     Some("Address Line 2"),
     Some("Address Line 3"),
@@ -186,7 +186,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec  extends ControllerSpec
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.failed(new HttpException("Failed",INTERNAL_SERVER_ERROR)))
+        .thenReturn(Future.failed(new HttpException("Failed", INTERNAL_SERVER_ERROR)))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)
 

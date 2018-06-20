@@ -27,20 +27,20 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 
 import scala.concurrent.Future
 
-class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator,
-                                                        override val appConfig: FrontendAppConfig,
-                                                        override val messagesApi: MessagesApi,
-                                                        override val cacheConnector: DataCacheConnector,
-                                                        authenticate: AuthAction,
-                                                        getData: DataRetrievalAction,
-                                                        requireData: DataRequiredAction
+class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator2,
+                                                       override val appConfig: FrontendAppConfig,
+                                                       override val messagesApi: MessagesApi,
+                                                       override val cacheConnector: DataCacheConnector,
+                                                       authenticate: AuthAction,
+                                                       getData: DataRetrievalAction,
+                                                       requireData: DataRequiredAction
                                                       ) extends AddressListController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

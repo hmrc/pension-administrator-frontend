@@ -30,11 +30,12 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.i18n.MessagesApi
+import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator2, Navigator2, UserAnswers}
 import viewmodels.ContactDetailsViewModel
 import views.html.contactDetails
 
@@ -48,18 +49,18 @@ object ContactDetailsControllerSpec {
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: DataCacheConnector,
-                                  override val navigator: Navigator,
+                                  override val navigator: Navigator2,
                                   formProvider: ContactDetailsFormProvider
                                 ) extends ContactDetailsController {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, false, None), answers))
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
     def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, false, None), answers))
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }
 
@@ -80,7 +81,9 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
     "return a successful result when there is no existing answer" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
 
           implicit val materializer: Materializer = app.materializer
@@ -99,7 +102,9 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
     "return a successful result when there is an existing answer" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
 
           implicit val materializer: Materializer = app.materializer
@@ -132,7 +137,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator].toInstance(FakeNavigator)
+        bind[Navigator2].toInstance(FakeNavigator2)
       )) {
         app =>
 
@@ -158,7 +163,9 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
     "return a bad request when the submitted data is invalid" in {
 
-      running(_.overrides()) {
+      running(_.overrides(
+        bind[Navigator2].toInstance(FakeNavigator2)
+      )) {
         app =>
 
           implicit val materializer: Materializer = app.materializer

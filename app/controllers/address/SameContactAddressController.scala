@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
@@ -35,8 +35,10 @@ import scala.concurrent.Future
 trait SameContactAddressController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
+
   protected def dataCacheConnector: DataCacheConnector
-  protected def navigator: Navigator
+
+  protected def navigator: Navigator2
 
   protected val form: Form[Boolean]
 
@@ -64,36 +66,35 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
     form.bindFromRequest().fold(
       formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
       value => {
-        val hasAnswerChanged = existingValue match{
+        val hasAnswerChanged = existingValue match {
           case None => true
           case Some(existing) => existing != value
         }
-        hasAnswerChanged match {
-          case true =>
-            value match {
-              case false => dataCacheConnector.save (request.externalId, id, value).map {
-                cacheMap =>
-                  Redirect (navigator.nextPage (id, mode) (UserAnswers (cacheMap) ) )
-              }
-              case true =>
-                dataCacheConnector.save (request.externalId, id, value).flatMap {
-                  _ =>
-                    getResolvedAddress (viewModel.address) match {
-                      case None =>
-                        dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
-                          cacheMap =>
-                            Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
-                        }
-                      case Some(address) =>
-                        dataCacheConnector.save(request.externalId, contactId, address).map {
-                          cacheMap =>
-                            Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
-                        }
+        if (hasAnswerChanged) {
+          if (value) {
+            dataCacheConnector.save(request.externalId, id, value).flatMap {
+              _ =>
+                getResolvedAddress(viewModel.address) match {
+                  case None =>
+                    dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
+                      cacheMap =>
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+                    }
+                  case Some(address) =>
+                    dataCacheConnector.save(request.externalId, contactId, address).map {
+                      cacheMap =>
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
                     }
                 }
             }
-          case _ =>
-            Future.successful(Redirect(navigator.nextPage(id, mode)(request.userAnswers)))
+          } else {
+            dataCacheConnector.save(request.externalId, id, value).map {
+              cacheMap =>
+                Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+            }
+          }
+        } else {
+          Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))
         }
       }
     )
@@ -117,6 +118,4 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
         }
     }
   }
-
-
 }

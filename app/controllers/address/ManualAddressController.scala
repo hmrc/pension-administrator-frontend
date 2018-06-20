@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
@@ -36,8 +36,11 @@ import scala.concurrent.Future
 trait ManualAddressController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
+
   protected def dataCacheConnector: DataCacheConnector
-  protected def navigator: Navigator
+
+  protected def navigator: Navigator2
+
   protected def auditService: AuditService
 
   protected val form: Form[Address]
@@ -79,7 +82,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
         ).map {
           cacheMap =>
             auditEvent.foreach(auditService.sendEvent(_))
-            Redirect(navigator.nextPage(id, mode)(UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
         }
       }
     )

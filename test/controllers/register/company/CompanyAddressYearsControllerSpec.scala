@@ -24,13 +24,14 @@ import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
 import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator2
 import views.html.register.company.companyAddressYears
 
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressYearsFormProvider()
   val form = formProvider("companyAddressYears.error.required")
@@ -55,7 +56,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form) = companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages).toString
 
   "CompanyAddressYears Controller" must {
 

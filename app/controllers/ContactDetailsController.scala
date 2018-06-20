@@ -19,13 +19,13 @@ package controllers
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import models.{ContactDetails, Mode}
 import models.requests.DataRequest
+import models.{ContactDetails, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator2, UserAnswers}
 import viewmodels.ContactDetailsViewModel
 import views.html.contactDetails
 
@@ -34,8 +34,10 @@ import scala.concurrent.Future
 trait ContactDetailsController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
+
   protected def cacheConnector: DataCacheConnector
-  protected def navigator: Navigator
+
+  protected def navigator: Navigator2
 
   protected def get(id: TypedIdentifier[ContactDetails], form: Form[ContactDetails], viewmodel: ContactDetailsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -58,7 +60,7 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
       contactDetails =>
         cacheConnector.save(request.externalId, id, contactDetails).map {
           answers =>
-            Redirect(navigator.nextPage(id, mode)(UserAnswers(answers)))
+            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
         }
     )
   }

@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
-import utils.{CheckYourAnswersFactory, Navigator}
+import utils.{CheckYourAnswersFactory, Navigator2}
 import viewmodels.{AnswerSection, Message}
 import views.html.check_your_answers
 
@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            @Individual navigator: Navigator,
+                                            @Individual navigator: Navigator2,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory
                                           ) extends FrontendController with Retrievals with I18nSupport {
@@ -70,8 +70,8 @@ class CheckYourAnswersController @Inject()(
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, mode)(request.userAnswers))
+    implicit request =>
+      Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
   }
 }
 

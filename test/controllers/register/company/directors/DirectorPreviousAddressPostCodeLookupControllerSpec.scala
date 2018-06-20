@@ -24,16 +24,16 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
+import models._
 import models.register.company.CompanyDetails
 import models.register.company.directors.DirectorDetails
-import models._
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -56,7 +56,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       frontendAppConfig,
       FakeDataCacheConnector,
       fakeAddressLookupConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
+      new FakeNavigator2(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
@@ -86,7 +86,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       viewModel
     )(fakeRequest, messages).toString
 
-  private def fakeAddress(postCode: String):TolerantAddress = TolerantAddress(
+  private def fakeAddress(postCode: String): TolerantAddress = TolerantAddress(
     Some("Address Line 1"),
     Some("Address Line 2"),
     Some("Address Line 3"),

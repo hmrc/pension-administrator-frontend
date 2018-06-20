@@ -33,7 +33,7 @@ import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, FakeNavigator2, Navigator, Navigator2}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
@@ -88,7 +88,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
-      bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
+      bind[Navigator2].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator2(postCall)),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

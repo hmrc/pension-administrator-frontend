@@ -17,19 +17,19 @@
 package controllers.register.adviser
 
 import audit.AuditService
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.MessagesApi
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
+import javax.inject.Inject
 import models.{Address, Mode}
+import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import utils.Navigator2
 import utils.annotations.Adviser
-import utils.Navigator
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -38,7 +38,7 @@ class AdviserAddressController @Inject()(
                                           override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           override val dataCacheConnector: DataCacheConnector,
-                                          @Adviser override val navigator: Navigator,
+                                          @Adviser override val navigator: Navigator2,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

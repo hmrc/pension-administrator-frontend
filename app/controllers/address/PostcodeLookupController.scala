@@ -26,10 +26,11 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator, Navigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
+
 import scala.util.{Failure, Success}
 import scala.concurrent.Future
 
@@ -41,7 +42,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
   protected def addressLookupConnector: AddressLookupConnector
 
-  protected def navigator: Navigator
+  protected def navigator: Navigator2
 
   protected def form: Form[String]
 
@@ -82,21 +83,19 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
       case Nil => Future.successful(Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel)))
 
-      case addresses => {
+      case addresses =>
         cacheConnector.save(
           request.externalId,
           id,
           addresses
         ).map {
           json =>
-            Redirect(navigator.nextPage(id, mode)(UserAnswers(json)))
+            Redirect(navigator.nextPage(id, mode, UserAnswers(json)))
         }
-      }
     } recoverWith {
 
-      case _ => {
+      case _ =>
         Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel)))
-      }
 
     }
   }

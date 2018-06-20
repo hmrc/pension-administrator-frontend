@@ -17,20 +17,20 @@
 package controllers.register.adviser
 
 import base.CSRFRequest
-import utils.{FakeNavigator, Navigator}
 import connectors.{AddressLookupConnector, DataCacheConnector, FakeDataCacheConnector}
-import controllers.actions._
-import play.api.test.Helpers._
-import models.{Address, AddressRecord, NormalMode, TolerantAddress}
 import controllers.ControllerSpecBase
+import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
+import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Adviser
+import utils.{FakeNavigator2, Navigator2}
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -88,15 +88,15 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   }
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
 
-  private def requestResult[T](request: (Application) => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
+  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
+      bind(classOf[Navigator2]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

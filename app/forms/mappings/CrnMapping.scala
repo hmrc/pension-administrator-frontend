@@ -20,12 +20,10 @@ import play.api.data.Mapping
 
 trait CrnMapping extends Mappings with Transforms {
 
-  def crnMapping(keyCrnRequired: String, keyCrnLength: String, keyCrnInvalid: String): Mapping[String] = {
-    text(keyCrnRequired).transform(standardTextTransform, noTransform)
-      .verifying(firstError(
-        maxLength(CrnMapping.maxCrnLength, keyCrnLength),
-        companyRegistrationNumber(keyCrnInvalid)
-      ))
+  def crnMapping(keyCrnRequired: String, keyCrnInvalid: String): Mapping[String] = {
+    text(keyCrnRequired)
+      .transform(standardTextTransform, noTransform)
+      .verifying(companyRegistrationNumber(keyCrnInvalid))
   }
 
 }

@@ -36,6 +36,12 @@ trait ControllerSpecBase extends SpecBase {
 
   def dontGetAnyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
 
+  def getCompany: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(
+      BusinessDetailsId.toString ->
+        BusinessDetails("Test Company Name", "Test UTR")
+    )))
+
   def getDirector: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       BusinessDetailsId.toString ->
