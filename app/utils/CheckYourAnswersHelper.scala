@@ -272,10 +272,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     }
   }
 
-  def companyContactAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressId) flatMap { x =>
-    x map { address =>
-      AnswerRow("cya.label.company.contact.address", addressAnswer(address), false, None)
-    }
+  def companyContactAddress: Option[AnswerRow] =  userAnswers.get(identifiers.register.company.CompanyContactAddressId) map {answer =>
+    AnswerRow("cya.label.company.contact.address", addressAnswer(answer), false, None)
   }
 
   def companySameContactAddress: Option[AnswerRow] =
