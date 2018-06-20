@@ -31,7 +31,7 @@ import views.html.register.partnership.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          @Partnership navigator: Navigator, //TODO change to Partnership navigator
+                                          @Partnership navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
