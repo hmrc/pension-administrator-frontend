@@ -39,12 +39,17 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
     case ConfirmCompanyAddressId =>
       _ => routes.WhatYouWillNeedController.onPageLoad()
     case WhatYouWillNeedId =>
-      _ => routes.CompanyDetailsController.onPageLoad(NormalMode)
-    case CompanyDetailsId =>
-      _ => routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-    case CompanyRegistrationNumberId =>
+      _ => routes.CompanySameContactAddressController.onPageLoad(NormalMode)
+    case CompanySameContactAddressId =>
+      sameContactAddress(NormalMode)
+    case CompanyContactAddressPostCodeLookupId =>
+      _ => routes.CompanyContactAddressListController.onPageLoad(NormalMode)
+    case CompanyContactAddressListId =>
+      _ => routes.CompanyContactAddressController.onPageLoad(NormalMode)
+    case CompanyContactAddressId =>
       _ => routes.CompanyAddressYearsController.onPageLoad(NormalMode)
-    case CompanyAddressYearsId => companyAddressYearsIdRoutes
+    case CompanyAddressYearsId =>
+      companyAddressYearsIdRoutes
     case CompanyPreviousAddressPostCodeLookupId =>
       _ => routes.CompanyAddressListController.onPageLoad(NormalMode)
     case CompanyAddressListId =>
@@ -52,23 +57,38 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
     case CompanyPreviousAddressId =>
       _ => routes.ContactDetailsController.onPageLoad(NormalMode)
     case ContactDetailsId =>
+      _ => routes.CompanyDetailsController.onPageLoad(NormalMode)
+    case CompanyDetailsId =>
+      _ => routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
+    case CompanyRegistrationNumberId =>
       _ => routes.CheckYourAnswersController.onPageLoad()
     case CompanyReviewId =>
       _ => controllers.register.routes.DeclarationController.onPageLoad()
   }
 
   override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case CompanyDetailsId => checkYourAnswers
-    case CompanyRegistrationNumberId => checkYourAnswers
-    case CompanyAddressId => checkYourAnswers
-    case CompanyAddressYearsId => companyAddressYearsCheckIdRoutes
+    case CompanySameContactAddressId =>
+      sameContactAddress(CheckMode)
+    case CompanyContactAddressPostCodeLookupId =>
+      _ => routes.CompanyContactAddressListController.onPageLoad(CheckMode)
+    case CompanyContactAddressListId =>
+      _ => routes.CompanyContactAddressController.onPageLoad(CheckMode)
+    case CompanyContactAddressId =>
+      checkYourAnswers
+    case CompanyAddressYearsId =>
+      companyAddressYearsCheckIdRoutes
     case CompanyPreviousAddressPostCodeLookupId =>
       _ => routes.CompanyAddressListController.onPageLoad(CheckMode)
     case CompanyAddressListId =>
       _ => routes.CompanyPreviousAddressController.onPageLoad(CheckMode)
-    case CompanyPreviousAddressId => checkYourAnswers
+    case CompanyPreviousAddressId =>
+      checkYourAnswers
     case ContactDetailsId =>
-      _ => routes.CheckYourAnswersController.onPageLoad()
+      checkYourAnswers
+    case CompanyDetailsId =>
+      checkYourAnswers
+    case CompanyRegistrationNumberId =>
+      checkYourAnswers
   }
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Call = {
@@ -88,4 +108,13 @@ class RegisterCompanyNavigator @Inject() extends Navigator {
         controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
+
+  private def sameContactAddress(mode: Mode)(answers: UserAnswers): Call = {
+    answers.get(CompanySameContactAddressId) match {
+      case Some(true) => routes.CompanyAddressYearsController.onPageLoad(mode)
+      case Some(false) => routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
 }

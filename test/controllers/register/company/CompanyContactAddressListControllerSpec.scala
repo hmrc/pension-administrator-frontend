@@ -19,7 +19,7 @@ package controllers.register.company
 import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import controllers.register.individual.IndividualContactAddressPostCodeLookupControllerSpec.getEmptyData
 import forms.address.AddressListFormProvider
 import models.{NormalMode, TolerantAddress}
@@ -27,7 +27,7 @@ import org.scalatest.OptionValues
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, route, running, status, _}
 import utils.annotations.RegisterCompany
@@ -116,7 +116,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
 }
 
 object CompanyContactAddressListControllerSpec extends OptionValues {
-  val onwardRoute = routes.CompanyContactAddressController.onPageLoad(NormalMode)
+  val onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
@@ -150,10 +150,8 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
     )
   )
 
-  private val data =
-    UserAnswers().businessDetails.companyContactAddressList(addresses).asOpt.value.json
-  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-
+  private val dataRetrievalAction =
+    UserAnswers().businessDetails.companyContactAddressList(addresses).dataRetrievalAction
   private def requestResult[T](data: DataRetrievalAction = getEmptyData,
                                request: Application => Request[T],
                                test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
