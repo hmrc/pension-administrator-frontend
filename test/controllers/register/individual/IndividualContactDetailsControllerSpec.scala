@@ -39,10 +39,9 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
 
   def viewmodel = ContactDetailsViewModel(
     postCall = routes.IndividualContactDetailsController.onSubmit(NormalMode),
-    title = Message("contactDetails.title"),
-    heading = Message("contactDetails.heading"),
-    subHeading = Some(Message("common.individual.secondary.heading")),
-    legend = Message("contactDetails.individual.lede")
+    title = Message("contactDetails.individual.title"),
+    heading = Message("contactDetails.individual.heading"),
+    legend = Message("contactDetails.body")
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
