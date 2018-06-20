@@ -18,19 +18,21 @@ package controllers.register.individual
 
 import java.time.LocalDate
 
-import play.api.data.Form
-import utils.{DateHelper, FakeNavigator}
 import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import identifiers.register.individual.IndividualDateOfBirthId
 import models.NormalMode
-import views.html.register.individual.individualDateOfBirth
+import play.api.data.Form
 import play.api.libs.json._
-import controllers.ControllerSpecBase
+import play.api.mvc.Call
+import play.api.test.Helpers._
+import utils.{DateHelper, FakeNavigator2}
+import views.html.register.individual.individualDateOfBirth
 
 class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
+
   import IndividualDateOfBirthControllerSpec._
 
   "IndividualDateOfBirth Controller" must {
@@ -92,16 +94,23 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
 
 object IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new IndividualDateOfBirthFormProvider()
-  val form = formProvider()
+  private val formProvider = new IndividualDateOfBirthFormProvider()
+  private val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualDateOfBirthController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new IndividualDateOfBirthController(frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = LocalDate.now()
+  private val testAnswer = LocalDate.now()
 }

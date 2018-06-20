@@ -60,7 +60,8 @@ class DirectorNavigatorSpec2 extends SpecBase with MockitoSugar with NavigatorBe
     (DirectorPreviousAddressPostCodeLookupId(0), emptyAnswers,                  paAddressListPage(NormalMode),   false,              Some(paAddressListPage(CheckMode)),   false),
     (DirectorPreviousAddressListId(0),           emptyAnswers,                  previousAddressPage(NormalMode), true,               Some(previousAddressPage(CheckMode)), true),
     (DirectorPreviousAddressId(0),               emptyAnswers,                  directorContactDetailsPage,      true,               Some(checkYourAnswersPage),           true),
-    (DirectorContactDetailsId(0),                emptyAnswers,                  checkYourAnswersPage,            true,               Some(checkYourAnswersPage),           true)
+    (DirectorContactDetailsId(0),                emptyAnswers,                  checkYourAnswersPage,            true,               Some(checkYourAnswersPage),           true),
+    (CheckYourAnswersId,                         emptyAnswers,                  addDirectorsPage,                 true,               None,                                 false)
   )
 
   //scalastyle:on line.size.limit
@@ -83,6 +84,7 @@ object DirectorNavigatorSpec2 extends OptionValues {
   private lazy val directorUniqueTaxReferencePage = routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, 0)
   private lazy val directorAddressYearsPage = routes.DirectorAddressYearsController.onPageLoad(NormalMode, 0)
   private lazy val directorContactDetailsPage = routes.DirectorContactDetailsController.onPageLoad(NormalMode, 0)
+  private lazy val addDirectorsPage = controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
 
   def paPostCodePage(mode: Mode): Call = routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
   def paAddressListPage(mode: Mode): Call = routes.DirectorPreviousAddressListController.onPageLoad(mode, 0)

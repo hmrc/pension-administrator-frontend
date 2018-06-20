@@ -25,17 +25,15 @@ class CrnMappingSpec extends CrnBehaviours {
 
     val fieldName = "crn"
     val keyCrnRequired = "companyRegistrationNumber.error.required"
-    val keyCrnLength = "companyRegistrationNumber.error.length"
     val keyCrnInvalid = "companyRegistrationNumber.error.invalid"
 
-    val mapping: Mapping[String] = crnMapping(keyCrnRequired, keyCrnLength, keyCrnInvalid)
+    val mapping: Mapping[String] = crnMapping(keyCrnRequired, keyCrnInvalid)
     val form: Form[String] = Form(fieldName -> mapping)
 
     behave like formWithCrnField(
       form,
       fieldName,
       keyCrnRequired,
-      keyCrnLength,
       keyCrnInvalid
     )
 

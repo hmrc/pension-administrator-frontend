@@ -16,27 +16,32 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import models.{Index, Mode}
+import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
+import javax.inject.Inject
+import models.{Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.CheckYourAnswersFactory
+import utils.annotations.CompanyDirector
+import utils.{CheckYourAnswersFactory, Navigator2, SectionComplete}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
 import scala.concurrent.Future
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with Retrievals with I18nSupport {
+class CheckYourAnswersController @Inject()(
+                                            appConfig: FrontendAppConfig,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            @CompanyDirector navigator: Navigator2,
+                                            override val messagesApi: MessagesApi,
+                                            checkYourAnswersFactory: CheckYourAnswersFactory,
+                                            sectionComplete: SectionComplete
+                                          ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -61,15 +66,16 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
           appConfig,
           answersSection,
           Some(directorName),
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit()))
+          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(index)))
         )
       }
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Redirect(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode))
-
+      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
+        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      }
   }
 
 }

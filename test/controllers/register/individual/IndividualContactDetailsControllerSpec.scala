@@ -24,14 +24,15 @@ import identifiers.register.individual.IndividualContactDetailsId
 import models.{ContactDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.FakeNavigator2
 import viewmodels.{ContactDetailsViewModel, Message}
 import views.html.contactDetails
 
 class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new ContactDetailsFormProvider()
   val form = formProvider()
@@ -45,10 +46,18 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualContactDetailsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new IndividualContactDetailsController(
+      new FakeNavigator2(desiredRoute = onwardRoute),
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
   "ContactDetails Controller" must {
 

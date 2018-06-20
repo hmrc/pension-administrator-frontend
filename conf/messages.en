@@ -160,13 +160,12 @@ businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference numb
 businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot be more than 10 characters
 businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
-companyRegistrationNumber.title = Company Registration number
-companyRegistrationNumber.heading = Company Registration number
-companyRegistrationNumber.checkYourAnswersLabel = Company Registration number
+companyRegistrationNumber.title = What is the company’s registration number?
+companyRegistrationNumber.heading = What is the company’s registration number?
+companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = This is issued by Companies House. It is 8 characters, typically 8 numbers or a combination of 2 letters followed by 6 numbers. For example, AB123456.
-companyRegistrationNumber.error.length = The Company Registration number cannot be more than 8 characters
-companyRegistrationNumber.error.invalid = Enter a valid 7 or 8 character Company Registration number
+companyRegistrationNumber.hint = This is an 8 character registration number given by Companies House when the company was first registered.
+companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
 
@@ -478,6 +477,12 @@ common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
 
+company.contactAddressList.title = Select the contact address
+company.contactAddressList.heading = Select {0}’s contact address
+
+companyContactAddress.title = What is {0}’s contact address?
+companyContactAddress.heading = What is {0}’s contact address?
+companyContactAddress.lede = This can be any address that can be used to contact {0}. The PSA might receive letters from HMRC.
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
 cya.label.company.contact.address = Contact Address

@@ -29,7 +29,7 @@ import models.{AddressYears, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
-import utils.Navigator
+import utils.Navigator2
 import utils.annotations.CompanyDirector
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
@@ -37,7 +37,7 @@ import viewmodels.address.AddressYearsViewModel
 import scala.concurrent.Future
 
 class DirectorAddressYearsController @Inject()(
-                                                @CompanyDirector override val navigator: Navigator,
+                                                @CompanyDirector override val navigator: Navigator2,
                                                 override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 override val cacheConnector: DataCacheConnector,

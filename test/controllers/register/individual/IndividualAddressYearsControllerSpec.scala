@@ -23,22 +23,23 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import models.{AddressYears, NormalMode, TolerantIndividual}
 import play.api.data.Form
-import play.api.libs.json.{JsString, _}
+import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator2, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
 class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressYearsFormProvider()
   val form = formProvider(Message("error.addressYears.required"))
   val questionText = "individualAddressYears.title"
   val individualDetails = TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
-  val name = individualDetails.fullName
+  val name: String = individualDetails.fullName
   val viewmodel = AddressYearsViewModel(
     postCall = routes.IndividualAddressYearsController.onSubmit(NormalMode),
     title = Message(questionText, name),
@@ -48,12 +49,12 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
-    new IndividualAddressYearsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
+    new IndividualAddressYearsController(new FakeNavigator2(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
-  val validData = UserAnswers()
+  val validData: JsResult[UserAnswers] = UserAnswers()
     .set(IndividualDetailsId)(individualDetails)
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
