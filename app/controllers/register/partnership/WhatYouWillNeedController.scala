@@ -17,21 +17,21 @@
 package controllers.register.partnership
 
 import audit.{AuditService, PSAStartEvent}
-import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
+import controllers.actions._
 import identifiers.register.company.WhatYouWillNeedId
+import javax.inject.Inject
 import models.NormalMode
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator2
-import utils.annotations.Individual
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
+import utils.annotations.Partnership
 import views.html.register.partnership.whatYouWillNeed
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          @Individual navigator: Navigator2, //TODO change to Partnership navigator
+                                          @Partnership navigator: Navigator, //TODO change to Partnership navigator
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
