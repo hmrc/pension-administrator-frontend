@@ -272,6 +272,15 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     }
   }
 
+  def companyContactAddress: Option[AnswerRow] =  userAnswers.get(identifiers.register.company.CompanyContactAddressId) map {answer =>
+    AnswerRow("cya.label.company.contact.address", addressAnswer(answer), false, None)
+  }
+
+  def companySameContactAddress: Option[AnswerRow] =
+    userAnswers.get(identifiers.register.company.CompanySameContactAddressId) map { x =>
+      AnswerRow("cya.label.company.same.contact.address", Seq(if(x) "site.yes" else "site.no"), true, controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)
+  }
+
   def businessDetails: Seq[AnswerRow] = userAnswers.get(BusinessDetailsId) match {
     case Some(x) => Seq(
       AnswerRow("businessDetails.companyName", Seq(s"${x.companyName}"), false, None),
