@@ -31,7 +31,7 @@ import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
-import utils.{FakeNavigator2, KnownFactsRetrieval, UserAnswers}
+import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -174,7 +174,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()

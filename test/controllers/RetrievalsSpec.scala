@@ -19,8 +19,8 @@ package controllers
 import java.time.LocalDate
 
 import identifiers.TypedIdentifier
-import models.{PSAUser, UserType}
 import models.requests.DataRequest
+import models.{PSAUser, UserType}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
@@ -45,11 +45,11 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
     Future.successful(Ok("Success"))
   }
 
-  val testIdentifier = new TypedIdentifier[String]{
+  val testIdentifier = new TypedIdentifier[String] {
     override def toString: String = "test"
   }
 
-  val secondIdentifier = new TypedIdentifier[String]{
+  val secondIdentifier = new TypedIdentifier[String] {
     override def toString: String = "second"
   }
 

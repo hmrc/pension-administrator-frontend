@@ -17,40 +17,54 @@
 package utils.navigators
 
 import base.SpecBase
+import connectors.FakeDataCacheConnector
+import identifiers.Identifier
 import identifiers.register.adviser._
 import models.{CheckMode, Mode, NormalMode}
 import play.api.libs.json.Json
-import utils.UserAnswers
-import controllers.register.adviser._
+import utils.{NavigatorBehaviour, UserAnswers}
+import models.requests.IdentifiedRequest
+import org.scalatest.OptionValues
+import org.scalatest.prop.TableFor6
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import AdviserNavigatorSpec._
 
-  val navigator = new AdviserNavigator
+  val navigator = new AdviserNavigator(FakeDataCacheConnector)
 
-  private val routes = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage, Some(checkYourAnswersPage)),
-    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), Some(adviserAddressListPage(CheckMode))),
-    (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), Some(adviserAddressPage(CheckMode))),
-    (AdviserAddressId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
-    (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, None)
+  def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id",                           "User Answers", "Next Page (NormalMode)",          "Save(NormalMode)", "Next Page (CheckMode)",                 "Save(CheckMode"),
+    (AdviserDetailsId,               emptyAnswers,   adviserPostCodeLookUpPage,          true,              Some(checkYourAnswersPage),              false),
+    (AdviserAddressPostCodeLookupId, emptyAnswers,   adviserAddressListPage(NormalMode), false,             Some(adviserAddressListPage(CheckMode)), false),
+    (AdviserAddressListId,           emptyAnswers,   adviserAddressPage(NormalMode),     true,              Some(adviserAddressPage(CheckMode)),     true),
+    (AdviserAddressId,               emptyAnswers,   checkYourAnswersPage,               true,              Some(checkYourAnswersPage),              false),
+    (CheckYourAnswersId,             emptyAnswers,   declarationFitAndProperPage,        true,              None,                                    false)
   )
 
   navigator.getClass.getSimpleName must {
-    behave like navigatorWithRoutes(navigator, routes)
+    appRunning()
+    behave like nonMatchingNavigator(navigator)
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
   }
 }
 
-object AdviserNavigatorSpec {
-  val emptyAnswers = new UserAnswers(Json.obj())
-  val adviserPostCodeLookUpPage = routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
+object AdviserNavigatorSpec extends OptionValues {
+  lazy val emptyAnswers = UserAnswers(Json.obj())
+  lazy val adviserPostCodeLookUpPage: Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
 
-  def adviserAddressListPage(mode: Mode) = routes.AdviserAddressListController.onPageLoad(mode)
+  def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
 
-  def adviserAddressPage(mode: Mode) = routes.AdviserAddressController.onPageLoad(mode)
+  def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
 
-  val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  val declarationFitAndProperPage = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+  lazy val checkYourAnswersPage: Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()
+  lazy val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+
+  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
 }

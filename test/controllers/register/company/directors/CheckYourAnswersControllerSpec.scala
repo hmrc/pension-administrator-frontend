@@ -74,7 +74,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      FakeNavigator2,
+      FakeNavigator,
       messagesApi,
       checkYourAnswersFactory,
       FakeSectionComplete

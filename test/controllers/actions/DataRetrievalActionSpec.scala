@@ -16,18 +16,18 @@
 
 package controllers.actions
 
-import org.mockito.Mockito._
-import org.mockito.Matchers.{eq => eqTo, _}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
 import base.SpecBase
 import connectors.DataCacheConnector
-import models.{PSAUser, UserType}
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
+import models.{PSAUser, UserType}
+import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
 

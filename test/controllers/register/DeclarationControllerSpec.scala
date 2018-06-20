@@ -21,16 +21,16 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
-import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
+import models.{PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers._
-import utils.{FakeNavigator, FakeNavigator2}
+import utils.FakeNavigator
 import views.html.register.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DeclarationControllerSpec extends ControllerSpecBase {
 
@@ -115,9 +115,10 @@ class DeclarationControllerSpec extends ControllerSpecBase {
 object DeclarationControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
+
   private def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
