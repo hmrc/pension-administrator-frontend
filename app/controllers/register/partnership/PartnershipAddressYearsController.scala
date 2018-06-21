@@ -18,10 +18,11 @@ package controllers.register.partnership
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.PartnershipAddressYearsId
+import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
@@ -39,26 +40,37 @@ class PartnershipAddressYearsController @Inject()(
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: AddressYearsFormProvider
-                                                 ) extends AddressYearsController {
+                                                 ) extends AddressYearsController with Retrievals {
 
-  private def viewModel(mode: Mode, index: Index) = AddressYearsViewModel(
-    routes.PartnershipAddressYearsController.onSubmit(mode, index),
-    "",
-    Message("partnership.addressYears.heading").withArgs(""),
-    Message("partnership.addressYears.heading").withArgs(""),
-    Some("site.secondaryHeader")
-  )
+
+  private def viewModel(mode: Mode, index: Index) =
+    Retrieval {
+      implicit request =>
+        PartnershipDetailsId(index).retrieve.right.map{ details =>
+          AddressYearsViewModel(
+            routes.PartnershipAddressYearsController.onSubmit(mode, index),
+            Message("partnership.addressYears.title"),
+            Message("partnership.addressYears.heading").withArgs(details.name),
+            Message("partnership.addressYears.heading").withArgs(details.name),
+            Some("site.secondaryHeader")
+          )
+        }
+    }
 
   val form = formProvider("error.addressYears.required")
 
   def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(PartnershipAddressYearsId(index), form, viewModel(mode, index))
+      viewModel(mode, index).retrieve.right.map{
+        get(PartnershipAddressYearsId(index), form, _)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PartnershipAddressYearsId(index), mode, form, viewModel(mode, index))
+      viewModel(mode, index).retrieve.right.map {
+        post(PartnershipAddressYearsId(index), mode, form, _)
+      }
   }
 
 }

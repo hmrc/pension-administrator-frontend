@@ -502,5 +502,5 @@ whatYouWillNeed.partnership.body.item1 = your partnership name, address and prev
 whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
 whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address
 
-partnership.addressYears.title = Has this been {0}’s contact address for more than 12 months?
+partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
 partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?

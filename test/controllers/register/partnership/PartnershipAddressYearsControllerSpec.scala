@@ -16,17 +16,20 @@
 
 package controllers.register.partnership
 
+import java.time.LocalDate
+
 import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import controllers.register.partnership.routes.PartnershipAddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.PartnershipAddressYearsId
-import models.{AddressYears, Index, NormalMode}
+import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
+import models.{AddressYears, BusinessDetails, Index, NormalMode}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.libs.json.{JsArray, Json}
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -47,7 +50,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
       implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode, index))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe (addressYears(frontendAppConfig, form, viewModel)(request, messages)).toString
+        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel)(request, messages).toString
       }
     )
   }
@@ -70,11 +73,18 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
 
   val id = PartnershipAddressYearsId(index)
 
+  val partnershipName = "Test Partnership Name"
+
+  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
+    "partnership" -> Json.arr(Json.obj(
+    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, "Test UTR")
+  )))))
+
   val viewModel = AddressYearsViewModel(
     PartnershipAddressYearsController.onSubmit(NormalMode, index),
-    "",
-    Message("partnership.addressYears.heading").withArgs(""),
-    Message("partnership.addressYears.heading").withArgs(""),
+    Message("partnership.addressYears.title"),
+    Message("partnership.addressYears.heading").withArgs(partnershipName),
+    Message("partnership.addressYears.heading").withArgs(partnershipName),
     Some("site.secondaryHeader")
   )
 
@@ -84,7 +94,7 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
                               (implicit writeable: Writeable[T]): Unit = {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getEmptyData),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
