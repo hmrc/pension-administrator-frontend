@@ -56,7 +56,8 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
             "directorDetails" -> Json.obj(
               "firstName" -> "John",
               "lastName" -> "Doe",
-              "dateOfBirth" -> Json.toJson(LocalDate.now())
+              "dateOfBirth" -> Json.toJson(LocalDate.now()),
+              "isDeleted" -> false
             )
           )
         )
@@ -88,7 +89,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
 
     }
 
-    "remove the director on submission of POST request" in {
+    "set the isDelete flag to true for the selected director on submission of POST request" in {
       val validData = Json.obj(
         "directors" -> Json.arr(
           Json.obj(
@@ -101,7 +102,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verifyRemoved(DirectorId(firstIndex))
+      FakeDataCacheConnector.verify(DirectorDetailsId(firstIndex), DirectorDetails("John", None, "Doe", LocalDate.now(), true))
     }
 
   }
