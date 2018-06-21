@@ -62,7 +62,8 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
             "directorDetails" -> Json.obj(
               "firstName" -> "John",
               "lastName" -> "Doe",
-              "dateOfBirth" -> Json.toJson(LocalDate.now())
+              "dateOfBirth" -> Json.toJson(LocalDate.now()),
+              "isDeleted" -> false
             )
           )
         )
