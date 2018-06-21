@@ -17,8 +17,18 @@
 package identifiers.register.company
 
 import identifiers.TypedIdentifier
-import models.TolerantAddress
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
 case object CompanySameContactAddressId extends TypedIdentifier[Boolean] {self =>
   override def toString = "companySameContactAddressId"
+
+  override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {
+    answers
+      .remove(CompanyContactAddressId)
+      .flatMap(_.remove(CompanyContactAddressPostCodeLookupId))
+      .flatMap(_.remove(CompanyAddressYearsId))
+      .flatMap(_.remove(CompanyPreviousAddressPostCodeLookupId))
+      .flatMap(_.remove(CompanyPreviousAddressId))
+  }
 }
