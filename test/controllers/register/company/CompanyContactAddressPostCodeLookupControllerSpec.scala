@@ -33,7 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator2, Navigator2}
+import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -109,7 +109,7 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator2].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator2(onwardRoute)),
+      bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

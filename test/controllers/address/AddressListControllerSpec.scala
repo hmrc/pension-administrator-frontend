@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator2, Navigator2, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -46,7 +46,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     "return Ok and the correct view when no addresses" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val viewModel = addressListViewModel(Nil)
         val controller = app.injector.instanceOf[TestController]
@@ -78,7 +78,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     "return See Other on submission of valid data" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val controller = app.injector.instanceOf[TestController]
         val result = controller.onSubmit(addressListViewModel(), 0)
@@ -91,7 +91,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     "redirect to the page specified by the navigator following submission of valid data" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val controller = app.injector.instanceOf[TestController]
         val result = controller.onSubmit(addressListViewModel(), 0)
@@ -104,7 +104,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     "save the user answer on submission of valid data" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
@@ -119,7 +119,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     "delete any existing address on submission of valid data" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
@@ -134,7 +134,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     "return Bad Request and the correct view on submission of invalid data" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
@@ -159,7 +159,7 @@ object AddressListControllerSpec {
 
     override protected def cacheConnector: DataCacheConnector = FakeDataCacheConnector
 
-    override protected def navigator: Navigator2 = new FakeNavigator2(onwardRoute)
+    override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
 
     def onPageLoad(viewModel: AddressListViewModel): Future[Result] = {
 

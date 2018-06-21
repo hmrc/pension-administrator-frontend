@@ -493,3 +493,11 @@ interceptPSA.heading = You have already registered as a pension scheme administr
 interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.
 interceptPSA.button = Continue to your pension schemes
 interceptPSA.exit = Exit to GOV.UK
+
+whatYouWillNeed.partnership.title = What you will need
+whatYouWillNeed.partnership.heading = What you will need
+whatYouWillNeed.partnership.body.text1 = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
+whatYouWillNeed.partnership.body.text2 = To register as a Pension Scheme Administrator (PSA) with HMRC you will need:
+whatYouWillNeed.partnership.body.item1 = your partnership name, address and previous address
+whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
+whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address

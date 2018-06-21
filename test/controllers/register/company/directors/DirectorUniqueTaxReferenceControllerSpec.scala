@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import views.html.register.company.directors.directorUniqueTaxReference
 
 class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
@@ -64,7 +64,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorUniqueTaxReferenceController(frontendAppConfig, messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

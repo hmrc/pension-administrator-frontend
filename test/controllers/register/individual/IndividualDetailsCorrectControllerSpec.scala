@@ -33,7 +33,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -120,7 +120,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, registrationConnector: RegistrationConnector = FakeRegistrationConnector) =
     new IndividualDetailsCorrectController(
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,

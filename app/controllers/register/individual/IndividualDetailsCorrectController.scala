@@ -30,13 +30,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.Future
 
 class IndividualDetailsCorrectController @Inject()(
-                                                    @Individual navigator: Navigator2,
+                                                    @Individual navigator: Navigator,
                                                     appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     dataCacheConnector: DataCacheConnector,

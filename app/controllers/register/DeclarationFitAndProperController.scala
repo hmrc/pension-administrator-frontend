@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{KnownFactsRetrieval, Navigator2, UserAnswers}
+import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
 import scala.concurrent.Future
@@ -41,7 +41,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  @Register navigator: Navigator2,
+                                                  @Register navigator: Navigator,
                                                   formProvider: DeclarationFormProvider,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,

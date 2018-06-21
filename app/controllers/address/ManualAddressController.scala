@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
@@ -39,7 +39,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
 
   protected def dataCacheConnector: DataCacheConnector
 
-  protected def navigator: Navigator2
+  protected def navigator: Navigator
 
   protected def auditService: AuditService
 

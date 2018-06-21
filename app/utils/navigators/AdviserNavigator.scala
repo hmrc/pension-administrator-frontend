@@ -16,42 +16,34 @@
 
 package utils.navigators
 
-import javax.inject.{Inject, Singleton}
-
-import identifiers.Identifier
+import connectors.DataCacheConnector
+import controllers.register.adviser._
 import identifiers.register.adviser._
+import javax.inject.{Inject, Singleton}
 import models.{CheckMode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
-import controllers.register.adviser._
 
 @Singleton
-class AdviserNavigator @Inject() extends Navigator {
+class AdviserNavigator@Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
-  private def checkYourAnswers()(answers: UserAnswers): Call =
+  private def checkYourAnswers(): Call =
     controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()
 
-  override def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AdviserDetailsId =>
-      _ => routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
-    case AdviserAddressPostCodeLookupId =>
-      _ => routes.AdviserAddressListController.onPageLoad(NormalMode)
-    case AdviserAddressListId =>
-      _ => routes.AdviserAddressController.onPageLoad(NormalMode)
-    case AdviserAddressId =>
-      _ => routes.CheckYourAnswersController.onPageLoad()
-    case CheckYourAnswersId =>
-      _ => controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+  override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AdviserDetailsId => NavigateTo.save(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))
+    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(NormalMode))
+    case AdviserAddressListId => NavigateTo.save(routes.AdviserAddressController.onPageLoad(NormalMode))
+    case AdviserAddressId => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case CheckYourAnswersId => NavigateTo.save(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AdviserDetailsId =>
-      checkYourAnswers()
-    case AdviserAddressPostCodeLookupId =>
-      _ => routes.AdviserAddressListController.onPageLoad(CheckMode)
-    case AdviserAddressListId =>
-      _ => routes.AdviserAddressController.onPageLoad(CheckMode)
-    case AdviserAddressId =>
-      checkYourAnswers()
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers())
+    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
+    case AdviserAddressListId => NavigateTo.save(routes.AdviserAddressController.onPageLoad(CheckMode))
+    case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 }

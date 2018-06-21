@@ -27,7 +27,7 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
-import utils.Navigator2
+import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class CompanyAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                              override val messagesApi: MessagesApi,
                                              override val cacheConnector: DataCacheConnector,
-                                             @RegisterCompany override val navigator: Navigator2,
+                                             @RegisterCompany override val navigator: Navigator,
                                              authenticate: AuthAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction) extends AddressListController with Retrievals {

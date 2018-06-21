@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Adviser
-import utils.{FakeNavigator2, Navigator2}
+import utils.{FakeNavigator, Navigator}
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -88,7 +88,7 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   }
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator2(desiredRoute = onwardRoute)
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
 
@@ -96,7 +96,7 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind(classOf[Navigator2]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
+      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {
       app =>

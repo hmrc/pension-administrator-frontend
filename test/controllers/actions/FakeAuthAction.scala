@@ -16,9 +16,9 @@
 
 package controllers.actions
 
+import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
 import play.api.mvc.{Request, Result}
-import models.requests.AuthenticatedRequest
 
 import scala.concurrent.Future
 
