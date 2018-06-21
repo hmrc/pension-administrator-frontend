@@ -466,11 +466,6 @@ company.same.contact.address.title = Is this registered address the same as your
 company.same.contact.address.heading = Is this {0}’s contact address?
 company.same.contact.address.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
 
-individualCorrespondenceAddressPostCodeLookup.title = What is the contact address
-individualCorrespondenceAddressPostCodeLookup.heading = What is your contact address?
-individualCorrespondenceAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
-individualCorrespondenceAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0}enter the address manually {1} if the address is overseas.
-individualCorrespondenceAddressPostCodeLookup.formLabel = Postcode
 individualContactAddressPostCodeLookup.title = What is the contact address
 individualContactAddressPostCodeLookup.heading = What is your contact address?
 individualContactAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
@@ -485,11 +480,13 @@ common.contactAddress.lede = This can be any address that can be used to contact
 company.contactAddressList.title = Select the contact address
 company.contactAddressList.heading = Select {0}’s contact address
 
-companyContactAddress.title = What is {0}’s contact address?
+companyContactAddress.title = What is company’s contact address?
 companyContactAddress.heading = What is {0}’s contact address?
 companyContactAddress.lede = This can be any address that can be used to contact {0}. The PSA might receive letters from HMRC.
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
+cya.label.company.contact.address = Contact Address
+cya.label.company.same.contact.address = Is your contact address the same as your registered address?
 
 interceptPSA.title = You have already registered as a pension scheme administrator
 interceptPSA.heading = You have already registered as a pension scheme administrator
@@ -501,3 +498,12 @@ alreadyDeleted.director.title = You have already deleted this director
 alreadyDeleted.heading = You have already deleted {0}
 alreadyDeleted.lede = You have already confirmed deletion of {0}.
 alreadyDeleted.text = This page no longer exists.
+
+
+whatYouWillNeed.partnership.title = What you will need
+whatYouWillNeed.partnership.heading = What you will need
+whatYouWillNeed.partnership.body.text1 = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
+whatYouWillNeed.partnership.body.text2 = To register as a Pension Scheme Administrator (PSA) with HMRC you will need:
+whatYouWillNeed.partnership.body.item1 = your partnership name, address and previous address
+whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
+whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address

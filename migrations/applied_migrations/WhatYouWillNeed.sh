@@ -2,9 +2,9 @@
 
 echo "Applying migration WhatYouWillNeed"
 
-echo "Adding routes to register.individual.routes"
-echo "" >> ../conf/register.individual.routes
-echo "GET        /whatYouWillNeed                       controllers.register.individual.WhatYouWillNeedController.onPageLoad()" >> ../conf/register.individual.routes
+echo "Adding routes to register.partnership.routes"
+echo "" >> ../conf/register.partnership.routes
+echo "GET        /whatYouWillNeed                       controllers.register.partnership.WhatYouWillNeedController.onPageLoad()" >> ../conf/register.partnership.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en

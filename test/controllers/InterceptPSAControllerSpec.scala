@@ -16,20 +16,12 @@
 
 package controllers
 
-import controllers.actions._
 import play.api.test.Helpers._
 import views.html.interceptPSA
 
 class InterceptPSAControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new InterceptPSAController(
-      frontendAppConfig,
-      messagesApi,
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl
-    )
+  def controller() = new InterceptPSAController(frontendAppConfig, messagesApi)
 
   def viewAsString() = interceptPSA(frontendAppConfig)(fakeRequest, messages).toString
 

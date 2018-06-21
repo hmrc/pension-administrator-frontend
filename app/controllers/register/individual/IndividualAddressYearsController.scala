@@ -26,13 +26,13 @@ import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator2
+import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 
 class IndividualAddressYearsController @Inject()(
-                                                  @Individual override val navigator: Navigator2,
+                                                  @Individual override val navigator: Navigator,
                                                   override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   override val cacheConnector: DataCacheConnector,

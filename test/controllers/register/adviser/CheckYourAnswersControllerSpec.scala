@@ -71,7 +71,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   def sections = Seq(AnswerSection(None, adviserDetails ++ adviserAddress))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CheckYourAnswersController(frontendAppConfig, messagesApi, new FakeNavigator2(desiredRoute = onwardRoute), FakeAuthAction,
+    new CheckYourAnswersController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, checkYourAnswersFactory)
 
   def viewAsString() = check_your_answers(frontendAppConfig, sections, Some("common.adviser.secondary.heading"), postCall)(fakeRequest, messages).toString

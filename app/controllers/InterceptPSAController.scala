@@ -26,13 +26,10 @@ import views.html.interceptPSA
 
 class InterceptPSAController @Inject()(
                                         appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction
+                                        override val messagesApi: MessagesApi
                                       ) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
       Ok(interceptPSA(appConfig))
   }

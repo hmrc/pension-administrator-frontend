@@ -18,21 +18,21 @@ package controllers.actions
 
 import java.net.URLEncoder
 
-import play.api.mvc.Controller
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.SpecBase
 import config.FrontendAppConfig
 import controllers.routes
 import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Controller
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.{ExecutionContext, Future}
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.auth.core.retrieve.~
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase {
 
@@ -65,15 +65,17 @@ class AuthActionSpec extends SpecBase {
         redirectLocation(result) mustBe Some(redirectUrl)
       }
 
-      "redirect to scheme overview page if the user is already enrolled in PODS, not coming from confirmation" in {
-        val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
-        val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
-        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(true))
-        val controller = new Harness(authAction)
+      "redirect to scheme overview page" when {
+        "already enrolled in PODS, not coming from confirmation" in {
+          val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A0000000")), "")))
+          val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
+          val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(true))
+          val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(frontendAppConfig.schemesOverviewUrl)
+          val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.InterceptPSAController.onPageLoad().url)
+        }
       }
 
       "return OK if the user is already enrolled in PODS but coming from confirmation" in {
