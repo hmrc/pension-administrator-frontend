@@ -18,8 +18,8 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
-import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, _}
-import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualPreviousAddressId, IndividualPreviousAddressListId}
+import identifiers.register.company._
+import identifiers.register.individual._
 import models.register.company.BusinessDetails
 import models.{Address, LastPage, TolerantAddress}
 import org.scalatest.OptionValues
@@ -67,6 +67,10 @@ package object utils {
       answers.set(CompanyContactAddressListId)(address).asOpt.value
     }
 
+    def companySameContactAddress(same: Boolean): UserAnswers = {
+      answers.set(CompanySameContactAddressId)(same).asOpt.value
+    }
+
     // Company director
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value
@@ -97,8 +101,8 @@ package object utils {
       answers.set(BusinessDetailsId)(BusinessDetails("test company", "1111111111")).asOpt.value
     }
 
-    def companyContactAddressList(addresses: Seq[TolerantAddress]) = {
-      answers.set(CompanyContactAddressPostCodeLookupId)(addresses)
+    def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {
+      answers.set(CompanyContactAddressPostCodeLookupId)(addresses).asOpt.value
     }
 
     // Converters
