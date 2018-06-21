@@ -59,6 +59,8 @@ class CheckYourAnswersController @Inject()(
         Some("company.checkYourAnswers.company.contact.details.heading"),
         Seq(
           checkYourAnswerHelper.companyAddress,
+          checkYourAnswerHelper.companySameContactAddress,
+          checkYourAnswerHelper.companyContactAddress,
           checkYourAnswerHelper.companyAddressYears,
           checkYourAnswerHelper.companyPreviousAddress
         ).flatten
