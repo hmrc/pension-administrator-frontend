@@ -17,20 +17,21 @@
 package views
 
 import play.api.mvc.Call
-import viewmodels.Message
+import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.behaviours.ViewBehaviours
 import views.html.alreadyDeleted
 
 class AlreadyDeletedViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "alreadyDeleted"
   val deletedEntity = "Test entity"
+  def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), deletedEntity, Call("GET", "/"))
 
   val expectedGuidanceKeys = Seq(
     Message("alreadyDeleted.lede", deletedEntity),
     Message("alreadyDeleted.text")
   )
 
-  def createView = () => alreadyDeleted(frontendAppConfig, deletedEntity, Call("GET", "/"))(fakeRequest, messages)
+  def createView = () => alreadyDeleted(frontendAppConfig, viewmodel)(fakeRequest, messages)
 
   "Already Deleted view" must {
 

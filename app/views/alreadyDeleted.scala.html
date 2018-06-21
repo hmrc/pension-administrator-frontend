@@ -18,20 +18,20 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
-@import viewmodels.Message
+@import viewmodels.{AlreadyDeletedViewModel, Message}
 
-@(appConfig: FrontendAppConfig, deletedEntity: String, returnCall: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, viewmodel: AlreadyDeletedViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = Message("alreadyDeleted.title", deletedEntity),
+    title = Message(viewmodel.title),
     appConfig = appConfig,
     bodyClasses = None) {
 
-        @components.heading(Message("alreadyDeleted.heading", deletedEntity))
+        @components.heading(Message("alreadyDeleted.heading", viewmodel.deletedEntity))
 
-        <p>@messages("alreadyDeleted.lede", deletedEntity)</p>
+        <p>@messages("alreadyDeleted.lede", viewmodel.deletedEntity)</p>
         <p>@messages("alreadyDeleted.text")</p>
 
-        @components.button_link("site.go_back", returnCall.url, "return-to-list")
+        @components.button_link("site.go_back", viewmodel.returnCall.url, "return-to-list")
 
 }

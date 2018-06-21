@@ -497,7 +497,7 @@ interceptPSA.body = This Government Gateway account has already been used to reg
 interceptPSA.button = Continue to your pension schemes
 interceptPSA.exit = Exit to GOV.UK
 
-alreadyDeleted.title = You have already deleted {0}
+alreadyDeleted.director.title = You have already deleted this director
 alreadyDeleted.heading = You have already deleted {0}
 alreadyDeleted.lede = You have already confirmed deletion of {0}.
 alreadyDeleted.text = This page no longer exists.

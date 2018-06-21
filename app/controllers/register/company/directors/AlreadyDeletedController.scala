@@ -25,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Enumerable
+import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
 
 import scala.concurrent.Future
@@ -40,11 +41,14 @@ class AlreadyDeletedController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
-        Future.successful(Ok(alreadyDeleted(appConfig,
-          directorName,
-          controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
-        )))
+        Future.successful(Ok(alreadyDeleted(appConfig, viewmodel(directorName))))
       }
   }
+
+  private def viewmodel(directorName: String) = AlreadyDeletedViewModel(
+          Message("alreadyDeleted.director.title"),
+          directorName,
+          controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
+        )
 
 }
