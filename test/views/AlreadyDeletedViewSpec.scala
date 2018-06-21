@@ -37,7 +37,7 @@ class AlreadyDeletedViewSpec extends ViewBehaviours {
 
     "display the correct browser title" in {
       val doc = asDocument(createView())
-      assertEqualsMessage(doc, "title", Message(s"$messageKeyPrefix.title", deletedEntity))
+      assertEqualsMessage(doc, "title", Message(s"$messageKeyPrefix.director.title", deletedEntity))
     }
 
     "display the correct page title" in {
