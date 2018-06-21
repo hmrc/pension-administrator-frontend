@@ -20,6 +20,9 @@ import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
+import controllers.register.partnership.routes.PartnershipAddressYearsController
+import forms.address.AddressYearsFormProvider
+import identifiers.register.partnership.PartnershipAddressYearsId
 import models.{AddressYears, Index, NormalMode}
 import play.api.Application
 import play.api.http.Writeable
@@ -29,8 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
 import utils.{FakeNavigator, Navigator}
-import controllers.register.partnership.routes.PartnershipAddressYearsController
-import forms.address.AddressYearsFormProvider
+import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
@@ -40,21 +42,12 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 
   import PartnershipAddressYearsControllerSpec._
 
-  val index = Index(0)
-
-  val viewModel = AddressYearsViewModel(
-    PartnershipAddressYearsController.onSubmit(NormalMode, index),
-    "", "", ""
-  )
-
-  val form = new AddressYearsFormProvider()("error.required")
-
   "render the view correctly on a GET request" in {
     requestResult(
       implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode, index))),
-      (_, result) => {
+      (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+        contentAsString(result) mustBe (addressYears(frontendAppConfig, form, viewModel)(request, messages)).toString
       }
     )
   }
@@ -65,7 +58,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
         .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)),
       (_, result) => {
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(FakeNavigator)
+        redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
       }
     )
   }
@@ -73,6 +66,19 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 
 object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsControllerSpec {
 
+  val index = Index(0)
+
+  val id = PartnershipAddressYearsId(index)
+
+  val viewModel = AddressYearsViewModel(
+    PartnershipAddressYearsController.onSubmit(NormalMode, index),
+    "",
+    Message("partnership.addressYears.heading").withArgs(""),
+    Message("partnership.addressYears.heading").withArgs(""),
+    Some("site.secondaryHeader")
+  )
+
+  val form = new AddressYearsFormProvider()("error.required")
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
                               (implicit writeable: Writeable[T]): Unit = {

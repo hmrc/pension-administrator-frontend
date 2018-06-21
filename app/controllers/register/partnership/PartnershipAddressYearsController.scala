@@ -21,11 +21,14 @@ import connectors.DataCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
+import identifiers.register.partnership.PartnershipAddressYearsId
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import utils.Navigator
 import utils.annotations.Partnership
+import viewmodels.Message
+import viewmodels.address.AddressYearsViewModel
 
 class PartnershipAddressYearsController @Inject()(
                                                    val appConfig: FrontendAppConfig,
@@ -38,14 +41,24 @@ class PartnershipAddressYearsController @Inject()(
                                                    formProvider: AddressYearsFormProvider
                                                  ) extends AddressYearsController {
 
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData) {
+  private def viewModel(mode: Mode, index: Index) = AddressYearsViewModel(
+    routes.PartnershipAddressYearsController.onSubmit(mode, index),
+    "",
+    Message("partnership.addressYears.heading").withArgs(""),
+    Message("partnership.addressYears.heading").withArgs(""),
+    Some("site.secondaryHeader")
+  )
+
+  val form = formProvider("error.addressYears.required")
+
+  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      ???
+      get(PartnershipAddressYearsId(index), form, viewModel(mode, index))
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      ???
+      post(PartnershipAddressYearsId(index), mode, form, viewModel(mode, index))
   }
 
 }
