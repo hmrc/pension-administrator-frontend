@@ -26,7 +26,7 @@ import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import views.html.register.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
@@ -41,7 +41,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

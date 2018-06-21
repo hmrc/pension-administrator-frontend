@@ -25,8 +25,8 @@ import models.{Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
 import utils.annotations.CompanyDirector
-import utils.{CheckYourAnswersFactory, Navigator2, SectionComplete}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
@@ -37,7 +37,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            @CompanyDirector navigator: Navigator2,
+                                            @CompanyDirector navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             sectionComplete: SectionComplete

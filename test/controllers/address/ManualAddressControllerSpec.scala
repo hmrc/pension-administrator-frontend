@@ -61,7 +61,7 @@ object ManualAddressControllerSpec {
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: DataCacheConnector,
-                                  override val navigator: Navigator2,
+                                  override val navigator: Navigator,
                                   formProvider: AddressFormProvider,
                                   override val auditService: AuditService
                                 ) extends ManualAddressController {
@@ -106,7 +106,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[Navigator2].to(FakeNavigator2),
+          bind[Navigator].to(FakeNavigator),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -130,7 +130,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
       "data is retrieved" in {
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[Navigator2].to(FakeNavigator2),
+          bind[Navigator].to(FakeNavigator),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -162,7 +162,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[Navigator2].to(FakeNavigator2),
+          bind[Navigator].to(FakeNavigator),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -205,12 +205,12 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         val onwardRoute = Call("GET", "/")
 
-        val navigator = new FakeNavigator2(onwardRoute, NormalMode)
+        val navigator = new FakeNavigator(onwardRoute, NormalMode)
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
           bind[DataCacheConnector].to(FakeDataCacheConnector),
-          bind[Navigator2].to(navigator),
+          bind[Navigator].to(navigator),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
           app =>
@@ -238,13 +238,13 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         val onwardRoute = Call("GET", "/")
 
-        val navigator = new FakeNavigator2(onwardRoute, NormalMode)
+        val navigator = new FakeNavigator(onwardRoute, NormalMode)
         val auditService = new StubSuccessfulAuditService()
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
           bind[DataCacheConnector].to(FakeDataCacheConnector),
-          bind[Navigator2].to(navigator),
+          bind[Navigator].to(navigator),
           bind[AuditService].toInstance(auditService)
         )) {
           app =>
@@ -302,7 +302,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
       running(_.overrides(
         bind[CountryOptions].to[FakeCountryOptions],
         bind[AuditService].to[StubSuccessfulAuditService],
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
 

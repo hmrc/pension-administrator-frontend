@@ -23,9 +23,9 @@ import javax.inject.Inject
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.mvc.Call
-import utils.{Navigator, Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 
-class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator2 {
+class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))

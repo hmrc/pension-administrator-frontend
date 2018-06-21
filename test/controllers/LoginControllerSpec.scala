@@ -18,9 +18,9 @@ package controllers
 
 import connectors.FakeDataCacheConnector
 import controllers.actions.AuthAction
-import models.{NormalMode, PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
+import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 

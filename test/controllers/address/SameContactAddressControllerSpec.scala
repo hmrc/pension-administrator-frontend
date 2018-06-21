@@ -37,7 +37,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator2, Navigator2, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
@@ -55,7 +55,7 @@ object SameContactAddressControllerSpec {
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: DataCacheConnector,
-                                  override val navigator: Navigator2,
+                                  override val navigator: Navigator,
                                   formProvider: SameContactAddressFormProvider
                                 ) extends SameContactAddressController {
 
@@ -100,7 +100,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     "return a successful result when there is no existing answer" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -118,7 +118,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     "return a successful result when there is an existing answer" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -149,7 +149,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
@@ -180,7 +180,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator2].toInstance(FakeNavigator2),
+        bind[Navigator].toInstance(FakeNavigator),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
       )) {
         app =>
@@ -214,7 +214,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator2].toInstance(FakeNavigator2),
+        bind[Navigator].toInstance(FakeNavigator),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
       )) {
         app =>
@@ -240,7 +240,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       running(_.overrides(
         bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
@@ -265,7 +265,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     "return a bad request when the submitted data is invalid" in {
 
       running(_.overrides(
-        bind[Navigator2].toInstance(FakeNavigator2)
+        bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]

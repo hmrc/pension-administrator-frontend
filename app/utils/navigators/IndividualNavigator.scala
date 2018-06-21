@@ -18,6 +18,7 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
+import connectors.DataCacheConnector
 import controllers.register.individual.routes
 import identifiers.register.individual.WhatYouWillNeedId
 import identifiers.register.individual._
@@ -27,98 +28,102 @@ import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class IndividualNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
+class IndividualNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {
 
-  private def checkYourAnswers()(answers: UserAnswers): Call =
-    routes.CheckYourAnswersController.onPageLoad()
+  private def checkYourAnswers(): Option[NavigateTo] =
+    NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
 
-  override protected def routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case IndividualDetailsCorrectId => detailsCorrect
-    case WhatYouWillNeedId => contactAddressToggle
-    case IndividualSameContactAddressId => contactAddressRoutes(_)(NormalMode)
-    case IndividualContactAddressPostCodeLookupId => _ => routes.IndividualContactAddressListController.onPageLoad(NormalMode)
-    case IndividualContactAddressListId => _ => routes.IndividualContactAddressController.onPageLoad(NormalMode)
-    case IndividualContactAddressId => _ => routes.IndividualAddressYearsController.onPageLoad(NormalMode)
-    case IndividualAddressYearsId => addressYearsRoutes
-    case IndividualPreviousAddressPostCodeLookupId => _ => routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
-    case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(NormalMode)
-    case IndividualPreviousAddressId => _ => routes.IndividualContactDetailsController.onPageLoad(NormalMode)
-    case IndividualContactDetailsId => _ => routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
+  //noinspection ScalaStyle
+  override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case IndividualDetailsCorrectId => detailsCorrect(from.userAnswers)
+    case WhatYouWillNeedId => contactAddressToggle(from.userAnswers)
+    case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, NormalMode)
+    case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(NormalMode))
+    case IndividualContactAddressListId => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(NormalMode))
+    case IndividualContactAddressId => NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(NormalMode))
+    case IndividualAddressYearsId => addressYearsRoutes(from.userAnswers)
+    case IndividualPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
+    case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(NormalMode))
+    case IndividualPreviousAddressId => NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
+    case IndividualContactDetailsId => NavigateTo.save(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
     case IndividualDateOfBirthId => checkYourAnswers()
-    case CheckYourAnswersId => _ => controllers.register.routes.DeclarationController.onPageLoad()
+    case CheckYourAnswersId => NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
+  //noinspection ScalaStyle
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case IndividualDateOfBirthId => checkYourAnswers()
-    case IndividualSameContactAddressId => contactAddressRoutes(_)(CheckMode)
-    case IndividualContactAddressPostCodeLookupId => _ => routes.IndividualContactAddressListController.onPageLoad(CheckMode)
-    case IndividualContactAddressListId => _ => routes.IndividualContactAddressController.onPageLoad(CheckMode)
-    case IndividualContactAddressId => _ => routes.IndividualAddressYearsController.onPageLoad(CheckMode)
-    case IndividualAddressYearsId => addressYearsRouteCheckMode
-    case IndividualPreviousAddressPostCodeLookupId => _ => routes.IndividualPreviousAddressListController.onPageLoad(CheckMode)
-    case IndividualPreviousAddressListId => _ => routes.IndividualPreviousAddressController.onPageLoad(CheckMode)
+    case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, CheckMode)
+    case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(CheckMode))
+    case IndividualContactAddressListId => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(CheckMode))
+    case IndividualContactAddressId => NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(CheckMode))
+    case IndividualAddressYearsId => addressYearsRouteCheckMode(from.userAnswers)
+    case IndividualPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualPreviousAddressListController.onPageLoad(CheckMode))
+    case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(CheckMode))
     case IndividualPreviousAddressId => checkYourAnswers()
     case IndividualContactDetailsId => checkYourAnswers()
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  def detailsCorrect(answers: UserAnswers): Call = {
+  def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) =>
         answers.get(LastPageId) match {
-          case Some(lastPage) => Call(lastPage.method, lastPage.url)
-          case _ => routes.WhatYouWillNeedController.onPageLoad()
+          case Some(lastPage) => NavigateTo.dontSave(Call(lastPage.method, lastPage.url))
+          case _ => NavigateTo.save(routes.WhatYouWillNeedController.onPageLoad())
         }
       case Some(false) =>
-        routes.YouWillNeedToUpdateController.onPageLoad()
+        NavigateTo.dontSave(routes.YouWillNeedToUpdateController.onPageLoad())
       case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  def addressYearsRoutes(answers: UserAnswers): Call = {
+  def addressYearsRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
+        NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
       case Some(AddressYears.OverAYear) =>
-        routes.IndividualContactDetailsController.onPageLoad(NormalMode)
+        NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
       case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  def addressYearsRouteCheckMode(answers: UserAnswers): Call = {
+  def addressYearsRouteCheckMode(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
+        NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
       case Some(AddressYears.OverAYear) =>
-        routes.CheckYourAnswersController.onPageLoad()
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  def contactAddressRoutes(answers: UserAnswers)(mode: Mode): Call = {
+  def contactAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(IndividualSameContactAddressId) match {
       case Some(false) =>
-        routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
+        NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
       case Some(true) =>
         answers.get(IndividualContactAddressId) match {
           case None =>
-            routes.IndividualContactAddressController.onPageLoad(mode)
+            NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
           case Some(_) =>
-            routes.IndividualAddressYearsController.onPageLoad(mode)
+            NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(mode))
         }
       case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  def contactAddressToggle(answers: UserAnswers): Call = {
-      if (config.contactAddressEnabled) {
-        routes.IndividualSameContactAddressController.onPageLoad(NormalMode)
-      } else {
-        routes.IndividualAddressYearsController.onPageLoad(NormalMode)
-      }
+  def contactAddressToggle(answers: UserAnswers): Option[NavigateTo] = {
+    if (config.contactAddressEnabled) {
+      NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
+    } else {
+      NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(NormalMode))
     }
+  }
 
 }

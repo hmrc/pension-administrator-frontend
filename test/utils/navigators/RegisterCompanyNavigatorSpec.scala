@@ -17,86 +17,79 @@
 package utils.navigators
 
 import base.SpecBase
+import connectors.FakeDataCacheConnector
 import controllers.register.company.routes
-import identifiers.Identifier
 import identifiers.register.BusinessTypeId
 import identifiers.register.company._
+import identifiers.{Identifier, LastPageId}
 import models._
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.UserAnswers
+import utils.{NavigatorBehaviour, UserAnswers}
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterCompanyNavigatorSpec._
 
-  val navigator = new RegisterCompanyNavigator
+  val navigator = new RegisterCompanyNavigator(FakeDataCacheConnector)
 
   //scalastyle:off line.size.limit
-  private def routes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id",                                      "User Answers",                 "Next Page (Normal Mode)",            "Next Page (Check Mode)"),
-    (BusinessTypeId,                              emptyAnswers,                   businessDetailsPage,                  None),
-    (BusinessDetailsId,                           emptyAnswers,                   confirmCompanyDetailsPage,            None),
-    (ConfirmCompanyAddressId,                     emptyAnswers,                   whatYouWillNeedPage,                  None),
-    (WhatYouWillNeedId,                           emptyAnswers,                   sameContactAddress(NormalMode),       None),
-    (CompanySameContactAddressId,                 isSameContactAddress,           companyAddressYearsPage(NormalMode),  Some(companyAddressYearsPage(CheckMode))),
-    (CompanySameContactAddressId,                 notSameContactAddress,          contactAddressPostCode(NormalMode),   Some(contactAddressPostCode(CheckMode))),
-    (CompanySameContactAddressId,                 emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
-    (CompanyContactAddressPostCodeLookupId,       emptyAnswers,                   contactAddressList(NormalMode),       Some(contactAddressList(CheckMode))),
-    (CompanyContactAddressListId,                 emptyAnswers,                   contatAddress(NormalMode),            Some(contatAddress(CheckMode))),
-    (CompanyContactAddressId,                     emptyAnswers,                   companyAddressYearsPage(NormalMode),  Some(checkYourAnswersPage)),
-
-    (CompanyAddressYearsId,                       addressYearsOverAYear,          contactDetailsPage,                   Some(checkYourAnswersPage)),
-    (CompanyAddressYearsId,                       addressYearsUnderAYear,         paPostCodePage(NormalMode),           Some(paPostCodePage(CheckMode))),
-    (CompanyAddressYearsId,                       emptyAnswers,                   sessionExpiredPage,                   Some(sessionExpiredPage)),
-
-    (CompanyPreviousAddressPostCodeLookupId,      emptyAnswers,                   paAddressListPage(NormalMode),        Some(paAddressListPage(CheckMode))),
-    (CompanyAddressListId,                        emptyAnswers,                   previousAddressPage(NormalMode),      Some(previousAddressPage(CheckMode))),
-    (CompanyPreviousAddressId,                    emptyAnswers,                   contactDetailsPage,                   Some(checkYourAnswersPage)),
-
-    (ContactDetailsId,                            emptyAnswers,                   companyDetailsPage,                   Some(checkYourAnswersPage)),
-    (CompanyDetailsId,                            emptyAnswers,                   companyRegistrationNumberPage,        Some(checkYourAnswersPage)),
-    (CompanyRegistrationNumberId,                 emptyAnswers,                   checkYourAnswersPage,                 Some(checkYourAnswersPage)),
-
-    (CompanyReviewId,                             emptyAnswers,                   declarationPage,                      None)
+  def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id",                                   "User Answers",        "Next Page (Normal Mode)",        "Save(NormalMode)", "Next Page (Check Mode)",             "Save(CheckMode"),
+    (BusinessTypeId,                         emptyAnswers,           businessDetailsPage,             false,              None,                                 false),
+    (BusinessDetailsId,                      emptyAnswers,           confirmCompanyDetailsPage,       false,              None,                                 false),
+    (ConfirmCompanyAddressId,                emptyAnswers,           whatYouWillNeedPage,             true,               None,                                 false),
+    (ConfirmCompanyAddressId,                lastPage,               testLastPage,                    false,              None,                                 false),
+    (WhatYouWillNeedId,                      emptyAnswers,           companyDetailsPage,              true,               None,                                 false),
+    (CompanyDetailsId,                       emptyAnswers,           companyRegistrationNumberPage,   true,               Some(checkYourAnswersPage),           false),
+    (CompanyRegistrationNumberId,            emptyAnswers,           companyAddressYearsPage,         true,               Some(checkYourAnswersPage),           false),
+    (CompanyAddressYearsId,                  addressYearsOverAYear,  contactDetailsPage,              true,               Some(checkYourAnswersPage),           false),
+    (CompanyAddressYearsId,                  addressYearsUnderAYear, paPostCodePage(NormalMode),      true,               Some(paPostCodePage(CheckMode)),      true),
+    (CompanyAddressYearsId,                  emptyAnswers,           sessionExpiredPage,              false,              Some(sessionExpiredPage),             false),
+    (CompanyPreviousAddressPostCodeLookupId, emptyAnswers,           paAddressListPage(NormalMode),   false,              Some(paAddressListPage(CheckMode)),   false),
+    (CompanyAddressListId,                   emptyAnswers,           previousAddressPage(NormalMode), true,               Some(previousAddressPage(CheckMode)), true),
+    (CompanyPreviousAddressId,               emptyAnswers,           contactDetailsPage,              true,               Some(checkYourAnswersPage),           false),
+    (ContactDetailsId,                       emptyAnswers,           checkYourAnswersPage,            true,               Some(checkYourAnswersPage),           false),
+    (CompanyReviewId,                        emptyAnswers,           declarationPage,                 true,               None,                                 false),
+    (CheckYourAnswersId,                     emptyAnswers,           addDirectorsPage,                true,               None,                                 false)
   )
-  //scalastyle:on line.size.limit
 
+  //scalastyle:on line.size.limit
   navigator.getClass.getSimpleName must {
     appRunning()
-    behave like navigatorWithRoutes(navigator, routes)
+    behave like nonMatchingNavigator(navigator)
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
   }
-
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
 
-  private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  private def businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
-  private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
-  private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
-  private def companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
-  private def companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-  private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
-  private def contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
+  private lazy val testLastPage = Call("GET", "www.test.com")
+  private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  private lazy val businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
+  private lazy val confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
+  private lazy val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+  private lazy val companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
+  private lazy val companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
+  private lazy val companyAddressYearsPage = routes.CompanyAddressYearsController.onPageLoad(NormalMode)
+  private lazy val contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
+  private lazy val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  private lazy val addDirectorsPage = routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
+
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
+
   private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
+
   private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
-  private def declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
-  private def sameContactAddress(mode: Mode) = routes.CompanySameContactAddressController.onPageLoad(mode)
-  private def contactAddressPostCode(mode: Mode) = routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
-  private def contactAddressList(mode: Mode) = routes.CompanyContactAddressListController.onPageLoad(mode)
-  private def contatAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
 
-  private val emptyAnswers = UserAnswers(Json.obj())
-  private val addressYearsOverAYear = UserAnswers(Json.obj())
+  private lazy val emptyAnswers = UserAnswers(Json.obj())
+  private lazy val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYear = UserAnswers(Json.obj())
+  private lazy val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
-  private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
-  private val notSameContactAddress = UserAnswers().companySameContactAddress(false)
-
+  private lazy val lastPage = UserAnswers(Json.obj())
+    .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
 }
