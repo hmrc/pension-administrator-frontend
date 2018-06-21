@@ -61,6 +61,8 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
       NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case CheckYourAnswersId =>
+      NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
     case CompanyReviewId =>
       NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case _ => None
@@ -74,7 +76,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
     case CompanyContactAddressListId =>
       NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(CheckMode))
     case CompanyContactAddressId =>
-      checkYourAnswers
+      NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(CheckMode))
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>

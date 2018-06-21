@@ -48,7 +48,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanySameContactAddressId,                 emptyAnswers,           sessionExpiredPage,                   false,        Some(sessionExpiredPage),                 false),
     (CompanyContactAddressPostCodeLookupId,       emptyAnswers,           contactAddressList(NormalMode),       true,         Some(contactAddressList(CheckMode)),      true),
     (CompanyContactAddressListId,                 emptyAnswers,           contatAddress(NormalMode),            true,         Some(contatAddress(CheckMode)),           true),
-    (CompanyContactAddressId,                     emptyAnswers,           companyAddressYearsPage(NormalMode),  true,         Some(checkYourAnswersPage),               true),
+    (CompanyContactAddressId,                     emptyAnswers,           companyAddressYearsPage(NormalMode),  true,         Some(companyAddressYearsPage(CheckMode)), true),
 
     (CompanyAddressYearsId,                       addressYearsOverAYear,  contactDetailsPage,                   true,         Some(checkYourAnswersPage),               true),
     (CompanyAddressYearsId,                       addressYearsUnderAYear, paPostCodePage(NormalMode),           true,         Some(paPostCodePage(CheckMode)),          true),
@@ -62,6 +62,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyDetailsId,                            emptyAnswers,           companyRegistrationNumberPage,        true,         Some(checkYourAnswersPage),               true),
     (CompanyRegistrationNumberId,                 emptyAnswers,           checkYourAnswersPage,                 true,         Some(checkYourAnswersPage),               true),
 
+    (CheckYourAnswersId,                          emptyAnswers,           addCompanyDirectors(NormalMode),      true,         None,                                     false),
     (CompanyReviewId,                             emptyAnswers,           declarationPage,                      true,         None,                                     false)
   )
   //scalastyle:on line.size.limit
@@ -92,6 +93,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def contactAddressPostCode(mode: Mode) = routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
   private def contactAddressList(mode: Mode) = routes.CompanyContactAddressListController.onPageLoad(mode)
   private def contatAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
+  private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
   private def testLastPage = Call("GET", "www.test.com")
 
   private val emptyAnswers = UserAnswers(Json.obj())
