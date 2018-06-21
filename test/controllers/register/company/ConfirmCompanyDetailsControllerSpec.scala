@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import utils.{FakeNavigator2, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -272,7 +272,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       dataCacheConnector,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

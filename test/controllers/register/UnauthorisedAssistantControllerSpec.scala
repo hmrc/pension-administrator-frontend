@@ -16,8 +16,8 @@
 
 package controllers.register
 
-import controllers.{ControllerSpecBase, UnauthorisedAssistantController}
 import controllers.actions._
+import controllers.{ControllerSpecBase, UnauthorisedAssistantController}
 import play.api.test.Helpers._
 import views.html.unauthorisedAssistant
 

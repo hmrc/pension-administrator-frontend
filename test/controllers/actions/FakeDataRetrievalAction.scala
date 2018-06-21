@@ -16,7 +16,6 @@
 
 package controllers.actions
 
-import models.PSAUser
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import play.api.libs.json.JsValue
 import utils.UserAnswers

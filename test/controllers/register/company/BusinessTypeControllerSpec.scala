@@ -37,8 +37,16 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new BusinessTypeController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new BusinessTypeController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
   private def viewAsString(form: Form[_] = form) = businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 

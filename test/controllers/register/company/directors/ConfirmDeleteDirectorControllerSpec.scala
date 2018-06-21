@@ -30,7 +30,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import views.html.register.company.directors.confirmDeleteDirector
 
-class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar{
+class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val firstIndex = Index(0)
 

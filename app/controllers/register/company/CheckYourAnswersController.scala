@@ -25,7 +25,7 @@ import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{CheckYourAnswersFactory, Navigator2}
+import utils.{CheckYourAnswersFactory, Navigator}
 import utils.annotations.RegisterCompany
 import viewmodels.AnswerSection
 import views.html.check_your_answers
@@ -35,7 +35,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            @RegisterCompany navigator: Navigator2,
+                                            @RegisterCompany navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory
                                           ) extends FrontendController with Retrievals with I18nSupport {
@@ -59,6 +59,8 @@ class CheckYourAnswersController @Inject()(
         Some("company.checkYourAnswers.company.contact.details.heading"),
         Seq(
           checkYourAnswerHelper.companyAddress,
+          checkYourAnswerHelper.companySameContactAddress,
+          checkYourAnswerHelper.companyContactAddress,
           checkYourAnswerHelper.companyAddressYears,
           checkYourAnswerHelper.companyPreviousAddress
         ).flatten

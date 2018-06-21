@@ -32,7 +32,7 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import utils.FakeNavigator2
+import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -66,7 +66,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       frontendAppConfig,
       FakeDataCacheConnector,
       fakeAddressLookupConnector,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,

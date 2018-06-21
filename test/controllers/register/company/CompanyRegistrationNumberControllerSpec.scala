@@ -16,20 +16,18 @@
 
 package controllers.register.company
 
-import play.api.data.Form
-import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{FakeNavigator, FakeNavigator2}
 import connectors.FakeDataCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import play.api.test.Helpers._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.company.CompanyRegistrationNumberId
 import models.NormalMode
-import views.html.register.company.companyRegistrationNumber
-import play.api.libs.json._
-import controllers.ControllerSpecBase
+import play.api.data.Form
+import play.api.libs.json.{JsString, _}
 import play.api.mvc.Call
+import play.api.test.Helpers._
+import utils.FakeNavigator
+import views.html.register.company.companyRegistrationNumber
 
 class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
@@ -43,7 +41,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator2(desiredRoute = onwardRoute),
+      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

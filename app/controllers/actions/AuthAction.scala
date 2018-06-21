@@ -49,7 +49,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
         if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
-          Future.successful(Redirect(config.schemesOverviewUrl))
+          Future.successful(Redirect(routes.InterceptPSAController.onPageLoad()))
         } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
           Future.successful(Redirect(ivUpliftUrl))
         } else {

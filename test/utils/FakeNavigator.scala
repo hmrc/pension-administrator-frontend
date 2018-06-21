@@ -16,21 +16,32 @@
 
 package utils
 
-import play.api.mvc.Call
+import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.Identifier
+import models.requests.IdentifiedRequest
 import models.{Mode, NormalMode}
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext
 
 class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
 
   private[this] var userAnswers: Option[UserAnswers] = None
 
-  override def nextPage(controllerId: Identifier, mode: Mode): UserAnswers => Call = {
-    ua =>
-      userAnswers = Some(ua)
-      desiredRoute
+  def lastUserAnswers: Option[UserAnswers] = userAnswers
+
+  override protected def dataCacheConnector: DataCacheConnector = FakeDataCacheConnector
+
+  override def nextPage(id: Identifier, mode: Mode, answers: UserAnswers)
+                       (implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
+    userAnswers = Some(answers)
+    desiredRoute
   }
 
-  def lastUserAnswers: Option[UserAnswers] = userAnswers
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
+
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = None
 
 }
 

@@ -1,6 +1,7 @@
 ->         /company                                 company.Routes
 ->         /individual                              individual.Routes
 ->         /adviser                                 adviser.Routes
+->         /partnership                             partnership.Routes
 
 GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)

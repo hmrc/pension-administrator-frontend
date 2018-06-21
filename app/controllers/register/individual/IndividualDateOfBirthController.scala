@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
-import utils.{Navigator2, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDateOfBirth
 
 import scala.concurrent.Future
@@ -37,7 +37,7 @@ class IndividualDateOfBirthController @Inject()(
                                                  appConfig: FrontendAppConfig,
                                                  override val messagesApi: MessagesApi,
                                                  dataCacheConnector: DataCacheConnector,
-                                                 @Individual navigator: Navigator2,
+                                                 @Individual navigator: Navigator,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,

@@ -16,11 +16,11 @@
 
 package controllers
 
-import play.api.test.Helpers._
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import play.api.mvc.Call
+import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{CheckYourAnswersFactory, FakeCountryOptions, InputOption}
+import utils.{CheckYourAnswersFactory, FakeCountryOptions}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 

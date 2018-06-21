@@ -18,116 +18,88 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
+import connectors.DataCacheConnector
 import controllers.register.company.directors.routes
-import identifiers.Identifier
-import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
-import models.{CheckMode, Mode, NormalMode}
-import models.AddressYears
+import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
 import models.register.company.directors.DirectorDetails
-import play.api.mvc.Call
+import models.{AddressYears, CheckMode, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigator {
+class DirectorNavigator @Inject()(val dataCacheConnector: DataCacheConnector, appConfig: FrontendAppConfig) extends Navigator {
 
-  private def checkYourAnswers(index: Int)(answers: UserAnswers): Call =
-    controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index)
+  private def checkYourAnswers(index: Int): Option[NavigateTo] =
+    NavigateTo.save(controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index))
 
-  override protected val routeMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AddCompanyDirectorsId =>
-      addCompanyDirectorRoutes
-    case MoreThanTenDirectorsId =>
-      _ => controllers.register.company.routes.CompanyReviewController.onPageLoad()
-    case DirectorDetailsId(id) =>
-      _ => routes.DirectorNinoController.onPageLoad(NormalMode, id)
-    case DirectorNinoId(id) =>
-      _ => routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, id)
-    case DirectorUniqueTaxReferenceId(id) =>
-      _ => routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, id)
-    case CompanyDirectorAddressPostCodeLookupId(id) =>
-      _ => routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, id)
-    case CompanyDirectorAddressListId(id) =>
-      _ => routes.DirectorAddressController.onPageLoad(NormalMode, id)
-    case DirectorAddressId(id) =>
-      _ => routes.DirectorAddressYearsController.onPageLoad(NormalMode, id)
-    case DirectorAddressYearsId(id) =>
-      directorAddressYearsRoutes(id)
-    case DirectorPreviousAddressPostCodeLookupId(id) =>
-      _ => routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, id)
-    case DirectorPreviousAddressListId(id) =>
-      _ => routes.DirectorPreviousAddressController.onPageLoad(NormalMode, id)
-    case DirectorPreviousAddressId(id) =>
-      _ => routes.DirectorContactDetailsController.onPageLoad(NormalMode, id)
-    case DirectorContactDetailsId(id) =>
-      checkYourAnswers(id)
+  //noinspection ScalaStyle
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers)
+    case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
+    case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(NormalMode, index))
+    case DirectorNinoId(index) => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, index))
+    case DirectorUniqueTaxReferenceId(index) => NavigateTo.save(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))
+    case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, index))
+    case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(NormalMode, index))
+    case DirectorAddressId(index) => NavigateTo.save(routes.DirectorAddressYearsController.onPageLoad(NormalMode, index))
+    case DirectorAddressYearsId(index) => directorAddressYearsRoutes(index, from.userAnswers)
+    case DirectorPreviousAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, index))
+    case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index))
+    case DirectorPreviousAddressId(index) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(NormalMode, index))
+    case DirectorContactDetailsId(index) => checkYourAnswers(index)
+    case CheckYourAnswersId => NavigateTo.save(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected val editRouteMap: PartialFunction[Identifier, UserAnswers => Call] = {
-    case AddCompanyDirectorsId =>
-      addCompanyDirectorRoutes
-    case DirectorDetailsId(id) =>
-      checkYourAnswers(id)
-    case DirectorNinoId(id) =>
-      checkYourAnswers(id)
-    case DirectorUniqueTaxReferenceId(id) =>
-      checkYourAnswers(id)
-    case CompanyDirectorAddressPostCodeLookupId(id) =>
-      _ => routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, id)
-    case CompanyDirectorAddressListId(id) =>
-      _ => routes.DirectorAddressController.onPageLoad(CheckMode, id)
-    case DirectorAddressId(id) =>
-      checkYourAnswers(id)
-    case DirectorAddressYearsId(id) =>
-      directorAddressYearsCheckRoutes(id)
-    case DirectorPreviousAddressPostCodeLookupId(id) =>
-      _ => routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, id)
-    case DirectorPreviousAddressListId(id) =>
-      _ => routes.DirectorPreviousAddressController.onPageLoad(CheckMode, id)
-    case DirectorPreviousAddressId(id) =>
-      checkYourAnswers(id)
-    case DirectorContactDetailsId(id) =>
-      checkYourAnswers(id)
+  //noinspection ScalaStyle
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers)
+    case DirectorDetailsId(index) => checkYourAnswers(index)
+    case DirectorNinoId(index) => checkYourAnswers(index)
+    case DirectorUniqueTaxReferenceId(index) => checkYourAnswers(index)
+    case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index))
+    case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(CheckMode, index))
+    case DirectorAddressId(index) => checkYourAnswers(index)
+    case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers)
+    case DirectorPreviousAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index))
+    case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index))
+    case DirectorPreviousAddressId(index) => checkYourAnswers(index)
+    case DirectorContactDetailsId(index) => checkYourAnswers(index)
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private def directorAddressYearsRoutes(index: Int)(answers: UserAnswers): Call = {
+  private def directorAddressYearsRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
     answers.get(DirectorAddressYearsId(index)) match {
-      case Some(AddressYears.UnderAYear) =>
-        routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index)
-      case Some(AddressYears.OverAYear) =>
-        routes.DirectorContactDetailsController.onPageLoad(NormalMode, index)
-      case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index))
+      case Some(AddressYears.OverAYear) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(NormalMode, index))
+      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  private def addCompanyDirectorRoutes(answers: UserAnswers): Call = {
+  private def addCompanyDirectorRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AddCompanyDirectorsId) match {
-      case Some(false) => {
-        controllers.register.company.routes.CompanyReviewController.onPageLoad()
-      }
-      case _ => {
+      case Some(false) => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
+      case _ =>
         val index = answers.getAll(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
           case Some(seq@Seq(_*)) => seq.length
           case None => 0
         }
         if (index >= appConfig.maxDirectors) {
-          controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode)
+          NavigateTo.save(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode))
         } else {
-          controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index)
+          NavigateTo.save(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index))
         }
-      }
     }
   }
 
-  private def directorAddressYearsCheckRoutes(index: Int)(answers: UserAnswers): Call = {
+  private def directorAddressYearsCheckRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
     answers.get(DirectorAddressYearsId(index)) match {
       case Some(AddressYears.UnderAYear) =>
-        routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index)
+        NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index))
       case Some(AddressYears.OverAYear) =>
-        routes.CheckYourAnswersController.onPageLoad(index)
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index))
       case None =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 }
