@@ -496,3 +496,8 @@ interceptPSA.heading = You have already registered as a pension scheme administr
 interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.
 interceptPSA.button = Continue to your pension schemes
 interceptPSA.exit = Exit to GOV.UK
+
+alreadyDeleted.title = You have already deleted {0}
+alreadyDeleted.heading = You have already deleted {0}
+alreadyDeleted.lede = You have already confirmed deletion of {0}.
+alreadyDeleted.text = This page no longer exists.

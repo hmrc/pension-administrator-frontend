@@ -58,3 +58,5 @@ POST       /:index/change-directors-address-results             controllers.regi
 
 GET        /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onPageLoad(index: Index)
 POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
+
+GET        /:index/already-deleted                           controllers.register.company.directors.AlreadyDeletedController.onPageLoad(index: Index)
