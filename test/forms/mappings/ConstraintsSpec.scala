@@ -417,7 +417,8 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     val validText = Table(
       "text",
       "xyz 2nd's Ltd",
-      "xyz/private"
+      "xyz/private",
+      "TEST-FINANCIAL GROUP LTD"
     )
 
     val invalidText = Table(
