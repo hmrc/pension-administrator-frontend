@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.directors.DirectorContactDetailsId
 import javax.inject.Inject
 import models.{Index, Mode}

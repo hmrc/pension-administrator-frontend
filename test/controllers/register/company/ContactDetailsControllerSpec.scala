@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.ContactDetailsId
 import models.{ContactDetails, NormalMode}
 import play.api.data.Form

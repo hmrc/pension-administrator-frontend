@@ -16,9 +16,10 @@
 
 package views.register.company.directors
 
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import models.{ContactDetails, Index, NormalMode}
 import play.api.data.Form
+import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.directors.directorContactDetails
 
@@ -30,9 +31,21 @@ class DirectorContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetai
 
   override val form = new ContactDetailsFormProvider()()
 
-  def createView = () => directorContactDetails(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => directorContactDetails(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    index,
+    directorName
+  )(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => directorContactDetails(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => directorContactDetails(
+    frontendAppConfig,
+    form,
+    NormalMode,
+    index,
+    directorName
+  )(fakeRequest, messages)
 
   "DirectorContactDetails view" must {
 
@@ -42,6 +55,12 @@ class DirectorContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetai
 
     behave like pageWithSecondaryHeader(createView, directorName)
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.directors.routes.DirectorContactDetailsController.onSubmit(NormalMode, index).url, "emailAddress", "phoneNumber")
+    behave like pageWithTextFields(
+      createViewUsingForm,
+      messageKeyPrefix,
+      controllers.register.company.directors.routes.DirectorContactDetailsController.onSubmit(NormalMode, index).url,
+      "emailAddress",
+      "phoneNumber"
+    )
   }
 }

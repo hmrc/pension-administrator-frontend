@@ -21,7 +21,7 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
 import models.register.company._

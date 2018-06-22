@@ -19,7 +19,7 @@ package controllers.register.company
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.ContactDetailsId
 import javax.inject.Inject
 import models.Mode
