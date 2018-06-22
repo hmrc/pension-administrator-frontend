@@ -39,9 +39,9 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
 
   def viewmodel = ContactDetailsViewModel(
     postCall = controllers.register.company.routes.ContactDetailsController.onSubmit(NormalMode),
-    title = Message("contactDetails.title"),
-    heading = Message("contactDetails.heading"),
-    legend = Message("contactDetails.body"),
+    title = Message("contactDetails.company.title"),
+    heading = Message("contactDetails.company.heading"),
+    body = Message("contactDetails.body"),
     subHeading = Some(Message("site.secondaryHeader"))
   )
 

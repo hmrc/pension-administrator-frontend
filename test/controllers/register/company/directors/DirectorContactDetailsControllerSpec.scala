@@ -47,9 +47,9 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
 
   private def viewmodel(mode: Mode, index: Index, directorName: String) = ContactDetailsViewModel(
     postCall = routes.DirectorContactDetailsController.onSubmit(mode, index),
-    title = Message("contactDetails.title"),
-    heading = Message("contactDetails.heading"),
-    legend = Message("contactDetails.body"),
+    title = Message("directorContactDetails.title"),
+    heading = Message("directorContactDetails.heading"),
+    body = Message("contactDetails.body"),
     subHeading = Some(directorName)
   )
 

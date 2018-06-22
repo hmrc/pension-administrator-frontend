@@ -54,9 +54,9 @@ class ContactDetailsController @Inject()(
 
   private def viewmodel(mode: Mode) = ContactDetailsViewModel(
     postCall = routes.ContactDetailsController.onSubmit(mode),
-    title = Message("contactDetails.title"),
-    heading = Message("contactDetails.heading"),
-    legend = Message("contactDetails.body"),
+    title = Message("contactDetails.company.title"),
+    heading = Message("contactDetails.company.heading"),
+    body = Message("contactDetails.body"),
     subHeading = Some("site.secondaryHeader")
   )
 }
