@@ -43,11 +43,9 @@ class IndividualContactDetailsController @Inject()(
 
   private def viewmodel(mode: Mode) = ContactDetailsViewModel(
     postCall = routes.IndividualContactDetailsController.onSubmit(mode),
-    title = Message("contactDetails.title"),
-    heading = Message("contactDetails.heading"),
-    legend = Message("contactDetails.individual.lede"),
-    subHeading = Some("common.individual.secondary.heading")
-
+    title = Message("contactDetails.individual.title"),
+    heading = Message("contactDetails.individual.heading"),
+    body = Message("contactDetails.body")
   )
 
   private val form = formProvider()

@@ -19,50 +19,44 @@ package controllers.register.company
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.ContactDetailsId
 import javax.inject.Inject
 import models.Mode
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.contactDetails
-
-import scala.concurrent.Future
+import viewmodels.{ContactDetailsViewModel, Message}
 
 class ContactDetailsController @Inject()(
-                                          appConfig: FrontendAppConfig,
+                                          @RegisterCompany override val navigator: Navigator,
+                                          override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          dataCacheConnector: DataCacheConnector,
-                                          @RegisterCompany navigator: Navigator,
+                                          override val cacheConnector: DataCacheConnector,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: ContactDetailsFormProvider
-                                        ) extends FrontendController with I18nSupport {
+                                        ) extends controllers.ContactDetailsController {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ContactDetailsId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(contactDetails(appConfig, preparedForm, mode))
+      get(ContactDetailsId, form, viewmodel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, mode))),
-        value =>
-          dataCacheConnector.save(request.externalId, ContactDetailsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(ContactDetailsId, mode, UserAnswers(cacheMap))))
-      )
+      post(ContactDetailsId, mode, form, viewmodel(mode))
   }
+
+  private def viewmodel(mode: Mode) = ContactDetailsViewModel(
+    postCall = routes.ContactDetailsController.onSubmit(mode),
+    title = Message("contactDetails.company.title"),
+    heading = Message("contactDetails.company.heading"),
+    body = Message("contactDetails.body"),
+    subHeading = Some("site.secondaryHeader")
+  )
 }

@@ -22,6 +22,6 @@ case class ContactDetailsViewModel(
                                     postCall: Call,
                                     title: Message,
                                     heading: Message,
-                                    legend: Message,
+                                    body: Message,
                                     subHeading: Option[Message] = None
                                   )
