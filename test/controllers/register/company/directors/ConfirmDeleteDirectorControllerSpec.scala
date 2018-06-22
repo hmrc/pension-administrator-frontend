@@ -22,7 +22,6 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import controllers.register.company.directors.routes.AlreadyDeletedController
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorId}
 import models.register.company.directors.DirectorDetails
 import models.{Index, NormalMode}
@@ -92,7 +91,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       val result = controller(data).onPageLoad(firstIndex)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(AlreadyDeletedController.onPageLoad(firstIndex).url)
+      redirectLocation(result) mustBe Some(routes.AlreadyDeletedController.onPageLoad(firstIndex).url)
 
     }
 
