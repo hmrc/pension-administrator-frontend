@@ -141,8 +141,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       navigator.lastUserAnswers.value.get(AddCompanyDirectorsId).value mustBe true
     }
 
-    "redirect to the next page when maximum directors exist and the user submits" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors)(johnDoe): _*)
+    "redirect to the next page when maximum active directors exist and the user submits" in {
+      val x = Seq.fill(maxDirectors)(johnDoe) ++Seq(joeBloggs.copy(isDeleted = true))
+
+      val getRelevantData = dataRetrievalAction(x: _*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 
@@ -156,6 +158,14 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form, directors)
+    }
+
+    "exclude the deleted directors from the list" in {
+      val directors = Seq(johnDoe, joeBloggs.copy(isDeleted = true))
+      val getRelevantData = dataRetrievalAction(directors: _*)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoe))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

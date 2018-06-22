@@ -37,7 +37,10 @@ class DirectorIdSpec extends WordSpec with MustMatchers with OptionValues {
       Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Seven", LocalDate.now())),
       Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Eight", LocalDate.now())),
       Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Nine", LocalDate.now())),
-      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Ten", LocalDate.now()))
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("Tim", None, "Ten", LocalDate.now(), isDeleted = true)),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("Tim", None, "Eleven", LocalDate.now(), isDeleted = true)),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("Tim", None, "Twelve", LocalDate.now(), isDeleted = true)),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Thirteen", LocalDate.now()))
     )
   ))
 

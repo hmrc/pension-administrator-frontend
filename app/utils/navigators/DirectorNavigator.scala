@@ -81,7 +81,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: DataCacheConnector, ap
       case Some(false) => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
       case _ =>
         val index = answers.getAll(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
-          case Some(seq@Seq(_*)) => seq.length
+          case Some(seq@Seq(_*)) => seq.filterNot(_.isDeleted).length
           case None => 0
         }
         if (index >= appConfig.maxDirectors) {

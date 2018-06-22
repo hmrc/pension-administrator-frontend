@@ -94,9 +94,9 @@ object DirectorNavigatorSpec extends OptionValues {
   def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, 0)
 
   private def data = {
-    (0 to 9).map(index => Json.obj(
-      DirectorDetailsId.toString -> DirectorDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now))
-    ).toArray
+    (0 to 19).map(index => Json.obj(
+      DirectorDetailsId.toString -> DirectorDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index%2==0))
+    )).toArray
   }
   val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
