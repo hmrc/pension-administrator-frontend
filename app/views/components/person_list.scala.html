@@ -28,25 +28,25 @@
 
             @if(flag){
 
-            <div class="cya-status">
+            <div class="cya-status status">
                 <span class="complete">COMPLETE</span>
             </div>
 
             } else {
 
-            <div class="cya-status">
-                <span class="incomplete">INCOMPLETE</span>
+            <div class="cya-status status">
+                <span class="rejected">INCOMPLETE</span>
             </div>
 
             }
 
-            <div class="cya-change">
+            <div>
                 <a id="@person.deleteLinkId" href="@person.deleteLink">
                     @messages("site.delete")
                 </a>
             </div>
 
-            <div class="cya-change">
+            <div>
                 <a id="@person.editLinkId" href="@person.editLink">
                     @messages("site.edit")
                 </a>
