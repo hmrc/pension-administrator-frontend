@@ -18,56 +18,49 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.Retrievals
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.company.directors.DirectorContactDetailsId
 import javax.inject.Inject
 import models.{Index, Mode}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.CompanyDirector
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.directors.directorContactDetails
-
-import scala.concurrent.Future
+import viewmodels.{ContactDetailsViewModel, Message}
 
 class DirectorContactDetailsController @Inject()(
-                                                  appConfig: FrontendAppConfig,
+                                                  @CompanyDirector override val navigator: Navigator,
+                                                  override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
-                                                  dataCacheConnector: DataCacheConnector,
-                                                  @CompanyDirector navigator: Navigator,
+                                                  override val cacheConnector: DataCacheConnector,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: ContactDetailsFormProvider
-                                                ) extends FrontendController with Retrievals with I18nSupport {
+                                                ) extends controllers.ContactDetailsController {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
-        val redirectResult = request.userAnswers.get(DirectorContactDetailsId(index)) match {
-          case None => Ok(directorContactDetails(appConfig, form, mode, index, directorName))
-          case Some(value) => Ok(directorContactDetails(appConfig, form.fill(value), mode, index, directorName))
-        }
-        Future.successful(redirectResult)
+        get(DirectorContactDetailsId(index), form, viewmodel(mode, index, directorName))
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorContactDetails(appConfig, formWithErrors, mode, index, directorName))),
-          value =>
-            dataCacheConnector.save(request.externalId, DirectorContactDetailsId(index), value).map(cacheMap =>
-              Redirect(navigator.nextPage(DirectorContactDetailsId(index), mode, UserAnswers(cacheMap))))
-        )
+        post(DirectorContactDetailsId(index), mode, form, viewmodel(mode, index, directorName))
       }
   }
+
+  private def viewmodel(mode: Mode, index: Index, directorName: String) = ContactDetailsViewModel(
+    postCall = routes.DirectorContactDetailsController.onSubmit(mode, index),
+    title = Message("contactDetails.title"),
+    heading = Message("contactDetails.heading"),
+    legend = Message("contactDetails.body"),
+    subHeading = Some(directorName)
+  )
 }
