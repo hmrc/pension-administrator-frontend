@@ -21,18 +21,19 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
 import models.register.company._
 import models.register.company.directors.DirectorDetails
-import models.{ContactDetails, Index, NormalMode}
+import models.{ContactDetails, Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.directors.directorContactDetails
+import viewmodels.{ContactDetailsViewModel, Message}
+import views.html.contactDetails
 
 class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
 
@@ -42,8 +43,15 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
   private val index = Index(0)
   private val directorName = "test first name test middle name test last name"
-  private val contactDetails = new ContactDetails("a@b.com", "1234567890")
-  private val companyName = "test company name"
+  private val contactDetailsModel = new ContactDetails("a@b.com", "1234567890")
+
+  private def viewmodel(mode: Mode, index: Index, directorName: String) = ContactDetailsViewModel(
+    postCall = routes.DirectorContactDetailsController.onSubmit(mode, index),
+    title = Message("directorContactDetails.title"),
+    heading = Message("directorContactDetails.heading"),
+    body = Message("contactDetails.body"),
+    subHeading = Some(directorName)
+  )
 
   private val validData: JsObject = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
@@ -52,7 +60,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
         DirectorDetailsId.toString ->
           DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorContactDetailsId.toString ->
-          contactDetails
+          contactDetailsModel
       ),
       Json.obj(
         DirectorDetailsId.toString ->
@@ -63,22 +71,20 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorContactDetailsController(
+      new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form): String = directorContactDetails(
+  def viewAsString(form: Form[_] = form): String = contactDetails(
     frontendAppConfig,
     form,
-    NormalMode,
-    index,
-    directorName
+    viewmodel(NormalMode, index, directorName)
   )(fakeRequest, messages).toString
 
   "DirectorContactDetails Controller" must {
