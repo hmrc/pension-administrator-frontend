@@ -21,6 +21,7 @@ import controllers.register.company.routes
 import forms.register.company.CompanyDetailsFormProvider
 import models.NormalMode
 import models.register.company.CompanyDetails
+import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.companyDetails
 
@@ -30,9 +31,11 @@ class CompanyDetailsViewSpec extends QuestionViewBehaviours[CompanyDetails] {
 
   override val form = new CompanyDetailsFormProvider()()
 
-  def createView = () => companyDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () =>
+    companyDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => companyDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    companyDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "CompanyDetails view" must {
 
@@ -42,7 +45,13 @@ class CompanyDetailsViewSpec extends QuestionViewBehaviours[CompanyDetails] {
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url, "vatRegistrationNumber", "payeEmployerReferenceNumber")
+    behave like pageWithTextFields(
+      createViewUsingForm,
+      messageKeyPrefix,
+      controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url,
+      "vatRegistrationNumber",
+      "payeEmployerReferenceNumber"
+    )
 
     behave like pageWithLabel(createViewUsingForm, "vatRegistrationNumber", messages("companyDetails.vatRegistrationNumber"))
 
