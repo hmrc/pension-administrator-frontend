@@ -17,6 +17,8 @@
 package utils
 
 import identifiers.TypedIdentifier
+import identifiers.register.company.directors.DirectorDetailsId
+import models.register.company.directors.DirectorDetails
 import play.api.libs.json._
 
 import scala.language.implicitConversions
@@ -41,6 +43,11 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         Some(vs.map(v =>
           validate[A](v)
       )))
+  }
+
+  def allDirectors: Seq[DirectorDetails] = {
+    getAll[DirectorDetails](DirectorDetailsId.collectionPath)
+      .map(_.filterNot(_.isDeleted)).getOrElse(Nil)
   }
 
   private def validate[A](jsValue: JsValue)(implicit rds: Reads[A]): A = {
