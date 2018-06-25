@@ -213,7 +213,7 @@ object AuthActionSpec {
 
   private def appConfig(isSchemeOverviewEnabled: Boolean = false) = {
     val application = new GuiceApplicationBuilder()
-      .configure(Configuration("microservice.services.features.scheme-overview" -> isSchemeOverviewEnabled))
+      .configure(Configuration("scheme-overview" -> isSchemeOverviewEnabled))
     application.injector.instanceOf[FrontendAppConfig]
   }
 

@@ -164,7 +164,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     )
 
   private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors.map((_, true)))(fakeRequest, messages).toString
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors.map((_, true)), false)(fakeRequest, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))

@@ -50,16 +50,20 @@ class AddCompanyDirectorsController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
+
       val directors: Seq[DirectorDetails] = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(Seq(), directors, isComplete)
 
-      Ok(addCompanyDirectors(appConfig, form, mode, directorsWithFlag(Seq(), directors, isComplete)))
+      Ok(addCompanyDirectors(appConfig, form, mode, withFlags, disableSubmission(withFlags)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
+
       val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(Seq(), directors, isComplete)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
@@ -67,7 +71,7 @@ class AddCompanyDirectorsController @Inject() (
       else {
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directorsWithFlag(Seq(), directors, isComplete))),
+            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, withFlags, disableSubmission(withFlags))),
           value => {
             request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
               errors => {
@@ -97,5 +101,9 @@ class AddCompanyDirectorsController @Inject() (
       directorsWithFlag(withFlag :+ addWithFlag, directors.tail, flags.tail)
     }
 
+  }
+
+  private def disableSubmission(directorsWithFlag: Seq[(DirectorDetails, Boolean)]): Boolean = directorsWithFlag.foldLeft(true){ (x, y) =>
+    !y._2
   }
 }

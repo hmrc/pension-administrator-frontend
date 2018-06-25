@@ -21,7 +21,7 @@
 @import models.register.company.directors.DirectorDetails
 @import utils.FormHelpers
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[(DirectorDetails, Boolean)])(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[(DirectorDetails, Boolean)], disableSubmission: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("addCompanyDirectors.title"),
@@ -41,7 +41,7 @@
             @components.submit_button("addCompanyDirectors.addADirector")
         } else {
 
-            @components.person_list(directors)
+            @components.person_list(appConfig, directors)
 
             @if(directors.size < appConfig.maxDirectors) {
                 @components.input_yes_no(
@@ -54,7 +54,7 @@
                 @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
             }
 
-            @components.submit_button()
+            @components.submit_button(disabled = disableSubmission)
         }
     }
 }

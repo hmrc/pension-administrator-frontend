@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import viewmodels.Person
 
-@(peopleWithFlag: Seq[(Person, Boolean)])(implicit messages: Messages)
+@(appConfig: FrontendAppConfig, peopleWithFlag: Seq[(Person, Boolean)])(implicit messages: Messages)
 
 <div class="form-group">
     <ul id="people" class="govuk-check-your-answers form-group cya-questions-long">
@@ -26,17 +27,21 @@
                 <h2 id="@person.id" class="bold std-text">@person.name</h2>
             </div>
 
-            @if(flag){
+            @if(appConfig.completeFlagEnabled){
 
-            <div class="cya-status status">
-                <span class="complete">COMPLETE</span>
-            </div>
+                @if(flag){
 
-            } else {
+                <div class="cya-status status">
+                    <span class="complete">COMPLETE</span>
+                </div>
 
-            <div class="cya-status status">
-                <span class="rejected">INCOMPLETE</span>
-            </div>
+                } else {
+
+                <div class="cya-status status">
+                    <span class="rejected">INCOMPLETE</span>
+                </div>
+
+                }
 
             }
 

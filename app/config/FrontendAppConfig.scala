@@ -55,8 +55,6 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
   lazy val registerSchemeUrl: String = loadConfig("urls.pensions-scheme-frontend.registerScheme")
   lazy val schemesOverviewUrl: String = loadConfig("urls.pensions-scheme-frontend.schemesOverview")
-  lazy val contactAddressEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.contact-address").getOrElse(false)
-  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
@@ -87,5 +85,9 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
     s"service/$serviceName/enrolment"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
+
+  lazy val contactAddressEnabled: Boolean = runModeConfiguration.getBoolean("features.contact-address").getOrElse(false)
+  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
+  lazy val completeFlagEnabled: Boolean = runModeConfiguration.getBoolean("features.is-complete").getOrElse(true)
 
 }
