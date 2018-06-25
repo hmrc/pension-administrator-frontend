@@ -47,7 +47,11 @@ object Person {
         index,
         director.fullName,
         routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+        if (flag) {
+          controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index).url
+        } else {
+          routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+        }
       ), flag)
     }
   }
