@@ -41,4 +41,15 @@ object Person {
     }
   }
 
+  implicit def indexedCompanyDirectorsWithFlag(directors: Seq[(DirectorDetails, Boolean)]): Seq[(Person, Boolean)] = {
+    directors.zipWithIndex.map { case ((director, flag), index) =>
+      (Person(
+        index,
+        director.fullName,
+        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
+        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+      ), flag)
+    }
+  }
+
 }
