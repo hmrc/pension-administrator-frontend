@@ -21,9 +21,8 @@ import connectors.{AddressLookupConnector, DataCacheConnector, FakeDataCacheConn
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.company.BusinessDetailsId
-import models.register.company.BusinessDetails
-import models.{NormalMode, TolerantAddress}
+import identifiers.register.partnership.PartnershipDetailsId
+import models.{BusinessDetails, Index, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -42,11 +41,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-    import PartnershipContactAddressPostCodeLookupControllerSpec._
+  import PartnershipContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
     requestResult(
-      implicit app => addToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
+      implicit app => addToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode, index))),
       (request, result) => {
         status(result) mustBe OK
         contentAsString(result) mustBe postcodeLookup(frontendAppConfig, formProvider(), viewModel)(request, messages).toString()
@@ -56,7 +55,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
 
   "redirect to the next page on a POST request" in {
     requestResult(
-      implicit App => addToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode))
+      implicit App => addToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode, index))
         .withFormUrlEncodedBody("value" -> validPostcode)),
       (_, result) => {
         status(result) mustBe SEE_OTHER
@@ -69,10 +68,10 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
 object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val formProvider = new PostCodeLookupFormProvider()
   private val validPostcode = "ZZ1 1ZZ"
-
+  private val index = Index(0)
   private val partnershipName = "PartnershipName"
 
-  private val onwardRoute = controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode)
+  private val onwardRoute = controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode, index)
   private val address = TolerantAddress(
     Some("test-address-line-1"),
     Some("test-address-line-2"),
@@ -89,8 +88,8 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   }
 
   val viewModel = PostcodeLookupViewModel(
-    routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode),
-    routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode), //TODO change to manual address page
+    routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode, index),
+    routes.PartnershipAddressYearsController.onSubmit(NormalMode, index), //TODO change to manual address page
     Message("partnershipContactAddressPostCodeLookup.title"),
     Message("partnershipContactAddressPostCodeLookup.heading").withArgs(partnershipName),
     Some(Message("site.secondaryHeader")),
@@ -101,7 +100,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   )
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    BusinessDetailsId.toString -> BusinessDetails(partnershipName, "UTR")
+    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, "UTR")
   )))
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {

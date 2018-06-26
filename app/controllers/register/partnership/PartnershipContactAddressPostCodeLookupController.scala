@@ -23,9 +23,8 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.partnership.BusinessDetailsId
-import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupId
-import models.Mode
+import identifiers.register.partnership.{PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
+import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -47,16 +46,16 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
                                                              ) extends PostcodeLookupController with Retrievals {
 
 
-  def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
+  def viewModel(mode: Mode, index: Index): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      PartnershipDetailsId.retrieve.right.map { partnershipDetails =>
+      PartnershipDetailsId(index).retrieve.right.map{ details =>
         PostcodeLookupViewModel(
-          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
-          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode), //TODO change to manual address page
+          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode, index),
+          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode, index), //TODO change to manual address page
           Message("partnershipContactAddressPostCodeLookup.title"),
-          Message("partnershipContactAddressPostCodeLookup.heading").withArgs(partnershipDetails.),
+          Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.name),
           Some(Message("site.secondaryHeader")),
-          Message("partnershipContactAddressPostCodeLookup.lede").withArgs(partnershipDetails.companyName),
+          Message("partnershipContactAddressPostCodeLookup.lede").withArgs(details.name),
           Message("common.postcodeLookup.enterPostcode"),
           Some(Message("common.postcodeLookup.enterPostcode.link")),
           Message("address.postcode")
@@ -66,15 +65,15 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map(get)
+      viewModel(mode, index).retrieve.right.map(get)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode,  index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map { vm =>
-        post(PartnershipContactAddressPostCodeLookupId, vm, mode)
+      viewModel(mode, index).retrieve.right.map { vm =>
+        post(PartnershipContactAddressPostCodeLookupId(index), vm, mode)
       }
   }
 
