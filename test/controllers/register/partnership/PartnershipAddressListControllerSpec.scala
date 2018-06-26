@@ -19,13 +19,16 @@ package controllers.register.partnership
 import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
-import models.{Index, NormalMode}
+import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId}
+import models.requests.{AuthenticatedRequest, OptionalDataRequest}
+import models.{BusinessDetails, Index, NormalMode}
 import org.scalatest.MustMatchers
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -73,18 +76,31 @@ object PartnershipAddressListControllerSpec extends PartnershipAddressListContro
 
   val form = new AddressListFormProvider()(Seq.empty)
 
+  val testName = "Partnership Name"
+
   val viewModel = AddressListViewModel(
     routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex),
     routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex),
-    Seq.empty
+    Seq.empty,
+    subHeading = Some(testName)
   )
+
+  val retrieval = new FakeDataRetrievalAction(Some(Json.obj(
+    "partnership" -> Json.arr(
+      Json.obj(
+        PartnershipDetailsId.toString -> BusinessDetails(
+          testName, "UTR"
+        )
+      )
+    )
+  )))
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
                               (implicit writeable: Writeable[T]): Unit = {
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getEmptyData),
+      bind[DataRetrievalAction].toInstance(retrieval),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
     )) {

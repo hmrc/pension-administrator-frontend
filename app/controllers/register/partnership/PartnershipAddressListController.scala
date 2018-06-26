@@ -18,10 +18,11 @@ package controllers.register.partnership
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.PartnershipContactAddressListId
+import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId}
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
@@ -39,22 +40,29 @@ class PartnershipAddressListController @Inject()(
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressListFormProvider
-                                                ) extends AddressListController {
+                                                ) extends AddressListController with Retrievals {
 
-  def viewModel(mode: Mode, index: Index) = AddressListViewModel(
-    routes.PartnershipAddressListController.onSubmit(mode, index),
-    routes.PartnershipAddressListController.onSubmit(mode, index),
-    Seq.empty
-  )
+  def viewModel(mode: Mode, index: Index) = Retrieval { implicit request =>
+    PartnershipDetailsId(index).retrieve.right.map{ details =>
+      AddressListViewModel(
+        routes.PartnershipAddressListController.onSubmit(mode, index),
+        routes.PartnershipAddressListController.onSubmit(mode, index),
+        Seq.empty,
+        subHeading = Some(details.name)
+      )
+    }
+  }
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode,index))
+      viewModel(mode,index).retrieve.right.map(get)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(viewModel(mode, index), PartnershipContactAddressListId(index), ???, mode)
+      viewModel(mode,index).retrieve.right.map { vm =>
+        post(vm, PartnershipContactAddressListId(index), ???, mode)
+      }
   }
 
 }

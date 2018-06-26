@@ -26,7 +26,7 @@ case class PartnershipContactAddressListId(index: Int) extends TypedIdentifier[T
 
 }
 
-object PartnershipContactAddressListId {
+  object PartnershipContactAddressListId {
 
   override def toString: String = "partnershipContactAddressList"
 
