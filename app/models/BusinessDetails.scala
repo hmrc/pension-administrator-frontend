@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
-import play.api.mvc.Call
+import play.api.libs.json.Json
 
-case class ContactDetailsViewModel(
-                                    postCall: Call,
-                                    title: Message,
-                                    heading: Message,
-                                    body: Message,
-                                    subHeading: Option[Message] = None
-                                  )
+case class BusinessDetails(name: String, uniqueTaxReferenceNumber: String)
+
+object BusinessDetails {
+  implicit val format = Json.format[BusinessDetails]
+}
