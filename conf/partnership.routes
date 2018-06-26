@@ -17,3 +17,8 @@ GET        /change-what-is-the-contact-address                 controllers.regis
 POST       /change-what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
 
 GET        /partnership-company-not-found           controllers.register.partnership.PartnershipCompanyNotFoundController.onPageLoad()
+
+GET        /:index/enter-contact-address             controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/enter-contact-address             controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/change-contact-address            controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /:index/change-contact-address            controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = CheckMode, index: Index)

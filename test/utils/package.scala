@@ -115,6 +115,10 @@ package object utils {
     }
 
 
+    def partnershipContactAddress(address: Address): UserAnswers = {
+      answers.set(PartnershipContactAddressId)(address).asOpt.value
+    }
+
     // Converters
     def dataRetrievalAction: DataRetrievalAction = {
       new FakeDataRetrievalAction(Some(answers.json))

@@ -19,14 +19,16 @@ package controllers
 import java.time.LocalDate
 
 import base.SpecBase
-import controllers.actions.FakeDataRetrievalAction
+import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
 import models.TolerantIndividual
 import models.register.company.BusinessDetails
 import models.register.company.directors.DirectorDetails
 import play.api.libs.json.Json
+import utils.UserAnswers
 
 trait ControllerSpecBase extends SpecBase {
 
@@ -58,5 +60,8 @@ trait ControllerSpecBase extends SpecBase {
       IndividualDetailsId.toString ->
         TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
     )))
+
+  def getPartnership: DataRetrievalAction =
+    UserAnswers().partnershipDetails(index = 0, details = models.BusinessDetails("Test Partnership Name", "1234567890")).dataRetrievalAction
 
 }
