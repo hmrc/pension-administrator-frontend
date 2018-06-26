@@ -21,15 +21,14 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId}
-import models.requests.{AuthenticatedRequest, OptionalDataRequest}
-import models.{BusinessDetails, Index, NormalMode}
+import identifiers.register.partnership.{PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
+import models.{BusinessDetails, NormalMode, TolerantAddress}
 import org.scalatest.MustMatchers
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{Call, Request, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator}
@@ -47,7 +46,7 @@ class PartnershipAddressListControllerSpec extends ControllerSpecBase with MustM
 
     "render the view correctly on a GET request" in {
       requestResult(
-        implicit app => addToken(FakeRequest(routes.PartnershipAddressListController.onPageLoad(NormalMode, firstIndex))),
+        implicit app => addToken(FakeRequest(routes.PartnershipAddressListController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
           contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel)(request, messages).toString()
@@ -57,11 +56,11 @@ class PartnershipAddressListControllerSpec extends ControllerSpecBase with MustM
 
     "redirect to the next page on a POST request" in {
       requestResult(
-        implicit App => addToken(FakeRequest(routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex))
-          .withFormUrlEncodedBody("value" -> "2")),
+        implicit App => addToken(FakeRequest(routes.PartnershipAddressListController.onSubmit(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")),
         (_, result) => {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute)
+          redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
         }
       )
     }
@@ -72,27 +71,39 @@ class PartnershipAddressListControllerSpec extends ControllerSpecBase with MustM
 
 object PartnershipAddressListControllerSpec extends PartnershipAddressListControllerSpec {
 
-  val firstIndex = Index(0)
-
-  val form = new AddressListFormProvider()(Seq.empty)
-
   val testName = "Partnership Name"
 
+  val addresses = Seq(
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      Some("Address 1 Line 2"),
+      Some("Address 1 Line 3"),
+      Some("Address 1 Line 4"),
+      Some("A1 1PC"),
+      Some("GB")
+    ),
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      Some("Address 2 Line 2"),
+      Some("Address 2 Line 3"),
+      Some("Address 2 Line 4"),
+      Some("123"),
+      Some("FR")
+    )
+  )
+
+  val form = new AddressListFormProvider()(addresses)
+
   val viewModel = AddressListViewModel(
-    routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex),
-    routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex),
-    Seq.empty,
+    routes.PartnershipAddressListController.onSubmit(NormalMode),
+    routes.PartnershipAddressListController.onSubmit(NormalMode),
+    addresses,
     subHeading = Some(testName)
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    "partnership" -> Json.arr(
-      Json.obj(
-        PartnershipDetailsId.toString -> BusinessDetails(
-          testName, "UTR"
-        )
-      )
-    )
+    PartnershipDetailsId.toString -> BusinessDetails(testName, "UTR"),
+    PartnershipContactAddressPostCodeLookupId.toString -> addresses
   )))
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)

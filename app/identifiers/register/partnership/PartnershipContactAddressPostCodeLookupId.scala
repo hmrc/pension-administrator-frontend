@@ -16,11 +16,9 @@
 
 package identifiers.register.partnership
 
-import identifiers.TypedIdentifier
+import identifiers._
 import models.TolerantAddress
 
-case object PartnershipContactAddressListId extends TypedIdentifier[TolerantAddress]{
-
-  override def toString: String = "partnershipContactAddressList"
-
+case object PartnershipContactAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def toString: String = "partnershipContactAddressPostCodeLookup"
 }

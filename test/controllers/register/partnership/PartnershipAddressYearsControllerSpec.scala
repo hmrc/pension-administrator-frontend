@@ -16,8 +16,6 @@
 
 package controllers.register.partnership
 
-import java.time.LocalDate
-
 import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
@@ -29,7 +27,7 @@ import models.{AddressYears, BusinessDetails, Index, NormalMode}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -47,7 +45,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 
   "render the view correctly on a GET request" in {
     requestResult(
-      implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode, index))),
+      implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
         contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel)(request, messages).toString
@@ -57,7 +55,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 
   "redirect to the next page on a POST request" in {
     requestResult(
-      implicit App => addToken(FakeRequest(PartnershipAddressYearsController.onSubmit(NormalMode, index))
+      implicit App => addToken(FakeRequest(PartnershipAddressYearsController.onSubmit(NormalMode))
         .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)),
       (_, result) => {
         status(result) mustBe SEE_OTHER
@@ -69,19 +67,16 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 
 object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsControllerSpec {
 
-  val index = Index(0)
-
-  val id = PartnershipAddressYearsId(index)
+  val id = PartnershipAddressYearsId
 
   val partnershipName = "Test Partnership Name"
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    "partnership" -> Json.arr(Json.obj(
     PartnershipDetailsId.toString -> BusinessDetails(partnershipName, "Test UTR")
-  )))))
+  )))
 
   val viewModel = AddressYearsViewModel(
-    PartnershipAddressYearsController.onSubmit(NormalMode, index),
+    PartnershipAddressYearsController.onSubmit(NormalMode),
     Message("partnership.addressYears.title"),
     Message("partnership.addressYears.heading").withArgs(partnershipName),
     Message("partnership.addressYears.heading").withArgs(partnershipName),
