@@ -26,6 +26,7 @@ import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipD
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.Message
@@ -59,18 +60,17 @@ class PartnershipAddressYearsController @Inject()(
 
   val form = formProvider("error.addressYears.required")
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map{
         get(PartnershipAddressYearsId, form, _)
       }
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map {
         post(PartnershipAddressYearsId, mode, form, _)
       }
   }
-
 }

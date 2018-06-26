@@ -20,7 +20,5 @@ import identifiers.TypedIdentifier
 import models.TolerantAddress
 
 case object PartnershipContactAddressListId extends TypedIdentifier[TolerantAddress]{
-
   override def toString: String = "partnershipContactAddressList"
-
 }

@@ -19,20 +19,18 @@ package controllers.register.partnership
 import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import controllers.register.partnership.routes.PartnershipAddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
-import models.{AddressYears, BusinessDetails, Index, NormalMode}
+import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -67,13 +65,11 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 
 object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsControllerSpec {
 
-  val id = PartnershipAddressYearsId
-
   val partnershipName = "Test Partnership Name"
 
-  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, "Test UTR")
-  )))
+  val dataRetrieval: DataRetrievalAction = UserAnswers()
+    .partnershipDetails(models.BusinessDetails(partnershipName, "Test UTR"))
+    .dataRetrievalAction
 
   val viewModel = AddressYearsViewModel(
     PartnershipAddressYearsController.onSubmit(NormalMode),
