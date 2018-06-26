@@ -19,35 +19,45 @@ package controllers.register.company
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.ContactDetailsFormProvider
+import forms.ContactDetailsFormProvider
 import identifiers.register.company.ContactDetailsId
 import models.{ContactDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import utils.FakeNavigator
-import views.html.register.company.contactDetails
+import viewmodels.{ContactDetailsViewModel, Message}
+import views.html.contactDetails
 
 class ContactDetailsControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new ContactDetailsFormProvider()
   val form = formProvider()
 
+  def viewmodel = ContactDetailsViewModel(
+    postCall = controllers.register.company.routes.ContactDetailsController.onSubmit(NormalMode),
+    title = Message("contactDetails.company.title"),
+    heading = Message("contactDetails.company.heading"),
+    body = Message("contactDetails.body"),
+    subHeading = Some(Message("site.secondaryHeader"))
+  )
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new ContactDetailsController(
+    new controllers.register.company.ContactDetailsController(
+      new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form) = contactDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
   "ContactDetails Controller" must {
 

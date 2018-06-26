@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register.partnership
 
-import play.api.mvc.Call
+import identifiers.TypedIdentifier
+import models.{BusinessDetails, Index}
+import play.api.libs.json.JsPath
 
-case class ContactDetailsViewModel(
-                                    postCall: Call,
-                                    title: Message,
-                                    heading: Message,
-                                    body: Message,
-                                    subHeading: Option[Message] = None
-                                  )
+case object PartnershipDetailsId extends TypedIdentifier[BusinessDetails] {
+  override def toString: String = "partnershipDetails"
+}

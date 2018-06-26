@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register.partnership
 
-import play.api.mvc.Call
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-case class ContactDetailsViewModel(
-                                    postCall: Call,
-                                    title: Message,
-                                    heading: Message,
-                                    body: Message,
-                                    subHeading: Option[Message] = None
-                                  )
+case object PartnershipContactAddressListId extends TypedIdentifier[TolerantAddress]{
+  override def toString: String = "partnershipContactAddressList"
+}
