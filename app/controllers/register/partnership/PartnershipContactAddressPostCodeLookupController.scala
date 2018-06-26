@@ -24,7 +24,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
-import models.{Index, Mode}
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}

@@ -18,9 +18,8 @@ package identifiers.register.partnership
 
 import identifiers._
 import models.TolerantAddress
-import play.api.libs.json.JsPath
 
-case class PartnershipContactAddressPostCodeLookupId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
+case object PartnershipContactAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
   
   override def toString: String = "partnershipContactAddressPostcodeLookup"
 }
