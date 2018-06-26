@@ -27,5 +27,5 @@ case class PartnershipAddressYearsId(index: Index) extends TypedIdentifier[Addre
 }
 
 object PartnershipAddressYearsId {
-  override lazy val toString: String = "partnershipAddressYears"
+  override def toString: String = "partnershipAddressYears"
 }
