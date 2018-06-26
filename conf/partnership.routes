@@ -1,2 +1,7 @@
-GET        /what-you-will-need                       controllers.register.partnership.WhatYouWillNeedController.onPageLoad()
-POST       /what-you-will-need                       controllers.register.partnership.WhatYouWillNeedController.onSubmit()
+GET        /what-you-will-need                          controllers.register.partnership.WhatYouWillNeedController.onPageLoad()
+POST       /what-you-will-need                          controllers.register.partnership.WhatYouWillNeedController.onSubmit()
+
+GET        /what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /change-what-is-the-contact-address          controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-what-is-the-contact-address          controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
