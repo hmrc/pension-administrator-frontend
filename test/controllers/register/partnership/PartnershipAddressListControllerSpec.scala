@@ -75,7 +75,7 @@ object PartnershipAddressListControllerSpec extends PartnershipAddressListContro
 
   val viewModel = AddressListViewModel(
     routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex),
-    Call("", ""),
+    routes.PartnershipAddressListController.onSubmit(NormalMode, firstIndex),
     Seq.empty
   )
 

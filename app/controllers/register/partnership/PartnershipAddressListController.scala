@@ -21,12 +21,14 @@ import connectors.DataCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
+import identifiers.register.partnership.PartnershipContactAddressListId
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
+import viewmodels.address.AddressListViewModel
 
 class PartnershipAddressListController @Inject()(
                                                 val cacheConnector: DataCacheConnector,
@@ -39,14 +41,20 @@ class PartnershipAddressListController @Inject()(
                                                 formProvider: AddressListFormProvider
                                                 ) extends AddressListController {
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def viewModel(mode: Mode, index: Index) = AddressListViewModel(
+    routes.PartnershipAddressListController.onSubmit(mode, index),
+    routes.PartnershipAddressListController.onSubmit(mode, index),
+    Seq.empty
+  )
+
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      ???
+      get(viewModel(mode,index))
   }
 
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      ???
+      post(viewModel(mode, index), PartnershipContactAddressListId(index), ???, mode)
   }
 
 }
