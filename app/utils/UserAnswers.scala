@@ -50,6 +50,11 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       .map(_.filterNot(_.isDeleted)).getOrElse(Nil)
   }
 
+  def directorsCount: Int = {
+    getAll[DirectorDetails](DirectorDetailsId.collectionPath)
+      .getOrElse(Nil).length
+  }
+
   private def validate[A](jsValue: JsValue)(implicit rds: Reads[A]): A = {
     jsValue.validate[A].fold(
       invalid =
