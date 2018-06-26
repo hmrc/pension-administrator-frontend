@@ -26,6 +26,7 @@ import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipD
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.Message
@@ -43,12 +44,12 @@ class PartnershipAddressYearsController @Inject()(
                                                  ) extends AddressYearsController with Retrievals {
 
 
-  private def viewModel(mode: Mode, index: Index) =
+  private def viewModel(mode: Mode) =
     Retrieval {
       implicit request =>
-        PartnershipDetailsId(index).retrieve.right.map{ details =>
+        PartnershipDetailsId.retrieve.right.map{ details =>
           AddressYearsViewModel(
-            routes.PartnershipAddressYearsController.onSubmit(mode, index),
+            routes.PartnershipAddressYearsController.onSubmit(mode),
             Message("partnership.addressYears.title"),
             Message("partnership.addressYears.heading").withArgs(details.name),
             Message("partnership.addressYears.heading").withArgs(details.name),
@@ -59,18 +60,17 @@ class PartnershipAddressYearsController @Inject()(
 
   val form = formProvider("error.addressYears.required")
 
-  def onPageLoad(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map{
-        get(PartnershipAddressYearsId(index), form, _)
+      viewModel(mode).retrieve.right.map{
+        get(PartnershipAddressYearsId, form, _)
       }
   }
 
-  def onSubmit(mode: Mode, index: Index) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map {
-        post(PartnershipAddressYearsId(index), mode, form, _)
+      viewModel(mode).retrieve.right.map {
+        post(PartnershipAddressYearsId, mode, form, _)
       }
   }
-
 }
