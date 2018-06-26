@@ -23,7 +23,6 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.PartnershipDetailsId
 import models.TolerantIndividual
 import models.register.company.BusinessDetails
 import models.register.company.directors.DirectorDetails
@@ -62,6 +61,6 @@ trait ControllerSpecBase extends SpecBase {
     )))
 
   def getPartnership: DataRetrievalAction =
-    UserAnswers().partnershipDetails(index = 0, details = models.BusinessDetails("Test Partnership Name", "1234567890")).dataRetrievalAction
+    UserAnswers().partnershipDetails(details = models.BusinessDetails("Test Partnership Name", "1234567890")).dataRetrievalAction
 
 }

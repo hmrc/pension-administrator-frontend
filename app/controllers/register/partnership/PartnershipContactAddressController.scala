@@ -24,11 +24,10 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipDetailsId}
-import models.{Address, Index, Mode}
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.AnyContent
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
@@ -50,9 +49,9 @@ class PartnershipContactAddressController @Inject()(
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  def viewmodel(mode: Mode, index: Index, partnershipName: String) =
+  def viewmodel(mode: Mode, partnershipName: String) =
     ManualAddressViewModel(
-      postCall = routes.PartnershipContactAddressController.onSubmit(mode, index),
+      postCall = routes.PartnershipContactAddressController.onSubmit(mode),
       countryOptions = countryOptions.options,
       title = Message("partnership.contactAddress.title"),
       heading = Message("partnership.contactAddress.heading").withArgs(partnershipName),
@@ -60,26 +59,26 @@ class PartnershipContactAddressController @Inject()(
       hint = Some(Message("partnership.contactAddress.hint").withArgs(partnershipName))
     )
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnershipDetailsId(index).retrieve.right.map {
+      PartnershipDetailsId.retrieve.right.map {
         details =>
           get(
-            PartnershipContactAddressId(index),
-            PartnershipContactAddressListId(index),
-            viewmodel(mode, index, details.name)
+            PartnershipContactAddressId,
+            PartnershipContactAddressListId,
+            viewmodel(mode, details.name)
           )
       }
   }
 
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnershipDetailsId(index).retrieve.right.map {
+      PartnershipDetailsId.retrieve.right.map {
         details =>
           post(
-            PartnershipContactAddressId(index),
-            PartnershipContactAddressListId(index),
-            viewmodel(mode, index, details.name),
+            PartnershipContactAddressId,
+            PartnershipContactAddressListId,
+            viewmodel(mode, details.name),
             mode,
             context = "Partnership contact address"
           )

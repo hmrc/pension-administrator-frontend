@@ -18,10 +18,7 @@ package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
 import models.Address
-import play.api.libs.json.JsPath
 
 case object PartnershipContactAddressId extends TypedIdentifier[Address] {
-
   override def toString: String = "partnershipContactAddress"
-
 }

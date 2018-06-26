@@ -43,14 +43,13 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val messagePrefix = "partnership.contactAddress"
-  val firstIndex = Index(0)
   val partnershipDetails = models.BusinessDetails("Test Partnership Name", "1234567890")
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
 
   val viewmodel = ManualAddressViewModel(
-    postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode, firstIndex),
+    postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading").withArgs(partnershipDetails.name),
@@ -79,7 +78,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   "PartnershipContactAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode, firstIndex)(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -87,11 +86,11 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = UserAnswers()
-        .partnershipDetails(firstIndex, partnershipDetails)
-        .partnershipContactAddress(firstIndex, Address("value 1", "value 2", None, None, None, "GB"))
+        .partnershipDetails(partnershipDetails)
+        .partnershipContactAddress(Address("value 1", "value 2", None, None, None, "GB"))
         .dataRetrievalAction
 
-      val result = controller(validData).onPageLoad(NormalMode, firstIndex)(fakeRequest)
+      val result = controller(validData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "GB")))
     }
@@ -104,7 +103,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
         "country" -> "GB"
       )
 
-      val result = controller().onSubmit(NormalMode, firstIndex)(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -138,7 +137,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
 
       fakeAuditService.reset()
 
-      val result = controller(data).onSubmit(NormalMode, firstIndex)(postRequest)
+      val result = controller(data).onSubmit(NormalMode)(postRequest)
 
       whenReady(result) {
         _ =>
@@ -165,7 +164,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode, firstIndex)(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -174,14 +173,14 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
     "redirect to Session Expired" when {
       "no existing data is found" when {
         "GET" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode, firstIndex)(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit(NormalMode, firstIndex)(postRequest)
+          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
