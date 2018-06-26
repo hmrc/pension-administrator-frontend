@@ -46,12 +46,12 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
                                                              ) extends PostcodeLookupController with Retrievals {
 
 
-  def viewModel(mode: Mode, index: Index): Retrieval[PostcodeLookupViewModel] = Retrieval(
+  def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      PartnershipDetailsId(index).retrieve.right.map{ details =>
+      PartnershipDetailsId.retrieve.right.map{ details =>
         PostcodeLookupViewModel(
-          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode, index),
-          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode, index), //TODO change to manual address page
+          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
+          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode), //TODO change to manual address page
           Message("partnershipContactAddressPostCodeLookup.title"),
           Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.name),
           Some(Message("site.secondaryHeader")),
@@ -65,15 +65,15 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map(get)
+      viewModel(mode).retrieve.right.map(get)
   }
 
-  def onSubmit(mode: Mode,  index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map { vm =>
-        post(PartnershipContactAddressPostCodeLookupId(index), vm, mode)
+      viewModel(mode).retrieve.right.map { vm =>
+        post(PartnershipContactAddressPostCodeLookupId, vm, mode)
       }
   }
 

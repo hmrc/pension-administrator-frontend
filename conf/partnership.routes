@@ -6,7 +6,7 @@ POST       /:index/how-long-at-address                         controllers.regis
 GET        /:index/change-how-long-at-address                  controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-how-long-at-address                  controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode = CheckMode, index: Index)
 
-GET        /:index/what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/change-what-is-the-contact-address          controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/change-what-is-the-contact-address          controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /what-is-the-contact-address                        controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-is-the-contact-address                        controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /change-what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
