@@ -20,12 +20,6 @@ import identifiers.TypedIdentifier
 import models.{AddressYears, Index}
 import play.api.libs.json.JsPath
 
-case class PartnershipAddressYearsId(index: Index) extends TypedIdentifier[AddressYears] {
-
-  override def path: JsPath = JsPath \ "partnership" \ index \ PartnershipAddressYearsId.toString
-
-}
-
-object PartnershipAddressYearsId {
+case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
   override lazy val toString: String = "partnershipAddressYears"
 }
