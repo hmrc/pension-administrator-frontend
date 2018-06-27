@@ -132,8 +132,12 @@ cya.label.address = Address
 cya.label.dob = Date of birth
 cya.label.address.years = Address years
 
-contactDetails.title = Contact details
-contactDetails.heading = Contact details
+contactDetails.title = Enter contact details
+contactDetails.heading = Enter contact details
+contactDetails.individual.title = Enter your contact details
+contactDetails.individual.heading = Enter your contact details
+contactDetails.company.title = Enter the company’s contact details
+contactDetails.company.heading = Enter the company’s contact details
 contactDetails.email = Email address
 contactDetails.phone = Phone number
 contactDetails.body = We will use this information to contact you about your schemes. You can enter a group or individual email.
@@ -306,9 +310,9 @@ directorAddress.heading = Director’s address
 
 companyDirectorAddressList.checkYourAnswersLabel = companyDirectorAddressList
 
-directorContactDetails.title = Contact details for director
-directorContactDetails.heading = Contact details for director
-directorContactDetails.checkYourAnswersLabel = Contact details for director
+directorContactDetails.title = Enter the director’s contact details
+directorContactDetails.heading = Enter the director’s contact details
+directorContactDetails.checkYourAnswersLabel = Director’s contact details
 
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
@@ -343,8 +347,6 @@ youWillNeedToUpdate.title = You need to update your details before registering
 youWillNeedToUpdate.heading = You need to update your details before registering
 youWillNeedToUpdate.text = If you are an individual or partnership and are not registered with Companies House
 youWillNeedToUpdate.link = you only need to inform HMRC
-
-contactDetails.individual.lede = We will use this information to contact you about your schemes. You can enter a group or individual email.
 
 companyReview.title = Review the company details
 companyReview.heading = Review the company details
@@ -494,6 +496,12 @@ interceptPSA.body = This Government Gateway account has already been used to reg
 interceptPSA.button = Continue to your pension schemes
 interceptPSA.exit = Exit to GOV.UK
 
+alreadyDeleted.director.title = You have already deleted this director
+alreadyDeleted.heading = You have already deleted {0}
+alreadyDeleted.lede = You have already confirmed deletion of {0}.
+alreadyDeleted.text = This page no longer exists.
+
+
 whatYouWillNeed.partnership.title = What you will need
 whatYouWillNeed.partnership.heading = What you will need
 whatYouWillNeed.partnership.body.text1 = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
@@ -501,3 +509,6 @@ whatYouWillNeed.partnership.body.text2 = To register as a Pension Scheme Adminis
 whatYouWillNeed.partnership.body.item1 = your partnership name, address and previous address
 whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
 whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address
+
+partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
+partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?

@@ -16,11 +16,11 @@
 
 package views
 
-import controllers.register.individual.routes
 import forms.ContactDetailsFormProvider
 import models.{ContactDetails, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
 import viewmodels.{ContactDetailsViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
 import views.html.contactDetails
@@ -36,12 +36,14 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
     title = Message("contactDetails.title"),
     heading = Message("contactDetails.heading"),
     subHeading = Some(Message("site.secondaryHeader")),
-    legend = Message("contactDetails.lede")
+    body = Message("contactDetails.lede")
   )
 
-  def createView = () => contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () =>
+    contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
 
   "ContactDetails view" must {
 
@@ -49,6 +51,12 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithTextFields(createViewUsingForm, messageKeyPrefix, controllers.register.individual.routes.IndividualContactDetailsController.onSubmit(NormalMode).url, "emailAddress", "phoneNumber")
+    behave like pageWithTextFields(
+      createViewUsingForm,
+      messageKeyPrefix,
+      controllers.register.individual.routes.IndividualContactDetailsController.onSubmit(NormalMode).url,
+      "emailAddress",
+      "phoneNumber"
+    )
   }
 }

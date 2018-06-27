@@ -18,10 +18,8 @@ package viewmodels
 
 import play.api.mvc.Call
 
-case class ContactDetailsViewModel(
-                                    postCall: Call,
+case class AlreadyDeletedViewModel(
                                     title: Message,
-                                    heading: Message,
-                                    body: Message,
-                                    subHeading: Option[Message] = None
+                                    deletedEntity: String,
+                                    returnCall: Call
                                   )
