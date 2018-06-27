@@ -519,6 +519,6 @@ partnershipContactAddressPostCodeLookup.lede = This can be any address that HMRC
 partnershipContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
 partnershipContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-partnership.contactAddress.title = Enter the Partnership’s contact address
-partnership.contactAddress.heading = What is {0}’s Partnership contact address?
-partnership.contactAddress.hint = This can be any address that can be used to contact {0}’s Partnership. The PSA might receive letters from HMRC.
+partnership.contactAddress.title = What is the contact address?
+partnership.contactAddress.heading = What is {0}’s contact address?
+partnership.contactAddress.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.

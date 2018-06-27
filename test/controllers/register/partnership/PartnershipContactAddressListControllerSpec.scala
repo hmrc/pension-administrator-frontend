@@ -38,15 +38,15 @@ import views.html.address.addressList
 
 import scala.concurrent.Future
 
-class PartnershipAddressListControllerSpec extends ControllerSpecBase with MustMatchers with CSRFRequest {
+class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers with CSRFRequest {
 
-  import PartnershipAddressListControllerSpec._
+  import PartnershipContactAddressListControllerSpec._
 
   "PartnershipAddressListController" must {
 
     "render the view correctly on a GET request" in {
       requestResult(
-        implicit app => addToken(FakeRequest(routes.PartnershipAddressListController.onPageLoad(NormalMode))),
+        implicit app => addToken(FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
           contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel)(request, messages).toString()
@@ -56,7 +56,7 @@ class PartnershipAddressListControllerSpec extends ControllerSpecBase with MustM
 
     "redirect to the next page on a POST request" in {
       requestResult(
-        implicit App => addToken(FakeRequest(routes.PartnershipAddressListController.onSubmit(NormalMode))
+        implicit App => addToken(FakeRequest(routes.PartnershipContactAddressListController.onSubmit(NormalMode))
           .withFormUrlEncodedBody("value" -> "0")),
         (_, result) => {
           status(result) mustBe SEE_OTHER
@@ -69,7 +69,7 @@ class PartnershipAddressListControllerSpec extends ControllerSpecBase with MustM
 
 }
 
-object PartnershipAddressListControllerSpec extends PartnershipAddressListControllerSpec {
+object PartnershipContactAddressListControllerSpec extends PartnershipContactAddressListControllerSpec {
 
   val testName = "Partnership Name"
 
@@ -95,8 +95,8 @@ object PartnershipAddressListControllerSpec extends PartnershipAddressListContro
   val form = new AddressListFormProvider()(addresses)
 
   val viewModel = AddressListViewModel(
-    routes.PartnershipAddressListController.onSubmit(NormalMode),
-    routes.PartnershipAddressListController.onSubmit(NormalMode),
+    routes.PartnershipContactAddressListController.onSubmit(NormalMode),
+    routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     addresses,
     subHeading = Some(testName)
   )
