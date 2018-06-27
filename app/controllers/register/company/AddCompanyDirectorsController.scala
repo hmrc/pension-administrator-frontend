@@ -103,7 +103,7 @@ class AddCompanyDirectorsController @Inject() (
 
   }
 
-  private def disableSubmission(directorsWithFlag: Seq[(DirectorDetails, Boolean)]): Boolean = directorsWithFlag.foldLeft(true){ (x, y) =>
-    !y._2
+  private def disableSubmission(directorsWithFlag: Seq[(DirectorDetails, Boolean)]): Boolean = directorsWithFlag.foldLeft(true){ case (_, (_, isComplete)) =>
+    !isComplete
   }
 }
