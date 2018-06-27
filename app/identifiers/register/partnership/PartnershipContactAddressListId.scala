@@ -17,9 +17,8 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import models.{AddressYears, Index}
-import play.api.libs.json.JsPath
+import models.TolerantAddress
 
-case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
-  override lazy val toString: String = "partnershipAddressYears"
+case object PartnershipContactAddressListId extends TypedIdentifier[TolerantAddress]{
+  override def toString: String = "partnershipContactAddressList"
 }
