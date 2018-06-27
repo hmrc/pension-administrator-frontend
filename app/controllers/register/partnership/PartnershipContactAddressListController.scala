@@ -31,7 +31,7 @@ import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.address.AddressListViewModel
 
-class PartnershipAddressListController @Inject()(
+class PartnershipContactAddressListController @Inject()(
                                                 val cacheConnector: DataCacheConnector,
                                                 @Partnership val navigator: Navigator,
                                                 val appConfig: FrontendAppConfig,
@@ -45,8 +45,8 @@ class PartnershipAddressListController @Inject()(
   def viewModel(mode: Mode) = Retrieval { implicit request =>
     (PartnershipDetailsId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case details ~ addresses =>
       AddressListViewModel(
-        routes.PartnershipAddressListController.onSubmit(mode),
-        routes.PartnershipAddressListController.onSubmit(mode),
+        routes.PartnershipContactAddressListController.onSubmit(mode),
+        routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
         subHeading = Some(details.name)
       )

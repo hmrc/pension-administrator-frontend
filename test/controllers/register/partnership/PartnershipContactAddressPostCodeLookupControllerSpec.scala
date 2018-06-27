@@ -88,7 +88,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
 
   val viewModel = PostcodeLookupViewModel(
     routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode),
-    routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode), //TODO change to manual address page
+    routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     Message("partnershipContactAddressPostCodeLookup.title"),
     Message("partnershipContactAddressPostCodeLookup.heading").withArgs(partnershipName),
     Some(Message("site.secondaryHeader")),

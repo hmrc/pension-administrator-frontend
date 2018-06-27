@@ -20,7 +20,7 @@ import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company._
 import identifiers.register.individual._
-import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId}
+import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipDetailsId}
 import models.register.company.BusinessDetails
 import models.{Address, LastPage, TolerantAddress}
 import org.scalatest.OptionValues
@@ -114,6 +114,10 @@ package object utils {
       answers.set(PartnershipContactAddressListId)(address).asOpt.value
     }
 
+
+    def partnershipContactAddress(address: Address): UserAnswers = {
+      answers.set(PartnershipContactAddressId)(address).asOpt.value
+    }
 
     // Converters
     def dataRetrievalAction: DataRetrievalAction = {
