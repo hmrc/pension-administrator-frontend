@@ -1,7 +1,15 @@
 GET        /what-you-will-need                controllers.register.partnership.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                controllers.register.partnership.WhatYouWillNeedController.onSubmit()
 
+
 GET        /how-long-at-address               controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST       /how-long-at-address               controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-how-long-at-address        controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-how-long-at-address        controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /what-is-the-contact-address                        controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-is-the-contact-address                        controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /change-what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET        /partnership-company-not-found           controllers.register.partnership.PartnershipCompanyNotFoundController.onPageLoad()
