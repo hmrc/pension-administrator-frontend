@@ -16,9 +16,10 @@
 
 package identifiers.register.partnership
 
-import identifiers.TypedIdentifier
-import models.AddressYears
+import identifiers._
+import models.TolerantAddress
 
-case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
-  override lazy val toString: String = "partnershipAddressYears"
+case object PartnershipContactAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]] {
+
+  override def toString: String = "partnershipContactAddressPostcodeLookup"
 }

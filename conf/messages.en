@@ -387,8 +387,8 @@ companyNotFound.lede = There could be a number of reasons why we cannot find you
 companyNotFound.businessNameExactMatch = Your business name is not an exact match
 companyNotFound.businessNameExactMatch.description = Your business name should match the name written on letters you have from HMRC. Check the capital letters and spaces in your business name. You should also check if your business name uses ‘limited’ or ‘LTD’.
 companyNotFound.businessNameChanged = Your business name has changed
-companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with companies house you need to inform {0}Companies House{1} and {2}HMRC{1}
-companyNotFound.businessNameChanged.individual = If you are an individual or a partnership and are not registered with Companies House {0}you only need to inform HMRC{1}
+companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with companies house you need to inform {0}Companies House{1} and {2}HMRC{1}.
+companyNotFound.businessNameChanged.individual = If you are an individual or a partnership and your details are not correct {0}you only need to contact the Tax helpline{1}.
 companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number does not match
 companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference number is made up of 10 or 13 numbers. If it is 13, only enter the last 10.
 
@@ -485,6 +485,7 @@ company.contactAddressList.heading = Select {0}’s contact address
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
 companyContactAddress.lede = This can be any address that can be used to contact {0}. The PSA might receive letters from HMRC.
+
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
 cya.label.company.contact.address = Contact Address
@@ -501,7 +502,6 @@ alreadyDeleted.heading = You have already deleted {0}
 alreadyDeleted.lede = You have already confirmed deletion of {0}.
 alreadyDeleted.text = This page no longer exists.
 
-
 whatYouWillNeed.partnership.title = What you will need
 whatYouWillNeed.partnership.heading = What you will need
 whatYouWillNeed.partnership.body.text1 = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
@@ -512,3 +512,9 @@ whatYouWillNeed.partnership.body.item3 = your contact telephone number and email
 
 partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
 partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?
+
+partnershipContactAddressPostCodeLookup.title = What is the contact address?
+partnershipContactAddressPostCodeLookup.heading = What is {0}’s contact address?
+partnershipContactAddressPostCodeLookup.lede = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+partnershipContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
+partnershipContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
