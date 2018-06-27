@@ -19,15 +19,13 @@ package controllers.register.partnership
 import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import controllers.register.partnership.routes.PartnershipAddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.PartnershipDetailsId
-import models.{AddressYears, BusinessDetails, NormalMode}
+import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -66,7 +64,6 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
 }
 
 object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsControllerSpec {
-
 
   val partnershipName = "Test Partnership Name"
 
