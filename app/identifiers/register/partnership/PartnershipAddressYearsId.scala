@@ -17,8 +17,7 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import models.{AddressYears, Index}
-import play.api.libs.json.JsPath
+import models.AddressYears
 
 case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
   override lazy val toString: String = "partnershipAddressYears"
