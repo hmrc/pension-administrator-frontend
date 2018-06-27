@@ -512,3 +512,7 @@ whatYouWillNeed.partnership.body.item3 = your contact telephone number and email
 
 partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
 partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?
+
+confirmPartnershipDetails.title = Are these details correct?
+confirmPartnershipDetails.heading = Are these details correct?
+confirmPartnershipDetails.error.required = Select yes if these details are correct
