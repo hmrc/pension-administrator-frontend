@@ -35,6 +35,8 @@ import utils.Navigator
 import utils.annotations.CompanyDirector
 import views.html.register.company.addCompanyDirectors
 
+import scala.annotation.tailrec
+
 class AddCompanyDirectorsController @Inject() (
                                                 appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
@@ -53,7 +55,7 @@ class AddCompanyDirectorsController @Inject() (
 
       val directors: Seq[DirectorDetails] = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
-      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(Seq(), directors, isComplete)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(directors, isComplete)
 
       Ok(addCompanyDirectors(appConfig, form, mode, withFlags, disableSubmission(withFlags)))
   }
@@ -63,7 +65,7 @@ class AddCompanyDirectorsController @Inject() (
 
       val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
-      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(Seq(), directors, isComplete)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(directors, isComplete)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
@@ -85,20 +87,21 @@ class AddCompanyDirectorsController @Inject() (
       }
   }
 
+  @tailrec
   private def directorsWithFlag(
-                                 withFlag: Seq[(DirectorDetails, Boolean)],
                                  directors: Seq[DirectorDetails],
-                                 flags: Seq[Boolean]
+                                 flags: Seq[Boolean],
+                                 withFlag: Seq[(DirectorDetails, Boolean)] = Seq.empty
                                ): Seq[(DirectorDetails, Boolean)] = {
 
     if(directors.isEmpty){
       withFlag
     } else if (flags.isEmpty) {
       val addWithFlag: (DirectorDetails, Boolean) = (directors.head, false)
-      directorsWithFlag(withFlag :+ addWithFlag, directors.tail, Seq.empty)
+      directorsWithFlag(directors.tail, Seq.empty, withFlag :+ addWithFlag)
     } else {
       val addWithFlag: (DirectorDetails, Boolean) = (directors.head, flags.head)
-      directorsWithFlag(withFlag :+ addWithFlag, directors.tail, flags.tail)
+      directorsWithFlag(directors.tail, flags.tail, withFlag :+ addWithFlag)
     }
 
   }
