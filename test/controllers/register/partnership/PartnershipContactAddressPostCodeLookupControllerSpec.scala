@@ -93,8 +93,8 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
     Message("partnershipContactAddressPostCodeLookup.heading").withArgs(partnershipName),
     Some(Message("site.secondaryHeader")),
     Message("partnershipContactAddressPostCodeLookup.lede").withArgs(partnershipName),
-    Message("common.postcodeLookup.enterPostcode"),
-    Some(Message("common.postcodeLookup.enterPostcode.link")),
+    Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
+    Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),
     Message("address.postcode")
   )
 

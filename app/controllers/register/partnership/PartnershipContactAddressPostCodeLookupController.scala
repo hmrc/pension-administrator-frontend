@@ -56,8 +56,8 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
           Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.name),
           Some(Message("site.secondaryHeader")),
           Message("partnershipContactAddressPostCodeLookup.lede").withArgs(details.name),
-          Message("common.postcodeLookup.enterPostcode"),
-          Some(Message("common.postcodeLookup.enterPostcode.link")),
+          Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
+          Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),
           Message("address.postcode")
         )
       }
