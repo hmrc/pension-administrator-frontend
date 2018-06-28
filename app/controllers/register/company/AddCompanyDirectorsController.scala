@@ -31,7 +31,7 @@ import models.register.company.directors.DirectorDetails
 import play.api.Logger
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import utils.{Navigator, SectionComplete}
 import utils.annotations.CompanyDirector
 import views.html.register.company.addCompanyDirectors
 
@@ -45,8 +45,9 @@ class AddCompanyDirectorsController @Inject() (
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: AddCompanyDirectorsFormProvider
-                                                   ) extends FrontendController with I18nSupport {
+                                                formProvider: AddCompanyDirectorsFormProvider,
+                                                sectionComplete: SectionComplete
+                                              ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -55,7 +56,7 @@ class AddCompanyDirectorsController @Inject() (
 
       val directors: Seq[DirectorDetails] = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
-      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(directors, isComplete)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = sectionComplete.directorsWithFlag(directors, isComplete)
 
       Ok(addCompanyDirectors(appConfig, form, mode, withFlags, disableSubmission(withFlags)))
   }
@@ -65,7 +66,7 @@ class AddCompanyDirectorsController @Inject() (
 
       val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
-      val withFlags: Seq[(DirectorDetails, Boolean)] = directorsWithFlag(directors, isComplete)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = sectionComplete.directorsWithFlag(directors, isComplete)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
@@ -85,25 +86,6 @@ class AddCompanyDirectorsController @Inject() (
           }
         )
       }
-  }
-
-  @tailrec
-  private def directorsWithFlag(
-                                 directors: Seq[DirectorDetails],
-                                 flags: Seq[Boolean],
-                                 withFlag: Seq[(DirectorDetails, Boolean)] = Seq.empty
-                               ): Seq[(DirectorDetails, Boolean)] = {
-
-    if(directors.isEmpty){
-      withFlag
-    } else if (flags.isEmpty) {
-      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, false)
-      directorsWithFlag(directors.tail, Seq.empty, withFlag :+ addWithFlag)
-    } else {
-      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, flags.head)
-      directorsWithFlag(directors.tail, flags.tail, withFlag :+ addWithFlag)
-    }
-
   }
 
   private def disableSubmission(directorsWithFlag: Seq[(DirectorDetails, Boolean)]): Boolean = directorsWithFlag.foldLeft(true){ case (_, (_, isComplete)) =>

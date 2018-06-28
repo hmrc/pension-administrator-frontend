@@ -19,6 +19,7 @@ package utils
 import com.google.inject.{ImplementedBy, Inject}
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
+import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
 import play.api.libs.json.JsResultException
 import play.api.mvc.AnyContent
@@ -31,6 +32,12 @@ trait SectionComplete {
 
   def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
                  (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers]
+
+  def directorsWithFlag(
+                         directors: Seq[DirectorDetails],
+                         flags: Seq[Boolean],
+                         withFlag: Seq[(DirectorDetails, Boolean)] = Seq.empty
+                       ): Seq[(DirectorDetails, Boolean)]
 
 }
 
@@ -45,6 +52,24 @@ class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) exte
     )
 
     dataCacheConnector.save(request.externalId, id, true) map UserAnswers
+
+  }
+
+  override def directorsWithFlag(
+                                 directors: Seq[DirectorDetails],
+                                 flags: Seq[Boolean],
+                                 withFlag: Seq[(DirectorDetails, Boolean)] = Seq.empty
+                               ): Seq[(DirectorDetails, Boolean)] = {
+
+    if(directors.isEmpty){
+      withFlag
+    } else if (flags.isEmpty) {
+      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, false)
+      directorsWithFlag(directors.tail, Seq.empty, withFlag :+ addWithFlag)
+    } else {
+      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, flags.head)
+      directorsWithFlag(directors.tail, flags.tail, withFlag :+ addWithFlag)
+    }
 
   }
 

@@ -29,7 +29,7 @@ import models.register.company.directors.DirectorDetails
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, SectionComplete}
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
@@ -160,7 +160,8 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      injector.instanceOf[SectionComplete]
     )
 
   private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
