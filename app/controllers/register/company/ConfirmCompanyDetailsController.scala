@@ -26,7 +26,6 @@ import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
 import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
 import models._
-import models.register.company.BusinessDetails
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
@@ -101,7 +100,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                (implicit request: DataRequest[AnyContent]) = {
     (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
       case businessDetails ~ businessType =>
-        val organisation = Organisation(businessDetails.companyName, businessType)
+        val organisation = Organisation(businessDetails.name, businessType)
         registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap {
           registration =>
             fn(businessDetails, registration)

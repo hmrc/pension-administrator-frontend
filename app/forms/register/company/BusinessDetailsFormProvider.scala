@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import forms.FormErrorHelper
 import forms.mappings.{Mappings, Transforms}
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 import play.api.data.Form
 import play.api.data.Forms._
 

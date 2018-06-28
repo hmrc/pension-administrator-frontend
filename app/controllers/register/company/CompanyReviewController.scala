@@ -44,7 +44,7 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       BusinessDetailsId.retrieve.right.map { businessDetails =>
         val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil).map(_.fullName)
-        Future.successful(Ok(companyReview(appConfig, businessDetails.companyName, directors)))
+        Future.successful(Ok(companyReview(appConfig, businessDetails.name, directors)))
       }
   }
 

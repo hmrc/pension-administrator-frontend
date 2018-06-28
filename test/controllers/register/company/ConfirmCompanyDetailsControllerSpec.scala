@@ -24,7 +24,7 @@ import identifiers.register.company._
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -255,7 +255,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {
-        Future.failed(new NotFoundException(s"Unnown UTR: $utr"))
+        Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
       }
     }
 
@@ -281,7 +281,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       psaNameCacheConnector
     )
 
-  private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
+  private def viewAsString(companyName: String = companyDetails.name, address: TolerantAddress = testLimitedCompanyAddress): String =
     confirmCompanyDetails(frontendAppConfig, form, address, companyName)(fakeRequest, messages).toString
 
 }

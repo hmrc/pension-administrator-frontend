@@ -6,5 +6,5 @@ POST       /how-long-at-address               controllers.register.partnership.P
 GET        /change-how-long-at-address        controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-how-long-at-address        controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode = CheckMode)
 
-GET        /confirmPartnershipDetails         controllers.register.partnership.ConfirmPartnershipDetailsController.onPageLoad()
-POST       /confirmPartnershipDetails         controllers.register.partnership.ConfirmPartnershipDetailsController.onSubmit()
+GET        /confirm-partnership-details         controllers.register.partnership.ConfirmPartnershipDetailsController.onPageLoad()
+POST       /confirm-partnership-details         controllers.register.partnership.ConfirmPartnershipDetailsController.onSubmit()

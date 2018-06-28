@@ -25,11 +25,13 @@ import controllers.actions._
 import config.FrontendAppConfig
 import controllers.Retrievals
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
-import identifiers.register.BusinessTypeId
+import identifiers.TypedIdentifier
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
-import models.register.company.BusinessDetails
 import models.requests.DataRequest
-import models.{Mode, NormalMode, Organisation, OrganizationRegistration}
+import models.{BusinessDetails, NormalMode, Organisation, OrganizationRegistration}
+import play.api.Logger
+import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import utils.annotations.Partnership
@@ -55,8 +57,9 @@ class ConfirmPartnershipDetailsController @Inject() (
   def onPageLoad = (authenticate andThen getData andThen requireData).async {
     implicit request =>
           getPartnershipDetails { case (_, registration) =>
-            dataCacheConnector.remove(request.externalId, ConfirmPartnershipDetailsId)
-            Future.successful(Ok(confirmPartnershipDetails(appConfig, form, registration.response.organisation.organisationName, registration.response.address)))
+            dataCacheConnector.remove(request.externalId, ConfirmPartnershipDetailsId).flatMap(_ =>
+              dataCacheConnector.remove(request.externalId, PartnershipRegisteredAddressId).map(_ =>
+                Ok(confirmPartnershipDetails(appConfig, form, registration.response.organisation.organisationName, registration.response.address))))
       }
   }
 
@@ -65,10 +68,25 @@ class ConfirmPartnershipDetailsController @Inject() (
       getPartnershipDetails { case (partnershipDetails, registration) =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(confirmPartnershipDetails(appConfig, formWithErrors, registration.response.organisation.organisationName, registration.response.address))),
-          (value) =>
-            dataCacheConnector.save(request.externalId, ConfirmPartnershipDetailsId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, UserAnswers(cacheMap))))
+            Future.successful(BadRequest(confirmPartnershipDetails(
+              appConfig,
+              formWithErrors,
+              registration.response.organisation.organisationName,
+              registration.response.address
+            ))),
+          {
+            case true =>
+              upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
+                upsert(userAnswers, PartnershipDetailsId)(partnershipDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
+                  upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                    dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
+                      Redirect(navigator.nextPage(PartnershipRegisteredAddressId, NormalMode, userAnswers))
+                    }
+                  }
+                }
+              }
+          case false => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+          }
         )
       }
   }
@@ -89,4 +107,19 @@ class ConfirmPartnershipDetailsController @Inject() (
             }
       }
     }
+
+  private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)(value: id.Data)
+                                                        (fn: UserAnswers => Future[Result])
+                                                        (implicit writes: Writes[id.Data]) = {
+
+    userAnswers
+      .set(id)(value)
+      .fold(
+        errors => {
+          Logger.error("Unable to set user answer", JsResultException(errors))
+          Future.successful(InternalServerError)
+        },
+        userAnswers => fn(userAnswers)
+      )
+  }
 }

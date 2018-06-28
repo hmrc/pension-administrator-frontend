@@ -18,7 +18,7 @@ package views.register.company
 
 import forms.register.company.BusinessDetailsFormProvider
 import models.NormalMode
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.businessDetails

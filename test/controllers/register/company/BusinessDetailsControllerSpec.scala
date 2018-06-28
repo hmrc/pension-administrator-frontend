@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.register.company.BusinessDetailsFormProvider
 import identifiers.register.company.BusinessDetailsId
 import models.NormalMode
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
