@@ -51,7 +51,7 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
       PartnershipDetailsId.retrieve.right.map{ details =>
         PostcodeLookupViewModel(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
-          routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode), //TODO change to manual address page
+          routes.PartnershipContactAddressController.onPageLoad(mode),
           Message("partnershipContactAddressPostCodeLookup.title"),
           Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.name),
           Some(Message("site.secondaryHeader")),
