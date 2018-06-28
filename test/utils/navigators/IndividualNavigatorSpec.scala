@@ -86,7 +86,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object IndividualNavigatorSpec extends OptionValues {
   private def appConfig(isContactAddressEnabled: Boolean = false) = {
     val application = new GuiceApplicationBuilder()
-      .configure(Configuration("microservice.services.features.contact-address" -> isContactAddressEnabled)).build()
+      .configure(Configuration("features.contact-address" -> isContactAddressEnabled)).build()
     application.injector.instanceOf[FrontendAppConfig]
   }
 

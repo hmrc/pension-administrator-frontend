@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@(submitMessageKey: String = "site.continue")(implicit messages: Messages)
+@(submitMessageKey: String = "site.continue", disabled: Boolean = false)(implicit messages: Messages)
 
 <div class="section">
-    <button id="submit" class="button">@messages(submitMessageKey)</button>
+    <button id="submit" class="button" @if(disabled) {disabled}>@messages(submitMessageKey)</button>
 </div>

@@ -24,6 +24,7 @@ import forms.register.company.AddCompanyDirectorsFormProvider
 import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import models.NormalMode
 import models.register.company.directors.DirectorDetails
+import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBehaviours {
@@ -32,11 +33,11 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
 
   val form = new AddCompanyDirectorsFormProvider()()
 
-  private def createView(directors: Seq[DirectorDetails] = Nil)
-      = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
+  private def createView(directors: Seq[(DirectorDetails, Boolean)] = Nil)
+      = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, false)(fakeRequest, messages)
 
   private def createViewUsingForm(directors: Seq[DirectorDetails] = Nil)
-      = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
+      = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors.map((_, true)), false)(fakeRequest, messages)
 
   // scalastyle:off magic.number
   private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
@@ -61,9 +62,9 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
       Some("addADirector.hint")
     )
 
-    val directors: Seq[DirectorDetails] = Seq(johnDoe, joeBloggs)
+    val directors: Seq[(DirectorDetails, Boolean)] = Seq((johnDoe, true), (joeBloggs, true))
 
-    behave like peopleList(createView(), createView(directors), directors)
+    behave like peopleList(createView(), createView(directors), Person.indexedCompanyDirectorsWithFlag(directors) map (_._1))
 
     "not show the yes no inputs if there are no directors" in {
       val doc = asDocument(createViewUsingForm()(form))
@@ -94,7 +95,7 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
     }
 
     "show the maximum number of directors message when there are 10 directors" in {
-      val view = createView(Seq.fill(maxDirectors)(johnDoe))
+      val view = createView(Seq.fill(maxDirectors)((johnDoe, true)))
       view must haveDynamicText("addCompanyDirectors.atMaximum")
       view must haveDynamicText("addCompanyDirectors.tellUsIfYouHaveMore")
     }
