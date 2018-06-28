@@ -51,11 +51,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       save("cacheId", id, true) map UserAnswers
     }
 
-    override def directorsWithFlag(
-                                    directors: Seq[DirectorDetails],
-                                    flags: Seq[Boolean],
-                                    withFlag: Seq[(DirectorDetails, Boolean)]
-                                  ): Seq[(DirectorDetails, Boolean)] = ???
+    override def answersWithFlag[T](
+                                     answers: Seq[T],
+                                     flags: Seq[Boolean],
+                                     withFlag: Seq[(T, Boolean)]
+                                   ): Seq[(T, Boolean)] = ???
   }
 
   def answersDD: Seq[AnswerRow] = Seq(

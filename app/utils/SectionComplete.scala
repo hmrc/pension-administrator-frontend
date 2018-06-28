@@ -33,11 +33,11 @@ trait SectionComplete {
   def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
                  (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers]
 
-  def directorsWithFlag(
-                         directors: Seq[DirectorDetails],
-                         flags: Seq[Boolean],
-                         withFlag: Seq[(DirectorDetails, Boolean)] = Seq.empty
-                       ): Seq[(DirectorDetails, Boolean)]
+  def answersWithFlag[T](
+                          answers: Seq[T],
+                          flags: Seq[Boolean],
+                          withFlag: Seq[(T, Boolean)] = Seq.empty
+                        ): Seq[(T, Boolean)]
 
 }
 
@@ -55,20 +55,20 @@ class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) exte
 
   }
 
-  override def directorsWithFlag(
-                                 directors: Seq[DirectorDetails],
-                                 flags: Seq[Boolean],
-                                 withFlag: Seq[(DirectorDetails, Boolean)] = Seq.empty
-                               ): Seq[(DirectorDetails, Boolean)] = {
+  override def answersWithFlag[T](
+                                   answers: Seq[T],
+                                   flags: Seq[Boolean],
+                                   withFlag: Seq[(T, Boolean)] = Seq.empty
+                                 ): Seq[(T, Boolean)] = {
 
-    if(directors.isEmpty){
+    if(answers.isEmpty){
       withFlag
     } else if (flags.isEmpty) {
-      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, false)
-      directorsWithFlag(directors.tail, Seq.empty, withFlag :+ addWithFlag)
+      val addWithFlag: (T, Boolean) = (answers.head, false)
+      answersWithFlag(answers.tail, Seq.empty, withFlag :+ addWithFlag)
     } else {
-      val addWithFlag: (DirectorDetails, Boolean) = (directors.head, flags.head)
-      directorsWithFlag(directors.tail, flags.tail, withFlag :+ addWithFlag)
+      val addWithFlag: (T, Boolean) = (answers.head, flags.head)
+      answersWithFlag(answers.tail, flags.tail, withFlag :+ addWithFlag)
     }
 
   }

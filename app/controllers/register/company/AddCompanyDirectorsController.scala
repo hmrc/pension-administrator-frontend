@@ -56,7 +56,7 @@ class AddCompanyDirectorsController @Inject() (
 
       val directors: Seq[DirectorDetails] = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
-      val withFlags: Seq[(DirectorDetails, Boolean)] = sectionComplete.directorsWithFlag(directors, isComplete)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = sectionComplete.answersWithFlag(directors, isComplete)
 
       Ok(addCompanyDirectors(appConfig, form, mode, withFlags, disableSubmission(withFlags)))
   }
@@ -66,7 +66,7 @@ class AddCompanyDirectorsController @Inject() (
 
       val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
       val isComplete: Seq[Boolean] = request.userAnswers.getAll[Boolean](IsDirectorCompleteId.collectionPath).getOrElse(Nil)
-      val withFlags: Seq[(DirectorDetails, Boolean)] = sectionComplete.directorsWithFlag(directors, isComplete)
+      val withFlags: Seq[(DirectorDetails, Boolean)] = sectionComplete.answersWithFlag(directors, isComplete)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
