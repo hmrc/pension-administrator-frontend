@@ -19,8 +19,8 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company._
-import models.register.company.{BusinessDetails, CompanyDetails}
 import models._
+import models.register.company.CompanyDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions

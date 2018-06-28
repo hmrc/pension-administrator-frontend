@@ -24,7 +24,7 @@ import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import models.TolerantIndividual
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 import models.register.company.directors.DirectorDetails
 import play.api.libs.json.Json
 

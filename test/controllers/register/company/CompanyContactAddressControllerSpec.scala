@@ -23,8 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId}
-import models.register.company.BusinessDetails
-import models.{Address, NormalMode, TolerantAddress}
+import models.{Address, BusinessDetails, NormalMode, TolerantAddress}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
