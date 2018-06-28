@@ -16,23 +16,23 @@
 
 package utils
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import models.{PSAUser, UserType}
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.HeaderCarrier
-import org.mockito.Mockito._
+import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionValues with MockitoSugar{
+class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar{
 
   private val dummyId=new TypedIdentifier[Boolean]{
     override def toString="DummyId"
@@ -85,4 +85,27 @@ class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionVal
 
 
   }
+
+  "answersWithFlag" must {
+
+    "return a collection of answers with false flags" when {
+      "an empty collection of flags is passed" in {
+
+      }
+    }
+
+    "return a collection of answers with flags" when {
+      "a collection of answers and flags are passed" in {
+
+      }
+    }
+
+    "return an empty collection" when {
+      "an empty collection of answers is passed" in {
+
+      }
+    }
+
+  }
+
 }
