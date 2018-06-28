@@ -16,13 +16,13 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorId}
+import identifiers.register.company.directors.DirectorDetailsId
+import javax.inject.Inject
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}

@@ -17,8 +17,8 @@
 package models.register.company.directors
 
 import java.time.LocalDate
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 case class DirectorDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate, isDeleted: Boolean = false) {
   def fullName: String = middleName match {
@@ -28,6 +28,7 @@ case class DirectorDetails(firstName: String, middleName: Option[String], lastNa
 }
 
 object DirectorDetails {
+
   implicit val reads: Reads[DirectorDetails] =
     ((JsPath \ "firstName").read[String] and
       (JsPath \ "middleName").readNullable[String] and
@@ -37,6 +38,7 @@ object DirectorDetails {
       ) (DirectorDetails.apply _)
 
   implicit val writes: Writes[DirectorDetails] = Json.writes[DirectorDetails]
+
 
   def applyDelete(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate): DirectorDetails = {
     DirectorDetails(firstName, middleName, lastName, dateOfBirth, false)

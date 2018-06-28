@@ -24,7 +24,7 @@ import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.UserAnswers
 
-class DirectorIdSpec extends WordSpec with MustMatchers with OptionValues {
+class DirectorDetailsIdSpec extends WordSpec with MustMatchers with OptionValues {
 
   val userAnswersWithTenDirectors = UserAnswers(Json.obj(
     "directors" -> Json.arr(
@@ -56,9 +56,9 @@ class DirectorIdSpec extends WordSpec with MustMatchers with OptionValues {
 
       "there are fewer than 10 directors" in {
 
-        val result: UserAnswers = userAnswersWithOneDirector
+        val result: UserAnswers = userAnswersWithTenDirectors
           .set(MoreThanTenDirectorsId)(true).asOpt.value
-          .remove(DirectorId(1)).asOpt.value
+          .remove(DirectorDetailsId(1)).asOpt.value
 
         result.get(MoreThanTenDirectorsId) must not be defined
 

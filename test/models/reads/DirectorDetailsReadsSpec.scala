@@ -29,15 +29,13 @@ class DirectorDetailsReadsSpec extends WordSpec with MustMatchers with OptionVal
     "map correctly to director details" when {
 
       "We have director details with isDeleted defaulted to false when no isDeleted flag is in json" in {
-        val payload = Json.obj("firstName" -> "test", "middleName" -> "testVat",
-          "lastName" -> "testPaye", "dateOfBirth" -> LocalDate.now())
+        val payload = Json.obj("firstName" -> "test", "middleName" -> "testVat", "lastName" -> "testPaye", "dateOfBirth" -> LocalDate.now())
         val result = payload.as[DirectorDetails]
         result.isDeleted mustBe false
       }
 
       "We have director details with isDeleted flag to true when isDeleted is present in json" in {
-        val payload = Json.obj("firstName" -> "test", "middleName" -> "testVat",
-          "lastName" -> "testPaye", "dateOfBirth" -> LocalDate.now(), "isDeleted" -> true)
+        val payload = Json.obj("firstName" -> "test", "middleName" -> "testVat", "lastName" -> "testPaye", "dateOfBirth" -> LocalDate.now(), "isDeleted" -> true)
         val result = payload.as[DirectorDetails]
         result.isDeleted mustBe true
       }

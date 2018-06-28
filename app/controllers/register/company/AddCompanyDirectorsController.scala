@@ -16,24 +16,22 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
-
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.DirectorDetailsId
+import javax.inject.Inject
 import models.Mode
-import models.register.company.directors.DirectorDetails
 import play.api.Logger
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
 import utils.annotations.CompanyDirector
+import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsController @Inject() (
@@ -51,13 +49,13 @@ class AddCompanyDirectorsController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors: Seq[DirectorDetails] = request.userAnswers.allDirectors
+      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
       Ok(addCompanyDirectors(appConfig, form, mode, directors))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors = request.userAnswers.allDirectors
+      val directors = request.userAnswers.allDirectorsAfterDelete
 
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {

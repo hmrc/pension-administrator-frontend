@@ -22,7 +22,7 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorId}
+import identifiers.register.company.directors.DirectorDetailsId
 import models.register.company.directors.DirectorDetails
 import models.{Index, NormalMode}
 import org.scalatest.mockito.MockitoSugar

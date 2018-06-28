@@ -29,7 +29,7 @@ case class DirectorId(index: Int) extends TypedIdentifier[Nothing] {
   override def cleanup(value: Option[Nothing], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.get(MoreThanTenDirectorsId) match {
       case Some(_) =>
-        userAnswers.allDirectors match {
+        userAnswers.allDirectorsAfterDelete match {
           case directors if directors.filterNot(_.isDeleted).length < 10 =>
             userAnswers.remove(MoreThanTenDirectorsId)
           case _ => JsSuccess(userAnswers)
