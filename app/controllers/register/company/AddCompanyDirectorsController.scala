@@ -79,7 +79,7 @@ class AddCompanyDirectorsController @Inject() (
   }
 
   private def disableSubmission(directorsWithFlag: Seq[Person])(implicit request: DataRequest[AnyContent]): Boolean =
-    directorsWithFlag.foldLeft(true) { (_, person) =>
+     appConfig.completeFlagEnabled & directorsWithFlag.foldLeft(true) { (_, person) =>
       !person.isComplete.fold(false)(isComplete => isComplete)
     }
 }
