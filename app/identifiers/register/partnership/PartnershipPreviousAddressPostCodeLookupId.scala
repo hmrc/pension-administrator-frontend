@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package utils.navigators
+package identifiers.register.partnership
 
-import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
-import connectors.DataCacheConnector
-import utils.Navigator
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-@Singleton
-class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {
-
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = {
-    from.id match {
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-  }
-
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+case object PartnershipPreviousAddressPostCodeLookupId extends TypedIdentifier[Seq[TolerantAddress]]{
+  override def toString: String = "partnershipPreviousAddressPostCodeLookup"
 }
