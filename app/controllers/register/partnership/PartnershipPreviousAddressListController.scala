@@ -21,15 +21,14 @@ import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
-import identifiers.register.individual._
-import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
+import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
-import utils.annotations.{Individual, Partnership}
+import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 
@@ -56,11 +55,11 @@ class PartnershipPreviousAddressListController @Inject()(
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    IndividualPreviousAddressPostCodeLookupId.retrieve.right.map {
+    PartnershipPreviousAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
-          manualInputCall = routes.PartnershipPreviousAddressListController.onPageLoad(mode),
+          manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("common.previousAddressList.title"),
           Message("common.previousAddressList.heading"),
@@ -68,6 +67,6 @@ class PartnershipPreviousAddressListController @Inject()(
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )
-    }.left.map(_ => Future.successful(Redirect(routes.PartnershipPreviousAddressListController.onPageLoad(mode))))
+    }.left.map(_ => Future.successful(Redirect(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }
 }

@@ -21,13 +21,13 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
-import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
+import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.annotations.{Individual, Partnership}
+import utils.annotations.Partnership
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -56,12 +56,12 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
   private val data =
     UserAnswers(Json.obj())
-      .set(IndividualPreviousAddressPostCodeLookupId)(addresses)
+      .set(PartnershipPreviousAddressPostCodeLookupId)(addresses)
       .asOpt.map(_.json)
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
-  "individual Previous Address List Controller" must {
+  "partnership Previous Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
 
@@ -94,7 +94,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
       }
 
     }
@@ -116,7 +116,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
     }
 
     "redirect to the next page on POST of valid data" in {
-      val onwardRoute = controllers.routes.IndexController.onPageLoad()
+      val onwardRoute = controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(NormalMode)
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
         bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
@@ -174,17 +174,16 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)
       }
 
     }
-
   }
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
       routes.PartnershipPreviousAddressListController.onSubmit(NormalMode),
-      routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode),
+      routes.PartnershipPreviousAddressController.onPageLoad(NormalMode),
       addresses,
       Message("common.previousAddressList.title"),
       Message("common.previousAddressList.heading"),
