@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package viewmodels
 
-import identifiers.TypedIdentifier
-import models.AddressYears
+import play.api.mvc.Call
 
-case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
-  override lazy val toString: String = "partnershipAddressYears"
-}
+case class AlreadyDeletedViewModel(
+                                    title: Message,
+                                    deletedEntity: String,
+                                    returnCall: Call
+                                  )

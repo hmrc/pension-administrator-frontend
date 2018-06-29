@@ -17,8 +17,8 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import models.AddressYears
+import models.Address
 
-case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
-  override lazy val toString: String = "partnershipAddressYears"
+case object PartnershipContactAddressId extends TypedIdentifier[Address] {
+  override def toString: String = "partnershipContactAddress"
 }
