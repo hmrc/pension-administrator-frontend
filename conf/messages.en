@@ -522,3 +522,18 @@ partnershipContactAddressPostCodeLookup.enterPostcode.link = enter the address m
 partnership.contactAddress.title = What is the contact address?
 partnership.contactAddress.heading = What is {0}’s contact address?
 partnership.contactAddress.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+
+partnershipBusinessDetails.title = What are your partnership details?
+partnershipBusinessDetails.heading = What are your partnership details?
+partnershipBusinessDetails.partnershipName = Registered partnership name
+partnershipBusinessDetails.partnershipName.hint = This is the registered name on self assessment letters issued by HMRC
+partnershipBusinessDetails.utr = Partnership Self Assessment Unique Taxpayer Reference (UTR) number
+partnershipBusinessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’, ’UTR’ or ’Offical Use’
+
+partnershipBusinessDetails.error.partnershipName.required = Enter the registered partner name
+partnershipBusinessDetails.error.partnershipName.length = The name cannot be more than 105 characters
+partnershipBusinessDetails.error.partnershipName.invalid = Enter a valid registered partner name
+
+partnershipBusinessDetails.error.utr.required = Enter the Partnership Self Assessment Unique Taxpayer Reference number
+partnershipBusinessDetails.error.utr.invalid = Enter a valid Partnership Self Assessment Unique Taxpayer
+partnershipBusinessDetails.error.utr.length = The Partnership Self Assessment Unique Taxpayer Reference number cannot be more than 10 characters

@@ -22,8 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.register.company.BusinessDetails
-import models.{NormalMode, TolerantAddress}
+import models.{BusinessDetails, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind

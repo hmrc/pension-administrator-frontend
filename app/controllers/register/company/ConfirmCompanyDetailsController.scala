@@ -26,7 +26,6 @@ import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
 import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
 import models._
-import models.register.company.BusinessDetails
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
