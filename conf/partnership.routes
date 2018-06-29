@@ -27,3 +27,8 @@ GET        /is-this-the-contact-address            controllers.register.partners
 POST       /is-this-the-contact-address            controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-is-this-the-contact-address     controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-is-this-the-contact-address     controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-contact-details                controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-contact-details                controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = CheckMode)

@@ -22,7 +22,7 @@ import identifiers.register.company._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import models.register.company.BusinessDetails
-import models.{Address, LastPage, TolerantAddress}
+import models.{Address, ContactDetails, LastPage, TolerantAddress}
 import org.scalatest.OptionValues
 
 package object utils {
@@ -124,6 +124,10 @@ package object utils {
 
     def partnershipRegisteredAddress(address: TolerantAddress): UserAnswers = {
       answers.set(PartnershipRegisteredAddressId)(address).asOpt.value
+    }
+
+    def partnershipContactDetails(contactDetails: ContactDetails): UserAnswers = {
+      answers.set(PartnershipContactDetailsId)(contactDetails).asOpt.value
     }
 
     // Converters
