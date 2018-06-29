@@ -18,44 +18,54 @@ package identifiers.register.company.directors
 
 import java.time.LocalDate
 
+import identifiers.register.company.MoreThanTenDirectorsId
 import models.register.company.directors.DirectorDetails
-import models.requests.DataRequest
-import models.{PSAUser, UserType}
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Request}
-import play.api.test.FakeRequest
 import utils.UserAnswers
 
+class DirectorDetailsIdSpec extends WordSpec with MustMatchers with OptionValues {
 
-class DirectorDetailsIdSpec extends WordSpec with MustMatchers {
+  val userAnswersWithTenDirectors = UserAnswers(Json.obj(
+    "directors" -> Json.arr(
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "One", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Two", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Three", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Four", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Five", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Six", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Seven", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Eight", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Nine", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("Tim", None, "Ten", LocalDate.now(), isDeleted = true)),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("Tim", None, "Eleven", LocalDate.now(), isDeleted = true)),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("Tim", None, "Twelve", LocalDate.now(), isDeleted = true)),
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "Thirteen", LocalDate.now()))
+    )
+  ))
 
-  "DirectorDetailsId" must {
-    "return isComplete flag" when {
-      "the flag is present" in {
+  val userAnswersWithOneDirector = UserAnswers(Json.obj(
+    "directors" -> Json.arr(
+      Json.obj(DirectorDetailsId.toString -> DirectorDetails("John", None, "One", LocalDate.now()))
+    )
+  ))
 
-        val director = DirectorDetails("First", None, "Last", LocalDate.now())
+  "Cleanup" must {
 
-        val fakeRequest: Request[AnyContent] = FakeRequest("/", "GET")
+    "remove MoreThanTenDirectorsId" when {
 
-        implicit val request: DataRequest[AnyContent] = DataRequest(
-          fakeRequest,
-          "cacheId",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
-          UserAnswers(Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorDetailsId.toString -> director,
-                IsDirectorCompleteId.toString -> false
-              )
-            )
-          ))
-        )
+      "there are fewer than 10 directors" in {
 
-        DirectorDetailsId.isComplete(0) must be(Some(false))
+        val result: UserAnswers = userAnswersWithTenDirectors
+          .set(MoreThanTenDirectorsId)(true).asOpt.value
+          .remove(DirectorDetailsId(1)).asOpt.value
+
+        result.get(MoreThanTenDirectorsId) must not be defined
 
       }
+
     }
+
   }
 
 }

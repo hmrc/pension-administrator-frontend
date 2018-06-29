@@ -21,18 +21,16 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
 import models.Mode
-import models.register.company.directors.DirectorDetails
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, SectionComplete}
+import utils.Navigator
 import utils.annotations.CompanyDirector
+import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsController @Inject() (
@@ -43,28 +41,21 @@ class AddCompanyDirectorsController @Inject() (
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: AddCompanyDirectorsFormProvider,
-                                                sectionComplete: SectionComplete
-                                              ) extends FrontendController with I18nSupport {
+                                                formProvider: AddCompanyDirectorsFormProvider
+                                                   ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-
-      val directors: Seq[DirectorDetails] = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
-
-      val withFlags: Seq[(DirectorDetails, Boolean)] = directors.zipWithIndex.map { case (director, index) =>
-        (director, DirectorDetailsId.isComplete(index).fold(false)(isComplete => isComplete))
-      }
-
-      Ok(addCompanyDirectors(appConfig, form, mode, withFlags, disableSubmission(withFlags)))
+      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
+      Ok(addCompanyDirectors(appConfig, form, mode, directors))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
+      val directors = request.userAnswers.allDirectorsAfterDelete
 
-      val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
 
       val withFlags: Seq[(DirectorDetails, Boolean)] = directors.zipWithIndex.map { case (director, index) =>
         (director, DirectorDetailsId.isComplete(index).fold(false)(isComplete => isComplete))

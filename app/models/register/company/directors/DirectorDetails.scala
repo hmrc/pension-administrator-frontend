@@ -17,20 +17,34 @@
 package models.register.company.directors
 
 import java.time.LocalDate
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-import play.api.libs.json.{Format, Json}
-
-case class DirectorDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate) {
-
+case class DirectorDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate, isDeleted: Boolean = false) {
   def fullName: String = middleName match {
     case Some(middle) => s"$firstName $middle $lastName"
     case _ => s"$firstName $lastName"
   }
-
-  def isComplete: Option[Boolean] = ???
-
 }
 
 object DirectorDetails {
-  implicit val format: Format[DirectorDetails] = Json.format[DirectorDetails]
+
+  implicit val reads: Reads[DirectorDetails] =
+    ((JsPath \ "firstName").read[String] and
+      (JsPath \ "middleName").readNullable[String] and
+      (JsPath \ "lastName").read[String] and
+      (JsPath \ "dateOfBirth").read[LocalDate] and
+      ((JsPath \ "isDeleted").read[Boolean] orElse (Reads.pure(false)))
+      ) (DirectorDetails.apply _)
+
+  implicit val writes: Writes[DirectorDetails] = Json.writes[DirectorDetails]
+
+
+  def applyDelete(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate): DirectorDetails = {
+    DirectorDetails(firstName, middleName, lastName, dateOfBirth, false)
+  }
+
+  def unapplyDelete(directorDetails: DirectorDetails): Option[(String, Option[String], String, LocalDate)] = {
+    Some((directorDetails.firstName, directorDetails.middleName, directorDetails.lastName, directorDetails.dateOfBirth))
+  }
 }

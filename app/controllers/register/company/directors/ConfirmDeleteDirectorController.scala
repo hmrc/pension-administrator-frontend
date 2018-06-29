@@ -16,14 +16,13 @@
 
 package controllers.register.company.directors
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import identifiers.register.company.directors.DirectorId
+import identifiers.register.company.directors.DirectorDetailsId
+import javax.inject.Inject
 import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -41,15 +40,23 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        Future.successful(Ok(confirmDeleteDirector(appConfig, index, directorName)))
+      retrieve(DirectorDetailsId(index)) { details =>
+          details.isDeleted match {
+            case false =>
+              Future.successful(Ok(confirmDeleteDirector(appConfig, index, details.fullName)))
+            case true =>
+              Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(index)))
+          }
+
       }
   }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      dataCacheConnector.remove(request.externalId, DirectorId(index)).map { _ =>
-        Redirect(AddCompanyDirectorsController.onPageLoad(NormalMode))
+      retrieve(DirectorDetailsId(index)) {directorDetails =>
+        dataCacheConnector.save(request.externalId, DirectorDetailsId(index), directorDetails.copy(isDeleted = true)).map{ _ =>
+          Redirect(AddCompanyDirectorsController.onPageLoad(NormalMode))
+        }
       }
   }
 

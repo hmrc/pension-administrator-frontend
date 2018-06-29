@@ -17,13 +17,27 @@
 package identifiers.register.company.directors
 
 import identifiers._
+import identifiers.register.company.MoreThanTenDirectorsId
 import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsResult, JsSuccess}
 import play.api.mvc.AnyContent
+import utils.UserAnswers
 
 case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorDetailsId.toString
+
+  override def cleanup(value: Option[DirectorDetails], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    userAnswers.get(MoreThanTenDirectorsId) match {
+      case Some(_) =>
+        userAnswers.allDirectorsAfterDelete match {
+          case directors if directors.length < 10 =>
+            userAnswers.remove(MoreThanTenDirectorsId)
+          case _ => JsSuccess(userAnswers)
+        }
+      case _ => JsSuccess(userAnswers)
+    }
+  }
 }
 
 object DirectorDetailsId {

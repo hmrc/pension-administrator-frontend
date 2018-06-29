@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.{FakeNavigator, SectionComplete}
+import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
@@ -50,7 +51,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val getRelevantData = dataRetrievalAction(directors: _*)
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-      contentAsString(result) mustBe viewAsString(form, directors)
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
     }
 
     "redirect to the next page when no directors exist and the user submits" in {
@@ -73,6 +74,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
       val directors = Seq.fill(maxDirectors - 1)(johnDoe)
+      val directorAsPerson = Seq.fill(maxDirectors - 1)(johnDoePerson)
       val getRelevantData = dataRetrievalAction(directors: _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
@@ -81,7 +83,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(boundForm, directors)
+      contentAsString(result) mustBe viewAsString(boundForm, directorAsPerson)
     }
 
     "not save the answer when directors exist and valid data is submitted" in {
@@ -104,8 +106,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       navigator.lastUserAnswers.value.get(AddCompanyDirectorsId).value mustBe true
     }
 
-    "redirect to the next page when maximum directors exist and the user submits" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors)(johnDoe): _*)
+    "redirect to the next page when maximum active directors exist and the user submits" in {
+      val directorDetails = Seq.fill(maxDirectors)(johnDoe) ++Seq(joeBloggs.copy(isDeleted = true))
+
+      val getRelevantData = dataRetrievalAction(directorDetails: _*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 
@@ -115,10 +119,19 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "populate the view with directors when they exist" in {
       val directors = Seq(johnDoe, joeBloggs)
+      val directorsAsPerson = Seq(johnDoePerson, joeBloggsPerson)
       val getRelevantData = dataRetrievalAction(directors: _*)
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form, directors)
+      contentAsString(result) mustBe viewAsString(form, directorsAsPerson)
+    }
+
+    "exclude the deleted directors from the list" in {
+      val directors = Seq(johnDoe, joeBloggs.copy(isDeleted = true))
+      val getRelevantData = dataRetrievalAction(directors: _*)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -171,6 +184,12 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
   private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
+
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
+  // scalastyle:off magic.number
+  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), false)
+  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 

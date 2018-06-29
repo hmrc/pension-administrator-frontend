@@ -16,15 +16,12 @@
 
 package views.register.company
 
-import java.time.LocalDate
-
-import play.api.data.Form
 import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
-import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import models.NormalMode
-import models.register.company.directors.DirectorDetails
+import play.api.data.Form
 import viewmodels.Person
+import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBehaviours {
@@ -33,15 +30,16 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
 
   val form = new AddCompanyDirectorsFormProvider()()
 
-  private def createView(directors: Seq[(DirectorDetails, Boolean)] = Nil)
-      = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, false)(fakeRequest, messages)
+  private def createView(directors: Seq[Person] = Nil)
+      = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
 
-  private def createViewUsingForm(directors: Seq[DirectorDetails] = Nil)
-      = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors.map((_, true)), false)(fakeRequest, messages)
-
+  private def createViewUsingForm(directors: Seq[Person] = Nil)
+      = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
   // scalastyle:off magic.number
-  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), false)
+  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
   // scalastyle:on magic.number
 
   private val maxDirectors = frontendAppConfig.maxDirectors
@@ -62,9 +60,9 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
       Some("addADirector.hint")
     )
 
-    val directors: Seq[(DirectorDetails, Boolean)] = Seq((johnDoe, true), (joeBloggs, true))
+    val directors: Seq[Person] = Seq(johnDoe, joeBloggs)
 
-    behave like peopleList(createView(), createView(directors), Person.indexedCompanyDirectorsWithFlag(directors) map (_._1))
+    behave like peopleList(createView(), createView(directors), directors)
 
     "not show the yes no inputs if there are no directors" in {
       val doc = asDocument(createViewUsingForm()(form))
@@ -95,7 +93,7 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
     }
 
     "show the maximum number of directors message when there are 10 directors" in {
-      val view = createView(Seq.fill(maxDirectors)((johnDoe, true)))
+      val view = createView(Seq.fill(maxDirectors)(johnDoe))
       view must haveDynamicText("addCompanyDirectors.atMaximum")
       view must haveDynamicText("addCompanyDirectors.tellUsIfYouHaveMore")
     }

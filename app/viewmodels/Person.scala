@@ -17,12 +17,12 @@
 package viewmodels
 
 import controllers.register.company.directors.routes
-import models.register.company.directors.DirectorDetails
 import models.{Index, NormalMode}
+import models.register.company.directors.DirectorDetails
 
 import scala.language.implicitConversions
 
-case class Person(index: Int, name: String, deleteLink: String, editLink: String) {
+case class Person(index: Int, name: String, deleteLink: String, editLink: String, isDeleted: Boolean) {
   def id = s"person-$index"
   def deleteLinkId = s"$id-delete"
   def editLinkId = s"$id-edit"
