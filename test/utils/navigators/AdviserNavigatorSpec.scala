@@ -29,7 +29,7 @@ import org.scalatest.prop.TableFor6
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
+//scalastyle:off line.size.limit
 
 class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -49,7 +49,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
 }
 
@@ -66,5 +66,7 @@ object AdviserNavigatorSpec extends OptionValues {
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }
