@@ -1,0 +1,70 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import config.FrontendAppConfig
+import connectors.DataCacheConnector
+import forms.BusinessDetailsFormModel
+import forms.BusinessDetailsFormProvider
+import identifiers.TypedIdentifier
+import models.requests.DataRequest
+import models.{BusinessDetails, NormalMode}
+import play.api.data.Form
+import play.api.i18n.I18nSupport
+import play.api.mvc.{AnyContent, Result}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{Navigator, UserAnswers}
+import viewmodels.BusinessDetailsViewModel
+import views.html.businessDetails
+
+import scala.concurrent.Future
+
+trait BusinessDetailsController extends FrontendController with I18nSupport {
+
+  protected def appConfig: FrontendAppConfig
+  protected def dataCacheConnector: DataCacheConnector
+  protected def navigator: Navigator
+
+  protected def formModel: BusinessDetailsFormModel
+  protected def viewModel: BusinessDetailsViewModel
+
+  private lazy val form = new BusinessDetailsFormProvider()(formModel)
+
+  def get[I <: TypedIdentifier[BusinessDetails]](id: I)(implicit request: DataRequest[AnyContent]): Result = {
+
+    val preparedForm = request.userAnswers.get(id) match {
+      case None => form
+      case Some(value) => form.fill(value)
+    }
+
+    Ok(businessDetails(appConfig, preparedForm, viewModel))
+
+  }
+
+  def post[I <: TypedIdentifier[BusinessDetails]](id: I)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+
+    form.bindFromRequest().fold(
+      (formWithErrors: Form[_]) =>
+        Future.successful(BadRequest(businessDetails(appConfig, formWithErrors, viewModel))),
+      value =>
+        dataCacheConnector.save(request.externalId, id, value).map(cacheMap =>
+          Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap))))
+    )
+
+  }
+
+}

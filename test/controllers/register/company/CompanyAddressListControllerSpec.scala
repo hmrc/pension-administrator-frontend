@@ -21,8 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.register.company.BusinessDetails
-import models.{NormalMode, TolerantAddress}
+import models.{BusinessDetails, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._

@@ -69,10 +69,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: DataCacheConnector, 
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) =>
-        answers.get(LastPageId) match {
-          case Some(lastPage) => NavigateTo.dontSave(Call(lastPage.method, lastPage.url))
-          case _ => NavigateTo.save(routes.WhatYouWillNeedController.onPageLoad())
-        }
+        NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
       case Some(false) =>
         NavigateTo.dontSave(routes.YouWillNeedToUpdateController.onPageLoad())
       case None =>

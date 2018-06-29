@@ -5,10 +5,8 @@ POST       /business-type                               controllers.register.com
 GET        /change-business-type                        controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-business-type                        controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /business-details                            controllers.register.company.BusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /business-details                            controllers.register.company.BusinessDetailsController.onSubmit(mode: Mode = NormalMode)
-GET        /change-business-details                     controllers.register.company.BusinessDetailsController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-business-details                     controllers.register.company.BusinessDetailsController.onSubmit(mode: Mode = CheckMode)
+GET        /business-details                            controllers.register.company.CompanyBusinessDetailsController.onPageLoad()
+POST       /business-details                            controllers.register.company.CompanyBusinessDetailsController.onSubmit()
 
 GET        /company-registration-number                 controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /company-registration-number                 controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)

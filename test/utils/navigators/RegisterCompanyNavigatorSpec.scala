@@ -38,10 +38,10 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                                      "User Answers",           "Next Page (Normal Mode)",            "Save (NM)",  "Next Page (Check Mode)",                 "Save (CM)"),
-    (BusinessTypeId,                              emptyAnswers,           businessDetailsPage,                  false,        None,                                     false),
+    (BusinessTypeId,                              emptyAnswers,           companyBusinessDetailsPage,           false,        None,                                     false),
     (BusinessDetailsId,                           emptyAnswers,           confirmCompanyDetailsPage,            false,        None,                                     false),
     (ConfirmCompanyAddressId,                     emptyAnswers,           whatYouWillNeedPage,                  false,        None,                                     false),
-    (ConfirmCompanyAddressId,                     lastPage,               testLastPage,                         false,        None,                                     false),
+    (ConfirmCompanyAddressId,                     lastPage,               whatYouWillNeedPage,                  false,        None,                                     false),
     (WhatYouWillNeedId,                           emptyAnswers,           sameContactAddress(NormalMode),       true,         None,                                     false),
     (CompanySameContactAddressId,                 isSameContactAddress,   companyAddressYearsPage(NormalMode),  true,         Some(companyAddressYearsPage(CheckMode)), true),
     (CompanySameContactAddressId,                 notSameContactAddress,  contactAddressPostCode(NormalMode),   true,         Some(contactAddressPostCode(CheckMode)),  true),
@@ -70,15 +70,16 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
+
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  private def businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
+  private def companyBusinessDetailsPage = routes.CompanyBusinessDetailsController.onPageLoad()
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   private def companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
@@ -94,7 +95,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def contactAddressList(mode: Mode) = routes.CompanyContactAddressListController.onPageLoad(mode)
   private def contatAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
-  private def testLastPage = Call("GET", "www.test.com")
 
   private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
@@ -105,5 +105,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val notSameContactAddress = UserAnswers().companySameContactAddress(false)
   private lazy val lastPage = UserAnswers(Json.obj())
     .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
+
+  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }

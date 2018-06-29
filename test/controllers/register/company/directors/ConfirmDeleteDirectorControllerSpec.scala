@@ -22,7 +22,7 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorId}
+import identifiers.register.company.directors.DirectorDetailsId
 import models.register.company.directors.DirectorDetails
 import models.{Index, NormalMode}
 import org.scalatest.mockito.MockitoSugar
@@ -56,7 +56,8 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
             "directorDetails" -> Json.obj(
               "firstName" -> "John",
               "lastName" -> "Doe",
-              "dateOfBirth" -> Json.toJson(LocalDate.now())
+              "dateOfBirth" -> Json.toJson(LocalDate.now()),
+              "isDeleted" -> false
             )
           )
         )
@@ -68,6 +69,30 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+    }
+
+    "redirect to already deleted view for a GET if the director was already deleted" in {
+
+      val validData = Json.obj(
+        "directors" -> Json.arr(
+          Json.obj(
+            "directorDetails" -> Json.obj(
+              "firstName" -> "John",
+              "lastName" -> "Doe",
+              "dateOfBirth" -> Json.toJson(LocalDate.now()),
+              "isDeleted" -> true
+            )
+          )
+        )
+      )
+
+      val data = new FakeDataRetrievalAction(Some(validData))
+
+      val result = controller(data).onPageLoad(firstIndex)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.AlreadyDeletedController.onPageLoad(firstIndex).url)
+
     }
 
     "redirect to directors list on removal of director" in {
@@ -88,7 +113,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
 
     }
 
-    "remove the director on submission of POST request" in {
+    "set the isDelete flag to true for the selected director on submission of POST request" in {
       val validData = Json.obj(
         "directors" -> Json.arr(
           Json.obj(
@@ -101,7 +126,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verifyRemoved(DirectorId(firstIndex))
+      FakeDataCacheConnector.verify(DirectorDetailsId(firstIndex), DirectorDetails("John", None, "Doe", LocalDate.now(), true))
     }
 
   }

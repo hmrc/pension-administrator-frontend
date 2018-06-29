@@ -22,5 +22,3 @@ import utils.NavigatorBehaviour
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 }
-
-

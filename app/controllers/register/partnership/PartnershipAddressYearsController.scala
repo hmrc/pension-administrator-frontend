@@ -24,7 +24,7 @@ import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
 import javax.inject.Inject
-import models.{Index, Mode}
+import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -51,8 +51,8 @@ class PartnershipAddressYearsController @Inject()(
           AddressYearsViewModel(
             routes.PartnershipAddressYearsController.onSubmit(mode),
             Message("partnership.addressYears.title"),
-            Message("partnership.addressYears.heading").withArgs(details.name),
-            Message("partnership.addressYears.heading").withArgs(details.name),
+            Message("partnership.addressYears.heading").withArgs(details.companyName),
+            Message("partnership.addressYears.heading").withArgs(details.companyName),
             Some("site.secondaryHeader")
           )
         }

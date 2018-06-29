@@ -26,9 +26,14 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector,
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = {
     from.id match {
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => None
     }
   }
 
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = {
+    from.id match {
+      case _ => None
+    }
+  }
+
 }
