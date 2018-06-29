@@ -16,13 +16,18 @@
 
 package utils
 
+import java.time.LocalDate
+
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
+import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
+import org.scalacheck.Gen
 import org.scalatest.mockito.MockitoSugar
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
@@ -32,7 +37,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar{
+class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar with GeneratorDrivenPropertyChecks {
 
   private val dummyId=new TypedIdentifier[Boolean]{
     override def toString="DummyId"
@@ -91,11 +96,41 @@ class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues w
     "return a collection of answers with false flags" when {
       "an empty collection of flags is passed" in {
 
+        val directors = Gen.alphaStr map { alphaStr =>
+          DirectorDetails(alphaStr, None, alphaStr, LocalDate.now())
+        }
+
+        forAll(Gen.listOf(directors)){ directors =>
+
+          val result = new SectionCompleteImpl(dataCacheConnector).answersWithFlag(directors, Seq.empty)
+
+          result must be(directors map ((_, false)))
+
+        }
+
       }
     }
 
     "return a collection of answers with flags" when {
       "a collection of answers and flags are passed" in {
+
+        val directorsWithFlagsGen = for {
+          alphaStr <- Gen.alphaStr
+          flag <-Gen.oneOf(Seq(true, false))
+        } yield {
+          (DirectorDetails(alphaStr, None, alphaStr, LocalDate.now()), flag)
+        }
+
+        forAll(Gen.listOf(directorsWithFlagsGen)){ directorsWithFlags =>
+
+          val directors = directorsWithFlags map (_._1)
+          val flags = directorsWithFlags map (_._2)
+
+          val result = new SectionCompleteImpl(dataCacheConnector).answersWithFlag(directors, flags)
+
+          result must be(directorsWithFlags)
+
+        }
 
       }
     }
@@ -103,6 +138,9 @@ class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues w
     "return an empty collection" when {
       "an empty collection of answers is passed" in {
 
+        val result = new SectionCompleteImpl(dataCacheConnector).answersWithFlag(Seq.empty, Seq.empty)
+
+        result must be(Seq.empty)
       }
     }
 

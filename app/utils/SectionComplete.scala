@@ -19,7 +19,6 @@ package utils
 import com.google.inject.{ImplementedBy, Inject}
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
 import play.api.libs.json.JsResultException
 import play.api.mvc.AnyContent
@@ -64,11 +63,9 @@ class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) exte
     if(answers.isEmpty){
       withFlag
     } else if (flags.isEmpty) {
-      val addWithFlag: (T, Boolean) = (answers.head, false)
-      answersWithFlag(answers.tail, Seq.empty, withFlag :+ addWithFlag)
+      answersWithFlag(answers.tail, Seq.empty, withFlag :+ (answers.head, false))
     } else {
-      val addWithFlag: (T, Boolean) = (answers.head, flags.head)
-      answersWithFlag(answers.tail, flags.tail, withFlag :+ addWithFlag)
+      answersWithFlag(answers.tail, flags.tail, withFlag :+ (answers.head, flags.head))
     }
 
   }
