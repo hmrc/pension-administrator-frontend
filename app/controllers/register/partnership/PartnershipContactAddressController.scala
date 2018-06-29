@@ -66,7 +66,7 @@ class PartnershipContactAddressController @Inject()(
           get(
             PartnershipContactAddressId,
             PartnershipContactAddressListId,
-            viewmodel(mode, details.name)
+            viewmodel(mode, details.companyName)
           )
       }
   }
@@ -78,7 +78,7 @@ class PartnershipContactAddressController @Inject()(
           post(
             PartnershipContactAddressId,
             PartnershipContactAddressListId,
-            viewmodel(mode, details.name),
+            viewmodel(mode, details.companyName),
             mode,
             context = "Partnership contact address"
           )
