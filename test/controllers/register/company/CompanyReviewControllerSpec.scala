@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 import models.register.company.directors.DirectorDetails
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call

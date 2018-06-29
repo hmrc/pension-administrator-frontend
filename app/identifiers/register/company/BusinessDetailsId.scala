@@ -17,7 +17,7 @@
 package identifiers.register.company
 
 import identifiers._
-import models.register.company.BusinessDetails
+import models.BusinessDetails
 
 case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] {
   override def toString: String = "businessDetails"

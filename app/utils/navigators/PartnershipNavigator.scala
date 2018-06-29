@@ -24,7 +24,16 @@ import utils.Navigator
 @Singleton
 class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {
 
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = {
+    from.id match {
+      case _ => None
+    }
+  }
 
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = {
+    from.id match {
+      case _ => None
+    }
+  }
+
 }

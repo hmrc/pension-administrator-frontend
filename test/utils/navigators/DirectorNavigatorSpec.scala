@@ -29,13 +29,11 @@ import models.requests.IdentifiedRequest
 import models.{AddressYears, CheckMode, Mode, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.prop.{TableFor4, TableFor6}
+import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
   import DirectorNavigatorSpec._
@@ -69,7 +67,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
 }
 
@@ -113,4 +111,7 @@ object DirectorNavigatorSpec extends OptionValues {
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private def dataDescriber(answers: UserAnswers): String = answers.toString
+
 }

@@ -21,8 +21,7 @@ import identifiers.register.company.directors.{CompanyDirectorAddressListId, Dir
 import identifiers.register.company._
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import models.register.company.BusinessDetails
-import models.{Address, LastPage, TolerantAddress}
+import models._
 import org.scalatest.OptionValues
 
 package object utils {
@@ -110,6 +109,7 @@ package object utils {
     def partnershipDetails(details: models.BusinessDetails): UserAnswers = {
       answers.set(PartnershipDetailsId)(details).asOpt.value
     }
+
     def partnershipContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(PartnershipContactAddressListId)(address).asOpt.value
     }
