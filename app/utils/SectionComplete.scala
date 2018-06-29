@@ -32,12 +32,6 @@ trait SectionComplete {
   def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
                  (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers]
 
-  def answersWithFlag[T](
-                          answers: Seq[T],
-                          flags: Seq[Boolean],
-                          withFlag: Seq[(T, Boolean)] = Seq.empty
-                        ): Seq[(T, Boolean)]
-
 }
 
 class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) extends SectionComplete {
@@ -51,22 +45,6 @@ class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) exte
     )
 
     dataCacheConnector.save(request.externalId, id, true) map UserAnswers
-
-  }
-
-  override def answersWithFlag[T](
-                                   answers: Seq[T],
-                                   flags: Seq[Boolean],
-                                   withFlag: Seq[(T, Boolean)] = Seq.empty
-                                 ): Seq[(T, Boolean)] = {
-
-    if(answers.isEmpty){
-      withFlag
-    } else if (flags.isEmpty) {
-      answersWithFlag(answers.tail, Seq.empty, withFlag :+ (answers.head, false))
-    } else {
-      answersWithFlag(answers.tail, flags.tail, withFlag :+ (answers.head, flags.head))
-    }
 
   }
 
