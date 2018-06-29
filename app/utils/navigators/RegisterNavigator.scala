@@ -17,17 +17,18 @@
 package utils.navigators
 
 import connectors.DataCacheConnector
-import identifiers.Identifier
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import controllers.register.company.routes
+import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
-import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case BusinessTypeId =>
+      NavigateTo.dontSave(routes.BusinessDetailsController.onPageLoad(NormalMode))
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
     case DeclarationWorkingKnowledgeId =>
       declarationWorkingKnowledgeRoutes(from.userAnswers)

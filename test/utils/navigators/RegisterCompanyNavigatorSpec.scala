@@ -38,7 +38,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                                      "User Answers",           "Next Page (Normal Mode)",            "Save (NM)",  "Next Page (Check Mode)",                 "Save (CM)"),
-    (BusinessTypeId,                              emptyAnswers,           businessDetailsPage,                  false,        None,                                     false),
     (BusinessDetailsId,                           emptyAnswers,           confirmCompanyDetailsPage,            false,        None,                                     false),
     (ConfirmCompanyAddressId,                     emptyAnswers,           whatYouWillNeedPage,                  false,        None,                                     false),
     (ConfirmCompanyAddressId,                     lastPage,               testLastPage,                         false,        None,                                     false),
@@ -78,7 +77,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  private def businessDetailsPage = routes.BusinessDetailsController.onPageLoad(NormalMode)
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   private def companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)

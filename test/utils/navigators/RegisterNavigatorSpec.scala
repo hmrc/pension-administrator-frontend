@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.FakeDataCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import models.requests.IdentifiedRequest
@@ -31,8 +31,6 @@ import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import RegisterNavigatorSpec._
   val navigator = new RegisterNavigator(FakeDataCacheConnector)
@@ -40,6 +38,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                          "User Answers",                  "Next Page (Normal Mode)",       "Save(NormalMode)",  "Next Page (Check Mode)", "Save(CheckMode"),
+    (BusinessTypeId,                emptyAnswers,                     businessDetailsPage,            false,               None,                     false),
     (DeclarationId,                 emptyAnswers,                    declarationWorkingKnowledgePage, true,                None,                     false),
     (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage,     true,                None,                     false),
     (DeclarationWorkingKnowledgeId, haveAnAdviser,                   adviserDetailsPage,              true,                None,                     false),
@@ -59,6 +58,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object RegisterNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  lazy val businessDetailsPage = controllers.register.company.routes.BusinessDetailsController.onPageLoad(NormalMode)
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
