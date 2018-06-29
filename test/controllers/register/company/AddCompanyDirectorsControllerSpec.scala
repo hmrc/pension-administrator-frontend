@@ -150,9 +150,9 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when maximum active directors exist and the user submits" in {
-      val x = Seq.fill(maxDirectors)(johnDoe) ++Seq(joeBloggs.copy(isDeleted = true))
+      val directorDetails = Seq.fill(maxDirectors)(johnDoe) ++Seq(joeBloggs.copy(isDeleted = true))
 
-      val getRelevantData = dataRetrievalAction(x: _*)
+      val getRelevantData = dataRetrievalAction(directorDetails: _*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 

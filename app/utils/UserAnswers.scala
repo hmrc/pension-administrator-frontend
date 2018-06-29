@@ -54,7 +54,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
   def allDirectorsAfterDelete: Seq[Person] = {
     val directors = allDirectors
-    directors.filterNot(_.isDeleted).map { case (director) =>
+    directors.filterNot(_.isDeleted).map { director =>
       val index = directors.indexOf(director)
       Person(
         index,

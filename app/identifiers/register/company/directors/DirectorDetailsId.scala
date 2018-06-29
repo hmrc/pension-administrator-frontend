@@ -29,7 +29,7 @@ case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails
     userAnswers.get(MoreThanTenDirectorsId) match {
       case Some(_) =>
         userAnswers.allDirectorsAfterDelete match {
-          case directors if directors.filterNot(_.isDeleted).length < 10 =>
+          case directors if directors.length < 10 =>
             userAnswers.remove(MoreThanTenDirectorsId)
           case _ => JsSuccess(userAnswers)
         }
