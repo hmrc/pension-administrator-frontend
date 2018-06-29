@@ -24,12 +24,15 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
-import models.NormalMode
 import models.register.company.directors.DirectorDetails
+import models.requests.DataRequest
+import models.{NormalMode, PSAUser, UserType}
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, SectionComplete}
+import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
@@ -173,12 +176,14 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
-      injector.instanceOf[SectionComplete]
+      formProvider
     )
 
-  private def viewAsString(form: Form[_] = form, directors: Seq[DirectorDetails] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors.map((_, true)), false)(fakeRequest, messages).toString
+  val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
+
+  private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, true)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
@@ -196,8 +201,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   private def dataRetrievalAction(directors: DirectorDetails*): FakeDataRetrievalAction = {
     val validData = Json.obj("directors" ->
       directors.map(d => Json.obj(
-        DirectorDetailsId.toString -> Json.toJson(d),
-        IsDirectorCompleteId.toString -> JsBoolean(true)
+        DirectorDetailsId.toString -> Json.toJson(d)
       ))
     )
     new FakeDataRetrievalAction(Some(validData))

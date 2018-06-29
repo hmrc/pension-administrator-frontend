@@ -14,14 +14,16 @@
  * limitations under the License.
  *@
 
+@import play.api.mvc.AnyContent
 @import config.FrontendAppConfig
+@import models.requests.DataRequest
 @import viewmodels.Person
 
-@(appConfig: FrontendAppConfig, peopleWithFlag: Seq[(Person, Boolean)])(implicit messages: Messages)
+@(appConfig: FrontendAppConfig, people: Seq[Person])(implicit request: DataRequest[AnyContent], messages: Messages)
 
 <div class="form-group">
     <ul id="people" class="govuk-check-your-answers form-group cya-questions-long">
-        @for((person, flag) <- peopleWithFlag) {
+        @for(person <- people) {
         <li>
             <div class="cya-question">
                 <h2 id="@person.id" class="bold std-text">@person.name</h2>
@@ -29,7 +31,7 @@
 
             @if(appConfig.completeFlagEnabled){
 
-                @if(flag){
+                @if(person.isComplete){
 
                 <div class="cya-status status">
                     <span class="complete">COMPLETE</span>

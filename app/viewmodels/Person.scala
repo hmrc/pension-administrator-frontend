@@ -16,9 +16,9 @@
 
 package viewmodels
 
-import controllers.register.company.directors.routes
-import models.{Index, NormalMode}
-import models.register.company.directors.DirectorDetails
+import identifiers.register.company.directors.DirectorDetailsId
+import models.requests.DataRequest
+import play.api.mvc.AnyContent
 
 import scala.language.implicitConversions
 
@@ -26,34 +26,7 @@ case class Person(index: Int, name: String, deleteLink: String, editLink: String
   def id = s"person-$index"
   def deleteLinkId = s"$id-delete"
   def editLinkId = s"$id-edit"
+
+  def isComplete(implicit request: DataRequest[AnyContent]): Option[Boolean] = DirectorDetailsId.isComplete(index)
 }
 
-object Person {
-
-  implicit def indexedCompanyDirectors(directors: Seq[DirectorDetails]): Seq[Person] = {
-    directors.zipWithIndex.map { case (director, index) =>
-      Person(
-        index,
-        director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
-      )
-    }
-  }
-
-  implicit def indexedCompanyDirectorsWithFlag(directors: Seq[(DirectorDetails, Boolean)]): Seq[(Person, Boolean)] = {
-    directors.zipWithIndex.map { case ((director, flag), index) =>
-      (Person(
-        index,
-        director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-        if (flag) {
-          controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index).url
-        } else {
-          routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
-        }
-      ), flag)
-    }
-  }
-
-}
