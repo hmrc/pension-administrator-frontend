@@ -49,8 +49,6 @@ class ConfirmPartnershipDetailsViewSpec extends ViewBehaviours with AddressBehav
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
-
     behave like pageWithAddress((address) => createView(address)(), "partnershipAddress")
 
     behave like pageWithSubmitButton(createView())
