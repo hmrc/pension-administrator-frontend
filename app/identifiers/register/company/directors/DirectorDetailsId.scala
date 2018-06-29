@@ -19,7 +19,9 @@ package identifiers.register.company.directors
 import identifiers._
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.register.company.directors.DirectorDetails
+import models.requests.DataRequest
 import play.api.libs.json.{JsPath, JsResult, JsSuccess}
+import play.api.mvc.AnyContent
 import utils.UserAnswers
 
 case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails] {
@@ -39,6 +41,11 @@ case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails
 }
 
 object DirectorDetailsId {
+
   def collectionPath: JsPath = JsPath \ "directors" \\ DirectorDetailsId.toString
+
   override def toString: String = "directorDetails"
+
+  def isComplete(index: Int)(implicit request: DataRequest[AnyContent]): Option[Boolean] =
+    request.userAnswers.get[Boolean](JsPath \ "directors" \ index \ IsDirectorCompleteId.toString)
 }

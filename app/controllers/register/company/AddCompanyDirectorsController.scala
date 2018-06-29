@@ -23,6 +23,7 @@ import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,20 +44,19 @@ class AddCompanyDirectorsController @Inject() (
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddCompanyDirectorsFormProvider
-                                                   ) extends FrontendController with I18nSupport {
+                                              ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
-      Ok(addCompanyDirectors(appConfig, form, mode, directors))
+      Ok(addCompanyDirectors(appConfig, form, mode, directors, disableSubmission(directors)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors = request.userAnswers.allDirectorsAfterDelete
-
+      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
@@ -64,7 +64,7 @@ class AddCompanyDirectorsController @Inject() (
       else {
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors)),
+            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors, disableSubmission(directors))),
           value => {
             request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
               errors => {
@@ -77,4 +77,9 @@ class AddCompanyDirectorsController @Inject() (
         )
       }
   }
+
+  private def disableSubmission(directorsWithFlag: Seq[Person])(implicit request: DataRequest[AnyContent]): Boolean =
+    directorsWithFlag.foldLeft(true) { (_, person) =>
+      !person.isComplete.fold(false)(isComplete => isComplete)
+    }
 }

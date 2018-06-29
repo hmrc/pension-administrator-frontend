@@ -16,23 +16,28 @@
 
 package utils
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import java.time.LocalDate
+
+import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import models.{PSAUser, UserType}
+import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.HeaderCarrier
-import org.mockito.Mockito._
+import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito._
+import org.scalacheck.Gen
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionValues with MockitoSugar{
+class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar with GeneratorDrivenPropertyChecks {
 
   private val dummyId=new TypedIdentifier[Boolean]{
     override def toString="DummyId"
@@ -85,4 +90,5 @@ class SectionCompleteSpec extends AsyncWordSpec with MustMatchers with OptionVal
 
 
   }
+
 }
