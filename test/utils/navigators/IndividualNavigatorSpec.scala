@@ -43,8 +43,9 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //noinspection ScalaStyle
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                                      "User Answers",               "Next Page (Normal Mode)",              "Save(NormalMode)", "Next Page (CheckMode)",                     "Save(CheckMode"),
-    (IndividualDetailsCorrectId,                detailsCorrect,               whatYouWillNeedPage,                    true,               None,                                        false),
-    (IndividualDetailsCorrectId,                detailsIncorrect,             youWillNeedToUpdatePage,                false,               None,                                        false),
+    (IndividualDetailsCorrectId,                detailsCorrect,               whatYouWillNeedPage,                    false,              None,                                        false),
+    (IndividualDetailsCorrectId,                detailsIncorrect,             youWillNeedToUpdatePage,                false,              None,                                        false),
+    (IndividualDetailsCorrectId,                lastPage,                     whatYouWillNeedPage,                    false,              None,                                        false),
     (IndividualDetailsCorrectId,                emptyAnswers,                 sessionExpiredPage,                     false,              None,                                        false),
     (WhatYouWillNeedId,                         emptyAnswers,                 sameContactAddressPage(NormalMode),     true,               None,                                        false),
     (IndividualSameContactAddressId,            sameContactAddress,           addressYearsPage(NormalMode),           true,               Some(addressYearsPage(CheckMode)),           true),
@@ -67,19 +68,19 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   val navigatorToggled = new IndividualNavigator(FakeDataCacheConnector, appConfig())
   s"When contact address journey is toggled off ${navigatorToggled.getClass.getSimpleName}" must {
     appRunning()
-    behave like navigatorWithRoutes(navigatorToggled, FakeDataCacheConnector, toggledRoute())
+    behave like navigatorWithRoutes(navigatorToggled, FakeDataCacheConnector, toggledRoute(), dataDescriber)
   }
 
   val navigator = new IndividualNavigator(FakeDataCacheConnector, appConfig(true))
   s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
     appRunning()
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
 }
 
@@ -90,7 +91,7 @@ object IndividualNavigatorSpec extends OptionValues {
     application.injector.instanceOf[FrontendAppConfig]
   }
 
-  lazy val lastPage: Call = Call("GET", "http://www.test.com")
+  lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
 
   lazy private val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
@@ -117,16 +118,12 @@ object IndividualNavigatorSpec extends OptionValues {
   private def previousAddressPage(mode: Mode) = routes.IndividualPreviousAddressController.onPageLoad(mode)
 
   val emptyAnswers = UserAnswers(Json.obj())
-  private val detailsCorrectNoLastPage = UserAnswers(Json.obj()).set(
-    IndividualDetailsCorrectId)(true).asOpt.value
-  private val detailsCorrectLastPage =
-    UserAnswers()
-      .lastPage(LastPage(lastPage.method, lastPage.url))
-      .set(IndividualDetailsCorrectId)(true).asOpt.value
   private val detailsCorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(true).asOpt.value
   private val detailsIncorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(false).asOpt.value
+  private lazy val lastPage =
+    detailsCorrect.lastPage(LastPage(lastPageCall.method, lastPageCall.url))
   private val sameContactAddress = UserAnswers(Json.obj()).set(
     IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
@@ -141,4 +138,7 @@ object IndividualNavigatorSpec extends OptionValues {
     .set(IndividualAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+
+  private def dataDescriber(answers: UserAnswers): String = answers.toString
+
 }

@@ -36,7 +36,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
     case BusinessDetailsId =>
       NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
     case ConfirmCompanyAddressId =>
-      detailsCorrect(from.userAnswers)
+      NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
     case CompanySameContactAddressId =>
@@ -97,13 +97,6 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
 
   private def checkYourAnswers: Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
-
-  def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(LastPageId) match {
-      case Some(lastPage) => NavigateTo.dontSave(Call(lastPage.method, lastPage.url))
-      case _ => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-    }
-  }
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(CompanyAddressYearsId) match {
