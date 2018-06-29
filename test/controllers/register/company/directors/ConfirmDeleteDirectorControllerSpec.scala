@@ -71,6 +71,30 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       contentAsString(result) mustBe viewAsString()
     }
 
+    "redirect to already deleted view for a GET if the director was already deleted" in {
+
+      val validData = Json.obj(
+        "directors" -> Json.arr(
+          Json.obj(
+            "directorDetails" -> Json.obj(
+              "firstName" -> "John",
+              "lastName" -> "Doe",
+              "dateOfBirth" -> Json.toJson(LocalDate.now()),
+              "isDeleted" -> true
+            )
+          )
+        )
+      )
+
+      val data = new FakeDataRetrievalAction(Some(validData))
+
+      val result = controller(data).onPageLoad(firstIndex)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.AlreadyDeletedController.onPageLoad(firstIndex).url)
+
+    }
+
     "redirect to directors list on removal of director" in {
 
       val validData = Json.obj(

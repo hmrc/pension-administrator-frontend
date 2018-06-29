@@ -40,8 +40,14 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        Future.successful(Ok(confirmDeleteDirector(appConfig, index, directorName)))
+      retrieve(DirectorDetailsId(index)) { details =>
+          details.isDeleted match {
+            case false =>
+              Future.successful(Ok(confirmDeleteDirector(appConfig, index, details.fullName)))
+            case true =>
+              Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(index)))
+          }
+
       }
   }
 
@@ -53,4 +59,5 @@ class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
         }
       }
   }
+
 }
