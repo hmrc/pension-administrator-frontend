@@ -22,8 +22,7 @@ import controllers.actions._
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.company.{BusinessDetailsId, CompanyReviewId}
 import javax.inject.Inject
-import models.NormalMode
-import models.register.company.directors.DirectorDetails
+import models.{PersonDetails, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -43,7 +42,7 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right.map { businessDetails =>
-        val directors = request.userAnswers.getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil).map(_.fullName)
+        val directors = request.userAnswers.allDirectorsAfterDelete.map(_.name)
         Future.successful(Ok(companyReview(appConfig, businessDetails.companyName, directors)))
       }
   }

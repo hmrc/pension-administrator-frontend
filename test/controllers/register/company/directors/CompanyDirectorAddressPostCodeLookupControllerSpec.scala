@@ -23,8 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
-import models._
-import models.register.company.directors.DirectorDetails
+import models.{PersonDetails, _}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -54,7 +53,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
     "directors" -> Seq(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("Foo", None, "Bar", LocalDate.now)
+          PersonDetails("Foo", None, "Bar", LocalDate.now)
       )
     )
   )

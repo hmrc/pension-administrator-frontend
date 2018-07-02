@@ -21,10 +21,9 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.directors.DirectorDetailsFormProvider
+import forms.PersonDetailsFormProvider
 import identifiers.register.company.directors.DirectorDetailsId
-import models.NormalMode
-import models.register.company.directors.DirectorDetails
+import models.{NormalMode, PersonDetails}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -35,7 +34,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new DirectorDetailsFormProvider()
+  private val formProvider = new PersonDetailsFormProvider()
   private val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
@@ -66,7 +65,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         "directors" -> Json.arr(
           Json.obj(
-            DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
+            DirectorDetailsId.toString -> PersonDetails("John", None, "Doe", LocalDate.now())
           )
         )
       )
@@ -74,7 +73,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode, 0)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(0, form.fill(DirectorDetails("John", None, "Doe", LocalDate.now())))
+      contentAsString(result) mustBe viewAsString(0, form.fill(PersonDetails("John", None, "Doe", LocalDate.now())))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -97,7 +96,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
       val dob = LocalDate.of(1862, 6, 9)
       // scalastyle:on magic.number
 
-      val director = DirectorDetails(
+      val director = PersonDetails(
         "John",
         Some("J"),
         "Doe",
@@ -120,7 +119,7 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val invalidValue = Seq.fill(DirectorDetailsFormProvider.firstNameLength + 1)("A").mkString
+      val invalidValue = Seq.fill(PersonDetailsFormProvider.firstNameLength + 1)("A").mkString
       val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", invalidValue))
       val boundForm = form.bind(Map("firstName" -> invalidValue))
 

@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package models.register.company.directors
+package identifiers.register.partnership
 
-import java.time.LocalDate
+import identifiers.TypedIdentifier
+import models.Address
 
-import play.api.libs.json.{Format, Json}
-
-case class DirectorDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate) {
-  def fullName: String = middleName match {
-    case Some(middle) => s"$firstName $middle $lastName"
-    case _ => s"$firstName $lastName"
-  }
-}
-
-object DirectorDetails {
-  implicit val format: Format[DirectorDetails] = Json.format[DirectorDetails]
+case object PartnershipPreviousAddressId extends TypedIdentifier[Address] {
+  override def toString: String = "partnershipPreviousAddress"
 }

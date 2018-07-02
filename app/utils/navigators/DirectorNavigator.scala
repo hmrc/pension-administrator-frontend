@@ -22,8 +22,7 @@ import connectors.DataCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
-import models.register.company.directors.DirectorDetails
-import models.{AddressYears, CheckMode, NormalMode}
+import models.{AddressYears, CheckMode, PersonDetails, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 @Singleton
@@ -80,14 +79,11 @@ class DirectorNavigator @Inject()(val dataCacheConnector: DataCacheConnector, ap
     answers.get(AddCompanyDirectorsId) match {
       case Some(false) => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
       case _ =>
-        val index = answers.getAll(DirectorDetailsId.collectionPath)(DirectorDetails.format) match {
-          case Some(seq@Seq(_*)) => seq.length
-          case None => 0
-        }
+        val index = answers.allDirectorsAfterDelete.length
         if (index >= appConfig.maxDirectors) {
           NavigateTo.save(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode))
         } else {
-          NavigateTo.save(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index))
+          NavigateTo.save(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, answers.directorsCount))
         }
     }
   }

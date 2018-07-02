@@ -16,8 +16,12 @@
 
 package utils
 
+import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
+import identifiers.register.company.directors.DirectorDetailsId
+import models.{PersonDetails, Index, NormalMode}
 import play.api.libs.json._
+import viewmodels.Person
 
 import scala.language.implicitConversions
 
@@ -41,6 +45,29 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         Some(vs.map(v =>
           validate[A](v)
       )))
+  }
+
+  def allDirectors: Seq[PersonDetails] = {
+    getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
+  }
+
+  def allDirectorsAfterDelete: Seq[Person] = {
+    val directors = allDirectors
+    directors.filterNot(_.isDeleted).map { director =>
+      val index = directors.indexOf(director)
+      Person(
+        index,
+        director.fullName,
+        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
+        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url,
+        director.isDeleted
+      )
+    }
+  }
+
+  def directorsCount: Int = {
+    getAll[PersonDetails](DirectorDetailsId.collectionPath)
+      .getOrElse(Nil).length
   }
 
   private def validate[A](jsValue: JsValue)(implicit rds: Reads[A]): A = {

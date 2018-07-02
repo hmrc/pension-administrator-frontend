@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.register.company
+package identifiers.register.partnership
 
-import play.api.libs.json.Json
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-case class BusinessDetails (companyName: String, uniqueTaxReferenceNumber: String)
-
-object BusinessDetails {
-  implicit val format = Json.format[BusinessDetails]
+case object PartnershipPreviousAddressListId extends TypedIdentifier[TolerantAddress] {
+  override def toString: String = "partnershipPreviousAddressList"
 }

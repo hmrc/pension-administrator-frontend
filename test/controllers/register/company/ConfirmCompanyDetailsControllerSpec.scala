@@ -24,7 +24,6 @@ import identifiers.register.company._
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
-import models.register.company.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._

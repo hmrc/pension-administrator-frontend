@@ -18,12 +18,11 @@ package forms.mappings
 
 import java.time.LocalDate
 
-import base.SpecBase
 import forms.FormSpec
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.Matchers
 import play.api.data.validation.{Invalid, Valid}
+import utils.FakeCountryOptions
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, InputOption}
 
 class ConstraintsSpec extends FormSpec with Matchers with Constraints with RegexBehaviourSpec {
 
@@ -418,12 +417,12 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "text",
       "xyz 2nd's Ltd",
       "xyz/private",
+      "company\\Ltd",
       "TEST-FINANCIAL GROUP LTD"
     )
 
     val invalidText = Table(
       "text",
-      "company\\Ltd",
       "[company ltd]",
       "company, Ltd",
       "company Ltd."
@@ -433,4 +432,5 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     behave like regexWithValidAndInvalidExamples(companyName, validText, invalidText, invalidMsg, companyNameRegex)
   }
+
 }

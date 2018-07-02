@@ -31,8 +31,6 @@ import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import RegisterNavigatorSpec._
   val navigator = new RegisterNavigator(FakeDataCacheConnector)
@@ -51,7 +49,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
 
 }
@@ -72,5 +70,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }

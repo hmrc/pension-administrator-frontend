@@ -22,8 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
-import models.register.company.BusinessDetails
-import models.register.company.directors.DirectorDetails
+import models.{BusinessDetails, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -37,14 +36,14 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
   val companyName = "test company name"
   val directors = Seq("director a", "director b", "director c")
 
-  def director(lastName: String): JsObject = Json.obj(
-    DirectorDetailsId.toString -> DirectorDetails("director", None, lastName, LocalDate.now())
+  def director(lastName: String, isDeleted: Boolean = false): JsObject = Json.obj(
+    DirectorDetailsId.toString -> PersonDetails("director", None, lastName, LocalDate.now(), isDeleted)
   )
 
   val validData: JsObject = Json.obj(
     BusinessDetailsId.toString ->
       BusinessDetails(companyName, "test utr"),
-    "directors" -> Json.arr(director("a"), director("b"), director("c"))
+    "directors" -> Json.arr(director("a"), director("b"), director("c"), director("d", true))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
