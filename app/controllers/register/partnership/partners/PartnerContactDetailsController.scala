@@ -18,8 +18,10 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.ContactDetailsController
+import controllers.{ContactDetailsController, Retrievals}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import forms.ContactDetailsFormProvider
+import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerDetailsId}
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
@@ -27,6 +29,7 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Action
 import utils.Navigator
 import utils.annotations.Partnership
+import viewmodels.ContactDetailsViewModel
 
 class PartnerContactDetailsController @Inject()(
                                                  val appConfig: FrontendAppConfig,
@@ -35,17 +38,31 @@ class PartnerContactDetailsController @Inject()(
                                                  val messagesApi: MessagesApi,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction
-                                               ) extends ContactDetailsController {
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: ContactDetailsFormProvider
+                                               ) extends ContactDetailsController with Retrievals {
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def viewModel(mode: Mode, index: Index) = Retrieval {
     implicit request =>
-      ???
+      PartnerDetailsId(index).retrieve.right.map{ details =>
+        ContactDetailsViewModel(
+          routes.PartnerContactDetailsController.onSubmit(mode,index),
+          "partnership.partner.contactDetails.title",
+          "partnership.partner.contactDetails.heading",
+          None,
+          Some(details.fullName)
+        )
+      }
   }
 
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      ???
+      viewModel(mode, index).retrieve.right.map( vm => get(PartnerContactDetailsId(index), formProvider(), vm))
+  }
+
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+      viewModel(mode, index).retrieve.right.map( vm => post(PartnerContactDetailsId(index), mode, formProvider(), vm))
   }
 
 }

@@ -41,7 +41,7 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
     postCall = controllers.register.company.routes.ContactDetailsController.onSubmit(NormalMode),
     title = Message("contactDetails.company.title"),
     heading = Message("contactDetails.company.heading"),
-    body = Message("contactDetails.body"),
+    body = Some(Message("contactDetails.body")),
     subHeading = Some(Message("site.secondaryHeader"))
   )
 

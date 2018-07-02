@@ -60,7 +60,7 @@ class DirectorContactDetailsController @Inject()(
     postCall = routes.DirectorContactDetailsController.onSubmit(mode, index),
     title = Message("directorContactDetails.title"),
     heading = Message("directorContactDetails.heading"),
-    body = Message("contactDetails.body"),
+    body = Some(Message("contactDetails.body")),
     subHeading = Some(directorName)
   )
 }
