@@ -1,3 +1,5 @@
+->         /partner                             partners.Routes
+
 GET        /what-you-will-need                                    controllers.register.partnership.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                                    controllers.register.partnership.WhatYouWillNeedController.onSubmit()
 
