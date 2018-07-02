@@ -530,6 +530,10 @@ partnership.contactAddress.hint = This can be any address that HMRC can use to c
 partnership.partner.contactDetails.title = Enter the partner’s contact details
 partnership.partner.contactDetails.heading = Enter the partner’s contact details
 
+partnershipContactDetails.title = Enter the partnership’s contact details
+partnershipContactDetails.heading = Enter the partnership’s contact details
+
+
 partnershipBusinessDetails.title = What are your partnership details?
 partnershipBusinessDetails.heading = What are your partnership details?
 partnershipBusinessDetails.partnershipName = Registered partnership name
