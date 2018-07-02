@@ -524,5 +524,5 @@ partnership.contactAddress.heading = What is {0}’s contact address?
 partnership.contactAddress.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
 
 partnershipContactDetails.title = Enter contact details
-partnershipContactDetails.heading = What are the contact details for {0}’s Partnership?
+partnershipContactDetails.heading = Enter the partnership’s contact details
 

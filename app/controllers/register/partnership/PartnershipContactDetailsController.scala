@@ -46,7 +46,7 @@ class PartnershipContactDetailsController @Inject()(
         ContactDetailsViewModel(
           postCall = routes.PartnershipContactDetailsController.onSubmit(mode),
           title = Message("partnershipContactDetails.title"),
-          heading = Message("partnershipContactDetails.heading", details.name),
+          heading = Message("partnershipContactDetails.heading"),
           body = Message("contactDetails.body")
         )
       }

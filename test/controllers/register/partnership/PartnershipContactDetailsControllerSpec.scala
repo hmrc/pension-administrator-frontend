@@ -16,19 +16,15 @@
 
 package controllers.register.partnership
 
-import play.api.data.Form
-import play.api.libs.json.{JsBoolean, Json}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{FakeNavigator, UserAnswers}
 import connectors.FakeDataCacheConnector
-import controllers.actions._
-import play.api.test.Helpers._
-import models.{ContactDetails, NormalMode}
-import views.html.register.partnership.partnershipContactDetails
 import controllers.ControllerSpecBase
+import controllers.actions._
 import forms.ContactDetailsFormProvider
-import identifiers.register.partnership.PartnershipContactDetailsId
+import models.{ContactDetails, NormalMode}
+import play.api.data.Form
 import play.api.mvc.Call
+import play.api.test.Helpers._
+import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{ContactDetailsViewModel, Message}
 import views.html.contactDetails
 
@@ -42,7 +38,7 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
   def viewmodel = ContactDetailsViewModel(
     postCall = routes.PartnershipContactDetailsController.onSubmit(NormalMode),
     title = Message("partnershipContactDetails.title"),
-    heading = Message("partnershipContactDetails.heading", "Test Partnership Name"),
+    heading = Message("partnershipContactDetails.heading"),
     body = Message("contactDetails.body")
   )
 
