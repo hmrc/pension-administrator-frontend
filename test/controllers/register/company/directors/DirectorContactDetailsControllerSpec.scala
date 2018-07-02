@@ -25,8 +25,7 @@ import forms.ContactDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
 import models.register.company._
-import models.register.company.directors.DirectorDetails
-import models.{ContactDetails, Index, Mode, NormalMode}
+import models._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -58,13 +57,13 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorContactDetailsId.toString ->
           contactDetailsModel
       ),
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+          PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )
   )

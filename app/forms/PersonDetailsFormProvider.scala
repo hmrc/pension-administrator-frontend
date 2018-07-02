@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package forms.register.company.directors
-
-import javax.inject.Inject
+package forms
 
 import forms.mappings.{Mappings, Transforms}
-import models.register.company.directors.DirectorDetails
+import javax.inject.Inject
+import models.PersonDetails
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 
-class DirectorDetailsFormProvider @Inject() extends Mappings with Transforms {
+class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(): Form[DirectorDetails] = Form(
+  def apply(): Form[PersonDetails] = Form(
     mapping(
       "firstName" ->
-        text("directorDetails.error.firstName.required")
+        text("personDetails.error.firstName.required")
           .transform(standardTextTransform, noTransform)
           .verifying(
             firstError(
-              maxLength(DirectorDetailsFormProvider.firstNameLength,
-                "directorDetails.error.firstName.length"
+              maxLength(PersonDetailsFormProvider.firstNameLength,
+                "personDetails.error.firstName.length"
               ),
-              name("directorDetails.error.firstName.invalid")
+              name("personDetails.error.firstName.invalid")
             )
           ),
       "middleName" -> optional(
@@ -43,32 +42,32 @@ class DirectorDetailsFormProvider @Inject() extends Mappings with Transforms {
           .transform(standardTextTransform, noTransform)
           .verifying(
             firstError(
-              maxLength(DirectorDetailsFormProvider.middleNameLength,
-                "directorDetails.error.middleName.length"
+              maxLength(PersonDetailsFormProvider.middleNameLength,
+                "personDetails.error.middleName.length"
               ),
-              name("directorDetails.error.middleName.invalid")
+              name("personDetails.error.middleName.invalid")
             )
           )
       ),
       "lastName" ->
-        text("directorDetails.error.lastName.required")
+        text("personDetails.error.lastName.required")
           .transform(standardTextTransform, noTransform)
           .verifying(
             firstError(
-              maxLength(DirectorDetailsFormProvider.lastNameLength,
-                "directorDetails.error.lastName.length"
+              maxLength(PersonDetailsFormProvider.lastNameLength,
+                "personDetails.error.lastName.length"
               ),
-              name("directorDetails.error.lastName.invalid")
+              name("personDetails.error.lastName.invalid")
             )
           ),
       "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
         .verifying(nonFutureDate("common.error.dateOfBirth.future"))
-    )(DirectorDetails.applyDelete)(DirectorDetails.unapplyDelete)
+    )(PersonDetails.applyDelete)(PersonDetails.unapplyDelete)
   )
 
 }
 
-object DirectorDetailsFormProvider {
+object PersonDetailsFormProvider {
   val firstNameLength: Int = 35
   val middleNameLength: Int = 35
   val lastNameLength: Int = 35

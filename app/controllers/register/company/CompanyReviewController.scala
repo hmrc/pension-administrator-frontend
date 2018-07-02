@@ -22,8 +22,7 @@ import controllers.actions._
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.company.{BusinessDetailsId, CompanyReviewId}
 import javax.inject.Inject
-import models.NormalMode
-import models.register.company.directors.DirectorDetails
+import models.{PersonDetails, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

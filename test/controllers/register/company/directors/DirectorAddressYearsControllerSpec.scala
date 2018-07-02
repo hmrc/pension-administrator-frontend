@@ -25,8 +25,7 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.DirectorDetails
-import models.{AddressYears, Index, NormalMode}
+import models.{AddressYears, PersonDetails, Index, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -49,13 +48,13 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorAddressYearsId.toString ->
           AddressYears.options.head.value.toString
       ),
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+          PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )
   )
