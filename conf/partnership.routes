@@ -30,3 +30,9 @@ POST       /change-is-this-the-contact-address     controllers.register.partners
 
 GET        /business-details                  controllers.register.partnership.PartnershipBusinessDetailsController.onPageLoad()
 POST       /business-details                  controllers.register.partnership.PartnershipBusinessDetailsController.onSubmit()
+
+GET         /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = CheckMode)
+
