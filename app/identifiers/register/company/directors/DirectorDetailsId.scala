@@ -18,14 +18,14 @@ package identifiers.register.company.directors
 
 import identifiers._
 import identifiers.register.company.MoreThanTenDirectorsId
-import models.register.company.directors.DirectorDetails
+import models.PersonDetails
 import play.api.libs.json.{JsPath, JsResult, JsSuccess}
 import utils.UserAnswers
 
-case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails] {
+case class DirectorDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorDetailsId.toString
 
-  override def cleanup(value: Option[DirectorDetails], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+  override def cleanup(value: Option[PersonDetails], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.get(MoreThanTenDirectorsId) match {
       case Some(_) =>
         userAnswers.allDirectorsAfterDelete match {

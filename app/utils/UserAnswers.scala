@@ -19,8 +19,7 @@ package utils
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.DirectorDetailsId
-import models.{Index, NormalMode}
-import models.register.company.directors.DirectorDetails
+import models.{PersonDetails, Index, NormalMode}
 import play.api.libs.json._
 import viewmodels.Person
 
@@ -48,8 +47,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       )))
   }
 
-  def allDirectors: Seq[DirectorDetails] = {
-    getAll[DirectorDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
+  def allDirectors: Seq[PersonDetails] = {
+    getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
   }
 
   def allDirectorsAfterDelete: Seq[Person] = {
@@ -67,7 +66,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def directorsCount: Int = {
-    getAll[DirectorDetails](DirectorDetailsId.collectionPath)
+    getAll[PersonDetails](DirectorDetailsId.collectionPath)
       .getOrElse(Nil).length
   }
 

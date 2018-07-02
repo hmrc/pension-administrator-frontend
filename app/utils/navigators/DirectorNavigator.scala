@@ -22,8 +22,7 @@ import connectors.DataCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
-import models.register.company.directors.DirectorDetails
-import models.{AddressYears, CheckMode, NormalMode}
+import models.{AddressYears, CheckMode, PersonDetails, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 @Singleton

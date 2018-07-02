@@ -27,8 +27,7 @@ import forms.AddressFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.DirectorDetails
-import models.{Address, Index, NormalMode, TolerantAddress}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -55,14 +54,14 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorPreviousAddressId.toString ->
           address
 
       ),
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+          PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )
   )

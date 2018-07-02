@@ -25,8 +25,7 @@ import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.DirectorDetails
-import models.{Index, Nino, NormalMode, UniqueTaxReference}
+import models._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -50,13 +49,13 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorUniqueTaxReferenceId.toString ->
           UniqueTaxReference.Yes("1234567891")
       ),
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+          PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )
   )

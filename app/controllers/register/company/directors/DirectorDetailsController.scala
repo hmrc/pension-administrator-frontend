@@ -19,7 +19,7 @@ package controllers.register.company.directors
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import forms.register.company.directors.DirectorDetailsFormProvider
+import forms.PersonDetailsFormProvider
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
 import models.{Index, Mode}
@@ -41,7 +41,7 @@ class DirectorDetailsController @Inject()(
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           formProvider: DirectorDetailsFormProvider
+                                           formProvider: PersonDetailsFormProvider
                                          ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()

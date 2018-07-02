@@ -24,8 +24,7 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
-import models.NormalMode
-import models.register.company.directors.DirectorDetails
+import models.{PersonDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -61,8 +60,8 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages).toString
 
   // scalastyle:off magic.number
-  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
@@ -73,7 +72,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 
-  private def dataRetrievalAction(directors: DirectorDetails*): FakeDataRetrievalAction = {
+  private def dataRetrievalAction(directors: PersonDetails*): FakeDataRetrievalAction = {
     val validData = Json.obj(
       "directors" -> directors.map(d => Json.obj(DirectorDetailsId.toString -> Json.toJson(d)))
     )
