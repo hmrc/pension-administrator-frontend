@@ -24,7 +24,7 @@ import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
 import javax.inject.Inject
-import models.{Index, Mode}
+import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator

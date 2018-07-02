@@ -26,7 +26,7 @@ trait Constraints {
 
   protected val crnRegex = """^[A-Za-z0-9 -]{8}$"""
   protected val utrRegex = """^\d{10}$"""
-  protected val emailRestrictiveRegex = "^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
+  protected val emailRestrictiveRegex: String = "^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
     "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" +
     "@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|" +
     "\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:" +
@@ -39,7 +39,7 @@ trait Constraints {
   protected val nameRegex = """^[a-zA-Z\u00C0-\u00FF'‘’\u2014\u2013\u2010\u002d]{1,35}$"""
   protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   protected val addressLineRegex = """^[A-Za-z0-9 !'‘’"“”(),./\u2014\u2013\u2010\u002d]{1,35}$"""
-  protected val companyNameRegex = """^[a-zA-Z0-9 '&\/]{1,105}$"""
+  protected val companyNameRegex = """^[a-zA-Z0-9- '&\\/]{1,105}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -148,7 +148,6 @@ trait Constraints {
   protected def country(countryOptions: CountryOptions, errorKey: String): Constraint[String] =
     Constraint {
       input =>
-        val x = countryOptions.options
         countryOptions.options
           .find(_.value == input)
           .map(_ => Valid)

@@ -17,8 +17,7 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import models.{BusinessDetails, Index}
-import play.api.libs.json.JsPath
+import models.BusinessDetails
 
 case object PartnershipDetailsId extends TypedIdentifier[BusinessDetails] {
   override def toString: String = "partnershipDetails"

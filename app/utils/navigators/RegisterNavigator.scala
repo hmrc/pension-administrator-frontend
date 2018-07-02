@@ -28,7 +28,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) ex
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case BusinessTypeId =>
-      NavigateTo.dontSave(routes.BusinessDetailsController.onPageLoad(NormalMode))
+      NavigateTo.dontSave(routes.CompanyBusinessDetailsController.onPageLoad)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
     case DeclarationWorkingKnowledgeId =>
       declarationWorkingKnowledgeRoutes(from.userAnswers)

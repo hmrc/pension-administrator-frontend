@@ -14,95 +14,115 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package forms
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import models.BusinessDetails
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
+
+//scalastyle:off magic.number
 
 class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constraints {
 
-  val form = new BusinessDetailsFormProvider().apply()
+  import BusinessDetailsFormProviderSpec._
 
-  ".companyName" must {
+  "companyName" must {
 
     val fieldName = "companyName"
-    val requiredKey = "businessDetails.error.companyName.required"
-    val lengthKey = "businessDetails.error.companyName.length"
-    val invalidKey = "businessDetails.error.companyName.invalid"
-    val maxLength = BusinessDetailsFormProvider.BusinessNameLength
+    val maxLength = formModel.companyNameMaxLength
 
     behave like fieldThatBindsValidData(
-      form,
+      form(),
       fieldName,
-      "valid company name"
+      RegexpGen.from(companyNameRegex)
     )
 
     behave like fieldWithMaxLength(
-      form,
+      form(),
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, formModel.companyNameLengthMsg, Seq(maxLength))
     )
 
     behave like mandatoryField(
-      form,
+      form(),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, formModel.companyNameRequiredMsg)
     )
 
     behave like fieldWithRegex(
-      form,
+      form(),
       fieldName,
       "[invalid]",
-      error = FormError(fieldName, invalidKey, Seq(companyNameRegex))
+      error = FormError(fieldName, formModel.companyNameInvalidMsg, Seq(companyNameRegex))
     )
+
   }
 
-  ".utr" must {
+  "utr" must {
 
-    val requiredKey = "businessDetails.error.utr.required"
-    val lengthKey = "businessDetails.error.utr.length"
-    val invalid = "businessDetails.error.utr.invalid"
     val fieldName = "utr"
+    val maxLength = formModel.utrMaxLength
 
     behave like fieldThatBindsValidData(
-      form,
+      form(),
       fieldName,
       RegexpGen.from(utrRegex)
     )
 
     behave like mandatoryField(
-      form,
+      form(),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, formModel.utrRequiredMsg)
     )
 
     behave like fieldWithRegex(
-      form,
+      form(),
       fieldName,
       "ABC",
-      FormError(fieldName, invalid, Seq(utrRegex))
+      FormError(fieldName, formModel.utrInvalidMsg, Seq(utrRegex))
     )
 
     behave like fieldWithMaxLength(
-      form,
+      form(),
       fieldName,
-      maxLength = BusinessDetailsFormProvider.utrMaxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(BusinessDetailsFormProvider.utrMaxLength))
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, formModel.utrLengthMsg, Seq(maxLength))
     )
+
   }
+
   "form" must {
     val rawData = Map("companyName" -> "test", "utr" -> " 1234567890 ")
     val expectedData = BusinessDetails("test", "1234567890")
 
     behave like formWithTransform[BusinessDetails](
-      form,
+      form(),
       rawData,
       expectedData
     )
   }
+
+}
+
+object BusinessDetailsFormProviderSpec {
+
+  def form(): Form[BusinessDetails] = {
+    new BusinessDetailsFormProvider().apply(formModel)
+  }
+
+  val formModel: BusinessDetailsFormModel =
+    BusinessDetailsFormModel(
+      companyNameMaxLength = 105,
+      companyNameRequiredMsg = "businessDetails.error.companyName.required",
+      companyNameLengthMsg = "businessDetails.error.companyName.length",
+      companyNameInvalidMsg= "businessDetails.error.companyName.invalid",
+      utrMaxLength = 10,
+      utrRequiredMsg = "businessDetails.error.utr.required",
+      utrLengthMsg = "businessDetails.error.utr.length",
+      utrInvalidMsg= "businessDetails.error.utr.invalid"
+    )
 
 }

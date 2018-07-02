@@ -17,11 +17,25 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.register.company.directors.DirectorDetails
-import play.api.libs.json.JsPath
+import identifiers.register.company.MoreThanTenDirectorsId
+import models.PersonDetails
+import play.api.libs.json.{JsPath, JsResult, JsSuccess}
+import utils.UserAnswers
 
-case class DirectorDetailsId(index: Int) extends TypedIdentifier[DirectorDetails] {
+case class DirectorDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorDetailsId.toString
+
+  override def cleanup(value: Option[PersonDetails], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    userAnswers.get(MoreThanTenDirectorsId) match {
+      case Some(_) =>
+        userAnswers.allDirectorsAfterDelete match {
+          case directors if directors.length < 10 =>
+            userAnswers.remove(MoreThanTenDirectorsId)
+          case _ => JsSuccess(userAnswers)
+        }
+      case _ => JsSuccess(userAnswers)
+    }
+  }
 }
 
 object DirectorDetailsId {

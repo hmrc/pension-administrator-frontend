@@ -50,7 +50,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes())
+    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
   }
 
 }
@@ -58,7 +58,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object RegisterNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
-  lazy val businessDetailsPage = controllers.register.company.routes.BusinessDetailsController.onPageLoad(NormalMode)
+  lazy val businessDetailsPage = controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
@@ -72,5 +72,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }
