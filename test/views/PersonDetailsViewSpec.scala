@@ -14,25 +14,34 @@
  * limitations under the License.
  */
 
-package views.register.company.directors
+package views
 
 import forms.PersonDetailsFormProvider
 import models.{NormalMode, PersonDetails}
 import play.api.data.Form
+import play.api.mvc.Call
+import viewmodels.PersonDetailsViewModel
 import views.behaviours.QuestionViewBehaviours
-import views.html.register.company.directors.directorDetails
+import views.html.personDetails
 
-class DirectorDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
+class PersonDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
 
   private val messageKeyPrefix = "directorDetails"
 
   override val form = new PersonDetailsFormProvider()()
 
-  private def createView = () => directorDetails(frontendAppConfig, form, NormalMode, 0)(fakeRequest, messages)
+  private lazy val viewModel =
+    PersonDetailsViewModel(
+      title = "directorDetails.title",
+      heading = "directorDetails.heading",
+      postCall = Call("POST", "http://www.test.com")
+    )
 
-  private def createViewUsingForm = (form: Form[_]) => directorDetails(frontendAppConfig, form, NormalMode, 0)(fakeRequest, messages)
+  private def createView = () => personDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  "DirectorDetails view" must {
+  private def createViewUsingForm = (form: Form[_]) => personDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+
+  "PersonDetails view" must {
 
     behave like normalPage(createView, messageKeyPrefix)
 

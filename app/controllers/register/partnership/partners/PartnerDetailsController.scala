@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.PersonDetailsController
-import controllers.actions._
-import identifiers.register.company.directors.DirectorDetailsId
-import javax.inject.Inject
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.partnership.partners.PartnerDetailsId
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.CompanyDirector
+import utils.annotations.PartnershipPartner
 import viewmodels.PersonDetailsViewModel
 
-class DirectorDetailsController @Inject()(
-                                           val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           val dataCacheConnector: DataCacheConnector,
-                                           @CompanyDirector val navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction
-                                         ) extends PersonDetailsController {
+class PartnerDetailsController @Inject()(
+  val appConfig: FrontendAppConfig,
+  override val messagesApi: MessagesApi,
+  val dataCacheConnector: DataCacheConnector,
+  @PartnershipPartner val navigator: Navigator,
+  authenticate: AuthAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction
+) extends PersonDetailsController {
 
-  private[directors] def viewModel(mode: Mode, index: Index) =
+  private[partners] def viewModel(mode: Mode, index: Int) =
     PersonDetailsViewModel(
-      title = "directorDetails.title",
-      heading = "directorDetails.title",
-      postCall = routes.DirectorDetailsController.onSubmit(mode, index)
+      title = "partnerDetails.title",
+      heading = "partnerDetails.heading",
+      postCall = routes.PartnerDetailsController.onSubmit(mode, index)
     )
 
-  private[directors] def id(index: Index): DirectorDetailsId =
-    DirectorDetailsId(index)
+  private[partners] def id(index: Int) =
+    PartnerDetailsId(index)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>

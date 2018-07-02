@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
-import controllers.actions._
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
 import models.NormalMode
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator}
 
-class DirectorDetailsControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
+class PartnerDetailsControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
 
-  import DirectorDetailsControllerSpec._
+  import PartnerDetailsControllerSpec._
 
-  "DirectorDetailsController" must {
+  "PartnerDetailsController" must {
 
     val controller = testController(this, getEmptyData)
     val viewModel = controller.viewModel(NormalMode, 0)
@@ -54,19 +54,19 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase with PersonDetail
 
 }
 
-object DirectorDetailsControllerSpec {
+object PartnerDetailsControllerSpec {
 
   def testController(
     base: ControllerSpecBase,
     dataRetrievalAction: DataRetrievalAction
-  ): DirectorDetailsController =
+  ): PartnerDetailsController =
     createController(base, dataRetrievalAction)(FakeDataCacheConnector, FakeNavigator)
 
   def createController(
     base: ControllerSpecBase,
     dataRetrievalAction: DataRetrievalAction
-  )(connector: DataCacheConnector, nav: Navigator): DirectorDetailsController =
-    new DirectorDetailsController(
+  )(connector: DataCacheConnector, nav: Navigator): PartnerDetailsController =
+    new PartnerDetailsController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
       dataCacheConnector = connector,
