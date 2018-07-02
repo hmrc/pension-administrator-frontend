@@ -107,7 +107,7 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
             AddressEvent(
               FakeAuthAction.externalId,
               AddressAction.LookupChanged,
-              "Individual Previous Address",
+              "Partnership Previous Address",
               Address(
                 "value 1",
                 "value 2",
@@ -164,7 +164,7 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading"),
-    secondaryHeader = Some("common.individual.secondary.heading"),
+    secondaryHeader = Some("site.secondaryHeader"),
     hint = Some(Message(s"$messagePrefix.lede"))
   )
 
