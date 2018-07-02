@@ -1,0 +1,58 @@
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.routes._
+@import models.Mode
+@import utils.FormHelpers
+
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, viewmodel: VatViewModel)(implicit request: Request[_], messages: Messages)
+
+@_options = @{
+Vat.options
+}
+
+@main_template(
+    title = messages("viewmodel.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.heading(viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading)
+
+        <p>@messages(viewmodel.body)</p>
+
+        @components.fieldSet(
+        field = form("vat.hasVat"),
+        legend = "viewmodel.title",
+        hiddenLegend = true
+        ) {
+            @components.radio(
+                field = form("vat.hasVat"),
+                label = _options.head.label,
+                value = _options.head.value,
+                dataTarget = _options.head.dataTarget
+            )
+
+            @components.input_text(
+                field = form("vat.vat"),
+                label = messages("common.vat"),
+                groupClass = Some("js-hidden panel panel-border-narrow"),
+                hint = Some(messages("common.vat.hint"))
+            )
+
+            @components.radio(
+                field = form("vat.hasVat"),
+                label = _options(1).label,
+                value = _options(1).value,
+                dataTarget = _options(1).dataTarget
+            )
+
+        }
+
+        @components.submit_button()
+    }
+}
