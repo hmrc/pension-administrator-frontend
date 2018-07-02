@@ -43,3 +43,8 @@ GET         /previous-address                       controllers.register.partner
 POST        /previous-address                       controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET         /change-previous-address                controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-previous-address                controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET        /contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-contact-details                controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-contact-details                controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = CheckMode)
