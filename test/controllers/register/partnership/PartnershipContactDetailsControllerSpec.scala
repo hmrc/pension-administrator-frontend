@@ -42,7 +42,7 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
     body = Message("contactDetails.body")
   )
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnershipContactDetailsController(
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
@@ -68,7 +68,6 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val getRelevantData = UserAnswers()
-        .partnershipDetails(details = models.BusinessDetails("Test Partnership Name", "1234567890"))
         .partnershipContactDetails(ContactDetails("test@test.com", "123456789"))
         .dataRetrievalAction
 

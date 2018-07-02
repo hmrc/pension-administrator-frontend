@@ -40,31 +40,22 @@ class PartnershipContactDetailsController @Inject()(
                                                      formProvider: ContactDetailsFormProvider
                                                    ) extends controllers.ContactDetailsController {
 
-  private def viewmodel(mode: Mode) = Retrieval {
-    implicit request =>
-      PartnershipDetailsId.retrieve.right.map { details =>
-        ContactDetailsViewModel(
+  private def viewmodel(mode: Mode) = ContactDetailsViewModel(
           postCall = routes.PartnershipContactDetailsController.onSubmit(mode),
           title = Message("partnershipContactDetails.title"),
           heading = Message("partnershipContactDetails.heading"),
           body = Message("contactDetails.body")
         )
-      }
-  }
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map {
-        get(PartnershipContactDetailsId, form, _)
-      }
+        get(PartnershipContactDetailsId, form, viewmodel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map {
-        post(PartnershipContactDetailsId, mode, form, _)
-      }
+        post(PartnershipContactDetailsId, mode, form,  viewmodel(mode))
   }
 }
