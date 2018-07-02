@@ -23,9 +23,7 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
-import models.TolerantIndividual
-import models.BusinessDetails
-import models.register.company.directors.DirectorDetails
+import models.{BusinessDetails, PersonDetails, TolerantIndividual}
 import play.api.libs.json.Json
 import utils.UserAnswers
 
@@ -49,7 +47,7 @@ trait ControllerSpecBase extends SpecBase {
         BusinessDetails("Test Company Name", "Test UTR"),
       "directors" -> Json.arr(
         Json.obj(
-          DirectorDetailsId.toString -> DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
+          DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
         )
       )
     )))

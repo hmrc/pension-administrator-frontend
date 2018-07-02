@@ -24,9 +24,8 @@ import controllers.register.company.directors.routes
 import identifiers.Identifier
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
-import models.register.company.directors.DirectorDetails
 import models.requests.IdentifiedRequest
-import models.{AddressYears, CheckMode, Mode, NormalMode}
+import models._
 import org.scalatest.OptionValues
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.prop.TableFor6
@@ -93,7 +92,7 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private def data = {
     (0 to 19).map(index => Json.obj(
-      DirectorDetailsId.toString -> DirectorDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index%2==0))
+      DirectorDetailsId.toString -> PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index%2==0))
     )).toArray
   }
   val emptyAnswers = UserAnswers(Json.obj())

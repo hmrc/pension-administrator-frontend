@@ -18,7 +18,7 @@ package models.reads
 
 import java.time.LocalDate
 
-import models.register.company.directors.DirectorDetails
+import models.PersonDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json._
 
@@ -30,13 +30,13 @@ class DirectorDetailsReadsSpec extends WordSpec with MustMatchers with OptionVal
 
       "We have director details with isDeleted defaulted to false when no isDeleted flag is in json" in {
         val payload = Json.obj("firstName" -> "test", "middleName" -> "testVat", "lastName" -> "testPaye", "dateOfBirth" -> LocalDate.now())
-        val result = payload.as[DirectorDetails]
+        val result = payload.as[PersonDetails]
         result.isDeleted mustBe false
       }
 
       "We have director details with isDeleted flag to true when isDeleted is present in json" in {
         val payload = Json.obj("firstName" -> "test", "middleName" -> "testVat", "lastName" -> "testPaye", "dateOfBirth" -> LocalDate.now(), "isDeleted" -> true)
-        val result = payload.as[DirectorDetails]
+        val result = payload.as[PersonDetails]
         result.isDeleted mustBe true
       }
     }
