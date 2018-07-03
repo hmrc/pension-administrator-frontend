@@ -36,7 +36,9 @@
 
         @components.heading(viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading)
 
-        <p>@messages(viewmodel.body)</p>
+        @viewmodel.body.map{ body =>
+            <p>@messages(body)</p>
+        }
 
         @components.input_text(
             field = form("emailAddress"),

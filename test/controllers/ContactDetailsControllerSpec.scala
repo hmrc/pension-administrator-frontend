@@ -74,7 +74,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
-    body = "legend"
+    body = Some("legend")
   )
 
   "get" must {

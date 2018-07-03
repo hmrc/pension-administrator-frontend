@@ -41,7 +41,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
     postCall = routes.IndividualContactDetailsController.onSubmit(NormalMode),
     title = Message("contactDetails.individual.title"),
     heading = Message("contactDetails.individual.heading"),
-    body = Message("contactDetails.body")
+    body = Some(Message("contactDetails.body"))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

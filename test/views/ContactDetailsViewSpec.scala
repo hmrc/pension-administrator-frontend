@@ -36,7 +36,7 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
     title = Message("contactDetails.title"),
     heading = Message("contactDetails.heading"),
     subHeading = Some(Message("site.secondaryHeader")),
-    body = Message("contactDetails.lede")
+    body = Some(Message("contactDetails.lede"))
   )
 
   def createView: () => HtmlFormat.Appendable = () =>

@@ -45,7 +45,7 @@ class IndividualContactDetailsController @Inject()(
     postCall = routes.IndividualContactDetailsController.onSubmit(mode),
     title = Message("contactDetails.individual.title"),
     heading = Message("contactDetails.individual.heading"),
-    body = Message("contactDetails.body")
+    body = Some(Message("contactDetails.body"))
   )
 
   private val form = formProvider()

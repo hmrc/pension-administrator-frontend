@@ -44,7 +44,7 @@ class PartnershipContactDetailsController @Inject()(
           postCall = routes.PartnershipContactDetailsController.onSubmit(mode),
           title = Message("partnershipContactDetails.title"),
           heading = Message("partnershipContactDetails.heading"),
-          body = Message("contactDetails.body"),
+          body = Some(Message("contactDetails.body")),
           Some(Message("site.secondaryHeader"))
         )
 

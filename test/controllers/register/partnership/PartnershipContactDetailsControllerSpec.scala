@@ -39,7 +39,7 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
     postCall = routes.PartnershipContactDetailsController.onSubmit(NormalMode),
     title = Message("partnershipContactDetails.title"),
     heading = Message("partnershipContactDetails.heading"),
-    body = Message("contactDetails.body"),
+    body = Some(Message("contactDetails.body")),
     Some(Message("site.secondaryHeader"))
   )
 
