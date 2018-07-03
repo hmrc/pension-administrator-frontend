@@ -16,28 +16,33 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.register.routes._
+@import controllers.register.partnership.routes._
 @import models.Mode
-@import models.register.BusinessType
+@import utils.FormHelpers
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], name: String, address: TolerantAddress)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("businessType.title"),
+    title = messages("confirmPartnershipDetails.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = ConfirmPartnershipDetailsController.onSubmit(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
-        @components.heading("businessType.heading")
+        @components.heading("confirmPartnershipDetails.heading")
 
-        @components.input_radio(
+        <p>
+            <div>@name,</div>
+            @components.tolerant_address("partnershipAddress", address)
+        </p>
+
+
+        @components.input_yes_no(
             field = form("value"),
-            legend = messages("businessType.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = BusinessType.options
+            label = messages("confirmPartnershipDetails.heading"),
+            labelClass = Some("visually-hidden")
         )
 
         @components.submit_button("site.save_and_continue")

@@ -50,7 +50,7 @@ class LoginControllerSpec extends ControllerSpecBase {
       val result = loginController().onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(register.company.routes.BusinessTypeController.onPageLoad(NormalMode).url)
+      redirectLocation(result) mustBe Some(register.routes.BusinessTypeController.onPageLoad(NormalMode).url)
     }
   }
 }

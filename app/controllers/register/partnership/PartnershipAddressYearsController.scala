@@ -51,8 +51,8 @@ class PartnershipAddressYearsController @Inject()(
           AddressYearsViewModel(
             routes.PartnershipAddressYearsController.onSubmit(mode),
             Message("partnership.addressYears.title"),
-            Message("partnership.addressYears.heading").withArgs(details.companyName),
-            Message("partnership.addressYears.heading").withArgs(details.companyName),
+            Message("partnership.addressYears.heading").withArgs(details.name),
+            Message("partnership.addressYears.heading").withArgs(details.name),
             Some("site.secondaryHeader")
           )
         }

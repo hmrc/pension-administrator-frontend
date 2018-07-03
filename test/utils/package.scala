@@ -17,12 +17,11 @@
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.company._
+import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
-import identifiers.register.partnership._
-import models.BusinessDetails
-import models.{Address, ContactDetails, LastPage, TolerantAddress}
+import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
+import models._
 import org.scalatest.OptionValues
 
 package object utils {

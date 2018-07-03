@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package identifiers.register.partnership
+import identifiers._
 
-import play.api.libs.json.{Format, Json}
-
-case class BusinessDetails(name: String, uniqueTaxReferenceNumber: String)
-
-object BusinessDetails {
-  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+case object ConfirmPartnershipDetailsId extends TypedIdentifier[Boolean] {
+  override def toString: String = "confirmPartnershipDetails"
 }

@@ -54,9 +54,9 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
           routes.CompanyContactAddressController.onSubmit(mode),
           countryOptions.options,
           Message("companyContactAddress.title"),
-          Message("companyContactAddress.heading", businessDetails.companyName),
+          Message("companyContactAddress.heading", businessDetails.name),
           Some(Message("site.secondaryHeader")),
-          Some(Message("companyContactAddress.lede", businessDetails.companyName))
+          Some(Message("companyContactAddress.lede", businessDetails.name))
         )
       }
   )

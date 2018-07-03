@@ -38,7 +38,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                                      "User Answers",           "Next Page (Normal Mode)",            "Save (NM)",  "Next Page (Check Mode)",                 "Save (CM)"),
-    (BusinessTypeId,                              emptyAnswers,           companyBusinessDetailsPage,           false,        None,                                     false),
     (BusinessDetailsId,                           emptyAnswers,           confirmCompanyDetailsPage,            false,        None,                                     false),
     (ConfirmCompanyAddressId,                     emptyAnswers,           whatYouWillNeedPage,                  false,        None,                                     false),
     (ConfirmCompanyAddressId,                     lastPage,               whatYouWillNeedPage,                  false,        None,                                     false),
