@@ -19,36 +19,36 @@
 @import utils.FormHelpers
 @import controllers.register.company.directors.routes._
 @import models.Mode
-@import models.PersonDetails
+@import viewmodels.PersonDetailsViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Int)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("directorDetails.title"),
+    title = messages(viewModel.title),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = DirectorDetailsController.onSubmit(mode, index), 'autoComplete -> "off") {
+    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("directorDetails.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.heading(viewModel.heading, secondaryHeaderKey = Some("site.secondaryHeader"))
 
         @components.input_text(
             field = form("firstName"),
-            label = messages("directorDetails.firstName")
+            label = messages("personDetails.firstName")
         )
 
         @components.input_text(
             field = form("middleName"),
-            label = messages("directorDetails.middleName")
+            label = messages("personDetails.middleName")
         )
 
         @components.input_text(
             field = form("lastName"),
-            label = messages("directorDetails.lastName")
+            label = messages("personDetails.lastName")
         )
 
         @components.input_date(

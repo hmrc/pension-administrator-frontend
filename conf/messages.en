@@ -241,11 +241,14 @@ confirmDeleteDirector.heading = Are you sure you want to delete {0} as a directo
 
 directorDetails.title = Company director
 directorDetails.heading = Company director
-directorDetails.firstName = First name
-directorDetails.middleName = Middle name
-directorDetails.lastName = Last name
 directorDetails.checkYourAnswersLabel = Company director
 
+partnerDetails.title = Partner
+partnerDetails.heading = Partner
+
+personDetails.firstName = First name
+personDetails.middleName = Middle name
+personDetails.lastName = Last name
 personDetails.error.firstName.required = Enter the first name
 personDetails.error.firstName.length = The first name cannot be more than 35 characters
 personDetails.error.firstName.invalid = The first name must start with an alphabetic character
