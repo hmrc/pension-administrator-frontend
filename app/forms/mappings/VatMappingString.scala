@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package forms.register
+package forms.mappings
 
-import forms.FormErrorHelper
-import forms.mappings.VatMapping
-import javax.inject.Inject
-import models.Vat
-import play.api.data.Form
+import play.api.data.{Forms, Mapping}
 
-class VatFormProvider @Inject() extends FormErrorHelper with VatMapping {
+trait VatMappingString extends Mappings with Transforms {
 
-  def apply(): Form[Vat] =
-    Form(
-      "vat" -> vatMapping(
-        requiredKey = "common.radio.error.required",
-        vatLengthKey = "common.error.vat.length"
+  def vatMapping(keyVatLength: String, keyVatInvalid: String    ): Mapping[String] = {
+    Forms.text
+      .transform(vatRegistrationNumberTransform, noTransform)
+      .verifying(
+        firstError(
+          maxLength(VatMapping.maxVatLength, keyVatLength),
+          vatRegistrationNumber(keyVatInvalid))
       )
-    )
+  }
+
+  protected def vatRegistrationNumberTransform(value: String): String = {
+    strip(value).replaceAll("^[gG][bB]", "")
+  }
+
+}
+
+object VatMappingString {
+  val maxVatLength = 9
 }

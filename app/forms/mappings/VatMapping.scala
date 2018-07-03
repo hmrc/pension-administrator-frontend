@@ -24,9 +24,9 @@ import uk.gov.voa.play.form.ConditionalMappings.{mandatoryIfFalse, mandatoryIfTr
 trait VatMapping extends Mappings with Transforms {
 
   def vatMapping(requiredKey: String,
-                 keyVatLength: String,
-                  requiredVatKey: String = "common.error.vat.required",
-                  invalidVatKey: String = "common.error.vat.invalid"):
+                 vatLengthKey: String,
+                 requiredVatKey: String = "common.error.vat.required",
+                 invalidVatKey: String = "common.error.vat.invalid"):
   Mapping[Vat] = {
 
     tuple("hasVat" -> boolean(requiredKey),
@@ -36,7 +36,7 @@ trait VatMapping extends Mappings with Transforms {
           .transform(vatRegistrationNumberTransform, noTransform)
           .verifying(
             firstError(
-              maxLength(VatMapping.maxVatLength, keyVatLength),
+              maxLength(VatMapping.maxVatLength, vatLengthKey),
               vatRegistrationNumber(invalidVatKey))
           )
       )
@@ -49,7 +49,7 @@ trait VatMapping extends Mappings with Transforms {
 
   private[this] def fromVat(vat: Vat): (Boolean, Option[String]) = {
     vat match {
-      case Vat.Yes(ninoNo) => (true, Some(ninoNo))
+      case Vat.Yes(vatNo) => (true, Some(vatNo))
       case Vat.No =>  (false, None)
     }
   }

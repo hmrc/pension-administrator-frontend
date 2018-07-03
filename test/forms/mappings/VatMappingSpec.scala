@@ -17,54 +17,33 @@
 package forms.mappings
 
 import forms.behaviours.VatBehaviours
-import play.api.data.{Form, Mapping}
-import play.api.data.Forms._
+import models.Vat
+import play.api.data.Form
 
 class VatMappingSpec extends VatBehaviours {
 
-  case class VatTestModel(vat: String)
+  private val requiredKey = "common.radio.error.required"
+  private val requiredVatKey = "common.error.vat.required"
+  private val vatLengthKey = "common.error.vat.length"
+  private val invalidVatKey = "common.error.vat.invalid"
 
-  "VatMapping" should {
-    val fieldName = "vat"
-    val keyVatLength = "companyDetails.error.vatRegistrationNumber.length"
-    val keyVatInvalid = "companyDetails.error.vatRegistrationNumber.invalid"
-
-    val fieldMapping: Mapping[String] = vatMapping(keyVatLength, keyVatInvalid)
-
-    val form: Form[VatTestModel] = Form(
-      mapping(
-        fieldName -> fieldMapping
-      )(VatTestModel.apply)(VatTestModel.unapply)
-    )
-
-    behave like formWithVatField(
-      form,
-      fieldName,
-      keyVatLength,
-      keyVatInvalid
-    )
-
-  }
-
-  "vatRegistrationNumberTransform" must {
-    "strip leading, trailing ,and internal spaces" in {
-      val actual = vatRegistrationNumberTransform("  123 456 789  ")
-      actual shouldBe "123456789"
-    }
-
-    "remove leading GB" in {
-      val gb = Table(
-        "vat",
-        "GB123456789",
-        "Gb123456789",
-        "gB123456789",
-        "gb123456789"
+    "A form with a Vat" should {
+      val mapping = vatMapping(
+        requiredKey,
+        vatLengthKey,
+        requiredVatKey,
+        invalidVatKey
       )
 
-      forAll(gb) {vat =>
-        vatRegistrationNumberTransform(vat) shouldBe "123456789"
-      }
-    }
+      val testForm:Form[Vat] = Form("vat" -> mapping)
+
+    behave like formWithVat(testForm: Form[Vat],
+      requiredKey: String,
+      vatLengthKey: String,
+      requiredVatKey: String,
+      invalidVatKey: String
+    )
+
   }
 
 }

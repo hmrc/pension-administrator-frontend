@@ -120,6 +120,12 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.dateOfBirth = Date of birth
 common.dateOfBirth.hint = Example 30 9 1990
+common.vat = VAT Registration number
+common.vat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
+common.error.vat.required = Enter the VAT registration number
+common.error.vat.invalid = Enter a valid VAT registration number
+common.error.vat.length = The VAT Registration number cannot be more than 9 characters
+common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -564,3 +570,6 @@ partnerNino.no.reason = Tell us why the partner does not have a National Insuran
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
 partnerNino.error.reason.length = The reason cannot be more than 150 characters
+
+partnershipVat.title = Does the partnership have a VAT registration number?
+partnershipVat.heading = Does the partnership have a VAT registration number?
