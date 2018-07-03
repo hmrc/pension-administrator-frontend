@@ -35,7 +35,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
 import utils.{FakeNavigator, Navigator}
-import viewmodels.ContactDetailsViewModel
+import viewmodels.{ContactDetailsViewModel, Message}
 import views.html.contactDetails
 
 import scala.concurrent.Future
@@ -81,7 +81,7 @@ object PartnerContactDetailsControllerSpec extends OptionValues{
 
   val viewModel = ContactDetailsViewModel(
     routes.PartnerContactDetailsController.onSubmit(NormalMode, firstIndex),
-    "partnership.partner.contactDetails.title", "partnership.partner.contactDetails.heading", None, Some(partnershipName)
+    Message("partnership.partner.contactDetails.title"), Message("partnership.partner.contactDetails.heading"), None, Some(partnershipName)
   )
 
   def requestResult[T](dataRetrieval: DataRetrievalAction)
