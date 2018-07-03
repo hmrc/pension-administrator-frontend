@@ -37,7 +37,7 @@
         @components.heading(viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading)
 
         @viewmodel.body.map{ body =>
-            <p>messages(body)</p>
+            <p>@messages(body)</p>
         }
 
         @components.input_text(
