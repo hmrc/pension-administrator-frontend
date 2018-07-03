@@ -20,11 +20,11 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConne
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
-import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -91,7 +91,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           val info = RegistrationInfo(
             RegistrationLegalStatus.Partnership,
             sapNumber,
-            false,
+            noIdentifier = false,
             RegistrationCustomerType.UK,
             RegistrationIdType.UTR,
             validBusinessPartnershipUtr
