@@ -29,7 +29,7 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Action
 import utils.Navigator
 import utils.annotations.Partnership
-import viewmodels.ContactDetailsViewModel
+import viewmodels.{ContactDetailsViewModel, Message}
 
 class PartnerContactDetailsController @Inject()(
                                                  val appConfig: FrontendAppConfig,
@@ -47,8 +47,8 @@ class PartnerContactDetailsController @Inject()(
       PartnerDetailsId(index).retrieve.right.map{ details =>
         ContactDetailsViewModel(
           routes.PartnerContactDetailsController.onSubmit(mode,index),
-          "partnership.partner.contactDetails.title",
-          "partnership.partner.contactDetails.heading",
+          Message("partnership.partner.contactDetails.title"),
+          Message("partnership.partner.contactDetails.heading"),
           None,
           Some(details.fullName)
         )
