@@ -25,9 +25,7 @@ import identifiers.TypedIdentifier
 import identifiers.register.company.directors.IsDirectorCompleteId
 import models.requests.DataRequest
 import models.{CheckMode, Index, NormalMode}
-import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.AnyContent
-import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
@@ -46,10 +44,12 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   object FakeSectionComplete extends SectionComplete with FakeDataCacheConnector {
+
     override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
                             (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
       save("cacheId", id, true) map UserAnswers
     }
+
   }
 
   def answersDD: Seq[AnswerRow] = Seq(

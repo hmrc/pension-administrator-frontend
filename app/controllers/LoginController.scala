@@ -40,7 +40,7 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
           case UserType.Individual =>
             Redirect(controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
           case UserType.Organisation =>
-            Redirect(controllers.register.company.routes.BusinessTypeController.onPageLoad(NormalMode))
+            Redirect(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
         }
       }
   }

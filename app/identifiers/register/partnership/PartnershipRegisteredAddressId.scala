@@ -22,4 +22,3 @@ import models.TolerantAddress
 case object PartnershipRegisteredAddressId extends TypedIdentifier[TolerantAddress] {
   override def toString: String = "partnershipRegisteredAddress"
 }
-

@@ -31,8 +31,6 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessTypeId =>
-      NavigateTo.dontSave(routes.CompanyBusinessDetailsController.onPageLoad())
     case BusinessDetailsId =>
       NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
     case ConfirmCompanyAddressId =>

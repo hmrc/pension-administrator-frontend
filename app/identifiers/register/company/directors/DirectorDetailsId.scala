@@ -20,6 +20,8 @@ import identifiers._
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.PersonDetails
 import play.api.libs.json.{JsPath, JsResult, JsSuccess}
+import models.requests.DataRequest
+import play.api.mvc.AnyContent
 import utils.UserAnswers
 
 case class DirectorDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {
@@ -39,6 +41,11 @@ case class DirectorDetailsId(index: Int) extends TypedIdentifier[PersonDetails] 
 }
 
 object DirectorDetailsId {
+
   def collectionPath: JsPath = JsPath \ "directors" \\ DirectorDetailsId.toString
+
   override def toString: String = "directorDetails"
+
+  def isComplete(index: Int)(implicit request: DataRequest[AnyContent]): Option[Boolean] =
+    request.userAnswers.get[Boolean](JsPath \ "directors" \ index \ IsDirectorCompleteId.toString)
 }

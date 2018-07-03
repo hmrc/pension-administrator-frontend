@@ -1,10 +1,5 @@
 ->         /directors                                   directors.Routes
 
-GET        /business-type                               controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /business-type                               controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-business-type                        controllers.register.company.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-business-type                        controllers.register.company.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
-
 GET        /business-details                            controllers.register.company.CompanyBusinessDetailsController.onPageLoad()
 POST       /business-details                            controllers.register.company.CompanyBusinessDetailsController.onSubmit()
 

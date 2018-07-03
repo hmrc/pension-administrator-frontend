@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package forms.register.partnership
 
-import play.api.libs.json.{Format, Json}
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case class BusinessDetails(name: String, uniqueTaxReferenceNumber: String)
+class ConfirmPartnershipDetailsFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-object BusinessDetails {
-  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("confirmPartnershipDetails.error.required")
+    )
 }

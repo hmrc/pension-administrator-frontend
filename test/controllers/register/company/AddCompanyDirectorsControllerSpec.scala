@@ -24,60 +24,20 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
-import models.{PersonDetails, NormalMode}
+import models.requests.DataRequest
+import models.{NormalMode, PSAUser, PersonDetails, UserType}
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  private val formProvider = new AddCompanyDirectorsFormProvider()
-  private val form = formProvider()
-
-  protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
-
-  protected def controller(
-                            dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                            navigator: FakeNavigator = fakeNavigator()) =
-
-    new AddCompanyDirectorsController(
-      frontendAppConfig,
-      messagesApi,
-      FakeDataCacheConnector,
-      navigator,
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider
-    )
-
-  private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages).toString
-
-  // scalastyle:off magic.number
-  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
-  // scalastyle:on magic.number
-
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
-  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
-  // scalastyle:off magic.number
-  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), false)
-  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
-
-  private val maxDirectors = frontendAppConfig.maxDirectors
-
-  private def dataRetrievalAction(directors: PersonDetails*): FakeDataRetrievalAction = {
-    val validData = Json.obj(
-      "directors" -> directors.map(d => Json.obj(DirectorDetailsId.toString -> Json.toJson(d)))
-    )
-    new FakeDataRetrievalAction(Some(validData))
-  }
+  import AddCompanyDirectorsControllerSpec._
 
   "AddCompanyDirectors Controller" must {
 
@@ -190,6 +150,60 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
+  }
+
+}
+
+object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSpec {
+
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  private val formProvider = new AddCompanyDirectorsFormProvider()
+  private val form = formProvider()
+
+  protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
+
+  protected def controller(
+                            dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                            navigator: FakeNavigator = fakeNavigator()
+                          ) =
+    new AddCompanyDirectorsController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      navigator,
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
+
+  val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
+
+  private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, true)(request, messages).toString
+
+  // scalastyle:off magic.number
+  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  // scalastyle:on magic.number
+
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
+  // scalastyle:off magic.number
+  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), false)
+  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
+
+  private val maxDirectors = frontendAppConfig.maxDirectors
+
+  private def dataRetrievalAction(directors: PersonDetails*): FakeDataRetrievalAction = {
+    val validData = Json.obj("directors" ->
+      directors.map(d => Json.obj(
+        DirectorDetailsId.toString -> Json.toJson(d)
+      ))
+    )
+    new FakeDataRetrievalAction(Some(validData))
   }
 
 }

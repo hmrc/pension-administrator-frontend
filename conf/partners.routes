@@ -8,3 +8,8 @@ GET        /:index/national-insurance-number                    controllers.regi
 POST       /:index/national-insurance-number                    controllers.register.partnership.partners.PartnerNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-national-insurance-number             controllers.register.partnership.partners.PartnerNinoController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-national-insurance-number             controllers.register.partnership.partners.PartnerNinoController.onSubmit(mode: Mode = CheckMode, index: Index)
+
+GET         /:index/partner-details               controllers.register.partnership.partners.PartnerDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/partner-details               controllers.register.partnership.partners.PartnerDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/change-partner-details        controllers.register.partnership.partners.PartnerDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST        /:index/change-partner-details        controllers.register.partnership.partners.PartnerDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)

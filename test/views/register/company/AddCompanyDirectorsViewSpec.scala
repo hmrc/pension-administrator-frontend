@@ -18,31 +18,32 @@ package views.register.company
 
 import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
-import models.NormalMode
+import models.requests.DataRequest
+import models.{NormalMode, PSAUser, UserType}
 import play.api.data.Form
+import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import utils.UserAnswers
 import viewmodels.Person
 import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
 import views.html.register.company.addCompanyDirectors
 
-class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBehaviours {
+class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
+
+  import AddCompanyDirectorsViewSpec._
+
+  private val maxDirectors = frontendAppConfig.maxDirectors
 
   private val messageKeyPrefix = "addCompanyDirectors"
 
-  val form = new AddCompanyDirectorsFormProvider()()
-
   private def createView(directors: Seq[Person] = Nil)
-      = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
+  = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, false)(request, messages)
 
   private def createViewUsingForm(directors: Seq[Person] = Nil)
-      = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(fakeRequest, messages)
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
-  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
-  // scalastyle:off magic.number
-  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), false)
-  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
-  // scalastyle:on magic.number
+  = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, false)(request, messages)
 
-  private val maxDirectors = frontendAppConfig.maxDirectors
+  val form = new AddCompanyDirectorsFormProvider()()
 
   "AddCompanyDirectors view" must {
 
@@ -99,5 +100,24 @@ class AddCompanyDirectorsViewSpec  extends YesNoViewBehaviours with PeopleListBe
     }
 
   }
+
+}
+
+object AddCompanyDirectorsViewSpec {
+
+  val request: DataRequest[AnyContent] = DataRequest(
+    FakeRequest(),
+    "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+    UserAnswers(Json.obj())
+  )
+
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
+
+  // scalastyle:off magic.number
+  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), false)
+  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
+  // scalastyle:on magic.number
 
 }

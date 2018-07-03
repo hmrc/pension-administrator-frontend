@@ -133,7 +133,7 @@ object BusinessDetailsControllerBehaviour {
     val request = businessDetails map {
       details =>
         fakeRequest.withFormUrlEncodedBody(
-          ("companyName", details.companyName),
+          ("companyName", details.name),
           ("utr", details.uniqueTaxReferenceNumber)
         )
     } getOrElse fakeRequest
