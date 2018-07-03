@@ -14,8 +14,12 @@
  * limitations under the License.
  *@
 
+@import play.api.mvc.AnyContent
+@import config.FrontendAppConfig
+@import models.requests.DataRequest
 @import viewmodels.Person
-@(people: Seq[Person])(implicit messages: Messages)
+
+@(appConfig: FrontendAppConfig, people: Seq[Person])(implicit request: DataRequest[AnyContent], messages: Messages)
 
 <div class="form-group">
     <ul id="people" class="govuk-check-your-answers form-group cya-questions-long">
@@ -25,13 +29,31 @@
                 <h2 id="@person.id" class="bold std-text">@person.name</h2>
             </div>
 
-            <div class="cya-change">
+            @if(appConfig.completeFlagEnabled){
+
+                @if(person.isComplete){
+
+                <div class="cya-status status">
+                    <span class="complete">COMPLETE</span>
+                </div>
+
+                } else {
+
+                <div class="cya-status status">
+                    <span class="rejected">INCOMPLETE</span>
+                </div>
+
+                }
+
+            }
+
+            <div>
                 <a id="@person.deleteLinkId" href="@person.deleteLink">
                     @messages("site.delete")
                 </a>
             </div>
 
-            <div class="cya-change">
+            <div>
                 <a id="@person.editLinkId" href="@person.editLink">
                     @messages("site.edit")
                 </a>
