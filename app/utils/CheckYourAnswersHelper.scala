@@ -26,11 +26,6 @@ import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
-  def vat: Seq[AnswerRow] = userAnswers.get(identifiers.register.VatId) match {
-    case Some(x) => Seq(AnswerRow("vat.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, controllers.register.routes.VatController.onPageLoad(CheckMode).url))
-    case _ => Nil
-  }
-
   def individualContactAddress:Option[AnswerRow]={
     userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map {answer =>
       AnswerRow("cya.label.individual.contact.address", addressAnswer(answer), false, None)

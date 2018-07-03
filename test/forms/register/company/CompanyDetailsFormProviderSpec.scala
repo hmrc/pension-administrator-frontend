@@ -16,12 +16,12 @@
 
 package forms.register.company
 
-import forms.behaviours.{PayeBehaviours, StringFieldBehaviours, VatBehaviours}
+import forms.behaviours.{PayeBehaviours, StringFieldBehaviours, VatBehavioursString}
 import forms.mappings.Constraints
 import models.register.company.CompanyDetails
 import org.scalatest.OptionValues
 
-class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with OptionValues with PayeBehaviours with VatBehaviours {
+class CompanyDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with OptionValues with PayeBehaviours with VatBehavioursString {
 
   val form = new CompanyDetailsFormProvider()()
 

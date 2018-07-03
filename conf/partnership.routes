@@ -30,3 +30,8 @@ POST       /change-is-this-the-contact-address     controllers.register.partners
 
 GET        /business-details                  controllers.register.partnership.PartnershipBusinessDetailsController.onPageLoad()
 POST       /business-details                  controllers.register.partnership.PartnershipBusinessDetailsController.onSubmit()
+
+GET        /vat-number            controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = NormalMode)
+POST       /vat-number            controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = NormalMode)
+GET        /change-vat-number     controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-vat-number     controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = CheckMode)

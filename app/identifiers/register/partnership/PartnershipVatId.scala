@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register.partnership
 
-import play.api.mvc.Call
+import identifiers._
+import models.Vat
 
-case class VatViewModel (
-                          postCall: Call,
-                          title: Message,
-                          heading: Message,
-                          hint: Message,
-                          subHeading: Option[Message] = None
-                        )
+case object PartnershipVatId extends TypedIdentifier[Vat] {
+  override def toString: String = "partnershipVat"
+}
