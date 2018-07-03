@@ -24,9 +24,8 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
-import models._
+import models.{PersonDetails, _}
 import models.register.company.CompanyDetails
-import models.register.company.directors.DirectorDetails
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -100,13 +99,13 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorPreviousAddressPostCodeLookupId.toString ->
           Seq(fakeAddress(testAnswer))
       ),
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+          PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )
   )

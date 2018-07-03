@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package forms.register.company.directors
+package forms
 
 import java.time.LocalDate
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import models.register.company.directors.DirectorDetails
+import models.PersonDetails
 import org.scalatest.Matchers
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
+class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
 
-  val form = new DirectorDetailsFormProvider()()
+  val form = new PersonDetailsFormProvider()()
 
   // scalastyle:off magic.number
-  private val johnDoe = DirectorDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
   // scalastyle:on magic.number
 
   ".firstName" must {
 
     val fieldName = "firstName"
-    val requiredKey = "directorDetails.error.firstName.required"
-    val lengthKey = "directorDetails.error.firstName.length"
-    val invalidKey = "directorDetails.error.firstName.invalid"
-    val maxLength = DirectorDetailsFormProvider.firstNameLength
+    val requiredKey = "personDetails.error.firstName.required"
+    val lengthKey = "personDetails.error.firstName.length"
+    val invalidKey = "personDetails.error.firstName.invalid"
+    val maxLength = PersonDetailsFormProvider.firstNameLength
 
     behave like fieldThatBindsValidData(
       form,
@@ -78,7 +78,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
         "dateOfBirth.year" -> "1862"
       ),
       "John",
-      (model: DirectorDetails) => model.firstName
+      (model: PersonDetails) => model.firstName
     )
 
   }
@@ -86,9 +86,9 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
   ".middleName" must {
 
     val fieldName = "middleName"
-    val lengthKey = "directorDetails.error.middleName.length"
-    val invalidKey = "directorDetails.error.middleName.invalid"
-    val maxLength = DirectorDetailsFormProvider.middleNameLength
+    val lengthKey = "personDetails.error.middleName.length"
+    val invalidKey = "personDetails.error.middleName.invalid"
+    val maxLength = PersonDetailsFormProvider.middleNameLength
 
     behave like fieldThatBindsValidData(
       form,
@@ -122,7 +122,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
         "dateOfBirth.year" -> "1862"
       ),
       "J",
-      (model: DirectorDetails) => model.middleName.value
+      (model: PersonDetails) => model.middleName.value
     )
 
   }
@@ -130,10 +130,10 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
   ".lastName" must {
 
     val fieldName = "lastName"
-    val requiredKey = "directorDetails.error.lastName.required"
-    val lengthKey = "directorDetails.error.lastName.length"
-    val invalidKey = "directorDetails.error.lastName.invalid"
-    val maxLength = DirectorDetailsFormProvider.lastNameLength
+    val requiredKey = "personDetails.error.lastName.required"
+    val lengthKey = "personDetails.error.lastName.length"
+    val invalidKey = "personDetails.error.lastName.invalid"
+    val maxLength = PersonDetailsFormProvider.lastNameLength
 
     behave like fieldThatBindsValidData(
       form,
@@ -172,7 +172,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
         "dateOfBirth.year" -> "1862"
       ),
       "Doe",
-      (model: DirectorDetails) => model.lastName
+      (model: PersonDetails) => model.lastName
     )
   }
 
@@ -237,8 +237,8 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
 
   }
 
-  "DirectorDetailsFormProvider" must {
-    "apply DirectorDetails correctly" in {
+  "PersonDetailsFormProvider" must {
+    "apply PersonDetails correctly" in {
       val details = form.bind(
         Map(
           "firstName" -> johnDoe.firstName,
@@ -254,7 +254,7 @@ class DirectorDetailsFormProviderSpec extends StringFieldBehaviours with Constra
       details.dateOfBirth shouldBe johnDoe.dateOfBirth
     }
 
-    "unapply DirectorDetails corectly" in {
+    "unapply PersonDetails corectly" in {
       val filled = form.fill(johnDoe)
       filled("firstName").value.value shouldBe johnDoe.firstName
       filled("lastName").value.value shouldBe johnDoe.lastName

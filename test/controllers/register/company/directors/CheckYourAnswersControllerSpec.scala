@@ -23,7 +23,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.IsDirectorCompleteId
-import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
 import models.{CheckMode, Index, NormalMode}
 import play.api.mvc.AnyContent

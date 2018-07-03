@@ -25,8 +25,7 @@ import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorNinoId}
 import models.register.company.CompanyDetails
-import models.register.company.directors.DirectorDetails
-import models.{Index, Nino, NormalMode}
+import models.{PersonDetails, Index, Nino, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -50,13 +49,13 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorNinoId.toString ->
           Nino.Yes("CS700100A")
       ),
       Json.obj(
         DirectorDetailsId.toString ->
-          DirectorDetails("test", Some("test"), "test", LocalDate.now)
+          PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )
   )

@@ -23,8 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
 import identifiers.register.company.directors.DirectorDetailsId
-import models.register.company.directors.DirectorDetails
-import models.{Index, NormalMode}
+import models.{PersonDetails, Index, NormalMode}
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -100,7 +99,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       val validData = Json.obj(
         "directors" -> Json.arr(
           Json.obj(
-            DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
+            DirectorDetailsId.toString -> PersonDetails("John", None, "Doe", LocalDate.now())
           )
         )
       )
@@ -117,7 +116,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       val validData = Json.obj(
         "directors" -> Json.arr(
           Json.obj(
-            DirectorDetailsId.toString -> DirectorDetails("John", None, "Doe", LocalDate.now())
+            DirectorDetailsId.toString -> PersonDetails("John", None, "Doe", LocalDate.now())
           )
         )
       )
@@ -126,7 +125,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(DirectorDetailsId(firstIndex), DirectorDetails("John", None, "Doe", LocalDate.now(), true))
+      FakeDataCacheConnector.verify(DirectorDetailsId(firstIndex), PersonDetails("John", None, "Doe", LocalDate.now(), true))
     }
 
   }

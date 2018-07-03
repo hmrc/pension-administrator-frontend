@@ -25,8 +25,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId}
-import models.register.company.directors.DirectorDetails
-import models.{Address, Index, NormalMode, TolerantAddress}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -46,8 +45,8 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
 
   private val firstIndex = Index(0)
 
-  private val jonathanDoe = DirectorDetails("Jonathan", None, "Doe", LocalDate.now())
-  private val joeBloggs = DirectorDetails("Joe", None, "Bloggs", LocalDate.now())
+  private val jonathanDoe = PersonDetails("Jonathan", None, "Doe", LocalDate.now())
+  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.now())
 
   private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
   private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")

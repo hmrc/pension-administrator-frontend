@@ -18,7 +18,7 @@ package controllers
 
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.DirectorDetailsId
-import models.register.company.directors.DirectorDetails
+import models.PersonDetails
 import models.requests.DataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
@@ -34,7 +34,7 @@ trait Retrievals {
   private[controllers] def retrieveDirectorName(index: Int)
                                                (f: String => Future[Result])
                                                (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    retrieve[DirectorDetails](DirectorDetailsId(index)) { directorDetails =>
+    retrieve[PersonDetails](DirectorDetailsId(index)) { directorDetails =>
       f(directorDetails.fullName)
     }
   }

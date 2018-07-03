@@ -23,9 +23,9 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
-import models.TolerantIndividual
-import models.BusinessDetails
-import models.register.company.directors.DirectorDetails
+import identifiers.register.partnership.PartnershipDetailsId
+import identifiers.register.partnership.partners.PartnerDetailsId
+import models.{BusinessDetails, PersonDetails, TolerantIndividual}
 import play.api.libs.json.Json
 import utils.UserAnswers
 
@@ -49,7 +49,7 @@ trait ControllerSpecBase extends SpecBase {
         BusinessDetails("Test Company Name", "Test UTR"),
       "directors" -> Json.arr(
         Json.obj(
-          DirectorDetailsId.toString -> DirectorDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
+          DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
         )
       )
     )))
@@ -63,4 +63,17 @@ trait ControllerSpecBase extends SpecBase {
   def getPartnership: DataRetrievalAction =
     UserAnswers().partnershipDetails(details = models.BusinessDetails("Test Partnership Name", "1234567890")).dataRetrievalAction
 
+  def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
+    Some(
+      Json.obj(
+        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", "1234567890"),
+        "partners" -> Json.arr(
+          Json.obj(
+            PartnerDetailsId.toString ->
+              PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
+          )
+        )
+      )
+    )
+  )
 }

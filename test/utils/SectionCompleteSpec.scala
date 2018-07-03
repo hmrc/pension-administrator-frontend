@@ -16,16 +16,12 @@
 
 package utils
 
-import java.time.LocalDate
-
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import models.register.company.directors.DirectorDetails
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
-import org.scalacheck.Gen
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
