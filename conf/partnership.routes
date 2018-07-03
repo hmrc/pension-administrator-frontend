@@ -1,3 +1,5 @@
+->         /partner                             partners.Routes
+
 GET        /what-you-will-need                                    controllers.register.partnership.WhatYouWillNeedController.onPageLoad()
 POST       /what-you-will-need                                    controllers.register.partnership.WhatYouWillNeedController.onSubmit()
 
@@ -34,13 +36,22 @@ POST       /change-is-this-the-contact-address     controllers.register.partners
 GET        /business-details                  controllers.register.partnership.PartnershipBusinessDetailsController.onPageLoad()
 POST       /business-details                  controllers.register.partnership.PartnershipBusinessDetailsController.onSubmit()
 
-GET         /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = CheckMode)
-
-
 GET         /previous-address                       controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST        /previous-address                       controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET         /change-previous-address                controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-previous-address                controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET        /contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST       /contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-contact-details                controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-contact-details                controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = CheckMode)
+
+GET        /previous-address-results               controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST       /previous-address-results               controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
+GET        /change-previous-address-results        controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-previous-address-results        controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = CheckMode)
+
+GET         /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = CheckMode)

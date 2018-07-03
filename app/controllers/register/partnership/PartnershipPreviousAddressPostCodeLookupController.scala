@@ -64,7 +64,7 @@ object PartnershipPreviousAddressPostCodeLookupController {
 
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
-    routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode),
+    routes.PartnershipPreviousAddressController.onPageLoad(mode),
     Message("common.previousAddress.title"),
     Message("common.previousAddress.heading"),
     Some(Message("site.secondaryHeader")),

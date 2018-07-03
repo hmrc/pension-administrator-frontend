@@ -21,7 +21,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
 import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
-import models.{Address, BusinessDetails, LastPage, TolerantAddress}
+import models._
 import org.scalatest.OptionValues
 
 package object utils {
@@ -128,6 +128,10 @@ package object utils {
 
     def partnershipPreviousAddress(address: Address): UserAnswers = {
       answers.set(PartnershipPreviousAddressId)(address).asOpt.value
+    }
+
+    def partnershipContactDetails(contactDetails: ContactDetails): UserAnswers = {
+      answers.set(PartnershipContactDetailsId)(contactDetails).asOpt.value
     }
 
     // Converters
