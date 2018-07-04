@@ -236,12 +236,12 @@ company.checkYourAnswers.company.details.heading = Company details
 company.checkYourAnswers.company.contact.details.heading = Company contact details
 company.checkYourAnswers.contact.details.heading = Contact details
 
-
 moreThanTenDirectors.title = Do you need to tell us about other directors?
 moreThanTenDirectors.heading = Do you need to tell us about other directors?
 moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
 moreThanTenDirectors.hint = We will contact you if we need their information.
-moreThanTenDirectors.error.required = You must make a selection
+
+moreThanTen.error.required = You must make a selection
 
 confirmDeleteDirector.title = Are you sure you want to delete this person as a director?
 confirmDeleteDirector.heading = Are you sure you want to delete {0} as a director?
@@ -574,3 +574,8 @@ partnerNino.no.reason = Tell us why the partner does not have a National Insuran
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
 partnerNino.error.reason.length = The reason cannot be more than 150 characters
+
+moreThanTenPartners.title = Do you need to tell us about other partners?
+moreThanTenPartners.heading = Do you need to tell us about other partners?
+moreThanTenPartners.checkYourAnswersLabel = Do you need to tell us about other partners?
+moreThanTenPartners.hint = We will contact you if we need their information.

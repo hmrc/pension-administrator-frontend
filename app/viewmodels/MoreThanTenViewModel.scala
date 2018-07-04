@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package viewmodels
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import play.api.mvc.Call
 
-class MoreThanTenDirectorsFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("moreThanTenDirectors.error.required")
-    )
-}
+case class MoreThanTenViewModel(title: String, heading: String, hint: String, postCall: Call, id: TypedIdentifier[Boolean])
