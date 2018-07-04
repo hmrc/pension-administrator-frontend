@@ -17,39 +17,62 @@
 package forms.behaviours
 
 import forms.FormSpec
-import forms.mappings.{Constraints, PayeMapping}
+import forms.mappings.{PayeMapping, RegexBehaviourSpec}
+import models.Paye
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
-trait PayeBehaviours extends FormSpec with StringFieldBehaviours with Constraints with PayeMapping {
+class PayeBehaviours extends FormSpec with PayeMapping with RegexBehaviourSpec {
 
-  def formWithPayeField(
-       form: Form[_],
-       fieldName: String,
-       keyPayeLength: String,
-       keyPayeInvalid: String): Unit = {
+  def formWithPaye(
+                    testForm: Form[Paye],
+                    requiredKey: String,
+                    keyPayeRequired: String,
+                    keyPayeLength: String
+  ): Unit = {
 
-    "behave like a form with a paye field" should {
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        RegexpGen.from(payeRegex)
-      )
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = PayeMapping.maxPayeLength,
-        lengthError = FormError(fieldName, keyPayeLength, Seq(PayeMapping.maxPayeLength))
-      )
-
-      behave like fieldWithRegex(
-        form,
-        fieldName,
-        "A1_",
-        FormError(fieldName, keyPayeInvalid, Seq(payeRegex))
-      )
+    "fail to bind when yes is selected but paye is not provided" in {
+      val result = testForm.bind(Map("paye.hasPaye" -> "true"))
+      result.errors shouldBe Seq(FormError("paye.paye", keyPayeRequired))
     }
+
+    "fail to bind when yes is selected and paye exceeds max length of 16" in {
+      val testString = RandomStringUtils.randomAlphabetic(PayeMapping.maxPayeLength + 1)
+      val result = testForm.bind(Map("paye.hasPaye" -> "true", "paye.paye" -> testString))
+      result.errors shouldBe Seq(FormError("paye.paye", keyPayeLength, Seq(PayeMapping.maxPayeLength)))
+    }
+
+    "fail to bind when value is omitted" in {
+      val expectedError = error("paye.hasPaye", requiredKey)
+      checkForError(testForm, emptyForm, expectedError)
+    }
+
+    "successfully unbind `Paye.Yes`" in {
+      val result = testForm.fill(Paye.Yes("paye")).data
+      result should contain("paye.hasPaye" -> "true")
+      result should contain("paye.paye" -> "paye")
+    }
+
+    "successfully unbind `Paye.No`" in {
+      val result = testForm.fill(Paye.No).data
+      result should contain("paye.hasPaye" -> "false")
+    }
+
+    val valid = Table(
+      "data",
+      Map("paye.hasPaye" -> "true", "paye.paye" -> " 123/AB56789 "),
+      Map("paye.hasPaye" -> "true", "paye.paye" -> " 123AB56789 "),
+      Map("paye.hasPaye" -> "true", "paye.paye" -> " 123\\AB56789 ")
+    )
+
+    val invalid = Table(
+      "data",
+      Map("paye.hasPaye" -> "true", "paye.paye" -> "A1_"),
+      Map("paye.hasPaye" -> "true", "paye.paye" -> "ABC1234567897"),
+      Map("paye.hasPaye" -> "true", "paye.paye" -> "123")
+    )
+
+    behave like formWithRegex(testForm, valid, invalid)
   }
 
 }
