@@ -40,7 +40,7 @@ object Vat {
           .map[Vat](Yes.apply)
           .orElse(Reads[Vat](_ => JsError("Vat Value expected")))
 
-      case false => Reads(_ => JsSuccess(No))
+      case false => Reads[Vat](_ => JsSuccess(No))
     }
   }
 
