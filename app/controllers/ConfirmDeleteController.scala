@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.Index
 import models.requests.DataRequest
@@ -37,17 +36,15 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   protected def cacheConnector: DataCacheConnector
 
-  def get(vm: ConfirmDeleteViewModel, index: Index)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def get(vm: ConfirmDeleteViewModel, index: Index)(implicit request: DataRequest[AnyContent]): Future[Result] =
     Future.successful(Ok(confirmDelete(appConfig, index, vm)))
-  }
 
   def post[A](id: TypedIdentifier[A], postUrl: Call, setDelete: A => A)
-             (implicit request: DataRequest[AnyContent], f: Format[A]): Future[Result] = {
+             (implicit request: DataRequest[AnyContent], f: Format[A]): Future[Result] =
     retrieve(id) { details =>
       cacheConnector.save(request.externalId, id, setDelete(details)).map{ _ =>
         Redirect(postUrl)
       }
     }
-  }
 
 }

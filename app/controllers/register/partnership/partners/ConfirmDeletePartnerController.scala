@@ -18,9 +18,8 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.Retrievals
+import controllers.{ConfirmDeleteController, Retrievals}
 import controllers.actions._
-import controllers.register.ConfirmDeleteController
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
 import models.{Index, PersonDetails}
