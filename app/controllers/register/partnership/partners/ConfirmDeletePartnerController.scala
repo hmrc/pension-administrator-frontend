@@ -17,26 +17,25 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
+import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
+import controllers.register.ConfirmDeleteController
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
-import models.Index
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.{Index, PersonDetails}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import viewmodels.{ConfirmDeleteViewModel, Message}
-import views.html.confirmDelete
-
-import scala.concurrent.Future
 
 class ConfirmDeletePartnerController @Inject()(
-                                                appConfig: FrontendAppConfig,
+                                                val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction
-                                              ) extends FrontendController with I18nSupport with Retrievals {
+                                                requireData: DataRequiredAction,
+                                                val cacheConnector: DataCacheConnector
+                                              ) extends ConfirmDeleteController with Retrievals {
 
   def viewModel(index: Index) = Retrieval {
     implicit request =>
@@ -53,13 +52,16 @@ class ConfirmDeletePartnerController @Inject()(
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(index).retrieve.right.map{ vm =>
-        Future.successful(Ok(confirmDelete(appConfig, index, vm)))
-      }
+      viewModel(index).retrieve.right.map(get(_, index))
   }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      ???
+      post[PersonDetails](
+        PartnerDetailsId(index),
+        routes.ConfirmDeletePartnerController.onPageLoad(index),
+        _.copy(isDeleted = true)
+      )
   }
+
 }

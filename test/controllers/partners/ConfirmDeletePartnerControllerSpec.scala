@@ -18,6 +18,7 @@ package controllers.partners
 
 import java.time.LocalDate
 
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
 import controllers.register.partnership.partners.{ConfirmDeletePartnerController, routes}
@@ -36,7 +37,8 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
       messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      FakeDataCacheConnector
     )
 
   val firstIndex = Index(0)
