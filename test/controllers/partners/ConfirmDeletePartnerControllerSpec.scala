@@ -18,30 +18,75 @@ package controllers.partners
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import base.CSRFRequest
+import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
-import controllers.register.partnership.partners.{ConfirmDeletePartnerController, routes}
+import controllers.register.partnership.partners.routes
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models.{Index, PersonDetails}
+import play.api.Application
+import play.api.http.Writeable
+import play.api.inject.bind
 import play.api.libs.json.Json
+import play.api.mvc.{Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.annotations.Partnership
+import utils.{FakeNavigator, Navigator}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
-class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new ConfirmDeletePartnerController(
-      frontendAppConfig,
-      messagesApi,
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      FakeDataCacheConnector
+class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFRequest {
+
+  import ConfirmDeletePartnerControllerSpec._
+
+  "render the view correctly on a GET request" in {
+    requestResult(dataRetrieval)(
+      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex))),
+      (request, result) => {
+        status(result) mustBe OK
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, firstIndex, viewModel)(request, messages).toString()
+      }
     )
+  }
+
+  "redirect to the next page on a POST request" in {
+    requestResult(dataRetrieval)(
+      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onSubmit(firstIndex))),
+      (_, result) => {
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(postUrl.url)
+      }
+    )
+  }
+
+  def requestResult[T](dataRetrieval: DataRetrievalAction)
+                      (request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
+                      (implicit w: Writeable[T]): Unit = {
+    running(_.overrides(
+      bind[AuthAction].to(FakeAuthAction),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
+      bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
+      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+    )) {
+      app =>
+        val req = request(app)
+        val result = route[T](app, req).value
+        test(req, result)
+    }
+  }
+
+}
+
+object ConfirmDeletePartnerControllerSpec {
+
 
   val firstIndex = Index(0)
+
+  val postUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex)
 
   val person = PersonDetails("First", None, "Last", LocalDate.now())
 
@@ -51,23 +96,11 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
     ))))
 
   def viewModel = ConfirmDeleteViewModel(
-    routes.ConfirmDeletePartnerController.onSubmit(firstIndex),
+    postUrl,
     routes.ConfirmDeletePartnerController.onPageLoad(firstIndex),
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",
     Some(person.fullName)
   )
 
-  def viewAsString() = confirmDelete(frontendAppConfig, firstIndex, viewModel)(fakeRequest, messages).toString
-
-  "ConfirmDeletePartner Controller" must {
-
-    "return OK and the correct view for a GET" in {
-
-      val result = controller(dataRetrieval).onPageLoad(firstIndex)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-  }
 }
