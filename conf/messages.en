@@ -123,7 +123,7 @@ common.dateOfBirth.hint = Example 30 9 1990
 common.vat = VAT Registration number
 common.vat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
 common.error.vat.required = Enter the VAT registration number
-common.error.vat.invalid = Enter a valid VAT registration number
+common.error.vat.invalid = Enter a valid VAT Registration number in the format GB123456789
 common.error.vat.length = The VAT Registration number cannot be more than 9 characters
 common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
 
