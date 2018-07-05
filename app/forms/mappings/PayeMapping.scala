@@ -16,22 +16,52 @@
 
 package forms.mappings
 
-import play.api.data.{Forms, Mapping}
+import models.Paye
+import play.api.data.Forms.tuple
+import play.api.data.Mapping
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 
-trait PayeMapping extends Mappings with Transforms{
+trait PayeMapping extends Mappings with Transforms {
 
-  def payeMapping(keyPayeLength: String, keyPayeInvalid: String): Mapping[String] = {
-    Forms.text.
-      transform(payeTransform, noTransform).
-      verifying(
-      firstError(
-        maxLength(PayeMapping.maxPayeLength, keyPayeLength),
-        payeEmployerReferenceNumber(keyPayeInvalid))
-    )
+  def payeMapping(requiredKey: String = "common.radio.error.required",
+                  requiredPayeKey: String = "common.error.paye.required",
+                  invalidPayeKey: String = "common.error.paye.invalid",
+                  payeLengthKey: String = "common.error.paye.length"):
+  Mapping[Paye] = {
+
+    tuple("hasPaye" -> boolean(requiredKey),
+      "paye" -> mandatoryIfTrue(
+        "paye.hasPaye",
+        text(requiredPayeKey)
+          .transform(payeTransform, noTransform)
+          .verifying(
+            firstError(
+              maxLength(PayeMapping.maxPayeLength, payeLengthKey),
+              payeEmployerReferenceNumber(invalidPayeKey)
+            )
+          )
+      )
+    ).transform(toPaye, fromPaye)
   }
 
+  private[this] def fromPaye(paye: Paye): (Boolean, Option[String]) = {
+    paye match {
+      case Paye.Yes(payeNo) => (true, Some(payeNo))
+      case Paye.No => (false, None)
+    }
+  }
+
+  private[this] def toPaye(payeTuple: (Boolean, Option[String])): Paye = {
+    payeTuple match {
+      case (true, Some(paye)) => Paye.Yes(paye)
+      case (false, None) => Paye.No
+      case _ => throw new RuntimeException("Invalid selection")
+    }
+  }
 }
 
-object PayeMapping{
+object PayeMapping {
   val maxPayeLength = 16
 }
+
+

@@ -120,6 +120,13 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.dateOfBirth = Date of birth
 common.dateOfBirth.hint = Example 30 9 1990
+commom.paye.label = PAYE employer reference number
+common.paye.hint = This is issued by HMRC. For example, 123/AB56789.
+commom.error.paye.required = Enter the PAYE employer reference number
+common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
+common.error.paye.length = The PAYE number cannot be more than 16 characters
+common.error.paye.invalid = Enter a valid PAYE number
+common.error.paye.required = Enter the PAYE employer reference number
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -189,7 +196,7 @@ companyDetails.error.companyName.length = The name cannot be more than 160 chara
 companyDetails.error.companyName.invalid = The name contains invalid characters
 companyDetails.error.vatRegistrationNumber.length = The VAT Registration number cannot be more than 9 characters
 companyDetails.error.vatRegistrationNumber.invalid = Enter a valid VAT Registration number
-companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 13 characters
+companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 16 characters
 companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE number
 
 companyAddressYears.title = How long has the company been at this address?
@@ -554,6 +561,9 @@ partnershipBusinessDetails.error.partnershipName.invalid = Enter a valid registe
 partnershipBusinessDetails.error.utr.required = Enter the Partnership Self Assessment Unique Taxpayer Reference number
 partnershipBusinessDetails.error.utr.invalid = Enter a valid Partnership Self Assessment Unique Taxpayer
 partnershipBusinessDetails.error.utr.length = The Partnership Self Assessment Unique Taxpayer Reference number cannot be more than 10 characters
+
+partnershipPaye.title = Does the partnership have a PAYE employer reference number?
+partnershipPaye.heading = Does the partnership have a PAYE employer reference number?
 
 partnerNino.title = Does the partner have a National Insurance number?
 partnerNino.heading = Does the partner have a National Insurance number?
