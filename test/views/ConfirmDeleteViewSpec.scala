@@ -35,7 +35,7 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
     s"$messageKeyPrefix.heading"
   )
 
-  def createView = () => confirmDelete(frontendAppConfig, firstIndex, viewModel)(fakeRequest, messages)
+  def createView = () => confirmDelete(frontendAppConfig, viewModel)(fakeRequest, messages)
 
   "ConfirmDeletePartner view" must {
     behave like normalPage(createView, messageKeyPrefix)

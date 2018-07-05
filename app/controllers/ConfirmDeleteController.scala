@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
-import models.Index
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Format
@@ -36,13 +35,17 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   protected def cacheConnector: DataCacheConnector
 
-  def get(vm: ConfirmDeleteViewModel, index: Index)(implicit request: DataRequest[AnyContent]): Future[Result] =
-    Future.successful(Ok(confirmDelete(appConfig, index, vm)))
+  def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call)(implicit request: DataRequest[AnyContent]): Future[Result] =
+    if(!isDeleted) {
+      Future.successful(Ok(confirmDelete(appConfig, vm)))
+    } else {
+      Future.successful(Redirect(redirectTo))
+    }
 
   def post[A](id: TypedIdentifier[A], postUrl: Call, setDelete: A => A)
              (implicit request: DataRequest[AnyContent], f: Format[A]): Future[Result] =
     id.retrieve.right.map { details =>
-      cacheConnector.save(request.externalId, id, setDelete(details)).map{ _ =>
+      cacheConnector.save(request.externalId, id, setDelete(details)) map { _ =>
         Redirect(postUrl)
       }
     }

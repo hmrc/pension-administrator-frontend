@@ -31,8 +31,6 @@ import views.html.register.company.directors.confirmDeleteDirector
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private val firstIndex = Index(0)
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmDeleteDirectorController(
       frontendAppConfig,

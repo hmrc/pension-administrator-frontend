@@ -32,8 +32,6 @@ import views.html.confirmDelete
 
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private val firstIndex = Index(0)
-
   val testIdentifier = new TypedIdentifier[String] {
     override def toString: String = "test"
   }
@@ -57,16 +55,25 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       override def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
     }
 
-  private def viewAsString() = confirmDelete(frontendAppConfig, firstIndex, viewModel)(fakeRequest, messages).toString
+  private def viewAsString() = confirmDelete(frontendAppConfig, viewModel)(fakeRequest, messages).toString
 
   "ConfirmDeleteDirector Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val result = controller().get(viewModel, firstIndex)(request)
+      val result = controller().get(viewModel, false, FakeNavigator.desiredRoute)(request)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+    }
+
+    "redirect to already deleted view for a GET if the director was already deleted" in {
+
+      val result = controller().get(viewModel, true, FakeNavigator.desiredRoute)(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+
     }
 
     "redirect to directors list on removal of director" in {

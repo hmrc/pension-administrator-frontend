@@ -48,7 +48,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
       implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, firstIndex, viewModel)(request, messages).toString()
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, viewModel)(request, messages).toString()
       }
     )
   }
@@ -82,7 +82,6 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
 }
 
 object ConfirmDeletePartnerControllerSpec {
-
 
   val firstIndex = Index(0)
 

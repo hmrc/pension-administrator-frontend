@@ -18,46 +18,44 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.Retrievals
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
+import controllers.{ConfirmDeleteController, Retrievals}
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
-import models.{Index, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.{Index, NormalMode, PersonDetails}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.register.company.directors.confirmDeleteDirector
+import viewmodels.{ConfirmDeleteViewModel, Message}
 
-import scala.concurrent.Future
+class ConfirmDeleteDirectorController @Inject()(
+                                                 val appConfig: FrontendAppConfig,
+                                                 override val messagesApi: MessagesApi,
+                                                 authenticate: AuthAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 val cacheConnector: DataCacheConnector
+                                               ) extends ConfirmDeleteController with Retrievals {
 
-class ConfirmDeleteDirectorController @Inject()(appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieve(DirectorDetailsId(index)) { details =>
-          details.isDeleted match {
-            case false =>
-              Future.successful(Ok(confirmDeleteDirector(appConfig, index, details.fullName)))
-            case true =>
-              Future.successful(Redirect(routes.AlreadyDeletedController.onPageLoad(index)))
-          }
-
+      DirectorDetailsId(index).retrieve.right.map { details =>
+        val vm = ConfirmDeleteViewModel(
+          routes.ConfirmDeleteDirectorController.onSubmit(index),
+          controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
+          Message("confirmDeleteDirector.title"),
+          "confirmDeleteDirector.heading",
+          Some(details.fullName),
+          Some("site.secondaryHeader")
+        )
+        get(vm, details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
       }
   }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieve(DirectorDetailsId(index)) {directorDetails =>
-        dataCacheConnector.save(request.externalId, DirectorDetailsId(index), directorDetails.copy(isDeleted = true)).map{ _ =>
-          Redirect(AddCompanyDirectorsController.onPageLoad(NormalMode))
-        }
-      }
+      post[PersonDetails](DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode), _.copy(isDeleted = true))
   }
 
 }

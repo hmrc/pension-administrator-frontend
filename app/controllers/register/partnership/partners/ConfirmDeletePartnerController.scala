@@ -22,7 +22,7 @@ import controllers.{ConfirmDeleteController, Retrievals}
 import controllers.actions._
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
-import models.{Index, PersonDetails}
+import models.{Index, NormalMode, PersonDetails}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import viewmodels.{ConfirmDeleteViewModel, Message}
@@ -36,22 +36,21 @@ class ConfirmDeletePartnerController @Inject()(
                                                 val cacheConnector: DataCacheConnector
                                               ) extends ConfirmDeleteController with Retrievals {
 
-  def viewModel(index: Index) = Retrieval {
+  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+
       PartnerDetailsId(index).retrieve.right.map{ details =>
-        ConfirmDeleteViewModel(
+        val viewModel = ConfirmDeleteViewModel(
           routes.ConfirmDeletePartnerController.onSubmit(index),
           routes.ConfirmDeletePartnerController.onPageLoad(index),
           Message("confirmDelete.partner.title"),
           "confirmDelete.partner.heading",
           Some(details.fullName)
         )
-      }
-  }
 
-  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      viewModel(index).retrieve.right.map(get(_, index))
+        get(viewModel, details.isDeleted, routes.PartnerDetailsController.onPageLoad(NormalMode, index))
+
+      }
   }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
