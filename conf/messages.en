@@ -525,6 +525,7 @@ whatYouWillNeed.partnership.body.item3 = your contact telephone number and email
 
 partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
 partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?
+partnershipVat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
 
 confirmPartnershipDetails.title = Are these details correct?
 confirmPartnershipDetails.heading = Are these details correct?
