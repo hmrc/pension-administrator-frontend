@@ -30,7 +30,7 @@ import views.html.confirmDelete
 
 import scala.concurrent.Future
 
-trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals{
+trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals {
 
   protected def appConfig: FrontendAppConfig
 
@@ -41,7 +41,7 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   def post[A](id: TypedIdentifier[A], postUrl: Call, setDelete: A => A)
              (implicit request: DataRequest[AnyContent], f: Format[A]): Future[Result] =
-    retrieve(id) { details =>
+    id.retrieve.right.map { details =>
       cacheConnector.save(request.externalId, id, setDelete(details)).map{ _ =>
         Redirect(postUrl)
       }

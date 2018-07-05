@@ -16,13 +16,9 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
-import controllers.actions._
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.DirectorDetailsId
 import models._
 import models.requests.DataRequest
 import org.scalatest.mockito.MockitoSugar
@@ -38,23 +34,21 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val firstIndex = Index(0)
 
-  implicit val request: DataRequest[AnyContent] = DataRequest(
-    fakeRequest, "cacheId", PSAUser(UserType.Individual, None, false, None), UserAnswers()
-  )
-
   val testIdentifier = new TypedIdentifier[String] {
     override def toString: String = "test"
   }
 
-  val validData = Json.obj(testIdentifier.toString -> "answer")
+  implicit val request: DataRequest[AnyContent] = DataRequest(
+    fakeRequest, "cacheId", PSAUser(UserType.Individual, None, false, None), UserAnswers(Json.obj(testIdentifier.toString -> "answer"))
+  )
 
   val viewModel = ConfirmDeleteViewModel(
     FakeNavigator.desiredRoute,
     FakeNavigator.desiredRoute,
-    "", ""
+    "title", "heading"
   )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller() =
     new ConfirmDeleteController {
       override protected def cacheConnector: DataCacheConnector = FakeDataCacheConnector
 
@@ -69,9 +63,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val data = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(data).get(viewModel, firstIndex)(request)
+      val result = controller().get(viewModel, firstIndex)(request)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -79,9 +71,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "redirect to directors list on removal of director" in {
 
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).post[String](testIdentifier, FakeNavigator.desiredRoute, _ => "")
+      val result = controller().post[String](testIdentifier, FakeNavigator.desiredRoute, _ => "")
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
@@ -89,12 +79,10 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "set the isDelete flag to true for the selected director on submission of POST request" in {
 
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).post[String](testIdentifier, FakeNavigator.desiredRoute, _ => "")
+      val result = controller().post[String](testIdentifier, FakeNavigator.desiredRoute, _ => "newAnswer")
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(DirectorDetailsId(firstIndex), PersonDetails("John", None, "Doe", LocalDate.now(), true))
+      FakeDataCacheConnector.verify(testIdentifier, "newAnswer")
     }
 
   }
