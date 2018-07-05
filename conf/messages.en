@@ -124,7 +124,7 @@ common.utr.text = Unique Taxpayer Reference number
 common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
 common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
-common.error.utr.reason.length = The reason cannot be more than 150 characters
+common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
 
 unauthorised.title = You can’t access this service with this account
@@ -272,7 +272,7 @@ directorNino.checkYourAnswersLabel.reason = Why the director does not have a Nat
 directorNino.no.reason = Tell us why the director does not have a National Insurance number
 directorNino.error.required = One of the two radio buttons must be selected (YES/NO)
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
-directorNino.error.reason.length = The reason cannot be more than 150 characters
+directorNino.error.reason.length = The reason cannot be more than 160 characters
 
 companyDirectorAddressPostCodeLookup.title = Director’s address
 companyDirectorAddressPostCodeLookup.heading = Director’s address
@@ -565,7 +565,7 @@ partnerNino.checkYourAnswersLabel.reason = Why the partner does not have a Natio
 partnerNino.no.reason = Tell us why the partner does not have a National Insurance number
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
-partnerNino.error.reason.length = The reason cannot be more than 150 characters
+partnerNino.error.reason.length = The reason cannot be more than 160 characters
 
 partnerUniqueTaxReference.title = Does the partner have a Unique Taxpayer Reference number (SAUTR)?
 partnerUniqueTaxReference.heading = Does the partner have a Unique Taxpayer Reference number (SAUTR)?
