@@ -16,3 +16,5 @@ POST        /:index/change-partner-details        controllers.register.partnersh
 
 GET         /:index/partners-confirm-delete                       controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index)
 POST        /:index/partners-confirm-delete                       controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index)
+
+GET        /:index/already-deleted                           controllers.register.partnership.partners.AlreadyDeletedController.onPageLoad(index: Index)

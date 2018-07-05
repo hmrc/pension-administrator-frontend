@@ -509,6 +509,8 @@ alreadyDeleted.heading = You have already deleted {0}
 alreadyDeleted.lede = You have already confirmed deletion of {0}.
 alreadyDeleted.text = This page no longer exists.
 
+alreadyDeleted.partner.title = You have already deleted this partner
+
 whatYouWillNeed.partnership.title = What you will need
 whatYouWillNeed.partnership.heading = What you will need
 whatYouWillNeed.partnership.body.text1 = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
