@@ -120,6 +120,11 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.dateOfBirth = Date of birth
 common.dateOfBirth.hint = Example 30 9 1990
+common.utr.text = Unique Taxpayer Reference number
+common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
+common.error.utr.required = Enter the Unique Tax Reference number
+common.error.utr.invalid = The UTR must be ten digits
+common.error.utr.reason.length = The reason cannot be more than 150 characters
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -286,11 +291,8 @@ directorUniqueTaxReference.utr.text = Unique Taxpayer Reference number
 directorUniqueTaxReference.number.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
 directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
 directorUniqueTaxReference.error.required = Select yes if the director has a UTR
-directorUniqueTaxReference.error.utr.required = Enter the Unique Tax Reference number
 directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 characters
-directorUniqueTaxReference.error.utr.invalid = The UTR must be ten digits
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
-directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address
@@ -564,3 +566,10 @@ partnerNino.no.reason = Tell us why the partner does not have a National Insuran
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
 partnerNino.error.reason.length = The reason cannot be more than 150 characters
+
+partnerUniqueTaxReference.title = Does the partner have a Unique Taxpayer Reference number (SAUTR)?
+partnerUniqueTaxReference.heading = Does the partner have a Unique Taxpayer Reference number (SAUTR)?
+partnerUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
+partnerUniqueTaxReference.reason.text = Tell us why the partner does not have a UTR
+partnerUniqueTaxReference.error.required = Select yes if the partner has a UTR
+partnerUniqueTaxReference.error.reason.required = You need to tell us why the partner does not have a UTR

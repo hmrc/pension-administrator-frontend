@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package forms.register.company.directors
+package identifiers.register.partnership.partners
 
-import forms.behaviours.{OptionFieldBehaviours, UtrBehaviours}
+import identifiers._
 import models.UniqueTaxReference
+import play.api.libs.json.JsPath
 
-class DirectorUniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
+case class PartnerUniqueTaxReferenceId(index: Int) extends TypedIdentifier[UniqueTaxReference] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerUniqueTaxReferenceId.toString
+}
 
-  val formProvider = new DirectorUniqueTaxReferenceFormProvider()()
-
-  "DirectorUniqueTaxReference form provider" must {
-    behave like formWithUtr(
-      formProvider,
-      keyUtrRequired = "common.error.utr.required",
-      keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
-      keyUtrLength = "common.error.utr.length",
-      keyReasonLength = "common.error.utr.reason.length"
-    )
-  }
-
+object PartnerUniqueTaxReferenceId {
+  override lazy val toString: String = "partnerUtr"
 }

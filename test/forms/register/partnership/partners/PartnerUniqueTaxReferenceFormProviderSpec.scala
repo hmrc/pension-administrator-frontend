@@ -14,33 +14,21 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package forms.register.partnership.partners
 
 import forms.behaviours.UtrBehaviours
-import models.UniqueTaxReference
-import play.api.data.Form
 
-class UtrMappingSpec extends UtrBehaviours {
+class PartnerUniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
 
-  "A form with a UTR" should {
-    val mapping = utrMapping(
-      requiredKey = "directorUniqueTaxReference.error.required",
-      requiredUtrKey = "common.error.utr.required",
-      utrLengthKey = "common.error.utr.length",
-      utrInvalidKey = "common.error.utr.invalid",
-      requiredReasonKey = "directorUniqueTaxReference.error.reason.required",
-      reasonLengthKey = "common.error.utr.reason.length"
-    )
+  val form = new PartnerUniqueTaxReferenceFormProvider()()
 
-    val testForm: Form[UniqueTaxReference] = Form("utr" -> mapping)
-
+  "PartnerUniqueTaxReference form provider" must {
     behave like formWithUtr(
-      testForm,
+      form,
       keyUtrRequired = "common.error.utr.required",
-      keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
+      keyReasonRequired = "partnerUniqueTaxReference.error.reason.required",
       keyUtrLength = "common.error.utr.length",
       keyReasonLength = "common.error.utr.reason.length"
     )
   }
-
 }

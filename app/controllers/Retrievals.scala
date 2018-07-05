@@ -18,6 +18,7 @@ package controllers
 
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.partnership.partners.PartnerDetailsId
 import models.PersonDetails
 import models.requests.DataRequest
 import play.api.libs.json.Reads
@@ -36,6 +37,14 @@ trait Retrievals {
                                                (implicit request: DataRequest[AnyContent]): Future[Result] = {
     retrieve[PersonDetails](DirectorDetailsId(index)) { directorDetails =>
       f(directorDetails.fullName)
+    }
+  }
+
+  private[controllers] def retrievePartnerName(index: Int)
+                                               (f: String => Future[Result])
+                                               (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    retrieve[PersonDetails](PartnerDetailsId(index)) { partnerDetails =>
+      f(partnerDetails.fullName)
     }
   }
 
