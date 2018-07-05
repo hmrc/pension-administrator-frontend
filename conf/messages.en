@@ -125,6 +125,7 @@ common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will fin
 common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
 common.error.utr.reason.length = The reason cannot be more than 150 characters
+common.error.utr.length = The utr cannot be more than 10 characters
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -291,7 +292,6 @@ directorUniqueTaxReference.utr.text = Unique Taxpayer Reference number
 directorUniqueTaxReference.number.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
 directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
 directorUniqueTaxReference.error.required = Select yes if the director has a UTR
-directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 characters
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address

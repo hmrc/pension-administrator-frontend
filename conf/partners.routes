@@ -14,7 +14,7 @@ POST        /:index/partner-details               controllers.register.partnersh
 GET         /:index/change-partner-details        controllers.register.partnership.partners.PartnerDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST        /:index/change-partner-details        controllers.register.partnership.partners.PartnerDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
 
-GET        /:index/partnerUniqueTaxReference                     controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/partnerUniqueTaxReference                     controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/changePartnerUniqueTaxReference               controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/changePartnerUniqueTaxReference               controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/unique-taxpayer-reference                     controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/unique-taxpayer-reference                     controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/change-unique-taxpayer-reference              controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /:index/change-unique-taxpayer-reference              controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = CheckMode, index: Index)
