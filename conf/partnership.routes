@@ -55,3 +55,8 @@ GET         /previous-address-manual                controllers.register.partner
 POST        /previous-address-manual                controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET         /paye-number                            controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
+POST        /paye-number                            controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
+GET         /change-paye-number                     controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-paye-number                     controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = CheckMode)
