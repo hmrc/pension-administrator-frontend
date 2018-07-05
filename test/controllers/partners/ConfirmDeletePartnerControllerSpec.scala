@@ -99,7 +99,8 @@ object ConfirmDeletePartnerControllerSpec {
     routes.ConfirmDeletePartnerController.onPageLoad(firstIndex),
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",
-    Some(person.fullName)
+    Some(person.fullName),
+    Some("site.secondaryHeader")
   )
 
 }

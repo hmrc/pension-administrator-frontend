@@ -45,7 +45,8 @@ class ConfirmDeletePartnerController @Inject()(
           routes.ConfirmDeletePartnerController.onPageLoad(index),
           Message("confirmDelete.partner.title"),
           "confirmDelete.partner.heading",
-          Some(details.fullName)
+          Some(details.fullName),
+          Some("site.secondaryHeader")
         )
 
         get(viewModel, details.isDeleted, routes.PartnerDetailsController.onPageLoad(NormalMode, index))
