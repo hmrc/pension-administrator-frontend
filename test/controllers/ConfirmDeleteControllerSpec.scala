@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.TypedIdentifier
@@ -32,12 +34,14 @@ import views.html.confirmDelete
 
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  val testIdentifier = new TypedIdentifier[String] {
+  val testIdentifier = new TypedIdentifier[PersonDetails] {
     override def toString: String = "test"
   }
 
+  val person = PersonDetails("First", None, "Last", LocalDate.now())
+
   implicit val request: DataRequest[AnyContent] = DataRequest(
-    fakeRequest, "cacheId", PSAUser(UserType.Individual, None, false, None), UserAnswers(Json.obj(testIdentifier.toString -> "answer"))
+    fakeRequest, "cacheId", PSAUser(UserType.Individual, None, false, None), UserAnswers(Json.obj(testIdentifier.toString -> person))
   )
 
   val viewModel = ConfirmDeleteViewModel(
@@ -78,7 +82,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "redirect to directors list on removal of director" in {
 
-      val result = controller().post[String](testIdentifier, FakeNavigator.desiredRoute, _ => "")
+      val result = controller().post(testIdentifier, FakeNavigator.desiredRoute)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
@@ -86,10 +90,10 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "set the isDelete flag to true for the selected director on submission of POST request" in {
 
-      val result = controller().post[String](testIdentifier, FakeNavigator.desiredRoute, _ => "newAnswer")
+      val result = controller().post(testIdentifier, FakeNavigator.desiredRoute)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(testIdentifier, "newAnswer")
+      FakeDataCacheConnector.verify(testIdentifier, person.copy(isDeleted = true))
     }
 
   }

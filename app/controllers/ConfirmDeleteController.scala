@@ -19,6 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import identifiers.TypedIdentifier
+import models.PersonDetails
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Format
@@ -42,10 +43,10 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
       Future.successful(Redirect(redirectTo))
     }
 
-  def post[A](id: TypedIdentifier[A], postUrl: Call, setDelete: A => A)
-             (implicit request: DataRequest[AnyContent], f: Format[A]): Future[Result] =
+  def post(id: TypedIdentifier[PersonDetails], postUrl: Call)
+             (implicit request: DataRequest[AnyContent], f: Format[PersonDetails]): Future[Result] =
     id.retrieve.right.map { details =>
-      cacheConnector.save(request.externalId, id, setDelete(details)) map { _ =>
+      cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
         Redirect(postUrl)
       }
     }

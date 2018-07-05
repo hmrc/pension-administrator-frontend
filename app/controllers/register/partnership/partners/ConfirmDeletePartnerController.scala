@@ -56,11 +56,7 @@ class ConfirmDeletePartnerController @Inject()(
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post[PersonDetails](
-        PartnerDetailsId(index),
-        routes.ConfirmDeletePartnerController.onPageLoad(index),
-        _.copy(isDeleted = true)
-      )
+      post(PartnerDetailsId(index), routes.ConfirmDeletePartnerController.onPageLoad(index))
   }
 
 }

@@ -55,7 +55,7 @@ class ConfirmDeleteDirectorController @Inject()(
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post[PersonDetails](DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode), _.copy(isDeleted = true))
+      post(DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode))
   }
 
 }
