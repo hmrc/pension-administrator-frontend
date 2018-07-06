@@ -75,7 +75,7 @@ object PartnershipVatControllerSpec extends PartnershipVatControllerSpec {
     routes.PartnershipVatController.onSubmit(NormalMode),
     Message("partnershipVat.title"),
     Message("partnershipVat.heading"),
-    Message("partnershipVat.hint"),
+    Message("common.vat.hint"),
     Some(Message("site.secondaryHeader"))
   )
 

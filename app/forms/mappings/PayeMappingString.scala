@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-package models
+package forms.mappings
 
-import play.api.libs.json.{Format, Json}
+import play.api.data.{Forms, Mapping}
 
-case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: String)
+trait PayeMappingString extends Mappings with Transforms{
 
-object BusinessDetails {
-  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+  def payeMapping(keyPayeLength: String, keyPayeInvalid: String): Mapping[String] = {
+    Forms.text.
+      transform(payeTransform, noTransform).
+      verifying(
+      firstError(
+        maxLength(PayeMappingString.maxPayeLength, keyPayeLength),
+        payeEmployerReferenceNumber(keyPayeInvalid))
+    )
+  }
+
+}
+
+object PayeMappingString {
+  val maxPayeLength = 16
 }

@@ -46,7 +46,7 @@ class PartnershipVatController @Inject()(
     postCall = routes.PartnershipVatController.onSubmit(mode),
     title = Message("partnershipVat.title"),
     heading = Message("partnershipVat.heading"),
-    hint = Message("partnershipVat.hint"),
+    hint = Message("common.vat.hint"),
     subHeading = Some(Message("site.secondaryHeader"))
   )
 

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json.{Format, Json}
+import forms.mappings.PayeMapping
+import javax.inject.Inject
+import models.Paye
+import play.api.data.Form
 
-case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: String)
+class PayeFormProvider @Inject() extends PayeMapping {
 
-object BusinessDetails {
-  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+  def apply(): Form[Paye] =
+    Form(
+      "paye" -> payeMapping()
+    )
 }

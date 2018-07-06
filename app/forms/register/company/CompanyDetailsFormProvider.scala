@@ -16,14 +16,13 @@
 
 package forms.register.company
 
-import forms.mappings.{Mappings, PayeMapping, Transforms, VatMappingString}
+import forms.mappings._
 import javax.inject.Inject
-
 import models.register.company.CompanyDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-class CompanyDetailsFormProvider @Inject() extends Mappings with PayeMapping with VatMappingString with Transforms {
+class CompanyDetailsFormProvider @Inject() extends Mappings with PayeMappingString with VatMappingString with Transforms {
 
   def apply(): Form[CompanyDetails] = Form(
     mapping(

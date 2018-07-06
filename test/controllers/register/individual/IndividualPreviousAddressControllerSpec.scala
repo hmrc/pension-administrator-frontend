@@ -44,7 +44,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val messagePrefix = "common.previousAddress"
-  val firstIndex = Index(0)
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")

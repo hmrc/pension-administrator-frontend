@@ -126,6 +126,12 @@ common.error.vat.required = Enter the VAT registration number
 common.error.vat.invalid = Enter a valid VAT Registration number in the format GB123456789
 common.error.vat.length = The VAT Registration number cannot be more than 9 characters
 common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
+commom.paye.label = PAYE employer reference number
+common.paye.hint = This is issued by HMRC. For example, 123/AB56789.
+commom.error.paye.required = Enter the PAYE employer reference number
+common.error.paye.length = The PAYE number cannot be more than 16 characters
+common.error.paye.invalid = Enter a valid PAYE number
+common.error.paye.required = Enter the PAYE employer reference number
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -195,7 +201,7 @@ companyDetails.error.companyName.length = The name cannot be more than 160 chara
 companyDetails.error.companyName.invalid = The name contains invalid characters
 companyDetails.error.vatRegistrationNumber.length = The VAT Registration number cannot be more than 9 characters
 companyDetails.error.vatRegistrationNumber.invalid = Enter a valid VAT Registration number
-companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 13 characters
+companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 16 characters
 companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE number
 
 companyAddressYears.title = How long has the company been at this address?
@@ -525,7 +531,6 @@ whatYouWillNeed.partnership.body.item3 = your contact telephone number and email
 
 partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
 partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?
-partnershipVat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
 
 confirmPartnershipDetails.title = Are these details correct?
 confirmPartnershipDetails.heading = Are these details correct?
@@ -562,6 +567,9 @@ partnershipBusinessDetails.error.utr.required = Enter the Partnership Self Asses
 partnershipBusinessDetails.error.utr.invalid = Enter a valid Partnership Self Assessment Unique Taxpayer
 partnershipBusinessDetails.error.utr.length = The Partnership Self Assessment Unique Taxpayer Reference number cannot be more than 10 characters
 
+partnershipPaye.title = Does the partnership have a PAYE employer reference number?
+partnershipPaye.heading = Does the partnership have a PAYE employer reference number?
+
 partnerNino.title = Does the partner have a National Insurance number?
 partnerNino.heading = Does the partner have a National Insurance number?
 partnerNino.checkYourAnswersLabel = Does the partner have a National Insurance number?
@@ -574,3 +582,7 @@ partnerNino.error.reason.length = The reason cannot be more than 150 characters
 
 partnershipVat.title = Does the partnership have a VAT registration number?
 partnershipVat.heading = Does the partnership have a VAT registration number?
+
+confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
+confirmDelete.partner.heading = Are you sure you want to delete {0}?
+confirmDelete.partner.body = confirmDeletePartner
