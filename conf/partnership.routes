@@ -56,6 +56,9 @@ POST        /previous-address-manual                controllers.register.partner
 GET         /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-previous-address-manual         controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = CheckMode)
 
+GET        /add-partners                       controllers.register.partnership.AddPartnerController.onPageLoad
+POST       /add-partners                       controllers.register.partnership.AddPartnerController.onSubmit
+
 GET        /vat-number            controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = NormalMode)
 POST       /vat-number            controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = NormalMode)
 GET        /change-vat-number     controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = CheckMode)
