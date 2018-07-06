@@ -54,7 +54,7 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.IndividualDetailsCorrectController.onSubmit(NormalMode).url)
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.IndividualDetailsCorrectController.onSubmit(NormalMode).url, s"$messageKeyPrefix.heading")
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 

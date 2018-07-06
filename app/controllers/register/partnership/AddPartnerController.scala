@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.company.AddEntityController
+import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
@@ -45,7 +45,7 @@ class AddPartnerController @Inject() (
   private val form: Form[Boolean] = formProvider()
 
   private def viewmodel(partners: Seq[Person]) = EntityViewModel(
-         postCall = routes.AddPartnerController.onSubmit,
+         postCall = routes.AddPartnerController.onSubmit(),
          title = Message("addPartners.title"),
          heading = Message("addPartners.heading"),
          entities = partners,
