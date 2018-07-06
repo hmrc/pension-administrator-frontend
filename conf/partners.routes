@@ -22,6 +22,8 @@ POST       /:index/unique-taxpayer-reference                     controllers.reg
 GET        /:index/change-unique-taxpayer-reference              controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-unique-taxpayer-reference              controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = CheckMode, index: Index)
 
+GET        /:index/already-deleted                           controllers.register.partnership.partners.AlreadyDeletedController.onPageLoad(index: Index)
+
 GET        /:index/address-manual                     controllers.register.partnership.partners.PartnerAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/address-manual                     controllers.register.partnership.partners.PartnerAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-address-manual              controllers.register.partnership.partners.PartnerAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)

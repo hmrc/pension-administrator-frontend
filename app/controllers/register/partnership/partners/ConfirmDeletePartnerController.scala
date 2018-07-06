@@ -18,11 +18,11 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.{ConfirmDeleteController, Retrievals}
 import controllers.actions._
+import controllers.{ConfirmDeleteController, Retrievals}
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
-import models.{Index, NormalMode, PersonDetails}
+import models.Index
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import viewmodels.{ConfirmDeleteViewModel, Message}
@@ -49,7 +49,7 @@ class ConfirmDeletePartnerController @Inject()(
           Some("site.secondaryHeader")
         )
 
-        get(viewModel, details.isDeleted, routes.PartnerDetailsController.onPageLoad(NormalMode, index))
+        get(viewModel, details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
 
       }
   }
