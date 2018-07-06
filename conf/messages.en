@@ -120,10 +120,15 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.dateOfBirth = Date of birth
 common.dateOfBirth.hint = Example 30 9 1990
+common.vat = VAT Registration number
+common.vat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
+common.error.vat.required = Enter the VAT registration number
+common.error.vat.invalid = Enter a valid VAT Registration number in the format GB123456789
+common.error.vat.length = The VAT Registration number cannot be more than 9 characters
+common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
 commom.paye.label = PAYE employer reference number
 common.paye.hint = This is issued by HMRC. For example, 123/AB56789.
 commom.error.paye.required = Enter the PAYE employer reference number
-common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
 common.error.paye.length = The PAYE number cannot be more than 16 characters
 common.error.paye.invalid = Enter a valid PAYE number
 common.error.paye.required = Enter the PAYE employer reference number
@@ -574,6 +579,9 @@ partnerNino.no.reason = Tell us why the partner does not have a National Insuran
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
 partnerNino.error.reason.length = The reason cannot be more than 150 characters
+
+partnershipVat.title = Does the partnership have a VAT registration number?
+partnershipVat.heading = Does the partnership have a VAT registration number?
 
 confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
 confirmDelete.partner.heading = Are you sure you want to delete {0}?

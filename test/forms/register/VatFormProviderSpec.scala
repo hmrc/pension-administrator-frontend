@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package forms.register
 
 import forms.behaviours.VatBehaviours
 import models.Vat
 import play.api.data.Form
 
-class VatMappingSpec extends VatBehaviours {
+class VatFormProviderSpec extends VatBehaviours {
 
   private val requiredKey = "common.radio.error.required"
   private val requiredVatKey = "common.error.vat.required"
   private val vatLengthKey = "common.error.vat.length"
   private val invalidVatKey = "common.error.vat.invalid"
 
-    "A form with a Vat" should {
-      val mapping = vatMapping(
-        requiredKey,
-        vatLengthKey,
-        requiredVatKey,
-        invalidVatKey
-      )
+  "A form with a Vat" should {
+    val mapping = vatMapping(
+      requiredKey,
+      vatLengthKey,
+      requiredVatKey,
+      invalidVatKey
+    )
 
-      val testForm:Form[Vat] = Form("vat" -> mapping)
+    val testForm = new VatFormProvider().apply()
 
     behave like formWithVat(testForm: Form[Vat],
       requiredKey: String,
@@ -45,5 +45,4 @@ class VatMappingSpec extends VatBehaviours {
     )
 
   }
-
 }
