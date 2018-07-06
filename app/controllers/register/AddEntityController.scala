@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import identifiers.register.company.AddCompanyDirectorsId
+import models.NormalMode
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -32,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
 import viewmodels.{EntityViewModel, Person}
 import views.html.register.addEntity
+
 import scala.concurrent.Future
 
 trait AddEntityController extends FrontendController with Retrievals with I18nSupport {

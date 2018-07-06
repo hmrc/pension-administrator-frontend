@@ -22,6 +22,7 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{MatchResult, Matcher}
 import play.twirl.api.{Html, HtmlFormat}
+import viewmodels.Message
 
 trait ViewSpecBase extends SpecBase {
 
@@ -115,7 +116,7 @@ trait ViewSpecBase extends SpecBase {
 
   def haveDynamicText(messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
     view =>
-      val text = messages(messageKey, args:_*)
+      val text = Message(messageKey, args:_*).resolve
       MatchResult(
         Jsoup.parse(view().toString).toString.contains(text),
         s"text $text is not rendered on the page",

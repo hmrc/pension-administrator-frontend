@@ -44,7 +44,7 @@ class MoreThanTenDirectorsViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
       routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,
-      "heading",
-      Some("hint"))
+      s"$messageKeyPrefix.heading",
+      Some(s"$messageKeyPrefix.hint"))
   }
 }

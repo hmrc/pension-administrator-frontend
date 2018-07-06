@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
 
 trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
@@ -24,7 +24,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
   def yesNoPage(createView: (Form[Boolean]) => HtmlFormat.Appendable,
                 messageKeyPrefix: String,
                 expectedFormAction: String,
-                messageKey: String = "heading",
+                messageKey: String,
                 expectedHintKey: Option[String] = None
                 ) = {
 
@@ -34,9 +34,9 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
           val doc = asDocument(createView(form))
           val legends = doc.select("legend > span")
           legends.size mustBe expectedHintKey.map(_ => 2).getOrElse(1)
-          legends.first.text mustBe messages(s"$messageKeyPrefix.$messageKey")
+          legends.first.text mustBe messages(messageKey)
           expectedHintKey.foreach(key =>
-            legends.next().text() mustBe messages(s"$messageKeyPrefix.$key")
+            legends.next().text() mustBe messages(key)
           )
         }
 
