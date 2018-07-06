@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package forms.register.company.directors
+package forms
 
-import javax.inject.Inject
-
-import forms.FormErrorHelper
 import forms.mappings.UtrMapping
+import javax.inject.Inject
 import models.UniqueTaxReference
 import play.api.data.Form
 
-class DirectorUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with UtrMapping {
+class UniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with UtrMapping {
 
-  def apply(): Form[UniqueTaxReference] = {
+  def apply(requiredKey: String, requiredReasonKey: String): Form[UniqueTaxReference] = {
     val mapping = utrMapping(
-      requiredKey = "directorUniqueTaxReference.error.required",
+      requiredKey = requiredKey,
       requiredUtrKey = "common.error.utr.required",
       utrLengthKey = "common.error.utr.length",
       utrInvalidKey = "common.error.utr.invalid",
-      requiredReasonKey = "directorUniqueTaxReference.error.reason.required",
+      requiredReasonKey = requiredReasonKey,
       reasonLengthKey = "common.error.utr.reason.length"
     )
 
@@ -39,5 +37,4 @@ class DirectorUniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper w
       "utr" -> mapping
     )
   }
-
 }

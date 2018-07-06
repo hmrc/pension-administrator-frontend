@@ -16,7 +16,7 @@
 
 package views.register.company.directors
 
-import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
+import forms.UniqueTaxReferenceFormProvider
 import models.{Index, NormalMode}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
@@ -26,7 +26,7 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "directorUniqueTaxReference"
   val index = Index(1)
-  val form = new DirectorUniqueTaxReferenceFormProvider()()
+  val form = new UniqueTaxReferenceFormProvider().apply("directorUniqueTaxReference.error.required", "directorUniqueTaxReference.error.reason.required")
   val directorName = "test director name"
 
   def createView = () => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)

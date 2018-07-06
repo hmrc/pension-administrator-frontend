@@ -16,7 +16,7 @@
 
 package views.register.partnership.partners
 
-import forms.register.partnership.partners.PartnerUniqueTaxReferenceFormProvider
+import forms.UniqueTaxReferenceFormProvider
 import models.{Index, NormalMode}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
@@ -26,7 +26,7 @@ class PartnerUniqueTaxReferenceViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "partnerUniqueTaxReference"
 
-  val form = new PartnerUniqueTaxReferenceFormProvider()()
+  val form = new UniqueTaxReferenceFormProvider().apply("partnerUniqueTaxReference.error.required", "partnerUniqueTaxReference.error.reason.required")
   val partnerName = "test partner name"
 
   def createView = () => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)

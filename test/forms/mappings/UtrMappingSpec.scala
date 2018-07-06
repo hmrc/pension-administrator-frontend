@@ -36,6 +36,7 @@ class UtrMappingSpec extends UtrBehaviours {
 
     behave like formWithUtr(
       testForm,
+      keyRequired = "directorUniqueTaxReference.error.required",
       keyUtrRequired = "common.error.utr.required",
       keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
       keyUtrLength = "common.error.utr.length",

@@ -21,9 +21,9 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.partnership.partners.PartnerUniqueTaxReferenceFormProvider
+import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerUniqueTaxReferenceId}
-import models.{Index, NormalMode, PersonDetails, UniqueTaxReference}
+import models.{NormalMode, PersonDetails, UniqueTaxReference}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -34,8 +34,8 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new PartnerUniqueTaxReferenceFormProvider()
-  val form = formProvider()
+  val formProvider = new UniqueTaxReferenceFormProvider()
+  val form = formProvider("partnerUniqueTaxReference.error.required", "partnerUniqueTaxReference.error.reason.required")
   val personDetails = PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now)
 
   private val validData = Json.obj(

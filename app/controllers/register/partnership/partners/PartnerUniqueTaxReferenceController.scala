@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.partnership.partners.PartnerUniqueTaxReferenceFormProvider
+import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.partnership.partners.PartnerUniqueTaxReferenceId
 import javax.inject.Inject
 import models.{Index, Mode}
@@ -42,10 +42,13 @@ class PartnerUniqueTaxReferenceController @Inject()(
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: PartnerUniqueTaxReferenceFormProvider
+                                                     formProvider: UniqueTaxReferenceFormProvider
                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
-  private val form = formProvider()
+  private val form = formProvider.apply(
+    requiredKey = "partnerUniqueTaxReference.error.required",
+    requiredReasonKey = "partnerUniqueTaxReference.error.reason.required"
+  )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

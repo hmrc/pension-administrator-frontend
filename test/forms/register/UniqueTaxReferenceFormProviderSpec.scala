@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package forms.register.partnership.partners
+package forms.register
 
+import forms.UniqueTaxReferenceFormProvider
 import forms.behaviours.UtrBehaviours
 
-class PartnerUniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
+class UniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
 
-  val form = new PartnerUniqueTaxReferenceFormProvider()()
+  val formProvider = new UniqueTaxReferenceFormProvider().apply("directorUniqueTaxReference.error.required", "directorUniqueTaxReference.error.reason.required")
 
-  "PartnerUniqueTaxReference form provider" must {
+  "UniqueTaxReference form provider" must {
     behave like formWithUtr(
-      form,
+      formProvider,
+      keyRequired = "directorUniqueTaxReference.error.required",
       keyUtrRequired = "common.error.utr.required",
-      keyReasonRequired = "partnerUniqueTaxReference.error.reason.required",
+      keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
       keyUtrLength = "common.error.utr.length",
       keyReasonLength = "common.error.utr.reason.length"
     )
   }
+
 }
