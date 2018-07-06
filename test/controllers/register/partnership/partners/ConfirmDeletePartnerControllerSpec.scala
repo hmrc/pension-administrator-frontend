@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.partners
+package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
@@ -22,7 +22,6 @@ import base.CSRFRequest
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
-import controllers.register.partnership.partners.routes
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models.{Index, PersonDetails}
 import play.api.Application
