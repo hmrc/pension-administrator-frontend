@@ -626,3 +626,14 @@ partnerAddressYears.title = How long has the partner lived at this address?
 partnerAddressYears.heading = How long has the partner lived at this address?
 partnerAddressYears.checkYourAnswersLabel = How long has the partner lived at this address?
 partnerAddressYears.error.required = Select how long the partner has been at the current address
+
+addEntity.error.required = You must make a selection
+addEntity.addYesNo = Do you want to add another {0}?
+addEntity.addAnEntity = Add a {0}
+addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
+addEntity.atMaximum = You have added the maximum number of {0}.
+addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+addPartners.title = Partners
+addPartners.heading = Partners
+addPartners.entityType = partners
