@@ -564,3 +564,14 @@ partnerNino.no.reason = Tell us why the partner does not have a National Insuran
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
 partnerNino.error.reason.length = The reason cannot be more than 150 characters
+
+addEntity.error.required = You must make a selection
+addEntity.addYesNo = Do you want to add another {0}?
+addEntity.addAnEntity = Add a {0}
+addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
+addEntity.atMaximum = You have added the maximum number of {0}.
+addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+addPartners.title = Partners
+addPartners.heading = Partners
+addPartners.entityType = partners
