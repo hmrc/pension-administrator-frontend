@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
 import viewmodels.{EntityViewModel, Person}
 import views.html.register.addEntity
+
 import scala.concurrent.Future
 
 trait AddEntityController extends FrontendController with Retrievals with I18nSupport {
