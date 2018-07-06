@@ -16,33 +16,33 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.register.company.directors.routes
+@import controllers.register.partnership.partners.routes._
 @import models.Mode
 @import models.UniqueTaxReference
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, partnerName: String)(implicit request: Request[_], messages: Messages)
 
 @options = @{
     UniqueTaxReference.options
 }
 
 @main_template(
-    title = messages("directorUniqueTaxReference.title"),
+    title = messages("partnerUniqueTaxReference.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = routes.DirectorUniqueTaxReferenceController.onSubmit(mode, index), 'autoComplete -> "off") {
+    @helpers.form(action = PartnerUniqueTaxReferenceController.onSubmit(mode, index), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.heading("directorUniqueTaxReference.heading", secondaryHeaderKey = Some(directorName))
+        @components.heading("partnerUniqueTaxReference.heading", secondaryHeaderKey = Some(partnerName))
 
         @components.fieldSet(
             field = form("utr.hasUtr"),
-            legend = messages("directorUniqueTaxReference.heading"),
-            hint = Some(messages("directorUniqueTaxReference.hint")),
+            legend = messages("partnerUniqueTaxReference.heading"),
+            hint = Some(messages("partnerUniqueTaxReference.hint")),
             hiddenLegend = true
         ){
             @components.radio(
@@ -68,7 +68,7 @@
 
             @components.input_text(
                 field = form("utr.reason"),
-                label = messages("directorUniqueTaxReference.reason.text"),
+                label = messages("partnerUniqueTaxReference.reason.text"),
                 groupClass = Some("js-hidden panel panel-border-narrow")
             )
         }
