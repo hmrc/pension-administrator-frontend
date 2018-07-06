@@ -120,13 +120,24 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.dateOfBirth = Date of birth
 common.dateOfBirth.hint = Example 30 9 1990
+common.vat = VAT Registration number
+common.vat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
+common.error.vat.required = Enter the VAT registration number
+common.error.vat.invalid = Enter a valid VAT Registration number in the format GB123456789
+common.error.vat.length = The VAT Registration number cannot be more than 9 characters
+common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
 commom.paye.label = PAYE employer reference number
 common.paye.hint = This is issued by HMRC. For example, 123/AB56789.
 commom.error.paye.required = Enter the PAYE employer reference number
-common.radio.error.required = One of the two radio buttons must be selected (YES/NO)
 common.error.paye.length = The PAYE number cannot be more than 16 characters
 common.error.paye.invalid = Enter a valid PAYE number
 common.error.paye.required = Enter the PAYE employer reference number
+common.utr.text = Unique Taxpayer Reference number
+common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
+common.error.utr.required = Enter the Unique Tax Reference number
+common.error.utr.invalid = The UTR must be ten digits
+common.error.utr.reason.length = The reason cannot be more than 160 characters
+common.error.utr.length = The utr cannot be more than 10 characters
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -273,7 +284,7 @@ directorNino.checkYourAnswersLabel.reason = Why the director does not have a Nat
 directorNino.no.reason = Tell us why the director does not have a National Insurance number
 directorNino.error.required = One of the two radio buttons must be selected (YES/NO)
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
-directorNino.error.reason.length = The reason cannot be more than 150 characters
+directorNino.error.reason.length = The reason cannot be more than 160 characters
 
 companyDirectorAddressPostCodeLookup.title = Director’s address
 companyDirectorAddressPostCodeLookup.heading = Director’s address
@@ -293,11 +304,7 @@ directorUniqueTaxReference.utr.text = Unique Taxpayer Reference number
 directorUniqueTaxReference.number.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
 directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
 directorUniqueTaxReference.error.required = Select yes if the director has a UTR
-directorUniqueTaxReference.error.utr.required = Enter the Unique Tax Reference number
-directorUniqueTaxReference.error.utr.length = The utr cannot be more than 10 characters
-directorUniqueTaxReference.error.utr.invalid = The UTR must be ten digits
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
-directorUniqueTaxReference.error.reason.length = The reason cannot be more than 150 characters
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address
@@ -575,7 +582,17 @@ partnerNino.checkYourAnswersLabel.reason = Why the partner does not have a Natio
 partnerNino.no.reason = Tell us why the partner does not have a National Insurance number
 partnerNino.error.required = One of the two radio buttons must be selected (YES/NO)
 partnerNino.error.reason.required = You need to tell us why the partner does not have a National Insurance number
-partnerNino.error.reason.length = The reason cannot be more than 150 characters
+partnerNino.error.reason.length = The reason cannot be more than 160 characters
+
+partnerUniqueTaxReference.title = Does the partner have a Unique Taxpayer Reference number (SAUTR)?
+partnerUniqueTaxReference.heading = Does the partner have a Unique Taxpayer Reference number (SAUTR)?
+partnerUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
+partnerUniqueTaxReference.reason.text = Tell us why the partner does not have a UTR
+partnerUniqueTaxReference.error.required = Select yes if the partner has a UTR
+partnerUniqueTaxReference.error.reason.required = You need to tell us why the partner does not have a UTR
+
+partnershipVat.title = Does the partnership have a VAT registration number?
+partnershipVat.heading = Does the partnership have a VAT registration number?
 
 confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
 confirmDelete.partner.heading = Are you sure you want to delete {0}?

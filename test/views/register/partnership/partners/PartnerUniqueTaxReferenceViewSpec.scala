@@ -14,37 +14,34 @@
  * limitations under the License.
  */
 
-package views.register.company.directors
+package views.register.partnership.partners
 
 import forms.UniqueTaxReferenceFormProvider
 import models.{Index, NormalMode}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
-import views.html.register.company.directors.directorUniqueTaxReference
+import views.html.register.partnership.partners.partnerUniqueTaxReference
 
-class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
+class PartnerUniqueTaxReferenceViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "directorUniqueTaxReference"
-  val index = Index(1)
-  val form = new UniqueTaxReferenceFormProvider().apply("directorUniqueTaxReference.error.required", "directorUniqueTaxReference.error.reason.required")
-  val directorName = "test director name"
+  val messageKeyPrefix = "partnerUniqueTaxReference"
 
-  def createView = () => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  val form = new UniqueTaxReferenceFormProvider().apply("partnerUniqueTaxReference.error.required", "partnerUniqueTaxReference.error.reason.required")
+  val partnerName = "test partner name"
 
-  def createViewUsingForm = (form: Form[_]) => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createView = () => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)
+
+  def createViewUsingForm = (form: Form[_]) => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)
   val utrOptions = Seq("true", "false")
 
-  "DirectorUniqueTaxReference view" must {
+  "PartnerUniqueTaxReference view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithSecondaryHeader(createView, directorName )
+
     behave like pageWithBackLink(createView)
   }
 
-  "DirectorUniqueTaxReference view" when {
+  "PartnerUniqueTaxReference view" when {
     "rendered" must {
-
-
-
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- utrOptions) {
