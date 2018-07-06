@@ -36,7 +36,6 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   val formProvider = new PartnerUniqueTaxReferenceFormProvider()
   val form = formProvider()
-  val firstIndex = Index(0)
   val personDetails = PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now)
 
   private val validData = Json.obj(

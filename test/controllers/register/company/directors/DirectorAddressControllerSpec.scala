@@ -43,8 +43,6 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider()
 
-  private val firstIndex = Index(0)
-
   private val jonathanDoe = PersonDetails("Jonathan", None, "Doe", LocalDate.now())
   private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.now())
 

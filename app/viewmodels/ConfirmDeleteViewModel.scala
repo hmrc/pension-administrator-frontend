@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package viewmodels
 
-import play.api.libs.json.{Format, Json}
+import play.api.mvc.Call
 
-case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: String)
-
-object BusinessDetails {
-  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
-}
+case class ConfirmDeleteViewModel(
+                                   postUrl: Call,
+                                   cancelUrl: Call,
+                                   title: Message,
+                                   heading: String,
+                                   token: Option[String] = None,
+                                   secondaryHeader: Option[String] = None
+                                 )

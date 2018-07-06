@@ -40,7 +40,6 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressListFormProvider()
   private val form: Form[Int] = formProvider(Seq.empty)
 
-  private val firstIndex = Index(0)
   private val director = PersonDetails("firstName", Some("middle"), "lastName", LocalDate.now())
 
   private val addresses = Seq(

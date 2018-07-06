@@ -100,7 +100,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                (implicit request: DataRequest[AnyContent]) = {
     (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
       case businessDetails ~ businessType =>
-        val organisation = Organisation(businessDetails.name, businessType)
+        val organisation = Organisation(businessDetails.companyName, businessType)
         registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap {
           registration =>
             fn(businessDetails, registration)

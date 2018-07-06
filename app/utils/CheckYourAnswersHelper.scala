@@ -289,7 +289,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
 
   def businessDetails: Seq[AnswerRow] = userAnswers.get(BusinessDetailsId) match {
     case Some(x) => Seq(
-      AnswerRow("businessDetails.companyName", Seq(s"${x.name}"), false, None),
+      AnswerRow("businessDetails.companyName", Seq(s"${x.companyName}"), false, None),
       AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"${x.uniqueTaxReferenceNumber}"), false, None)
     )
     case _ => Seq.empty[AnswerRow]
