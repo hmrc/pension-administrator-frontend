@@ -602,3 +602,6 @@ moreThanTenPartners.title = Do you need to tell us about other partners?
 moreThanTenPartners.heading = Do you need to tell us about other partners?
 moreThanTenPartners.checkYourAnswersLabel = Do you need to tell us about other partners?
 moreThanTenPartners.hint = We will contact you if we need their information.
+
+partnerAddress.title = Partner’s address
+partnerAddress.heading = Partner’s address
