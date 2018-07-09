@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package viewmodels
 
-import identifiers.TypedIdentifier
-import models.Address
-import utils.checkyouranswers.AddressCYA
-import utils.countryOptions.CountryOptions
+import play.api.mvc.Call
 
-case object PartnershipPreviousAddressId extends TypedIdentifier[Address] { self =>
-  override def toString: String = "partnershipPreviousAddress"
-
-  implicit def cya(implicit countryOptions: CountryOptions) = AddressCYA[self.type]("common.previousAddress.checkyouranswers")()
-
-}
+case class EntityViewModel(
+                          postCall: Call,
+                          title: Message,
+                          heading: Message,
+                          entities: Seq[Person],
+                          maxLimit: Int,
+                          entityType: String,
+                          subHeading: Option[Message]
+                          )

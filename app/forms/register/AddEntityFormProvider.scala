@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package forms.register
 
-import identifiers.TypedIdentifier
-import models.Address
-import utils.checkyouranswers.AddressCYA
-import utils.countryOptions.CountryOptions
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case object PartnershipPreviousAddressId extends TypedIdentifier[Address] { self =>
-  override def toString: String = "partnershipPreviousAddress"
+class AddEntityFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  implicit def cya(implicit countryOptions: CountryOptions) = AddressCYA[self.type]("common.previousAddress.checkyouranswers")()
-
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addEntity.error.required")
+    )
 }

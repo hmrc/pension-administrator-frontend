@@ -98,20 +98,7 @@ object CheckYourAnswers {
     }
   }
 
-  implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) = {
-        userAnswers.get(id).map { address =>
-          Seq(AnswerRow(
-            "common.previousAddress.checkyouranswers",
-            addressAnswer(address),
-            false,
-            changeUrl
-          ))
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
+  implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
 
   implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -128,7 +115,7 @@ object CheckYourAnswers {
     }
   }
 
-  private def addressAnswer(address: Address)(implicit countryOptions: CountryOptions): Seq[String] = {
+  def addressAnswer(address: Address)(implicit countryOptions: CountryOptions): Seq[String] = {
     val country = countryOptions.options.find(_.value == address.country).map(_.label).getOrElse(address.country)
     Seq(
       Some(s"${address.addressLine1},"),
@@ -171,6 +158,38 @@ object CheckYourAnswers {
               changeUrl
             ))
         } getOrElse Seq.empty[AnswerRow]
+      }
+    }
+  }
+
+}
+
+case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "checkyouranswers.partnership.contact.details.heading") {
+
+  def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) = {
+
+        def addressAnswer(address: Address): Seq[String] = {
+          val country = countryOptions.options.find(_.value == address.country).map(_.label).getOrElse(address.country)
+          Seq(
+            Some(s"${address.addressLine1},"),
+            Some(s"${address.addressLine2},"),
+            address.addressLine3.map(line3 => s"$line3,"),
+            address.addressLine4.map(line4 => s"$line4,"),
+            address.postcode.map(postCode => s"$postCode,"),
+            Some(country)
+          ).flatten
+        }
+
+        userAnswers.get(id).map { address =>
+          Seq(AnswerRow(
+            label,
+            addressAnswer(address),
+            false,
+            changeUrl
+          ))
+        }.getOrElse(Seq.empty[AnswerRow])
       }
     }
   }

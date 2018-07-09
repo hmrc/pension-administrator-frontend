@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package forms
 
-import identifiers.TypedIdentifier
-import models.Address
-import utils.checkyouranswers.AddressCYA
-import utils.countryOptions.CountryOptions
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case object PartnershipPreviousAddressId extends TypedIdentifier[Address] { self =>
-  override def toString: String = "partnershipPreviousAddress"
+class MoreThanTenFormProviderSpec extends BooleanFieldBehaviours {
 
-  implicit def cya(implicit countryOptions: CountryOptions) = AddressCYA[self.type]("common.previousAddress.checkyouranswers")()
+  val requiredKey = "moreThanTen.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new MoreThanTenFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 
 }

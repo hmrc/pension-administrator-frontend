@@ -53,6 +53,6 @@ class ConfirmPartnershipDetailsViewSpec extends ViewBehaviours with AddressBehav
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.ConfirmPartnershipDetailsController.onSubmit.url, "title")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.ConfirmPartnershipDetailsController.onSubmit.url, s"$messageKeyPrefix.title")
   }
 }

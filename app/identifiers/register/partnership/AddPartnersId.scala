@@ -16,14 +16,8 @@
 
 package identifiers.register.partnership
 
-import identifiers.TypedIdentifier
-import models.Address
-import utils.checkyouranswers.AddressCYA
-import utils.countryOptions.CountryOptions
+import identifiers._
 
-case object PartnershipPreviousAddressId extends TypedIdentifier[Address] { self =>
-  override def toString: String = "partnershipPreviousAddress"
-
-  implicit def cya(implicit countryOptions: CountryOptions) = AddressCYA[self.type]("common.previousAddress.checkyouranswers")()
-
+case object AddPartnersId extends TypedIdentifier[Boolean] {
+  override def toString: String = "addPartners"
 }

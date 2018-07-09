@@ -14,24 +14,36 @@
  * limitations under the License.
  */
 
-package views.register.company
+package views
 
-import play.api.data.Form
 import controllers.register.company.routes
-import forms.register.company.MoreThanTenDirectorsFormProvider
-import views.behaviours.YesNoViewBehaviours
+import forms.MoreThanTenFormProvider
+import identifiers.TypedIdentifier
 import models.NormalMode
-import views.html.register.company.moreThanTenDirectors
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import viewmodels.MoreThanTenViewModel
+import views.behaviours.YesNoViewBehaviours
+import views.html.moreThanTen
 
-class MoreThanTenDirectorsViewSpec extends YesNoViewBehaviours {
+class MoreThanTenViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "moreThanTenDirectors"
 
-  val form = new MoreThanTenDirectorsFormProvider()()
+  val form = new MoreThanTenFormProvider()()
 
-  def createView = () => moreThanTenDirectors(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def viewModel =
+    MoreThanTenViewModel(
+      title = "moreThanTenDirectors.title",
+      heading = "moreThanTenDirectors.heading",
+      hint = "moreThanTenDirectors.hint",
+      postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
+      id = new TypedIdentifier[Boolean] {}
+    )
 
-  def createViewUsingForm = (form: Form[_]) => moreThanTenDirectors(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => moreThanTen(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => moreThanTen(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
   "MoreThanTenDirectors view" must {
 
@@ -44,7 +56,7 @@ class MoreThanTenDirectorsViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
       routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,
-      "heading",
-      Some("hint"))
+      s"$messageKeyPrefix.heading",
+      Some(s"$messageKeyPrefix.hint"))
   }
 }

@@ -60,6 +60,8 @@ class CheckYourAnswersController @Inject()(
         Some("checkyouranswers.partnership.contact.details.heading"),
         Seq(
           PartnershipRegisteredAddressId.row(routes.ConfirmPartnershipDetailsController.onPageLoad().url),
+//          PartnershipSameContactAddressId.row(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url),
+          PartnershipContactAddressId.row(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url),
           PartnershipAddressYearsId.row(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url),
           PartnershipPreviousAddressId.row(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)
         ).flatten

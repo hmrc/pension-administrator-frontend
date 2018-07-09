@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package identifiers.register.partnership.partners
 
-import identifiers.TypedIdentifier
+import identifiers._
 import models.Address
-import utils.checkyouranswers.AddressCYA
-import utils.countryOptions.CountryOptions
+import play.api.libs.json.JsPath
 
-case object PartnershipPreviousAddressId extends TypedIdentifier[Address] { self =>
-  override def toString: String = "partnershipPreviousAddress"
-
-  implicit def cya(implicit countryOptions: CountryOptions) = AddressCYA[self.type]("common.previousAddress.checkyouranswers")()
-
+case class PartnerAddressId(index: Int) extends TypedIdentifier[Address] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerAddressId.toString
 }
+
+object PartnerAddressId {
+  override lazy val toString: String = "partnerAddress"
+}
+
+

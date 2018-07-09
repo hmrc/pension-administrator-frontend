@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package forms.register
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class MoreThanTenDirectorsFormProviderSpec extends BooleanFieldBehaviours {
+class AddEntityFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "moreThanTenDirectors.error.required"
+  val requiredKey = "addEntity.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new MoreThanTenDirectorsFormProvider()()
+  val form = new AddEntityFormProvider()()
 
   ".value" must {
 

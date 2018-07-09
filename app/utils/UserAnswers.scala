@@ -19,7 +19,8 @@ package utils
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.DirectorDetailsId
-import models.{PersonDetails, Index, NormalMode}
+import identifiers.register.partnership.partners.PartnerDetailsId
+import models.{Index, NormalMode, PersonDetails}
 import play.api.libs.json._
 import viewmodels.Person
 
@@ -67,6 +68,29 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
   def directorsCount: Int = {
     getAll[PersonDetails](DirectorDetailsId.collectionPath)
+      .getOrElse(Nil).length
+  }
+
+  def allPartners: Seq[PersonDetails] = {
+    getAll[PersonDetails](PartnerDetailsId.collectionPath).getOrElse(Nil)
+  }
+
+  def allPartnersAfterDelete: Seq[Person] = {
+    val partners = allPartners
+    partners.filterNot(_.isDeleted).map { partner =>
+      val index = partners.indexOf(partner)
+      Person(
+        index,
+        partner.fullName,
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url,
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
+        partner.isDeleted
+      )
+    }
+  }
+
+  def partnersCount: Int = {
+    getAll[PersonDetails](PartnerDetailsId.collectionPath)
       .getOrElse(Nil).length
   }
 
