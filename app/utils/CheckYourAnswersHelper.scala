@@ -26,12 +26,6 @@ import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
-  def partnerUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerUniqueTaxReferenceId(index)) match {
-    case Some(x) => Seq(AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel", Seq(s"partnerUniqueTaxReference.$x"), true,
-      controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
-    case _ => Nil
-  }
-
   def individualContactAddress:Option[AnswerRow]={
     userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map {answer =>
       AnswerRow("cya.label.individual.contact.address", addressAnswer(answer), false, None)

@@ -65,3 +65,6 @@ GET         /paye-number                            controllers.register.partner
 POST        /paye-number                            controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
 GET         /change-paye-number                     controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-paye-number                     controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = CheckMode)
+
+GET        /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onPageLoad()
+POST       /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)

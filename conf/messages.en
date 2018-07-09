@@ -94,6 +94,7 @@ common.error.nino.invalid = Enter a valid National Insurance number in the forma
 common.error.reason.invalid = The reason contains invalid characters
 common.previousAddressList.title = Select the previous address
 common.previousAddressList.heading = Select the previous address
+common.previousAddress.checkyouranswers = Previous address
 common.previousAddressList.error.required = Select an address
 common.contactAddressList.title = Select your contact address
 common.contactAddressList.heading = Select your contact address
@@ -109,6 +110,7 @@ common.address.enterPostcode.formLabel = Postcode
 common.individual.secondary.heading = Register as a new pension scheme administrator
 common.manual.address.title = Address
 common.manual.address.heading = Address
+common.manual.address.checkyouranswers = Address
 common.firstname = First name
 common.postcodeLookup.enterPostcode = Enter the postcode below, or {0}
 common.postcodeLookup.enterPostcode.link = enter the address manually
@@ -193,6 +195,7 @@ companyRegistrationNumber.hint = This is an 8 character registration number give
 companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
+common.vatRegistrationNumber.checkYourAnswersLabel = VAT registration number
 
 companyDetails.title = Company details
 companyDetails.heading = Company details
@@ -245,8 +248,8 @@ addCompanyDirectors.tellUsIfYouHaveMore = You can tell us on the next page if yo
 
 company.checkYourAnswers.company.details.heading = Company details
 company.checkYourAnswers.company.contact.details.heading = Company contact details
-company.checkYourAnswers.contact.details.heading = Contact details
 
+common.checkYourAnswers.contact.details.heading = Contact details
 
 moreThanTenDirectors.title = Do you need to tell us about other directors?
 moreThanTenDirectors.heading = Do you need to tell us about other directors?
@@ -593,6 +596,11 @@ partnerUniqueTaxReference.error.reason.required = You need to tell us why the pa
 
 partnershipVat.title = Does the partnership have a VAT registration number?
 partnershipVat.heading = Does the partnership have a VAT registration number?
+
+checkyouranswers.partnership.details = Partnership details
+checkyouranswers.partnership.address.years = How long has the partnership been at this address?
+checkyouranswers.partnership.contact.details.heading = Partnership contact details
+
 
 confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
