@@ -70,3 +70,6 @@ GET        /other-partners                             controllers.register.part
 POST       /other-partners                             controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = NormalMode)
 GET        /change-other-partners                      controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-other-partners                      controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = CheckMode)
+
+GET        /add-partners                       controllers.register.partnership.AddPartnerController.onPageLoad
+POST       /add-partners                       controllers.register.partnership.AddPartnerController.onSubmit

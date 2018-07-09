@@ -64,7 +64,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", "title")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.title")
   }
 
 }
