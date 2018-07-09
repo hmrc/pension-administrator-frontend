@@ -25,13 +25,15 @@ import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{BusinessDetails, PersonDetails, TolerantIndividual}
+import models.{BusinessDetails, Index, PersonDetails, TolerantIndividual}
 import play.api.libs.json.Json
 import utils.UserAnswers
 
 trait ControllerSpecBase extends SpecBase {
 
   val cacheMapId = "id"
+
+  val firstIndex = Index(0)
 
   def getEmptyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))
 

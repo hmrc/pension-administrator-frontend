@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package forms.register.company.directors
+package forms
 
-import forms.behaviours.{OptionFieldBehaviours, UtrBehaviours}
+import forms.mappings.UtrMapping
+import javax.inject.Inject
 import models.UniqueTaxReference
+import play.api.data.Form
 
-class DirectorUniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
+class UniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with UtrMapping {
 
-  val formProvider = new DirectorUniqueTaxReferenceFormProvider()()
+  def apply(requiredKey: String, requiredReasonKey: String): Form[UniqueTaxReference] = {
+    val mapping = utrMapping(
+      requiredKey = requiredKey,
+      requiredUtrKey = "common.error.utr.required",
+      utrLengthKey = "common.error.utr.length",
+      utrInvalidKey = "common.error.utr.invalid",
+      requiredReasonKey = requiredReasonKey,
+      reasonLengthKey = "common.error.utr.reason.length"
+    )
 
-  "DirectorUniqueTaxReference form provider" must {
-    behave like formWithUtr(
-      formProvider,
-      keyUtrRequired = "directorUniqueTaxReference.error.utr.required",
-      keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
-      keyUtrLength = "directorUniqueTaxReference.error.utr.length",
-      keyReasonLength = "directorUniqueTaxReference.error.reason.length"
+    Form(
+      "utr" -> mapping
     )
   }
-
 }

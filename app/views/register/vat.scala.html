@@ -1,0 +1,74 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.routes._
+@import models.Mode
+@import utils.FormHelpers
+@import viewmodels.VatViewModel
+
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: VatViewModel)(implicit request: Request[_], messages: Messages)
+
+@_options = @{
+Vat.options
+}
+
+@main_template(
+    title = messages(viewmodel.title),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.heading(viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading)
+
+        <p>@messages(viewmodel.hint)</p>
+
+        @components.fieldSet(
+        field = form("vat.hasVat"),
+        legend = "viewmodel.title",
+        hiddenLegend = true
+        ) {
+            @components.radio(
+                field = form("vat.hasVat"),
+                label = _options.head.label,
+                value = _options.head.value,
+                dataTarget = _options.head.dataTarget
+            )
+
+            @components.input_text(
+                field = form("vat.vat"),
+                label = messages("common.vat"),
+                groupClass = Some("js-hidden panel panel-border-narrow")
+            )
+
+            @components.radio(
+                field = form("vat.hasVat"),
+                label = _options(1).label,
+                value = _options(1).value,
+                dataTarget = _options(1).dataTarget
+            )
+
+        }
+
+        @components.submit_button()
+    }
+}
