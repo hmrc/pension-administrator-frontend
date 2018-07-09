@@ -16,53 +16,45 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
-import controllers.actions._
 import config.FrontendAppConfig
-import forms.register.company.MoreThanTenDirectorsFormProvider
+import connectors.DataCacheConnector
+import controllers.MoreThanTenController
+import controllers.actions._
 import identifiers.register.company.MoreThanTenDirectorsId
+import javax.inject.Inject
 import models.Mode
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import utils.Navigator
 import utils.annotations.CompanyDirector
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.moreThanTenDirectors
-
-import scala.concurrent.Future
+import viewmodels.MoreThanTenViewModel
 
 class MoreThanTenDirectorsController @Inject() (
-                                                 appConfig: FrontendAppConfig,
+                                                 val appConfig: FrontendAppConfig,
                                                  override val messagesApi: MessagesApi,
-                                                 dataCacheConnector: DataCacheConnector,
-                                                 @CompanyDirector navigator: Navigator,
+                                                 val dataCacheConnector: DataCacheConnector,
+                                                 @CompanyDirector val navigator: Navigator,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 formProvider: MoreThanTenDirectorsFormProvider
-                                                   ) extends FrontendController with I18nSupport {
+                                                 requireData: DataRequiredAction
+                                                   ) extends MoreThanTenController {
 
-  private val form: Form[Boolean] = formProvider()
+  private def viewModel(mode: Mode): MoreThanTenViewModel =
+    MoreThanTenViewModel(
+      title = "moreThanTenDirectors.title",
+      heading = "moreThanTenDirectors.heading",
+      hint = "moreThanTenDirectors.hint",
+      postCall = routes.MoreThanTenDirectorsController.onSubmit(mode),
+      id = MoreThanTenDirectorsId
+    )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MoreThanTenDirectorsId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(moreThanTenDirectors(appConfig, preparedForm, mode))
+     get(viewModel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(moreThanTenDirectors(appConfig, formWithErrors, mode))),
-        value =>
-          dataCacheConnector.save(request.externalId, MoreThanTenDirectorsId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(MoreThanTenDirectorsId, mode, new UserAnswers(cacheMap))))
-      )
+     post(viewModel(mode), mode)
   }
 }
