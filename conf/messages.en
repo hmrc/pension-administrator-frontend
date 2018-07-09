@@ -247,12 +247,12 @@ company.checkYourAnswers.company.details.heading = Company details
 company.checkYourAnswers.company.contact.details.heading = Company contact details
 company.checkYourAnswers.contact.details.heading = Contact details
 
-
 moreThanTenDirectors.title = Do you need to tell us about other directors?
 moreThanTenDirectors.heading = Do you need to tell us about other directors?
 moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
 moreThanTenDirectors.hint = We will contact you if we need their information.
-moreThanTenDirectors.error.required = You must make a selection
+
+moreThanTen.error.required = You must make a selection
 
 confirmDeleteDirector.title = Are you sure you want to delete this person as a director?
 confirmDeleteDirector.heading = Are you sure you want to delete {0} as a director?
@@ -598,6 +598,10 @@ confirmDelete.partner.title = Are you sure you want to delete this person as a p
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
 confirmDelete.partner.body = confirmDeletePartner
 
+moreThanTenPartners.title = Do you need to tell us about other partners?
+moreThanTenPartners.heading = Do you need to tell us about other partners?
+moreThanTenPartners.checkYourAnswersLabel = Do you need to tell us about other partners?
+moreThanTenPartners.hint = We will contact you if we need their information.
+
 partnerAddress.title = Partner’s address
 partnerAddress.heading = Partner’s address
-
