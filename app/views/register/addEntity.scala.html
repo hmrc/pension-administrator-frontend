@@ -1,0 +1,62 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.company.routes._
+@import models.Mode
+@import utils.FormHelpers
+@import models.requests.DataRequest
+@import play.api.mvc.AnyContent
+@import viewmodels.{Person, EntityViewModel, Message}
+
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel, disableSubmission: Boolean)(implicit request: DataRequest[AnyContent], messages: Messages)
+
+@main_template(
+    title = messages(viewmodel.title),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+        @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
+
+            @components.back_link()
+
+            @components.error_summary(form.errors)
+
+            @components.heading(viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading)
+
+            @if(viewmodel.entities.isEmpty) {
+                @components.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
+                @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
+            } else {
+
+                @components.person_list(appConfig, viewmodel.entities)
+
+                @if(viewmodel.entities.size < viewmodel.maxLimit) {
+                    @components.input_yes_no(
+                        field = form("value"),
+                        label = Message("addEntity.addYesNo", viewmodel.entityType.dropRight(1)),
+                        hint = Some(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
+                    )
+                } else {
+                    @components.paragraph_text(Message("addEntity.atMaximum", viewmodel.entityType))
+                    @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
+                }
+
+                @components.submit_button(disabled = disableSubmission)
+            }
+        }
+}

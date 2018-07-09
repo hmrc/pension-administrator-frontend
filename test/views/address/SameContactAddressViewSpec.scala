@@ -60,7 +60,7 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "www.example.com")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "www.example.com", s"$messageKeyPrefix.heading")
 
     behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 
