@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
-import models.{Index, NormalMode}
+import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import viewmodels.{AlreadyDeletedViewModel, Message}
@@ -26,13 +26,13 @@ import views.html.alreadyDeleted
 
 class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
+  def onwardRoute: Call = routes.PartnerDetailsController.onPageLoad(NormalMode, firstIndex)
 
-  private val directorName = "test first name test middle name test last name"
-  private val companyName = "test company name"
-  def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), directorName, onwardRoute)
+  private val partnerName = "test first name test middle name test last name"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
+  def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.partner.title"), partnerName, onwardRoute)
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new AlreadyDeletedController(
       frontendAppConfig,
       messagesApi,

@@ -21,11 +21,11 @@ import java.time.LocalDate
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
+import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
-import models.register.company.CompanyDetails
 import models._
+import models.register.company.CompanyDetails
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -37,8 +37,8 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new DirectorUniqueTaxReferenceFormProvider()
-  private val form = formProvider()
+  private val formProvider = new UniqueTaxReferenceFormProvider()
+  private val form = formProvider("directorUniqueTaxReference.error.required", "directorUniqueTaxReference.error.reason.required")
   private val index = Index(0)
   private val directorName = "test first name test middle name test last name"
   private val companyName = "ThisCompanyName"

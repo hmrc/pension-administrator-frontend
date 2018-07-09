@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.company.directors.DirectorUniqueTaxReferenceFormProvider
+import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.company.directors.DirectorUniqueTaxReferenceId
 import javax.inject.Inject
 import models.{Index, Mode, UniqueTaxReference}
@@ -42,10 +42,13 @@ class DirectorUniqueTaxReferenceController @Inject()(
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
-                                                      formProvider: DirectorUniqueTaxReferenceFormProvider
+                                                      formProvider: UniqueTaxReferenceFormProvider
                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
-  private val form: Form[UniqueTaxReference] = formProvider()
+  private val form: Form[UniqueTaxReference] = formProvider.apply(
+    requiredKey = "directorUniqueTaxReference.error.required",
+    requiredReasonKey = "directorUniqueTaxReference.error.reason.required"
+  )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

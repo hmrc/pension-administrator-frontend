@@ -22,7 +22,7 @@ import models.register.company.CompanyDetails
 import play.api.data.Form
 import play.api.data.Forms._
 
-class CompanyDetailsFormProvider @Inject() extends Mappings with PayeMappingString with VatMapping with Transforms {
+class CompanyDetailsFormProvider @Inject() extends Mappings with PayeMappingString with VatMappingString with Transforms {
 
   def apply(): Form[CompanyDetails] = Form(
     mapping(
