@@ -597,3 +597,7 @@ partnershipVat.heading = Does the partnership have a VAT registration number?
 confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
 confirmDelete.partner.body = confirmDeletePartner
+
+partnerAddress.title = Partner’s address
+partnerAddress.heading = Partner’s address
+
