@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package identifiers.register.partnership.partners
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers._
+import models.TolerantAddress
+import play.api.libs.json.JsPath
 
-class MoreThanTenDirectorsFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("moreThanTenDirectors.error.required")
-    )
+case class PartnerAddressListId(index: Int) extends TypedIdentifier[TolerantAddress] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerAddressListId.toString
 }
+
+object PartnerAddressListId {
+  override def toString: String = "partnerAddressList"
+}
+
+
+
+
