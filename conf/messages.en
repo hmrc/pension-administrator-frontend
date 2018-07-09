@@ -609,6 +609,17 @@ confirmDelete.partner.title = Are you sure you want to delete this person as a p
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
 confirmDelete.partner.body = confirmDeletePartner
 
+addEntity.error.required = You must make a selection
+addEntity.addYesNo = Do you want to add another {0}?
+addEntity.addAnEntity = Add a {0}
+addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
+addEntity.atMaximum = You have added the maximum number of {0}.
+addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+addPartners.title = Partners
+addPartners.heading = Partners
+addPartners.entityType = partners
+
 partnerPreviousAddress.title = Partner’s previous address
 partnerPreviousAddress.heading = Partner’s previous address
 partnerPreviousAddress.hint = This is usually the partner’s home address.
