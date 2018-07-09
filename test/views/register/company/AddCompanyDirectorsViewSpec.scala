@@ -57,8 +57,8 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
       routes.AddCompanyDirectorsController.onSubmit(NormalMode).url,
-      "addYesNo",
-      Some("addADirector.hint")
+      s"$messageKeyPrefix.addYesNo",
+      Some(s"$messageKeyPrefix.addADirector.hint")
     )
 
     val directors: Seq[Person] = Seq(johnDoe, joeBloggs)
