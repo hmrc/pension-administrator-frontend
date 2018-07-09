@@ -26,11 +26,17 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
 
   def formWithUtr(
     testForm: Form[UniqueTaxReference],
+    keyRequired: String,
     keyUtrRequired: String,
     keyReasonRequired: String,
     keyUtrLength: String,
     keyReasonLength: String
   ): Unit = {
+
+    "fail to bind when form is empty" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors shouldBe Seq(FormError("utr.hasUtr", keyRequired))
+    }
 
     "fail to bind when yes is selected but utr is not provided" in {
       val result = testForm.bind(Map("utr.hasUtr" -> "true"))

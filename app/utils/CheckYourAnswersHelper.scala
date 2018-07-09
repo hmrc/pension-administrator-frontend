@@ -26,6 +26,12 @@ import viewmodels.{AnswerRow, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
+  def partnerUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerUniqueTaxReferenceId(index)) match {
+    case Some(x) => Seq(AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel", Seq(s"partnerUniqueTaxReference.$x"), true,
+      controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
+    case _ => Nil
+  }
+
   def individualContactAddress:Option[AnswerRow]={
     userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map {answer =>
       AnswerRow("cya.label.individual.contact.address", addressAnswer(answer), false, None)
@@ -283,7 +289,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
 
   def businessDetails: Seq[AnswerRow] = userAnswers.get(BusinessDetailsId) match {
     case Some(x) => Seq(
-      AnswerRow("businessDetails.companyName", Seq(s"${x.name}"), false, None),
+      AnswerRow("businessDetails.companyName", Seq(s"${x.companyName}"), false, None),
       AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"${x.uniqueTaxReferenceNumber}"), false, None)
     )
     case _ => Seq.empty[AnswerRow]

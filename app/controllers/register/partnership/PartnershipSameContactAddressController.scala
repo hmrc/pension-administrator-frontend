@@ -51,8 +51,8 @@ class PartnershipSameContactAddressController @Inject()(
     SameContactAddressViewModel(
       postCall = routes.PartnershipSameContactAddressController.onSubmit(mode),
       title = Message("partnership.sameContactAddress.title"),
-      heading = Message("partnership.sameContactAddress.heading").withArgs(details.name),
-      hint = Some(Message("partnership.sameContactAddress.hint").withArgs(details.name)),
+      heading = Message("partnership.sameContactAddress.heading").withArgs(details.companyName),
+      hint = Some(Message("partnership.sameContactAddress.hint").withArgs(details.companyName)),
       secondaryHeader = Some("site.secondaryHeader"),
       address = address
     )

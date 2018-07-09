@@ -18,40 +18,92 @@ package forms.behaviours
 
 import forms.FormSpec
 import forms.mappings.{Constraints, VatMapping}
+import generators.Generators
+import models.Vat
+import org.scalatest.prop.PropertyChecks
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
-trait VatBehaviours extends FormSpec with StringFieldBehaviours with Constraints with VatMapping {
+trait VatBehaviours extends FormSpec with Generators with PropertyChecks with Constraints with VatMapping {
 
-  def formWithVatField[A](
-                      form: Form[A],
-                      fieldName: String,
-                      keyVatLength: String,
-                      keyVatInvalid: String
-                      ): Unit = {
+  val maxVatLength = 9
 
-    "behave like a form with a VAT number" should {
+  def formWithVat(  testForm: Form[Vat],
+                    requiredKey: String,
+                    vatLengthKey: String,
+                    requiredVatKey: String,
+                    invalidVatKey: String
+                  ): Unit = {
+    
+    "behave like a form with a VAT Mapping" should {
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        RegexpGen.from(vatRegex)
-      )
+      "fail to bind when yes is selected but VAT is not provided" in {
+        val result = testForm.bind(Map("vat.hasVat" -> "true"))
+        result.errors shouldBe Seq(FormError("vat.vat", requiredVatKey))
+      }
 
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = VatMapping.maxVatLength,
-        lengthError = FormError(fieldName, keyVatLength, Seq(VatMapping.maxVatLength))
-      )
+      Seq("AB123490", "AO111111B", "ORA12345C", "AB0202020", "AB040404E").foreach { vat =>
+        s"fail to bind when VAT $vat is invalid" in {
+          val result = testForm.bind(Map("vat.hasVat" -> "true", "vat.vat" -> vat))
+          result.errors shouldBe Seq(FormError("vat.vat", invalidVatKey, Seq(vatRegex)))
+        }
+      }
 
-      behave like fieldWithRegex(
-        form,
-        fieldName,
-        "12345678A",
-        FormError(fieldName, keyVatInvalid, Seq(vatRegex))
-      )
+      Seq("AB1234567890", "987654328765", "CDCDCDOPOPOP", "AB03047853030D").foreach { vat =>
+        s"fail to bind when VAT $vat is longer than expected" in {
+          val result = testForm.bind(Map("vat.hasVat" -> "true", "vat.vat" -> vat))
+          result.errors shouldBe Seq(FormError("vat.vat", vatLengthKey, Seq(VatMapping.maxVatLength)))
+        }
+      }
 
+      Seq("9 9 9 9 9 9 9 9 9 ", "999999999").foreach{
+        validVat =>
+          s"successfully bind when yes is selected and valid VAT $validVat is provided" in {
+            val form = testForm.bind(Map("vat.hasVat" -> "true", "vat.vat" -> validVat))
+            form.get shouldEqual Vat.Yes("999999999")
+          }
+      }
+
+      "successfully bind when no is selected" in {
+        val form = testForm.bind(Map("vat.hasVat" -> "false"))
+        form.get shouldBe Vat.No
+      }
+
+      "fail to bind when value is omitted" in {
+        val expectedError = error("vat.hasVat", requiredKey)
+        checkForError(testForm, emptyForm, expectedError)
+      }
+
+      "successfully unbind `Vat.Yes`" in {
+        val result = testForm.fill(Vat.Yes("vat")).data
+        result should contain("vat.hasVat" -> "true")
+        result should contain("vat.vat" -> "vat")
+      }
+
+      "successfully unbind `Vat.No`" in {
+        val result = testForm.fill(Vat.No).data
+        result should contain("vat.hasVat" -> "false")
+      }
+    }
+
+    "vatRegistrationNumberTransform" must {
+      "strip leading, trailing ,and internal spaces" in {
+        val actual = vatRegistrationNumberTransform("  123 456 789  ")
+        actual shouldBe "123456789"
+      }
+
+      "remove leading GB" in {
+        val gb = Table(
+          "vat",
+          "GB123456789",
+          "Gb123456789",
+          "gB123456789",
+          "gb123456789"
+        )
+
+        forAll(gb) {vat =>
+          vatRegistrationNumberTransform(vat) shouldBe "123456789"
+        }
+      }
     }
   }
 

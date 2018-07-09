@@ -52,9 +52,9 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
-    heading = Message(s"$messagePrefix.heading").withArgs(partnershipDetails.name),
+    heading = Message(s"$messagePrefix.heading").withArgs(partnershipDetails.companyName),
     secondaryHeader = Some("site.secondaryHeader"),
-    hint = Some(Message(s"$messagePrefix.hint").withArgs(partnershipDetails.name))
+    hint = Some(Message(s"$messagePrefix.hint").withArgs(partnershipDetails.companyName))
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()

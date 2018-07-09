@@ -28,7 +28,6 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
 
-  private val index = Index(0)
   private val directorName = "test first name test middle name test last name"
   private val companyName = "test company name"
   def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), directorName, onwardRoute)
@@ -50,14 +49,14 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
   "AlreadyDeleted Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(index)(fakeRequest)
+      val result = controller().onPageLoad(firstIndex)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(index)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(firstIndex)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

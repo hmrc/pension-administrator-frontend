@@ -44,7 +44,6 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val messagePrefix = "common.contactAddress"
-  val firstIndex = Index(0)
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")

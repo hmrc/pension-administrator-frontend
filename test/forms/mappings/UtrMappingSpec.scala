@@ -25,21 +25,22 @@ class UtrMappingSpec extends UtrBehaviours {
   "A form with a UTR" should {
     val mapping = utrMapping(
       requiredKey = "directorUniqueTaxReference.error.required",
-      requiredUtrKey = "directorUniqueTaxReference.error.utr.required",
-      utrLengthKey = "directorUniqueTaxReference.error.utr.length",
-      utrInvalidKey = "directorUniqueTaxReference.error.utr.invalid",
+      requiredUtrKey = "common.error.utr.required",
+      utrLengthKey = "common.error.utr.length",
+      utrInvalidKey = "common.error.utr.invalid",
       requiredReasonKey = "directorUniqueTaxReference.error.reason.required",
-      reasonLengthKey = "directorUniqueTaxReference.error.reason.length"
+      reasonLengthKey = "common.error.utr.reason.length"
     )
 
     val testForm: Form[UniqueTaxReference] = Form("utr" -> mapping)
 
     behave like formWithUtr(
       testForm,
-      keyUtrRequired = "directorUniqueTaxReference.error.utr.required",
+      keyRequired = "directorUniqueTaxReference.error.required",
+      keyUtrRequired = "common.error.utr.required",
       keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
-      keyUtrLength = "directorUniqueTaxReference.error.utr.length",
-      keyReasonLength = "directorUniqueTaxReference.error.reason.length"
+      keyUtrLength = "common.error.utr.length",
+      keyReasonLength = "common.error.utr.reason.length"
     )
   }
 
