@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.MoreThanTenDirectorsFormProvider
+import forms.MoreThanTenFormProvider
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.NormalMode
 import play.api.data.Form
@@ -27,14 +27,24 @@ import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.moreThanTenDirectors
+import viewmodels.MoreThanTenViewModel
+import views.html.moreThanTen
 
 class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new MoreThanTenDirectorsFormProvider()
+  val formProvider = new MoreThanTenFormProvider()
   val form = formProvider()
+
+  def viewModel =
+    MoreThanTenViewModel(
+      title = "moreThanTenDirectors.title",
+      heading = "moreThanTenDirectors.heading",
+      hint = "moreThanTenDirectors.hint",
+      postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
+      id = MoreThanTenDirectorsId
+    )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new MoreThanTenDirectorsController(frontendAppConfig,
@@ -43,11 +53,10 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider
+      new DataRequiredActionImpl
     )
 
-  def viewAsString(form: Form[_] = form): String = moreThanTenDirectors(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = moreThanTen(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
   "MoreThanTenDirectors Controller" must {
 
