@@ -621,3 +621,12 @@ moreThanTenPartners.hint = We will contact you if we need their information.
 
 partnerAddress.title = Partner’s address
 partnerAddress.heading = Partner’s address
+
+partnerPreviousAddressPostCodeLookup.title = Partner’s previous address
+partnerPreviousAddressPostCodeLookup.heading = Partner’s previous address
+partnerPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this partnership.
+partnerPreviousAddressPostCodeLookup.input.text = Postcode
+partnerPreviousAddressPostCodeLookup.checkYourAnswersLabel = Partner’s previous address post code
+partnerPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+partnerPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
+partnerPreviousAddressPostCodeLookup.submit.button = Find address
