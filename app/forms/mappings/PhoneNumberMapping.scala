@@ -22,7 +22,6 @@ trait PhoneNumberMapping extends Mappings with Transforms {
 
   def phoneNumberMapping(keyPhoneNumberRequired: String, keyPhoneNumberLength: String, keyPhoneNumberInvalid: String): Mapping[String] = {
     text(keyPhoneNumberRequired)
-      .transform(standardTextTransform,noTransform)
       .verifying(
         returnOnFirstFailure(
           maxLength(PhoneNumberMapping.maxPhoneNumberLength, keyPhoneNumberLength),

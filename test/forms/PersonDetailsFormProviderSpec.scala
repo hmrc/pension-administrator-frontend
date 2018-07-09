@@ -110,19 +110,18 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
       FormError(fieldName, invalidKey, Seq(nameRegex))
     )
 
-    behave like fieldWithTransform(
+    behave like optionalField(
       form,
       fieldName,
       Map(
         "firstName" -> "John",
-        "middleName" -> " J ",
+        "middleName" -> "J",
         "lastName" -> "Doe",
         "dateOfBirth.day" -> "9",
         "dateOfBirth.month" -> "6",
         "dateOfBirth.year" -> "1862"
       ),
-      "J",
-      (model: PersonDetails) => model.middleName.value
+      (model: PersonDetails) => model.middleName
     )
 
   }
