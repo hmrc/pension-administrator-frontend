@@ -518,6 +518,8 @@ cya.label.company.same.contact.address = Is your contact address the same as you
 
 cya.label.common.same.contact.address = Is your contact address the same as your registered address?
 
+partnership.sameContactAddress.title = Is your contact address the same as your registered address?
+partnership.sameContactAddress.heading = Is your contact address the same as your registered address?
 partnershipSameContactAddress.checkYourAnswersLabel = Is your contact address the same as your registered address?
 
 interceptPSA.title = You have already registered as a pension scheme administrator
