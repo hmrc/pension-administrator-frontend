@@ -616,6 +616,11 @@ moreThanTenPartners.hint = We will contact you if we need their information.
 
 partnerAddress.title = Partner’s address
 partnerAddress.heading = Partner’s address
+
+partnerAddressPostCodeLookup.title = Partner’s address
+partnerAddressPostCodeLookup.heading = Partner’s address
+partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.
+
 partnerAddressYears.title = How long has the partner lived at this address?
 partnerAddressYears.heading = How long has the partner lived at this address?
 partnerAddressYears.checkYourAnswersLabel = How long has the partner lived at this address?
