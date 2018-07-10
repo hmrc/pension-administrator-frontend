@@ -609,6 +609,11 @@ confirmDelete.partner.title = Are you sure you want to delete this person as a p
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
 confirmDelete.partner.body = confirmDeletePartner
 
+partnerPreviousAddress.title = Partner’s previous address
+partnerPreviousAddress.heading = Partner’s previous address
+partnerPreviousAddress.hint = This is usually the partner’s home address.
+partnerPreviousAddress.checkYourAnswersLabel = Previous Address
+
 addEntity.error.required = You must make a selection
 addEntity.addYesNo = Do you want to add another {0}?
 addEntity.addAnEntity = Add a {0}
