@@ -24,6 +24,11 @@ POST       /:index/change-unique-taxpayer-reference              controllers.reg
 
 GET        /:index/already-deleted                           controllers.register.partnership.partners.AlreadyDeletedController.onPageLoad(index: Index)
 
+GET        /:index/how-long-at-address                          controllers.register.partnership.partners.PartnerAddressYearsController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/how-long-at-address                          controllers.register.partnership.partners.PartnerAddressYearsController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/change-how-long-at-address                   controllers.register.partnership.partners.PartnerAddressYearsController.onPageLoad(mode: Mode = CheckMode, index: Index)
+POST       /:index/change-how-long-at-address                   controllers.register.partnership.partners.PartnerAddressYearsController.onSubmit(mode: Mode = CheckMode, index: Index)
+
 GET        /:index/address-manual                     controllers.register.partnership.partners.PartnerAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/address-manual                     controllers.register.partnership.partners.PartnerAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-address-manual              controllers.register.partnership.partners.PartnerAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
@@ -43,3 +48,8 @@ GET        /:index/partners-previous-address-manual            controllers.regis
 POST       /:index/partners-previous-address-manual            controllers.register.partnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-partners-previous-address-manual     controllers.register.partnership.partners.PartnerPreviousAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-partners-previous-address-manual     controllers.register.partnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = CheckMode, index: Index)
+
+GET        /:index/check-your-answers                           controllers.register.partnership.partners.CheckYourAnswersController.onPageLoad(index: Index)
+POST       /:index/check-your-answers                           controllers.register.partnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
+
+
