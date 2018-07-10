@@ -24,4 +24,6 @@ case class PartnerPreviousAddressPostCodeLookupId(index: Int) extends TypedIdent
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerPreviousAddressPostCodeLookupId.toString
 }
 
-
+object PartnerPreviousAddressPostCodeLookupId {
+  override val toString: String = "partnerPreviousAddressPostCodeLookup"
+}
