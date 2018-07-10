@@ -21,6 +21,7 @@ import models._
 import models.register.adviser.AdviserDetails
 import play.api.libs.json.Reads
 import utils.UserAnswers
+import utils.checkyouranswers.CheckYourAnswers.addressAnswer
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
 
@@ -31,6 +32,14 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 }
 
 object CheckYourAnswers {
+
+  implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
+
+  implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = TolerantAddressCYA()()
+
+  implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
+
+  implicit def addressYears[I <: TypedIdentifier[AddressYears]](implicit r: Reads[AddressYears]): CheckYourAnswers[I] = AddressYearsCYA()()
 
   implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -45,8 +54,6 @@ object CheckYourAnswers {
       }
     }
   }
-
-  implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
 
   implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -94,23 +101,6 @@ object CheckYourAnswers {
     }
   }
 
-  implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
-
-  implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map { address =>
-          Seq(AnswerRow(
-            "common.manual.address.checkyouranswers",
-            addressAnswer(address.toAddress),
-            false,
-            None
-          ))
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
-
   def addressAnswer(address: Address)(implicit countryOptions: CountryOptions): Seq[String] = {
     val country = countryOptions.options.find(_.value == address.country).map(_.label).getOrElse(address.country)
     Seq(
@@ -121,19 +111,6 @@ object CheckYourAnswers {
       address.postcode.map(postCode => s"$postCode,"),
       Some(country)
     ).flatten
-  }
-
-  implicit def addressYears[I <: TypedIdentifier[AddressYears]](implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) =
-        userAnswers.get(id).map(addressYears =>
-          Seq(AnswerRow(
-            "checkyouranswers.partnership.address.years",
-            Seq(s"common.addressYears.$addressYears"),
-            true,
-            changeUrl
-          ))) getOrElse Seq.empty[AnswerRow]
-    }
   }
 
   implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
@@ -169,7 +146,7 @@ object CheckYourAnswers {
               answerIsMessageKey = false,
               changeUrl
             ))
-        }.getOrElse(Seq.empty[AnswerRow])
+        } getOrElse Seq.empty[AnswerRow]
     }
 
   implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
@@ -190,7 +167,6 @@ object CheckYourAnswers {
 }
 
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address") {
-
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) = {
@@ -214,15 +190,14 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
             false,
             changeUrl
           ))
-        }.getOrElse(Seq.empty[AnswerRow])
+        } getOrElse Seq.empty[AnswerRow]
       }
     }
   }
 }
 
 case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: String = "cya.label.name", utrLabel: String = "businessDetails.utr") {
-
-  def apply() = new CheckYourAnswers[I] {
+  def apply()(implicit rds: Reads[BusinessDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
       userAnswers.get(id).map{ businessDetails =>
         val nameRow = AnswerRow(
@@ -240,6 +215,36 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
         Seq(nameRow, utrRow)
       } getOrElse Seq.empty[AnswerRow]
   }
-
 }
 
+case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: String = "common.manual.address.checkyouranswers") {
+  def apply()(implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(id).map { address =>
+          Seq(AnswerRow(
+            label,
+            addressAnswer(address.toAddress),
+            false,
+            None
+          ))
+        } getOrElse Seq.empty[AnswerRow]
+      }
+    }
+  }
+}
+
+case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years") {
+  def apply()(implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) =
+        userAnswers.get(id).map(addressYears =>
+          Seq(AnswerRow(
+            label,
+            Seq(s"common.addressYears.$addressYears"),
+            true,
+            changeUrl
+          ))) getOrElse Seq.empty[AnswerRow]
+    }
+  }
+}

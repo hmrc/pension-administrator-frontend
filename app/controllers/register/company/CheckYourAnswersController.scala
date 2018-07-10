@@ -20,8 +20,8 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.{BusinessDetailsId, CheckYourAnswersId}
-import models.{Mode, NormalMode}
+import identifiers.register.company.{BusinessDetailsId, CheckYourAnswersId, CompanyAddressId, CompanySameContactAddressId}
+import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
