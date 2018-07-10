@@ -18,6 +18,7 @@ package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
 import models._
+import models.register.adviser.AdviserDetails
 import play.api.libs.json.Reads
 import utils.UserAnswers
 import utils.countryOptions.CountryOptions
@@ -30,6 +31,20 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 }
 
 object CheckYourAnswers {
+
+  implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(id).map{ adviserDetails =>
+          Seq(
+            AnswerRow("cya.label.name", Seq(adviserDetails.name), false, changeUrl),
+            AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviserDetails.email), false, changeUrl),
+            AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviserDetails.phone), false, changeUrl)
+          )
+        } getOrElse Seq.empty[AnswerRow]
+      }
+    }
+  }
 
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -179,7 +194,7 @@ object CheckYourAnswers {
 
 }
 
-case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "checkyouranswers.partnership.contact.details.heading") {
+case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address") {
 
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {

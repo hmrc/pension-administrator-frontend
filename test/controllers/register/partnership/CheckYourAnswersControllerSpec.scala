@@ -131,7 +131,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders contact address" in {
           val rows = Seq(answerRow(
-            "checkyouranswers.partnership.contact.details.heading",
+            "cya.label.address",
             Seq(
               s"${address.addressLine1},",
               s"${address.addressLine2},",
