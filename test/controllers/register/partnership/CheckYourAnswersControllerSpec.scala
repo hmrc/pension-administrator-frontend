@@ -16,15 +16,22 @@
 
 package controllers.register.partnership
 
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.TypedIdentifier
 import identifiers.register.partnership._
 import models._
+import models.requests.DataRequest
 import play.api.libs.json.Json
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
-import utils.{FakeCountryOptions, FakeNavigator}
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.{FakeCountryOptions, FakeNavigator, SectionComplete, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
@@ -231,7 +238,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     }
 
-    "on a POST request" must {
+    "POST" must {
       "redirect to the next page" in {
         val result = controller().onSubmit(NormalMode)(fakeRequest)
 
@@ -245,6 +252,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
+
+      "mark partnership as complete on submit" in {
+
+        val result = controller().onSubmit(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        FakeSectionComplete.verify(IsPartnershipCompleteId, true)
+
+      }
     }
   }
 }
@@ -252,6 +268,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  object FakeSectionComplete extends SectionComplete with FakeDataCacheConnector {
+
+    override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
+                            (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
+      save("cacheId", id, true) map UserAnswers
+    }
+
+  }
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new CheckYourAnswersController(
@@ -261,7 +286,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
-      new FakeCountryOptions(environment, frontendAppConfig)
+      new FakeCountryOptions(environment, frontendAppConfig),
+      FakeSectionComplete
     )
 
   private val partnershipContactDetails = AnswerSection(

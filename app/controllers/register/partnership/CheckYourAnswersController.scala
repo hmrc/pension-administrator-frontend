@@ -19,14 +19,14 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.adviser.CheckYourAnswersId
+import identifiers.register.partnership.{CheckYourAnswersId, IsPartnershipCompleteId}
 import identifiers.register.partnership._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, SectionComplete}
 import utils.annotations.Partnership
 import viewmodels.AnswerSection
 import views.html.check_your_answers
@@ -41,7 +41,8 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @Partnership navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            implicit val countryOptions: CountryOptions
+                                            implicit val countryOptions: CountryOptions,
+                                            sectionComplete: SectionComplete
                                           ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
@@ -50,27 +51,27 @@ class CheckYourAnswersController @Inject()(
       val partnershipDetails = AnswerSection(
         Some("checkyouranswers.partnership.details"),
         Seq(
-          PartnershipDetailsId.row(routes.PartnershipBusinessDetailsController.onPageLoad().url),
-          PartnershipPayeId.row(routes.PartnershipPayeController.onPageLoad(CheckMode).url),
-          PartnershipVatId.row(routes.PartnershipVatController.onPageLoad(CheckMode).url)
+          PartnershipDetailsId.row(None),
+          PartnershipPayeId.row(Some(routes.PartnershipPayeController.onPageLoad(CheckMode).url)),
+          PartnershipVatId.row(Some(routes.PartnershipVatController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
       val partnershipContactDetails = AnswerSection(
         Some("checkyouranswers.partnership.contact.details.heading"),
         Seq(
-          PartnershipRegisteredAddressId.row(routes.ConfirmPartnershipDetailsController.onPageLoad().url),
-          PartnershipSameContactAddressId.row(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url),
-          PartnershipContactAddressId.row(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url),
-          PartnershipAddressYearsId.row(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url),
-          PartnershipPreviousAddressId.row(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)
+          PartnershipRegisteredAddressId.row(None),
+          PartnershipSameContactAddressId.row(Some(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
+          PartnershipContactAddressId.row(Some(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)),
+          PartnershipAddressYearsId.row(Some(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
+          PartnershipPreviousAddressId.row(Some(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
         Seq(
-          PartnershipContactDetailsId.row(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)
+          PartnershipContactDetailsId.row(Some(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
@@ -82,9 +83,11 @@ class CheckYourAnswersController @Inject()(
       ))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      sectionComplete.setComplete(IsPartnershipCompleteId, request.userAnswers) map { _ =>
+        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      }
 
   }
 }

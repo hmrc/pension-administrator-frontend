@@ -28,7 +28,7 @@ import viewmodels.AnswerRow
 import scala.language.implicitConversions
 
 trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
-  def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow]
+  def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow]
 }
 
 object CheckYourAnswers {
@@ -43,7 +43,7 @@ object CheckYourAnswers {
 
   implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] = {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map{ adviserDetails =>
           Seq(
             AnswerRow("cya.label.name", Seq(adviserDetails.name), false, changeUrl),
@@ -57,7 +57,7 @@ object CheckYourAnswers {
 
   implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map{
           case Paye.Yes(paye) => Seq(
             AnswerRow(
@@ -80,7 +80,7 @@ object CheckYourAnswers {
 
   implicit def vat[I <: TypedIdentifier[Vat]](implicit r: Reads[Vat]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map{
           case Vat.Yes(vat) => Seq(
             AnswerRow(
@@ -115,7 +115,7 @@ object CheckYourAnswers {
 
   implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] = {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map{ contactDetails =>
           Seq(
             AnswerRow(
@@ -137,7 +137,7 @@ object CheckYourAnswers {
 
   implicit def string[I <: TypedIdentifier[String]](implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map {
           string =>
             Seq(AnswerRow(
@@ -151,7 +151,7 @@ object CheckYourAnswers {
 
   implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map {
           flag =>
             Seq(AnswerRow(
@@ -169,7 +169,7 @@ object CheckYourAnswers {
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address") {
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) = {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers) = {
 
         def addressAnswer(address: Address): Seq[String] = {
           val country = countryOptions.options.find(_.value == address.country).map(_.label).getOrElse(address.country)
@@ -198,7 +198,7 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
 
 case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: String = "cya.label.name", utrLabel: String = "businessDetails.utr") {
   def apply()(implicit rds: Reads[BusinessDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
-    override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+    override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
       userAnswers.get(id).map{ businessDetails =>
         val nameRow = AnswerRow(
           nameLabel,
@@ -220,7 +220,7 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
 case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: String = "common.manual.address.checkyouranswers") {
   def apply()(implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] = {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map { address =>
           Seq(AnswerRow(
             label,
@@ -237,7 +237,7 @@ case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: Stri
 case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years") {
   def apply()(implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers) =
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers) =
         userAnswers.get(id).map(addressYears =>
           Seq(AnswerRow(
             label,

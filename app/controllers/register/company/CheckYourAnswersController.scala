@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
 
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
-        BusinessDetailsId.row(routes.CompanyBusinessDetailsController.onPageLoad().url)
+        BusinessDetailsId.row(None)
         ++ Seq(
           checkYourAnswerHelper.vatRegistrationNumber,
           checkYourAnswerHelper.payeEmployerReferenceNumber,
