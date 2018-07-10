@@ -20,6 +20,7 @@ import identifiers._
 import models.AddressYears
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
+import utils.checkyouranswers.AddressYearsCYA
 
 case class PartnerAddressYearsId(index: Int) extends TypedIdentifier[AddressYears] {
 
@@ -38,7 +39,11 @@ case class PartnerAddressYearsId(index: Int) extends TypedIdentifier[AddressYear
 }
 
 object PartnerAddressYearsId {
+
   override lazy val toString: String = "partnerAddressYears"
+
+  implicit val cya = AddressYearsCYA[PartnerAddressYearsId]("partnerAddressYears.checkYourAnswersLabel")()
+
 }
 
 

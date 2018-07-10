@@ -68,7 +68,7 @@ class CheckYourAnswersController @Inject()(
       )
 
       val contactDetails = AnswerSection(
-        Some("company.checkYourAnswers.contact.details.heading"),
+        Some("common.checkYourAnswers.contact.details.heading"),
         Seq(
           checkYourAnswerHelper.email,
           checkYourAnswerHelper.phone

@@ -23,6 +23,6 @@ import utils.checkyouranswers.BusinessDetailsCYA
 case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] { self =>
   override def toString: String = "businessDetails"
 
-  implicit val cya = new BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
+  implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
 
 }

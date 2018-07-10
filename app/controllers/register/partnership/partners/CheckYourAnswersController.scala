@@ -26,11 +26,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Partnership
+import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
+import utils.{Navigator, SectionComplete}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
-import utils.checkyouranswers.Ops._
 
 import scala.concurrent.Future
 

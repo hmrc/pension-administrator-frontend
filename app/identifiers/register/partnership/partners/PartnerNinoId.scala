@@ -28,6 +28,6 @@ case class PartnerNinoId(index: Int) extends TypedIdentifier[Nino] {
 object PartnerNinoId {
   override lazy val toString: String = "partnerNino"
 
-  implicit val cya = NinoCYA("partnerNino.checkYourAnswersLabel", "partnerNino.checkYourAnswersLabel.nino")()
+  implicit val cya = NinoCYA[PartnerNinoId]("partnerNino.checkYourAnswersLabel", "partnerNino.checkYourAnswersLabel.nino")()
 
 }
