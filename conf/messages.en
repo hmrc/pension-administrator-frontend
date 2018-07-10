@@ -655,12 +655,14 @@ moreThanTenPartners.hint = We will contact you if we need their information.
 partnerAddress.title = Partner’s address
 partnerAddress.heading = Partner’s address
 
+partnerAddressPostCodeLookup.title = Partner’s address
+partnerAddressPostCodeLookup.heading = Partner’s address
+partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.
+
 partnerAddressYears.title = How long has the partner lived at this address?
 partnerAddressYears.heading = How long has the partner lived at this address?
 partnerAddressYears.checkYourAnswersLabel = How long has the partner lived at this address?
 partnerAddressYears.error.required = Select how long the partner has been at the current address
-
-
 
 partnerPreviousAddressPostCodeLookup.title = Partner’s previous address
 partnerPreviousAddressPostCodeLookup.heading = Partner’s previous address
@@ -685,7 +687,6 @@ addPartners.entityType = partners
 partnerCheckYourAnswers.partnerDetails.heading = Partner details
 partnerCheckYourAnswers.contactDetails.heading = Contact details for partner
 
-
 pensionSchemePractitioner.title = You cannot use this service
 pensionSchemePractitioner.heading = You cannot use this service
 pensionSchemePractitioner.lede = You are already a pension scheme practitioner on the Pension Schemes Online service with this Government Gateway account.
@@ -693,3 +694,6 @@ pensionSchemePractitioner.explanation = Only pension scheme administrators can u
 pensionSchemePractitioner.continue = You should continue to use the {0}.
 pensionSchemePractitioner.link = Pension Schemes Online service
 
+partnerAddressPostCodeLookup.title = Partner’s address
+partnerAddressPostCodeLookup.heading = Partner’s address
+partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.

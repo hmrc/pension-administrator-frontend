@@ -17,13 +17,15 @@
 package identifiers.register.partnership.partners
 
 import identifiers._
-import models.{Index, TolerantAddress}
+import models.TolerantAddress
 import play.api.libs.json.JsPath
 
-case class PartnerPreviousAddressListId(index: Index) extends TypedIdentifier[TolerantAddress] {
-  override def path: JsPath = JsPath \ "partners" \ index \ PartnerPreviousAddressListId.toString
+case class PartnerAddressPostCodeLookupId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerAddressPostCodeLookupId.toString
 }
 
-case object PartnerPreviousAddressListId {
-  override def toString: String = "partnerPreviousAddressList"
+object PartnerAddressPostCodeLookupId {
+  override def toString: String = "partnerAddressPostCodeLookup"
 }
+
+
