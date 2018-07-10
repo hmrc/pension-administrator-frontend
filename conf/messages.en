@@ -622,3 +622,7 @@ moreThanTenPartners.hint = We will contact you if we need their information.
 
 partnerAddress.title = Partner’s address
 partnerAddress.heading = Partner’s address
+partnerAddressYears.title = How long has the partner lived at this address?
+partnerAddressYears.heading = How long has the partner lived at this address?
+partnerAddressYears.checkYourAnswersLabel = How long has the partner lived at this address?
+partnerAddressYears.error.required = Select how long the partner has been at the current address
