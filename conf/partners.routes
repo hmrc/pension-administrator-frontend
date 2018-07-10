@@ -66,9 +66,3 @@ POST       /:index/change-partners-previous-address-results    controllers.regis
 
 GET        /:index/check-your-answers                           controllers.register.partnership.partners.CheckYourAnswersController.onPageLoad(index: Index)
 POST       /:index/check-your-answers                           controllers.register.partnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
-
-GET        /:index/address                            controllers.register.partnership.partners.PartnerAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/address                            controllers.register.partnership.partners.PartnerAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/change-address                     controllers.register.partnership.partners.PartnerAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/change-address                     controllers.register.partnership.partners.PartnerAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode, index: Index)
-
