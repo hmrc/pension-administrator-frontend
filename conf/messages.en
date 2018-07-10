@@ -679,3 +679,8 @@ pensionSchemePractitioner.explanation = Only pension scheme administrators can u
 pensionSchemePractitioner.continue = You should continue to use the {0}.
 pensionSchemePractitioner.link = Pension Schemes Online service
 
+
+
+partnerAddressPostCodeLookup.title = Partner’s address
+partnerAddressPostCodeLookup.heading = Partner’s address
+partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.
