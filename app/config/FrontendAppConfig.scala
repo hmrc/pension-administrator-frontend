@@ -61,6 +61,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val maxPartners: Int = loadConfig("register.partnership.maxPartners").toInt
   lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
   lazy val duplicateRegUri = "/register-as-pension-scheme-administrator/register/duplicate-registration"
+  lazy val tpssUrl: String = loadConfig("urls.tpss")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -81,7 +82,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
       baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
 
-  def taxEnrolmentsUrl(serviceName: String) = baseUrl("tax-enrolments") +
+  def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
     s"service/$serviceName/enrolment"
 
