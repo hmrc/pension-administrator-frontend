@@ -50,6 +50,8 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
         if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
           Future.successful(Redirect(routes.InterceptPSAController.onPageLoad()))
+        } else if (isPSP(enrolments) && !isPSA(enrolments)){
+          Future.successful(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
         } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
           Future.successful(Redirect(ivUpliftUrl))
         } else {
@@ -91,6 +93,12 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def existingPSA(enrolments: Enrolments): Option[String] =
     enrolments.getEnrolment("HMRC-PSA-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
+
+  private def isPSP(enrolments: Enrolments): Boolean =
+    enrolments.getEnrolment(key = "HMRC-PP-ORG").nonEmpty
+
+  private def isPSA(enrolments: Enrolments): Boolean =
+    enrolments.getEnrolment(key = "HMRC-PSA-ORG").nonEmpty
 
   private def alreadyEnrolledInPODS(enrolments: Enrolments) =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
