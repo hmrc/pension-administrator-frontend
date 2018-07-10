@@ -590,6 +590,9 @@ partnerUniqueTaxReference.hint = A UTR is issued by HMRC when you register for S
 partnerUniqueTaxReference.reason.text = Tell us why the partner does not have a UTR
 partnerUniqueTaxReference.error.required = Select yes if the partner has a UTR
 partnerUniqueTaxReference.error.reason.required = You need to tell us why the partner does not have a UTR
+partnerUniqueTaxReference.checkYourAnswersLabel = Does the partner have a Self Assessment Unique Taxpayer Reference number?
+partnerUniqueTaxReference.checkYourAnswersLabel.utr = Unique Taxpayer Reference number
+partnerUniqueTaxReference.checkYourAnswersLabel.reason = Why the partner does not have a UTR
 
 partnershipVat.title = Does the partnership have a VAT registration number?
 partnershipVat.heading = Does the partnership have a VAT registration number?
@@ -637,3 +640,6 @@ addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have mor
 addPartners.title = Partners
 addPartners.heading = Partners
 addPartners.entityType = partners
+
+partnerCheckYourAnswers.partnerDetails.heading = Partner details
+partnerCheckYourAnswers.contactDetails.heading = Contact details for partner
