@@ -46,26 +46,7 @@ object CheckYourAnswers {
     }
   }
 
-  implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map{ businessDetails =>
-          val nameRow = AnswerRow(
-            "cya.label.name",
-            Seq(businessDetails.companyName),
-            false,
-            None
-          )
-          val utrRow = AnswerRow(
-            "businessDetails.utr",
-            Seq(businessDetails.uniqueTaxReferenceNumber),
-            false,
-            None
-          )
-          Seq(nameRow, utrRow)
-        } getOrElse Seq.empty[AnswerRow]
-    }
-  }
+  implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
 
   implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -177,6 +158,20 @@ object CheckYourAnswers {
     }
   }
 
+  implicit def string[I <: TypedIdentifier[String]](implicit rds: Reads[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          string =>
+            Seq(AnswerRow(
+              s"${id.toString}.checkYourAnswersLabel",
+              Seq(string),
+              answerIsMessageKey = false,
+              changeUrl
+            ))
+        }.getOrElse(Seq.empty[AnswerRow])
+    }
+
   implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -223,5 +218,28 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
       }
     }
   }
+}
+
+case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: String = "cya.label.name", utrLabel: String = "businessDetails.utr") {
+
+  def apply() = new CheckYourAnswers[I] {
+    override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+      userAnswers.get(id).map{ businessDetails =>
+        val nameRow = AnswerRow(
+          nameLabel,
+          Seq(businessDetails.companyName),
+          false,
+          None
+        )
+        val utrRow = AnswerRow(
+          utrLabel,
+          Seq(businessDetails.uniqueTaxReferenceNumber),
+          false,
+          None
+        )
+        Seq(nameRow, utrRow)
+      } getOrElse Seq.empty[AnswerRow]
+  }
 
 }
+
