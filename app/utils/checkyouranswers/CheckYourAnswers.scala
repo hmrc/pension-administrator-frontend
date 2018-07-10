@@ -162,6 +162,21 @@ object CheckYourAnswers {
     }
   }
 
+  implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: String, userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          flag =>
+            Seq(AnswerRow(
+              s"${id.toString}.checkYourAnswersLabel",
+              Seq(if (flag) "site.yes" else "site.no"),
+              answerIsMessageKey = true,
+              changeUrl
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
+  }
+
 }
 
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "checkyouranswers.partnership.contact.details.heading") {

@@ -516,6 +516,10 @@ cya.label.individual.same.contact.address = Is your contact address the same as 
 cya.label.company.contact.address = Contact Address
 cya.label.company.same.contact.address = Is your contact address the same as your registered address?
 
+cya.label.common.same.contact.address = Is your contact address the same as your registered address?
+
+partnershipSameContactAddress.checkYourAnswersLabel = Is your contact address the same as your registered address?
+
 interceptPSA.title = You have already registered as a pension scheme administrator
 interceptPSA.heading = You have already registered as a pension scheme administrator
 interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.

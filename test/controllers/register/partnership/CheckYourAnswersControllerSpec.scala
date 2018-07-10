@@ -115,13 +115,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders same contact address" in {
           val rows = Seq(answerRow(
-            "cya.label.company.same.contact.address",
+            "cya.label.common.same.contact.address",
             Seq("Yes"),
             true,
             Some(controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)
           ))
 
-          val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
+          val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
 
           val retrievalAction = dataRetrievalAction(
             PartnershipSameContactAddressId.toString -> true
@@ -131,13 +131,16 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders contact address" in {
           val rows = Seq(answerRow(
-            "cya.label.company.contact.address",
+            "checkyouranswers.partnership.contact.details.heading",
             Seq(
               s"${address.addressLine1},",
               s"${address.addressLine2},",
               s"${address.postcode.value},",
               address.country
-            )))
+            ),
+            false,
+            Some(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)
+          ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
 
