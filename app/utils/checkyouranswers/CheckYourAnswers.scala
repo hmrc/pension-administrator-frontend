@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import models._
 import models.register.adviser.AdviserDetails
 import play.api.libs.json.Reads
-import utils.UserAnswers
+import utils.{DateHelper, UserAnswers}
 import utils.checkyouranswers.CheckYourAnswers.addressAnswer
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
@@ -33,7 +33,13 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 
 object CheckYourAnswers {
 
+  implicit def personDetails[I <: TypedIdentifier[PersonDetails]](implicit r: Reads[PersonDetails]): CheckYourAnswers[I] = PersonDetailsCYA()()
+
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
+
+  implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
+
+  implicit def nino[I <: TypedIdentifier[Nino]](implicit r: Reads[Nino]): CheckYourAnswers[I] = NinoCYA()()
 
   implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = TolerantAddressCYA()()
 
@@ -246,5 +252,59 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
             changeUrl
           ))) getOrElse Seq.empty[AnswerRow]
     }
+  }
+}
+
+case class PersonDetailsCYA[I <: TypedIdentifier[PersonDetails]](label: String = "cya.label.name") {
+  def apply()(implicit r: Reads[PersonDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
+    override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
+      userAnswers.get(id).map{ personDetails =>
+        Seq(
+          AnswerRow("cya.label.name", Seq(s"${personDetails.firstName} ${personDetails.lastName}"), false, changeUrl),
+          AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(personDetails.dateOfBirth)}"), false, changeUrl)
+        )
+      } getOrElse Seq.empty[AnswerRow]
+  }
+}
+
+case class NinoCYA[I <: TypedIdentifier[Nino]](
+                                                questionLabel: String = "common.nino",
+                                                ninoLabel: String = "common.nino",
+                                                reasonLabel: String = "partnerNino.checkYourAnswersLabel.reason"
+                                              ) {
+  def apply()(implicit r: Reads[Nino]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
+    override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
+      userAnswers.get(id).map{
+        case Nino.Yes(nino) => Seq(
+          AnswerRow(questionLabel, Seq(s"${Nino.Yes}"), true, changeUrl),
+          AnswerRow(ninoLabel, Seq(nino), true, changeUrl)
+        )
+        case Nino.No(reason) => Seq(
+          AnswerRow(questionLabel, Seq(s"${Nino.No}"), true, changeUrl),
+          AnswerRow(reasonLabel, Seq(reason), true, changeUrl)
+        )
+        case _ => Seq.empty[AnswerRow]
+      } getOrElse Seq.empty[AnswerRow]
+  }
+}
+
+case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
+                                                                            questionLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel",
+                                                                            utrLabel: String = "common.utr.text",
+                                                                            reasonLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel.reason"
+                                                                          ) {
+  def apply()(implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
+    override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
+      userAnswers.get(id).map{
+        case UniqueTaxReference.Yes(utr) => Seq(
+          AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.Yes}"), true, changeUrl),
+          AnswerRow(utrLabel, Seq(utr), true, changeUrl)
+        )
+        case UniqueTaxReference.No(reason) => Seq(
+          AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.No}"), true, changeUrl),
+          AnswerRow(reasonLabel, Seq(reason), true, changeUrl)
+        )
+        case _ => Seq.empty[AnswerRow]
+      } getOrElse Seq.empty[AnswerRow]
   }
 }

@@ -41,7 +41,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val companyName = "Test Company Name"
   val partnerName = "test first name test middle name test last name"
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   object FakeSectionComplete extends SectionComplete with FakeDataCacheConnector {
 
@@ -76,8 +75,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       FakeNavigator,
       messagesApi,
-      checkYourAnswersFactory,
-      FakeSectionComplete
+      FakeSectionComplete,
+      countryOptions
     )
 
   def viewAsString(): String = check_your_answers(
