@@ -24,4 +24,6 @@ case class PartnerPreviousAddressListId(index: Index) extends TypedIdentifier[To
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerPreviousAddressListId.toString
 }
 
-
+case object PartnerPreviousAddressListId {
+  override def toString: String = "partnerPreviousAddressList"
+}
