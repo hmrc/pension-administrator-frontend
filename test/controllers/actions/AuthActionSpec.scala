@@ -161,6 +161,36 @@ class AuthActionSpec extends SpecBase {
       }
     }
 
+    "the user is a PSP but not a PSA" must {
+      "redirect the user to the PSP cant use this service page" in {
+        val enrolmentPP = Enrolments(Set(Enrolment("HMRC-PP-ORG", Seq(EnrolmentIdentifier("PPID", "A0000000")), "")))
+        val retrievalResult = authRetrievals(enrolments = enrolmentPP)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(isSchemeOverviewEnabled = true))
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.PensionSchemePractitionerController.onPageLoad().url)
+      }
+    }
+
+    "the user is a PSP and is a PSA" must {
+      "do something" in {
+        val enrolmentsPSA = Enrolments(
+          Set(
+            Enrolment("HMRC-PP-ORG", Seq(EnrolmentIdentifier("PPID", "A0000000")), ""),
+            Enrolment("HMRC-PSA-ORG", Seq(EnrolmentIdentifier("PSAID", "A000000")), "")
+          )
+        )
+        val retrievalResult = authRetrievals(enrolments = enrolmentsPSA)
+        val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(isSchemeOverviewEnabled = true))
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
+        status(result) mustBe OK
+      }
+    }
+
     "the user doesn't have sufficient confidence level" must {
       "redirect the user to the unauthorised page" in {
         val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new InsufficientConfidenceLevel)), frontendAppConfig)

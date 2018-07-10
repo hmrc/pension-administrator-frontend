@@ -17,13 +17,7 @@
 package identifiers.register.partnership.partners
 
 import identifiers._
-import models.TolerantAddress
-import play.api.libs.json.JsPath
 
-case class PartnerPreviousAddressPostCodeLookupId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
-  override def path: JsPath = JsPath \ "partners" \ index \ PartnerPreviousAddressPostCodeLookupId.toString
-}
-
-object PartnerPreviousAddressPostCodeLookupId {
-  override val toString: String = "partnerPreviousAddressPostCodeLookup"
+case object CheckYourAnswersId extends Identifier {
+  override def toString: String = "checkYourAnswers"
 }

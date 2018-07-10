@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership.partners
+package controllers
 
-import identifiers._
-import models.TolerantAddress
-import play.api.libs.json.JsPath
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Action
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.pensionSchemePractitioner
 
-case class PartnerPreviousAddressPostCodeLookupId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
-  override def path: JsPath = JsPath \ "partners" \ index \ PartnerPreviousAddressPostCodeLookupId.toString
-}
+class PensionSchemePractitionerController @Inject()(
+  appConfig: FrontendAppConfig,
+  val messagesApi: MessagesApi
+) extends FrontendController with I18nSupport {
 
-object PartnerPreviousAddressPostCodeLookupId {
-  override val toString: String = "partnerPreviousAddressPostCodeLookup"
+  def onPageLoad() = Action {
+    implicit request =>
+      Ok(pensionSchemePractitioner(appConfig))
+  }
+
 }

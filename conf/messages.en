@@ -590,13 +590,9 @@ partnerUniqueTaxReference.hint = A UTR is issued by HMRC when you register for S
 partnerUniqueTaxReference.reason.text = Tell us why the partner does not have a UTR
 partnerUniqueTaxReference.error.required = Select yes if the partner has a UTR
 partnerUniqueTaxReference.error.reason.required = You need to tell us why the partner does not have a UTR
-
-partnershipVat.title = Does the partnership have a VAT registration number?
-partnershipVat.heading = Does the partnership have a VAT registration number?
-
-confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
-confirmDelete.partner.heading = Are you sure you want to delete {0}?
-confirmDelete.partner.body = confirmDeletePartner
+partnerUniqueTaxReference.checkYourAnswersLabel = Does the partner have a Self Assessment Unique Taxpayer Reference number?
+partnerUniqueTaxReference.checkYourAnswersLabel.utr = Unique Taxpayer Reference number
+partnerUniqueTaxReference.checkYourAnswersLabel.reason = Why the partner does not have a UTR
 
 addEntity.error.required = You must make a selection
 addEntity.addYesNo = Do you want to add another {0}?
@@ -608,6 +604,34 @@ addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have mor
 addPartners.title = Partners
 addPartners.heading = Partners
 addPartners.entityType = partners
+
+partnershipVat.title = Does the partnership have a VAT registration number?
+partnershipVat.heading = Does the partnership have a VAT registration number?
+
+confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
+confirmDelete.partner.heading = Are you sure you want to delete {0}?
+confirmDelete.partner.body = confirmDeletePartner
+
+partnerPreviousAddress.title = Partner’s previous address
+partnerPreviousAddress.heading = Partner’s previous address
+partnerPreviousAddress.hint = This is usually the partner’s home address.
+partnerPreviousAddress.checkYourAnswersLabel = Previous Address
+
+addEntity.error.required = You must make a selection
+addEntity.addYesNo = Do you want to add another {0}?
+addEntity.addAnEntity = Add a {0}
+addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
+addEntity.atMaximum = You have added the maximum number of {0}.
+addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+addPartners.title = Partners
+addPartners.heading = Partners
+addPartners.entityType = partners
+
+partnerPreviousAddress.title = Partner’s previous address
+partnerPreviousAddress.heading = Partner’s previous address
+partnerPreviousAddress.hint = This is usually the partner’s home address.
+partnerPreviousAddress.checkYourAnswersLabel = Previous Address
 
 moreThanTenPartners.title = Do you need to tell us about other partners?
 moreThanTenPartners.heading = Do you need to tell us about other partners?
@@ -625,3 +649,37 @@ partnerAddressYears.title = How long has the partner lived at this address?
 partnerAddressYears.heading = How long has the partner lived at this address?
 partnerAddressYears.checkYourAnswersLabel = How long has the partner lived at this address?
 partnerAddressYears.error.required = Select how long the partner has been at the current address
+
+partnerPreviousAddressPostCodeLookup.title = Partner’s previous address
+partnerPreviousAddressPostCodeLookup.heading = Partner’s previous address
+partnerPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this partnership.
+partnerPreviousAddressPostCodeLookup.input.text = Postcode
+partnerPreviousAddressPostCodeLookup.checkYourAnswersLabel = Partner’s previous address post code
+partnerPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+partnerPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
+partnerPreviousAddressPostCodeLookup.submit.button = Find address
+
+addEntity.error.required = You must make a selection
+addEntity.addYesNo = Do you want to add another {0}?
+addEntity.addAnEntity = Add a {0}
+addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
+addEntity.atMaximum = You have added the maximum number of {0}.
+addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have more to add.
+
+addPartners.title = Partners
+addPartners.heading = Partners
+addPartners.entityType = partners
+
+partnerCheckYourAnswers.partnerDetails.heading = Partner details
+partnerCheckYourAnswers.contactDetails.heading = Contact details for partner
+
+pensionSchemePractitioner.title = You cannot use this service
+pensionSchemePractitioner.heading = You cannot use this service
+pensionSchemePractitioner.lede = You are already a pension scheme practitioner on the Pension Schemes Online service with this Government Gateway account.
+pensionSchemePractitioner.explanation = Only pension scheme administrators can use this digital service at the moment. HMRC will let your company know when practitioners can use this service.
+pensionSchemePractitioner.continue = You should continue to use the {0}.
+pensionSchemePractitioner.link = Pension Schemes Online service
+
+partnerAddressPostCodeLookup.title = Partner’s address
+partnerAddressPostCodeLookup.heading = Partner’s address
+partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.
