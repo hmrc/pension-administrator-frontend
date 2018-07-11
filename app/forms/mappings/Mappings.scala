@@ -29,6 +29,9 @@ trait Mappings extends Formatters with Constraints {
   protected def text(errorKey: String = "error.required"): FieldMapping[String] =
     of(stringFormatter(errorKey))
 
+  protected def optionalText(): FieldMapping[Option[String]] =
+    of(optionalStringFormatter)
+
   protected def int(requiredKey: String = "error.required",
                     wholeNumberKey: String = "error.wholeNumber",
                     nonNumericKey: String = "error.nonNumeric"): FieldMapping[Int] =
@@ -60,7 +63,7 @@ trait Mappings extends Formatters with Constraints {
       "day" -> int("error.date.day_blank", "error.date.day_invalid", "error.date.day_invalid"),
       "month" -> int("error.date.month_blank", "error.date.month_invalid", "error.date.month_invalid"),
       "year" -> int("error.date.year_blank", "error.date.year_invalid", "error.date.year_invalid")
-    ).verifying(invalidKey, (inputs) => validDate(inputs))
+    ).verifying(invalidKey, inputs => validDate(inputs))
       .transform(toLocalDate, fromLocalDate)
 
   }

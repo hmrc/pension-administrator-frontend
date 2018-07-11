@@ -19,8 +19,8 @@ package forms
 import forms.mappings.{Mappings, Transforms}
 import javax.inject.Inject
 import models.PersonDetails
+import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.{Form, Forms}
 
 class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
 
@@ -28,7 +28,6 @@ class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
     mapping(
       "firstName" ->
         text("personDetails.error.firstName.required")
-          .transform(standardTextTransform, noTransform)
           .verifying(
             firstError(
               maxLength(PersonDetailsFormProvider.firstNameLength,
@@ -37,21 +36,18 @@ class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
               name("personDetails.error.firstName.invalid")
             )
           ),
-      "middleName" -> optional(
-        Forms.text
-          .transform(standardTextTransform, noTransform)
+      "middleName" ->
+        optionalText()
           .verifying(
-            firstError(
-              maxLength(PersonDetailsFormProvider.middleNameLength,
-                "personDetails.error.middleName.length"
-              ),
-              name("personDetails.error.middleName.invalid")
-            )
-          )
-      ),
+              firstError(
+                maxLength(PersonDetailsFormProvider.middleNameLength,
+                  "personDetails.error.middleName.length"
+                ),
+                name("personDetails.error.middleName.invalid")
+              )
+          ),
       "lastName" ->
         text("personDetails.error.lastName.required")
-          .transform(standardTextTransform, noTransform)
           .verifying(
             firstError(
               maxLength(PersonDetailsFormProvider.lastNameLength,
