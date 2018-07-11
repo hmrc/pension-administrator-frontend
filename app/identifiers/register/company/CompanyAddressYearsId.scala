@@ -20,6 +20,7 @@ import identifiers._
 import models.AddressYears
 import play.api.libs.json.JsResult
 import utils.UserAnswers
+import utils.checkyouranswers.AddressYearsCYA
 
 case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] { self =>
   override def toString: String = "companyAddressYears"
@@ -33,5 +34,7 @@ case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] { self =
       case _ => super.cleanup(value, userAnswers)
     }
   }
+
+  implicit val cya = AddressYearsCYA[self.type]("companyAddressYears.checkYourAnswersLabel")()
 
 }

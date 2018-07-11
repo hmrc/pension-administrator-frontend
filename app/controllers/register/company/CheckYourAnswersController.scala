@@ -16,20 +16,21 @@
 
 package controllers.register.company
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.{BusinessDetailsId, CheckYourAnswersId, CompanyAddressId, CompanySameContactAddressId}
+import identifiers.register.company._
+import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{CheckYourAnswersFactory, Navigator}
+import utils.Navigator
 import utils.annotations.RegisterCompany
+import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
 import viewmodels.AnswerSection
 import views.html.check_your_answers
-import utils.checkyouranswers.Ops._
 
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
@@ -38,41 +39,35 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @RegisterCompany navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            checkYourAnswersFactory: CheckYourAnswersFactory
+                                            implicit val countryOptions: CountryOptions
                                           ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
 
-      val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
         ++ Seq(
-          checkYourAnswerHelper.vatRegistrationNumber,
-          checkYourAnswerHelper.payeEmployerReferenceNumber,
-          checkYourAnswerHelper.companyRegistrationNumber
+          CompanyDetailsId.row(Some(routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
+          CompanyRegistrationNumberId.row(Some(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
       val companyContactDetails = AnswerSection(
         Some("company.checkYourAnswers.company.contact.details.heading"),
         Seq(
-          checkYourAnswerHelper.companyAddress,
-          checkYourAnswerHelper.companySameContactAddress,
-          checkYourAnswerHelper.companyContactAddress,
-          checkYourAnswerHelper.companyAddressYears,
-          checkYourAnswerHelper.companyPreviousAddress
+          CompanyAddressId.row(None),
+          CompanySameContactAddressId.row(Some(routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)),
+          CompanyContactAddressId.row(None),
+          CompanyAddressYearsId.row(Some(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
+          CompanyPreviousAddressId.row(Some(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
-        Seq(
-          checkYourAnswerHelper.email,
-          checkYourAnswerHelper.phone
-        ).flatten
+        ContactDetailsId.row(Some(routes.ContactDetailsController.onPageLoad(CheckMode).url))
       )
 
       Ok(check_your_answers(

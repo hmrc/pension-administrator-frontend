@@ -18,10 +18,14 @@ package forms.mappings
 
 import java.time.LocalDate
 
+import generators.Generators
+import org.scalacheck.Gen
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.{Form, FormError}
 import play.api.data.Forms._
 import utils.Enumerable
+import wolfendale.scalacheck.regexp.RegexpGen
 
 object MappingsSpec {
 
@@ -38,7 +42,9 @@ object MappingsSpec {
   }
 }
 
-class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Mappings {
+// scalastyle:off magic.number
+
+class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Mappings with GeneratorDrivenPropertyChecks with Generators {
 
   import MappingsSpec._
 
@@ -54,9 +60,33 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       result.get mustEqual "foobar"
     }
 
+    "trim spaces from a valid string" in {
+      val gen = RegexpGen.from("""^\s+test\s+$""")
+      forAll(gen) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.get mustBe "test"
+      }
+    }
+
+    "minimise internal spaces" in {
+      val gen = RegexpGen.from("""^start\s+middle\s+end$""")
+      forAll(gen) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.get mustBe "start middle end"
+      }
+    }
+
     "not bind an empty string" in {
       val result = testForm.bind(Map("value" -> ""))
       result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "not bind a string containing only spaces" in {
+      val gen = RegexpGen.from("""^\s+$""")
+      forAll(gen) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.errors must contain(FormError("value", "error.required"))
+      }
     }
 
     "not bind an empty map" in {
@@ -74,6 +104,95 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       val result = testForm.fill("foobar")
       result.apply("value").value.value mustEqual "foobar"
     }
+  }
+
+  "optionalText" must {
+
+    val testForm: Form[Option[String]] =
+      Form(
+        "value" -> optionalText()
+      )
+
+    "bind a valid string" in {
+      forAll(stringsLongerThan(0)) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.get mustBe Some(s)
+      }
+    }
+
+    "trim spaces from a valid string" in {
+      val gen = RegexpGen.from("""^\s+test\s+$""")
+      forAll(gen) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.get mustBe Some("test")
+      }
+    }
+
+    "minimise internal spaces" in {
+      val gen = RegexpGen.from("""^start\s+middle\s+end$""")
+      forAll(gen) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.get mustBe Some("start middle end")
+      }
+    }
+
+    "bind an empty string to None" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.get mustBe None
+    }
+
+    "bind a string containing only spaces to None" in {
+      val gen = RegexpGen.from("""^\s+$""")
+      forAll(gen) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.get mustBe None
+      }
+    }
+
+    "bind an empty map to None" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.get mustBe None
+    }
+
+    "unbind some valid value" in {
+      forAll(Gen.alphaStr) { s =>
+        val result = testForm.fill(Some(s))
+        result.apply("value").value mustBe Some(s)
+      }
+    }
+
+    "unbind None to an empty string" in {
+      val result = testForm.fill(None)
+      result.apply("value").value mustBe Some("")
+    }
+
+  }
+
+  "optionalText with constraint" must {
+
+    val testForm: Form[Option[String]] =
+      Form(
+        "value" -> optionalText()
+          .verifying(maxLength(5, "error.length"))
+      )
+
+    "not enforce the constraint for an empty string" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.get mustBe None
+    }
+
+    "not enforce the constraint for an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.get mustBe None
+    }
+
+    "enforce the constraint for a valid string" in {
+      forAll(stringsLongerThan(5)) { s =>
+        val result = testForm.bind(Map("value" -> s))
+        result.errors mustBe Seq(FormError("value" , Seq("error.length"), Seq(5)))
+      }
+    }
+
   }
 
   "boolean" must {

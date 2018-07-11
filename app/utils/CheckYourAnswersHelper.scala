@@ -16,23 +16,13 @@
 
 package utils
 
-import identifiers.register.adviser.AdviserAddressId
-import identifiers.register.company.directors.{DirectorAddressId, DirectorPreviousAddressListId}
-import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
+import identifiers.register.company.directors.DirectorAddressId
 import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
-import identifiers.register.partnership.partners.PartnerAddressId
 import models.{Address, CheckMode, Nino, UniqueTaxReference}
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
-
-  def partnerAddressYears(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerAddressYearsId(index)) match {
-    case Some(x) => Seq(AnswerRow("partnerAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true,
-      controllers.register.partnership.partners.routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url))
-
-    case _ => Nil
-  }
 
   def individualContactAddress:Option[AnswerRow]={
     userAnswers.get(identifiers.register.individual.IndividualContactAddressId) map {answer =>
@@ -50,34 +40,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
       controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)
-  }
-
-  def adviserAddress: Seq[AnswerRow] = userAnswers.get(AdviserAddressId) match {
-    case Some(x) => Seq(AnswerRow("cya.label.address", addressAnswer(x), false,
-      controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url))
-    case _ => Nil
-  }
-
-  def adviserDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.adviser.AdviserDetailsId) match {
-    case Some(x) => Seq(AnswerRow("cya.label.name", Seq(x.name), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
-                        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
-                        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))
-    case _ => Nil
-  }
-
-  def declarationWorkingKnowledge: Option[AnswerRow] = {
-    userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) map { x =>
-      AnswerRow("declarationWorkingKnowledge.checkYourAnswersLabel", Seq(s"declarationWorkingKnowledge.$x"), true, controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(CheckMode).url)
-    }
-  }
-  def adviserAddressPostCodeLookup: Seq[AnswerRow] = userAnswers.get(identifiers.register.adviser.AdviserAddressPostCodeLookupId) match {
-    case Some(x) => Seq(AnswerRow("adviserAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(CheckMode).url))
-    case _ => Nil
-  }
-
-  def contactDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualContactDetailsId) match {
-    case Some(x) => Seq(AnswerRow("contactDetails.checkYourAnswersLabel", Seq(x.email,x.phone), false, controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url))
-    case _ => Nil
   }
 
   def individualPhoneNumber: Option[AnswerRow] = {
@@ -125,14 +87,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     )
 
     case _ => Nil
-  }
-
-  def companyDirectorAddressList(index: Int): Option[AnswerRow] = userAnswers.get(identifiers.register.company.directors.CompanyDirectorAddressListId(index)) map {
-    x => AnswerRow("companyDirectorAddressList.checkYourAnswersLabel", Seq(s"companyDirectorAddressList.$x"), true, controllers.register.company.directors.routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index).url)
-  }
-
-  def directorPreviousAddressList(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPreviousAddressListId(index)) map {
-    x => AnswerRow("directorPreviousAddressList.checkYourAnswersLabel", Seq(s"directorPreviousAddressList.$x"), true, controllers.register.company.directors.routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index).url)
   }
 
   def companyDirectorAddressPostCodeLookup(index: Int): Option[AnswerRow] =
@@ -210,42 +164,8 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyPreviousAddressId) map {
-    x => AnswerRow("companyPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false, controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)
-  }
-
-  def companyAddressList: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressListId) map {
-    x => AnswerRow("companyAddressList.checkYourAnswersLabel", Seq(s"companyAddressList.$x"), true, controllers.register.company.routes.CompanyAddressListController.onPageLoad(CheckMode).url)
-  }
-
-  def companyPreviousAddressPostCodeLookup: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyPreviousAddressPostCodeLookupId) map {
-    x => AnswerRow("companyPreviousAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false, controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)
-  }
-
-  def addCompanyDirectors: Option[AnswerRow] = userAnswers.get(identifiers.register.company.AddCompanyDirectorsId) map {
-    x => AnswerRow("addCompanyDirectors.checkYourAnswersLabel", Seq(if(x) "site.yes" else "site.no"), true, controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url)
-  }
-
   def moreThanTenDirectors: Option[AnswerRow] = userAnswers.get(identifiers.register.company.MoreThanTenDirectorsId) map {
     x => AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq(if(x) "site.yes" else "site.no"), true, controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(CheckMode).url)
-  }
-
-  def email: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { x =>
-    AnswerRow(
-      "contactDetails.email.checkYourAnswersLabel",
-      Seq(x.email),
-      false,
-      controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url
-    )
-  }
-
-  def phone: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { x =>
-    AnswerRow(
-      "contactDetails.phone.checkYourAnswersLabel",
-      Seq(x.phone),
-      false,
-      controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url
-    )
   }
 
   def vatRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) flatMap { x =>
@@ -268,33 +188,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
         controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
       )
     }
-  }
-
-  def companyAddressYears: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressYearsId) map {
-    x => AnswerRow("companyAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true, controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)
-  }
-
-  def companyAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyAddressId) flatMap { x =>
-    x map { address =>
-      AnswerRow("companyAddress.checkYourAnswersLabel", addressAnswer(address), false, None)
-    }
-  }
-
-  def companyContactAddress: Option[AnswerRow] =  userAnswers.get(identifiers.register.company.CompanyContactAddressId) map {answer =>
-    AnswerRow("cya.label.company.contact.address", addressAnswer(answer), false, None)
-  }
-
-  def companySameContactAddress: Option[AnswerRow] =
-    userAnswers.get(identifiers.register.company.CompanySameContactAddressId) map { x =>
-      AnswerRow("cya.label.company.same.contact.address", Seq(if(x) "site.yes" else "site.no"), true, controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)
-  }
-
-  def businessDetails: Seq[AnswerRow] = userAnswers.get(BusinessDetailsId) match {
-    case Some(x) => Seq(
-      AnswerRow("businessDetails.companyName", Seq(s"${x.name}"), false, None),
-      AnswerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq(s"${x.uniqueTaxReferenceNumber}"), false, None)
-    )
-    case _ => Seq.empty[AnswerRow]
   }
 
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {

@@ -235,7 +235,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
-      checkYourAnswersFactory
+      countryOptions
     )
 
   private val companyContactDetails = AnswerSection(
