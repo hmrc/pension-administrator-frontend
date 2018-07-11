@@ -679,3 +679,9 @@ pensionSchemePractitioner.explanation = Only pension scheme administrators can u
 pensionSchemePractitioner.continue = You should continue to use the {0}.
 pensionSchemePractitioner.link = Pension Schemes Online service
 
+partnershipReview.title = Review the partnership details
+partnershipReview.heading = Review the partnership details
+partnershipReview.editLink = Edit partnership details
+partnershipReview.partners.heading = Partners
+partnershipReview.partners.editLink = Add, delete or edit partners
+partnershipReview.partners.changeLink = Change partners
