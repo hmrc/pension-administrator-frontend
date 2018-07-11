@@ -25,6 +25,8 @@ import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import javax.inject.Inject
+
+import controllers.register.company.routes
 import models.requests.DataRequest
 import models.{BusinessDetails, NormalMode, Organisation, OrganizationRegistration}
 import play.api.Logger
@@ -85,7 +87,7 @@ class ConfirmPartnershipDetailsController @Inject()(
                   }
                 }
               }
-            case false => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+            case false => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
           }
         )
       }
