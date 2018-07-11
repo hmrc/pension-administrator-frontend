@@ -19,6 +19,7 @@ package utils.checkyouranswers
 import identifiers.TypedIdentifier
 import models._
 import models.register.adviser.AdviserDetails
+import models.register.company.CompanyDetails
 import play.api.libs.json.Reads
 import utils.{DateHelper, UserAnswers}
 import utils.checkyouranswers.CheckYourAnswers.addressAnswer
@@ -37,6 +38,8 @@ object CheckYourAnswers {
 
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
 
+  implicit def companyDetails[I <: TypedIdentifier[CompanyDetails]](implicit r: Reads[CompanyDetails]): CheckYourAnswers[I] = CompanyDetailsCYA()()
+
   implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
 
   implicit def nino[I <: TypedIdentifier[Nino]](implicit r: Reads[Nino]): CheckYourAnswers[I] = NinoCYA()()
@@ -46,6 +49,10 @@ object CheckYourAnswers {
   implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
 
   implicit def addressYears[I <: TypedIdentifier[AddressYears]](implicit r: Reads[AddressYears]): CheckYourAnswers[I] = AddressYearsCYA()()
+
+  implicit def string[I <: TypedIdentifier[String]](implicit rds: Reads[String]): CheckYourAnswers[I] = StringCYA()()
+
+  implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = BooleanCYA()()
 
   implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -138,35 +145,6 @@ object CheckYourAnswers {
             ))
         } getOrElse Seq.empty[AnswerRow]
       }
-    }
-  }
-
-  implicit def string[I <: TypedIdentifier[String]](implicit rds: Reads[String]): CheckYourAnswers[I] =
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map {
-          string =>
-            Seq(AnswerRow(
-              s"${id.toString}.checkYourAnswersLabel",
-              Seq(string),
-              answerIsMessageKey = false,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
-    }
-
-  implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map {
-          flag =>
-            Seq(AnswerRow(
-              s"${id.toString}.checkYourAnswersLabel",
-              Seq(if (flag) "site.yes" else "site.no"),
-              answerIsMessageKey = true,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
     }
   }
 
@@ -306,5 +284,71 @@ case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
         )
         case _ => Seq.empty[AnswerRow]
       } getOrElse Seq.empty[AnswerRow]
+  }
+}
+
+case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None) {
+  def apply()(implicit rds: Reads[String]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          string =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.checkYourAnswersLabel",
+              Seq(string),
+              answerIsMessageKey = false,
+              changeUrl
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
+}
+
+case class CompanyDetailsCYA[I <: TypedIdentifier[CompanyDetails]](
+                                                                    vatLabel: String = "companyDetails.vatRegistrationNumber.checkYourAnswersLabel",
+                                                                    payeLabel: String = "companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel"
+                                                                  ) {
+  def apply()(implicit r: Reads[CompanyDetails]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map { companyDetails =>
+
+          val vat = companyDetails.vatRegistrationNumber.map{ vatRegNo =>
+            Seq(AnswerRow(
+              vatLabel,
+              Seq(vatRegNo),
+              false,
+              controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+            ))
+          } getOrElse Seq.empty[AnswerRow]
+
+          val paye = companyDetails.payeEmployerReferenceNumber.map{ payeRefNo =>
+            Seq(AnswerRow(
+              payeLabel,
+              Seq(payeRefNo),
+              false,
+              controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url
+            ))
+          } getOrElse Seq.empty[AnswerRow]
+
+          vat ++ paye
+
+        } getOrElse Seq.empty[AnswerRow]
+    }
+}
+
+case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None) {
+  implicit def apply()(implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          flag =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.checkYourAnswersLabel",
+              Seq(if (flag) "site.yes" else "site.no"),
+              answerIsMessageKey = true,
+              changeUrl
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
   }
 }
