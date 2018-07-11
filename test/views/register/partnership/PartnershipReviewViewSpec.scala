@@ -16,7 +16,6 @@
 
 package views.register.partnership
 
-import controllers.register.partnership.partners.routes.CheckYourAnswersController
 import controllers.register.partnership.routes
 import views.behaviours.ViewBehaviours
 import views.html.register.partnership.partnershipReview
@@ -44,7 +43,7 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
 
   "have link to edit partnership details" in {
     createView must haveLink(
-      CheckYourAnswersController.onPageLoad(0).url, "edit-partnership-details"
+      routes.CheckYourAnswersController.onPageLoad.url, "edit-partnership-details"
     )
   }
 

@@ -27,76 +27,9 @@ import viewmodels.AnswerRow
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
-  def partnerUniqueTaxReference(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerUniqueTaxReferenceId(index)) match {
-    case Some(UniqueTaxReference.Yes(utr)) => Seq(
-      AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.Yes}"), true,
-        controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
-      AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel.utr", Seq(utr), true,
-        controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
-    )
-
-    case Some(UniqueTaxReference.No(reason)) => Seq(
-      AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.No}"), true,
-        controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url),
-      AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel.reason", Seq(reason), true,
-        controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)
-    )
-
-    case _ => Nil
-  }
-
-  def partnerContactDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerContactDetailsId(index)) match {
-    case Some(x) => Seq(
-      AnswerRow("contactDetails.email", Seq(s"${x.email}"), false,
-        controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url),
-      AnswerRow("contactDetails.phone", Seq(s"${x.phone}"), false,
-        controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)
-    )
-
-    case _ => Nil
-  }
-
-  def partnerAddress(index: Int): Seq[AnswerRow] = userAnswers.get(PartnerAddressId(index)) match {
-    case Some(x) => Seq(AnswerRow("cya.label.address", addressAnswer(x), false,
-      controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(CheckMode, index).url))
-    case _ => Nil
-  }
-
-  def partnerPreviousAddress(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerPreviousAddressId(index)) match {
-    case Some(x) => Seq(AnswerRow("partnerPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false,
-      controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, index).url))
-    case _ => Nil
-  }
-
   def partnerAddressYears(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerAddressYearsId(index)) match {
     case Some(x) => Seq(AnswerRow("partnerAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true,
       controllers.register.partnership.partners.routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url))
-
-    case _ => Nil
-  }
-
-  def partnerDetails(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerDetailsId(index)) match {
-    case Some(x) => Seq(AnswerRow("cya.label.name", Seq(s"${x.firstName} ${x.lastName}"), false,
-      controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(CheckMode, index).url),
-      AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x.dateOfBirth)}"), false,
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(CheckMode, index).url))
-    case _ => Nil
-  }
-
-  def partnerNino(index: Int): Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.partners.PartnerNinoId(index)) match {
-    case Some(Nino.Yes(nino)) => Seq(
-      AnswerRow("partnerNino.checkYourAnswersLabel", Seq(s"${Nino.Yes}"), true,
-        controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url),
-      AnswerRow("partnerNino.checkYourAnswersLabel.nino", Seq(nino), true,
-        controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url)
-    )
-
-    case Some(Nino.No(reason)) => Seq(
-      AnswerRow("partnerNino.checkYourAnswersLabel", Seq(s"${Nino.No}"), true,
-        controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url),
-      AnswerRow("partnerNino.checkYourAnswersLabel.reason", Seq(reason), true,
-        controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url)
-    )
 
     case _ => Nil
   }

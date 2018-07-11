@@ -20,8 +20,8 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.CheckYourAnswersId
-import models.{Mode, NormalMode}
+import identifiers.register.company.{BusinessDetailsId, CheckYourAnswersId, CompanyAddressId, CompanySameContactAddressId}
+import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -29,6 +29,7 @@ import utils.{CheckYourAnswersFactory, Navigator}
 import utils.annotations.RegisterCompany
 import viewmodels.AnswerSection
 import views.html.check_your_answers
+import utils.checkyouranswers.Ops._
 
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
@@ -47,7 +48,7 @@ class CheckYourAnswersController @Inject()(
 
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
-        checkYourAnswerHelper.businessDetails
+        BusinessDetailsId.row(None)
         ++ Seq(
           checkYourAnswerHelper.vatRegistrationNumber,
           checkYourAnswerHelper.payeEmployerReferenceNumber,
@@ -67,7 +68,7 @@ class CheckYourAnswersController @Inject()(
       )
 
       val contactDetails = AnswerSection(
-        Some("company.checkYourAnswers.contact.details.heading"),
+        Some("common.checkYourAnswers.contact.details.heading"),
         Seq(
           checkYourAnswerHelper.email,
           checkYourAnswerHelper.phone

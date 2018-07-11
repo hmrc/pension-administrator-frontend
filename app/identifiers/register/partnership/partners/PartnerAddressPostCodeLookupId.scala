@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package identifiers.register.partnership.partners
 
 import identifiers._
-import models.BusinessDetails
-import utils.checkyouranswers.BusinessDetailsCYA
+import models.TolerantAddress
+import play.api.libs.json.JsPath
 
-case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] { self =>
-  override def toString: String = "businessDetails"
-
-  implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
-
+case class PartnerAddressPostCodeLookupId(index: Int) extends TypedIdentifier[Seq[TolerantAddress]] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerAddressPostCodeLookupId.toString
 }
+
+object PartnerAddressPostCodeLookupId {
+  override def toString: String = "partnerAddressPostCodeLookup"
+}
+
+
