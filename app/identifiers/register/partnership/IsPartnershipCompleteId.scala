@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package identifiers.register.partnership
 
-import identifiers._
-import models.BusinessDetails
-import utils.checkyouranswers.BusinessDetailsCYA
+import identifiers.TypedIdentifier
 
-case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] { self =>
-  override def toString: String = "businessDetails"
-
-  implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
-
+case object IsPartnershipCompleteId extends TypedIdentifier[Boolean] {
+  override def toString: String = "isDirectorComplete"
 }

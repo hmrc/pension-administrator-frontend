@@ -19,11 +19,18 @@ package identifiers.register.partnership.partners
 import identifiers._
 import models.Address
 import play.api.libs.json.JsPath
+import utils.checkyouranswers.{AddressCYA, CheckYourAnswers}
+import utils.countryOptions.CountryOptions
 
 case class PartnerPreviousAddressId(index: Int) extends TypedIdentifier[Address] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerPreviousAddressId.toString
 }
 
 object PartnerPreviousAddressId {
+
   override def toString: String = "partnerPreviousAddress"
+
+  implicit def cya(implicit countryOptions: CountryOptions): CheckYourAnswers[PartnerPreviousAddressId] =
+    AddressCYA[PartnerPreviousAddressId]("partnerPreviousAddress.checkYourAnswersLabel")()
+
 }
