@@ -99,7 +99,10 @@ trait Generators {
     } yield num.mkString
 
   def stringsLongerThan(minLength: Int): Gen[String] =
-    arbitrary[String] suchThat (_.length > minLength)
+    for {
+      base <- Gen.listOfN(minLength + 1, arbitrary[Char]).map(_.mkString)
+      surplus <- arbitrary[String]
+    } yield base + surplus
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))

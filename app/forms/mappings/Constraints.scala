@@ -42,6 +42,7 @@ trait Constraints {
   protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   protected val addressLineRegex = """^[A-Za-z0-9 !'‘’"“”(),./\u2014\u2013\u2010\u002d]{1,35}$"""
   protected val companyNameRegex = """^[a-zA-Z0-9- '&\\/]{1,105}$"""
+  protected val adviserNameRegex = """^[a-zA-Z\u00C0-\u00FF '‘’\u2014\u2013\u2010\u002d]{1,255}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -135,6 +136,8 @@ trait Constraints {
   protected def safeText(errorKey: String): Constraint[String] = regexp(safeTextRegex, errorKey)
 
   protected def companyName(errorKey: String): Constraint[String] = regexp(companyNameRegex, errorKey)
+
+  protected def adviserName(errorKey: String): Constraint[String] = regexp(adviserNameRegex, errorKey)
 
   protected def validNino(invalidKey: String) : Constraint[String] = {
     Constraint {
