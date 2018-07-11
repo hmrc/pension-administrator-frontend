@@ -281,7 +281,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       psaNameCacheConnector
     )
 
-  private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
+  private def viewAsString(companyName: String = companyDetails.name, address: TolerantAddress = testLimitedCompanyAddress): String =
     confirmCompanyDetails(frontendAppConfig, form, address, companyName)(fakeRequest, messages).toString
 
 }

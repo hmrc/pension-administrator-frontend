@@ -53,9 +53,9 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
           routes.PartnershipContactAddressController.onPageLoad(mode),
           Message("partnershipContactAddressPostCodeLookup.title"),
-          Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.companyName),
+          Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.name),
           Some(Message("site.secondaryHeader")),
-          Message("partnershipContactAddressPostCodeLookup.lede").withArgs(details.companyName),
+          Message("partnershipContactAddressPostCodeLookup.lede").withArgs(details.name),
           Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
           Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),
           Message("address.postcode")

@@ -60,7 +60,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
           manualInputCall = routes.CompanyContactAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("company.contactAddressList.title"),
-          Message("company.contactAddressList.heading").withArgs(details.companyName),
+          Message("company.contactAddressList.heading").withArgs(details.name),
           Some(Message("site.secondaryHeader")),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")

@@ -279,7 +279,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(partnershipName: String = partnershipDetails.companyName, address: TolerantAddress = testBusinessPartnershipAddress): String =
+  private def viewAsString(partnershipName: String = partnershipDetails.name, address: TolerantAddress = testBusinessPartnershipAddress): String =
     confirmPartnershipDetails(frontendAppConfig, form, partnershipName, address)(fakeRequest, messages).toString
 
 }
