@@ -20,7 +20,7 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.{BusinessDetailsId, CheckYourAnswersId, CompanyAddressId, CompanySameContactAddressId}
+import identifiers.register.company._
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -30,6 +30,7 @@ import utils.annotations.RegisterCompany
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
 
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
@@ -38,7 +39,8 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @RegisterCompany navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            checkYourAnswersFactory: CheckYourAnswersFactory
+                                            checkYourAnswersFactory: CheckYourAnswersFactory,
+                                            implicit val countryOptions: CountryOptions
                                           ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
@@ -59,20 +61,17 @@ class CheckYourAnswersController @Inject()(
       val companyContactDetails = AnswerSection(
         Some("company.checkYourAnswers.company.contact.details.heading"),
         Seq(
-          checkYourAnswerHelper.companyAddress,
-          checkYourAnswerHelper.companySameContactAddress,
-          checkYourAnswerHelper.companyContactAddress,
-          checkYourAnswerHelper.companyAddressYears,
-          checkYourAnswerHelper.companyPreviousAddress
+          CompanyAddressId.row(None),
+          CompanySameContactAddressId.row(Some(routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)),
+          CompanyContactAddressId.row(None),
+          CompanyAddressYearsId.row(Some(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
+          CompanyPreviousAddressId.row(Some(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
-        Seq(
-          checkYourAnswerHelper.email,
-          checkYourAnswerHelper.phone
-        ).flatten
+        ContactDetailsId.row(Some(routes.ContactDetailsController.onPageLoad(CheckMode).url))
       )
 
       Ok(check_your_answers(
