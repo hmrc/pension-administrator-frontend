@@ -5,5 +5,5 @@ A user must have an existing Business Partner Record to proceed with the service
 
 The service manager profile is PODS_ALL
 
-Start the serice locally by going to http://localhost:8201/register-as-pension-scheme-administrator
+Start the service locally by going to http://localhost:8201/register-as-pension-scheme-administrator
 
