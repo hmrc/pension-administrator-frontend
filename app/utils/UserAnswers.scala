@@ -82,7 +82,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         partner.fullName,
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url,
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url,
         controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
         partner.isDeleted
       )

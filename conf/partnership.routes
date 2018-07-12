@@ -79,3 +79,6 @@ POST       /change-other-partners                      controllers.register.part
 
 GET        /add-partners                       controllers.register.partnership.AddPartnerController.onPageLoad
 POST       /add-partners                       controllers.register.partnership.AddPartnerController.onSubmit
+
+GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad
+POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit

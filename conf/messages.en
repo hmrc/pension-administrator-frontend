@@ -697,3 +697,10 @@ pensionSchemePractitioner.link = Pension Schemes Online service
 partnerAddressPostCodeLookup.title = Partner’s address
 partnerAddressPostCodeLookup.heading = Partner’s address
 partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.
+
+partnershipReview.title = Review the partnership details
+partnershipReview.heading = Review the partnership details
+partnershipReview.editLink = Edit partnership details
+partnershipReview.partners.heading = Partners
+partnershipReview.partners.editLink = Add, delete or edit partners
+partnershipReview.partners.changeLink = Change partners
