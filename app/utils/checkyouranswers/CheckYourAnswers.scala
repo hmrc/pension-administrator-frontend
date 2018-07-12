@@ -186,7 +186,7 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
       userAnswers.get(id).map{ businessDetails =>
         val nameRow = AnswerRow(
           nameLabel,
-          Seq(businessDetails.name),
+          Seq(businessDetails.companyName),
           false,
           None
         )

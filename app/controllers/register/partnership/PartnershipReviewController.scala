@@ -42,7 +42,7 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
         val partners = request.userAnswers.allPartnersAfterDelete.map(_.name)
-        Future.successful(Ok(partnershipReview(appConfig, details.name, partners)))
+        Future.successful(Ok(partnershipReview(appConfig, details.companyName, partners)))
       }
   }
 

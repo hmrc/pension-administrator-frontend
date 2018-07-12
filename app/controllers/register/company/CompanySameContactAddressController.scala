@@ -61,8 +61,8 @@ class CompanySameContactAddressController @Inject()(
             SameContactAddressViewModel(
               postCall(mode),
               title = Message(title),
-              heading = Message(heading).withArgs(details.name),
-              hint = Some(Message(hint).withArgs(details.name)),
+              heading = Message(heading).withArgs(details.companyName),
+              hint = Some(Message(hint).withArgs(details.companyName)),
               secondaryHeader = Some(secondaryHeader),
               address = address
             )

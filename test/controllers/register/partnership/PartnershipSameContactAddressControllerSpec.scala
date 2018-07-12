@@ -53,7 +53,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
   def viewmodel = SameContactAddressViewModel(
     postCall = controllers.register.partnership.routes.PartnershipSameContactAddressController.onSubmit(NormalMode),
     title = Message("partnership.sameContactAddress.title"),
-    heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipDetails.name),
+    heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipDetails.companyName),
     hint = None,
     secondaryHeader = Some(Message("site.secondaryHeader")),
     address = testAddress
