@@ -25,8 +25,6 @@ import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import javax.inject.Inject
-
-import controllers.register.company.routes
 import models.requests.DataRequest
 import models.{BusinessDetails, NormalMode, Organisation, OrganizationRegistration}
 import play.api.Logger

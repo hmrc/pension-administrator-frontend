@@ -27,7 +27,6 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.navigators.PartnershipNavigatorSpec.emptyAnswers
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
@@ -41,20 +40,28 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (ConfirmPartnershipDetailsId,                confirmPartnershipDetailsTrue,   whatYouWillNeedPage,                        false,              None,                                            false),
     (ConfirmPartnershipDetailsId,                confirmPartnershipDetailsFalse,  companyUpdateDetailsPage,                   false,              None,                                            false),
     (WhatYouWillNeedId,                          emptyAnswers,                    sameContactAddressPage,                     true,               Some(checkYourAnswersPage),                      true),
+
+    (PartnershipSameContactAddressId,            sameContactAddressTrue,          addressYearsPage,                           true,               Some(checkYourAnswersPage),                      true),
     (PartnershipSameContactAddressId,            sameContactAddressFalse,         contactPostcodePage(NormalMode),            true,               Some(contactPostcodePage(CheckMode)),            true),
+    (PartnershipSameContactAddressId,            emptyAnswers,                    sessionExpiredPage,                        false,               Some(sessionExpiredPage),                        false),
+
     (PartnershipContactAddressPostCodeLookupId,  emptyAnswers,                    contactAddressListPage(NormalMode),         true,               Some(contactAddressListPage(CheckMode)),         true),
     (PartnershipContactAddressListId,            emptyAnswers,                    contactAddressPage(NormalMode),             true,               Some(contactAddressPage(CheckMode)),             true),
     (PartnershipContactAddressId,                emptyAnswers,                    addressYearsPage,                           true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipSameContactAddressId,            sameContactAddressTrue,          addressYearsPage,                           true,               Some(checkYourAnswersPage),                      true),
+
     (PartnershipAddressYearsId,                  addressYearsUnder,               contactPreviousPostcodePage(NormalMode),    true,               Some(contactPreviousPostcodePage(CheckMode)),    true),
+    (PartnershipAddressYearsId,                  addressYearsOver,                vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
+    (PartnershipAddressYearsId,                  emptyAnswers,                    sessionExpiredPage,                         true,               Some(sessionExpiredPage),                        true),
+
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers,                    contactPreviousAddressListPage(NormalMode), true,               Some(contactPreviousAddressListPage(CheckMode)), true),
     (PartnershipPreviousAddressListId,           emptyAnswers,                    contactPreviousAddressPage(NormalMode),     true,               Some(contactPreviousAddressPage(CheckMode)),     true),
-    (PartnershipPreviousAddressId,               emptyAnswers,                    vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipAddressYearsId,                  addressYearsOver,                vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
+    (PartnershipPreviousAddressId,               emptyAnswers,                    contactDetailsPage,                         true,               Some(checkYourAnswersPage),                      true),
+
+    (PartnershipContactDetailsId,                emptyAnswers,                    vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
     (PartnershipVatId,                           emptyAnswers,                    payeNumberPage,                             true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipPayeId,                          emptyAnswers,                    contactDetailsPage,                         true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipContactDetailsId,                emptyAnswers,                    checkYourAnswersPage,                       true,               Some(checkYourAnswersPage),                      true),
-    (CheckYourAnswersId,                         emptyAnswers,                    AddPartnersId,                              true,               None,                                            true)
+    (PartnershipPayeId,                          emptyAnswers,                    checkYourAnswersPage,                       true,               Some(checkYourAnswersPage),                      true),
+
+    (CheckYourAnswersId,                         emptyAnswers,                    addPartnersPage,                            true,               None,                                            true)
   )
 
   navigator.getClass.getSimpleName must {
@@ -65,6 +72,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object PartnershipNavigatorSpec extends OptionValues {
+  private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private lazy val confirmPartnershipDetailsPage = routes.ConfirmPartnershipDetailsController.onPageLoad()
   private lazy val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   private lazy val companyUpdateDetailsPage = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
@@ -74,6 +82,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private lazy val vatPage = routes.PartnershipVatController.onPageLoad(NormalMode)
   private lazy val payeNumberPage = routes.PartnershipPayeController.onPageLoad(NormalMode)
   private lazy val contactDetailsPage = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
+  private lazy val addPartnersPage = routes.AddPartnerController.onPageLoad()
 
 
   def contactPostcodePage(mode:Mode): Call = routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
