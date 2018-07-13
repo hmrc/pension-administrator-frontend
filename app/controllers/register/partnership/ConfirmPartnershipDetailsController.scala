@@ -80,7 +80,7 @@ class ConfirmPartnershipDetailsController @Inject()(
                 upsert(userAnswers, PartnershipDetailsId)(partnershipDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
                   upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
                     dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
-                      Redirect(navigator.nextPage(PartnershipRegisteredAddressId, NormalMode, userAnswers))
+                      Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, userAnswers))
                     }
                   }
                 }
