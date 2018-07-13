@@ -63,14 +63,11 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
     }
   }
 
-  def formWithOptionalAddressField[T](
-        form: Form[T],
+  def formWithOptionalAddressField(
+        form: Form[_],
         fieldName: String,
         keyAddressLength: String,
-        keyAddressInvalid: String,
-        validData: Map[String, String],
-        accessor: T => Option[String]
-  ): Unit = {
+        keyAddressInvalid: String): Unit = {
 
     s"behave like a form with optional address field $fieldName" should {
 
@@ -94,12 +91,6 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
         FormError(fieldName, keyAddressInvalid, Seq(addressLineRegex))
       )
 
-      behave like optionalField(
-        form,
-        fieldName,
-        validData,
-        accessor
-      )
     }
 
   }
@@ -150,7 +141,7 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
                                      keyInvalid: String,
                                      keyNonUKLength: String,
                                      validOtherData: Map[String, String],
-                                     getPostCode: T => String): Unit = {
+                                     getPostCode: (T) => String): Unit = {
 
     "behave like a form with Post Code and Country" should {
 

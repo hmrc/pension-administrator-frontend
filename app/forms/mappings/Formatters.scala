@@ -27,31 +27,13 @@ trait Formatters {
   private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
-      data
-        .get(key)
-        .map(standardiseText)
-        .filter(_.lengthCompare(0) > 0)
-        .toRight(Seq(FormError(key, errorKey)))
+      data.get(key) match {
+        case None | Some("") => Left(Seq(FormError(key, errorKey)))
+        case Some(s) => Right(s)
+      }
 
     override def unbind(key: String, value: String): Map[String, String] =
       Map(key -> value)
-  }
-
-  private[mappings] val optionalStringFormatter: Formatter[Option[String]] = new Formatter[Option[String]] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] =
-      Right(
-        data
-          .get(key)
-          .map(standardiseText)
-          .filter(_.lengthCompare(0) > 0)
-      )
-
-    override def unbind(key: String, value: Option[String]): Map[String, String] =
-      Map(key -> value.getOrElse(""))
-  }
-
-  private def standardiseText(s: String): String = {
-    s.replaceAll("""\s{1,}""", " ").trim
   }
 
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String): Formatter[Boolean] =
@@ -59,7 +41,7 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(requiredKey)
 
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Boolean] =
+      override def bind(key: String, data: Map[String, String]) =
         baseFormatter
           .bind(key, data)
           .right.flatMap {
@@ -78,7 +60,7 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(requiredKey)
 
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] =
+      override def bind(key: String, data: Map[String, String]) =
         baseFormatter
           .bind(key, data)
           .right.map(_.replace(",", ""))
@@ -91,7 +73,7 @@ trait Formatters {
               .left.map(_ => Seq(FormError(key, nonNumericKey)))
         }
 
-      override def unbind(key: String, value: Int): Map[String, String] =
+      override def unbind(key: String, value: Int) =
         baseFormatter.unbind(key, value.toString)
     }
 
