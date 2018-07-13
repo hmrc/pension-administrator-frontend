@@ -22,8 +22,6 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
 import utils.countryOptions.CountryOptions
 
-import scala.language.implicitConversions
-
 trait Constraints {
 
   protected val crnRegex = """^[A-Za-z0-9 -]{8}$"""
@@ -163,12 +161,6 @@ trait Constraints {
     Constraint {
       case date if !LocalDate.now().isBefore(date) => Valid
       case _ => Invalid(errorKey)
-    }
-
-  implicit def convertToOptionalConstraint[T](constraint: Constraint[T]): Constraint[Option[T]] =
-    Constraint {
-      case Some(t) => constraint.apply(t)
-      case _ => Valid
     }
 
 }
