@@ -30,7 +30,7 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
   val form = new PersonDetailsFormProvider()()
 
   // scalastyle:off magic.number
-  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val johnDoe = PersonDetails("John Doherty", None, "Doe", LocalDate.of(1862, 6, 9))
   // scalastyle:on magic.number
 
   ".firstName" must {
