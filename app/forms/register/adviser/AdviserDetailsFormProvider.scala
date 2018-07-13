@@ -29,12 +29,14 @@ class AdviserDetailsFormProvider @Inject() extends EmailMapping with PhoneNumber
     mapping(
       "name" -> text("adviserDetails.error.name.required")
         .verifying(
+          firstError(
             maxLength(
               AdviserDetailsFormProvider.nameLength,
               "adviserDetails.error.name.length"
-            )
+            ),
+            adviserName("adviserDetails.error.name.invalid")
+          )
         ),
-
       "email" -> emailMapping(
         "contactDetails.error.email.required",
         "contactDetails.error.email.length",
@@ -51,5 +53,5 @@ class AdviserDetailsFormProvider @Inject() extends EmailMapping with PhoneNumber
  }
 
 object AdviserDetailsFormProvider {
-  val nameLength: Int = 107
+  val nameLength: Int = 255
 }
