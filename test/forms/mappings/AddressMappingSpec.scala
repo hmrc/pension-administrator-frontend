@@ -51,9 +51,7 @@ class AddressMappingSpec extends AddressBehaviours {
       form,
       fieldName,
       keyAddressLength,
-      keyAddressInvalid,
-      Map(fieldName -> "test-address-line"),
-      (s: Option[String]) => s
+      keyAddressInvalid
     )
 
   }
