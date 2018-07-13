@@ -41,8 +41,7 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @Partnership navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            implicit val countryOptions: CountryOptions,
-                                            sectionComplete: SectionComplete
+                                            implicit val countryOptions: CountryOptions
                                           ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
@@ -83,11 +82,9 @@ class CheckYourAnswersController @Inject()(
       ))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      sectionComplete.setComplete(IsPartnershipCompleteId, request.userAnswers) map { _ =>
-        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
-      }
+      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
 
   }
 }
