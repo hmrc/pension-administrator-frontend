@@ -56,11 +56,11 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector)
       NavigateTo.save(routes.PartnershipPayeController.onPageLoad(NormalMode))
     case PartnershipPayeId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case CheckYourAnswersId =>
+      NavigateTo.save(routes.AddPartnerController.onPageLoad())
     case _ =>
-      NavigateTo.dontSave(controllers.routes.CheckYourAnswersController.onPageLoad())
-
+      NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
-
 
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = {
     from.id match {
@@ -99,8 +99,8 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector)
     }
   }
 
-  //
   private def addressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    println("\n\n answers.get(PartnershipAddressYearsId) : " + answers.get(PartnershipAddressYearsId))
     answers.get(PartnershipAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
       case Some(AddressYears.OverAYear) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
@@ -108,7 +108,6 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector)
     }
   }
 
-  //
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
     answers.get(PartnershipSameContactAddressId) match {
       case Some(true) => NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(mode))
@@ -116,5 +115,4 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector)
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
-
 }

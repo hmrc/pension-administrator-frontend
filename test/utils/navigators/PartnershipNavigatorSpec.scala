@@ -38,26 +38,22 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipDetailsId,                       emptyAnswers,                    confirmPartnershipDetailsPage,              false,              None,                                            false),
     (ConfirmPartnershipDetailsId,                confirmPartnershipDetailsTrue,   whatYouWillNeedPage,                        false,              None,                                            false),
     (WhatYouWillNeedId,                          emptyAnswers,                    sameContactAddressPage,                     true,               None,                                            true),
-//    (PartnershipSameContactAddressId,            sameContactAddressTrue,          addressYearsPage,                           true,               Some(checkYourAnswersPage),                      true),
+    (PartnershipSameContactAddressId,            sameContactAddressTrue,          addressYearsPage(NormalMode),               true,               Some(addressYearsPage(CheckMode)),               true),
     (PartnershipSameContactAddressId,            sameContactAddressFalse,         contactPostcodePage(NormalMode),            true,               Some(contactPostcodePage(CheckMode)),            true),
-//    (PartnershipSameContactAddressId,            emptyAnswers,                    sessionExpiredPage,                        false,               Some(sessionExpiredPage),                        false)
-//
+    (PartnershipSameContactAddressId,            emptyAnswers,                    sessionExpiredPage,                         false,              Some(sessionExpiredPage),                        false),
     (PartnershipContactAddressPostCodeLookupId,  emptyAnswers,                    contactAddressListPage(NormalMode),         true,               Some(contactAddressListPage(CheckMode)),         true),
     (PartnershipContactAddressListId,            emptyAnswers,                    contactAddressPage(NormalMode),             true,               Some(contactAddressPage(CheckMode)),             true),
     (PartnershipContactAddressId,                emptyAnswers,                    addressYearsPage(NormalMode),               true,               Some(addressYearsPage(CheckMode)),               true),
-//
     (PartnershipAddressYearsId,                  addressYearsUnder,               contactPreviousPostcodePage(NormalMode),    true,               Some(contactPreviousPostcodePage(CheckMode)),    true),
-    (PartnershipAddressYearsId,                  addressYearsOver,                contactDetailsPage,                                    true,               Some(checkYourAnswersPage),                      true),
-//    (PartnershipAddressYearsId,                  emptyAnswers,                    sessionExpiredPage,                         true,               Some(sessionExpiredPage),                        true),
+    (PartnershipAddressYearsId,                  addressYearsOver,                contactDetailsPage,                         true,               Some(checkYourAnswersPage),                      true),
+    (PartnershipAddressYearsId,                  emptyAnswers,                    sessionExpiredPage,                         false,              Some(sessionExpiredPage),                        false),
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers,                    contactPreviousAddressListPage(NormalMode), true,               Some(contactPreviousAddressListPage(CheckMode)), true),
     (PartnershipPreviousAddressListId,           emptyAnswers,                    contactPreviousAddressPage(NormalMode),     true,               Some(contactPreviousAddressPage(CheckMode)),     true),
     (PartnershipPreviousAddressId,               emptyAnswers,                    contactDetailsPage,                         true,               Some(checkYourAnswersPage),                      true),
-//
     (PartnershipContactDetailsId,                emptyAnswers,                    vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
     (PartnershipVatId,                           emptyAnswers,                    payeNumberPage,                             true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipPayeId,                          emptyAnswers,                    checkYourAnswersPage,                       true,               Some(checkYourAnswersPage),                      true)
-//
-//    (CheckYourAnswersId,                         emptyAnswers,                    addPartnersPage,                            true,               None,                                            true)
+    (PartnershipPayeId,                          emptyAnswers,                    checkYourAnswersPage,                       true,               Some(checkYourAnswersPage),                      true),
+    (CheckYourAnswersId,                         emptyAnswers,                    addPartnersPage,                            true,               None,                                            true)
   )
 
   navigator.getClass.getSimpleName must {
@@ -71,7 +67,6 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def confirmPartnershipDetailsPage = routes.ConfirmPartnershipDetailsController.onPageLoad()
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
-  private def companyUpdateDetailsPage = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
   private def sameContactAddressPage = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   private def vatPage = routes.PartnershipVatController.onPageLoad(NormalMode)
@@ -90,21 +85,15 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj())
     .set(ConfirmPartnershipDetailsId)(true).asOpt.value
-
   private val confirmPartnershipDetailsFalse = UserAnswers(Json.obj())
     .set(ConfirmPartnershipDetailsId)(false).asOpt.value
-
   private val sameContactAddressTrue = UserAnswers(Json.obj())
     .set(PartnershipSameContactAddressId)(true).asOpt.value
-
   private val sameContactAddressFalse = UserAnswers(Json.obj())
     .set(PartnershipSameContactAddressId)(false).asOpt.value
   private val addressYearsUnder = UserAnswers (Json.obj())
     .set(PartnershipAddressYearsId)(AddressYears.UnderAYear).asOpt.value
   private val addressYearsOver = UserAnswers (Json.obj())
     .set(PartnershipAddressYearsId)(AddressYears.OverAYear).asOpt.value
-
   private def dataDescriber(answers: UserAnswers): String = answers.toString
-
 }
-
