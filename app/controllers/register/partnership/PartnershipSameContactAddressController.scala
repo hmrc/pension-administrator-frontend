@@ -28,13 +28,13 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 
 @Singleton
 class PartnershipSameContactAddressController @Inject()(
-                                                         @RegisterCompany val navigator: Navigator,
+                                                         @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
                                                          val messagesApi: MessagesApi,
                                                          val dataCacheConnector: DataCacheConnector,
