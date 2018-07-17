@@ -18,8 +18,8 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.DirectorDetailsId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models.{Index, NormalMode, PersonDetails}
 import play.api.libs.json._
 import viewmodels.Person
@@ -61,7 +61,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         director.fullName,
         routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
         routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url,
-        director.isDeleted
+        director.isDeleted,
+        get(IsDirectorCompleteId(index)).getOrElse(false)
       )
     }
   }
@@ -84,7 +85,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         partner.fullName,
         controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url,
         controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
-        partner.isDeleted
+        partner.isDeleted,
+        get(IsPartnerCompleteId(index)).getOrElse(false)
       )
     }
   }

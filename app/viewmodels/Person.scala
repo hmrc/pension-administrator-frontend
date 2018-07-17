@@ -16,17 +16,12 @@
 
 package viewmodels
 
-import identifiers.register.company.directors.DirectorDetailsId
-import models.requests.DataRequest
-import play.api.mvc.AnyContent
-
 import scala.language.implicitConversions
 
-case class Person(index: Int, name: String, deleteLink: String, editLink: String, isDeleted: Boolean) {
+case class Person(index: Int, name: String, deleteLink: String, editLink: String, isDeleted: Boolean, isComplete: Boolean) {
   def id = s"person-$index"
   def deleteLinkId = s"$id-delete"
   def editLinkId = s"$id-edit"
 
-  def isComplete(implicit request: DataRequest[AnyContent]): Option[Boolean] = DirectorDetailsId.isComplete(index)
 }
 

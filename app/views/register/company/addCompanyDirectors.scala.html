@@ -23,7 +23,11 @@
 @import play.api.mvc.AnyContent
 @import viewmodels.Person
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[Person], disableSubmission: Boolean)(implicit request: DataRequest[AnyContent], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[Person])(implicit request: DataRequest[AnyContent], messages: Messages)
+
+@disableSubmission = @{
+    appConfig.completeFlagEnabled & directors.exists(!_.isComplete)
+}
 
 @main_template(
     title = messages("addCompanyDirectors.title"),

@@ -24,7 +24,7 @@ import controllers.actions._
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonDetails, UserType}
 import play.api.data.Form
@@ -193,7 +193,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, partners: Seq[Person] = Nil) =
-    addEntity(frontendAppConfig, form, viewmodel(partners), disableSubmission = true)(request, messages).toString
+    addEntity(frontendAppConfig, form, viewmodel(partners))(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
@@ -203,15 +203,16 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
   // scalastyle:off magic.number
-  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false)
-  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false)
+  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
 
   private val maxPartners = frontendAppConfig.maxPartners
 
   private def dataRetrievalAction(partners: PersonDetails*): FakeDataRetrievalAction = {
     val validData = Json.obj("partners" ->
       partners.map(d => Json.obj(
-        PartnerDetailsId.toString -> Json.toJson(d)
+        PartnerDetailsId.toString -> Json.toJson(d),
+        IsPartnerCompleteId.toString -> true
       ))
     )
     new FakeDataRetrievalAction(Some(validData))

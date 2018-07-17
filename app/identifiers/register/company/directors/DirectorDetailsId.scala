@@ -46,6 +46,4 @@ object DirectorDetailsId {
 
   override def toString: String = "directorDetails"
 
-  def isComplete(index: Int)(implicit request: DataRequest[AnyContent]): Option[Boolean] =
-    request.userAnswers.get[Boolean](JsPath \ "directors" \ index \ IsDirectorCompleteId.toString)
 }

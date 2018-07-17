@@ -23,7 +23,11 @@
 @import play.api.mvc.AnyContent
 @import viewmodels.{Person, EntityViewModel, Message}
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel, disableSubmission: Boolean)(implicit request: DataRequest[AnyContent], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel)(implicit request: DataRequest[AnyContent], messages: Messages)
+
+@disableSubmission = @{
+appConfig.completeFlagEnabled & viewmodel.entities.exists(!_.isComplete)
+}
 
 @main_template(
     title = messages(viewmodel.title),
