@@ -43,10 +43,10 @@ object BusinessType extends Enumerable.Implicits {
     (if(partnershipsFlagEnabled) {
       Seq(
         LimitedCompany,
-        UnlimitedCompany,
         BusinessPartnership,
         LimitedPartnership,
-        LimitedLiabilityPartnership
+        LimitedLiabilityPartnership,
+        UnlimitedCompany
       )
     } else {
       Seq(
