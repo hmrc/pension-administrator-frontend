@@ -19,7 +19,7 @@ package controllers.register.partnership
 import audit.{AuditService, PSAStartEvent}
 import config.FrontendAppConfig
 import controllers.actions._
-import identifiers.register.company.WhatYouWillNeedId
+import identifiers.register.partnership.WhatYouWillNeedId
 import javax.inject.Inject
 import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
