@@ -19,6 +19,7 @@ package identifiers.register.company
 import identifiers.TypedIdentifier
 import play.api.libs.json.JsResult
 import utils.UserAnswers
+import utils.checkyouranswers.BooleanCYA
 
 case object CompanySameContactAddressId extends TypedIdentifier[Boolean] {self =>
   override def toString = "companySameContactAddressId"
@@ -31,4 +32,7 @@ case object CompanySameContactAddressId extends TypedIdentifier[Boolean] {self =
       .flatMap(_.remove(CompanyPreviousAddressPostCodeLookupId))
       .flatMap(_.remove(CompanyPreviousAddressId))
   }
+
+  implicit def cya = BooleanCYA[self.type](Some("cya.label.company.same.contact.address"))()
+
 }

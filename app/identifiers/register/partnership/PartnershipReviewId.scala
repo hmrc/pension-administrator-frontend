@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerSection
-@import views.html._
+package identifiers.register.partnership
 
-@(answerSection: AnswerSection, idPath: String)(implicit messages: Messages)
+import identifiers.Identifier
 
-@if(answerSection.headingKey.isDefined){
-    <h2 id="cya-@idPath-heading" class="bold">@messages(answerSection.headingKey.get)</h2>
+case object PartnershipReviewId extends Identifier {
+  override def toString: String = "partnershipReview"
 }
-
-<ul class="govuk-check-your-answers form-group cya-questions-long">
-    @for((row, i) <- answerSection.rows.zipWithIndex){
-        @components.answer_row(row, idPath + "-" + i.toString)
-    }
-</ul>

@@ -18,7 +18,14 @@ package identifiers.register.company
 
 import identifiers._
 import models.Address
+import utils.checkyouranswers.AddressCYA
+import utils.countryOptions.CountryOptions
 
-case object CompanyPreviousAddressId extends TypedIdentifier[Address] {
+case object CompanyPreviousAddressId extends TypedIdentifier[Address] { self =>
+
   override def toString: String = "companyPreviousAddress"
+
+  implicit def cya(implicit countryOptions: CountryOptions) =
+    AddressCYA[self.type]("companyPreviousAddress.checkYourAnswersLabel")()
+
 }

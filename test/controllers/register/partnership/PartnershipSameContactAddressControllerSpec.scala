@@ -54,7 +54,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     postCall = controllers.register.partnership.routes.PartnershipSameContactAddressController.onSubmit(NormalMode),
     title = Message("partnership.sameContactAddress.title"),
     heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipDetails.companyName),
-    hint = Some(Message("partnership.sameContactAddress.hint").withArgs(partnershipDetails.companyName)),
+    hint = None,
     secondaryHeader = Some(Message("site.secondaryHeader")),
     address = testAddress
   )

@@ -33,7 +33,7 @@ trait FieldBehaviours extends FormSpec with PropertyChecks with Generators {
 
     "bind valid data" in {
 
-      forAll(validDataGenerator -> "validDataItem") {
+      forAll(validDataGenerator.retryUntil(!_.matches("""^\s+$""")) -> "validDataItem") {
         dataItem: String =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
           result.errors shouldBe empty

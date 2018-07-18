@@ -26,8 +26,8 @@ import views.html.register.businessType
 class BusinessTypeViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "businessType"
-
   private val form = new BusinessTypeFormProvider()()
+  private val businessTypeOptions = BusinessType.options(true)
 
   private def createView = () => businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
@@ -45,19 +45,19 @@ class BusinessTypeViewSpec extends ViewBehaviours {
     "rendered" must {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
-        for (option <- BusinessType.options) {
+        for (option <- businessTypeOptions) {
           assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, isChecked = false)
         }
       }
     }
 
-    for(option <- BusinessType.options) {
+    for(option <- businessTypeOptions) {
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
           assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, isChecked = true)
 
-          for(unselectedOption <- BusinessType.options.filterNot(o => o == option)) {
+          for(unselectedOption <- businessTypeOptions.filterNot(o => o == option)) {
             assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, isChecked = false)
           }
         }

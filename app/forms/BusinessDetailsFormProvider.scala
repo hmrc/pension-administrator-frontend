@@ -37,7 +37,6 @@ class BusinessDetailsFormProvider extends Mappings with Transforms {
         ),
 
       "utr" -> text(model.utrRequiredMsg)
-        .transform(standardTextTransform, noTransform)
         .verifying(
           firstError(
             maxLength(model.utrMaxLength, model.utrLengthMsg),

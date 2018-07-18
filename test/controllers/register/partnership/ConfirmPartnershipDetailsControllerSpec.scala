@@ -120,7 +120,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         val result = controller(dataRetrievalAction).onSubmit(postRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
       }
     }
 

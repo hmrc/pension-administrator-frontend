@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company._
+import identifiers.register.partnership.{CheckYourAnswersId, IsPartnershipCompleteId}
+import identifiers.register.partnership._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
-import utils.annotations.RegisterCompany
-import utils.checkyouranswers.Ops._
-import utils.countryOptions.CountryOptions
+import utils.{Navigator, SectionComplete}
+import utils.annotations.Partnership
 import viewmodels.AnswerSection
 import views.html.check_your_answers
+import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
+
 
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            @RegisterCompany navigator: Navigator,
+                                            @Partnership navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             implicit val countryOptions: CountryOptions
                                           ) extends FrontendController with Retrievals with I18nSupport {
@@ -45,36 +47,38 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
 
-      val companyDetails = AnswerSection(
-        Some("company.checkYourAnswers.company.details.heading"),
-        BusinessDetailsId.row(None)
-        ++ Seq(
-          CompanyDetailsId.row(Some(routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
-          CompanyRegistrationNumberId.row(Some(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
+      val partnershipDetails = AnswerSection(
+        Some("checkyouranswers.partnership.details"),
+        Seq(
+          PartnershipDetailsId.row(None),
+          PartnershipPayeId.row(Some(routes.PartnershipPayeController.onPageLoad(CheckMode).url)),
+          PartnershipVatId.row(Some(routes.PartnershipVatController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
-      val companyContactDetails = AnswerSection(
-        Some("company.checkYourAnswers.company.contact.details.heading"),
+      val partnershipContactDetails = AnswerSection(
+        Some("checkyouranswers.partnership.contact.details.heading"),
         Seq(
-          CompanyAddressId.row(None),
-          CompanySameContactAddressId.row(Some(routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)),
-          CompanyContactAddressId.row(None),
-          CompanyAddressYearsId.row(Some(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-          CompanyPreviousAddressId.row(Some(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))
+          PartnershipRegisteredAddressId.row(None),
+          PartnershipSameContactAddressId.row(Some(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
+          PartnershipContactAddressId.row(Some(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)),
+          PartnershipAddressYearsId.row(Some(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
+          PartnershipPreviousAddressId.row(Some(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))
         ).flatten
       )
 
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
-        ContactDetailsId.row(Some(routes.ContactDetailsController.onPageLoad(CheckMode).url))
+        Seq(
+          PartnershipContactDetailsId.row(Some(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
+        ).flatten
       )
 
       Ok(check_your_answers(
         appConfig,
-        Seq(companyDetails, companyContactDetails, contactDetails),
+        Seq(partnershipDetails, partnershipContactDetails, contactDetails),
         Some(messagesApi("site.secondaryHeader")),
-        controllers.register.company.routes.CheckYourAnswersController.onSubmit()
+        controllers.register.partnership.routes.CheckYourAnswersController.onSubmit()
       ))
   }
 

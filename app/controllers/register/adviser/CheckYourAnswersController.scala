@@ -18,29 +18,34 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import controllers.actions._
-import identifiers.register.adviser.CheckYourAnswersId
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, CheckYourAnswersId}
 import javax.inject.Inject
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.Adviser
-import utils.{CheckYourAnswersFactory, Navigator}
+import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           @Adviser navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with I18nSupport {
+class CheckYourAnswersController @Inject()(
+                                            appConfig: FrontendAppConfig,
+                                            override val messagesApi: MessagesApi,
+                                            @Adviser navigator: Navigator,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            implicit val countryOptions: CountryOptions
+                                          ) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val helper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-      val sections = Seq(AnswerSection(None, helper.adviserDetails ++ helper.adviserAddress))
+      val details = AdviserDetailsId.row(Some(routes.AdviserDetailsController.onPageLoad(CheckMode).url))
+      val address = AdviserAddressId.row(Some(routes.AdviserAddressController.onPageLoad(CheckMode).url))
+      val sections = Seq(AnswerSection(None, details ++ address))
       Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
   }
 

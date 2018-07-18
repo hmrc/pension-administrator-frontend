@@ -18,6 +18,7 @@ package forms.register.adviser
 
 import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
+import wolfendale.scalacheck.regexp.RegexpGen
 
 class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours {
 
@@ -28,12 +29,13 @@ class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
     val fieldName = "name"
     val requiredKey = "adviserDetails.error.name.required"
     val lengthKey = "adviserDetails.error.name.length"
+    val invalidKey = "adviserDetails.error.name.invalid"
     val maxLength = AdviserDetailsFormProvider.nameLength
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      RegexpGen.from(adviserNameRegex)
     )
 
     behave like fieldWithMaxLength(
@@ -48,6 +50,14 @@ class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    behave like fieldWithRegex(
+      form,
+      fieldName,
+      "1234",
+      FormError(fieldName, invalidKey, Seq(adviserNameRegex))
+    )
+
   }
 
   ".email" must {

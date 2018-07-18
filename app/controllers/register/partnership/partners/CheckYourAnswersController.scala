@@ -19,14 +19,16 @@ package controllers.register.partnership.partners
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.partners.{CheckYourAnswersId, IsPartnerCompleteId}
+import identifiers.register.partnership.partners._
 import javax.inject.Inject
-import models.{Index, Mode, NormalMode}
+import models.{CheckMode, Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Partnership
-import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
+import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
+import utils.{Navigator, SectionComplete}
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
@@ -39,34 +41,33 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @Partnership navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            checkYourAnswersFactory: CheckYourAnswersFactory,
-                                            sectionComplete: SectionComplete
+                                            sectionComplete: SectionComplete,
+                                            implicit val countryOptions: CountryOptions
                                           ) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrievePartnerName(index) { partnerName =>
-        val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
         val answersSection = Seq(
           AnswerSection(
             Some("partnerCheckYourAnswers.partnerDetails.heading"),
-            checkYourAnswerHelper.partnerDetails(index.id) ++
-              checkYourAnswerHelper.partnerNino(index.id) ++
-              checkYourAnswerHelper.partnerUniqueTaxReference(index.id)
+            PartnerDetailsId(index).row(Some(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)) ++
+              PartnerNinoId(index).row(Some(routes.PartnerNinoController.onPageLoad(CheckMode, index).url)) ++
+              PartnerUniqueTaxReferenceId(index).row(Some(routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
           ),
           AnswerSection(
             Some("partnerCheckYourAnswers.contactDetails.heading"),
-            checkYourAnswerHelper.partnerAddress(index.id) ++
-              checkYourAnswerHelper.partnerAddressYears(index.id) ++
-              checkYourAnswerHelper.partnerPreviousAddress(index.id) ++
-              checkYourAnswerHelper.partnerContactDetails(index.id)
+            PartnerAddressId(index).row(Some(routes.PartnerAddressController.onPageLoad(CheckMode, index).url)) ++
+              PartnerAddressYearsId(index).row(Some(routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url)) ++
+              PartnerPreviousAddressId(index).row(None) ++
+              PartnerContactDetailsId(index).row(Some(routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url))
           ))
 
         Future.successful(Ok(check_your_answers(
           appConfig,
           answersSection,
           Some(partnerName),
-          controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(index)))
+          routes.CheckYourAnswersController.onSubmit(index)))
         )
       }
   }

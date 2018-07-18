@@ -19,7 +19,6 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company._
-import models.register.company.CompanyDetails
 import models._
 import models.register.company.CompanyDetails
 import play.api.libs.json.Json
@@ -184,7 +183,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url))
         )
 
-        val sections = answerSections(Some("company.checkYourAnswers.contact.details.heading"), rows)
+        val sections = answerSections(Some(contactDetailsHeading), rows)
 
         val retrievalAction = dataRetrievalAction(
           ContactDetailsId.toString -> ContactDetails("test email", "test phone")
@@ -220,8 +219,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
+
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+
+  val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -233,7 +235,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
-      checkYourAnswersFactory
+      countryOptions
     )
 
   private val companyContactDetails = AnswerSection(
@@ -245,7 +247,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Seq.empty
   )
   private val contactDetails = AnswerSection(
-    Some("company.checkYourAnswers.contact.details.heading"),
+    Some(contactDetailsHeading),
     Seq.empty
   )
   private val address = Address(

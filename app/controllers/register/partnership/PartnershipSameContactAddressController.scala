@@ -28,13 +28,13 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 
 @Singleton
 class PartnershipSameContactAddressController @Inject()(
-                                                         @RegisterCompany val navigator: Navigator,
+                                                         @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
                                                          val messagesApi: MessagesApi,
                                                          val dataCacheConnector: DataCacheConnector,
@@ -52,7 +52,7 @@ class PartnershipSameContactAddressController @Inject()(
       postCall = routes.PartnershipSameContactAddressController.onSubmit(mode),
       title = Message("partnership.sameContactAddress.title"),
       heading = Message("partnership.sameContactAddress.heading").withArgs(details.companyName),
-      hint = Some(Message("partnership.sameContactAddress.hint").withArgs(details.companyName)),
+      hint = None,
       secondaryHeader = Some("site.secondaryHeader"),
       address = address
     )
