@@ -58,6 +58,8 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector)
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
       NavigateTo.save(routes.AddPartnerController.onPageLoad())
+    case PartnershipReviewId =>
+      NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case _ =>
       NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
