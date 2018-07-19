@@ -165,7 +165,7 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
     countryOptions = countryOptions.options,
     title = Message("common.adviser.address.title"),
     heading = Message("common.adviser.address.heading"),
-    secondaryHeader = Some("common.adviser.secondary.heading")
+    secondaryHeader = Some(Message("common.adviser.secondary.heading"))
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()

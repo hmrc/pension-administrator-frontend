@@ -31,7 +31,10 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(headingKey = viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading)
+    @components.headingDynamic(
+        headingKey=components.hyphen(messages(viewmodel.heading)).toString,
+        secondaryHeaderKey = viewmodel.subHeading.map{components.hyphen(_).toString}
+    )
 
     @components.input_radio(
       field = form("value"),

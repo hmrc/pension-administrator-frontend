@@ -63,7 +63,6 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }

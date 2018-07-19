@@ -37,7 +37,11 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("directorUniqueTaxReference.heading", secondaryHeaderKey = Some(directorName))
+        @components.headingDynamic(
+            headingKey=messages("directorUniqueTaxReference.heading").toString,
+            secondaryHeaderKey = Some(components.hyphen(directorName).toString)
+        )
+
 
         @components.fieldSet(
             field = form("utr.hasUtr"),

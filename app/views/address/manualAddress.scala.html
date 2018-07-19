@@ -33,7 +33,10 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(headingKey = viewmodel.heading, secondaryHeaderKey = viewmodel.secondaryHeader)
+    @components.headingDynamic(
+        headingKey=components.hyphen(messages(viewmodel.heading)).toString,
+        secondaryHeaderKey = viewmodel.secondaryHeader.map{components.hyphen(_).toString}
+    )
 
     @viewmodel.hint.map{hintText =>
         <p>@messages(hintText)</p>

@@ -23,11 +23,13 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
 import identifiers.register.company.directors.DirectorDetailsId
-import models.{PersonDetails, Index, NormalMode}
+import models.{Index, NormalMode, PersonDetails}
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import views.html.confirmDelete
 import views.html.register.company.directors.confirmDeleteDirector
+import viewmodels.{ConfirmDeleteViewModel, Message}
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar {
 
@@ -41,7 +43,23 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with Mockit
       FakeDataCacheConnector
     )
 
-  private def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex, "John Doe")(fakeRequest, messages).toString
+
+  override val firstIndex = Index(0)
+
+  val postUrl = routes.ConfirmDeleteDirectorController.onSubmit(firstIndex)
+
+  val person = PersonDetails("John", None, "Doe", LocalDate.now())
+
+  def viewModel = ConfirmDeleteViewModel(
+    postUrl,
+    controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
+    Message("confirmDeleteDirector.title"),
+    "confirmDeleteDirector.heading",
+    Some(person.fullName),
+    Some("site.secondaryHeader")
+  )
+  private def viewAsString() = confirmDelete(frontendAppConfig, viewModel)(fakeRequest, messages).toString
+
 
   "ConfirmDeleteDirector Controller" must {
 
