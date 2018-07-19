@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.PartnershipPartner
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class PartnerAddressYearsController @Inject()(
                                                    val appConfig: FrontendAppConfig,
                                                    val cacheConnector: DataCacheConnector,
-                                                   @Partnership val navigator: Navigator,
+                                                   @PartnershipPartner val navigator: Navigator,
                                                    val messagesApi: MessagesApi,
                                                    authenticate: AuthAction,
                                                    getData: DataRetrievalAction,

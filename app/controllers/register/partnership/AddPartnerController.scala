@@ -28,18 +28,18 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.PartnershipPartner
 import viewmodels.{EntityViewModel, Message, Person}
 
 class AddPartnerController @Inject() (
-                             override val appConfig: FrontendAppConfig,
-                             override val messagesApi: MessagesApi,
-                             override val cacheConnector: DataCacheConnector,
-                             @Partnership override val navigator: Navigator,
-                             authenticate: AuthAction,
-                             getData: DataRetrievalAction,
-                             requireData: DataRequiredAction,
-                             formProvider: AddEntityFormProvider
+                                       override val appConfig: FrontendAppConfig,
+                                       override val messagesApi: MessagesApi,
+                                       override val cacheConnector: DataCacheConnector,
+                                       @PartnershipPartner override val navigator: Navigator,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       formProvider: AddEntityFormProvider
                            ) extends AddEntityController with Retrievals {
 
   private val form: Form[Boolean] = formProvider()

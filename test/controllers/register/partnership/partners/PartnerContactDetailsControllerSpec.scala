@@ -60,7 +60,7 @@ class PartnerContactDetailsControllerSpec extends ControllerSpecBase with CSRFRe
         .withFormUrlEncodedBody("emailAddress" -> "e@mail.co", "phoneNumber" -> "232")),
       (_, result) => {
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+        redirectLocation(result) mustBe Some(onwardRoute.url)
       }
     )
   }
@@ -69,8 +69,9 @@ class PartnerContactDetailsControllerSpec extends ControllerSpecBase with CSRFRe
 object PartnerContactDetailsControllerSpec extends OptionValues{
 
   val partnershipName = "Test Partner"
-
   val firstIndex = Index(0)
+
+  val onwardRoute = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(firstIndex)
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "partners" -> Json.arr(Json.obj(
