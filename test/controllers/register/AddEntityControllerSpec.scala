@@ -74,8 +74,8 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
   // scalastyle:off magic.number
-  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false)
-  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false)
+  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
   private val entities = Seq(johnDoePerson, joeBloggsPerson)
   private val maxPartners = 10
 
@@ -107,7 +107,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addEntity(appConfig, formProvider(), viewmodel(), disableSubmission = false)(request(), messages).toString
+          contentAsString(result) mustEqual addEntity(appConfig, formProvider(), viewmodel())(request(), messages).toString
       }
     }
 
@@ -130,7 +130,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           contentAsString(result) mustEqual addEntity(
             appConfig,
             formProvider(),
-            viewmodel(entities), disableSubmission = true
+            viewmodel(entities)
           )(request(), messages).toString
       }
     }
@@ -154,7 +154,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           contentAsString(result) mustEqual addEntity(
             appConfig,
             formProvider(),
-            viewmodel(Seq.fill(maxPartners)(johnDoePerson)), disableSubmission = true
+            viewmodel(Seq.fill(maxPartners)(johnDoePerson))
           )(request(), messages).toString
       }
     }
@@ -208,7 +208,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           contentAsString(result) mustEqual addEntity(
             appConfig,
             formProvider().bind(Map("value" -> "invalid value")),
-            viewmodel(entities), disableSubmission = true
+            viewmodel(entities)
           )(request(), messages).toString
       }
     }

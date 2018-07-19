@@ -51,7 +51,7 @@ class AddCompanyDirectorsController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
-      Ok(addCompanyDirectors(appConfig, form, mode, directors, disableSubmission(directors)))
+      Ok(addCompanyDirectors(appConfig, form, mode, directors))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
@@ -64,7 +64,7 @@ class AddCompanyDirectorsController @Inject() (
       else {
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors, disableSubmission(directors))),
+            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors)),
           value => {
             request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
               errors => {
@@ -78,8 +78,4 @@ class AddCompanyDirectorsController @Inject() (
       }
   }
 
-  private def disableSubmission(directorsWithFlag: Seq[Person])(implicit request: DataRequest[AnyContent]): Boolean =
-     appConfig.completeFlagEnabled & directorsWithFlag.foldLeft(true) { (_, person) =>
-      !person.isComplete.fold(false)(isComplete => isComplete)
-    }
 }

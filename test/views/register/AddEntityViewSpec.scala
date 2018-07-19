@@ -38,7 +38,6 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
   private val messageKeyPrefix = "addPartners"
   private val entityType = "partners"
   private val entityTypeSinglular = "partner"
-  private val entities = Seq(johnDoe, joeBloggs)
 
   def viewmodel(entities: Seq[Person]=Seq.empty) = EntityViewModel(
     postCall = Call("GET", "/"),
@@ -51,10 +50,10 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
   )
 
   private def createView(entities: Seq[Person] = Nil)
-  = () => addEntity(frontendAppConfig, form, viewmodel(entities), false)(request, messages)
+  = () => addEntity(frontendAppConfig, form, viewmodel(entities))(request, messages)
 
   private def createViewUsingForm(entities: Seq[Person] = Nil)
-  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities), false)(request, messages)
+  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities))(request, messages)
 
   val form = new AddEntityFormProvider()()
 
@@ -69,7 +68,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
-      routes.AddPartnerController.onSubmit.url,
+      routes.AddPartnerController.onSubmit().url,
       Message("addEntity.addYesNo", entityTypeSinglular).resolve,
       Some(Message("addEntity.addAnEntity.hint", entityType).resolve)
     )
@@ -129,8 +128,8 @@ object AddEntityViewSpec {
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
 
   // scalastyle:off magic.number
-  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), false)
-  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
+  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
   // scalastyle:on magic.number
   
 }
