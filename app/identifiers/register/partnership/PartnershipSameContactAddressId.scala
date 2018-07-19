@@ -27,6 +27,6 @@ case object PartnershipSameContactAddressId extends TypedIdentifier[Boolean] {
     case Some(_) => userAnswers
       .remove(PartnershipContactAddressId)
       .flatMap(_.remove(PartnershipContactAddressPostCodeLookupId))
-    case _ => JsSuccess(userAnswers)
+    case _ => super.cleanup(value, userAnswers)
   }
 }
