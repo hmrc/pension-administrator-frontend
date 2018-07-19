@@ -17,7 +17,16 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
+import play.api.libs.json.{JsResult, JsSuccess}
+import utils.UserAnswers
 
 case object PartnershipSameContactAddressId extends TypedIdentifier[Boolean] {
   override def toString: String = "partnershipSameContactAddress"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = value match {
+    case Some(_) => userAnswers
+      .remove(PartnershipContactAddressId)
+      .flatMap(_.remove(PartnershipContactAddressPostCodeLookupId))
+    case _ => super.cleanup(value, userAnswers)
+  }
 }
