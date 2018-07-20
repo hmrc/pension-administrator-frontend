@@ -17,11 +17,19 @@
 package identifiers.register.partnership.partners
 
 import identifiers.TypedIdentifier
+import identifiers.register.partnership.MoreThanTenPartnersId
 import models.PersonDetails
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsResult, JsSuccess}
+import utils.UserAnswers
 
 case class PartnerDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerDetailsId.toString
+
+  override def cleanup(value: Option[PersonDetails], userAnswers: UserAnswers): JsResult[UserAnswers] =
+    value match {
+      case Some(PersonDetails(_, _, _, _, true)) => userAnswers.remove(MoreThanTenPartnersId)
+      case _ => super.cleanup(value, userAnswers)
+    }
 }
 
 object PartnerDetailsId {

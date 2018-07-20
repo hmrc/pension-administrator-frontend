@@ -18,7 +18,18 @@ package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
 import models.AddressYears
+import models.AddressYears.OverAYear
+import play.api.libs.json.{JsResult, JsSuccess}
+import utils.UserAnswers
 
 case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
   override lazy val toString: String = "partnershipAddressYears"
+
+  override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = value match {
+    case Some(OverAYear) =>
+      userAnswers
+        .remove(PartnershipPreviousAddressPostCodeLookupId)
+        .flatMap(_.remove(PartnershipPreviousAddressId))
+    case _ => super.cleanup(value, userAnswers)
+  }
 }

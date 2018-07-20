@@ -35,6 +35,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new BusinessTypeFormProvider()
   private val form = formProvider()
+  private val businessTypeOptions = BusinessType.options(true)
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new BusinessTypeController(
@@ -69,7 +70,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
     }
 
     "save the selected answer when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", BusinessType.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", businessTypeOptions.head.value))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -78,7 +79,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", BusinessType.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", businessTypeOptions.head.value))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -104,7 +105,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", BusinessType.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", businessTypeOptions.head.value))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

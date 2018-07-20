@@ -16,6 +16,7 @@
 
 package models.register
 
+import config.FrontendAppConfig
 import utils.{Enumerable, InputOption, WithName}
 
 sealed trait BusinessType
@@ -38,23 +39,23 @@ object BusinessType extends Enumerable.Implicits {
     OverseasCompany
   )
 
-  /*
-    PODS-751: To include partnerships in the list of options presented to the user replace the sequence below
-    with the full list defined in values: Seq[BusinessType] above.
-    ie replace
-      Seq(...).map { value => ... }
-       with
-      values.map { value => ... }
-
-    PODS-770: Ditto with Overseas company
-   */
-  val options: Seq[InputOption] =
-    Seq(
-      LimitedCompany,
-      UnlimitedCompany
-    ).map { value =>
+  def options(partnershipsFlagEnabled: Boolean): Seq[InputOption] =
+    (if(partnershipsFlagEnabled) {
+      Seq(
+        LimitedCompany,
+        BusinessPartnership,
+        LimitedPartnership,
+        LimitedLiabilityPartnership,
+        UnlimitedCompany
+      )
+    } else {
+      Seq(
+        LimitedCompany,
+        UnlimitedCompany
+      )
+    }) map { value =>
       InputOption(value.toString, s"businessType.${value.toString}")
-  }
+    }
 
   implicit val enumerable: Enumerable[BusinessType] =
     Enumerable(values.map(v => v.toString -> v): _*)
