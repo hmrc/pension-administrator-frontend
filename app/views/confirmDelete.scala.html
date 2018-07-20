@@ -30,7 +30,7 @@
 
         @components.back_link()
 
-        @components.headingDynamic(
+        @components.headingNew(
             headingKey=components.hyphen(messages(viewModel.heading,viewModel.token.getOrElse(""))).toString,
             secondaryHeaderKey = viewModel.secondaryHeader.map{x=>components.hyphen(messages(x)).toString}
         )
