@@ -56,11 +56,18 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     val directors = allDirectors
     directors.filterNot(_.isDeleted).map { director =>
       val index = directors.indexOf(director)
+      val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
+      val editUrl = if(isComplete) {
+        routes.CheckYourAnswersController.onPageLoad(Index(index)).url
+      } else {
+        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+      }
+
       Person(
         index,
         director.fullName,
         routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
-        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url,
+        editUrl,
         director.isDeleted,
         get(IsDirectorCompleteId(index)).getOrElse(false)
       )
