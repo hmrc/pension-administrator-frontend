@@ -53,7 +53,8 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipContactDetailsId,                emptyAnswers,                    vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
     (PartnershipVatId,                           emptyAnswers,                    payeNumberPage,                             true,               Some(checkYourAnswersPage),                      true),
     (PartnershipPayeId,                          emptyAnswers,                    checkYourAnswersPage,                       true,               Some(checkYourAnswersPage),                      true),
-    (CheckYourAnswersId,                         emptyAnswers,                    addPartnersPage,                            true,               None,                                            true)
+    (CheckYourAnswersId,                         emptyAnswers,                    addPartnersPage,                            true,               None,                                            true),
+    (PartnershipReviewId,                        emptyAnswers,                    declarationPage,                            true,               None,                                           false)
   )
 
   navigator.getClass.getSimpleName must {
@@ -80,6 +81,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def contactPreviousPostcodePage(mode:Mode): Call = routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
   private def contactPreviousAddressListPage(mode:Mode): Call = routes.PartnershipPreviousAddressListController.onPageLoad(mode)
   private def contactPreviousAddressPage(mode:Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
+  private def declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
 
   val emptyAnswers = UserAnswers(Json.obj())
 

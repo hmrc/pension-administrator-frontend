@@ -26,7 +26,7 @@ import views.html.alreadyDeleted
 
 class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.PartnerDetailsController.onPageLoad(NormalMode, firstIndex)
+  def onwardRoute: Call = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
 
   private val partnerName = "test first name test middle name test last name"
 

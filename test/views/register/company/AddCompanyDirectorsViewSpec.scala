@@ -38,10 +38,10 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
   private val messageKeyPrefix = "addCompanyDirectors"
 
   private def createView(directors: Seq[Person] = Nil)
-  = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, false)(request, messages)
+  = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages)
 
   private def createViewUsingForm(directors: Seq[Person] = Nil)
-  = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, false)(request, messages)
+  = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages)
 
   val form = new AddCompanyDirectorsFormProvider()()
 
@@ -116,8 +116,8 @@ object AddCompanyDirectorsViewSpec {
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
 
   // scalastyle:off magic.number
-  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), false)
-  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
+  private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
   // scalastyle:on magic.number
 
 }
