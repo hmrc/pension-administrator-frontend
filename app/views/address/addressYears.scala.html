@@ -33,7 +33,7 @@
 
     @components.headingNew(
         headingKey=components.hyphen(messages(viewmodel.heading)).toString,
-        secondaryHeaderKey = viewmodel.subHeading.map{components.hyphen(_).toString}
+        secondaryHeaderKey = viewmodel.subHeading.map{x=>components.hyphen(messages(x)).toString}
     )
 
     @components.input_radio(
