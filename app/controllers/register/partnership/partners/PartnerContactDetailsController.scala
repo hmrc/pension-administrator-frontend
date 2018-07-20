@@ -18,23 +18,22 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.{ContactDetailsController, Retrievals}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.{ContactDetailsController, Retrievals}
 import forms.ContactDetailsFormProvider
 import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerDetailsId}
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
-import play.api.mvc.AnyContent
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.PartnershipPartner
 import viewmodels.{ContactDetailsViewModel, Message}
 
 class PartnerContactDetailsController @Inject()(
                                                  val appConfig: FrontendAppConfig,
                                                  val cacheConnector: DataCacheConnector,
-                                                 @Partnership val navigator: Navigator,
+                                                 @PartnershipPartner val navigator: Navigator,
                                                  val messagesApi: MessagesApi,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,

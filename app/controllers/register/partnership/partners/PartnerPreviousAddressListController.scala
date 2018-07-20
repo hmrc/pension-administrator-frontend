@@ -28,7 +28,7 @@ import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.PartnershipPartner
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 
@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class PartnerPreviousAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
                                                      override val cacheConnector: DataCacheConnector,
-                                                     @Partnership override val navigator: Navigator,
+                                                     @PartnershipPartner override val navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction) extends AddressListController with Retrievals {

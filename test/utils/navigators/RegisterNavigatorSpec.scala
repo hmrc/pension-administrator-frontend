@@ -22,13 +22,12 @@ import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.NormalMode
-import models.register.DeclarationWorkingKnowledge
+import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
@@ -38,7 +37,11 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id",                          "User Answers",                  "Next Page (Normal Mode)",       "Save(NormalMode)",  "Next Page (Check Mode)", "Save(CheckMode"),
-    (BusinessTypeId,                emptyAnswers,                     businessDetailsPage,            false,               None,                     false),
+    (BusinessTypeId,                unlimitedCompany,                businessDetailsPage,             false,               None,                     false),
+    (BusinessTypeId,                limitedCompany,                  businessDetailsPage,             false,               None,                     false),
+    (BusinessTypeId,                businessPartnership,             partnershipBusinessDetails,      false,               None,                     false),
+    (BusinessTypeId,                limitedPartnership,              partnershipBusinessDetails,      false,               None,                     false),
+    (BusinessTypeId,                limitedLiabilityPartnership,     partnershipBusinessDetails,      false,               None,                     false),
     (DeclarationId,                 emptyAnswers,                    declarationWorkingKnowledgePage, true,                None,                     false),
     (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage,     true,                None,                     false),
     (DeclarationWorkingKnowledgeId, haveAnAdviser,                   adviserDetailsPage,              true,                None,                     false),
@@ -59,6 +62,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val businessDetailsPage = controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad()
+  lazy val partnershipBusinessDetails = controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
@@ -69,9 +73,18 @@ object RegisterNavigatorSpec extends OptionValues {
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
   val haveAnAdviser: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
+  val unlimitedCompany: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.UnlimitedCompany).asOpt.value
+  val limitedCompany: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
+  val businessPartnership: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.BusinessPartnership).asOpt.value
+  val limitedPartnership: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.LimitedPartnership).asOpt.value
+  val limitedLiabilityPartnership: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.LimitedLiabilityPartnership).asOpt.value
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
-  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private def dataDescriber(answers: UserAnswers): String = answers.toString
 

@@ -16,24 +16,40 @@
 
 package utils.navigators
 
-import connectors.DataCacheConnector
-import controllers.register.company.routes
-import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import javax.inject.Inject
+
+import connectors.DataCacheConnector
+import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.NormalMode
-import models.register.DeclarationWorkingKnowledge
+import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import utils.{Navigator, UserAnswers}
 
 class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case BusinessTypeId =>
-      NavigateTo.dontSave(routes.CompanyBusinessDetailsController.onPageLoad)
+      businessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
     case DeclarationWorkingKnowledgeId =>
       declarationWorkingKnowledgeRoutes(from.userAnswers)
     case DeclarationFitAndProperId => NavigateTo.dontSave(controllers.register.routes.ConfirmationController.onPageLoad())
     case _ => None
+  }
+
+  private def businessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+    userAnswers.get(BusinessTypeId) match {
+      case Some(BusinessType.UnlimitedCompany) =>
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad())
+      case Some(BusinessType.LimitedCompany) =>
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad())
+      case Some(BusinessType.LimitedLiabilityPartnership) =>
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
+      case Some(BusinessType.LimitedPartnership) =>
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
+      case Some(BusinessType.BusinessPartnership) =>
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
   }
 
   private def declarationWorkingKnowledgeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {

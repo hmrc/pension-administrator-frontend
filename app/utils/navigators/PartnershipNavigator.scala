@@ -100,7 +100,6 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector)
   }
 
   private def addressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    println("\n\n answers.get(PartnershipAddressYearsId) : " + answers.get(PartnershipAddressYearsId))
     answers.get(PartnershipAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
       case Some(AddressYears.OverAYear) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
