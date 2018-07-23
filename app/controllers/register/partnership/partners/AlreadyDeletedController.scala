@@ -44,7 +44,7 @@ class AlreadyDeletedController @Inject()(
       def viewmodel(name: String) = AlreadyDeletedViewModel(
         Message("alreadyDeleted.partner.title"),
         name,
-        routes.PartnerDetailsController.onPageLoad(NormalMode, index)
+        controllers.register.partnership.routes.AddPartnerController.onPageLoad()
       )
       PartnerDetailsId(index).retrieve.right.map { partnerDetails =>
         Future.successful(Ok(alreadyDeleted(appConfig, viewmodel(partnerDetails.fullName))))

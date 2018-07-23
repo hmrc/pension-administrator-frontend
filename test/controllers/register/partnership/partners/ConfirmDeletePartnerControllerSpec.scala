@@ -84,7 +84,8 @@ object ConfirmDeletePartnerControllerSpec {
 
   val firstIndex = Index(0)
 
-  val postUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex)
+  val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
+  val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex)
 
   val person = PersonDetails("First", None, "Last", LocalDate.now())
 
@@ -94,7 +95,7 @@ object ConfirmDeletePartnerControllerSpec {
     ))))
 
   def viewModel = ConfirmDeleteViewModel(
-    postUrl,
+    redirectUrl,
     routes.ConfirmDeletePartnerController.onPageLoad(firstIndex),
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",

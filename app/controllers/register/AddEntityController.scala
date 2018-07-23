@@ -29,7 +29,7 @@ import play.api.libs.json.JsResultException
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
-import viewmodels.{EntityViewModel, Person}
+import viewmodels.EntityViewModel
 import views.html.register.addEntity
 
 import scala.concurrent.Future
@@ -45,7 +45,7 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
   protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    Future.successful(Ok(addEntity(appConfig, form, viewmodel, disableSubmission(viewmodel.entities))))
+    Future.successful(Ok(addEntity(appConfig, form, viewmodel)))
   }
 
   protected def post(
@@ -60,7 +60,7 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
     else {
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(addEntity(appConfig, formWithErrors, viewmodel, disableSubmission(viewmodel.entities)))),
+          Future.successful(BadRequest(addEntity(appConfig, formWithErrors, viewmodel))),
         value => {
           request.userAnswers.set(id)(value).fold(
             errors => {
@@ -74,8 +74,4 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
     }
   }
 
-  private def disableSubmission(entitiesWithFlag: Seq[Person])(implicit request: DataRequest[AnyContent]): Boolean =
-    appConfig.completeFlagEnabled & entitiesWithFlag.foldLeft(true) { (_, person) =>
-      !person.isComplete.fold(false)(isComplete => isComplete)
-    }
 }

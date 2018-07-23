@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonDetails, UserType}
 import play.api.data.Form
@@ -182,7 +182,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, true)(request, messages).toString
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
@@ -190,17 +190,18 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   // scalastyle:on magic.number
 
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
-  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
+  private def editLink(index: Int) = controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index).url
   // scalastyle:off magic.number
-  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), false)
-  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), false)
+  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 
   private def dataRetrievalAction(directors: PersonDetails*): FakeDataRetrievalAction = {
     val validData = Json.obj("directors" ->
       directors.map(d => Json.obj(
-        DirectorDetailsId.toString -> Json.toJson(d)
+        DirectorDetailsId.toString -> Json.toJson(d),
+        IsDirectorCompleteId.toString -> true
       ))
     )
     new FakeDataRetrievalAction(Some(validData))
