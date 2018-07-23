@@ -38,7 +38,7 @@ class ManualAddressViewSpec extends QuestionViewBehaviours[Address] {
     countryOptions,
     Message("common.manual.address.title"),
     Message("common.manual.address.heading"),
-    Some(Message("site.secondaryHeader"))
+    Some("site.secondaryHeader")
   )
 
   override val form = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
