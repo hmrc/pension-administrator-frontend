@@ -18,28 +18,31 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
+import play.api.http.Status
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
-  private val url: String = "/hmrc/email"
-
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-
   override protected def portConfigKey: String = "microservice.services.email.port"
 
+  private val url: String = "/hmrc/email"
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector = injector.instanceOf[EmailConnector]
+  private val testEmailAddress = "test@test.com"
+  private val testTemplate = "testTemplate"
 
   ".sendEmail" must {
     "return an EmailSent" when {
-      "email sent succesfully" in {
+      "email sent succesfully with status 202 (Accepted)" in {
         server.stubFor(
           post(urlEqualTo(url)).willReturn(
-            aResponse().withStatus(202)
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+              .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail("test@test", "testTemplate", Map.empty).map {
+        connector.sendEmail(testEmailAddress, testTemplate, Map.empty).map {
           result =>
             result mustBe EmailSent
         }
@@ -51,9 +54,10 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
         server.stubFor(
           post(urlEqualTo(url)).willReturn(
             noContent()
+              .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail("test@test", "testTemplate", Map.empty).map {
+        connector.sendEmail(testEmailAddress, testTemplate, Map.empty).map {
           result =>
             result mustBe EmailNotSent
         }
@@ -65,10 +69,11 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
         server.stubFor(
           post(urlEqualTo(url)).willReturn(
             serviceUnavailable()
+              .withHeader("Content-Type", "application/json")
           )
         )
 
-        connector.sendEmail("test@test", "testTemplate", Map.empty).map {
+        connector.sendEmail(testEmailAddress, testTemplate, Map.empty).map {
           result =>
             result mustBe EmailNotSent
         }

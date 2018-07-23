@@ -44,10 +44,10 @@ class EmailConnectorImpl @Inject()(appConfig: FrontendAppConfig, http: HttpClien
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailStatus] = {
 
     val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, params, force = true)
-    val postUrl = appConfig.emailUrl
+    val emailServiceUrl = appConfig.emailUrl
     val jsonData = Json.toJson(sendEmailReq)
 
-    http.POST(postUrl, jsonData).map { response =>
+    http.POST(emailServiceUrl, jsonData).map { response =>
       response.status match {
         case ACCEPTED =>
           EmailSent
