@@ -35,7 +35,7 @@
 
     @components.headingNew(
         headingKey=components.hyphen(messages(viewmodel.heading)).toString,
-        secondaryHeaderKey = viewmodel.secondaryHeader.map{components.hyphen(_).toString}
+        secondaryHeaderKey = viewmodel.secondaryHeader.map{x=>components.hyphen(messages(x)).toString}
     )
 
     @viewmodel.hint.map{hintText =>
