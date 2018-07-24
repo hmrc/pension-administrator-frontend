@@ -26,14 +26,14 @@ import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.PartnershipPartner
 import viewmodels.MoreThanTenViewModel
 
 class MoreThanTenPartnersController @Inject() (
   val appConfig: FrontendAppConfig,
   override val messagesApi: MessagesApi,
   val dataCacheConnector: DataCacheConnector,
-  @Partnership val navigator: Navigator,
+  @PartnershipPartner val navigator: Navigator,
   authenticate: AuthAction,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction
