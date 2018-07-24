@@ -16,18 +16,22 @@
 
 package controllers.register.partnership
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.company.ConfirmCompanyDetailsControllerSpec.mock
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
+import identifiers.TypedIdentifier
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.libs.ws.WSClient
 import play.api.test.Helpers._
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
@@ -112,6 +116,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
           dataCacheConnector.lastUpsert.value mustBe expectedJson
+          psaNameCacheConnector.verify(PsaNameId, partnershipDetails.companyName)
         }
       }
       "no" in {
@@ -265,6 +270,20 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
+  object PSANameCacheConnector extends PSANameCacheConnector(
+    frontendAppConfig,
+    mock[WSClient],
+    injector.instanceOf[ApplicationCrypto]
+  ) with FakeDataCacheConnector {
+    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                                (implicit
+                                                 ec: ExecutionContext,
+                                                 hc: HeaderCarrier
+                                                ): Future[JsValue] = ???
+  }
+
+  private lazy val psaNameCacheConnector = PSANameCacheConnector
+
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
     new ConfirmPartnershipDetailsController(
@@ -276,7 +295,8 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
-      formProvider
+      formProvider,
+      psaNameCacheConnector
     )
 
   private def viewAsString(partnershipName: String = partnershipDetails.companyName, address: TolerantAddress = testBusinessPartnershipAddress): String =
