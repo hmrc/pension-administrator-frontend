@@ -20,14 +20,17 @@ import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConne
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
+import identifiers.TypedIdentifier
 import identifiers.register.company._
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
-import models._
+import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
+import models.{BusinessDetails, _}
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
-import models.BusinessDetails
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.WSClient
 import play.api.test.Helpers._
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
@@ -84,7 +87,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
     "valid data is submitted" when {
       "yes" which {
-        "upsert address and organisation name from api response" in {
+        "upsert address, organisation name from api response and save company name to PSA Name cache" in {
           val dataCacheConnector = FakeDataCacheConnector
 
           val info = RegistrationInfo(
@@ -111,6 +114,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
           dataCacheConnector.lastUpsert.value mustBe expectedJson
+          psaNameCacheConnector.verify(PsaNameId, companyDetails.companyName)
         }
       }
       "no" in {
@@ -193,7 +197,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
 }
 
-object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
+object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -265,7 +269,19 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
-  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
+  object PSANameCacheConnector extends PSANameCacheConnector(
+    frontendAppConfig,
+    mock[WSClient],
+    injector.instanceOf[ApplicationCrypto]
+  ) with FakeDataCacheConnector {
+    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                                (implicit
+                                                 ec: ExecutionContext,
+                                                 hc: HeaderCarrier
+                                                ): Future[JsValue] = ???
+  }
+
+  private lazy val psaNameCacheConnector = PSANameCacheConnector
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
     new ConfirmCompanyDetailsController(
