@@ -41,6 +41,7 @@ class RegistrationConnectorSpec ()
   private val individualPath = "/pensions-scheme/register-with-id/individual"
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
+  private val legalStatus = RegistrationLegalStatus.LimitedCompany
 
   private val expectedIndividual = TolerantIndividual(
     Some("John"),
@@ -113,7 +114,7 @@ class RegistrationConnectorSpec ()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation).map { registration =>
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { registration =>
       registration.response.address shouldBe expectedAddress(true)
     }
 
@@ -141,7 +142,7 @@ class RegistrationConnectorSpec ()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation).map { registration =>
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { registration =>
       registration.info shouldBe info
     }
 
@@ -169,7 +170,7 @@ class RegistrationConnectorSpec ()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation).map { registration =>
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { registration =>
       registration.info shouldBe info
     }
 
@@ -189,7 +190,7 @@ class RegistrationConnectorSpec ()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[IllegalArgumentException] {
-      connector.registerWithIdOrganisation(utr, organisation)
+      connector.registerWithIdOrganisation(utr, organisation, legalStatus)
     }
 
   }
@@ -206,7 +207,7 @@ class RegistrationConnectorSpec ()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[NotFoundException] {
-      connector.registerWithIdOrganisation(utr, organisation)
+      connector.registerWithIdOrganisation(utr, organisation, legalStatus)
     }
 
   }
@@ -225,7 +226,7 @@ class RegistrationConnectorSpec ()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[JsResultException] {
-      connector.registerWithIdOrganisation(utr, organisation)
+      connector.registerWithIdOrganisation(utr, organisation, legalStatus)
     }
 
   }
@@ -251,7 +252,7 @@ class RegistrationConnectorSpec ()
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
     val ec: ExecutionContext = implicitly[ExecutionContext]
 
-    connector.registerWithIdOrganisation(utr, organisation)(hc, ec).map { _ =>
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus)(hc, ec).map { _ =>
       succeed
     }
 

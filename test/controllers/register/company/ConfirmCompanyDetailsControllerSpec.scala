@@ -236,7 +236,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation)
+    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
       val info = RegistrationInfo(

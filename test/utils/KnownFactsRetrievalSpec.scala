@@ -80,6 +80,120 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
       }
 
+      "user is partnership" which {
+
+        "comprise of SA UTR" when {
+
+          "company is UK" in {
+
+            val registration = RegistrationInfo(
+              RegistrationLegalStatus.Partnership,
+              sapNumber,
+              false,
+              RegistrationCustomerType.UK,
+              RegistrationIdType.UTR,
+              utr
+            )
+
+            implicit val request: DataRequest[AnyContent] = DataRequest(
+              FakeRequest(),
+              externalId,
+              PSAUser(UserType.Organisation, None, false, None),
+              UserAnswers(Json.obj(
+                ConfirmCompanyAddressId.toString -> TolerantAddress(
+                  Some("1 Street"),
+                  Some("Somewhere"),
+                  None, None,
+                  Some("ZZ1 1ZZ"),
+                  Some("GB")
+                ),
+                RegistrationInfoId.toString -> registration
+              ))
+            )
+
+            generator.retrieve(psa) mustEqual Some(KnownFacts(
+              Set(KnownFact("PSAID", psa)),
+              Set(KnownFact("SAUTR", utr)
+              )))
+          }
+
+        }
+
+        "comprise of Postal ID and Country Code" when {
+
+          "company is Non-UK" in {
+
+            val registration = RegistrationInfo(
+              RegistrationLegalStatus.Partnership,
+              sapNumber,
+              false,
+              RegistrationCustomerType.NonUK,
+              RegistrationIdType.UTR,
+              utr
+            )
+
+            implicit val request: DataRequest[AnyContent] = DataRequest(
+              FakeRequest(),
+              externalId,
+              PSAUser(UserType.Organisation, None, false, None),
+              UserAnswers(Json.obj(
+                ConfirmCompanyAddressId.toString -> TolerantAddress(
+                  Some("1 Street"),
+                  Some("Somewhere"),
+                  None, None,
+                  Some(postalCode),
+                  Some(nonUk)
+                ),
+                RegistrationInfoId.toString -> registration
+              ))
+            )
+
+            generator.retrieve(psa) mustEqual Some(KnownFacts(
+              Set(KnownFact("PSAID", psa)),
+              Set(
+                KnownFact("NonUKPostalCode", "TESTPCODE"),
+                KnownFact("CountryCode", nonUk)
+              )))
+          }
+
+        }
+
+        "comprise of PSA ID and Country Code" when {
+
+          "company is Non-UK and Postal ID does not exist" in {
+
+            val registration = RegistrationInfo(
+              RegistrationLegalStatus.Partnership,
+              sapNumber,
+              false,
+              RegistrationCustomerType.NonUK,
+              RegistrationIdType.UTR,
+              utr
+            )
+
+            implicit val request: DataRequest[AnyContent] = DataRequest(
+              FakeRequest(),
+              externalId,
+              PSAUser(UserType.Organisation, None, false, None),
+              UserAnswers(Json.obj(
+                ConfirmCompanyAddressId.toString -> TolerantAddress(
+                  Some("1 Street"),
+                  Some("Somewhere"),
+                  None, None, None,
+                  Some(nonUk)
+                ),
+                RegistrationInfoId.toString -> registration
+              ))
+            )
+
+            generator.retrieve(psa) mustEqual Some(KnownFacts(
+              Set(KnownFact("PSAID", psa)),
+              Set(KnownFact("CountryCode", nonUk)
+              )))
+          }
+        }
+      }
+
       "user is company" which {
 
         "comprise of CTR UTR" when {
