@@ -26,7 +26,7 @@ import identifiers.register.partnership.{ConfirmPartnershipDetailsId, Partnershi
 import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{BusinessDetails, NormalMode, Organisation, OrganizationRegistration}
+import models._
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -100,7 +100,8 @@ class ConfirmPartnershipDetailsController @Inject()(
     (PartnershipDetailsId and BusinessTypeId).retrieve.right.map {
       case businessDetails ~ businessType =>
         val organisation = Organisation(businessDetails.companyName, businessType)
-        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap {
+        val legalStatus = RegistrationLegalStatus.Partnership
+        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation, legalStatus).flatMap {
           registration =>
             fn(businessDetails, registration)
         } recoverWith {
