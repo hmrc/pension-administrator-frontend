@@ -19,7 +19,7 @@ package controllers
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.{DataCacheConnector, PSANameCacheConnector}
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -50,7 +50,8 @@ object ContactDetailsControllerSpec {
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: DataCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: ContactDetailsFormProvider
+                                  formProvider: ContactDetailsFormProvider,
+                                  override val psaNameCacheConnector: PSANameCacheConnector
                                 ) extends ContactDetailsController {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
@@ -58,8 +59,8 @@ object ContactDetailsControllerSpec {
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
+    def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent], savePsaEmail: Boolean = false): Future[Result] = {
+      post(FakeIdentifier, NormalMode, formProvider(), viewmodel, savePsaEmail)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }
@@ -130,6 +131,38 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
   "post" must {
 
     "return a redirect when the submitted data is valid" in {
+
+      import play.api.inject._
+
+      val cacheConnector = mock[DataCacheConnector]
+
+      running(_.overrides(
+        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+
+          implicit val materializer: Materializer = app.materializer
+
+          val answers = UserAnswers().set(FakeIdentifier)(ContactDetails("test@test.com", "123456789")).get
+          when(
+            cacheConnector.save[ContactDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ).thenReturn(Future.successful(Json.obj()))
+
+          val appConfig = app.injector.instanceOf[FrontendAppConfig]
+          val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
+          val request = FakeRequest().withFormUrlEncodedBody(
+            ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
+          )
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+      }
+    }
+
+    "save the psa email if savePsaEmail flag is true" in {
 
       import play.api.inject._
 
