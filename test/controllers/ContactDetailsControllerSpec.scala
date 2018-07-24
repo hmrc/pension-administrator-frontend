@@ -19,31 +19,36 @@ package controllers
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, PSANameCacheConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConnector}
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{ContactDetails, NormalMode, PSAUser, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{when, _}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.WSClient
+import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.ContactDetailsViewModel
 import views.html.contactDetails
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object ContactDetailsControllerSpec {
+object ContactDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   object FakeIdentifier extends TypedIdentifier[ContactDetails]
+  object FakeIdentifierEmail extends TypedIdentifier[String]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
@@ -64,6 +69,19 @@ object ContactDetailsControllerSpec {
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }
+
+  object PSANameCacheConnector extends PSANameCacheConnector (
+    frontendAppConfig,
+    mock[WSClient],
+    injector.instanceOf[ApplicationCrypto]
+  ) with FakeDataCacheConnector {
+    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                                (implicit
+                                                 ec: ExecutionContext,
+                                                 hc: HeaderCarrier
+                                                ): Future[JsValue] = ???
+  }
+  private lazy val psaNameCacheConnector = mock[PSANameCacheConnector]
 
 }
 
@@ -144,13 +162,10 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
           implicit val materializer: Materializer = app.materializer
 
-          val answers = UserAnswers().set(FakeIdentifier)(ContactDetails("test@test.com", "123456789")).get
           when(
             cacheConnector.save[ContactDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
-          val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
           val request = FakeRequest().withFormUrlEncodedBody(
             ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
           )
@@ -163,34 +178,51 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
     }
 
     "save the psa email if savePsaEmail flag is true" in {
-
+      reset(psaNameCacheConnector)
       import play.api.inject._
 
-      val cacheConnector = mock[DataCacheConnector]
+      running(_.overrides(
+        bind[Navigator].toInstance(FakeNavigator),
+        bind[PSANameCacheConnector].toInstance(psaNameCacheConnector)
+      )) { app =>
+
+        val request = FakeRequest().withFormUrlEncodedBody(
+          ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
+        )
+
+        when(psaNameCacheConnector.save[String, FakeIdentifierEmail.type](any(), eqTo(FakeIdentifierEmail), eqTo("test@test.com"))(any(), any(), any()))
+          .thenReturn(Future.successful(Json.obj()))
+
+        val controller = app.injector.instanceOf[TestController]
+        controller.onSubmit(viewmodel, UserAnswers(), request, savePsaEmail = true)
+
+        verify(psaNameCacheConnector, times(1))
+          .save[String, FakeIdentifierEmail.type](any(), any(), any())(any(), any(), any())
+      }
+    }
+
+    "not save the psa email if savePsaEmail flag is false" in {
+
+      reset(psaNameCacheConnector)
+      import play.api.inject._
 
       running(_.overrides(
-        bind[DataCacheConnector].toInstance(cacheConnector),
-        bind[Navigator].toInstance(FakeNavigator)
-      )) {
-        app =>
+        bind[Navigator].toInstance(FakeNavigator),
+        bind[PSANameCacheConnector].toInstance(psaNameCacheConnector)
+      )) { app =>
 
-          implicit val materializer: Materializer = app.materializer
+        val request = FakeRequest().withFormUrlEncodedBody(
+          ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
+        )
 
-          val answers = UserAnswers().set(FakeIdentifier)(ContactDetails("test@test.com", "123456789")).get
-          when(
-            cacheConnector.save[ContactDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ).thenReturn(Future.successful(Json.obj()))
+        when(psaNameCacheConnector.save[String, FakeIdentifierEmail.type](any(), eqTo(FakeIdentifierEmail), eqTo("test@test.com"))(any(), any(), any()))
+          .thenReturn(Future.successful(Json.obj()))
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
-          val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
-          val request = FakeRequest().withFormUrlEncodedBody(
-            ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
-          )
-          val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+        val controller = app.injector.instanceOf[TestController]
+        controller.onSubmit(viewmodel, UserAnswers(), request)
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual "www.example.com"
+        verify(psaNameCacheConnector, never())
+          .save[String, FakeIdentifierEmail.type](any(), any(), any())(any(), any(), any())
       }
     }
 
