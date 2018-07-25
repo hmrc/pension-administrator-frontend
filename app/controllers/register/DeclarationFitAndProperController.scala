@@ -18,10 +18,15 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.DeclarationFormProvider
-import identifiers.register.{DeclarationFitAndProperId, ExistingPSAId, PsaSubscriptionResponseId}
+import identifiers.register.company.ContactDetailsId
+import identifiers.register.individual.IndividualContactDetailsId
+import identifiers.register.partnership.PartnershipContactDetailsId
+import identifiers.register._
 import javax.inject.Inject
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{ExistingPSA, NormalMode, UserType}
 import play.api.Logger
@@ -46,8 +51,9 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   dataCacheConnector: DataCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
-                                                  enrolments: TaxEnrolmentsConnector
-                                                 ) extends FrontendController with I18nSupport {
+                                                  enrolments: TaxEnrolmentsConnector,
+                                                  emailConnector: EmailConnector
+                                                 ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -89,6 +95,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
               _ <- enrol(psaResponse.psaId)
+              _ <- sendEmail(answers)
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
@@ -99,9 +106,14 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               case _ =>
                 Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
             }
-
           }
       )
+  }
+
+  private def sendEmail(answers: UserAnswers)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
+      answers.get(PsaEmailId).map { email =>
+        emailConnector.sendEmail(email, appConfig.emailTemplateId)
+      } getOrElse Future.successful(EmailNotSent)
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {

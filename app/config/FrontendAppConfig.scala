@@ -59,6 +59,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
   lazy val maxPartners: Int = loadConfig("register.partnership.maxPartners").toInt
+  lazy val emailTemplateId: String = loadConfig("email.templateId")
   lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
   lazy val duplicateRegUri = "/register-as-pension-scheme-administrator/register/duplicate-registration"
   lazy val tpssUrl: String = loadConfig("urls.tpss")

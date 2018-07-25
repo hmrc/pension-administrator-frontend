@@ -25,8 +25,11 @@ import models.UserType.UserType
 import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.{AuthenticatedRequest, DataRequest}
 import models.{PSAUser, UserType}
+import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.Writes
+import play.api.libs.json.{Writes, _}
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
@@ -36,9 +39,11 @@ import views.html.register.declarationFitAndProper
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
+class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   import DeclarationFitAndProperControllerSpec._
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "DeclarationFitAndProperController" when {
 
@@ -73,12 +78,31 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
     "calling POST" must {
 
-      "redirect to the next page on a valid request" in {
-        val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-        val result = controller().onSubmit(request)
+      val validData = Json.obj("psaEmail" -> "test@test.com")
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
+      "redirect to the next page" when {
+        "on a valid request and send the email" in {
+          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any())(any(), any())).thenReturn(Future.successful(EmailSent))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any())(any(), any())
+        }
+        "on a valid request and not send the email" in {
+          reset(mockEmailConnector)
+          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Json.obj()))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+          verify(mockEmailConnector, never()).sendEmail(eqTo("test@test.com"), any())(any(), any())
+        }
       }
 
       "save the answer on a valid request" in {
@@ -171,7 +195,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
 }
 
-object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
+object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
@@ -228,12 +252,17 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
     }
   }
 
+  val mockDataCacheConnector = mock[DataCacheConnector]
+  val mockEmailConnector = mock[EmailConnector]
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
+                          fakeDataCacheConnector: DataCacheConnector = FakeDataCacheConnector,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()) =
+                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
+                        ) =
     new DeclarationFitAndProperController(
       frontendAppConfig,
       messagesApi,
@@ -242,10 +271,11 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       fakeNavigator,
       new DeclarationFormProvider(),
-      FakeDataCacheConnector,
+      fakeDataCacheConnector,
       pensionsSchemeConnector,
       knownFactsRetrieval,
-      enrolments
+      enrolments,
+      mockEmailConnector
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =

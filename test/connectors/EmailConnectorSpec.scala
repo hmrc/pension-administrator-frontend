@@ -42,7 +42,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate, Map.empty).map {
+        connector.sendEmail(testEmailAddress, testTemplate).map {
           result =>
             result mustBe EmailSent
         }
@@ -57,7 +57,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate, Map.empty).map {
+        connector.sendEmail(testEmailAddress, testTemplate).map {
           result =>
             result mustBe EmailNotSent
         }
@@ -73,7 +73,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
           )
         )
 
-        connector.sendEmail(testEmailAddress, testTemplate, Map.empty).map {
+        connector.sendEmail(testEmailAddress, testTemplate).map {
           result =>
             result mustBe EmailNotSent
         }
