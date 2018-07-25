@@ -111,9 +111,16 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
   }
 
   private def sendEmail(answers: UserAnswers)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
-      answers.get(PsaEmailId).map { email =>
-        emailConnector.sendEmail(email, appConfig.emailTemplateId)
-      } getOrElse Future.successful(EmailNotSent)
+    answers.get(RegistrationInfoId).flatMap{ registrationInfo =>
+      val id = registrationInfo.legalStatus match {
+        case Individual => IndividualContactDetailsId
+        case LimitedCompany => ContactDetailsId
+        case Partnership => PartnershipContactDetailsId
+      }
+      answers.get(id).map{ contactDetails =>
+          emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId)
+        }
+      } getOrElse(Future.successful(EmailNotSent))
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {

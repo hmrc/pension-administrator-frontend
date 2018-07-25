@@ -78,7 +78,12 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
     "calling POST" must {
 
-      val validData = Json.obj("psaEmail" -> "test@test.com")
+      val validData = Json.obj("registrationInfo" -> Json.obj(
+        "legalStatus" -> "Partnership",
+        "sapNumber" -> "24325236",
+        "noIdentifier" -> ""
+      )
+      )
 
       "redirect to the next page" when {
         "on a valid request and send the email" in {
@@ -93,6 +98,10 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any())(any(), any())
         }
         "on a valid request and not send the email" in {
+          val validData = Json.obj("registrationInfo" -> Json.obj(
+            "legalStatus" -> "Partnership"
+          )
+          )
           reset(mockEmailConnector)
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
           when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Json.obj()))
@@ -192,7 +201,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
     }
   }
-
 }
 
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
