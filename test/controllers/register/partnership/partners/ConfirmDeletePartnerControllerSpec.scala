@@ -96,7 +96,7 @@ object ConfirmDeletePartnerControllerSpec {
 
   def viewModel = ConfirmDeleteViewModel(
     redirectUrl,
-    routes.ConfirmDeletePartnerController.onPageLoad(firstIndex),
+    postUrl,
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",
     Some(person.fullName),
