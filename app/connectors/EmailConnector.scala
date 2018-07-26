@@ -43,7 +43,6 @@ class EmailConnectorImpl @Inject()(appConfig: FrontendAppConfig, http: HttpClien
 
   override def sendEmail(emailAddress: String, templateName: String)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailStatus] = {
-println("\n\n\n sendEmail\n\n"+emailAddress)
     val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, Map.empty, force = true)
     val emailServiceUrl = appConfig.emailUrl
     val jsonData = Json.toJson(sendEmailReq)
@@ -51,10 +50,8 @@ println("\n\n\n sendEmail\n\n"+emailAddress)
     http.POST(emailServiceUrl, jsonData).map { response =>
       response.status match {
         case ACCEPTED =>
-          println("\n\n\n coming sent\n\n\n")
           EmailSent
         case status =>
-          println(s"Sending Email failed with response status $status")
           Logger.warn(s"Sending Email failed with response status $status")
           EmailNotSent
       }
@@ -63,7 +60,6 @@ println("\n\n\n sendEmail\n\n"+emailAddress)
 
   private def logExceptions: PartialFunction[Throwable, Future[EmailStatus]] = {
     case (t: Throwable) =>
-      println("Unable to connect to Email Service"+t)
       Logger.warn("Unable to connect to Email Service", t)
       Future.successful(EmailNotSent)
   }

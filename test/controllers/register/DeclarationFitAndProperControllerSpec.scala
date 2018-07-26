@@ -78,15 +78,23 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
     "calling POST" must {
 
-      val validData = Json.obj("registrationInfo" -> Json.obj(
+      val data = Json.obj("registrationInfo" -> Json.obj(
         "legalStatus" -> "Partnership",
         "sapNumber" -> "24325236",
-        "noIdentifier" -> ""
+        "noIdentifier" -> false,
+        "customerType" -> "UK",
+        "idType" -> "UTR",
+        "idNumber" -> ""
       )
       )
-
       "redirect to the next page" when {
         "on a valid request and send the email" in {
+          val validData = data ++ Json.obj(
+            "partnershipContactDetails" -> Json.obj(
+              "email" -> "test@test.com",
+              "phone" -> "222222"
+            )
+          )
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
           when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any())(any(), any())).thenReturn(Future.successful(EmailSent))
@@ -98,14 +106,10 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any())(any(), any())
         }
         "on a valid request and not send the email" in {
-          val validData = Json.obj("registrationInfo" -> Json.obj(
-            "legalStatus" -> "Partnership"
-          )
-          )
           reset(mockEmailConnector)
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
           when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Json.obj()))
-          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
             fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
 
           status(result) mustBe SEE_OTHER
