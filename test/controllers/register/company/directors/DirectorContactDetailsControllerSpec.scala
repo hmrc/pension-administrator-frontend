@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.{FakeDataCacheConnector, PSANameCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
@@ -52,6 +52,8 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
     subHeading = Some(directorName)
   )
 
+  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
+
   private val validData: JsObject = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
@@ -77,7 +79,8 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      psaNameCacheConnector
     )
 
   def viewAsString(form: Form[_] = form): String = contactDetails(

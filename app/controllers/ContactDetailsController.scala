@@ -17,8 +17,9 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.{DataCacheConnector, PSANameCacheConnector}
 import identifiers.TypedIdentifier
+import identifiers.register.PsaEmailId
 import models.requests.DataRequest
 import models.{ContactDetails, Mode}
 import play.api.data.Form
@@ -36,6 +37,7 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: DataCacheConnector
+  protected def psaNameCacheConnector: PSANameCacheConnector
 
   protected def navigator: Navigator
 
@@ -52,16 +54,19 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
                       id: TypedIdentifier[ContactDetails],
                       mode: Mode,
                       form: Form[ContactDetails],
-                      viewmodel: ContactDetailsViewModel
+                      viewmodel: ContactDetailsViewModel,
+                      savePsaEmail: Boolean = false
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel))),
-      contactDetails =>
+      contactDetails => {
+        if(savePsaEmail) psaNameCacheConnector.save(request.externalId, PsaEmailId, contactDetails.email)
         cacheConnector.save(request.externalId, id, contactDetails).map {
           answers =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
         }
+      }
     )
   }
 }

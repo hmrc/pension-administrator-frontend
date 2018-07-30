@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.{DataCacheConnector, PSANameCacheConnector}
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
@@ -37,7 +37,8 @@ class PartnershipContactDetailsController @Inject()(
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: ContactDetailsFormProvider
+                                                     formProvider: ContactDetailsFormProvider,
+                                                     override  val psaNameCacheConnector: PSANameCacheConnector
                                                    ) extends controllers.ContactDetailsController {
 
   private def viewmodel(mode: Mode) = ContactDetailsViewModel(
@@ -57,6 +58,6 @@ class PartnershipContactDetailsController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-        post(PartnershipContactDetailsId, mode, form,  viewmodel(mode))
+        post(PartnershipContactDetailsId, mode, form,  viewmodel(mode), savePsaEmail = true)
   }
 }

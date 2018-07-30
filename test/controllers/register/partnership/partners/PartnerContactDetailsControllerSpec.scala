@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.ContactDetailsFormProvider
