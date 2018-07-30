@@ -17,16 +17,16 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{BusinessDetails, NormalMode, Organisation, OrganizationRegistration}
+import models._
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,7 +49,8 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      registrationConnector: RegistrationConnector,
-                                                     formProvider: ConfirmPartnershipDetailsFormProvider
+                                                     formProvider: ConfirmPartnershipDetailsFormProvider,
+                                                     psaNameCacheConnector: PSANameCacheConnector
                                                    ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -76,6 +77,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             ))),
           {
             case true =>
+              psaNameCacheConnector.save(request.externalId, PsaNameId, registration.response.organisation.organisationName)
               upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
                 upsert(userAnswers, PartnershipDetailsId)(partnershipDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
                   upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
@@ -98,7 +100,8 @@ class ConfirmPartnershipDetailsController @Inject()(
     (PartnershipDetailsId and BusinessTypeId).retrieve.right.map {
       case businessDetails ~ businessType =>
         val organisation = Organisation(businessDetails.companyName, businessType)
-        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation).flatMap {
+        val legalStatus = RegistrationLegalStatus.Partnership
+        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumber, organisation, legalStatus).flatMap {
           registration =>
             fn(businessDetails, registration)
         } recoverWith {

@@ -16,10 +16,10 @@
 
 package utils
 
+import identifiers.register.RegistrationInfoId
 import identifiers.register.company.ConfirmCompanyAddressId
-import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId}
 import models.RegistrationCustomerType.UK
-import models.RegistrationLegalStatus.{Individual, LimitedCompany}
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
@@ -40,7 +40,9 @@ class KnownFactsRetrieval {
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, registrationInfo.idNumber))))
         case LimitedCompany if registrationInfo.customerType equals UK =>
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, registrationInfo.idNumber))))
-        case LimitedCompany =>
+        case Partnership if registrationInfo.customerType equals UK =>
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, registrationInfo.idNumber))))
+        case LimitedCompany | Partnership =>
           for {
             address <- request.userAnswers.get(ConfirmCompanyAddressId)
             country <- address.country
