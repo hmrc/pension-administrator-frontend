@@ -30,10 +30,9 @@
 
         @components.back_link()
 
-        @components.heading(
-            headingKey = viewModel.heading,
-            headingToken = viewModel.token,
-            secondaryHeaderKey = viewModel.secondaryHeader
+        @components.headingNew(
+            headingKey=components.hyphen(messages(viewModel.heading,viewModel.token.getOrElse(""))).toString,
+            secondaryHeaderKey = viewModel.secondaryHeader.map{x=>components.hyphen(messages(x)).toString}
         )
 
         @components.submit_button("site.confirm")

@@ -18,114 +18,79 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import base.CSRFRequest
+import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.company.routes.AddCompanyDirectorsController
 import identifiers.register.company.directors.DirectorDetailsId
-import models.{PersonDetails, Index, NormalMode}
-import org.scalatest.mockito.MockitoSugar
+import models.{Index, NormalMode, PersonDetails}
+import play.api.Application
+import play.api.http.Writeable
+import play.api.inject.bind
 import play.api.libs.json.Json
+import play.api.mvc.{Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.register.company.directors.confirmDeleteDirector
+import viewmodels.{ConfirmDeleteViewModel, Message}
+import views.html.confirmDelete
 
-class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with MockitoSugar {
+import scala.concurrent.Future
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new ConfirmDeleteDirectorController(
-      frontendAppConfig,
-      messagesApi,
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      FakeDataCacheConnector
+class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRequest {
+
+  import ConfirmDeleteDirectorControllerSpec._
+
+  "render the view correctly on a GET request" in {
+    requestResult(dataRetrieval)(
+      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(firstIndex))),
+      (request, result) => {
+        status(result) mustBe OK
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, viewModel)(request, messages).toString()
+      }
     )
-
-  private def viewAsString() = confirmDeleteDirector(frontendAppConfig, firstIndex, "John Doe")(fakeRequest, messages).toString
-
-  "ConfirmDeleteDirector Controller" must {
-
-    "return OK and the correct view for a GET" in {
-
-      val validData = Json.obj(
-        "directors" -> Json.arr(
-          Json.obj(
-            "directorDetails" -> Json.obj(
-              "firstName" -> "John",
-              "lastName" -> "Doe",
-              "dateOfBirth" -> Json.toJson(LocalDate.now()),
-              "isDeleted" -> false
-            )
-          )
-        )
-      )
-
-      val data = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(data).onPageLoad(firstIndex)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "redirect to already deleted view for a GET if the director was already deleted" in {
-
-      val validData = Json.obj(
-        "directors" -> Json.arr(
-          Json.obj(
-            "directorDetails" -> Json.obj(
-              "firstName" -> "John",
-              "lastName" -> "Doe",
-              "dateOfBirth" -> Json.toJson(LocalDate.now()),
-              "isDeleted" -> true
-            )
-          )
-        )
-      )
-
-      val data = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(data).onPageLoad(firstIndex)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.AlreadyDeletedController.onPageLoad(firstIndex).url)
-
-    }
-
-    "redirect to directors list on removal of director" in {
-
-      val validData = Json.obj(
-        "directors" -> Json.arr(
-          Json.obj(
-            DirectorDetailsId.toString -> PersonDetails("John", None, "Doe", LocalDate.now())
-          )
-        )
-      )
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(AddCompanyDirectorsController.onPageLoad(NormalMode).url)
-
-    }
-
-    "set the isDelete flag to true for the selected director on submission of POST request" in {
-      val validData = Json.obj(
-        "directors" -> Json.arr(
-          Json.obj(
-            DirectorDetailsId.toString -> PersonDetails("John", None, "Doe", LocalDate.now())
-          )
-        )
-      )
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onSubmit(firstIndex)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(DirectorDetailsId(firstIndex), PersonDetails("John", None, "Doe", LocalDate.now(), true))
-    }
-
   }
 
+  "redirect to the next page on a POST request" in {
+    requestResult(dataRetrieval)(
+      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onSubmit(firstIndex))),
+      (_, result) => {
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
+      }
+    )
+  }
+
+  def requestResult[T](dataRetrieval: DataRetrievalAction)
+                      (request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
+                      (implicit w: Writeable[T]): Unit = {
+    running(_.overrides(
+      bind[AuthAction].to(FakeAuthAction),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
+      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+    )) {
+      app =>
+        val req = request(app)
+        val result = route[T](app, req).value
+        test(req, result)
+    }
+  }
+}
+
+object ConfirmDeleteDirectorControllerSpec {
+  val firstIndex = Index(0)
+  val person = PersonDetails("First", None, "Last", LocalDate.now())
+
+  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
+    "directors" -> Json.arr(
+      Json.obj(DirectorDetailsId.toString -> person)
+    ))))
+
+  def viewModel = ConfirmDeleteViewModel(
+    routes.ConfirmDeleteDirectorController.onSubmit(firstIndex),
+    controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
+    Message("confirmDeleteDirector.title"),
+    "confirmDeleteDirector.heading",
+    Some(person.fullName),
+    Some("site.secondaryHeader")
+  )
 }
