@@ -27,7 +27,7 @@ class BusinessTypeViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "businessType"
   private val form = new BusinessTypeFormProvider()()
-  private val businessTypeOptions = BusinessType.options(true)
+  private val businessTypeOptions = BusinessType.options
 
   private def createView = () => businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 

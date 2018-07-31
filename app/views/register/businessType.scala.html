@@ -37,7 +37,7 @@
             field = form("value"),
             legend = messages("businessType.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = BusinessType.options(appConfig.partnershipsFlagEnabled)
+            inputs = BusinessType.options
         )
 
         @components.submit_button("site.save_and_continue")
