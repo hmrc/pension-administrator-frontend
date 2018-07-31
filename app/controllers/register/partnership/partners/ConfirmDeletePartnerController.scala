@@ -42,7 +42,7 @@ class ConfirmDeletePartnerController @Inject()(
       PartnerDetailsId(index).retrieve.right.map{ details =>
         val viewModel = ConfirmDeleteViewModel(
           routes.ConfirmDeletePartnerController.onSubmit(index),
-          routes.ConfirmDeletePartnerController.onPageLoad(index),
+          controllers.register.partnership.routes.AddPartnerController.onPageLoad(),
           Message("confirmDelete.partner.title"),
           "confirmDelete.partner.heading",
           Some(details.fullName),

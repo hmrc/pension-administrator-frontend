@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.{DataCacheConnector, PSANameCacheConnector}
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.individual.IndividualContactDetailsId
@@ -38,7 +38,8 @@ class IndividualContactDetailsController @Inject()(
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    formProvider: ContactDetailsFormProvider
+                                                    formProvider: ContactDetailsFormProvider,
+                                                    override val psaNameCacheConnector: PSANameCacheConnector
                                                   ) extends controllers.ContactDetailsController {
 
   private def viewmodel(mode: Mode) = ContactDetailsViewModel(
@@ -57,6 +58,6 @@ class IndividualContactDetailsController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactDetailsId, mode, form, viewmodel(mode))
+      post(IndividualContactDetailsId, mode, form, viewmodel(mode), savePsaEmail = true)
   }
 }

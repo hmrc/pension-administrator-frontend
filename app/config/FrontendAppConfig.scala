@@ -86,6 +86,8 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
     s"service/$serviceName/enrolment"
 
+  def emailUrl=s"${baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"
+
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
   lazy val contactAddressEnabled: Boolean = runModeConfiguration.getBoolean("features.contact-address").getOrElse(false)
