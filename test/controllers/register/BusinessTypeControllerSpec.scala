@@ -35,7 +35,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new BusinessTypeFormProvider()
   private val form = formProvider()
-  private val businessTypeOptions = BusinessType.options(true)
+  private val businessTypeOptions = BusinessType.options
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new BusinessTypeController(

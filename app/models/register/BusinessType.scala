@@ -16,7 +16,6 @@
 
 package models.register
 
-import config.FrontendAppConfig
 import utils.{Enumerable, InputOption, WithName}
 
 sealed trait BusinessType
@@ -39,21 +38,14 @@ object BusinessType extends Enumerable.Implicits {
     OverseasCompany
   )
 
-  def options(partnershipsFlagEnabled: Boolean): Seq[InputOption] =
-    (if(partnershipsFlagEnabled) {
-      Seq(
-        LimitedCompany,
-        BusinessPartnership,
-        LimitedPartnership,
-        LimitedLiabilityPartnership,
-        UnlimitedCompany
-      )
-    } else {
-      Seq(
-        LimitedCompany,
-        UnlimitedCompany
-      )
-    }) map { value =>
+  def options: Seq[InputOption] =
+    Seq(
+      LimitedCompany,
+      BusinessPartnership,
+      LimitedPartnership,
+      LimitedLiabilityPartnership,
+      UnlimitedCompany
+    ) map { value =>
       InputOption(value.toString, s"businessType.${value.toString}")
     }
 
