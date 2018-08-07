@@ -100,8 +100,8 @@ trait Generators {
 
   def stringsLongerThan(minLength: Int): Gen[String] =
     for {
-      base <- Gen.listOfN(minLength + 1, arbitrary[Char]).map(_.mkString)
-      surplus <- arbitrary[String]
+      base <- Gen.listOfN(minLength + 1, alphaNumChar).map(_.mkString)
+      surplus <- alphaNumStr
     } yield base + surplus
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
