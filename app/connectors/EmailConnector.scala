@@ -43,7 +43,7 @@ class EmailConnectorImpl @Inject()(appConfig: FrontendAppConfig, http: HttpClien
 
   override def sendEmail(emailAddress: String, templateName: String)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailStatus] = {
-    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, Map.empty, force = true)
+    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, Map.empty, force = appConfig.emailSendForce)
     val emailServiceUrl = appConfig.emailUrl
     val jsonData = Json.toJson(sendEmailReq)
 
