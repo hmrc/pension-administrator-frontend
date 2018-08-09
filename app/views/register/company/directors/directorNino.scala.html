@@ -37,7 +37,10 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("directorNino.heading", secondaryHeaderKey = Some(directorName))
+        @components.headingNew(
+            headingKey=messages("directorNino.heading").toString,
+            secondaryHeaderKey = Some(components.hyphen(directorName).toString)
+        )
 
         @components.fieldSet(
             field = form("nino.hasNino"),

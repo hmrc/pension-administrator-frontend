@@ -27,7 +27,9 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-        @components.heading(Message("alreadyDeleted.heading", viewmodel.deletedEntity))
+        @components.headingNew(
+            headingKey=components.hyphen(Message("alreadyDeleted.heading", viewmodel.deletedEntity)).toString
+        )
 
         <p>@messages("alreadyDeleted.lede", viewmodel.deletedEntity)</p>
         <p>@messages("alreadyDeleted.text")</p>
