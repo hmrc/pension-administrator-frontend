@@ -471,6 +471,7 @@ confirmation.whatYouNeedToKnow.heading = What you need to know
 confirmation.whatYouNeedToKnow.existingPSA.detail=Your administrator ID has not changed. You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
 confirmation.whatYouNeedToKnow.newPSA.detail = You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
+confirmation.email = You will receive an email confirmation
 
 duplicateRegistration.title = You cannot register as a Pension Scheme Administrator using these details.
 duplicateRegistration.heading = You cannot register as a Pension Scheme Administrator using these details.
