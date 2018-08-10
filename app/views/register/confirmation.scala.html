@@ -50,6 +50,8 @@
         }
     </div>
 
+    <p>@messages("confirmation.email")</p>
+
     <h2 class="heading-large">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
     <p id="what-you-need-to-know">@if(request.user.isExistingPSA){
            @Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))

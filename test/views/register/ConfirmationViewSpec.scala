@@ -44,6 +44,10 @@ class ConfirmationViewSpec extends ViewBehaviours {
       createView must haveDynamicText("confirmation.whatYouNeedToKnow.heading")
     }
 
+    "display the 'email notification' detail " in {
+      createView must haveDynamicText("confirmation.email")
+    }
+
     "display the 'what you need to know' detail " in {
       createView must haveElementWithText(
         "what-you-need-to-know",
@@ -82,6 +86,10 @@ class ConfirmationViewSpec extends ViewBehaviours {
 
     "display the 'what you need to know' heading " in {
       createView must haveDynamicText("confirmation.whatYouNeedToKnow.heading")
+    }
+
+    "display the 'email notification' detail " in {
+      createView must haveDynamicText("confirmation.email")
     }
 
     "display the 'what you need to know' detail " in {
