@@ -16,7 +16,7 @@
 
 package models.reads
 
-import models.TolerantAddress
+import models.{NoAddressLinesFoundException, TolerantAddress}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json._
 
@@ -255,6 +255,14 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         result.addressLine2 mustBe tolerantAddressSample.addressLine2
         result.addressLine3 mustBe tolerantAddressSample.addressLine3
         result.addressLine4 mustBe tolerantAddressSample.addressLine4
+      }
+    }
+    "throw a NoAddressLines exception" when {
+      "we have no lines in the address" in {
+        val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq()),
+          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK")))
+
+        the [NoAddressLinesFoundException] thrownBy(payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)) must have message("Address with no address lines received")
       }
     }
   }
