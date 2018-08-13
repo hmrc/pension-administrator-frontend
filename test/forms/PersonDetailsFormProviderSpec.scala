@@ -202,7 +202,7 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
           "dateOfBirth.month" -> "A",
           "dateOfBirth.year" -> "A"
         )
-      ).errors should contain allOf (
+      ).errors should contain allOf(
         FormError("dateOfBirth.day", "error.date.day_invalid"),
         FormError("dateOfBirth.month", "error.date.month_invalid"),
         FormError("dateOfBirth.year", "error.date.year_invalid")

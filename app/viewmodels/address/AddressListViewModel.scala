@@ -29,4 +29,4 @@ case class AddressListViewModel(
                                  subHeading: Option[Message] = None,
                                  selectAddress: Message = Message("common.selectAddress.text"),
                                  selectAddressLink: Message = Message("common.selectAddress.link")
-)
+                               )

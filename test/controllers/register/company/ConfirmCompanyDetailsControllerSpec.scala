@@ -23,8 +23,8 @@ import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company._
 import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
-import models.{BusinessDetails, _}
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
+import models.{BusinessDetails, _}
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.{JsValue, Json}

@@ -68,6 +68,7 @@ abstract class Navigator {
 
   object NavigateTo {
     def save(page: Call): Option[NavigateTo] = Some(NavigateTo(page, save = true))
+
     def dontSave(page: Call): Option[NavigateTo] = Some(NavigateTo(page, save = false))
   }
 

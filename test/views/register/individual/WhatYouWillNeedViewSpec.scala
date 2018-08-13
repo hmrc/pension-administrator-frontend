@@ -16,10 +16,7 @@
 
 package views.register.individual
 
-import play.api.data.Form
-import controllers.routes
 import views.behaviours.ViewBehaviours
-import models.NormalMode
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedViewSpec extends ViewBehaviours {

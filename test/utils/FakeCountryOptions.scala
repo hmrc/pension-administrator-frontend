@@ -16,16 +16,15 @@
 
 package utils
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
+import javax.inject.Inject
 import play.api.Environment
 import utils.countryOptions.CountryOptions
 
-class FakeCountryOptions @Inject() (
-                                   environment: Environment,
-                                   config: FrontendAppConfig
-                                   ) extends CountryOptions(environment, config) {
+class FakeCountryOptions @Inject()(
+                                    environment: Environment,
+                                    config: FrontendAppConfig
+                                  ) extends CountryOptions(environment, config) {
   override def options = FakeCountryOptions.fakeCountries
 }
 

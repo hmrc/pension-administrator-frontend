@@ -25,8 +25,8 @@ import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

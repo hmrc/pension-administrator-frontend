@@ -16,11 +16,11 @@
 
 package views.register.individual
 
-import play.api.data.Form
 import controllers.register.individual.routes
 import forms.register.individual.IndividualDetailsCorrectFormProvider
-import views.behaviours.YesNoViewBehaviours
 import models.{NormalMode, TolerantAddress, TolerantIndividual}
+import play.api.data.Form
+import views.behaviours.YesNoViewBehaviours
 import views.html.register.individual.individualDetailsCorrect
 
 class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {

@@ -56,46 +56,46 @@ case class TolerantAddress(addressLine1: Option[String],
 
   def equalsAddress(address: Address): Boolean = {
     address.addressLine1 == addressLine1.getOrElse("") &&
-    address.addressLine2 == addressLine2.getOrElse("") &&
-    address.addressLine3 == addressLine3 &&
-    address.addressLine4 == addressLine4 &&
-    address.country == country.getOrElse("") &&
-    address.postcode == postcode
+      address.addressLine2 == addressLine2.getOrElse("") &&
+      address.addressLine3 == addressLine3 &&
+      address.addressLine4 == addressLine4 &&
+      address.country == country.getOrElse("") &&
+      address.postcode == postcode
   }
 
 }
 
 object TolerantAddress {
 
-  val postCodeLookupAddressReads : Reads[TolerantAddress] = (
+  val postCodeLookupAddressReads: Reads[TolerantAddress] = (
     (JsPath \ "address" \ "lines").read[List[String]] and
       (JsPath \ "address" \ "postcode").read[String] and
       (JsPath \ "address" \ "country" \ "code").read[String] and
       (JsPath \ "address" \ "town").readNullable[String] and
       (JsPath \ "address" \ "county").readNullable[String]
-    )((lines,postCode,countryCode,town,county) => {
-    val linesWithNoAmpersand = lines.map(line => line.replace("&","and"))
-    val addressLines : (Option[String],Option[String],Option[String],Option[String]) = {
+    ) ((lines, postCode, countryCode, town, county) => {
+    val linesWithNoAmpersand = lines.map(line => line.replace("&", "and"))
+    val addressLines: (Option[String], Option[String], Option[String], Option[String]) = {
       lines.size match {
         case 1 => {
           val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
-          (Some(linesWithNoAmpersand(0)),townOrCounty._1,townOrCounty._2,None)
+          (Some(linesWithNoAmpersand(0)), townOrCounty._1, townOrCounty._2, None)
         }
         case 2 => {
           val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
 
-          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),townOrCounty._1,townOrCounty._2)
+          (Some(linesWithNoAmpersand(0)), Some(linesWithNoAmpersand(1)), townOrCounty._1, townOrCounty._2)
         }
         case 3 => {
           val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
           val townOrCountyValue = if (townOrCounty._2.isDefined) townOrCounty._2 else townOrCounty._1
 
-          (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),townOrCountyValue)
+          (Some(linesWithNoAmpersand(0)), Some(linesWithNoAmpersand(1)), Some(linesWithNoAmpersand(2)), townOrCountyValue)
         }
-        case numberOfLines if (numberOfLines >= 4) => (Some(linesWithNoAmpersand(0)),Some(linesWithNoAmpersand(1)),Some(linesWithNoAmpersand(2)),Some(linesWithNoAmpersand(3)))
+        case numberOfLines if (numberOfLines >= 4) => (Some(linesWithNoAmpersand(0)), Some(linesWithNoAmpersand(1)), Some(linesWithNoAmpersand(2)), Some(linesWithNoAmpersand(3)))
       }
     }
-    TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode),Some(countryCode))
+    TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode), Some(countryCode))
   })
 
 
@@ -108,22 +108,22 @@ object TolerantAddress {
     (town, county) match {
       case (Some(town), None) => {
         val formattedTown = replaceAmpersanWithAnd(town)
-        (if (checkIfElementAlreadyExistsInLines(addressLines,formattedTown)) None else Some(formattedTown), None)
+        (if (checkIfElementAlreadyExistsInLines(addressLines, formattedTown)) None else Some(formattedTown), None)
       }
       case (None, Some(county)) => {
         val formattedCounty = replaceAmpersanWithAnd(county)
-        (if (checkIfElementAlreadyExistsInLines(addressLines,formattedCounty)) None else Some(formattedCounty), None)
+        (if (checkIfElementAlreadyExistsInLines(addressLines, formattedCounty)) None else Some(formattedCounty), None)
       }
       case (Some(town), Some(county)) => {
         val formattedTown = replaceAmpersanWithAnd(town)
         val formattedCounty = replaceAmpersanWithAnd(county)
-        val townAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines,formattedTown)
-        val countyAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines,formattedCounty)
+        val townAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines, formattedTown)
+        val countyAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines, formattedCounty)
 
-        (townAlreadyExists,countyAlreadyExists) match {
-          case (true,false) => (Some(replaceAmpersanWithAnd(county)), None)
-          case (false,true) => (Some(replaceAmpersanWithAnd(town)), None)
-          case (true,true) => (None, None)
+        (townAlreadyExists, countyAlreadyExists) match {
+          case (true, false) => (Some(replaceAmpersanWithAnd(county)), None)
+          case (false, true) => (Some(replaceAmpersanWithAnd(town)), None)
+          case (true, true) => (None, None)
           case _ => (Some(replaceAmpersanWithAnd(town)), Some(replaceAmpersanWithAnd(county)))
         }
       }
@@ -131,14 +131,14 @@ object TolerantAddress {
     }
   }
 
-  private def replaceAmpersanWithAnd(data : String) : String = (data.replace("&","and"))
+  private def replaceAmpersanWithAnd(data: String): String = (data.replace("&", "and"))
 
 
-  val postCodeLookupReads : Reads[Seq[TolerantAddress]] = Reads {
+  val postCodeLookupReads: Reads[Seq[TolerantAddress]] = Reads {
     json =>
       json.validate[Seq[JsValue]].flatMap(addresses => {
-        addresses.foldLeft[JsResult[List[TolerantAddress]]](JsSuccess(List.empty)){
-          (addresses,currentAddress) => {
+        addresses.foldLeft[JsResult[List[TolerantAddress]]](JsSuccess(List.empty)) {
+          (addresses, currentAddress) => {
             for {
               sequenceOfAddressess <- addresses
               address <- currentAddress.validate[TolerantAddress](postCodeLookupAddressReads)
@@ -150,12 +150,12 @@ object TolerantAddress {
 
   implicit lazy val formatsTolerantAddress: Format[TolerantAddress] = (
     (JsPath \ "addressLine1").formatNullable[String] and
-    (JsPath \ "addressLine2").formatNullable[String] and
-    (JsPath \ "addressLine3").formatNullable[String] and
-    (JsPath \ "addressLine4").formatNullable[String] and
-    (JsPath \ "postalCode").formatNullable[String] and
-    (JsPath \ "countryCode").formatNullable[String]
-  )(TolerantAddress.apply, unlift(TolerantAddress.unapply))
+      (JsPath \ "addressLine2").formatNullable[String] and
+      (JsPath \ "addressLine3").formatNullable[String] and
+      (JsPath \ "addressLine4").formatNullable[String] and
+      (JsPath \ "postalCode").formatNullable[String] and
+      (JsPath \ "countryCode").formatNullable[String]
+    ) (TolerantAddress.apply, unlift(TolerantAddress.unapply))
 
   implicit def convert(tolerant: TolerantAddress): Option[Address] = {
     for {

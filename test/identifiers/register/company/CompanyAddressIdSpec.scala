@@ -55,7 +55,7 @@ class CompanyAddressIdSpec extends WordSpec with MustMatchers with OptionValues 
         .asOpt.value
 
       "not remove the data for `CompanyAddressYears`" in {
-       result.get(CompanyAddressId) mustBe defined
+        result.get(CompanyAddressId) mustBe defined
       }
     }
 

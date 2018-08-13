@@ -62,16 +62,16 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
   private def translateExceptions(): PartialFunction[Throwable, Future[PsaSubscriptionResponse]] = {
     case ex: BadRequestException
       if ex.message.contains("INVALID_PAYLOAD")
-        => Future.failed(InvalidPayloadException())
+    => Future.failed(InvalidPayloadException())
     case ex: BadRequestException
       if ex.message.contains("INVALID_CORRELATION_ID")
-        => Future.failed(InvalidCorrelationIdException())
-    case ex @ Upstream4xxResponse(_, Status.FORBIDDEN, _, _)
+    => Future.failed(InvalidCorrelationIdException())
+    case ex@Upstream4xxResponse(_, Status.FORBIDDEN, _, _)
       if ex.message.contains("INVALID_BUSINESS_PARTNER")
-        => Future.failed(InvalidBusinessPartnerException())
-    case ex @ Upstream4xxResponse(_, Status.CONFLICT, _, _)
+    => Future.failed(InvalidBusinessPartnerException())
+    case ex@Upstream4xxResponse(_, Status.CONFLICT, _, _)
       if ex.message.contains("DUPLICATE_SUBMISSION")
-        => Future.failed(DuplicateSubmissionException())
+    => Future.failed(DuplicateSubmissionException())
   }
 
   private def logExceptions(): PartialFunction[Try[PsaSubscriptionResponse], Unit] = {
@@ -83,6 +83,9 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
 sealed trait RegisterPsaException extends Exception
 
 case class InvalidPayloadException() extends RegisterPsaException
+
 case class InvalidCorrelationIdException() extends RegisterPsaException
+
 case class InvalidBusinessPartnerException() extends RegisterPsaException
+
 case class DuplicateSubmissionException() extends RegisterPsaException

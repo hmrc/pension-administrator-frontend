@@ -154,7 +154,9 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
 
 object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
   val messagePrefix = "common.previousAddress"
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")

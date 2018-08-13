@@ -18,7 +18,6 @@ package controllers.register.partnership.partners
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
-import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import viewmodels.{AlreadyDeletedViewModel, Message}

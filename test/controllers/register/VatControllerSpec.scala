@@ -43,145 +43,145 @@ import scala.concurrent.Future
 
 object VatControllerSpec {
 
-    object FakeIdentifier extends TypedIdentifier[Vat]
+  object FakeIdentifier extends TypedIdentifier[Vat]
 
-    class TestController @Inject()(
-                                    override val appConfig: FrontendAppConfig,
-                                    override val messagesApi: MessagesApi,
-                                    override val cacheConnector: DataCacheConnector,
-                                    override val navigator: Navigator,
-                                    formProvider: VatFormProvider
-                                  ) extends VatController {
+  class TestController @Inject()(
+                                  override val appConfig: FrontendAppConfig,
+                                  override val messagesApi: MessagesApi,
+                                  override val cacheConnector: DataCacheConnector,
+                                  override val navigator: Navigator,
+                                  formProvider: VatFormProvider
+                                ) extends VatController {
 
-      def onPageLoad(viewmodel: VatViewModel, answers: UserAnswers): Future[Result] = {
-        get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
-      }
-
-      def onSubmit(viewmodel: VatViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-        post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
-      }
+    def onPageLoad(viewmodel: VatViewModel, answers: UserAnswers): Future[Result] = {
+      get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
+    def onSubmit(viewmodel: VatViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
+      post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+    }
   }
 
-  class VatControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
+}
 
-    import VatControllerSpec._
+class VatControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
 
-    val viewmodel = VatViewModel(
-      postCall = Call("GET", "www.example.com"),
-      title = "title",
-      heading = "heading",
-      hint = "legend",
-      subHeading = Some("sub-heading")
-    )
+  import VatControllerSpec._
 
-    "get" must {
+  val viewmodel = VatViewModel(
+    postCall = Call("GET", "www.example.com"),
+    title = "title",
+    heading = "heading",
+    hint = "legend",
+    subHeading = Some("sub-heading")
+  )
 
-      "return a successful result when there is no existing answer" in {
+  "get" must {
 
-        running(_.overrides(
-          bind[Navigator].toInstance(FakeNavigator)
-        )) {
-          app =>
+    "return a successful result when there is no existing answer" in {
 
-            implicit val materializer: Materializer = app.materializer
+      running(_.overrides(
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
-            val formProvider = app.injector.instanceOf[VatFormProvider]
-            val request = FakeRequest()
-            val messages = app.injector.instanceOf[MessagesApi].preferred(request)
-            val controller = app.injector.instanceOf[TestController]
-            val result = controller.onPageLoad(viewmodel, UserAnswers())
+          implicit val materializer: Materializer = app.materializer
 
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual vat(appConfig, formProvider(), viewmodel)(request, messages).toString
-        }
-      }
+          val appConfig = app.injector.instanceOf[FrontendAppConfig]
+          val formProvider = app.injector.instanceOf[VatFormProvider]
+          val request = FakeRequest()
+          val messages = app.injector.instanceOf[MessagesApi].preferred(request)
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onPageLoad(viewmodel, UserAnswers())
 
-      "return a successful result when there is an existing answer" in {
-
-        running(_.overrides(
-          bind[Navigator].toInstance(FakeNavigator)
-        )) {
-          app =>
-
-            implicit val materializer: Materializer = app.materializer
-
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
-            val formProvider = app.injector.instanceOf[VatFormProvider]
-            val request = FakeRequest()
-            val messages = app.injector.instanceOf[MessagesApi].preferred(request)
-            val controller = app.injector.instanceOf[TestController]
-            val answers = UserAnswers().set(FakeIdentifier)(Vat.Yes("123456789")).get
-            val result = controller.onPageLoad(viewmodel, answers)
-
-            status(result) mustEqual OK
-            contentAsString(result) mustEqual vat(
-              appConfig,
-              formProvider().fill(Vat.Yes("123456789")),
-              viewmodel
-            )(request, messages).toString
-        }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual vat(appConfig, formProvider(), viewmodel)(request, messages).toString
       }
     }
 
-    "post" must {
+    "return a successful result when there is an existing answer" in {
 
-      "return a redirect when the submitted data is valid" in {
+      running(_.overrides(
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
 
-        import play.api.inject._
+          implicit val materializer: Materializer = app.materializer
 
-        val cacheConnector = mock[DataCacheConnector]
+          val appConfig = app.injector.instanceOf[FrontendAppConfig]
+          val formProvider = app.injector.instanceOf[VatFormProvider]
+          val request = FakeRequest()
+          val messages = app.injector.instanceOf[MessagesApi].preferred(request)
+          val controller = app.injector.instanceOf[TestController]
+          val answers = UserAnswers().set(FakeIdentifier)(Vat.Yes("123456789")).get
+          val result = controller.onPageLoad(viewmodel, answers)
 
-        running(_.overrides(
-          bind[DataCacheConnector].toInstance(cacheConnector),
-          bind[Navigator].toInstance(FakeNavigator)
-        )) {
-          app =>
-
-            implicit val materializer: Materializer = app.materializer
-
-            when(
-              cacheConnector.save[Vat, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-            ).thenReturn(Future.successful(Json.obj()))
-
-            val request = FakeRequest().withFormUrlEncodedBody(
-              ("vat.hasVat", "true"), ("vat.vat", "123456789")
-            )
-            val controller = app.injector.instanceOf[TestController]
-            val result = controller.onSubmit(viewmodel, UserAnswers(), request)
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustEqual "www.example.com"
-        }
-      }
-
-      "return a bad request when the submitted data is invalid" in {
-
-        running(_.overrides(
-          bind[Navigator].toInstance(FakeNavigator)
-        )) {
-          app =>
-
-            implicit val materializer: Materializer = app.materializer
-
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
-            val formProvider = app.injector.instanceOf[VatFormProvider]
-            val request = FakeRequest()
-            val messages = app.injector.instanceOf[MessagesApi].preferred(request)
-            val controller = app.injector.instanceOf[TestController]
-            val result = controller.onSubmit(viewmodel, UserAnswers(), request)
-
-            status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual vat(
-              appConfig,
-              formProvider().bind(Map.empty[String, String]),
-              viewmodel
-            )(request, messages).toString
-        }
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual vat(
+            appConfig,
+            formProvider().fill(Vat.Yes("123456789")),
+            viewmodel
+          )(request, messages).toString
       }
     }
   }
+
+  "post" must {
+
+    "return a redirect when the submitted data is valid" in {
+
+      import play.api.inject._
+
+      val cacheConnector = mock[DataCacheConnector]
+
+      running(_.overrides(
+        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+
+          implicit val materializer: Materializer = app.materializer
+
+          when(
+            cacheConnector.save[Vat, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ).thenReturn(Future.successful(Json.obj()))
+
+          val request = FakeRequest().withFormUrlEncodedBody(
+            ("vat.hasVat", "true"), ("vat.vat", "123456789")
+          )
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+      }
+    }
+
+    "return a bad request when the submitted data is invalid" in {
+
+      running(_.overrides(
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+
+          implicit val materializer: Materializer = app.materializer
+
+          val appConfig = app.injector.instanceOf[FrontendAppConfig]
+          val formProvider = app.injector.instanceOf[VatFormProvider]
+          val request = FakeRequest()
+          val messages = app.injector.instanceOf[MessagesApi].preferred(request)
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual vat(
+            appConfig,
+            formProvider().bind(Map.empty[String, String]),
+            viewmodel
+          )(request, messages).toString
+      }
+    }
+  }
+}

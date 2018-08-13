@@ -113,6 +113,7 @@ object AddCompanyDirectorsViewSpec {
   )
 
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
 
   // scalastyle:off magic.number

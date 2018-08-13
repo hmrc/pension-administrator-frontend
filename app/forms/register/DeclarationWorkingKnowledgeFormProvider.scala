@@ -16,13 +16,10 @@
 
 package forms.register
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
 import com.google.inject.Inject
+import forms.mappings.Mappings
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
 
 class DeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
 

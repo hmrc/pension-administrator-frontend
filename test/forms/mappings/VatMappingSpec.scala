@@ -27,15 +27,15 @@ class VatMappingSpec extends VatBehaviours {
   private val vatLengthKey = "common.error.vat.length"
   private val invalidVatKey = "common.error.vat.invalid"
 
-    "A form with a Vat" should {
-      val mapping = vatMapping(
-        requiredKey,
-        vatLengthKey,
-        requiredVatKey,
-        invalidVatKey
-      )
+  "A form with a Vat" should {
+    val mapping = vatMapping(
+      requiredKey,
+      vatLengthKey,
+      requiredVatKey,
+      invalidVatKey
+    )
 
-      val testForm:Form[Vat] = Form("vat" -> mapping)
+    val testForm: Form[Vat] = Form("vat" -> mapping)
 
     behave like formWithVat(testForm: Form[Vat],
       requiredKey: String,

@@ -24,9 +24,9 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.pensionSchemePractitioner
 
 class PensionSchemePractitionerController @Inject()(
-  appConfig: FrontendAppConfig,
-  val messagesApi: MessagesApi
-) extends FrontendController with I18nSupport {
+                                                     appConfig: FrontendAppConfig,
+                                                     val messagesApi: MessagesApi
+                                                   ) extends FrontendController with I18nSupport {
 
   def onPageLoad() = Action {
     implicit request =>

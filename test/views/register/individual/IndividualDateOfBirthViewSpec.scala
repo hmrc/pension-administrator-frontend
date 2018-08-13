@@ -17,9 +17,10 @@
 package views.register.individual
 
 import java.time.LocalDate
-import play.api.data.Form
+
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import models.NormalMode
+import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.individual.individualDateOfBirth
 

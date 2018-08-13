@@ -39,7 +39,7 @@ class NinoMappingSpec extends NinoBehaviours {
       invalidReasonKey
     )
 
-    val testForm:Form[Nino] = Form("nino" -> mapping)
+    val testForm: Form[Nino] = Form("nino" -> mapping)
 
     behave like formWithNino(testForm,
       requiredKey,

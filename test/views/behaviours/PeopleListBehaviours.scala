@@ -70,6 +70,7 @@ trait PeopleListBehaviours {
       }
     }
   }
+
   // scalastyle:on method.length
 
 }

@@ -35,11 +35,11 @@ import scala.concurrent.Future
 
 class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar with GeneratorDrivenPropertyChecks {
 
-  private val dummyId=new TypedIdentifier[Boolean]{
-    override def toString="DummyId"
+  private val dummyId = new TypedIdentifier[Boolean] {
+    override def toString = "DummyId"
   }
-  private val existingId=new TypedIdentifier[String]{
-    override def toString="existingId"
+  private val existingId = new TypedIdentifier[String] {
+    override def toString = "existingId"
   }
 
   implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -63,9 +63,9 @@ class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues w
       when(dataCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expected.json))
 
-      val result=new SectionCompleteImpl(dataCacheConnector).setComplete(dummyId, UserAnswers())
+      val result = new SectionCompleteImpl(dataCacheConnector).setComplete(dummyId, UserAnswers())
 
-      result.map{answers=>
+      result.map { answers =>
         answers mustBe expected
       }
     }
@@ -77,9 +77,10 @@ class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues w
       when(dataCacheConnector.save(any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expected.json))
 
-      val result=new SectionCompleteImpl(dataCacheConnector).setComplete(dummyId, userAnswers)
-      result.map{
-        _ => verify(dataCacheConnector).save(any(), eqTo(dummyId), eqTo(true))(any(), any(), any())
+      val result = new SectionCompleteImpl(dataCacheConnector).setComplete(dummyId, userAnswers)
+      result.map {
+        _ =>
+          verify(dataCacheConnector).save(any(), eqTo(dummyId), eqTo(true))(any(), any(), any())
           succeed
       }
     }

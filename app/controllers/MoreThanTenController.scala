@@ -49,7 +49,7 @@ trait MoreThanTenController extends FrontendController with I18nSupport {
     Ok(moreThanTen(appConfig, preparedForm, viewModel))
   }
 
-  def post(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result]= {
+  def post(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(moreThanTen(appConfig, formWithErrors, viewModel))),

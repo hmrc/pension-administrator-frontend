@@ -22,12 +22,12 @@ import identifiers.TypedIdentifier
 import org.scalatest._
 import play.api.http.Status
 import play.api.libs.json.Json
+import play.api.mvc.Results._
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.mvc.Results._
 
 class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
 
@@ -38,6 +38,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
   override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
+
   private def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
 
   private lazy val connector = injector.instanceOf[MicroserviceCacheConnector]
@@ -103,7 +104,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           )
       )
 
-      recoverToExceptionIf[HttpException]{
+      recoverToExceptionIf[HttpException] {
         connector.fetch("foo")
       } map {
         _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
@@ -238,7 +239,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
       )
 
 
-      recoverToExceptionIf[HttpException]{
+      recoverToExceptionIf[HttpException] {
         connector.save("foo", FakeIdentifier, "foobar")
       } map {
         _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
@@ -288,7 +289,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         willReturn(ok)
       )
 
-      connector.removeAll("foo").map{
+      connector.removeAll("foo").map {
         _ mustEqual Ok
       }
     }

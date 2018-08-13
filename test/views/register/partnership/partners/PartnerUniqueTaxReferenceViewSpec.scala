@@ -32,6 +32,7 @@ class PartnerUniqueTaxReferenceViewSpec extends ViewBehaviours {
   def createView = () => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)
 
   def createViewUsingForm = (form: Form[_]) => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)
+
   val utrOptions = Seq("true", "false")
 
   "PartnerUniqueTaxReference view" must {
@@ -50,13 +51,13 @@ class PartnerUniqueTaxReferenceViewSpec extends ViewBehaviours {
       }
     }
 
-    for(option <- utrOptions) {
+    for (option <- utrOptions) {
       s"rendered with a value of '$option'" must {
         s"have the '$option' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("utr.hasUtr" -> s"$option"))))
           assertContainsRadioButton(doc, s"utr_hasUtr-$option", "utr.hasUtr", option, true)
 
-          for(unselectedOption <- utrOptions.filterNot(o => o == option)) {
+          for (unselectedOption <- utrOptions.filterNot(o => o == option)) {
             assertContainsRadioButton(doc, s"utr_hasUtr-$unselectedOption", "utr.hasUtr", unselectedOption, false)
           }
         }

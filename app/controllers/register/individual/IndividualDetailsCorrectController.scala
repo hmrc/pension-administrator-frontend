@@ -21,8 +21,8 @@ import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnec
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
-import identifiers.register.{PsaNameId, RegistrationInfoId}
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import identifiers.register.{PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form

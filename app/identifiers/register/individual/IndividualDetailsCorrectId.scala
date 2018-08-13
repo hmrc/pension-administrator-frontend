@@ -15,6 +15,7 @@
  */
 
 package identifiers.register.individual
+
 import identifiers._
 
 case object IndividualDetailsCorrectId extends TypedIdentifier[Boolean] {

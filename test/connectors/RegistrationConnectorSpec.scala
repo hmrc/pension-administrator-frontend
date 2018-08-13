@@ -26,7 +26,7 @@ import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext
 
-class RegistrationConnectorSpec ()
+class RegistrationConnectorSpec()
   extends AsyncFlatSpec with Matchers with OptionValues with WireMockHelper {
 
   override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"

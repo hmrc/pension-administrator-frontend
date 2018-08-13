@@ -25,13 +25,13 @@ import play.api.data.{Form, FormError}
 class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
 
   def formWithUtr(
-    testForm: Form[UniqueTaxReference],
-    keyRequired: String,
-    keyUtrRequired: String,
-    keyReasonRequired: String,
-    keyUtrLength: String,
-    keyReasonLength: String
-  ): Unit = {
+                   testForm: Form[UniqueTaxReference],
+                   keyRequired: String,
+                   keyUtrRequired: String,
+                   keyReasonRequired: String,
+                   keyUtrLength: String,
+                   keyReasonLength: String
+                 ): Unit = {
 
     "fail to bind when form is empty" in {
       val result = testForm.bind(Map.empty[String, String])

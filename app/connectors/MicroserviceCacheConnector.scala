@@ -30,11 +30,11 @@ import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MicroserviceCacheConnector @Inject() (
-                                             config: FrontendAppConfig,
-                                             http: WSClient,
-                                             crypto: ApplicationCrypto
-                                           ) extends DataCacheConnector {
+class MicroserviceCacheConnector @Inject()(
+                                            config: FrontendAppConfig,
+                                            http: WSClient,
+                                            crypto: ApplicationCrypto
+                                          ) extends DataCacheConnector {
 
   protected def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/journey-cache/psa/$id"
 

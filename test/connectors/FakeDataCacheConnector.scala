@@ -20,8 +20,9 @@ import identifiers.TypedIdentifier
 import org.scalatest.Matchers
 import play.api.libs.json._
 import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
 import play.api.mvc.Results._
+import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -64,15 +65,15 @@ trait FakeDataCacheConnector extends DataCacheConnector with Matchers {
   }
 
   def verify[A, I <: TypedIdentifier[A]](id: I, value: A)(implicit fmt: Format[A]): Unit = {
-    data should contain (id.toString -> Json.toJson(value))
+    data should contain(id.toString -> Json.toJson(value))
   }
 
   def verifyRemoved(id: TypedIdentifier[_]): Unit = {
-    removed should contain (id.toString)
+    removed should contain(id.toString)
   }
 
   def verifyNot(id: TypedIdentifier[_]): Unit = {
-    data should not contain key (id.toString)
+    data should not contain key(id.toString)
   }
 
   def lastUpsert: Option[JsValue] = json
@@ -80,7 +81,7 @@ trait FakeDataCacheConnector extends DataCacheConnector with Matchers {
   override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
     Future.successful(Ok)
 
-  def reset(): Unit ={
+  def reset(): Unit = {
     data.clear()
     removed.clear()
     json = None

@@ -32,7 +32,7 @@ class BusinessTypeFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[BusinessType](
       form,
       fieldName,
-      validValues  = BusinessType.values,
+      validValues = BusinessType.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

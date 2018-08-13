@@ -35,16 +35,16 @@ object RegisterWithIdResponse {
     ((JsPath \ "organisation").read[Organisation] ~ (JsPath \ "address").read[TolerantAddress]).apply(OrganizationRegisterWithIdResponse)
 
   implicit lazy val writesOrganizationRegisterWithIdResponse: Writes[OrganizationRegisterWithIdResponse] =
-      Writes[OrganizationRegisterWithIdResponse] { response =>
-    Json.obj(
-      "address" -> response.address,
-      "organisation" -> response.organisation
-    )
-  }
+    Writes[OrganizationRegisterWithIdResponse] { response =>
+      Json.obj(
+        "address" -> response.address,
+        "organisation" -> response.organisation
+      )
+    }
 
   implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = (
     (JsPath \ "individual").format[TolerantIndividual] and
-    (JsPath \ "address").format[TolerantAddress]
-  )(IndividualRegisterWithIdResponse.apply, unlift(IndividualRegisterWithIdResponse.unapply))
+      (JsPath \ "address").format[TolerantAddress]
+    ) (IndividualRegisterWithIdResponse.apply, unlift(IndividualRegisterWithIdResponse.unapply))
 
 }

@@ -45,7 +45,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       .flatMap(vs =>
         Some(vs.map(v =>
           validate[A](v)
-      )))
+        )))
   }
 
   def allDirectors: Seq[PersonDetails] = {
@@ -57,7 +57,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     directors.filterNot(_.isDeleted).map { director =>
       val index = directors.indexOf(director)
       val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
-      val editUrl = if(isComplete) {
+      val editUrl = if (isComplete) {
         routes.CheckYourAnswersController.onPageLoad(Index(index)).url
       } else {
         routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url

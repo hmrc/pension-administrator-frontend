@@ -37,6 +37,7 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: DataCacheConnector
+
   protected def psaNameCacheConnector: PSANameCacheConnector
 
   protected def navigator: Navigator
@@ -61,7 +62,7 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
       formWithErrors =>
         Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel))),
       contactDetails => {
-        if(savePsaEmail) psaNameCacheConnector.save(request.externalId, PsaEmailId, contactDetails.email)
+        if (savePsaEmail) psaNameCacheConnector.save(request.externalId, PsaEmailId, contactDetails.email)
         cacheConnector.save(request.externalId, id, contactDetails).map {
           answers =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))

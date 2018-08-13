@@ -110,7 +110,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when maximum active partners exist and the user submits" in {
-      val partnerDetails = Seq.fill(maxPartners)(johnDoe) ++Seq(joeBloggs.copy(isDeleted = true))
+      val partnerDetails = Seq.fill(maxPartners)(johnDoe) ++ Seq(joeBloggs.copy(isDeleted = true))
 
       val getRelevantData = dataRetrievalAction(partnerDetails: _*)
 
@@ -201,7 +201,9 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   // scalastyle:on magic.number
 
   private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url
+
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
+
   // scalastyle:off magic.number
   private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)

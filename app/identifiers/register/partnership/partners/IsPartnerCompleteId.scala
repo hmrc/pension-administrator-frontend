@@ -25,5 +25,6 @@ case class IsPartnerCompleteId(index: Int) extends TypedIdentifier[Boolean] {
 
 object IsPartnerCompleteId {
   def collectionPath: JsPath = JsPath \ "partners" \\ IsPartnerCompleteId.toString
+
   override def toString: String = "isPartnerComplete"
 }

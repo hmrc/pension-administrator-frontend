@@ -20,11 +20,8 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.register.individual.routes
-import identifiers.register.individual.WhatYouWillNeedId
-import identifiers.register.individual._
-import identifiers.{Identifier, LastPageId}
+import identifiers.register.individual.{WhatYouWillNeedId, _}
 import models.{AddressYears, CheckMode, Mode, NormalMode}
-import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton

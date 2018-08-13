@@ -21,7 +21,8 @@ import play.api.libs.json.JsResult
 import utils.UserAnswers
 import utils.checkyouranswers.BooleanCYA
 
-case object CompanySameContactAddressId extends TypedIdentifier[Boolean] {self =>
+case object CompanySameContactAddressId extends TypedIdentifier[Boolean] {
+  self =>
   override def toString = "companySameContactAddressId"
 
   override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {

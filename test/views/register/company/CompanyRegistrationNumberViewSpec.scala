@@ -16,10 +16,9 @@
 
 package views.register.company
 
-import play.api.data.Form
-import controllers.register.company.routes
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import models.NormalMode
+import play.api.data.Form
 import views.behaviours.StringViewBehaviours
 import views.html.register.company.companyRegistrationNumber
 

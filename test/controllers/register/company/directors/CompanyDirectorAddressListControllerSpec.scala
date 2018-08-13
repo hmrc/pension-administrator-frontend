@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
-import models.{PersonDetails, Index, NormalMode, TolerantAddress}
+import models.{NormalMode, PersonDetails, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call

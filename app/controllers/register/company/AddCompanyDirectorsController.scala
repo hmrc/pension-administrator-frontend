@@ -23,7 +23,6 @@ import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import javax.inject.Inject
 import models.Mode
-import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,16 +34,16 @@ import utils.annotations.CompanyDirector
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
-class AddCompanyDirectorsController @Inject() (
-                                                appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                dataCacheConnector: DataCacheConnector,
-                                                @CompanyDirector navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: AddCompanyDirectorsFormProvider
-                                              ) extends FrontendController with I18nSupport {
+class AddCompanyDirectorsController @Inject()(
+                                               appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               dataCacheConnector: DataCacheConnector,
+                                               @CompanyDirector navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: AddCompanyDirectorsFormProvider
+                                             ) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 

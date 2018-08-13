@@ -29,6 +29,7 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
     "partner f", "partner g", "partner h", "partner i", "partner j")
 
   def createView = () => partnershipReview(frontendAppConfig, partnershipName, partners)(fakeRequest, messages)
+
   def createSecView = () => partnershipReview(frontendAppConfig, partnershipName, tenPartners)(fakeRequest, messages)
 
   "PartnershipReview view" must {
@@ -62,7 +63,7 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
   }
 
   "contain list of partners" in {
-    for(partner <- partners)
+    for (partner <- partners)
       createView must haveDynamicText(partner)
   }
 

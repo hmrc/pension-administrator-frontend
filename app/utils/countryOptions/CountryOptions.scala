@@ -16,10 +16,9 @@
 
 package utils.countryOptions
 
-import javax.inject.{Inject, Singleton}
-
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
+import javax.inject.{Inject, Singleton}
 import play.api.Environment
 import play.api.libs.json.Json
 import utils.InputOption
@@ -27,7 +26,7 @@ import utils.InputOption
 @Singleton
 class CountryOptions @Inject()(environment: Environment, config: FrontendAppConfig) {
 
-  def options: Seq[InputOption] =  CountryOptions.getCountries(environment, config.locationCanonicalList)
+  def options: Seq[InputOption] = CountryOptions.getCountries(environment, config.locationCanonicalList)
 }
 
 object CountryOptions {
@@ -41,7 +40,7 @@ object CountryOptions {
             InputOption(countryList(1).replaceAll("country:", ""), countryList.head)
           }
         }
-    }.getOrElse{
+    }.getOrElse {
       throw new ConfigException.BadValue(fileName, "country json does not exist")
     }
   }

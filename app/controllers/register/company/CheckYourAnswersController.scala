@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
-        ++ Seq(
+          ++ Seq(
           CompanyDetailsId.row(Some(routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
           CompanyRegistrationNumberId.row(Some(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
         ).flatten

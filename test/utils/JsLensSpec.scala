@@ -27,7 +27,7 @@ class JsLensSpec extends WordSpec with MustMatchers with PropertyChecks with Opt
     Gen.frequency(
       10 -> Gen.alphaNumStr.map(JsString),
       10 -> Gen.chooseNum(1, 9999).map(JsNumber(_)),
-      3  -> Gen.oneOf(true, false).map(JsBoolean)
+      3 -> Gen.oneOf(true, false).map(JsBoolean)
     )
   }
 
@@ -62,7 +62,7 @@ class JsLensSpec extends WordSpec with MustMatchers with PropertyChecks with Opt
 
         val gen = Gen.frequency(
           10 -> jsLeafGen,
-          2  -> Gen.const(JsNull)
+          2 -> Gen.const(JsNull)
         )
 
         forAll(Gen.alphaNumStr, gen) {

@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.routes
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import viewmodels.Section
@@ -26,7 +25,9 @@ import views.html.check_your_answers
 class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours {
 
   private val messageKeyPrefix = "checkYourAnswers"
+
   private def emptyAnswerSections: Seq[Section] = Nil
+
   private def secondaryHeader: String = "test-secondaryHeader"
 
   val fakeCall = Call("method", "url")

@@ -22,15 +22,17 @@ import generators.Generators
 import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import play.api.data.{Form, FormError}
 import play.api.data.Forms._
+import play.api.data.{Form, FormError}
 import utils.Enumerable
 import wolfendale.scalacheck.regexp.RegexpGen
 
 object MappingsSpec {
 
   sealed trait Foo
+
   case object Bar extends Foo
+
   case object Baz extends Foo
 
   object Foo {
@@ -40,6 +42,7 @@ object MappingsSpec {
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(values.toSeq.map(v => v.toString -> v): _*)
   }
+
 }
 
 // scalastyle:off magic.number
@@ -189,7 +192,7 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
     "enforce the constraint for a valid string" in {
       forAll(stringsLongerThan(5)) { s =>
         val result = testForm.bind(Map("value" -> s))
-        result.errors mustBe Seq(FormError("value" , Seq("error.length"), Seq(5)))
+        result.errors mustBe Seq(FormError("value", Seq("error.length"), Seq(5)))
       }
     }
 
@@ -286,11 +289,11 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
   }
 
   "date" must {
-    case class TestClass (date: LocalDate)
+    case class TestClass(date: LocalDate)
 
     val testForm = Form(
       mapping(
-      "date" -> date("error.required", "error.invalid")
+        "date" -> date("error.required", "error.invalid")
       )(TestClass.apply)(TestClass.unapply)
     )
 

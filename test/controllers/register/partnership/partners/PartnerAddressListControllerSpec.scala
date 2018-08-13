@@ -156,6 +156,7 @@ object PartnerAddressListControllerSpec {
     address("test post code 1"),
     address("test post code 2")
   )
+
   def address(postCode: String): TolerantAddress = TolerantAddress(
     Some("address line 1"),
     Some("address line 2"),
@@ -164,6 +165,7 @@ object PartnerAddressListControllerSpec {
     Some(postCode),
     Some("United Kingdom")
   )
+
   val validData: JsValue = Json.obj(
     "partners" -> Json.arr(
       Json.obj(

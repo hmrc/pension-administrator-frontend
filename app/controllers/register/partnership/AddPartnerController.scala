@@ -31,39 +31,39 @@ import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{EntityViewModel, Message, Person}
 
-class AddPartnerController @Inject() (
-                                       override val appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       override val cacheConnector: DataCacheConnector,
-                                       @PartnershipPartner override val navigator: Navigator,
-                                       authenticate: AuthAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: AddEntityFormProvider
-                           ) extends AddEntityController with Retrievals {
+class AddPartnerController @Inject()(
+                                      override val appConfig: FrontendAppConfig,
+                                      override val messagesApi: MessagesApi,
+                                      override val cacheConnector: DataCacheConnector,
+                                      @PartnershipPartner override val navigator: Navigator,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      formProvider: AddEntityFormProvider
+                                    ) extends AddEntityController with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
   private def viewmodel(partners: Seq[Person]) = EntityViewModel(
-         postCall = routes.AddPartnerController.onSubmit(),
-         title = Message("addPartners.title"),
-         heading = Message("addPartners.heading"),
-         entities = partners,
-         maxLimit = appConfig.maxPartners,
-         entityType = Message("addPartners.entityType"),
-         subHeading = Some(Message("site.secondaryHeader"))
-       )
+    postCall = routes.AddPartnerController.onSubmit(),
+    title = Message("addPartners.title"),
+    heading = Message("addPartners.heading"),
+    entities = partners,
+    maxLimit = appConfig.maxPartners,
+    entityType = Message("addPartners.entityType"),
+    subHeading = Some(Message("site.secondaryHeader"))
+  )
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete
-        get(AddPartnersId, form, viewmodel(partners))
+      get(AddPartnersId, form, viewmodel(partners))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete
-        post(AddPartnersId, form, viewmodel(partners))
+      post(AddPartnersId, form, viewmodel(partners))
   }
 
 }

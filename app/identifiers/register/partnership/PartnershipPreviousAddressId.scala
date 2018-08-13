@@ -21,7 +21,8 @@ import models.Address
 import utils.checkyouranswers.AddressCYA
 import utils.countryOptions.CountryOptions
 
-case object PartnershipPreviousAddressId extends TypedIdentifier[Address] { self =>
+case object PartnershipPreviousAddressId extends TypedIdentifier[Address] {
+  self =>
   override def toString: String = "partnershipPreviousAddress"
 
   implicit def cya(implicit countryOptions: CountryOptions) = AddressCYA[self.type]("common.previousAddress.checkyouranswers")()

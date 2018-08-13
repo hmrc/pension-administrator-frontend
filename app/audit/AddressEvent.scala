@@ -50,11 +50,11 @@ object AddressEvent {
     if (hasChanged) {
       if (selected.isDefined) {
         val matchesSelected = (address, selected) match {
-          case(a, Some(s)) if s.equalsAddress(a) => true
+          case (a, Some(s)) if s.equalsAddress(a) => true
           case _ => false
         }
 
-        if(matchesSelected) {
+        if (matchesSelected) {
           Some(AddressEvent(externalId, AddressAction.Lookup, context, address))
         }
         else {

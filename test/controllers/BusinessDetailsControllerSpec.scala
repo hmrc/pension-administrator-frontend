@@ -48,16 +48,16 @@ object BusinessDetailsControllerSpec {
       companyNameMaxLength = 105,
       companyNameRequiredMsg = "businessDetails.error.companyName.required",
       companyNameLengthMsg = "businessDetails.error.companyName.length",
-      companyNameInvalidMsg= "businessDetails.error.companyName.invalid",
+      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = "businessDetails.error.utr.required",
       utrLengthMsg = "businessDetails.error.utr.length",
-      utrInvalidMsg= "businessDetails.error.utr.invalid"
+      utrInvalidMsg = "businessDetails.error.utr.invalid"
     )
 
   val testViewModel: BusinessDetailsViewModel =
     BusinessDetailsViewModel(
-      postCall = Call("GET","/"),
+      postCall = Call("GET", "/"),
       title = Message("businessDetails.title"),
       heading = Message("businessDetails.heading"),
       companyNameLabel = Message("businessDetails.companyName"),
@@ -74,6 +74,7 @@ object BusinessDetailsControllerSpec {
         override protected val navigator: Navigator = nav
         override protected val formModel: BusinessDetailsFormModel = testFormModel
         override protected val viewModel: BusinessDetailsViewModel = testViewModel
+
         override def messagesApi: MessagesApi = base.messagesApi
       }
   }

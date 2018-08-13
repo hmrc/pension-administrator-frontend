@@ -46,7 +46,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    connector.registerPsa(userAnswers).map( subscription =>
+    connector.registerPsa(userAnswers).map(subscription =>
       subscription shouldBe psaSubscriptionResponse
     )
 
@@ -76,8 +76,8 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-            ok("this-is-not-valid-json")
-              .withHeader("Content-Type", "application/json")
+          ok("this-is-not-valid-json")
+            .withHeader("Content-Type", "application/json")
         )
     )
 
@@ -131,9 +131,9 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
-            badRequest
-              .withHeader("Content-Type", "application/json")
-              .withBody(invalidCorrelationIdResponse)
+          badRequest
+            .withHeader("Content-Type", "application/json")
+            .withBody(invalidCorrelationIdResponse)
         )
     )
 
@@ -199,17 +199,17 @@ object PensionsSchemeConnectorSpec extends OptionValues {
   private val validResponse =
     Json.stringify(
       Json.obj(
-      "processingDate" -> "1969-07-20T20:18:00Z",
-      "formBundle" -> "test-form-bundle",
-      "psaId" -> psaId
+        "processingDate" -> "1969-07-20T20:18:00Z",
+        "formBundle" -> "test-form-bundle",
+        "psaId" -> psaId
       )
     )
 
   private val invalidPayloadResponse =
     Json.stringify(
       Json.obj(
-      "code" -> "INVALID_PAYLOAD",
-      "reason" -> "test-reason"
+        "code" -> "INVALID_PAYLOAD",
+        "reason" -> "test-reason"
       )
     )
 

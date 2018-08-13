@@ -37,7 +37,9 @@ sealed trait RegistrationLegalStatus
 object RegistrationLegalStatus extends Enumerable.Implicits {
 
   case object Individual extends WithName("Individual") with RegistrationLegalStatus
+
   case object Partnership extends WithName("Partnership") with RegistrationLegalStatus
+
   case object LimitedCompany extends WithName("Limited Company") with RegistrationLegalStatus
 
   val values = Seq(
@@ -56,6 +58,7 @@ sealed trait RegistrationCustomerType
 object RegistrationCustomerType extends Enumerable.Implicits {
 
   case object UK extends WithName("UK") with RegistrationCustomerType
+
   case object NonUK extends WithName("NON-UK") with RegistrationCustomerType
 
   def fromAddress(address: TolerantAddress): RegistrationCustomerType = {
@@ -81,6 +84,7 @@ sealed trait RegistrationIdType
 object RegistrationIdType extends Enumerable.Implicits {
 
   case object Nino extends WithName("NINO") with RegistrationIdType
+
   case object UTR extends WithName("UTR") with RegistrationIdType
 
   val values = Seq(

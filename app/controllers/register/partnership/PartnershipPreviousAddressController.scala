@@ -45,7 +45,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      formProvider: AddressFormProvider,
                                                      val countryOptions: CountryOptions,
                                                      val auditService: AuditService
-                                                   ) extends ManualAddressController with I18nSupport {
+                                                    ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = PartnershipPreviousAddressController.onSubmit _
 

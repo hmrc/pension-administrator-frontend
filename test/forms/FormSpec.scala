@@ -24,7 +24,7 @@ import play.api.data.{Form, FormError}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 
-trait FormSpec extends WordSpec with OptionValues with Matchers with GuiceOneAppPerSuite{
+trait FormSpec extends WordSpec with OptionValues with Matchers with GuiceOneAppPerSuite {
 
   def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) = {
 

@@ -139,7 +139,7 @@ trait Constraints {
 
   protected def adviserName(errorKey: String): Constraint[String] = regexp(adviserNameRegex, errorKey)
 
-  protected def validNino(invalidKey: String) : Constraint[String] = {
+  protected def validNino(invalidKey: String): Constraint[String] = {
     Constraint {
       case nino if Nino.isValid(nino.replaceAll(" ", "").toUpperCase) => Valid
       case _ => Invalid(invalidKey)

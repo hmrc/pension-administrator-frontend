@@ -18,8 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import forms.BusinessDetailsFormModel
-import forms.BusinessDetailsFormProvider
+import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{BusinessDetails, NormalMode}
@@ -36,10 +35,13 @@ import scala.concurrent.Future
 trait BusinessDetailsController extends FrontendController with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
+
   protected def dataCacheConnector: DataCacheConnector
+
   protected def navigator: Navigator
 
   protected def formModel: BusinessDetailsFormModel
+
   protected def viewModel: BusinessDetailsViewModel
 
   private lazy val form = new BusinessDetailsFormProvider()(formModel)

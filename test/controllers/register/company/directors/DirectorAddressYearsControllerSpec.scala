@@ -25,7 +25,7 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
 import models.register.company.CompanyDetails
-import models.{AddressYears, PersonDetails, Index, NormalMode}
+import models.{AddressYears, Index, NormalMode, PersonDetails}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._

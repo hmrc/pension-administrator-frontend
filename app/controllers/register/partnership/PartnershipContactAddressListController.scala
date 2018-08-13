@@ -24,7 +24,7 @@ import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
 import javax.inject.Inject
-import models.{Index, Mode}
+import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -32,15 +32,15 @@ import utils.annotations.Partnership
 import viewmodels.address.AddressListViewModel
 
 class PartnershipContactAddressListController @Inject()(
-                                                val cacheConnector: DataCacheConnector,
-                                                @Partnership val navigator: Navigator,
-                                                val appConfig: FrontendAppConfig,
-                                                val messagesApi: MessagesApi,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: AddressListFormProvider
-                                                ) extends AddressListController with Retrievals {
+                                                         val cacheConnector: DataCacheConnector,
+                                                         @Partnership val navigator: Navigator,
+                                                         val appConfig: FrontendAppConfig,
+                                                         val messagesApi: MessagesApi,
+                                                         authenticate: AuthAction,
+                                                         getData: DataRetrievalAction,
+                                                         requireData: DataRequiredAction,
+                                                         formProvider: AddressListFormProvider
+                                                       ) extends AddressListController with Retrievals {
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
     (PartnershipDetailsId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case details ~ addresses =>

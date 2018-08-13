@@ -16,13 +16,12 @@
 
 package connectors
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
+import javax.inject.Inject
 import play.api.libs.ws.WSClient
 import uk.gov.hmrc.crypto.ApplicationCrypto
 
-class PSANameCacheConnector @Inject() (
+class PSANameCacheConnector @Inject()(
                                        config: FrontendAppConfig,
                                        http: WSClient,
                                        crypto: ApplicationCrypto

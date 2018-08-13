@@ -32,17 +32,17 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
   def createView = () => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
 
   def createViewUsingForm = (form: Form[_]) => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+
   val utrOptions = Seq("true", "false")
 
   "DirectorUniqueTaxReference view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithSecondaryHeader(createView, directorName )
+    behave like pageWithSecondaryHeader(createView, directorName)
     behave like pageWithBackLink(createView)
   }
 
   "DirectorUniqueTaxReference view" when {
     "rendered" must {
-
 
 
       "contain radio buttons for the value" in {
@@ -53,13 +53,13 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
       }
     }
 
-    for(option <- utrOptions) {
+    for (option <- utrOptions) {
       s"rendered with a value of '$option'" must {
         s"have the '$option' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("utr.hasUtr" -> s"$option"))))
           assertContainsRadioButton(doc, s"utr_hasUtr-$option", "utr.hasUtr", option, true)
 
-          for(unselectedOption <- utrOptions.filterNot(o => o == option)) {
+          for (unselectedOption <- utrOptions.filterNot(o => o == option)) {
             assertContainsRadioButton(doc, s"utr_hasUtr-$unselectedOption", "utr.hasUtr", unselectedOption, false)
           }
         }

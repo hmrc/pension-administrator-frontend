@@ -63,6 +63,7 @@ object AddEntityControllerSpec {
     }
 
   }
+
   def request(answers: UserAnswers = UserAnswers(), fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
     DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
@@ -71,8 +72,11 @@ object AddEntityControllerSpec {
 class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
 
   import AddEntityControllerSpec._
+
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
+
   // scalastyle:off magic.number
   private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
@@ -80,14 +84,14 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
   private val maxPartners = 10
 
   def viewmodel(entities: Seq[Person] = Seq.empty) = EntityViewModel(
-      postCall = Call("GET", "www.example.com"),
-      title = "title",
-      heading = "heading",
-      entities = entities,
-      maxLimit = 10,
-      entityType = "partners",
-      subHeading = Some(Message("site.secondaryHeader"))
-    )
+    postCall = Call("GET", "www.example.com"),
+    title = "title",
+    heading = "heading",
+    entities = entities,
+    maxLimit = 10,
+    entityType = "partners",
+    subHeading = Some(Message("site.secondaryHeader"))
+  )
 
   "get" must {
 

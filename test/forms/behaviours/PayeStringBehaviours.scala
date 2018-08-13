@@ -24,10 +24,10 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait PayeStringBehaviours extends FormSpec with StringFieldBehaviours with Constraints with PayeMappingString {
 
   def formWithPayeField(
-       form: Form[_],
-       fieldName: String,
-       keyPayeLength: String,
-       keyPayeInvalid: String): Unit = {
+                         form: Form[_],
+                         fieldName: String,
+                         keyPayeLength: String,
+                         keyPayeInvalid: String): Unit = {
 
     "behave like a form with a paye field" should {
       behave like fieldThatBindsValidData(

@@ -27,9 +27,9 @@ import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MongoCacheConnector @Inject() (
-                                      val sessionRepository: SessionRepository
-                                    ) extends DataCacheConnector {
+class MongoCacheConnector @Inject()(
+                                     val sessionRepository: SessionRepository
+                                   ) extends DataCacheConnector {
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit

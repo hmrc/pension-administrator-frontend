@@ -33,10 +33,10 @@ trait ViewSpecBase extends SpecBase {
   def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String) =
     assertEqualsValue(doc, cssSelector, messages(expectedMessageKey))
 
-  def assertEqualsValue(doc : Document, cssSelector : String, expectedValue: String) = {
+  def assertEqualsValue(doc: Document, cssSelector: String, expectedValue: String) = {
     val elements = doc.select(cssSelector)
 
-    if(elements.isEmpty) throw new IllegalArgumentException(s"CSS Selector $cssSelector wasn't rendered.")
+    if (elements.isEmpty) throw new IllegalArgumentException(s"CSS Selector $cssSelector wasn't rendered.")
 
     //<p> HTML elements are rendered out with a carriage return on some pages, so discount for comparison
     assert(elements.first().html().replace("\n", "") == expectedValue)
@@ -45,10 +45,10 @@ trait ViewSpecBase extends SpecBase {
   def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*) = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
-    headers.first.text.replaceAll("\u00a0", " ") mustBe messages(expectedMessageKey, args:_*).replaceAll("&nbsp;", " ")
+    headers.first.text.replaceAll("\u00a0", " ") mustBe messages(expectedMessageKey, args: _*).replaceAll("&nbsp;", " ")
   }
 
-  def assertContainsText(doc:Document, text: String) = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
+  def assertContainsText(doc: Document, text: String) = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
 
   def assertContainsMessages(doc: Document, expectedMessageKeys: String*) = {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
@@ -116,7 +116,7 @@ trait ViewSpecBase extends SpecBase {
 
   def haveDynamicText(messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
     view =>
-      val text = Message(messageKey, args:_*).resolve
+      val text = Message(messageKey, args: _*).resolve
       MatchResult(
         Jsoup.parse(view().toString).toString.contains(text),
         s"text $text is not rendered on the page",
@@ -126,7 +126,7 @@ trait ViewSpecBase extends SpecBase {
 
   def haveElementWithText(id: String, messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
     view =>
-      val text = messages(messageKey, args:_*)
+      val text = messages(messageKey, args: _*)
       val element = Jsoup.parse(view().toString()).getElementById(id)
       MatchResult(
         element.text().equals(text),
@@ -173,11 +173,11 @@ trait ViewSpecBase extends SpecBase {
     view =>
       val doc = Jsoup.parse(view().toString())
       val label = doc.select(s"label[for=$forId]")
-    MatchResult(
-      label.size == 1 && label.text == text,
-      s"Label for $forId and text $text not rendered on page",
-      s"Label for $forId and text $text rendered on page"
-    )
+      MatchResult(
+        label.size == 1 && label.text == text,
+        s"Label for $forId and text $text not rendered on page",
+        s"Label for $forId and text $text rendered on page"
+      )
   }
 
   def assertLink(doc: Document, linkId: String, url: String): Assertion = {

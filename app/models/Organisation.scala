@@ -18,8 +18,7 @@ package models
 
 import models.register.BusinessType
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany, LimitedLiabilityPartnership, LimitedPartnership, UnlimitedCompany}
-import play.api.libs.json.Json
-import play.api.libs.json._
+import play.api.libs.json.{Json, _}
 import utils.EnumUtils
 
 object OrganisationTypeEnum extends Enumeration {
@@ -37,7 +36,7 @@ case class Organisation(organisationName: String, organisationType: Organisation
 
 object Organisation {
 
-  def apply (organisationName: String, businessType: BusinessType): Organisation = {
+  def apply(organisationName: String, businessType: BusinessType): Organisation = {
     val organisationType = businessType match {
       case LimitedCompany => OrganisationTypeEnum.CorporateBody
       case BusinessPartnership => OrganisationTypeEnum.Partnership

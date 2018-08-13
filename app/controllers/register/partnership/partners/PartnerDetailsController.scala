@@ -30,14 +30,14 @@ import utils.annotations.PartnershipPartner
 import viewmodels.PersonDetailsViewModel
 
 class PartnerDetailsController @Inject()(
-  val appConfig: FrontendAppConfig,
-  override val messagesApi: MessagesApi,
-  val dataCacheConnector: DataCacheConnector,
-  @PartnershipPartner val navigator: Navigator,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction
-) extends PersonDetailsController {
+                                          val appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          val dataCacheConnector: DataCacheConnector,
+                                          @PartnershipPartner val navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction
+                                        ) extends PersonDetailsController {
 
   private[partners] def viewModel(mode: Mode, index: Int) =
     PersonDetailsViewModel(

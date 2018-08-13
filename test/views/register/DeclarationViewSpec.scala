@@ -30,6 +30,7 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
   private val cancelCall = controllers.routes.IndexController.onPageLoad()
 
   private def createView = () => declaration(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
+
   private def createViewUsingForm(form: Form[_]) = declaration(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
 
   "Declaration view" must {

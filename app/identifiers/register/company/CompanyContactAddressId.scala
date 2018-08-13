@@ -21,7 +21,8 @@ import models.Address
 import utils.checkyouranswers.AddressCYA
 import utils.countryOptions.CountryOptions
 
-case object CompanyContactAddressId extends TypedIdentifier[Address] { self =>
+case object CompanyContactAddressId extends TypedIdentifier[Address] {
+  self =>
 
   override def toString: String = "companyContactAddress"
 

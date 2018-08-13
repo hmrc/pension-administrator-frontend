@@ -21,9 +21,9 @@ import models._
 import models.register.adviser.AdviserDetails
 import models.register.company.CompanyDetails
 import play.api.libs.json.Reads
-import utils.{DateHelper, UserAnswers}
 import utils.checkyouranswers.CheckYourAnswers.addressAnswer
 import utils.countryOptions.CountryOptions
+import utils.{DateHelper, UserAnswers}
 import viewmodels.AnswerRow
 
 import scala.language.implicitConversions
@@ -57,7 +57,7 @@ object CheckYourAnswers {
   implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map{ adviserDetails =>
+        userAnswers.get(id).map { adviserDetails =>
           Seq(
             AnswerRow("cya.label.name", Seq(adviserDetails.name), false, changeUrl),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviserDetails.email), false, changeUrl),
@@ -71,7 +71,7 @@ object CheckYourAnswers {
   implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map{
+        userAnswers.get(id).map {
           case Paye.Yes(paye) => Seq(
             AnswerRow(
               "commom.paye.label",
@@ -86,7 +86,7 @@ object CheckYourAnswers {
               Seq("site.no"),
               true,
               changeUrl
-          ))
+            ))
         } getOrElse Seq.empty[AnswerRow]
     }
   }
@@ -94,7 +94,7 @@ object CheckYourAnswers {
   implicit def vat[I <: TypedIdentifier[Vat]](implicit r: Reads[Vat]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map{
+        userAnswers.get(id).map {
           case Vat.Yes(vat) => Seq(
             AnswerRow(
               "common.vatRegistrationNumber.checkYourAnswersLabel",
@@ -109,7 +109,7 @@ object CheckYourAnswers {
               Seq("site.no"),
               true,
               changeUrl
-          ))
+            ))
         } getOrElse Seq.empty[AnswerRow]
     }
   }
@@ -129,7 +129,7 @@ object CheckYourAnswers {
   implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map{ contactDetails =>
+        userAnswers.get(id).map { contactDetails =>
           Seq(
             AnswerRow(
               "contactDetails.email",
@@ -183,7 +183,7 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
 case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: String = "cya.label.name", utrLabel: String = "businessDetails.utr") {
   def apply()(implicit rds: Reads[BusinessDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map{ businessDetails =>
+      userAnswers.get(id).map { businessDetails =>
         val nameRow = AnswerRow(
           nameLabel,
           Seq(businessDetails.companyName),
@@ -236,7 +236,7 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
 case class PersonDetailsCYA[I <: TypedIdentifier[PersonDetails]](label: String = "cya.label.name") {
   def apply()(implicit r: Reads[PersonDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map{ personDetails =>
+      userAnswers.get(id).map { personDetails =>
         Seq(
           AnswerRow("cya.label.name", Seq(s"${personDetails.firstName} ${personDetails.lastName}"), false, changeUrl),
           AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(personDetails.dateOfBirth)}"), false, changeUrl)
@@ -252,7 +252,7 @@ case class NinoCYA[I <: TypedIdentifier[Nino]](
                                               ) {
   def apply()(implicit r: Reads[Nino]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map{
+      userAnswers.get(id).map {
         case Nino.Yes(nino) => Seq(
           AnswerRow(questionLabel, Seq(s"${Nino.Yes}"), true, changeUrl),
           AnswerRow(ninoLabel, Seq(nino), true, changeUrl)
@@ -273,7 +273,7 @@ case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
                                                                           ) {
   def apply()(implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map{
+      userAnswers.get(id).map {
         case UniqueTaxReference.Yes(utr) => Seq(
           AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.Yes}"), true, changeUrl),
           AnswerRow(utrLabel, Seq(utr), true, changeUrl)
@@ -312,7 +312,7 @@ case class CompanyDetailsCYA[I <: TypedIdentifier[CompanyDetails]](
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map { companyDetails =>
 
-          val vat = companyDetails.vatRegistrationNumber.map{ vatRegNo =>
+          val vat = companyDetails.vatRegistrationNumber.map { vatRegNo =>
             Seq(AnswerRow(
               vatLabel,
               Seq(vatRegNo),
@@ -321,7 +321,7 @@ case class CompanyDetailsCYA[I <: TypedIdentifier[CompanyDetails]](
             ))
           } getOrElse Seq.empty[AnswerRow]
 
-          val paye = companyDetails.payeEmployerReferenceNumber.map{ payeRefNo =>
+          val paye = companyDetails.payeEmployerReferenceNumber.map { payeRefNo =>
             Seq(AnswerRow(
               payeLabel,
               Seq(payeRefNo),

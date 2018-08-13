@@ -25,7 +25,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
   "A Postcode Lookup response payload" should {
     "map correctly to a tolerant addres" when {
       val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"), JsString("line4"))),
-      "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK")))
+        "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK")))
 
       "We have line1" in {
         val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
@@ -65,7 +65,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
       "We have more than 4 lines in the array containing address lines" in {
         val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"), JsString("line4"), JsString("line5"))),
-          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK")))
+          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK")))
 
         val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
@@ -75,7 +75,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
       "we have a town" which {
         "maps to line2" in {
           val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine2 = Some("Tyne and Wear"))
 
@@ -83,8 +83,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "maps to line3" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"))
 
@@ -92,8 +92,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "maps to line4" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("line3"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine4 = Some("Tyne and Wear"))
 
@@ -101,16 +101,16 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "is already included in element 2 in lines sequence" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("Tyne & Wear"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("Tyne & Wear"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
           result.addressLine3 mustBe None
         }
 
         "is already included in element 3 in lines sequence" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("Tyne & Wear"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("Tyne & Wear"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
           result.addressLine4 mustBe None
@@ -120,7 +120,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
       "we have a county" which {
         "maps to line2" in {
           val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "county" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine2 = Some("Tyne and Wear"))
 
@@ -128,8 +128,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "maps to line3" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "county" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"))
 
@@ -137,8 +137,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "maps to line4" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("line3"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "county" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine4 = Some("Tyne and Wear"))
 
@@ -146,16 +146,16 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "is already included in element 2 in lines sequence" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("Tyne & Wear"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("Tyne & Wear"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "county" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
           result.addressLine3 mustBe None
         }
 
         "is already included in element 3 in lines sequence" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("Tyne & Wear"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("Tyne & Wear")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("Tyne & Wear"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "county" -> JsString("Tyne & Wear")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
           result.addressLine4 mustBe None
@@ -165,7 +165,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
       "we have a town and county" which {
         "maps town to line 2 and county to line 3" in {
           val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine2 = Some("Tyne and Wear"), addressLine3 = Some("County Test"))
 
@@ -175,8 +175,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
 
         "maps town to line 3 and county to line 4" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"), addressLine4 = Some("County Test"))
 
@@ -185,8 +185,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "town is already included in lines so we map county to line 3" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("Tyne and Wear"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("Tyne and Wear"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("County Test"))
 
@@ -195,8 +195,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "county is already included in lines so don't map it to line 4" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("County Test"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("County Test"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("Tyne and Wear"))
 
@@ -205,8 +205,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "county and town are in lines so we don't map them" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("Tyne & Wear"),JsString("County Test"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("Tyne & Wear"), JsString("County Test"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
           result.addressLine3 mustBe None
@@ -215,8 +215,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
 
         "maps county to line 4" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("line3"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "town" -> JsString("Tyne & Wear"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine4 = Some("County Test"))
 
@@ -225,8 +225,8 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
         }
 
         "county is already in lines so we don't map it to line 4" in {
-          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"),JsString("line2"),JsString("County Test"))),
-            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK"), "county" -> JsString("County Test")))
+          val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("County Test"))),
+            "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK"), "county" -> JsString("County Test")))
           val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
           val expectedAddress = tolerantAddressSample.copy(addressLine3 = Some("County Test"))
 
@@ -237,7 +237,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
 
       "we have a list of addresses" in {
-        val addresses = JsArray(Seq(payload,payload))
+        val addresses = JsArray(Seq(payload, payload))
 
         val result = addresses.as[Seq[TolerantAddress]](TolerantAddress.postCodeLookupReads)
 
@@ -245,9 +245,9 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
       }
 
       "we have a & in the address" in {
-        val tolerantAddressSample = TolerantAddress(Some("line1 and line1"), Some("line2 and line2"), Some("line3 and line3"), Some("line4 and line4"),Some("ZZ1 1ZZ"),Some("UK"))
+        val tolerantAddressSample = TolerantAddress(Some("line1 and line1"), Some("line2 and line2"), Some("line3 and line3"), Some("line4 and line4"), Some("ZZ1 1ZZ"), Some("UK"))
         val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1 & line1"), JsString("line2 & line2"), JsString("line3 & line3"), JsString("line4 & line4"))),
-          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code"-> "UK")))
+          "postcode" -> "ZZ1 1ZZ", "country" -> Json.obj("code" -> "UK")))
 
         val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
@@ -259,5 +259,5 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
     }
   }
 
-  val tolerantAddressSample = TolerantAddress(Some("line1"), Some("line2"), Some("line3"), Some("line4"),Some("ZZ1 1ZZ"),Some("UK"))
+  val tolerantAddressSample = TolerantAddress(Some("line1"), Some("line2"), Some("line3"), Some("line4"), Some("ZZ1 1ZZ"), Some("UK"))
 }

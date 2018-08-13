@@ -15,6 +15,7 @@
  */
 
 package identifiers.register.company
+
 import identifiers._
 
 case object AddCompanyDirectorsId extends TypedIdentifier[Boolean] {

@@ -48,14 +48,14 @@ class KnownFactsRetrieval {
             country <- address.country
           } yield {
             val knownFacts = KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
-              address.postcode.fold(knownFacts){ postalCode =>
-                KnownFacts(knownFacts.identifiers, knownFacts.verifiers + KnownFact(postalKey, transformNonUKPostalCode(postalCode)))
-              }
+            address.postcode.fold(knownFacts) { postalCode =>
+              KnownFacts(knownFacts.identifiers, knownFacts.verifiers + KnownFact(postalKey, transformNonUKPostalCode(postalCode)))
+            }
           }
         case _ => None
       }
 
-  }
+    }
 
   private val transformNonUKPostalCode: String => String = _.replaceAll(" ", "").toUpperCase
 

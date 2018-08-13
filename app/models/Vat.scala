@@ -24,6 +24,7 @@ sealed trait Vat
 object Vat {
 
   case class Yes(vat: String) extends Vat
+
   case object No extends Vat
 
   def options: Seq[InputOption] = Seq(

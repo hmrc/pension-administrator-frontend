@@ -54,7 +54,7 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
     "returns an ok and Seq of Addresses" which {
       "means the AddressLookup has found data for the postcode" in {
 
-       val payload =
+        val payload =
           """[{"uprn":990091234524,
             |"localCustodian":{"code":121,"name":"North Somerset","J":""},
             |"id":"GB990091234524",
@@ -83,10 +83,9 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
             |""".stripMargin
 
 
-
         val tolerantAddressSample = Seq(
-          TolerantAddress(Some("10 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK")),
-          TolerantAddress(Some("2 Other Place"),Some("Some District"),Some("Anytown"),Some("Somerset"),Some("ZZ1 1ZZ"),Some("UK"))
+          TolerantAddress(Some("10 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK")),
+          TolerantAddress(Some("2 Other Place"), Some("Some District"), Some("Anytown"), Some("Somerset"), Some("ZZ1 1ZZ"), Some("UK"))
         )
 
         server.stubFor(
@@ -94,7 +93,7 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
             .withHeader("user-agent", matching(".+"))
             .willReturn(
               ok(payload)
-          )
+            )
         )
         connector.addressLookupByPostCode("ZZ1 1ZZ") map {
           result =>

@@ -113,7 +113,7 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec with AddressB
         "addressLine4",
         "error.address_line_4.length",
         "error.address_line_4.invalid",
-          validData,
+        validData,
         (model: Address) => model.addressLine4
       )
 

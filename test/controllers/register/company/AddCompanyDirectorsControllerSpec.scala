@@ -109,7 +109,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when maximum active directors exist and the user submits" in {
-      val directorDetails = Seq.fill(maxDirectors)(johnDoe) ++Seq(joeBloggs.copy(isDeleted = true))
+      val directorDetails = Seq.fill(maxDirectors)(johnDoe) ++ Seq(joeBloggs.copy(isDeleted = true))
 
       val getRelevantData = dataRetrievalAction(directorDetails: _*)
 
@@ -190,7 +190,9 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   // scalastyle:on magic.number
 
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+
   private def editLink(index: Int) = controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index).url
+
   // scalastyle:off magic.number
   private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)

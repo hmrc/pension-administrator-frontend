@@ -32,7 +32,7 @@ class DeclarationWorkingKnowledgeFormProviderSpec extends OptionFieldBehaviours 
     behave like optionsField[DeclarationWorkingKnowledge](
       form,
       fieldName,
-      validValues  = DeclarationWorkingKnowledge.values,
+      validValues = DeclarationWorkingKnowledge.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

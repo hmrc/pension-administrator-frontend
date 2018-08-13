@@ -20,7 +20,8 @@ import identifiers._
 import models.BusinessDetails
 import utils.checkyouranswers.BusinessDetailsCYA
 
-case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] { self =>
+case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] {
+  self =>
   override def toString: String = "businessDetails"
 
   implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()

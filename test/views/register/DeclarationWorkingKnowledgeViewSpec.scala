@@ -16,13 +16,12 @@
 
 package views.register
 
-import play.api.data.Form
-import controllers.register.routes
 import forms.register.DeclarationWorkingKnowledgeFormProvider
-import views.behaviours.ViewBehaviours
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.ViewBehaviours
 import views.html.register.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {

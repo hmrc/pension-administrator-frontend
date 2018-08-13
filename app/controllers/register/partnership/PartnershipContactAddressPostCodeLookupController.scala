@@ -43,12 +43,12 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
                                                                    getData: DataRetrievalAction,
                                                                    requireData: DataRequiredAction,
                                                                    formProvider: PostCodeLookupFormProvider
-                                                             ) extends PostcodeLookupController with Retrievals {
+                                                                 ) extends PostcodeLookupController with Retrievals {
 
 
   def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      PartnershipDetailsId.retrieve.right.map{ details =>
+      PartnershipDetailsId.retrieve.right.map { details =>
         PostcodeLookupViewModel(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
           routes.PartnershipContactAddressController.onPageLoad(mode),

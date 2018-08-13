@@ -25,5 +25,6 @@ case class IsDirectorCompleteId(index: Int) extends TypedIdentifier[Boolean] {
 
 object IsDirectorCompleteId {
   def collectionPath: JsPath = JsPath \ "directors" \\ IsDirectorCompleteId.toString
+
   override def toString: String = "isDirectorComplete"
 }

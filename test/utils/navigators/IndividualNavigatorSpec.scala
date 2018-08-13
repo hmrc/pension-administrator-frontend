@@ -32,37 +32,38 @@ import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
+
   import IndividualNavigatorSpec._
 
   //Remove the routes and the corresponding tests once the toggle is removed
   def toggledRoute(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id",              "User Answers", "Next Page (Normal Mode)",    "Save(NormalMode)", "Next Page (CheckMode)",  "Save(CheckMode"),
-    (WhatYouWillNeedId, emptyAnswers,   addressYearsPage(NormalMode), true,               None,                     false)
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    (WhatYouWillNeedId, emptyAnswers, addressYearsPage(NormalMode), true, None, false)
   )
 
   //noinspection ScalaStyle
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id",                                      "User Answers",               "Next Page (Normal Mode)",              "Save(NormalMode)", "Next Page (CheckMode)",                     "Save(CheckMode"),
-    (IndividualDetailsCorrectId,                detailsCorrect,               whatYouWillNeedPage,                    false,              None,                                        false),
-    (IndividualDetailsCorrectId,                detailsIncorrect,             youWillNeedToUpdatePage,                false,              None,                                        false),
-    (IndividualDetailsCorrectId,                lastPage,                     whatYouWillNeedPage,                    false,              None,                                        false),
-    (IndividualDetailsCorrectId,                emptyAnswers,                 sessionExpiredPage,                     false,              None,                                        false),
-    (WhatYouWillNeedId,                         emptyAnswers,                 sameContactAddressPage(NormalMode),     true,               None,                                        false),
-    (IndividualSameContactAddressId,            sameContactAddress,           addressYearsPage(NormalMode),           true,               Some(addressYearsPage(CheckMode)),           true),
-    (IndividualSameContactAddressId,            differentContactAddress,      contactPostCodeLookupPage(NormalMode),  true,               Some(contactPostCodeLookupPage(CheckMode)),  true),
-    (IndividualSameContactAddressId,            sameContactAddressIncomplete, contactAddressPage(NormalMode),         true,               Some(contactAddressPage(CheckMode)),         true),
-    (IndividualContactAddressPostCodeLookupId,  emptyAnswers,                 contactAddressListPage(NormalMode),     false,              Some(contactAddressListPage(CheckMode)),     false),
-    (IndividualContactAddressListId,            emptyAnswers,                 contactAddressPage(NormalMode),         true,               Some(contactAddressPage(CheckMode)),         true),
-    (IndividualContactAddressId,                emptyAnswers,                 addressYearsPage(NormalMode),           true,               Some(addressYearsPage(CheckMode)),           true),
-    (IndividualAddressYearsId,                  addressYearsOverAYear,        contactDetailsPage,                     true,               Some(checkYourAnswersPage),                  true),
-    (IndividualAddressYearsId,                  addressYearsUnderAYear,       previousPostCodeLookupPage(NormalMode), true,               Some(previousPostCodeLookupPage(CheckMode)), true),
-    (IndividualAddressYearsId,                  emptyAnswers,                 sessionExpiredPage,                     false,              Some(sessionExpiredPage),                    false),
-    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers,                 previousAddressListPage(NormalMode),    false,              Some(previousAddressListPage(CheckMode)),    false),
-    (IndividualPreviousAddressListId,           emptyAnswers,                 previousAddressPage(NormalMode),        true,               Some(previousAddressPage(CheckMode)),        true),
-    (IndividualPreviousAddressId,               emptyAnswers,                 contactDetailsPage,                     true,               Some(checkYourAnswersPage),                  true),
-    (IndividualContactDetailsId,                emptyAnswers,                 individualDateOfBirthPage,              true,               Some(checkYourAnswersPage),                  true),
-    (IndividualDateOfBirthId,                   emptyAnswers,                 checkYourAnswersPage,                   true,               Some(checkYourAnswersPage),                  true),
-    (CheckYourAnswersId,                        emptyAnswers,                 declarationPage,                        true,               None,                                        false)
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    (IndividualDetailsCorrectId, detailsCorrect, whatYouWillNeedPage, false, None, false),
+    (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, false, None, false),
+    (IndividualDetailsCorrectId, lastPage, whatYouWillNeedPage, false, None, false),
+    (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
+    (IndividualSameContactAddressId, sameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (IndividualSameContactAddressId, differentContactAddress, contactPostCodeLookupPage(NormalMode), true, Some(contactPostCodeLookupPage(CheckMode)), true),
+    (IndividualSameContactAddressId, sameContactAddressIncomplete, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), false, Some(contactAddressListPage(CheckMode)), false),
+    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (IndividualAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (IndividualAddressYearsId, addressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
+    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), false, Some(previousAddressListPage(CheckMode)), false),
+    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
+    (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (IndividualContactDetailsId, emptyAnswers, individualDateOfBirthPage, true, Some(checkYourAnswersPage), true),
+    (IndividualDateOfBirthId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
   val navigatorToggled = new IndividualNavigator(FakeDataCacheConnector, appConfig())

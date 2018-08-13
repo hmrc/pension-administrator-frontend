@@ -23,5 +23,5 @@ trait IdentifiedRequest {
   def externalId: String
 }
 
-case class AuthenticatedRequest[A] (request: Request[A], externalId: String, user: PSAUser) extends
+case class AuthenticatedRequest[A](request: Request[A], externalId: String, user: PSAUser) extends
   WrappedRequest[A](request) with IdentifiedRequest

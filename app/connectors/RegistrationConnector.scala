@@ -32,12 +32,12 @@ import scala.util.Failure
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {
   def registerWithIdOrganisation
-      (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
+  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
 
   def registerWithIdIndividual
-      (nino: String)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
+  (nino: String)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
 }
 
 @Singleton
@@ -46,8 +46,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
   override def registerWithIdOrganisation
-      (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
     val url = config.registerWithIdOrganisationUrl
 
@@ -57,7 +57,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
       "organisationType" -> organisation.organisationType.toString
     )
 
-    http.POST(url, body) map {response =>
+    http.POST(url, body) map { response =>
       require(response.status == Status.OK, "The only valid response to registerWithIdOrganisation is 200 OK")
 
       val json = Json.parse(response.body)
@@ -80,8 +80,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   }
 
   override def registerWithIdIndividual
-      (nino: String)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
+  (nino: String)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
 

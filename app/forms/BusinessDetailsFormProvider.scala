@@ -49,12 +49,12 @@ class BusinessDetailsFormProvider extends Mappings with Transforms {
 }
 
 case class BusinessDetailsFormModel(
-  companyNameMaxLength: Int,
-  companyNameRequiredMsg: String,
-  companyNameLengthMsg: String,
-  companyNameInvalidMsg: String,
-  utrMaxLength: Int,
-  utrRequiredMsg: String,
-  utrLengthMsg: String,
-  utrInvalidMsg: String
-)
+                                     companyNameMaxLength: Int,
+                                     companyNameRequiredMsg: String,
+                                     companyNameLengthMsg: String,
+                                     companyNameInvalidMsg: String,
+                                     utrMaxLength: Int,
+                                     utrRequiredMsg: String,
+                                     utrLengthMsg: String,
+                                     utrInvalidMsg: String
+                                   )

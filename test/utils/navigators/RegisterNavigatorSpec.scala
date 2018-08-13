@@ -31,23 +31,26 @@ import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
+
   import RegisterNavigatorSpec._
+
   val navigator = new RegisterNavigator(FakeDataCacheConnector)
 
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id",                          "User Answers",                  "Next Page (Normal Mode)",       "Save(NormalMode)",  "Next Page (Check Mode)", "Save(CheckMode"),
-    (BusinessTypeId,                unlimitedCompany,                businessDetailsPage,             false,               None,                     false),
-    (BusinessTypeId,                limitedCompany,                  businessDetailsPage,             false,               None,                     false),
-    (BusinessTypeId,                businessPartnership,             partnershipBusinessDetails,      false,               None,                     false),
-    (BusinessTypeId,                limitedPartnership,              partnershipBusinessDetails,      false,               None,                     false),
-    (BusinessTypeId,                limitedLiabilityPartnership,     partnershipBusinessDetails,      false,               None,                     false),
-    (DeclarationId,                 emptyAnswers,                    declarationWorkingKnowledgePage, true,                None,                     false),
-    (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage,     true,                None,                     false),
-    (DeclarationWorkingKnowledgeId, haveAnAdviser,                   adviserDetailsPage,              true,                None,                     false),
-    (DeclarationWorkingKnowledgeId, emptyAnswers,                    sessionExpiredPage,              false,               None,                     false),
-    (DeclarationFitAndProperId,     emptyAnswers,                    confirmationPage,                false,               None,                     false)
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    (BusinessTypeId, unlimitedCompany, businessDetailsPage, false, None, false),
+    (BusinessTypeId, limitedCompany, businessDetailsPage, false, None, false),
+    (BusinessTypeId, businessPartnership, partnershipBusinessDetails, false, None, false),
+    (BusinessTypeId, limitedPartnership, partnershipBusinessDetails, false, None, false),
+    (BusinessTypeId, limitedLiabilityPartnership, partnershipBusinessDetails, false, None, false),
+    (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, true, None, false),
+    (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, true, None, false),
+    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserDetailsPage, true, None, false),
+    (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (DeclarationFitAndProperId, emptyAnswers, confirmationPage, false, None, false)
   )
+
   //scalastyle:on line.size.limit
 
   navigator.getClass.getSimpleName must {
@@ -84,7 +87,9 @@ object RegisterNavigatorSpec extends OptionValues {
   val limitedLiabilityPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.LimitedLiabilityPartnership).asOpt.value
 
-  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
+  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
+    val externalId: String = "test-external-id"
+  }
 
   private def dataDescriber(answers: UserAnswers): String = answers.toString
 

@@ -19,11 +19,11 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
+import controllers.register.partnership.partners.routes
+import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
 import models.{AddressYears, CheckMode, NormalMode}
 import utils.{Navigator, UserAnswers}
-import controllers.register.partnership.partners.routes
-import identifiers.register.partnership.partners._
 
 @Singleton
 class PartnerNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {

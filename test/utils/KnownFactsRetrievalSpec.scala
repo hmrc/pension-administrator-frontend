@@ -17,10 +17,10 @@
 package utils
 
 import base.SpecBase
+import identifiers.register.RegistrationInfoId
 import identifiers.register.company.ConfirmCompanyAddressId
-import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId}
 import models._
-import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
+import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
@@ -74,7 +74,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
           generator.retrieve(psa) mustEqual Some(KnownFacts(
             Set(KnownFact("PSAID", psa)),
             Set(KnownFact("NINO", nino)
-          )))
+            )))
 
         }
 
@@ -228,7 +228,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             generator.retrieve(psa) mustEqual Some(KnownFacts(
               Set(KnownFact("PSAID", psa)),
               Set(KnownFact("CTUTR", utr)
-            )))
+              )))
           }
 
         }
@@ -303,7 +303,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             generator.retrieve(psa) mustEqual Some(KnownFacts(
               Set(KnownFact("PSAID", psa)),
               Set(KnownFact("CountryCode", nonUk)
-            )))
+              )))
           }
 
         }

@@ -43,17 +43,17 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.{BusinessDetailsViewModel, Message}
 
 class PartnerShipBusinessDetailsControllerSpec extends ControllerSpecBase
-  with BusinessDetailsControllerBehaviour{
+  with BusinessDetailsControllerBehaviour {
 
   import PartnershipCompanyBusinessDetailsControllerSpec._
 
   "BusinessDetails Controller" must {
 
     appRunning()
-    behave like businessDetailsController(testFormModel,testViewModel,PartnershipDetailsId,createController(this,getEmptyData))
+    behave like businessDetailsController(testFormModel, testViewModel, PartnershipDetailsId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = createController(this,dontGetAnyData)(FakeDataCacheConnector,FakeNavigator).onPageLoad()(fakeRequest)
+      val result = createController(this, dontGetAnyData)(FakeDataCacheConnector, FakeNavigator).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -61,7 +61,7 @@ class PartnerShipBusinessDetailsControllerSpec extends ControllerSpecBase
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody()
-      val result = createController(this,dontGetAnyData)(FakeDataCacheConnector,FakeNavigator).onSubmit()(postRequest)
+      val result = createController(this, dontGetAnyData)(FakeDataCacheConnector, FakeNavigator).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -77,11 +77,11 @@ object PartnershipCompanyBusinessDetailsControllerSpec {
       companyNameMaxLength = 105,
       companyNameRequiredMsg = "partnershipBusinessDetails.error.partnershipName.required",
       companyNameLengthMsg = "partnershipBusinessDetails.error.partnershipName.length",
-      companyNameInvalidMsg= "partnershipBusinessDetails.error.partnershipName.invalid",
+      companyNameInvalidMsg = "partnershipBusinessDetails.error.partnershipName.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = "partnershipBusinessDetails.error.utr.required",
       utrLengthMsg = "partnershipBusinessDetails.error.utr.length",
-      utrInvalidMsg= "partnershipBusinessDetails.error.utr.invalid"
+      utrInvalidMsg = "partnershipBusinessDetails.error.utr.invalid"
     )
 
   lazy val testViewModel: BusinessDetailsViewModel =
@@ -95,16 +95,17 @@ object PartnershipCompanyBusinessDetailsControllerSpec {
       utrHint = Message("partnershipBusinessDetails.utr.hint")
     )
 
-  def createController(base: SpecBase,dataRetrieval:DataRetrievalAction): (DataCacheConnector, Navigator) => PartnershipBusinessDetailsController = {
+  def createController(base: SpecBase, dataRetrieval: DataRetrievalAction): (DataCacheConnector, Navigator) => PartnershipBusinessDetailsController = {
 
-    (connector,nav)=>new PartnershipBusinessDetailsController(
-      base.frontendAppConfig,
-      base.messagesApi,
-      connector,
-      nav,
-      FakeAuthAction,
-      dataRetrieval,
-      new DataRequiredActionImpl
-    )
+    (connector, nav) =>
+      new PartnershipBusinessDetailsController(
+        base.frontendAppConfig,
+        base.messagesApi,
+        connector,
+        nav,
+        FakeAuthAction,
+        dataRetrieval,
+        new DataRequiredActionImpl
+      )
   }
 }

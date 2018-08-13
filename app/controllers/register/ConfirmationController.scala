@@ -16,16 +16,15 @@
 
 package controllers.register
 
-import javax.inject.Inject
-
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import controllers.actions._
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.Retrievals
+import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
+import javax.inject.Inject
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.register.confirmation
 
 import scala.concurrent.Future
@@ -39,7 +38,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-    PsaSubscriptionResponseId.retrieve.right.map { response =>
+      PsaSubscriptionResponseId.retrieve.right.map { response =>
         dataCacheConnector.removeAll(request.externalId)
         Future.successful(Ok(confirmation(appConfig, response.psaId)))
       }

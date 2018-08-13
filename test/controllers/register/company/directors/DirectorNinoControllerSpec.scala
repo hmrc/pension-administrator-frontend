@@ -25,7 +25,7 @@ import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorNinoId}
 import models.register.company.CompanyDetails
-import models.{PersonDetails, Index, Nino, NormalMode}
+import models.{Index, Nino, NormalMode, PersonDetails}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call

@@ -23,7 +23,7 @@ import controllers.register.company.routes.AddCompanyDirectorsController
 import controllers.{ConfirmDeleteController, Retrievals}
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
-import models.{Index, NormalMode, PersonDetails}
+import models.{Index, NormalMode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import viewmodels.{ConfirmDeleteViewModel, Message}

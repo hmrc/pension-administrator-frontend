@@ -38,7 +38,7 @@ class DirectorContactDetailsController @Inject()(
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: ContactDetailsFormProvider,
-                                                  override  val psaNameCacheConnector: PSANameCacheConnector
+                                                  override val psaNameCacheConnector: PSANameCacheConnector
                                                 ) extends controllers.ContactDetailsController {
 
   private val form = formProvider()

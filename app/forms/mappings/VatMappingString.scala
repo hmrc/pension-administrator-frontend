@@ -20,7 +20,7 @@ import play.api.data.{Forms, Mapping}
 
 trait VatMappingString extends Mappings with Transforms {
 
-  def vatMapping(keyVatLength: String, keyVatInvalid: String    ): Mapping[String] = {
+  def vatMapping(keyVatLength: String, keyVatInvalid: String): Mapping[String] = {
     Forms.text
       .transform(vatRegistrationNumberTransform, noTransform)
       .verifying(

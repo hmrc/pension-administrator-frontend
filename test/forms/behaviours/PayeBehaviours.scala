@@ -29,7 +29,7 @@ class PayeBehaviours extends FormSpec with PayeMapping with RegexBehaviourSpec {
                     requiredKey: String,
                     keyPayeRequired: String,
                     keyPayeLength: String
-  ): Unit = {
+                  ): Unit = {
 
     "fail to bind when yes is selected but paye is not provided" in {
       val result = testForm.bind(Map("paye.hasPaye" -> "true"))

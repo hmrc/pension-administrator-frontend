@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
-import models.{Index, NormalMode}
+import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import viewmodels.{AlreadyDeletedViewModel, Message}
@@ -30,6 +30,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   private val directorName = "test first name test middle name test last name"
   private val companyName = "test company name"
+
   def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), directorName, onwardRoute)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =

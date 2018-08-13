@@ -26,11 +26,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constraints with AddressMapping {
 
   def formWithAddressField(
-      form: Form[_],
-      fieldName: String,
-      keyAddressRequired: String,
-      keyAddressLength: String,
-      keyAddressInvalid: String): Unit = {
+                            form: Form[_],
+                            fieldName: String,
+                            keyAddressRequired: String,
+                            keyAddressLength: String,
+                            keyAddressInvalid: String): Unit = {
 
     s"behave like a form with required address field $fieldName" should {
 
@@ -64,13 +64,13 @@ trait AddressBehaviours extends FormSpec with StringFieldBehaviours with Constra
   }
 
   def formWithOptionalAddressField[T](
-        form: Form[T],
-        fieldName: String,
-        keyAddressLength: String,
-        keyAddressInvalid: String,
-        validData: Map[String, String],
-        accessor: T => Option[String]
-  ): Unit = {
+                                       form: Form[T],
+                                       fieldName: String,
+                                       keyAddressLength: String,
+                                       keyAddressInvalid: String,
+                                       validData: Map[String, String],
+                                       accessor: T => Option[String]
+                                     ): Unit = {
 
     s"behave like a form with optional address field $fieldName" should {
 

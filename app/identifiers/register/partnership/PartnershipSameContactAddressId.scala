@@ -17,7 +17,7 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.JsResult
 import utils.UserAnswers
 
 case object PartnershipSameContactAddressId extends TypedIdentifier[Boolean] {

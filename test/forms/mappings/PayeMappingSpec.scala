@@ -20,7 +20,7 @@ import forms.behaviours.{PayeBehaviours, StringFieldBehaviours}
 import models.Paye
 import play.api.data.Form
 
-class PayeMappingSpec extends PayeBehaviours with StringFieldBehaviours{
+class PayeMappingSpec extends PayeBehaviours with StringFieldBehaviours {
 
   "A form with Paye Number" should {
     val mapping = payeMapping()

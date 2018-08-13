@@ -49,8 +49,11 @@ object PersonDetailsControllerSpec {
   def createController(base: ControllerSpecBase)(connector: DataCacheConnector, nav: Navigator): PersonDetailsController = {
     new PersonDetailsController {
       override def appConfig: FrontendAppConfig = base.frontendAppConfig
+
       override def dataCacheConnector: DataCacheConnector = connector
+
       override def navigator: Navigator = nav
+
       override def messagesApi: MessagesApi = base.messagesApi
     }
   }

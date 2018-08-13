@@ -24,19 +24,19 @@ import uk.gov.voa.play.form.ConditionalMappings.{mandatoryIfFalse, mandatoryIfTr
 trait UtrMapping extends Mappings with Transforms {
 
   protected def utrMapping(requiredKey: String,
-                                   requiredUtrKey: String,
-                                   utrLengthKey: String,
-                                   utrInvalidKey: String,
-                                   requiredReasonKey: String,
-                                   reasonLengthKey : String,
-                                   reasonInvalidKey: String = "common.error.reason.invalid"):
+                           requiredUtrKey: String,
+                           utrLengthKey: String,
+                           utrInvalidKey: String,
+                           requiredReasonKey: String,
+                           reasonLengthKey: String,
+                           reasonInvalidKey: String = "common.error.reason.invalid"):
   Mapping[UniqueTaxReference] = {
 
     tuple("hasUtr" -> boolean(requiredKey),
       "utr" -> mandatoryIfTrue(
         "utr.hasUtr",
         text(requiredUtrKey)
-          .transform(standardTextTransform,noTransform)
+          .transform(standardTextTransform, noTransform)
           .verifying(
             firstError(
               maxLength(UtrMapping.utrMaxLength, utrLengthKey),
@@ -62,7 +62,7 @@ trait UtrMapping extends Mappings with Transforms {
     }
   }
 
-  private[this] def fromUtr(uniqueTaxReference: UniqueTaxReference) ={
+  private[this] def fromUtr(uniqueTaxReference: UniqueTaxReference) = {
     uniqueTaxReference match {
       case UniqueTaxReference.Yes(utr) => (true, Some(utr), None)
       case UniqueTaxReference.No(reason) => (false, None, Some(reason))

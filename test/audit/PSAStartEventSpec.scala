@@ -17,9 +17,9 @@
 package audit
 
 import audit.testdoubles.StubSuccessfulAuditService
-import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.DataRequest
+import models.{PSAUser, UserType}
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import play.api.test.FakeRequest
 import utils.UserAnswers

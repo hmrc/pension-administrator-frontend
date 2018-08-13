@@ -16,8 +16,8 @@
 
 package forms.mappings
 
-import play.api.data.{Forms, Mapping}
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.{Forms, Mapping}
 
 trait CheckboxMapping {
 
