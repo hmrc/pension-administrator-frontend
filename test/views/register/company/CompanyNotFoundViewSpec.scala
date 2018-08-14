@@ -16,10 +16,7 @@
 
 package views.register.company
 
-import play.api.data.Form
-import controllers.routes
 import views.behaviours.ViewBehaviours
-import models.NormalMode
 import views.html.register.company.companyNotFound
 
 class CompanyNotFoundViewSpec extends ViewBehaviours {

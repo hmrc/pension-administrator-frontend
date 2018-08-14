@@ -16,10 +16,10 @@
 
 package views.register
 
-import play.api.data.Form
 import forms.register.BusinessTypeFormProvider
 import models.NormalMode
 import models.register.BusinessType
+import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.businessType
 
@@ -51,13 +51,13 @@ class BusinessTypeViewSpec extends ViewBehaviours {
       }
     }
 
-    for(option <- businessTypeOptions) {
+    for (option <- businessTypeOptions) {
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
           assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, isChecked = true)
 
-          for(unselectedOption <- businessTypeOptions.filterNot(o => o == option)) {
+          for (unselectedOption <- businessTypeOptions.filterNot(o => o == option)) {
             assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, isChecked = false)
           }
         }

@@ -24,8 +24,8 @@ import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
-import models.register.company._
 import models._
+import models.register.company._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call

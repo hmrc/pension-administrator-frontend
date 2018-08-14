@@ -22,7 +22,8 @@ import play.api.libs.json.JsResult
 import utils.UserAnswers
 import utils.checkyouranswers.AddressYearsCYA
 
-case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] { self =>
+case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
+  self =>
   override def toString: String = "companyAddressYears"
 
   override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = {

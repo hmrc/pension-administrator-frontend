@@ -43,21 +43,21 @@ trait NinoMapping extends Mappings with Transforms {
         text(requiredReasonKey)
           .verifying(firstError(maxLength(NinoMapping.reasonMaxLength, reasonLengthKey),
             safeText(invalidReasonKey)
-      )))
+          )))
     ).transform(toNino, fromNino)
   }
 
   private[this] def fromNino(nino: Nino): (Boolean, Option[String], Option[String]) = {
     nino match {
       case Nino.Yes(ninoNo) => (true, Some(ninoNo), None)
-      case Nino.No(reason) =>  (false, None, Some(reason))
+      case Nino.No(reason) => (false, None, Some(reason))
     }
   }
 
   private[this] def toNino(ninoTuple: (Boolean, Option[String], Option[String])) = {
     ninoTuple match {
-      case (true, Some(nino), None)  => Nino.Yes(nino)
-      case (false, None, Some(reason))  => Nino.No(reason)
+      case (true, Some(nino), None) => Nino.Yes(nino)
+      case (false, None, Some(reason)) => Nino.No(reason)
       case _ => throw new RuntimeException("Invalid selection")
     }
   }

@@ -24,11 +24,11 @@ case object IndividualSameContactAddressId extends TypedIdentifier[Boolean] {
   override def toString: String = "individualSameContactAddress"
 
   override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {
-            answers
-          .remove(IndividualContactAddressId)
-          .flatMap(_.remove(IndividualContactAddressPostCodeLookupId))
-          .flatMap(_.remove(IndividualAddressYearsId))
-          .flatMap(_.remove(IndividualPreviousAddressPostCodeLookupId))
-          .flatMap(_.remove(IndividualPreviousAddressId))
+    answers
+      .remove(IndividualContactAddressId)
+      .flatMap(_.remove(IndividualContactAddressPostCodeLookupId))
+      .flatMap(_.remove(IndividualAddressYearsId))
+      .flatMap(_.remove(IndividualPreviousAddressPostCodeLookupId))
+      .flatMap(_.remove(IndividualPreviousAddressId))
   }
 }

@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.ContactDetailsFormProvider
@@ -66,7 +66,7 @@ class PartnerContactDetailsControllerSpec extends ControllerSpecBase with CSRFRe
   }
 }
 
-object PartnerContactDetailsControllerSpec extends OptionValues{
+object PartnerContactDetailsControllerSpec extends OptionValues {
 
   val partnershipName = "Test Partner"
   val firstIndex = Index(0)

@@ -18,12 +18,12 @@ package viewmodels
 
 import play.api.mvc.Call
 
-case class BusinessDetailsViewModel (
-  postCall:Call,
-  title:Message,
-  heading:Message,
-  companyNameLabel:Message,
-  companyNameHint:Message,
-  utrLabel:Message,
-  utrHint:Message
-)
+case class BusinessDetailsViewModel(
+                                     postCall: Call,
+                                     title: Message,
+                                     heading: Message,
+                                     companyNameLabel: Message,
+                                     companyNameHint: Message,
+                                     utrLabel: Message,
+                                     utrHint: Message
+                                   )

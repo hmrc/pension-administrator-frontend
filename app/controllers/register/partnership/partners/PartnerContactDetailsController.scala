@@ -39,14 +39,14 @@ class PartnerContactDetailsController @Inject()(
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: ContactDetailsFormProvider,
-                                                 override  val psaNameCacheConnector: PSANameCacheConnector
+                                                 override val psaNameCacheConnector: PSANameCacheConnector
                                                ) extends ContactDetailsController with Retrievals {
 
   def viewModel(mode: Mode, index: Index) = Retrieval {
     implicit request =>
-      PartnerDetailsId(index).retrieve.right.map{ details =>
+      PartnerDetailsId(index).retrieve.right.map { details =>
         ContactDetailsViewModel(
-          routes.PartnerContactDetailsController.onSubmit(mode,index),
+          routes.PartnerContactDetailsController.onSubmit(mode, index),
           Message("partnership.partner.contactDetails.title"),
           Message("partnership.partner.contactDetails.heading"),
           None,
@@ -57,12 +57,12 @@ class PartnerContactDetailsController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map( vm => get(PartnerContactDetailsId(index), formProvider(), vm))
+      viewModel(mode, index).retrieve.right.map(vm => get(PartnerContactDetailsId(index), formProvider(), vm))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map( vm => post(PartnerContactDetailsId(index), mode, formProvider(), vm))
+      viewModel(mode, index).retrieve.right.map(vm => post(PartnerContactDetailsId(index), mode, formProvider(), vm))
   }
 
 }

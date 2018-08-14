@@ -19,19 +19,18 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.{CheckYourAnswersId, IsPartnershipCompleteId}
-import identifiers.register.partnership._
+import identifiers.register.partnership.{CheckYourAnswersId, _}
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, SectionComplete}
+import utils.Navigator
 import utils.annotations.Partnership
-import viewmodels.AnswerSection
-import views.html.check_your_answers
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import viewmodels.AnswerSection
+import views.html.check_your_answers
 
 
 class CheckYourAnswersController @Inject()(

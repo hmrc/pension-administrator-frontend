@@ -30,6 +30,7 @@ class CompanyReviewViewSpec extends ViewBehaviours {
     "director f", "director g", "director h", "director i", "director j")
 
   def createView = () => companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages)
+
   def createSecView = () => companyReview(frontendAppConfig, companyName, tenDirectors)(fakeRequest, messages)
 
   "CompanyReview view" must {
@@ -63,7 +64,7 @@ class CompanyReviewViewSpec extends ViewBehaviours {
   }
 
   "contain list of directors" in {
-    for(director <- directors)
+    for (director <- directors)
       createView must haveDynamicText(director)
   }
 

@@ -16,11 +16,11 @@
 
 package forms.register
 
-import javax.inject.Inject
 import forms.FormErrorHelper
 import forms.mappings.Mappings
-import play.api.data.Form
+import javax.inject.Inject
 import models.register.BusinessType
+import play.api.data.Form
 
 class BusinessTypeFormProvider @Inject() extends FormErrorHelper with Mappings {
 

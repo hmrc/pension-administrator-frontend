@@ -18,10 +18,10 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import connectors.DataCacheConnector
-import identifiers.register.partnership._
-import utils.{Navigator, UserAnswers}
 import controllers.register.partnership.routes
+import identifiers.register.partnership._
 import models._
+import utils.{Navigator, UserAnswers}
 
 @Singleton
 class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {

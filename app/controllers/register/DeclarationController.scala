@@ -16,13 +16,13 @@
 
 package controllers.register
 
-import javax.inject.Inject
 import com.google.inject.Singleton
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
+import javax.inject.Inject
 import models.{NormalMode, UserType}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

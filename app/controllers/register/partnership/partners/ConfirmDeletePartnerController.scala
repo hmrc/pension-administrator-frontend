@@ -39,7 +39,7 @@ class ConfirmDeletePartnerController @Inject()(
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
-      PartnerDetailsId(index).retrieve.right.map{ details =>
+      PartnerDetailsId(index).retrieve.right.map { details =>
         val viewModel = ConfirmDeleteViewModel(
           routes.ConfirmDeletePartnerController.onSubmit(index),
           controllers.register.partnership.routes.AddPartnerController.onPageLoad(),

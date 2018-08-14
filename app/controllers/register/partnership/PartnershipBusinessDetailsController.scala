@@ -29,23 +29,23 @@ import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{BusinessDetailsViewModel, Message}
 
-class PartnershipBusinessDetailsController @Inject()(val appConfig:FrontendAppConfig,
+class PartnershipBusinessDetailsController @Inject()(val appConfig: FrontendAppConfig,
                                                      val messagesApi: MessagesApi,
-                                                     val dataCacheConnector:DataCacheConnector,
+                                                     val dataCacheConnector: DataCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction
-                                                     ) extends BusinessDetailsController {
+                                                    ) extends BusinessDetailsController {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    implicit request=>
+    implicit request =>
       get(PartnershipDetailsId)
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-     post(PartnershipDetailsId)
+      post(PartnershipDetailsId)
   }
 
   // scalastyle:off magic.number
@@ -54,11 +54,11 @@ class PartnershipBusinessDetailsController @Inject()(val appConfig:FrontendAppCo
       companyNameMaxLength = 105,
       companyNameRequiredMsg = "partnershipBusinessDetails.error.partnershipName.required",
       companyNameLengthMsg = "partnershipBusinessDetails.error.partnershipName.length",
-      companyNameInvalidMsg= "partnershipBusinessDetails.error.partnershipName.invalid",
+      companyNameInvalidMsg = "partnershipBusinessDetails.error.partnershipName.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = "partnershipBusinessDetails.error.utr.required",
       utrLengthMsg = "partnershipBusinessDetails.error.utr.length",
-      utrInvalidMsg= "partnershipBusinessDetails.error.utr.invalid"
+      utrInvalidMsg = "partnershipBusinessDetails.error.utr.invalid"
     )
   // scalastyle:on magic.number
 

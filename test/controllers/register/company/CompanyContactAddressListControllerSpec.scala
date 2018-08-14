@@ -152,6 +152,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
 
   private val dataRetrievalAction =
     UserAnswers().businessDetails.companyContactAddressList(addresses).dataRetrievalAction
+
   private def requestResult[T](data: DataRetrievalAction = getEmptyData,
                                request: Application => Request[T],
                                test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {

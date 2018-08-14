@@ -16,11 +16,10 @@
 
 package connectors
 
-import javax.inject.Inject
-
 import com.google.inject.{ImplementedBy, Singleton}
 import config.FrontendAppConfig
-import models.register.{Enrol, KnownFacts}
+import javax.inject.Inject
+import models.register.KnownFacts
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}

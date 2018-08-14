@@ -21,7 +21,6 @@ import java.net.URLEncoder
 import base.SpecBase
 import config.FrontendAppConfig
 import controllers.routes
-import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Controller
 import play.api.test.FakeRequest

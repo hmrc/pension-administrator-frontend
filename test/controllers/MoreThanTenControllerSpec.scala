@@ -21,8 +21,8 @@ import config.FrontendAppConfig
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
-import models.{NormalMode, PSAUser, UserType}
 import models.requests.DataRequest
+import models.{NormalMode, PSAUser, UserType}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -130,6 +130,7 @@ object MoreThanTenControllerSpec {
 
     TestFixture(controller, connector)
   }
+
   private val form: Form[Boolean] = new MoreThanTenFormProvider()()
 
   def viewModel =

@@ -16,10 +16,9 @@
 
 package forms.register.company.directors
 
-import javax.inject.Inject
-
 import forms.FormErrorHelper
 import forms.mappings.NinoMapping
+import javax.inject.Inject
 import models.Nino
 import play.api.data.Form
 

@@ -19,7 +19,7 @@ package identifiers.register.partnership
 import identifiers.TypedIdentifier
 import models.AddressYears
 import models.AddressYears.OverAYear
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.JsResult
 import utils.UserAnswers
 
 case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {

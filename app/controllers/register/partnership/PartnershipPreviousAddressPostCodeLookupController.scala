@@ -60,6 +60,7 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
   }
 
 }
+
 object PartnershipPreviousAddressPostCodeLookupController {
 
   def viewModel(mode: Mode) = PostcodeLookupViewModel(

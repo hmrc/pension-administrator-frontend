@@ -28,10 +28,10 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
   val form: Form[A]
 
   private def assertFieldExists(
-                         createView: (Form[A]) => HtmlFormat.Appendable,
-                         fieldName: String,
-                         text: Option[String] = None,
-                         error: Option[FormError] = None): Unit = {
+                                 createView: (Form[A]) => HtmlFormat.Appendable,
+                                 fieldName: String,
+                                 text: Option[String] = None,
+                                 error: Option[FormError] = None): Unit = {
 
     val doc = error match {
       case Some(e) => asDocument(createView(form.withError(e)))
@@ -67,7 +67,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
     "behave like a question page" when {
       "rendered" must {
-        for(field <- fields) {
+        for (field <- fields) {
           s"contain an input for $field" in {
             val doc = asDocument(createView(form))
             assertRenderedById(doc, field)
@@ -80,7 +80,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         }
       }
 
-      for(field <- fields) {
+      for (field <- fields) {
         s"rendered with an error with field '$field'" must {
           "show an error summary" in {
             val doc = asDocument(createView(form.withError(FormError(field, "error"))))
@@ -98,9 +98,9 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
   }
 
   def pageWithLabel(createView: (Form[A]) => HtmlFormat.Appendable,
-                     forElement: String,
-                     expectedText: String,
-                     expectedHintText: Option[String] = None): Unit = {
+                    forElement: String,
+                    expectedText: String,
+                    expectedHintText: Option[String] = None): Unit = {
     s"behave like a question page with labels and optional hint for $forElement" in {
       val doc = asDocument(createView(form))
       assertContainsLabel(doc, forElement, expectedText, expectedHintText)
@@ -109,10 +109,10 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   // scalastyle:off method.length
   def pageWithDateField(
-      createView: (Form[A]) => HtmlFormat.Appendable,
-      fieldName: String,
-      label: String,
-      hint: Option[String]): Unit = {
+                         createView: (Form[A]) => HtmlFormat.Appendable,
+                         fieldName: String,
+                         label: String,
+                         hint: Option[String]): Unit = {
 
     "hava a date label?" in {
       assertFieldExists(createView, s"$fieldName-label", Some(label))
@@ -171,6 +171,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
 
   }
+
   // scalastyle:on method.length
 
 }

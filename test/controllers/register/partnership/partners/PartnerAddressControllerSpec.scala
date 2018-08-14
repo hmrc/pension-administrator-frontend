@@ -188,7 +188,9 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   )
 
   private val dataWithAddresses = new FakeDataRetrievalAction(Some(partnersWithAddresses))
+
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
   private val auditService = new StubSuccessfulAuditService()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

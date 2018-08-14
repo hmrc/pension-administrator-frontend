@@ -16,10 +16,9 @@
 
 package utils.countryOptions
 
-import javax.inject.Singleton
-
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import javax.inject.Singleton
 import play.api.Environment
 import utils.InputOption
 

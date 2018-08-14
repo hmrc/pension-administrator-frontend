@@ -118,11 +118,11 @@ object BusinessDetailsFormProviderSpec {
       companyNameMaxLength = 105,
       companyNameRequiredMsg = "businessDetails.error.companyName.required",
       companyNameLengthMsg = "businessDetails.error.companyName.length",
-      companyNameInvalidMsg= "businessDetails.error.companyName.invalid",
+      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = "businessDetails.error.utr.required",
       utrLengthMsg = "businessDetails.error.utr.length",
-      utrInvalidMsg= "businessDetails.error.utr.invalid"
+      utrInvalidMsg = "businessDetails.error.utr.invalid"
     )
 
 }

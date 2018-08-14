@@ -19,17 +19,16 @@ package forms.behaviours
 import forms.FormSpec
 import forms.mappings.{Constraints, EmailMapping}
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
 trait EmailBehaviours extends FormSpec with StringFieldBehaviours with Constraints with EmailMapping {
 
   def formWithEmailField(
-    form: Form[_],
-    fieldName: String,
-    keyEmailRequired: String,
-    keyEmailLength: String,
-    keyEmailInvalid: String
-  ): Unit = {
+                          form: Form[_],
+                          fieldName: String,
+                          keyEmailRequired: String,
+                          keyEmailLength: String,
+                          keyEmailInvalid: String
+                        ): Unit = {
 
     "behave like a form with an email field" should {
 

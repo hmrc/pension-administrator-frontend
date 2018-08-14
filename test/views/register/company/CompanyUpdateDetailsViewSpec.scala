@@ -16,10 +16,7 @@
 
 package views.register.company
 
-import play.api.data.Form
-import controllers.routes
 import views.behaviours.ViewBehaviours
-import models.NormalMode
 import views.html.register.company.companyUpdateDetails
 
 class CompanyUpdateDetailsViewSpec extends ViewBehaviours {
@@ -34,7 +31,7 @@ class CompanyUpdateDetailsViewSpec extends ViewBehaviours {
     "have link to companies house" in {
       createView must haveLink(
         frontendAppConfig.tellCompaniesHouseCompanyChangesUrl,
-           "companies-house-link"
+        "companies-house-link"
       )
     }
 

@@ -23,12 +23,12 @@ import play.api.data.{Form, FormError}
 trait PhoneNumberBehaviours extends FormSpec with StringFieldBehaviours with Constraints with PhoneNumberMapping {
 
   def formWithPhoneNumberField(
-                          form: Form[_],
-                          fieldName: String,
-                          keyPhoneNumberRequired: String,
-                          keyPhoneNumberLength: String,
-                          keyPhoneNumberInvalid: String
-                        ): Unit = {
+                                form: Form[_],
+                                fieldName: String,
+                                keyPhoneNumberRequired: String,
+                                keyPhoneNumberLength: String,
+                                keyPhoneNumberInvalid: String
+                              ): Unit = {
 
     "behave like a form with a phone number field" should {
       behave like fieldThatBindsValidData(

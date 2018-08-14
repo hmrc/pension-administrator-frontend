@@ -29,9 +29,9 @@ import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{BusinessDetailsViewModel, Message}
 
-class CompanyBusinessDetailsController @Inject()(val appConfig:FrontendAppConfig,
+class CompanyBusinessDetailsController @Inject()(val appConfig: FrontendAppConfig,
                                                  val messagesApi: MessagesApi,
-                                                 val dataCacheConnector:DataCacheConnector,
+                                                 val dataCacheConnector: DataCacheConnector,
                                                  @RegisterCompany val navigator: Navigator,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
@@ -39,7 +39,7 @@ class CompanyBusinessDetailsController @Inject()(val appConfig:FrontendAppConfig
                                                 ) extends BusinessDetailsController {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    implicit request=>
+    implicit request =>
       get(BusinessDetailsId)
   }
 
@@ -50,22 +50,22 @@ class CompanyBusinessDetailsController @Inject()(val appConfig:FrontendAppConfig
 
   // scalastyle:off magic.number
   override protected val formModel: BusinessDetailsFormModel =
-  BusinessDetailsFormModel(
-    companyNameMaxLength = 105,
-    companyNameRequiredMsg = "businessDetails.error.companyName.required",
-    companyNameLengthMsg = "businessDetails.error.companyName.length",
-    companyNameInvalidMsg= "businessDetails.error.companyName.invalid",
-    utrMaxLength = 10,
-    utrRequiredMsg = "businessDetails.error.utr.required",
-    utrLengthMsg = "businessDetails.error.utr.length",
-    utrInvalidMsg= "businessDetails.error.utr.invalid"
-  )
+    BusinessDetailsFormModel(
+      companyNameMaxLength = 105,
+      companyNameRequiredMsg = "businessDetails.error.companyName.required",
+      companyNameLengthMsg = "businessDetails.error.companyName.length",
+      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
+      utrMaxLength = 10,
+      utrRequiredMsg = "businessDetails.error.utr.required",
+      utrLengthMsg = "businessDetails.error.utr.length",
+      utrInvalidMsg = "businessDetails.error.utr.invalid"
+    )
   // scalastyle:on magic.number
 
-  override protected lazy val viewModel: BusinessDetailsViewModel=BusinessDetailsViewModel(
-    postCall=routes.CompanyBusinessDetailsController.onSubmit(),
-    title=Message("businessDetails.title"),
-    heading=Message("businessDetails.heading"),
+  override protected lazy val viewModel: BusinessDetailsViewModel = BusinessDetailsViewModel(
+    postCall = routes.CompanyBusinessDetailsController.onSubmit(),
+    title = Message("businessDetails.title"),
+    heading = Message("businessDetails.heading"),
     companyNameLabel = Message("businessDetails.companyName"),
     companyNameHint = Message("businessDetails.companyName.hint"),
     utrLabel = Message("businessDetails.utr"),

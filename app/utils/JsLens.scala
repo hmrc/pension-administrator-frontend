@@ -25,13 +25,15 @@ trait JsLens {
     getAll(s).map {
       case Seq(value) =>
         value
-      case Seq(values @ _*) =>
+      case Seq(values@_*) =>
         JsArray(values)
     }
   }
 
   def getAll(s: JsValue): JsResult[Seq[JsValue]]
+
   def set(a: JsValue, s: JsValue): JsResult[JsValue]
+
   def remove(s: JsValue): JsResult[JsValue]
 
   def andThen(other: JsLens): JsLens =
@@ -86,7 +88,7 @@ trait JsLens {
 
   private def traverse(seq: Seq[JsResult[JsValue]]): JsResult[Seq[JsValue]] = {
     seq match {
-      case Seq(e @ JsError(_)) =>
+      case Seq(e@JsError(_)) =>
         e
       case _ =>
         // should we favour successes or failures?
@@ -151,7 +153,7 @@ object JsLens {
 
       override def set(inner: JsValue, outer: JsValue): JsResult[JsValue] = {
         outer match {
-          case JsArray(values) if index < values.size  =>
+          case JsArray(values) if index < values.size =>
             JsSuccess(JsArray(values.patch(index, Seq(inner), 1)))
           case JsArray(values) if index == values.size =>
             JsSuccess(JsArray(values :+ inner))

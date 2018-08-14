@@ -19,7 +19,6 @@ package forms.register.company
 import forms.FormErrorHelper
 import forms.mappings.CrnMapping
 import javax.inject.Inject
-
 import play.api.data.Form
 
 class CompanyRegistrationNumberFormProvider @Inject() extends FormErrorHelper with CrnMapping {

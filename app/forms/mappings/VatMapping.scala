@@ -18,8 +18,8 @@ package forms.mappings
 
 import models.Vat
 import play.api.data.Forms.tuple
-import play.api.data.{Forms, Mapping}
-import uk.gov.voa.play.form.ConditionalMappings.{mandatoryIfFalse, mandatoryIfTrue}
+import play.api.data.Mapping
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 
 trait VatMapping extends Mappings with Transforms {
 
@@ -50,14 +50,14 @@ trait VatMapping extends Mappings with Transforms {
   private[this] def fromVat(vat: Vat): (Boolean, Option[String]) = {
     vat match {
       case Vat.Yes(vatNo) => (true, Some(vatNo))
-      case Vat.No =>  (false, None)
+      case Vat.No => (false, None)
     }
   }
 
   private[this] def toVat(vatTuple: (Boolean, Option[String])) = {
     vatTuple match {
-      case (true, Some(vat))  => Vat.Yes(vat)
-      case (false, None)  => Vat.No
+      case (true, Some(vat)) => Vat.Yes(vat)
+      case (false, None) => Vat.No
       case _ => throw new RuntimeException("Invalid selection")
     }
   }

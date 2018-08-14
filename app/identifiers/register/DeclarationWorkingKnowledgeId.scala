@@ -15,22 +15,24 @@
  */
 
 package identifiers.register
+
 import identifiers._
-import models.register.DeclarationWorkingKnowledge
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import models.register.DeclarationWorkingKnowledge
 import play.api.libs.json.JsResult
 import utils.UserAnswers
 
-case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWorkingKnowledge] { self =>
+case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWorkingKnowledge] {
+  self =>
   override def toString: String = "declarationWorkingKnowledge"
 
-  override def cleanup(value: Option[DeclarationWorkingKnowledge],userAnswers: UserAnswers):JsResult[UserAnswers]={
+  override def cleanup(value: Option[DeclarationWorkingKnowledge], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
-      case Some(DeclarationWorkingKnowledge.WorkingKnowledge)=>
+      case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
         userAnswers.remove(AdviserDetailsId)
           .flatMap(_.remove(AdviserAddressPostCodeLookupId))
-            .flatMap(_.remove(AdviserAddressId))
-      case _ =>super.cleanup(value,userAnswers)
+          .flatMap(_.remove(AdviserAddressId))
+      case _ => super.cleanup(value, userAnswers)
     }
   }
 }

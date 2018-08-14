@@ -20,13 +20,13 @@ import models.TolerantAddress
 import play.api.mvc.Call
 import viewmodels.Message
 
-case class SameContactAddressViewModel (
-                               postCall: Call,
-                               title: Message,
-                               heading: Message,
-                               secondaryHeader: Option[Message],
-                               hint: Option[Message] = None,
-                               address: TolerantAddress
-                             ) {
+case class SameContactAddressViewModel(
+                                        postCall: Call,
+                                        title: Message,
+                                        heading: Message,
+                                        secondaryHeader: Option[Message],
+                                        hint: Option[Message] = None,
+                                        address: TolerantAddress
+                                      ) {
 
 }

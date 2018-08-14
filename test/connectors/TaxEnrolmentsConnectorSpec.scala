@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.register.{Enrol, KnownFact, KnownFacts}
+import models.register.{KnownFact, KnownFacts}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}

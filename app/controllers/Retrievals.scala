@@ -41,8 +41,8 @@ trait Retrievals {
   }
 
   private[controllers] def retrievePartnerName(index: Int)
-                                               (f: String => Future[Result])
-                                               (implicit request: DataRequest[AnyContent]): Future[Result] = {
+                                              (f: String => Future[Result])
+                                              (implicit request: DataRequest[AnyContent]): Future[Result] = {
     retrieve[PersonDetails](PartnerDetailsId(index)) { partnerDetails =>
       f(partnerDetails.fullName)
     }
@@ -95,7 +95,7 @@ trait Retrievals {
       implicit request =>
         request.userAnswers.get(id) match {
           case Some(value) => Right(value)
-          case None        => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+          case None => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
         }
     }
 

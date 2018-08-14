@@ -19,6 +19,7 @@ package identifiers.register.company
 import identifiers.TypedIdentifier
 import models.TolerantAddress
 
-case object ConfirmCompanyAddressId extends TypedIdentifier[TolerantAddress] {self =>
+case object ConfirmCompanyAddressId extends TypedIdentifier[TolerantAddress] {
+  self =>
   override def toString = "companyAddressId"
 }

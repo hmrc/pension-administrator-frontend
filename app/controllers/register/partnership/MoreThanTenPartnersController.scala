@@ -29,15 +29,15 @@ import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.MoreThanTenViewModel
 
-class MoreThanTenPartnersController @Inject() (
-  val appConfig: FrontendAppConfig,
-  override val messagesApi: MessagesApi,
-  val dataCacheConnector: DataCacheConnector,
-  @PartnershipPartner val navigator: Navigator,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction
-) extends MoreThanTenController {
+class MoreThanTenPartnersController @Inject()(
+                                               val appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               val dataCacheConnector: DataCacheConnector,
+                                               @PartnershipPartner val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction
+                                             ) extends MoreThanTenController {
 
   import MoreThanTenPartnersController._
 

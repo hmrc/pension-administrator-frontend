@@ -22,7 +22,7 @@ import play.api.data.Form
 import views.behaviours.{AddressBehaviours, ViewBehaviours, YesNoViewBehaviours}
 import views.html.register.company.confirmCompanyDetails
 
-class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviours with YesNoViewBehaviours{
+class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviours with YesNoViewBehaviours {
 
   private val messageKeyPrefix = "confirmCompanyAddress"
 

@@ -19,11 +19,11 @@ package viewmodels
 import play.api.mvc.Call
 
 case class EntityViewModel(
-                          postCall: Call,
-                          title: Message,
-                          heading: Message,
-                          entities: Seq[Person],
-                          maxLimit: Int,
-                          entityType: String,
-                          subHeading: Option[Message]
+                            postCall: Call,
+                            title: Message,
+                            heading: Message,
+                            entities: Seq[Person],
+                            maxLimit: Int,
+                            entityType: String,
+                            subHeading: Option[Message]
                           )

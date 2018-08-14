@@ -24,11 +24,11 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait VatBehavioursString extends FormSpec with StringFieldBehaviours with Constraints with VatMappingString {
 
   def formWithVatField[A](
-                      form: Form[A],
-                      fieldName: String,
-                      keyVatLength: String,
-                      keyVatInvalid: String
-                      ): Unit = {
+                           form: Form[A],
+                           fieldName: String,
+                           keyVatLength: String,
+                           keyVatInvalid: String
+                         ): Unit = {
 
     "behave like a form with a VAT number" should {
 

@@ -61,7 +61,7 @@ class VatMappingStringSpec extends VatBehavioursString {
         "gb123456789"
       )
 
-      forAll(gb) {vat =>
+      forAll(gb) { vat =>
         vatRegistrationNumberTransform(vat) shouldBe "123456789"
       }
     }

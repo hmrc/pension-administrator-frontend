@@ -16,16 +16,14 @@
 
 package controllers
 
-import javax.inject.Inject
-
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions.AuthAction
 import identifiers.IndexId
-import play.api.libs.json.JsPath
+import javax.inject.Inject
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.index
 
 class IndexController @Inject()(val appConfig: FrontendAppConfig,

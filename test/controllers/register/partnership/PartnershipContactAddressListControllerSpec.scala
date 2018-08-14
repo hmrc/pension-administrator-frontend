@@ -31,8 +31,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator}
 import utils.annotations.Partnership
+import utils.{FakeNavigator, Navigator}
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 

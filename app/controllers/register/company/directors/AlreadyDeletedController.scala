@@ -32,12 +32,12 @@ import views.html.alreadyDeleted
 import scala.concurrent.Future
 
 class AlreadyDeletedController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction
-                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction
+                                        ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -47,9 +47,9 @@ class AlreadyDeletedController @Inject()(
   }
 
   private def viewmodel(directorName: String) = AlreadyDeletedViewModel(
-          Message("alreadyDeleted.director.title"),
-          directorName,
-          controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
-        )
+    Message("alreadyDeleted.director.title"),
+    directorName,
+    controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
+  )
 
 }

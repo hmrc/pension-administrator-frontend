@@ -17,15 +17,15 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import play.api.{Configuration, Environment}
-import play.api.i18n.Lang
 import controllers.routes
 import play.api.Mode.Mode
+import play.api.i18n.Lang
 import play.api.mvc.Call
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
+class FrontendAppConfig @Inject()(override val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
 
   override protected def mode: Mode = environment.mode
 
@@ -68,27 +68,28 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
+
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   lazy val addressLookUp: String = baseUrl("address-lookup")
 
   lazy val registerWithIdOrganisationUrl: String =
-      baseUrl("pensions-scheme") +
+    baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdOrganisation")
 
   lazy val registerWithIdIndividualUrl: String =
-      baseUrl("pensions-scheme") +
+    baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdIndividual")
 
   lazy val registerPsaUrl: String =
-      baseUrl("pensions-scheme") +
+    baseUrl("pensions-scheme") +
       runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
 
   def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
     s"service/$serviceName/enrolment"
 
-  def emailUrl=s"${baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"
+  def emailUrl = s"${baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 

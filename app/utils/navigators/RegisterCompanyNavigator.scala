@@ -19,11 +19,8 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import connectors.DataCacheConnector
 import controllers.register.company.routes
-import identifiers.LastPageId
-import identifiers.register.BusinessTypeId
 import identifiers.register.company._
 import models._
-import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
@@ -91,6 +88,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: DataCacheConnec
       checkYourAnswers
     case _ => None
   }
+
   //scalastyle:on cyclomatic.complexity
 
   private def checkYourAnswers: Option[NavigateTo] =

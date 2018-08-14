@@ -20,9 +20,9 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import org.scalacheck.Arbitrary._
+import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
-import Gen._
-import Arbitrary._
 
 import scala.util.Random
 
@@ -41,19 +41,19 @@ trait Generators {
     numberGen.map(n => {
       random.nextInt(10) match {
         case 1 => formatter format n
-        case _  => n.toString
+        case _ => n.toString
       }
     })
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.nonEmpty)
+    alphaStr suchThat (_.nonEmpty)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -62,19 +62,19 @@ trait Generators {
       .map(_.formatted("%f"))
 
   def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ < value)
+    arbitrary[Int] suchThat (_ < value)
 
   def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ > value)
+    arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
@@ -116,7 +116,7 @@ trait Generators {
   }
 
   def regexWildcardChar: Gen[Char] = {
-    arbitrary[Char].retryUntil( c =>
+    arbitrary[Char].retryUntil(c =>
       c.getType match {
         case Character.LINE_SEPARATOR => false
         case Character.PARAGRAPH_SEPARATOR => false

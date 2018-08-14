@@ -41,11 +41,11 @@ trait BusinessDetailsControllerBehaviour {
   // scalastyle:off method.length
 
   def businessDetailsController[I <: TypedIdentifier[BusinessDetails]](
-    testFormModel: BusinessDetailsFormModel,
-    testViewModel: BusinessDetailsViewModel,
-    id: I,
-    createController: (DataCacheConnector, Navigator) => BusinessDetailsController
-  ): Unit = {
+                                                                        testFormModel: BusinessDetailsFormModel,
+                                                                        testViewModel: BusinessDetailsViewModel,
+                                                                        id: I,
+                                                                        createController: (DataCacheConnector, Navigator) => BusinessDetailsController
+                                                                      ): Unit = {
 
     "return OK and the correct view for a GET request" in {
       val fixture = testFixture(createController, testFormModel, testViewModel)
@@ -108,15 +108,15 @@ object BusinessDetailsControllerBehaviour {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val testBusinessDetails = BusinessDetails("test company name", "1234567890")
-  val invalidBusinessDetails = BusinessDetails("","")
+  val invalidBusinessDetails = BusinessDetails("", "")
 
-  case class TestFixture (dataCacheConnector: FakeDataCacheConnector, controller: BusinessDetailsController, form:Form[BusinessDetails])
+  case class TestFixture(dataCacheConnector: FakeDataCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetails])
 
   def testFixture(
-    createController: (DataCacheConnector, Navigator) => BusinessDetailsController,
-    testFormModel: BusinessDetailsFormModel,
-    testViewModel: BusinessDetailsViewModel
-  ): TestFixture = {
+                   createController: (DataCacheConnector, Navigator) => BusinessDetailsController,
+                   testFormModel: BusinessDetailsFormModel,
+                   testViewModel: BusinessDetailsViewModel
+                 ): TestFixture = {
     val connector = new FakeDataCacheConnector() {}
     val navigator = new FakeNavigator(onwardRoute)
 
@@ -124,7 +124,7 @@ object BusinessDetailsControllerBehaviour {
 
     val form = new BusinessDetailsFormProvider().apply(testFormModel)
 
-    TestFixture(connector, controller,form)
+    TestFixture(connector, controller, form)
   }
 
   def testRequest(answers: UserAnswers = UserAnswers(), businessDetails: Option[BusinessDetails] = None): DataRequest[AnyContent] = {
@@ -146,7 +146,7 @@ object BusinessDetailsControllerBehaviour {
     )
   }
 
-  def viewAsString(form:Form[_], testViewModel: BusinessDetailsViewModel, base: SpecBase): String ={
+  def viewAsString(form: Form[_], testViewModel: BusinessDetailsViewModel, base: SpecBase): String = {
     businessDetails(
       base.frontendAppConfig,
       form,

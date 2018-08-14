@@ -20,11 +20,10 @@ import forms.FormSpec
 import forms.mappings.{Constraints, NinoMapping}
 import generators.Generators
 import models.Nino
-import org.apache.commons.lang3.RandomStringUtils
 import org.scalatest.prop.PropertyChecks
 import play.api.data.{Form, FormError}
 
-class NinoBehaviours extends FormSpec with NinoMapping with Constraints with Generators with PropertyChecks{
+class NinoBehaviours extends FormSpec with NinoMapping with Constraints with Generators with PropertyChecks {
   val reasonMaxLength = 160
 
   def formWithNino(testForm: Form[Nino],
@@ -68,7 +67,7 @@ class NinoBehaviours extends FormSpec with NinoMapping with Constraints with Gen
       }
 
 
-      Seq("AB020202A", " a b 0 2 0 2 0 2 a ").foreach{
+      Seq("AB020202A", " a b 0 2 0 2 0 2 a ").foreach {
         validNino =>
           s"successfully bind when yes is selected and valid NINO $validNino is provided" in {
             val form = testForm.bind(Map("nino.hasNino" -> "true", "nino.nino" -> validNino))

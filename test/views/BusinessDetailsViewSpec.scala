@@ -50,21 +50,21 @@ class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       companyNameMaxLength = 105,
       companyNameRequiredMsg = "businessDetails.error.companyName.required",
       companyNameLengthMsg = "businessDetails.error.companyName.length",
-      companyNameInvalidMsg= "businessDetails.error.companyName.invalid",
+      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = "businessDetails.error.utr.required",
       utrLengthMsg = "businessDetails.error.utr.length",
-      utrInvalidMsg= "businessDetails.error.utr.invalid"
+      utrInvalidMsg = "businessDetails.error.utr.invalid"
     )
 
   val messageKeyPrefix = "businessDetails"
 
   val form = new BusinessDetailsFormProvider()(formModel)
 
-  val viewModel=BusinessDetailsViewModel(
-    postCall=Call("GET","/"),
-    title=Message("businessDetails.title"),
-    heading=Message("businessDetails.heading"),
+  val viewModel = BusinessDetailsViewModel(
+    postCall = Call("GET", "/"),
+    title = Message("businessDetails.title"),
+    heading = Message("businessDetails.heading"),
     companyNameLabel = Message("businessDetails.companyName"),
     companyNameHint = Message("businessDetails.companyName.hint"),
     utrLabel = Message("businessDetails.utr"),
@@ -73,7 +73,7 @@ class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
   def createView: () => HtmlFormat.Appendable = () => businessDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => businessDetails(frontendAppConfig, form,viewModel)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => businessDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
   "CompanyUniqueTaxReference view" must {
     behave like normalPage(createView, messageKeyPrefix)

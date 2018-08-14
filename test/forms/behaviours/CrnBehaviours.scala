@@ -19,16 +19,15 @@ package forms.behaviours
 import forms.FormSpec
 import forms.mappings.{Constraints, CrnMapping}
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
 trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints with CrnMapping {
 
   def formWithCrnField(
-    form: Form[_],
-    fieldName: String,
-    keyCrnRequired: String,
-    keyCrnInvalid: String
-  ): Unit = {
+                        form: Form[_],
+                        fieldName: String,
+                        keyCrnRequired: String,
+                        keyCrnInvalid: String
+                      ): Unit = {
 
     "behave like a form with a CRN field" should {
 

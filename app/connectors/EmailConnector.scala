@@ -24,6 +24,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait EmailStatus

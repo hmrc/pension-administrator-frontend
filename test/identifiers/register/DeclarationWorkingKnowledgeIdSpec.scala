@@ -17,61 +17,61 @@
 package identifiers.register
 
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
-import models.{Address, TolerantAddress}
+import models.TolerantAddress
 import models.register.DeclarationWorkingKnowledge
 import models.register.adviser.AdviserDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import utils.{Enumerable, UserAnswers}
 import play.api.libs.json.Json
+import utils.{Enumerable, UserAnswers}
 
 class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
- "Cleanup" when {
+  "Cleanup" when {
 
-   val address=TolerantAddress(Some("test-address-line1"),
-     Some("test-address-line2"),
-     None,
-     None,
-     None,
-     Some("test-country"))
+    val address = TolerantAddress(Some("test-address-line1"),
+      Some("test-address-line2"),
+      None,
+      None,
+      None,
+      Some("test-country"))
 
-   val answersWithAdviser = UserAnswers(Json.obj())
-     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
-     .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
-     .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
-     .flatMap(_.set(AdviserAddressId)(address.toAddress))
-     .asOpt.value
+    val answersWithAdviser = UserAnswers(Json.obj())
+      .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
+      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
+      .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
+      .flatMap(_.set(AdviserAddressId)(address.toAddress))
+      .asOpt.value
 
 
-   "where Declaration Working knowledge " must {
-     val result: UserAnswers =
-       answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
-         .asOpt.value
+    "where Declaration Working knowledge " must {
+      val result: UserAnswers =
+        answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
+          .asOpt.value
 
-     "remove the data for Postcode lookup" in {
-       result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
-     }
-     "remove the data for address" in {
-       result.get(AdviserAddressId) mustNot be(defined)
-     }
+      "remove the data for Postcode lookup" in {
+        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
+      }
+      "remove the data for address" in {
+        result.get(AdviserAddressId) mustNot be(defined)
+      }
 
-     "remove date for adviser details" in {
-       result.get(AdviserDetailsId) mustNot be(defined)
-     }
-   }
+      "remove date for adviser details" in {
+        result.get(AdviserDetailsId) mustNot be(defined)
+      }
+    }
 
-   "Declaration has an adviser" must {
-     val result: UserAnswers = answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
+    "Declaration has an adviser" must {
+      val result: UserAnswers = answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
 
-     "not remove the data for Postcode lookup" in {
-       result.get(AdviserAddressPostCodeLookupId) mustBe defined
-     }
-     "not remove the data for address" in {
-       result.get(AdviserAddressId) mustBe defined
-     }
+      "not remove the data for Postcode lookup" in {
+        result.get(AdviserAddressPostCodeLookupId) mustBe defined
+      }
+      "not remove the data for address" in {
+        result.get(AdviserAddressId) mustBe defined
+      }
 
-     "not remove date for adviser details" in {
-       result.get(AdviserDetailsId) mustBe defined
-     }
-   }
- }
+      "not remove date for adviser details" in {
+        result.get(AdviserDetailsId) mustBe defined
+      }
+    }
+  }
 }

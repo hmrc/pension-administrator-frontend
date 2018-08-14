@@ -16,8 +16,6 @@
 
 package identifiers
 
-import identifiers._
-
 case object IndexId extends TypedIdentifier[String] {
   override def toString: String = "index"
 }

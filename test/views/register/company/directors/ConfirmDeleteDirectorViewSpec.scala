@@ -16,7 +16,6 @@
 
 package views.register.company.directors
 
-import controllers.register.company.directors.routes
 import models.{Index, NormalMode}
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.confirmDeleteDirector

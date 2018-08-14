@@ -33,7 +33,6 @@ import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSClient
-import play.api.mvc.Results.Ok
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
@@ -48,6 +47,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object ContactDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   object FakeIdentifier extends TypedIdentifier[ContactDetails]
+
   object FakeIdentifierEmail extends TypedIdentifier[String]
 
   class TestController @Inject()(
@@ -70,7 +70,7 @@ object ContactDetailsControllerSpec extends ControllerSpecBase with MockitoSugar
     }
   }
 
-  object PSANameCacheConnector extends PSANameCacheConnector (
+  object PSANameCacheConnector extends PSANameCacheConnector(
     frontendAppConfig,
     mock[WSClient],
     injector.instanceOf[ApplicationCrypto]
@@ -81,6 +81,7 @@ object ContactDetailsControllerSpec extends ControllerSpecBase with MockitoSugar
                                                  hc: HeaderCarrier
                                                 ): Future[JsValue] = ???
   }
+
   private lazy val psaNameCacheConnector = mock[PSANameCacheConnector]
 
 }

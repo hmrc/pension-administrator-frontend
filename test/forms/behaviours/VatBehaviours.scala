@@ -27,13 +27,13 @@ trait VatBehaviours extends FormSpec with Generators with PropertyChecks with Co
 
   val maxVatLength = 9
 
-  def formWithVat(  testForm: Form[Vat],
-                    requiredKey: String,
-                    vatLengthKey: String,
-                    requiredVatKey: String,
-                    invalidVatKey: String
-                  ): Unit = {
-    
+  def formWithVat(testForm: Form[Vat],
+                  requiredKey: String,
+                  vatLengthKey: String,
+                  requiredVatKey: String,
+                  invalidVatKey: String
+                 ): Unit = {
+
     "behave like a form with a VAT Mapping" should {
 
       "fail to bind when yes is selected but VAT is not provided" in {
@@ -55,7 +55,7 @@ trait VatBehaviours extends FormSpec with Generators with PropertyChecks with Co
         }
       }
 
-      Seq("9 9 9 9 9 9 9 9 9 ", "999999999").foreach{
+      Seq("9 9 9 9 9 9 9 9 9 ", "999999999").foreach {
         validVat =>
           s"successfully bind when yes is selected and valid VAT $validVat is provided" in {
             val form = testForm.bind(Map("vat.hasVat" -> "true", "vat.vat" -> validVat))
@@ -100,7 +100,7 @@ trait VatBehaviours extends FormSpec with Generators with PropertyChecks with Co
           "gb123456789"
         )
 
-        forAll(gb) {vat =>
+        forAll(gb) { vat =>
           vatRegistrationNumberTransform(vat) shouldBe "123456789"
         }
       }

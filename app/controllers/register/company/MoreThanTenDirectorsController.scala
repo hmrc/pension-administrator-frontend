@@ -29,15 +29,15 @@ import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.MoreThanTenViewModel
 
-class MoreThanTenDirectorsController @Inject() (
-                                                 val appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
-                                                 val dataCacheConnector: DataCacheConnector,
-                                                 @CompanyDirector val navigator: Navigator,
-                                                 authenticate: AuthAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction
-                                                   ) extends MoreThanTenController {
+class MoreThanTenDirectorsController @Inject()(
+                                                val appConfig: FrontendAppConfig,
+                                                override val messagesApi: MessagesApi,
+                                                val dataCacheConnector: DataCacheConnector,
+                                                @CompanyDirector val navigator: Navigator,
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction
+                                              ) extends MoreThanTenController {
 
   private def viewModel(mode: Mode): MoreThanTenViewModel =
     MoreThanTenViewModel(
@@ -50,11 +50,11 @@ class MoreThanTenDirectorsController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-     get(viewModel(mode))
+      get(viewModel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-     post(viewModel(mode), mode)
+      post(viewModel(mode), mode)
   }
 }

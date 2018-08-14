@@ -16,13 +16,13 @@
 
 package forms.mappings
 
-import play.api.data.{FormError, Mapping}
 import play.api.data.validation.Constraint
+import play.api.data.{FormError, Mapping}
 
 class CustomBindMapping[T](
-                                 fieldName: String,
-                                 fBind: (Map[String, String]) => Either[Seq[FormError], T],
-                                 fUnbind: (T) => Map[String, String]) extends Mapping[T] {
+                            fieldName: String,
+                            fBind: (Map[String, String]) => Either[Seq[FormError], T],
+                            fUnbind: (T) => Map[String, String]) extends Mapping[T] {
 
   override val key: String = fieldName
 

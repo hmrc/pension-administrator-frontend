@@ -20,8 +20,6 @@ import identifiers._
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.PersonDetails
 import play.api.libs.json.{JsPath, JsResult, JsSuccess}
-import models.requests.DataRequest
-import play.api.mvc.AnyContent
 import utils.UserAnswers
 
 case class DirectorDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {

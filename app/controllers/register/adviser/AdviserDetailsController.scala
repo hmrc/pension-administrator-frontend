@@ -16,33 +16,33 @@
 
 package controllers.register.adviser
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
+import javax.inject.Inject
 import models.Mode
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserDetails
 
 import scala.concurrent.Future
 
-class AdviserDetailsController @Inject() (
-                                           appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           dataCacheConnector: DataCacheConnector,
-                                           @Adviser navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: AdviserDetailsFormProvider
-                                      ) extends FrontendController with I18nSupport {
+class AdviserDetailsController @Inject()(
+                                          appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          dataCacheConnector: DataCacheConnector,
+                                          @Adviser navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: AdviserDetailsFormProvider
+                                        ) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 
@@ -63,6 +63,6 @@ class AdviserDetailsController @Inject() (
         value =>
           dataCacheConnector.save(request.externalId, AdviserDetailsId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
-    )
+      )
   }
 }

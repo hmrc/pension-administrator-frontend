@@ -26,7 +26,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
                 expectedFormAction: String,
                 messageKey: String,
                 expectedHintKey: Option[String] = None
-                ) = {
+               ) = {
 
     "behave like a page with a Yes/No question" when {
       "rendered" must {

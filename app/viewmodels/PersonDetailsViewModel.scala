@@ -19,7 +19,7 @@ package viewmodels
 import play.api.mvc.Call
 
 case class PersonDetailsViewModel(
-  title: String,
-  heading: String,
-  postCall: Call
-)
+                                   title: String,
+                                   heading: String,
+                                   postCall: Call
+                                 )

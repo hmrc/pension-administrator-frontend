@@ -37,10 +37,10 @@ trait AuditService {
 
 }
 
-class AuditServiceImpl @Inject() (
-                               config: FrontendAppConfig,
-                               connector: AuditConnector
-                             ) extends AuditService {
+class AuditServiceImpl @Inject()(
+                                  config: FrontendAppConfig,
+                                  connector: AuditConnector
+                                ) extends AuditService {
 
   private implicit def toHc(request: RequestHeader): AuditHeaderCarrier =
     auditHeaderCarrier(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session)))
@@ -56,12 +56,12 @@ class AuditServiceImpl @Inject() (
     val result: Future[AuditResult] = connector.sendEvent(
       DataEvent(
         auditSource = config.appName,
-        auditType   = event.auditType,
-        tags        = rh.toAuditTags(
+        auditType = event.auditType,
+        tags = rh.toAuditTags(
           transactionName = event.auditType,
-          path            = rh.path
+          path = rh.path
         ),
-        detail      = details
+        detail = details
       )
     )
 

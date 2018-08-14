@@ -27,8 +27,8 @@ object TolerantIndividual {
 
   implicit lazy val formatsTolerantIndividual: Format[TolerantIndividual] = (
     (JsPath \ "firstName").formatNullable[String] and
-    (JsPath \ "middleName").formatNullable[String] and
-    (JsPath \ "lastName").formatNullable[String]
-  )(TolerantIndividual.apply, unlift(TolerantIndividual.unapply))
+      (JsPath \ "middleName").formatNullable[String] and
+      (JsPath \ "lastName").formatNullable[String]
+    ) (TolerantIndividual.apply, unlift(TolerantIndividual.unapply))
 
 }

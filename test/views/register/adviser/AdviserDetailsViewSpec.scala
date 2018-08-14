@@ -16,11 +16,10 @@
 
 package views.register.adviser
 
-import play.api.data.Form
-import controllers.register.adviser.routes
 import forms.register.adviser.AdviserDetailsFormProvider
 import models.NormalMode
 import models.register.adviser.AdviserDetails
+import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.adviser.adviserDetails
 

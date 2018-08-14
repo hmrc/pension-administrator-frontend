@@ -57,15 +57,15 @@ class PartnerDetailsControllerSpec extends ControllerSpecBase with PersonDetails
 object PartnerDetailsControllerSpec {
 
   def testController(
-    base: ControllerSpecBase,
-    dataRetrievalAction: DataRetrievalAction
-  ): PartnerDetailsController =
+                      base: ControllerSpecBase,
+                      dataRetrievalAction: DataRetrievalAction
+                    ): PartnerDetailsController =
     createController(base, dataRetrievalAction)(FakeDataCacheConnector, FakeNavigator)
 
   def createController(
-    base: ControllerSpecBase,
-    dataRetrievalAction: DataRetrievalAction
-  )(connector: DataCacheConnector, nav: Navigator): PartnerDetailsController =
+                        base: ControllerSpecBase,
+                        dataRetrievalAction: DataRetrievalAction
+                      )(connector: DataCacheConnector, nav: Navigator): PartnerDetailsController =
     new PartnerDetailsController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,

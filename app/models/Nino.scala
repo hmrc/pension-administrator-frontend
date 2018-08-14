@@ -24,6 +24,7 @@ sealed trait Nino
 object Nino {
 
   case class Yes(nino: String) extends Nino
+
   case class No(reason: String) extends Nino
 
   def options: Seq[InputOption] = Seq(

@@ -37,15 +37,15 @@ import viewmodels.address.AddressYearsViewModel
 import scala.concurrent.Future
 
 class PartnerAddressYearsController @Inject()(
-                                                   val appConfig: FrontendAppConfig,
-                                                   val cacheConnector: DataCacheConnector,
-                                                   @PartnershipPartner val navigator: Navigator,
-                                                   val messagesApi: MessagesApi,
-                                                   authenticate: AuthAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: AddressYearsFormProvider
-                                                 ) extends AddressYearsController with Retrievals {
+                                               val appConfig: FrontendAppConfig,
+                                               val cacheConnector: DataCacheConnector,
+                                               @PartnershipPartner val navigator: Navigator,
+                                               val messagesApi: MessagesApi,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: AddressYearsFormProvider
+                                             ) extends AddressYearsController with Retrievals {
 
 
   private val form: Form[AddressYears] = formProvider(Message("partnerAddressYears.error.required"))

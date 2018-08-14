@@ -19,7 +19,7 @@ package identifiers.register.partnership.partners
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.MoreThanTenPartnersId
 import models.PersonDetails
-import play.api.libs.json.{JsPath, JsResult, JsSuccess}
+import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
 
 case class PartnerDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {
@@ -34,5 +34,6 @@ case class PartnerDetailsId(index: Int) extends TypedIdentifier[PersonDetails] {
 
 object PartnerDetailsId {
   def collectionPath: JsPath = JsPath \ "partners" \\ PartnerDetailsId.toString
+
   override def toString: String = "partnerDetails"
 }

@@ -46,7 +46,7 @@ class PartnerPreviousAddressPostCodeLookupController @Inject()(
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider
-                                                               ) extends PostcodeLookupController with Retrievals {
+                                                              ) extends PostcodeLookupController with Retrievals {
 
   override protected def form: Form[String] = formProvider()
 

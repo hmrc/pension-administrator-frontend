@@ -18,10 +18,10 @@ package viewmodels
 
 import play.api.mvc.Call
 
-case class VatViewModel (
-                          postCall: Call,
-                          title: Message,
-                          heading: Message,
-                          hint: Message,
-                          subHeading: Option[Message] = None
-                        )
+case class VatViewModel(
+                         postCall: Call,
+                         title: Message,
+                         heading: Message,
+                         hint: Message,
+                         subHeading: Option[Message] = None
+                       )

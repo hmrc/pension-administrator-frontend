@@ -23,6 +23,7 @@ sealed trait DeclarationWorkingKnowledge
 object DeclarationWorkingKnowledge extends Enumerable.Implicits {
 
   case object WorkingKnowledge extends WithName("workingKnowledge") with DeclarationWorkingKnowledge
+
   case object Adviser extends WithName("adviser") with DeclarationWorkingKnowledge
 
   val values: Seq[DeclarationWorkingKnowledge] = Seq(

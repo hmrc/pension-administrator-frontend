@@ -24,6 +24,7 @@ import views.html.alreadyDeleted
 class AlreadyDeletedViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "alreadyDeleted"
   val deletedEntity = "Test entity"
+
   def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), deletedEntity, Call("GET", "/"))
 
   val expectedGuidanceKeys = Seq(

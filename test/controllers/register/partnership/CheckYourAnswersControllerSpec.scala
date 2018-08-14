@@ -16,22 +16,15 @@
 
 package controllers.register.partnership
 
-import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.TypedIdentifier
 import identifiers.register.partnership._
 import models._
-import models.requests.DataRequest
 import play.api.libs.json.Json
-import play.api.mvc.AnyContent
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.{FakeCountryOptions, FakeNavigator, SectionComplete, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
-
-import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
@@ -43,53 +36,53 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "display Partnership Details section " which {
 
-          "renders name and utr" in {
-            val rows = Seq(
-              answerRow("cya.label.name", Seq("Test Company Name")),
-              answerRow("businessDetails.utr", Seq("Test UTR"))
-            )
+        "renders name and utr" in {
+          val rows = Seq(
+            answerRow("cya.label.name", Seq("Test Company Name")),
+            answerRow("businessDetails.utr", Seq("Test UTR"))
+          )
 
-            val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
+          val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
 
-            val retrievalAction = dataRetrievalAction(
-              PartnershipDetailsId.toString -> BusinessDetails("Test Company Name", "Test UTR")
-            )
-            testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
-          }
+          val retrievalAction = dataRetrievalAction(
+            PartnershipDetailsId.toString -> BusinessDetails("Test Company Name", "Test UTR")
+          )
+          testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
+        }
 
-          "renders paye number" in {
-            val rows = Seq(
-              answerRow(
-                "commom.paye.label",
-                Seq("Test Paye"),
-                false,
-                Some(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(CheckMode).url)
-              ))
+        "renders paye number" in {
+          val rows = Seq(
+            answerRow(
+              "commom.paye.label",
+              Seq("Test Paye"),
+              false,
+              Some(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(CheckMode).url)
+            ))
 
-            val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
+          val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
 
-            val retrievalAction = dataRetrievalAction(
-              PartnershipPayeId.toString -> Paye.Yes("Test Paye")
-            )
-            testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
-          }
+          val retrievalAction = dataRetrievalAction(
+            PartnershipPayeId.toString -> Paye.Yes("Test Paye")
+          )
+          testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
+        }
 
-          "renders vat registration number" in {
-            val rows = Seq(
-              answerRow(
-                "common.vatRegistrationNumber.checkYourAnswersLabel",
-                Seq("Test Vat"),
-                false,
-                Some(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url)
-              ))
+        "renders vat registration number" in {
+          val rows = Seq(
+            answerRow(
+              "common.vatRegistrationNumber.checkYourAnswersLabel",
+              Seq("Test Vat"),
+              false,
+              Some(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url)
+            ))
 
-            val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
+          val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
 
-            val retrievalAction = dataRetrievalAction(
-              PartnershipVatId.toString -> Vat.Yes("Test Vat")
-            )
-            testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
-          }
+          val retrievalAction = dataRetrievalAction(
+            PartnershipVatId.toString -> Vat.Yes("Test Vat")
+          )
+          testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
+        }
 
       }
 

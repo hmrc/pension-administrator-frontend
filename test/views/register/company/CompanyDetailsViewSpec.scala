@@ -16,11 +16,10 @@
 
 package views.register.company
 
-import play.api.data.Form
-import controllers.register.company.routes
 import forms.register.company.CompanyDetailsFormProvider
 import models.NormalMode
 import models.register.company.CompanyDetails
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.companyDetails

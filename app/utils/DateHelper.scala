@@ -20,8 +20,6 @@ package utils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import org.joda.time.format.DateTimeFormat
-
 object DateHelper {
 
   def formatDate(date: LocalDate): String = {

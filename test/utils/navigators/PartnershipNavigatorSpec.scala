@@ -29,32 +29,34 @@ import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
+
   import PartnershipNavigatorSpec._
+
   val navigator = new PartnershipNavigator(FakeDataCacheConnector)
 
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id",                                       "User Answers",                  "Next Page (Normal Mode)",                  "Save(NormalMode)", "Next Page (Check Mode)",                        "Save(CheckMode"),
-    (PartnershipDetailsId,                       emptyAnswers,                    confirmPartnershipDetailsPage,              false,              None,                                            false),
-    (ConfirmPartnershipDetailsId,                confirmPartnershipDetailsTrue,   whatYouWillNeedPage,                        false,              None,                                            false),
-    (WhatYouWillNeedId,                          emptyAnswers,                    sameContactAddressPage,                     true,               None,                                            true),
-    (PartnershipSameContactAddressId,            sameContactAddressTrue,          addressYearsPage(NormalMode),               true,               Some(addressYearsPage(CheckMode)),               true),
-    (PartnershipSameContactAddressId,            sameContactAddressFalse,         contactPostcodePage(NormalMode),            true,               Some(contactPostcodePage(CheckMode)),            true),
-    (PartnershipSameContactAddressId,            emptyAnswers,                    sessionExpiredPage,                         false,              Some(sessionExpiredPage),                        false),
-    (PartnershipContactAddressPostCodeLookupId,  emptyAnswers,                    contactAddressListPage(NormalMode),         true,               Some(contactAddressListPage(CheckMode)),         true),
-    (PartnershipContactAddressListId,            emptyAnswers,                    contactAddressPage(NormalMode),             true,               Some(contactAddressPage(CheckMode)),             true),
-    (PartnershipContactAddressId,                emptyAnswers,                    addressYearsPage(NormalMode),               true,               Some(addressYearsPage(CheckMode)),               true),
-    (PartnershipAddressYearsId,                  addressYearsUnder,               contactPreviousPostcodePage(NormalMode),    true,               Some(contactPreviousPostcodePage(CheckMode)),    true),
-    (PartnershipAddressYearsId,                  addressYearsOver,                contactDetailsPage,                         true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipAddressYearsId,                  emptyAnswers,                    sessionExpiredPage,                         false,              Some(sessionExpiredPage),                        false),
-    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers,                    contactPreviousAddressListPage(NormalMode), true,               Some(contactPreviousAddressListPage(CheckMode)), true),
-    (PartnershipPreviousAddressListId,           emptyAnswers,                    contactPreviousAddressPage(NormalMode),     true,               Some(contactPreviousAddressPage(CheckMode)),     true),
-    (PartnershipPreviousAddressId,               emptyAnswers,                    contactDetailsPage,                         true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipContactDetailsId,                emptyAnswers,                    vatPage,                                    true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipVatId,                           emptyAnswers,                    payeNumberPage,                             true,               Some(checkYourAnswersPage),                      true),
-    (PartnershipPayeId,                          emptyAnswers,                    checkYourAnswersPage,                       true,               Some(checkYourAnswersPage),                      true),
-    (CheckYourAnswersId,                         emptyAnswers,                    addPartnersPage,                            true,               None,                                            true),
-    (PartnershipReviewId,                        emptyAnswers,                    declarationPage,                            true,               None,                                           false)
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    (PartnershipDetailsId, emptyAnswers, confirmPartnershipDetailsPage, false, None, false),
+    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
+    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true),
+    (PartnershipSameContactAddressId, sameContactAddressTrue, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (PartnershipSameContactAddressId, sameContactAddressFalse, contactPostcodePage(NormalMode), true, Some(contactPostcodePage(CheckMode)), true),
+    (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), true, Some(contactAddressListPage(CheckMode)), true),
+    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (PartnershipAddressYearsId, addressYearsUnder, contactPreviousPostcodePage(NormalMode), true, Some(contactPreviousPostcodePage(CheckMode)), true),
+    (PartnershipAddressYearsId, addressYearsOver, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
+    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
+    (PartnershipPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipContactDetailsId, emptyAnswers, vatPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipVatId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipPayeId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
+    (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false)
   )
 
   navigator.getClass.getSimpleName must {
@@ -66,21 +68,37 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object PartnershipNavigatorSpec extends OptionValues {
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+
   private def confirmPartnershipDetailsPage = routes.ConfirmPartnershipDetailsController.onPageLoad()
+
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+
   private def sameContactAddressPage = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
+
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+
   private def vatPage = routes.PartnershipVatController.onPageLoad(NormalMode)
+
   private def payeNumberPage = routes.PartnershipPayeController.onPageLoad(NormalMode)
+
   private def contactDetailsPage = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
+
   private def addPartnersPage = routes.AddPartnerController.onPageLoad()
-  private def addressYearsPage(mode:Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
-  private def contactPostcodePage(mode:Mode): Call = routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
-  private def contactAddressListPage(mode:Mode): Call = routes.PartnershipContactAddressListController.onPageLoad(mode)
-  private def contactAddressPage(mode:Mode): Call = routes.PartnershipContactAddressController.onPageLoad(mode)
-  private def contactPreviousPostcodePage(mode:Mode): Call = routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
-  private def contactPreviousAddressListPage(mode:Mode): Call = routes.PartnershipPreviousAddressListController.onPageLoad(mode)
-  private def contactPreviousAddressPage(mode:Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
+
+  private def addressYearsPage(mode: Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
+
+  private def contactPostcodePage(mode: Mode): Call = routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
+
+  private def contactAddressListPage(mode: Mode): Call = routes.PartnershipContactAddressListController.onPageLoad(mode)
+
+  private def contactAddressPage(mode: Mode): Call = routes.PartnershipContactAddressController.onPageLoad(mode)
+
+  private def contactPreviousPostcodePage(mode: Mode): Call = routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
+
+  private def contactPreviousAddressListPage(mode: Mode): Call = routes.PartnershipPreviousAddressListController.onPageLoad(mode)
+
+  private def contactPreviousAddressPage(mode: Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
+
   private def declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
 
   val emptyAnswers = UserAnswers(Json.obj())
@@ -93,9 +111,10 @@ object PartnershipNavigatorSpec extends OptionValues {
     .set(PartnershipSameContactAddressId)(true).asOpt.value
   private val sameContactAddressFalse = UserAnswers(Json.obj())
     .set(PartnershipSameContactAddressId)(false).asOpt.value
-  private val addressYearsUnder = UserAnswers (Json.obj())
+  private val addressYearsUnder = UserAnswers(Json.obj())
     .set(PartnershipAddressYearsId)(AddressYears.UnderAYear).asOpt.value
-  private val addressYearsOver = UserAnswers (Json.obj())
+  private val addressYearsOver = UserAnswers(Json.obj())
     .set(PartnershipAddressYearsId)(AddressYears.OverAYear).asOpt.value
+
   private def dataDescriber(answers: UserAnswers): String = answers.toString
 }

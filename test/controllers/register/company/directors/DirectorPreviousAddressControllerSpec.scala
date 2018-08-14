@@ -26,8 +26,8 @@ import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressId}
-import models.register.company.CompanyDetails
 import models._
+import models.register.company.CompanyDetails
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json

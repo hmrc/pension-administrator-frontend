@@ -17,8 +17,7 @@
 package views.address
 
 import forms.address.AddressListFormProvider
-import models.{Address, TolerantAddress}
-import org.jsoup.Jsoup
+import models.TolerantAddress
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.Message

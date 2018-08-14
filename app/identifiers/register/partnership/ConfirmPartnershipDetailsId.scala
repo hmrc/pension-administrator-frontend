@@ -15,6 +15,7 @@
  */
 
 package identifiers.register.partnership
+
 import identifiers._
 
 case object ConfirmPartnershipDetailsId extends TypedIdentifier[Boolean] {

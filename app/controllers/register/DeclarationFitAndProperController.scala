@@ -21,10 +21,10 @@ import connectors._
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.DeclarationFormProvider
+import identifiers.register._
 import identifiers.register.company.ContactDetailsId
 import identifiers.register.individual.IndividualContactDetailsId
 import identifiers.register.partnership.PartnershipContactDetailsId
-import identifiers.register._
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
@@ -111,16 +111,16 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
   }
 
   private def sendEmail(answers: UserAnswers)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
-    answers.get(RegistrationInfoId).flatMap{ registrationInfo =>
+    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
       val id = registrationInfo.legalStatus match {
         case Individual => IndividualContactDetailsId
         case LimitedCompany => ContactDetailsId
         case Partnership => PartnershipContactDetailsId
       }
-      answers.get(id).map{ contactDetails =>
-          emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId)
-        }
-      } getOrElse(Future.successful(EmailNotSent))
+      answers.get(id).map { contactDetails =>
+        emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId)
+      }
+    } getOrElse (Future.successful(EmailNotSent))
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {

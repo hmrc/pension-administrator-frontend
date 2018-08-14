@@ -18,8 +18,8 @@ package utils
 
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import identifiers.{LastPageId, TypedIdentifier}
-import models.{CheckMode, LastPage, NormalMode}
 import models.requests.IdentifiedRequest
+import models.{CheckMode, LastPage, NormalMode}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
@@ -113,6 +113,7 @@ object NavigatorSpec {
 
   trait TestFixture {
     def dataCacheConnector: FakeDataCacheConnector
+
     def navigator: TestNavigator
   }
 
@@ -121,7 +122,9 @@ object NavigatorSpec {
     override val navigator: TestNavigator = new TestNavigator(dataCacheConnector)
   }
 
-  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {val externalId: String = "test-external-id"}
+  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
+    val externalId: String = "test-external-id"
+  }
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
 }

@@ -16,10 +16,9 @@
 
 package utils.navigators
 
-import javax.inject.Inject
-
 import connectors.DataCacheConnector
 import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import javax.inject.Inject
 import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import utils.{Navigator, UserAnswers}

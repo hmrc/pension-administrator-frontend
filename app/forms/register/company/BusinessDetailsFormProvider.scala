@@ -16,10 +16,9 @@
 
 package forms.register.company
 
-import javax.inject.Inject
-
 import forms.FormErrorHelper
 import forms.mappings.{Mappings, Transforms}
+import javax.inject.Inject
 import models.BusinessDetails
 import play.api.data.Form
 import play.api.data.Forms._

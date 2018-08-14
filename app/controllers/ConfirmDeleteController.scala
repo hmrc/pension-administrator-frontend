@@ -37,14 +37,14 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
   protected def cacheConnector: DataCacheConnector
 
   def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call)(implicit request: DataRequest[AnyContent]): Future[Result] =
-    if(!isDeleted) {
+    if (!isDeleted) {
       Future.successful(Ok(confirmDelete(appConfig, vm)))
     } else {
       Future.successful(Redirect(redirectTo))
     }
 
   def post(id: TypedIdentifier[PersonDetails], postUrl: Call)
-             (implicit request: DataRequest[AnyContent], f: Format[PersonDetails]): Future[Result] =
+          (implicit request: DataRequest[AnyContent], f: Format[PersonDetails]): Future[Result] =
     id.retrieve.right.map { details =>
       cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
         Redirect(postUrl)

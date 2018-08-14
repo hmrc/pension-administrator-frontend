@@ -21,8 +21,8 @@ import java.time.LocalDate
 import connectors.{DataCacheConnector, FakeDataCacheConnector}
 import forms.PersonDetailsFormProvider
 import identifiers.TypedIdentifier
-import models.{NormalMode, PSAUser, PersonDetails, UserType}
 import models.requests.DataRequest
+import models.{NormalMode, PSAUser, PersonDetails, UserType}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
@@ -42,10 +42,10 @@ trait PersonDetailsControllerBehaviour {
   // scalastyle:off method.length
 
   def personDetailsController[I <: TypedIdentifier[PersonDetails]](
-    viewModel: PersonDetailsViewModel,
-    id: I,
-    createController: (DataCacheConnector, Navigator) => PersonDetailsController
-  ): Unit = {
+                                                                    viewModel: PersonDetailsViewModel,
+                                                                    id: I,
+                                                                    createController: (DataCacheConnector, Navigator) => PersonDetailsController
+                                                                  ): Unit = {
 
     "return OK and the correct view for a GET request" in {
       val fixture = testFixture(createController)
@@ -125,11 +125,11 @@ object PersonDetailsControllerBehaviour {
       dateOfBirth = LocalDate.now().plusDays(1)
     )
 
-  case class TestFixture (dataCacheConnector: FakeDataCacheConnector, controller: PersonDetailsController)
+  case class TestFixture(dataCacheConnector: FakeDataCacheConnector, controller: PersonDetailsController)
 
   def testFixture(
-    createController: (DataCacheConnector, Navigator) => PersonDetailsController
-  ): TestFixture = {
+                   createController: (DataCacheConnector, Navigator) => PersonDetailsController
+                 ): TestFixture = {
 
     val connector = new FakeDataCacheConnector {}
     val navigator = new FakeNavigator(onwardRoute)

@@ -47,7 +47,7 @@ class PartnershipAddressYearsController @Inject()(
   private def viewModel(mode: Mode) =
     Retrieval {
       implicit request =>
-        PartnershipDetailsId.retrieve.right.map{ details =>
+        PartnershipDetailsId.retrieve.right.map { details =>
           AddressYearsViewModel(
             routes.PartnershipAddressYearsController.onSubmit(mode),
             Message("partnership.addressYears.title"),
@@ -62,7 +62,7 @@ class PartnershipAddressYearsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map{
+      viewModel(mode).retrieve.right.map {
         get(PartnershipAddressYearsId, form, _)
       }
   }

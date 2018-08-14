@@ -21,7 +21,7 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Environment
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.{Injector}
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 

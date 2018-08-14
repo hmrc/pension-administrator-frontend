@@ -34,7 +34,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
         "contain a label for the value" in {
           val doc = asDocument(createView(form))
-          val expectedHintText = expectedHintKey map(k => messages(k))
+          val expectedHintText = expectedHintKey map (k => messages(k))
           assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.$labelKey"), expectedHintText)
         }
 

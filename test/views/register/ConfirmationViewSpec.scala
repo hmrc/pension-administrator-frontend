@@ -16,8 +16,8 @@
 
 package views.register
 
-import models.{PSAUser, UserType}
 import models.requests.DataRequest
+import models.{PSAUser, UserType}
 import utils.UserAnswers
 import views.behaviours.ViewBehaviours
 import views.html.register.confirmation
@@ -27,10 +27,12 @@ class ConfirmationViewSpec extends ViewBehaviours {
   val psaId: String = "A1234567"
 
   "Confirmation view where user is existing PSA" must {
-     val messageKeyPrefix = "confirmation.existingPSA"
-     val psaUser=PSAUser(UserType.Individual, None, true, None)
-     def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",psaUser, UserAnswers()), messages)
-     behave like normalPage(createView(), messageKeyPrefix)
+    val messageKeyPrefix = "confirmation.existingPSA"
+    val psaUser = PSAUser(UserType.Individual, None, true, None)
+
+    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+
+    behave like normalPage(createView(), messageKeyPrefix)
 
     "display the PSA ID number text" in {
       createView mustNot haveDynamicText("confirmation.psaIdNumber")
@@ -60,7 +62,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
       createView must haveLink(frontendAppConfig.registerSchemeUrl, "register-scheme-link")
     }
 
-    behave like pageWithSubmitButton(  createView())
+    behave like pageWithSubmitButton(createView())
 
     "have a link to 'print this screen'" in {
       createView must haveLinkOnClick("window.print();return false;", "print-this-page-link")
@@ -71,9 +73,10 @@ class ConfirmationViewSpec extends ViewBehaviours {
   "Confirmation view where user is new PSA" must {
 
     val messageKeyPrefix = "confirmation.newPSA"
-    val psaUser=PSAUser(UserType.Individual, None, false, None)
+    val psaUser = PSAUser(UserType.Individual, None, false, None)
 
-    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId",psaUser, UserAnswers()), messages)
+    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+
     behave like normalPage(createView(), messageKeyPrefix)
 
     "display the PSA ID number text" in {

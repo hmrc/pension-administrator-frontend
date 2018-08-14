@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
-import models.{Index, NormalMode}
+import models.Index
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -32,12 +32,12 @@ import views.html.alreadyDeleted
 import scala.concurrent.Future
 
 class AlreadyDeletedController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction
-                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction
+                                        ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -46,6 +46,7 @@ class AlreadyDeletedController @Inject()(
         name,
         controllers.register.partnership.routes.AddPartnerController.onPageLoad()
       )
+
       PartnerDetailsId(index).retrieve.right.map { partnerDetails =>
         Future.successful(Ok(alreadyDeleted(appConfig, viewmodel(partnerDetails.fullName))))
       }

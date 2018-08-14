@@ -16,24 +16,22 @@
 
 package controllers
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.AuthAction
 import identifiers.IndexId
+import javax.inject.Inject
 import models.{NormalMode, UserType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.RegisterCompany
 
 class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
                                 dataCacheConnector: DataCacheConnector,
                                 authenticate: AuthAction) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authenticate.async{
+  def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
       dataCacheConnector.save(request.externalId, IndexId, "").map { _ =>
         request.user.userType match {

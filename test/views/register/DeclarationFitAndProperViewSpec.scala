@@ -16,8 +16,8 @@
 
 package views.register
 
-import play.api.data.Form
 import forms.register.DeclarationFormProvider
+import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.declarationFitAndProper
 
@@ -55,7 +55,7 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
       createView must haveDynamicText("declarationFitAndProper.declaration")
     }
 
-     "display the first statement" in {
+    "display the first statement" in {
       createView must haveDynamicText("declarationFitAndProper.statement1")
     }
 

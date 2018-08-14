@@ -39,12 +39,12 @@ class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
       "middleName" ->
         optionalText()
           .verifying(
-              firstError(
-                maxLength(PersonDetailsFormProvider.middleNameLength,
-                  "personDetails.error.middleName.length"
-                ),
-                name("personDetails.error.middleName.invalid")
-              )
+            firstError(
+              maxLength(PersonDetailsFormProvider.middleNameLength,
+                "personDetails.error.middleName.length"
+              ),
+              name("personDetails.error.middleName.invalid")
+            )
           ),
       "lastName" ->
         text("personDetails.error.lastName.required")

@@ -19,19 +19,18 @@ package controllers.actions
 import java.net.URLEncoder
 
 import com.google.inject.{ImplementedBy, Inject}
-import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
-import play.api.mvc.Results._
-import uk.gov.hmrc.auth.core._
 import config.FrontendAppConfig
 import controllers.routes
 import models.UserType.UserType
-import models.{PSAUser, UserType}
 import models.requests.AuthenticatedRequest
-import uk.gov.hmrc.http.UnauthorizedException
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.auth.core.retrieve._
+import models.{PSAUser, UserType}
+import play.api.mvc.Results._
+import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup._
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,7 +49,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
         if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
           Future.successful(Redirect(routes.InterceptPSAController.onPageLoad()))
-        } else if (isPSP(enrolments) && !isPSA(enrolments)){
+        } else if (isPSP(enrolments) && !isPSA(enrolments)) {
           Future.successful(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
         } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
           Future.successful(Redirect(ivUpliftUrl))

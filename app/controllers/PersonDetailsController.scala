@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import forms.PersonDetailsFormProvider
 import identifiers.TypedIdentifier
-import models.{Mode, PersonDetails}
 import models.requests.DataRequest
+import models.{Mode, PersonDetails}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -35,15 +35,17 @@ import scala.concurrent.Future
 trait PersonDetailsController extends FrontendController with I18nSupport {
 
   def appConfig: FrontendAppConfig
+
   def dataCacheConnector: DataCacheConnector
+
   def navigator: Navigator
 
   private val form = new PersonDetailsFormProvider()()
 
   def get[I <: TypedIdentifier[PersonDetails]](
-    id: I, viewModel:
-    PersonDetailsViewModel
-  )(implicit request: DataRequest[AnyContent]): Result = {
+                                                id: I, viewModel:
+  PersonDetailsViewModel
+                                              )(implicit request: DataRequest[AnyContent]): Result = {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form
@@ -55,10 +57,10 @@ trait PersonDetailsController extends FrontendController with I18nSupport {
   }
 
   def post[I <: TypedIdentifier[PersonDetails]](
-    id: I,
-    viewModel: PersonDetailsViewModel,
-    mode: Mode
-  )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                                                 id: I,
+                                                 viewModel: PersonDetailsViewModel,
+                                                 mode: Mode
+                                               )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>

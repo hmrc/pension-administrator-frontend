@@ -24,11 +24,12 @@ sealed trait UniqueTaxReference
 object UniqueTaxReference {
 
   case class Yes(utr: String) extends UniqueTaxReference
+
   case class No(reason: String) extends UniqueTaxReference
 
   val options: Seq[InputOption] = Seq(
-      InputOption("true", "site.yes", Some("utr_utr-form")),
-      InputOption("false", "site.no", Some("utr_reason-form"))
+    InputOption("true", "site.yes", Some("utr_utr-form")),
+    InputOption("false", "site.no", Some("utr_reason-form"))
   )
 
   implicit val reads: Reads[UniqueTaxReference] = {
