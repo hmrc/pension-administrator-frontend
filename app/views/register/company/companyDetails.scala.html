@@ -34,7 +34,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.headingNew(messages("companyDetails.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
+        @components.heading(messages("companyDetails.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.input_text(
             field = form("vatRegistrationNumber"),

@@ -40,7 +40,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.headingNew(messages("addCompanyDirectors.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
+        @components.heading(messages("addCompanyDirectors.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @if(directors.isEmpty) {
             @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))

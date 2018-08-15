@@ -34,7 +34,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.headingNew(viewModel.heading, secondaryHeaderKey = Some(messages("site.secondaryHeader")))
+        @components.heading(viewModel.heading, secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.input_text(
             field = form("firstName"),

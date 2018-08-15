@@ -32,7 +32,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.headingNew(viewModel.heading, secondaryHeaderKey = Some(messages("site.secondaryHeader")))
+        @components.heading(viewModel.heading, secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.input_yes_no(
             field = form("value"),

@@ -37,10 +37,10 @@
 
     <div class="govuk-box-highlight">
          @if(request.user.isExistingPSA){
-              @components.headingNew(messages("confirmation.existingPSA.heading"))
+              @components.heading(messages("confirmation.existingPSA.heading"))
 
          } else {
-                @components.headingNew(messages("confirmation.newPSA.heading"))
+                @components.heading(messages("confirmation.newPSA.heading"))
 
               <p class="font-large">
                  @messages("confirmation.psaIdNumber")

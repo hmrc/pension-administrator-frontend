@@ -31,7 +31,7 @@ bodyClasses = None) {
 
   @components.error_summary(form.errors)
 
-  @components.headingNew(viewModel.heading, "heading-xlarge", Some(messages("site.secondaryHeader")))
+  @components.heading(viewModel.heading, "heading-xlarge", Some(messages("site.secondaryHeader")))
 
   @components.input_text(
   field = form("companyName"),
