@@ -95,6 +95,4 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   lazy val contactAddressEnabled: Boolean = runModeConfiguration.getBoolean("features.contact-address").getOrElse(false)
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
-  lazy val completeFlagEnabled: Boolean = runModeConfiguration.getBoolean("features.is-complete").getOrElse(true)
-
 }

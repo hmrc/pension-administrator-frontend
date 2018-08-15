@@ -29,8 +29,6 @@
                 <h2 id="@person.id" class="bold std-text">@person.name</h2>
             </div>
 
-            @if(appConfig.completeFlagEnabled){
-
                 @if(person.isComplete){
 
                 <div class="cya-status status">
@@ -44,8 +42,6 @@
                 </div>
 
                 }
-
-            }
 
             <div>
                 <a id="@person.deleteLinkId" href="@person.deleteLink">

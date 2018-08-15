@@ -26,7 +26,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
-appConfig.completeFlagEnabled & viewmodel.entities.exists(!_.isComplete)
+    viewmodel.entities.exists(!_.isComplete)
 }
 
 @main_template(
