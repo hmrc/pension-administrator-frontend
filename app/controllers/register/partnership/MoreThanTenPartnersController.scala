@@ -27,19 +27,26 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
-import viewmodels.MoreThanTenViewModel
+import viewmodels.{Message, MoreThanTenViewModel}
 
-class MoreThanTenPartnersController @Inject() (
-  val appConfig: FrontendAppConfig,
-  override val messagesApi: MessagesApi,
-  val dataCacheConnector: DataCacheConnector,
-  @PartnershipPartner val navigator: Navigator,
-  authenticate: AuthAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction
-) extends MoreThanTenController {
+class MoreThanTenPartnersController @Inject()(
+                                               val appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               val dataCacheConnector: DataCacheConnector,
+                                               @PartnershipPartner val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction
+                                             ) extends MoreThanTenController {
 
-  import MoreThanTenPartnersController._
+  def viewModel(mode: Mode): MoreThanTenViewModel =
+    MoreThanTenViewModel(
+      title = "moreThanTenPartners.title",
+      heading = Message("moreThanTenPartners.heading"),
+      hint = "moreThanTenPartners.hint",
+      postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
+      id = MoreThanTenPartnersId
+    )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
@@ -52,13 +59,3 @@ class MoreThanTenPartnersController @Inject() (
   }
 }
 
-object MoreThanTenPartnersController {
-  def viewModel(mode: Mode): MoreThanTenViewModel =
-    MoreThanTenViewModel(
-      title = "moreThanTenPartners.title",
-      heading = "moreThanTenPartners.heading",
-      hint = "moreThanTenPartners.hint",
-      postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
-      id = MoreThanTenPartnersId
-    )
-}

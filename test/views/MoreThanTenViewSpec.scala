@@ -22,7 +22,7 @@ import identifiers.TypedIdentifier
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewmodels.MoreThanTenViewModel
+import viewmodels.{Message, MoreThanTenViewModel}
 import views.behaviours.YesNoViewBehaviours
 import views.html.moreThanTen
 
@@ -35,7 +35,7 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
   def viewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
-      heading = "moreThanTenDirectors.heading",
+      heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
       id = new TypedIdentifier[Boolean] {}

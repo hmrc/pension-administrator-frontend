@@ -37,7 +37,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("partnerUniqueTaxReference.heading", secondaryHeaderKey = Some(partnerName))
+        @components.headingNew(messages("partnerUniqueTaxReference.heading"), secondaryHeaderKey = Some(components.hyphen(partnerName).toString))
 
         @components.fieldSet(
             field = form("utr.hasUtr"),

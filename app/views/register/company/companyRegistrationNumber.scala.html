@@ -32,7 +32,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("companyRegistrationNumber.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.headingNew(messages("companyRegistrationNumber.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.input_text(
           field = form("value"),

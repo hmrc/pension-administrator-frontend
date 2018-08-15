@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
-import viewmodels.MoreThanTenViewModel
+import viewmodels.{Message, MoreThanTenViewModel}
 
 class MoreThanTenDirectorsController @Inject() (
                                                  val appConfig: FrontendAppConfig,
@@ -42,7 +42,7 @@ class MoreThanTenDirectorsController @Inject() (
   private def viewModel(mode: Mode): MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
-      heading = "moreThanTenDirectors.heading",
+      heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = routes.MoreThanTenDirectorsController.onSubmit(mode),
       id = MoreThanTenDirectorsId

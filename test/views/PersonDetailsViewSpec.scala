@@ -20,7 +20,7 @@ import forms.PersonDetailsFormProvider
 import models.{NormalMode, PersonDetails}
 import play.api.data.Form
 import play.api.mvc.Call
-import viewmodels.PersonDetailsViewModel
+import viewmodels.{Message, PersonDetailsViewModel}
 import views.behaviours.QuestionViewBehaviours
 import views.html.personDetails
 
@@ -33,7 +33,7 @@ class PersonDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
   private lazy val viewModel =
     PersonDetailsViewModel(
       title = "directorDetails.title",
-      heading = "directorDetails.heading",
+      heading = Message("directorDetails.heading"),
       postCall = Call("POST", "http://www.test.com")
     )
 

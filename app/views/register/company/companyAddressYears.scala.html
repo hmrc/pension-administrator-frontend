@@ -33,7 +33,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("companyAddressYears.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.headingNew(messages("companyAddressYears.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.tolerant_address("companyAddress", address)
 

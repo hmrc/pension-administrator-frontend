@@ -32,7 +32,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("individualDateOfBirth.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+        @components.headingNew(messages("individualDateOfBirth.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.input_date(
             field = form("dateOfBirth"),
