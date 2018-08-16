@@ -314,8 +314,11 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val validName = Table(
       "name",
-      "AÀ",
-      "a"
+      "a`",
+      "a",
+      "a.",
+      "a'",
+      "valid-name"
     )
 
     val invalidName = Table(
@@ -325,7 +328,9 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "_a",
       "1a",
       "A/",
-      "a\\"
+      "a\\",
+      "1234",
+      "a^"
     )
 
     val invalidMsg = "Invalid name"
