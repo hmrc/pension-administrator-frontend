@@ -52,5 +52,5 @@ class AdviserDetailsFormProvider @Inject() extends EmailMapping with PhoneNumber
 }
 
 object AdviserDetailsFormProvider {
-  val nameLength: Int = 255
+  val nameLength: Int = 107
 }

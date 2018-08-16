@@ -83,61 +83,58 @@ object TolerantAddress {
           throw new NoAddressLinesFoundException()
         }
         case 1 => {
-          val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
-          (Some(linesWithNoAmpersand(0)), townOrCounty._1, townOrCounty._2, None)
+          val townOrCounty = getTownOrCounty(town, county, lines)
+          (Some(lines(0)), townOrCounty._1, townOrCounty._2, None)
         }
         case 2 => {
-          val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
+          val townOrCounty = getTownOrCounty(town, county, lines)
 
-          (Some(linesWithNoAmpersand(0)), Some(linesWithNoAmpersand(1)), townOrCounty._1, townOrCounty._2)
+          (Some(lines(0)), Some(lines(1)), townOrCounty._1, townOrCounty._2)
         }
         case 3 => {
-          val townOrCounty = getTownOrCounty(town, county, linesWithNoAmpersand)
+          val townOrCounty = getTownOrCounty(town, county, lines)
           val townOrCountyValue = if (townOrCounty._2.isDefined) townOrCounty._2 else townOrCounty._1
 
-          (Some(linesWithNoAmpersand(0)), Some(linesWithNoAmpersand(1)), Some(linesWithNoAmpersand(2)), townOrCountyValue)
+          (Some(lines(0)), Some(lines(1)), Some(lines(2)), townOrCountyValue)
         }
-        case numberOfLines if (numberOfLines >= 4) => (Some(linesWithNoAmpersand(0)), Some(linesWithNoAmpersand(1)), Some(linesWithNoAmpersand(2)), Some(linesWithNoAmpersand(3)))
+        case numberOfLines if (numberOfLines >= 4) => (Some(lines(0)), Some(lines(1)), Some(lines(2)), Some(lines(3)))
       }
     }
     TolerantAddress(addressLines._1, addressLines._2, addressLines._3, addressLines._4, Some(postCode), Some(countryCode))
   })
 
 
-  private def checkIfElementAlreadyExistsInLines(linesWithNoAmpersand: List[String], elementToCheck: String) = {
-    linesWithNoAmpersand.mkString("").toLowerCase().contains(elementToCheck.trim().toLowerCase())
+  private def checkIfElementAlreadyExistsInLines(lines: List[String], elementToCheck: String) = {
+    lines.mkString("").toLowerCase().contains(elementToCheck.trim().toLowerCase())
   }
 
   private def getTownOrCounty(town: Option[String], county: Option[String], addressLines: List[String]) = {
 
     (town, county) match {
       case (Some(town), None) => {
-        val formattedTown = replaceAmpersanWithAnd(town)
+        val formattedTown = town
         (if (checkIfElementAlreadyExistsInLines(addressLines, formattedTown)) None else Some(formattedTown), None)
       }
       case (None, Some(county)) => {
-        val formattedCounty = replaceAmpersanWithAnd(county)
+        val formattedCounty = county
         (if (checkIfElementAlreadyExistsInLines(addressLines, formattedCounty)) None else Some(formattedCounty), None)
       }
       case (Some(town), Some(county)) => {
-        val formattedTown = replaceAmpersanWithAnd(town)
-        val formattedCounty = replaceAmpersanWithAnd(county)
+        val formattedTown = town
+        val formattedCounty = county
         val townAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines, formattedTown)
         val countyAlreadyExists = checkIfElementAlreadyExistsInLines(addressLines, formattedCounty)
 
         (townAlreadyExists, countyAlreadyExists) match {
-          case (true, false) => (Some(replaceAmpersanWithAnd(county)), None)
-          case (false, true) => (Some(replaceAmpersanWithAnd(town)), None)
+          case (true, false) => (Some(county), None)
+          case (false, true) => (Some(town), None)
           case (true, true) => (None, None)
-          case _ => (Some(replaceAmpersanWithAnd(town)), Some(replaceAmpersanWithAnd(county)))
+          case _ => (Some(town), Some(county))
         }
       }
       case _ => (None, None)
     }
   }
-
-  private def replaceAmpersanWithAnd(data: String): String = (data.replace("&", "and"))
-
 
   val postCodeLookupReads: Reads[Seq[TolerantAddress]] = Reads {
     json =>

@@ -439,14 +439,15 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "ABCD",
       "ab'cd",
       "ab-cd",
-      "ab cd"
+      "ab cd",
+      "ab & cd",
+      "1234_%£$"
     )
 
     val invalidText = Table(
       "text",
-      "1234",
-      "abc123",
-      "a&b"
+      "ab>cd",
+      "ab<cd"
     )
 
     val invalidMsg = "Invalid text"
