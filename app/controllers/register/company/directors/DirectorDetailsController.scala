@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
-import viewmodels.PersonDetailsViewModel
+import viewmodels.{Message, PersonDetailsViewModel}
 
 class DirectorDetailsController @Inject()(
                                            val appConfig: FrontendAppConfig,
@@ -42,7 +42,7 @@ class DirectorDetailsController @Inject()(
   private[directors] def viewModel(mode: Mode, index: Index) =
     PersonDetailsViewModel(
       title = "directorDetails.title",
-      heading = "directorDetails.title",
+      heading = Message("directorDetails.title"),
       postCall = routes.DirectorDetailsController.onSubmit(mode, index)
     )
 
