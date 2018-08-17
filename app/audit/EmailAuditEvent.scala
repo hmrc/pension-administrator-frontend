@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package audit
 
-import play.api.libs.json.Json
+import controllers.model.Event
+import uk.gov.hmrc.domain.PsaId
 
-case class SendEmailRequest(to: List[String], templateId: String, parameters: Map[String, String], force: Boolean, eventUrl: String)
+case class EmailAuditEvent(psaId: String, event: Event) extends AuditEvent {
 
-object SendEmailRequest {
-  implicit val format = Json.format[SendEmailRequest]
+  override def auditType: String = "EmailEvent"
+
+  override def details: Map[String, String] = Map("psaId" -> psaId, "event" -> event.toString)
+
 }

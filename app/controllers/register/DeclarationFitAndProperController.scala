@@ -95,7 +95,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
               _ <- enrol(psaResponse.psaId)
-              _ <- sendEmail(answers)
+              _ <- sendEmail(answers, psaResponse.psaId)
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
@@ -110,7 +110,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
       )
   }
 
-  private def sendEmail(answers: UserAnswers)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
+  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
     answers.get(RegistrationInfoId).flatMap { registrationInfo =>
       val id = registrationInfo.legalStatus match {
         case Individual => IndividualContactDetailsId
@@ -118,7 +118,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
         case Partnership => PartnershipContactDetailsId
       }
       answers.get(id).map { contactDetails =>
-        emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId)
+        emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId, psaId)
       }
     } getOrElse (Future.successful(EmailNotSent))
   }

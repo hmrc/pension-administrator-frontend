@@ -97,14 +97,15 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           )
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
           when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any())(any(), any())).thenReturn(Future.successful(EmailSent))
+          when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any(), eqTo("test-psa-id"))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
             fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any())(any(), any())
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any(), eqTo("test-psa-id"))(any(), any())
         }
+
         "on a valid request and not send the email" in {
           reset(mockEmailConnector)
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
@@ -114,7 +115,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo("test@test.com"), any())(any(), any())
+          verify(mockEmailConnector, never()).sendEmail(eqTo("test@test.com"), any(), eqTo("test-psa-id"))(any(), any())
         }
       }
 
