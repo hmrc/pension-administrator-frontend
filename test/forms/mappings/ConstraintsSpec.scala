@@ -440,7 +440,8 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "ab'cd",
       "ab-cd",
       "ab ‘(cd)’",
-      "ab & cd"
+      "ab & cd",
+      "aA &?*()_Àÿ '‘’— –‐-"
     )
 
     val invalidText = Table(
@@ -449,7 +450,9 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
       "ab<cd",
       "ab\\cd",
       "ab/cd",
-      "[abcd]"
+      "[abcd]",
+      "",
+      "A B" //different unicode space
     )
 
     val invalidMsg = "Invalid text"
