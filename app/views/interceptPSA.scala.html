@@ -31,7 +31,7 @@
 
     @components.button_link(
         "interceptPSA.button",
-        appConfig.schemesOverviewUrl,
+        if (appConfig.useManagePensionsFrontend) appConfig.managePensionsSchemeOverviewUrl else appConfig.schemesOverviewUrl,
         "go-to-scheme-reg"
     )
 
