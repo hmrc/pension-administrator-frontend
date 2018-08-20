@@ -16,6 +16,7 @@
 
 package views
 
+import play.api.inject.guice.GuiceApplicationBuilder
 import views.behaviours.ViewBehaviours
 import views.html.interceptPSA
 
@@ -25,11 +26,15 @@ class InterceptPSAViewSpec extends ViewBehaviours {
 
   def createView = () => interceptPSA(frontendAppConfig)(fakeRequest, messages)
 
+  override lazy val app = new GuiceApplicationBuilder().configure(
+    "features.useManagePensionsFrontend" -> true
+  ).build()
+
   "InterceptPSA view" must {
     behave like normalPage(createView, messageKeyPrefix, "body", "button", "exit")
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithContinueButton(createView, frontendAppConfig.schemesOverviewUrl, "go-to-scheme-reg")
+    behave like pageWithContinueButton(createView, frontendAppConfig.managePensionsSchemeOverviewUrl, "go-to-scheme-reg")
   }
 }
