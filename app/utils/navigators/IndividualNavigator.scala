@@ -33,7 +33,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: DataCacheConnector, 
   //noinspection ScalaStyle
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case IndividualDetailsCorrectId => detailsCorrect(from.userAnswers)
-    case WhatYouWillNeedId => contactAddressToggle(from.userAnswers)
+    case WhatYouWillNeedId => NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
     case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, NormalMode)
     case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(NormalMode))
     case IndividualContactAddressListId => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(NormalMode))
@@ -111,13 +111,4 @@ class IndividualNavigator @Inject()(val dataCacheConnector: DataCacheConnector, 
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
-
-  def contactAddressToggle(answers: UserAnswers): Option[NavigateTo] = {
-    if (config.contactAddressEnabled) {
-      NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
-    } else {
-      NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(NormalMode))
-    }
-  }
-
 }

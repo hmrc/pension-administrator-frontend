@@ -31,9 +31,8 @@
         @components.back_link()
 
         @components.heading(
-            headingKey = "confirmDeleteDirector.heading",
-            headingToken = Some(fullName),
-            secondaryHeaderKey = Some("site.secondaryHeader"))
+            headingKey = messages("confirmDeleteDirector.heading", fullName),
+            secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
         @components.submit_button("site.confirm")
 

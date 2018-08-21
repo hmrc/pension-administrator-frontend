@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
-import viewmodels.PersonDetailsViewModel
+import viewmodels.{Message, PersonDetailsViewModel}
 
 class PartnerDetailsController @Inject()(
                                           val appConfig: FrontendAppConfig,
@@ -42,7 +42,7 @@ class PartnerDetailsController @Inject()(
   private[partners] def viewModel(mode: Mode, index: Int) =
     PersonDetailsViewModel(
       title = "partnerDetails.title",
-      heading = "partnerDetails.heading",
+      heading = Message("partnerDetails.heading"),
       postCall = routes.PartnerDetailsController.onSubmit(mode, index)
     )
 

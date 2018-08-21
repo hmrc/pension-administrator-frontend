@@ -25,7 +25,6 @@ import identifiers.register.individual._
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
-import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -34,12 +33,6 @@ import utils.{NavigatorBehaviour, UserAnswers}
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import IndividualNavigatorSpec._
-
-  //Remove the routes and the corresponding tests once the toggle is removed
-  def toggledRoute(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (WhatYouWillNeedId, emptyAnswers, addressYearsPage(NormalMode), true, None, false)
-  )
 
   //noinspection ScalaStyle
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -66,13 +59,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
-  val navigatorToggled = new IndividualNavigator(FakeDataCacheConnector, appConfig())
-  s"When contact address journey is toggled off ${navigatorToggled.getClass.getSimpleName}" must {
-    appRunning()
-    behave like navigatorWithRoutes(navigatorToggled, FakeDataCacheConnector, toggledRoute(), dataDescriber)
-  }
-
-  val navigator = new IndividualNavigator(FakeDataCacheConnector, appConfig(true))
+  val navigator = new IndividualNavigator(FakeDataCacheConnector, appConfig())
   s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
     appRunning()
     behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
@@ -86,11 +73,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object IndividualNavigatorSpec extends OptionValues {
-  private def appConfig(isContactAddressEnabled: Boolean = false) = {
-    val application = new GuiceApplicationBuilder()
-      .configure(Configuration("features.contact-address" -> isContactAddressEnabled)).build()
-    application.injector.instanceOf[FrontendAppConfig]
-  }
+  private def appConfig() = new GuiceApplicationBuilder().injector.instanceOf[FrontendAppConfig]
 
   lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
 

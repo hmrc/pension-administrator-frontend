@@ -29,7 +29,7 @@
     ) {
 
         @helpers.form(action = postUrl, 'autoComplete -> "off") {
-            @components.headingNew(
+            @components.heading(
                     headingKey=messages("checkYourAnswers.heading").toString,
                     secondaryHeaderKey = secondaryHeader.map{x=>components.hyphen(messages(x)).toString}
             )

@@ -55,6 +55,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
   lazy val registerSchemeUrl: String = loadConfig("urls.pensions-scheme-frontend.registerScheme")
   lazy val schemesOverviewUrl: String = loadConfig("urls.pensions-scheme-frontend.schemesOverview")
+  lazy val managePensionsSchemeOverviewUrl : String = loadConfig("urls.manage-pensions-frontend.schemesOverview")
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
@@ -64,6 +65,8 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
   lazy val duplicateRegUri = "/register-as-pension-scheme-administrator/register/duplicate-registration"
   lazy val tpssUrl: String = loadConfig("urls.tpss")
+  lazy val useManagePensionsFrontend: Boolean = runModeConfiguration.getBoolean("features.useManagePensionsFrontend").getOrElse(false)
+
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -93,6 +96,5 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
-  lazy val contactAddressEnabled: Boolean = runModeConfiguration.getBoolean("features.contact-address").getOrElse(false)
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
 }
