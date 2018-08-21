@@ -54,7 +54,7 @@ class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
     behave like fieldWithRegex(
       form,
       fieldName,
-      "1234",
+      "test<name",
       FormError(fieldName, invalidKey, Seq(adviserNameRegex))
     )
 

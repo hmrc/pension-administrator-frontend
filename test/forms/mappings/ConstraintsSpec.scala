@@ -336,9 +336,9 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
   "addressLine" must {
 
     val validAddress = Table(
-      "address",
-      "1 Main St.",
-      "Apt/12",
+      "‘address’",
+      "1\" Main St.!",
+      "“Apt/12”",
       "—–‐-"
     )
 
@@ -436,17 +436,23 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     val validText = Table(
       "text",
       "abcd",
-      "ABCD",
+      "AB_CD",
       "ab'cd",
       "ab-cd",
-      "ab cd"
+      "ab ‘(cd)’",
+      "ab & cd",
+      "aA &?*()_Àÿ '‘’— –‐-"
     )
 
     val invalidText = Table(
       "text",
-      "1234",
-      "abc123",
-      "a&b"
+      "ab>cd",
+      "ab<cd",
+      "ab\\cd",
+      "ab/cd",
+      "[abcd]",
+      "",
+      "A B" //different unicode space
     )
 
     val invalidMsg = "Invalid text"
