@@ -33,6 +33,7 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
@@ -118,7 +119,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
         case Partnership => PartnershipContactDetailsId
       }
       answers.get(id).map { contactDetails =>
-        emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId, psaId)
+        emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId, PsaId(psaId))
       }
     } getOrElse (Future.successful(EmailNotSent))
   }

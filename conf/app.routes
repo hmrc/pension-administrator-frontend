@@ -24,5 +24,3 @@ GET        /assistant-on-gg                             controllers.Unauthorised
 GET        /no-reg-as-psa                               controllers.InterceptPSAController.onPageLoad()
 
 GET        /psp                                         controllers.PensionSchemePractitionerController.onPageLoad()
-
-POST       /email-response/:id                          controllers.EmailResponseController.retrieveStatus(id: String)

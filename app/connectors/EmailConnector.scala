@@ -23,6 +23,7 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -37,7 +38,7 @@ case object EmailNotSent extends EmailStatus
 @ImplementedBy(classOf[EmailConnectorImpl])
 trait EmailConnector {
 
-  def sendEmail(emailAddress: String, templateName: String, psaId: String)
+  def sendEmail(emailAddress: String, templateName: String, psaId: PsaId)
                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailStatus]
 }
 
@@ -47,15 +48,16 @@ class EmailConnectorImpl @Inject()(
                                     crypto: ApplicationCrypto
                                   ) extends EmailConnector {
 
-  private def callBackUrl(psaId: String): String = {
-    val encryptPsa = crypto.QueryParameterCrypto.encrypt(PlainText(psaId)).value
-    s"${appConfig.pensionAdminFrontend}/register-as-pension-scheme-administrator/email-response/$encryptPsa"
+  private def callBackUrl(psaId: PsaId): String = {
+    val requestType = "PSA"
+    val encryptedPsaId = crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value
+    s"${appConfig.pensionsSchemeUrl}/pensions-scheme/$requestType/email-response/$encryptedPsaId"
   }
 
   override def sendEmail(
                           emailAddress: String,
                           templateName: String,
-                          psaId: String
+                          psaId: PsaId
                         )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailStatus] = {
     val emailServiceUrl = appConfig.emailUrl
 

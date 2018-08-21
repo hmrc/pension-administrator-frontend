@@ -19,6 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -31,7 +32,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
   private lazy val connector = injector.instanceOf[EmailConnector]
   private val testEmailAddress = "test@test.com"
   private val testTemplate = "testTemplate"
-  val testPsaId = "A1234567"
+  val testPsaId = PsaId("A1234567")
 
   ".sendEmail" must {
     "return an EmailSent" when {
