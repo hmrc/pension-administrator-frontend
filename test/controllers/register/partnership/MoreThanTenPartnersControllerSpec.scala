@@ -20,14 +20,23 @@ import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAuthAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
-import models.NormalMode
+import models.{Mode, NormalMode}
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import viewmodels.MoreThanTenViewModel
+import viewmodels.{Message, MoreThanTenViewModel}
 
 class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
   import MoreThanTenPartnersControllerSpec._
+
+  private def viewModel(mode: Mode): MoreThanTenViewModel =
+    MoreThanTenViewModel(
+      title = "moreThanTenPartners.title",
+      heading = Message("moreThanTenPartners.heading"),
+      hint = "moreThanTenPartners.hint",
+      postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
+      id = MoreThanTenPartnersId
+    )
 
   "MoreThanTenPartnersController" must {
 
@@ -49,13 +58,13 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
     "check the view model is correct" in {
       val expected: MoreThanTenViewModel = MoreThanTenViewModel(
         title = "moreThanTenPartners.title",
-        heading = "moreThanTenPartners.heading",
+        heading = Message("moreThanTenPartners.heading"),
         hint = "moreThanTenPartners.hint",
         postCall = routes.MoreThanTenPartnersController.onSubmit(NormalMode),
         id = MoreThanTenPartnersId
       )
 
-      val actual = MoreThanTenPartnersController.viewModel(NormalMode)
+      val actual = controller(this).viewModel(NormalMode)
 
       actual mustBe expected
     }

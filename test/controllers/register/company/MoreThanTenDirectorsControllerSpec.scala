@@ -27,7 +27,7 @@ import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import viewmodels.MoreThanTenViewModel
+import viewmodels.{Message, MoreThanTenViewModel}
 import views.html.moreThanTen
 
 class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
@@ -40,7 +40,7 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
   def viewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
-      heading = "moreThanTenDirectors.heading",
+      heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
       id = MoreThanTenDirectorsId

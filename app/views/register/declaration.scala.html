@@ -29,7 +29,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading("declaration.heading", secondaryHeaderKey = Some("site.secondaryHeader"))
+    @components.heading(messages("declaration.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
     @helpers.form(action = routes.DeclarationController.onSubmit(), 'autoComplete -> "off") {
         @components.paragraph_text(messages("declaration.declaration") + ":")
