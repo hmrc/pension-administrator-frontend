@@ -19,6 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -31,6 +32,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
   private lazy val connector = injector.instanceOf[EmailConnector]
   private val testEmailAddress = "test@test.com"
   private val testTemplate = "testTemplate"
+  val testPsaId = PsaId("A1234567")
 
   ".sendEmail" must {
     "return an EmailSent" when {
@@ -42,7 +44,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate).map {
+        connector.sendEmail(testEmailAddress, testTemplate, testPsaId).map {
           result =>
             result mustBe EmailSent
         }
@@ -57,7 +59,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate).map {
+        connector.sendEmail(testEmailAddress, testTemplate, testPsaId).map {
           result =>
             result mustBe EmailNotSent
         }
@@ -73,7 +75,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
           )
         )
 
-        connector.sendEmail(testEmailAddress, testTemplate).map {
+        connector.sendEmail(testEmailAddress, testTemplate, testPsaId).map {
           result =>
             result mustBe EmailNotSent
         }

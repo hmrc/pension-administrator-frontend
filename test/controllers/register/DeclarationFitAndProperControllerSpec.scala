@@ -33,6 +33,7 @@ import play.api.libs.json.{Writes, _}
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
@@ -97,14 +98,15 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           )
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
           when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any())(any(), any())).thenReturn(Future.successful(EmailSent))
+          when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
             fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any())(any(), any())
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
+
         "on a valid request and not send the email" in {
           reset(mockEmailConnector)
           val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
@@ -114,7 +116,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo("test@test.com"), any())(any(), any())
+          verify(mockEmailConnector, never()).sendEmail(eqTo("test@test.com"), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
       }
 
@@ -220,7 +222,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       block(AuthenticatedRequest(request, "id", PSAUser(userType, None, true, Some("test psa id"))))
   }
 
-  private val validPsaResponse = PsaSubscriptionResponse("test-psa-id")
+  private val validPsaResponse = PsaSubscriptionResponse("A0123456")
   private val knownFacts = Some(KnownFacts(
     Set(KnownFact("PSAID", "test-psa")),
     Set(KnownFact("NINO", "test-nino")
