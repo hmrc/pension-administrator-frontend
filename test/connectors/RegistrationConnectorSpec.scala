@@ -17,6 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import config.FrontendAppConfig
 import models._
 import org.scalatest._
 import play.api.http.Status
@@ -26,7 +27,7 @@ import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext
 
-class RegistrationConnectorSpec()
+class RegistrationConnectorSpec(config: FrontendAppConfig)
   extends AsyncFlatSpec with Matchers with OptionValues with WireMockHelper {
 
   override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
@@ -37,8 +38,21 @@ class RegistrationConnectorSpec()
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
 
-  private val organizationPath = "/pensions-scheme/register-with-id/organisation"
-  private val individualPath = "/pensions-scheme/register-with-id/individual"
+  private val organizationPath: String =
+    if(config.psaBackendEnabled) {
+      "/pension-administrator/register-with-id/organisation"
+    }
+    else {
+      "/pensions-scheme/register-with-id/organisation"
+    }
+
+  private val individualPath: String =
+    if(config.psaBackendEnabled) {
+      "/pension-administrator/register-with-id/individual"
+    }
+    else {
+      "/pensions-scheme/register-with-id/individual"
+    }
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
