@@ -28,20 +28,21 @@ import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{UserAnswers, WireMockHelper}
 
-class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
+class PensionsSchemeConnectorWithAdminSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
-  import PensionsSchemeConnectorSpec._
+  import PensionsSchemeConnectorWithAdminSpec._
+
   override protected lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
         "metrics.enabled" -> false,
-        "features.psa-backend-enabled" -> false
+        "features.psa-backend-enabled" -> true
       )
       .build()
 
-  override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
+  override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   "registerPsa" should "return the PSA subscription for a valid request/response" in {
 
@@ -197,9 +198,9 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
 }
 
-object PensionsSchemeConnectorSpec extends OptionValues {
+object PensionsSchemeConnectorWithAdminSpec extends OptionValues {
 
-  private val registerPsaUrl = "/pensions-scheme/register-psa"
+  private val registerPsaUrl = "/pension-administrator/register-psa"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -249,3 +250,5 @@ object PensionsSchemeConnectorSpec extends OptionValues {
     )
 
 }
+
+

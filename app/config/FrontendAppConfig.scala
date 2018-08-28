@@ -93,8 +93,12 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
     }
 
   lazy val registerPsaUrl: String =
-    baseUrl("pensions-scheme") +
-      runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
+    runModeConfiguration.getBoolean("features.psa-backend-enabled") match {
+      case Some(true) => baseUrl("pension-administrator") +
+        runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
+      case _ => baseUrl("pensions-scheme") +
+        runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
+    }
 
   def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
