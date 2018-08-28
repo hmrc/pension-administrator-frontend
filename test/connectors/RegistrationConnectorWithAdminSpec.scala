@@ -28,10 +28,10 @@ import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext
 
-class RegistrationConnectorSpec()
+class RegistrationConnectorWithAdminSpec()
   extends AsyncFlatSpec with Matchers with OptionValues with WireMockHelper {
 
-  import RegistrationConnectorSpec._
+  import RegistrationConnectorWithAdminSpec._
 
   override protected lazy val app: Application =
     new GuiceApplicationBuilder()
@@ -39,13 +39,14 @@ class RegistrationConnectorSpec()
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
         "metrics.enabled" -> false,
-        "features.psa-backend-enabled" -> false
+        "features.psa-backend-enabled" -> true
       )
       .build()
 
-  override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
+  override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
+
 
   "registerWithIdOrganisation" should "return the address given a valid UTR" in {
 
@@ -364,13 +365,13 @@ class RegistrationConnectorSpec()
 
 }
 
-object RegistrationConnectorSpec extends OptionValues {
+object RegistrationConnectorWithAdminSpec extends OptionValues {
   private val utr = "test-utr"
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
 
-  private val organizationPath = "/pensions-scheme/register-with-id/organisation"
-  private val individualPath = "/pensions-scheme/register-with-id/individual"
+  private val organizationPath = "/pension-administrator/register-with-id/organisation"
+  private val individualPath = "/pension-administrator/register-with-id/individual"
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
   private val legalStatus = RegistrationLegalStatus.LimitedCompany

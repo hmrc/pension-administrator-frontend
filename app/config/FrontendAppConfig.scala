@@ -77,16 +77,28 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val addressLookUp: String = baseUrl("address-lookup")
 
   lazy val registerWithIdOrganisationUrl: String =
-    baseUrl("pensions-scheme") +
-      runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdOrganisation")
+    runModeConfiguration.getBoolean("features.psa-backend-enabled") match {
+      case Some(true) => baseUrl ("pension-administrator") +
+        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithIdOrganisation")
+      case _ => baseUrl ("pensions-scheme") +
+        runModeConfiguration.underlying.getString ("urls.pension-scheme.registerWithIdOrganisation")
+    }
 
   lazy val registerWithIdIndividualUrl: String =
-    baseUrl("pensions-scheme") +
-      runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdIndividual")
+    runModeConfiguration.getBoolean("features.psa-backend-enabled") match {
+      case Some(true) => baseUrl("pension-administrator") +
+        runModeConfiguration.underlying.getString("urls.pension-administrator.registerWithIdIndividual")
+      case _ => baseUrl("pensions-scheme") +
+        runModeConfiguration.underlying.getString("urls.pension-scheme.registerWithIdIndividual")
+    }
 
   lazy val registerPsaUrl: String =
-    baseUrl("pensions-scheme") +
-      runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
+    runModeConfiguration.getBoolean("features.psa-backend-enabled") match {
+      case Some(true) => baseUrl("pension-administrator") +
+        runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
+      case _ => baseUrl("pensions-scheme") +
+        runModeConfiguration.underlying.getString("urls.pension-scheme.registerPsa")
+    }
 
   def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
@@ -97,4 +109,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
+  lazy val psaBackendEnabled: Boolean = runModeConfiguration.getBoolean("features.psa-backend-enabled").getOrElse(false)
+
 }
