@@ -54,7 +54,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val tellCompaniesHouseCompanyChangesUrl: String = loadConfig("urls.companyChangesCompaniesHouse")
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
   lazy val registerSchemeUrl: String = loadConfig("urls.pensions-scheme-frontend.registerScheme")
-  lazy val managePensionsSchemeOverviewUrl : String = loadConfig("urls.manage-pensions-frontend.schemesOverview")
+  lazy val schemesOverviewUrl : String = loadConfig("urls.manage-pensions-frontend.schemesOverview")
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt

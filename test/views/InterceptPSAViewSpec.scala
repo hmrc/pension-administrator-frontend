@@ -35,6 +35,6 @@ class InterceptPSAViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithContinueButton(createView, frontendAppConfig.managePensionsSchemeOverviewUrl, "go-to-scheme-reg")
+    behave like pageWithContinueButton(createView, frontendAppConfig.schemesOverviewUrl, "go-to-scheme-reg")
   }
 }
