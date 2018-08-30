@@ -65,8 +65,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
   lazy val duplicateRegUri = "/register-as-pension-scheme-administrator/register/duplicate-registration"
   lazy val tpssUrl: String = loadConfig("urls.tpss")
-  lazy val useManagePensionsFrontend: Boolean = runModeConfiguration.getBoolean("features.useManagePensionsFrontend").getOrElse(false)
-
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
