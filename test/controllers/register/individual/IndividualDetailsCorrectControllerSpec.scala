@@ -16,22 +16,19 @@
 
 package controllers.register.individual
 
-import connectors.{FakeDataCacheConnector, PSANameCacheConnector, RegistrationConnector}
+import connectors.{FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
-import identifiers.TypedIdentifier
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
-import identifiers.register.{PsaNameId, RegistrationInfoId}
 import models.requests.AuthenticatedRequest
 import models.{RegistrationInfo, _}
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.WSClient
+import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator
 import views.html.register.individual.individualDetailsCorrect
@@ -91,20 +88,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     }
   }
 
-  object PSANameCacheConnector extends PSANameCacheConnector(
-    frontendAppConfig,
-    mock[WSClient],
-    injector.instanceOf[ApplicationCrypto]
-  ) with FakeDataCacheConnector {
-    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
-                                                (implicit
-                                                 ec: ExecutionContext,
-                                                 hc: HeaderCarrier
-                                                ): Future[JsValue] = ???
-  }
-
-  private lazy val psaNameCacheConnector = PSANameCacheConnector
-
   private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
@@ -128,8 +111,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      registrationConnector,
-      psaNameCacheConnector
+      registrationConnector
     )
 
   private def viewAsString(form: Form[_] = form) =
@@ -158,7 +140,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       FakeDataCacheConnector.verify(IndividualDetailsId, individual)
       FakeDataCacheConnector.verify(IndividualAddressId, address)
       FakeDataCacheConnector.verify(RegistrationInfoId, registrationInfo)
-      psaNameCacheConnector.verify(PsaNameId, individual.fullName)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {

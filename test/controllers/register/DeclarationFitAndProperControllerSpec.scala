@@ -20,19 +20,28 @@ import connectors._
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
-import identifiers.register.{DeclarationFitAndProperId, PsaSubscriptionResponseId}
+import identifiers.TypedIdentifier
+import identifiers.register._
+import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
+import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
+import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
+import models.RegistrationCustomerType.UK
+import models.RegistrationIdType.UTR
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.UserType.UserType
+import models._
 import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.{AuthenticatedRequest, DataRequest}
-import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.{Writes, _}
+import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
@@ -79,53 +88,77 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
     "calling POST" must {
 
-      val data = Json.obj("registrationInfo" -> Json.obj(
-        "legalStatus" -> "Partnership",
-        "sapNumber" -> "24325236",
-        "noIdentifier" -> false,
-        "customerType" -> "UK",
-        "idType" -> "UTR",
-        "idNumber" -> ""
-      )
-      )
       "redirect to the next page" when {
         "on a valid request and send the email" in {
           val validData = data ++ Json.obj(
-            "partnershipContactDetails" -> Json.obj(
-              "email" -> "test@test.com",
-              "phone" -> "222222"
-            )
+            PartnershipContactDetailsId.toString -> contactDetails
           )
-          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+
           when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          when(mockEmailConnector.sendEmail(eqTo("test@test.com"), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
+          when(mockEmailConnector.sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, times(1)).sendEmail(eqTo("test@test.com"), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
 
         "on a valid request and not send the email" in {
           reset(mockEmailConnector)
-          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Json.obj()))
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(request)
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo("test@test.com"), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, never()).sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
       }
 
-      "save the answer on a valid request" in {
-        val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-        val result = controller().onSubmit(request)
+      "save the PSA Name and Email against the PSA Id" when {
+        "on a valid request for an Organisation" in {
+          val validData = Json.obj(
+            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = LimitedCompany),
+            BusinessDetailsId.toString -> businessDetails,
+            ContactDetailsId.toString -> contactDetails
+          )
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+          status(result) mustBe SEE_OTHER
+          psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
+          psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
+        }
 
-        status(result) mustBe SEE_OTHER
-        FakeDataCacheConnector.verify(DeclarationFitAndProperId, true)
+        "on a valid request for an Individual" in {
+          val individualDetails = TolerantIndividual(Some("first"), None, Some("last"))
+          val validData = Json.obj(
+            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = Individual),
+            IndividualDetailsId.toString -> individualDetails,
+            IndividualContactDetailsId.toString -> contactDetails
+          )
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+          status(result) mustBe SEE_OTHER
+          psaNameCacheConnector.verify(PsaNameId, individualDetails.fullName)
+          psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
+        }
+
+        "on a valid request for Partnership" in {
+          val validData = Json.obj(
+            RegistrationInfoId.toString -> registrationInfo,
+            PartnershipDetailsId.toString -> businessDetails,
+            PartnershipContactDetailsId.toString -> contactDetails
+          )
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+          status(result) mustBe SEE_OTHER
+          psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
+          psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
+        }
       }
 
       "reject an invalid request and display errors" in {
@@ -145,18 +178,29 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
 
         "known facts cannot be retrieved" in {
-          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-          val result = controller(knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(request)
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          val result = controller(
+            fakeDataCacheConnector = mockDataCacheConnector,
+            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
 
         "enrolment is not successful" in {
-          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
+            fakeDataCacheConnector = mockDataCacheConnector,
             enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST))
-          ).onSubmit(request)
+          ).onSubmit(validRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+
+        "no PSA Name is found" in {
+          val data = Json.obj(RegistrationInfoId.toString -> registrationInfo)
+          val result = controller(new FakeDataRetrievalAction(Some(data))).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -180,17 +224,17 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
       }
 
-      "save the PSA Subscription response on a valid request" in {
-        val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-        val result = controller().onSubmit(request)
+      "save the answer and PSA Subscription response on a valid request" in {
+        when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+        val result = controller(fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
 
         status(result) mustBe SEE_OTHER
+        FakeDataCacheConnector.verify(DeclarationFitAndProperId, true)
         FakeDataCacheConnector.verify(PsaSubscriptionResponseId, validPsaResponse)
       }
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
-        val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-        val result = controller(pensionsSchemeConnector = duplicateRegistrationPensionsSchemeConnector).onSubmit(request)
+        val result = controller(pensionsSchemeConnector = duplicateRegistrationPensionsSchemeConnector).onSubmit(validRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
@@ -198,8 +242,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
       "redirect to Submission Invalid" when {
         "response is BAD_REQUEST from downstream" in {
-          val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(request)
+          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
@@ -216,6 +259,13 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
+  val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  val businessDetails = BusinessDetails("MyCompany", "1234567890")
+  val contactDetails = ContactDetails("test@test.com", "test Phone")
+  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, UTR, "")
+  val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
+    PartnershipDetailsId.toString -> businessDetails
+  )
 
   private def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
@@ -266,8 +316,21 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     }
   }
 
+  object PSANameCacheConnector extends PSANameCacheConnector(
+    frontendAppConfig,
+    mock[WSClient],
+    injector.instanceOf[ApplicationCrypto]
+  ) with FakeDataCacheConnector {
+    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                                (implicit
+                                                 ec: ExecutionContext,
+                                                 hc: HeaderCarrier
+                                                ): Future[JsValue] = ???
+  }
+
   val mockDataCacheConnector = mock[DataCacheConnector]
   val mockEmailConnector = mock[EmailConnector]
+  val psaNameCacheConnector = PSANameCacheConnector
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -289,7 +352,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       pensionsSchemeConnector,
       knownFactsRetrieval,
       enrolments,
-      mockEmailConnector
+      mockEmailConnector,
+      psaNameCacheConnector
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =

@@ -17,9 +17,14 @@
 package connectors
 
 import config.FrontendAppConfig
+import identifiers.TypedIdentifier
 import javax.inject.Inject
+import play.api.libs.json.{Format, JsValue}
 import play.api.libs.ws.WSClient
-import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class PSANameCacheConnector @Inject()(
                                        config: FrontendAppConfig,
@@ -28,5 +33,16 @@ class PSANameCacheConnector @Inject()(
                                      ) extends MicroserviceCacheConnector(config, http, crypto) {
 
   override protected def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/psa-name/$id"
+
+  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
+                                               (implicit
+                                                fmt: Format[A],
+                                                ec: ExecutionContext,
+                                                hc: HeaderCarrier
+                                               ): Future[JsValue] = {
+
+    val encryptedCacheId = crypto.QueryParameterCrypto.encrypt(PlainText(cacheId)).value
+    modify(encryptedCacheId, _.set(id)(value))
+  }
 
 }

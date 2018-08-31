@@ -58,7 +58,7 @@ class MicroserviceCacheConnector @Inject()(
   override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     modify(cacheId, _ => JsSuccess(UserAnswers(value)))
 
-  private def modify(cacheId: String, modification: (UserAnswers) => JsResult[UserAnswers])
+  private[connectors] def modify(cacheId: String, modification: (UserAnswers) => JsResult[UserAnswers])
                     (implicit
                      ec: ExecutionContext,
                      hc: HeaderCarrier

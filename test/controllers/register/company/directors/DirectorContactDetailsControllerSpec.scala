@@ -18,14 +18,14 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.{FakeDataCacheConnector, PSANameCacheConnector}
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
-import models._
 import models.register.company._
+import models._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -52,8 +52,6 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
     subHeading = Some(directorName)
   )
 
-  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
-
   private val validData: JsObject = Json.obj(
     CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
@@ -79,8 +77,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
-      psaNameCacheConnector
+      formProvider
     )
 
   def viewAsString(form: Form[_] = form): String = contactDetails(
