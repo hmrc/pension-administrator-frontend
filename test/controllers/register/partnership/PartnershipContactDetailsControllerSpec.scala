@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.{FakeDataCacheConnector, PSANameCacheConnector}
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
@@ -43,8 +43,6 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
     Some(Message("site.secondaryHeader"))
   )
 
-  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
-
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnershipContactDetailsController(
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -54,8 +52,7 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
-      psaNameCacheConnector
+      formProvider
     )
 
   def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString

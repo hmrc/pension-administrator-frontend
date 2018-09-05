@@ -17,7 +17,7 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, PSANameCacheConnector}
+import connectors.DataCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.{ContactDetailsController, Retrievals}
 import forms.ContactDetailsFormProvider
@@ -38,8 +38,7 @@ class PartnerContactDetailsController @Inject()(
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 formProvider: ContactDetailsFormProvider,
-                                                 override val psaNameCacheConnector: PSANameCacheConnector
+                                                 formProvider: ContactDetailsFormProvider
                                                ) extends ContactDetailsController with Retrievals {
 
   def viewModel(mode: Mode, index: Index) = Retrieval {

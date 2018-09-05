@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.{FakeDataCacheConnector, PSANameCacheConnector}
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
@@ -37,8 +37,6 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
   val formProvider = new ContactDetailsFormProvider()
   val form = formProvider()
 
-  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
-
   def viewmodel = ContactDetailsViewModel(
     postCall = controllers.register.company.routes.ContactDetailsController.onSubmit(NormalMode),
     title = Message("contactDetails.company.title"),
@@ -56,8 +54,7 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
-      psaNameCacheConnector
+      formProvider
     )
 
   def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString

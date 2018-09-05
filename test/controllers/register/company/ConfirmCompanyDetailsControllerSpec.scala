@@ -16,21 +16,18 @@
 
 package controllers.register.company
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector, PSANameCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
-import identifiers.TypedIdentifier
 import identifiers.register.company._
-import identifiers.register.{BusinessTypeId, PsaNameId, RegistrationInfoId}
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models.{BusinessDetails, _}
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.WSClient
+import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
@@ -114,7 +111,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
           dataCacheConnector.lastUpsert.value mustBe expectedJson
-          psaNameCacheConnector.verify(PsaNameId, companyDetails.companyName)
         }
       }
       "no" in {
@@ -268,21 +264,6 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
-
-  object PSANameCacheConnector extends PSANameCacheConnector(
-    frontendAppConfig,
-    mock[WSClient],
-    injector.instanceOf[ApplicationCrypto]
-  ) with FakeDataCacheConnector {
-    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
-                                                (implicit
-                                                 ec: ExecutionContext,
-                                                 hc: HeaderCarrier
-                                                ): Future[JsValue] = ???
-  }
-
-  private lazy val psaNameCacheConnector = PSANameCacheConnector
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
@@ -293,8 +274,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
-      formProvider,
-      psaNameCacheConnector
+      formProvider
     )
 
   private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =

@@ -17,12 +17,12 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, PSANameCacheConnector, RegistrationConnector}
+import connectors.{DataCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
-import identifiers.register.{PsaNameId, RegistrationInfoId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -44,8 +44,7 @@ class IndividualDetailsCorrectController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: IndividualDetailsCorrectFormProvider,
-                                                    registrationConnector: RegistrationConnector,
-                                                    psaNameCacheConnector: PSANameCacheConnector
+                                                    registrationConnector: RegistrationConnector
                                                   ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -69,7 +68,6 @@ class IndividualDetailsCorrectController @Inject()(
                 _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, registration.response.individual)
                 _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
-                _ <- psaNameCacheConnector.save(request.externalId, PsaNameId, registration.response.individual.fullName)
               } yield {
                 Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address))
               }

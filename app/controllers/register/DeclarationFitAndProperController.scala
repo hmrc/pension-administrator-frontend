@@ -22,9 +22,9 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.company.ContactDetailsId
-import identifiers.register.individual.IndividualContactDetailsId
-import identifiers.register.partnership.PartnershipContactDetailsId
+import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
+import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
+import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
@@ -53,7 +53,8 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
                                                   enrolments: TaxEnrolmentsConnector,
-                                                  emailConnector: EmailConnector
+                                                  emailConnector: EmailConnector,
+                                                  psaNameCacheConnector: PSANameCacheConnector
                                                  ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -95,6 +96,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
             (for {
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+              _ <- savePSANameAndEmail(answers, psaResponse.psaId)
               _ <- enrol(psaResponse.psaId)
               _ <- sendEmail(answers, psaResponse.psaId)
             } yield {
@@ -111,7 +113,27 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
       )
   }
 
-  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
+  private def savePSANameAndEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]) = {
+    getName(answers) map { name =>
+      psaNameCacheConnector.save(psaId, PsaNameId, name)
+      psaNameCacheConnector.save(psaId, PsaEmailId, getEmail(answers).getOrElse(""))
+    } getOrElse {
+      Logger.error("Could not retrieve PSA Name")
+      Future.failed(PSANameNotFoundException())
+    }
+  }
+
+  private def getName(answers: UserAnswers): Option[String] = {
+    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
+      registrationInfo.legalStatus match {
+        case Individual => answers.get(IndividualDetailsId).map(_.fullName)
+        case LimitedCompany => answers.get(BusinessDetailsId).map(_.companyName)
+        case Partnership => answers.get(PartnershipDetailsId).map(_.companyName)
+      }
+    }
+  }
+
+  private def getEmail(answers: UserAnswers): Option[String] = {
     answers.get(RegistrationInfoId).flatMap { registrationInfo =>
       val id = registrationInfo.legalStatus match {
         case Individual => IndividualContactDetailsId
@@ -119,9 +141,15 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
         case Partnership => PartnershipContactDetailsId
       }
       answers.get(id).map { contactDetails =>
-        emailConnector.sendEmail(contactDetails.email, appConfig.emailTemplateId, PsaId(psaId))
+        contactDetails.email
       }
-    } getOrElse (Future.successful(EmailNotSent))
+    }
+  }
+
+  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
+    getEmail(answers) map { email =>
+      emailConnector.sendEmail(email, appConfig.emailTemplateId, PsaId(psaId))
+    } getOrElse Future.successful(EmailNotSent)
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
@@ -133,5 +161,7 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
   case class KnownFactsRetrievalException() extends Exception {
     def apply(): Unit = Logger.error("Could not retrieve Known Facts")
   }
+
+  case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")
 
 }

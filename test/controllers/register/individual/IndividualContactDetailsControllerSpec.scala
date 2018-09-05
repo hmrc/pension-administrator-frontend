@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.{FakeDataCacheConnector, PSANameCacheConnector}
+import connectors.FakeDataCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
@@ -44,8 +44,6 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
     body = Some(Message("contactDetails.body"))
   )
 
-  private lazy val psaNameCacheConnector = injector.instanceOf[PSANameCacheConnector]
-
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualContactDetailsController(
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -55,8 +53,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
-      psaNameCacheConnector
+      formProvider
     )
 
   def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
