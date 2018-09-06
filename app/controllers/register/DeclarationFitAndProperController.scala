@@ -113,11 +113,15 @@ class DeclarationFitAndProperController @Inject()(appConfig: FrontendAppConfig,
       )
   }
 
-  private def savePSANameAndEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]) = {
-    getName(answers) map { name =>
-      psaNameCacheConnector.save(psaId, PsaNameId, name)
-      psaNameCacheConnector.save(psaId, PsaEmailId, getEmail(answers).getOrElse(""))
-    } getOrElse {
+  private def savePSANameAndEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Unit] = {
+    getName(answers).map { name =>
+      for {
+        _ <- psaNameCacheConnector.save(psaId, PsaNameId, name)
+        _ <- psaNameCacheConnector.save(psaId, PsaEmailId, getEmail(answers).getOrElse(""))
+      } yield {
+        ()
+      }
+    }.getOrElse {
       Logger.error("Could not retrieve PSA Name")
       Future.failed(PSANameNotFoundException())
     }
