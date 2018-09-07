@@ -31,17 +31,17 @@ import utils.{UserAnswers, WireMockHelper}
 class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
   import PensionsSchemeConnectorSpec._
+
   override protected lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
-        "metrics.enabled" -> false,
-        "features.psa-backend-enabled" -> false
+        "metrics.enabled" -> false
       )
       .build()
 
-  override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
+  override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   "registerPsa" should "return the PSA subscription for a valid request/response" in {
 
@@ -199,7 +199,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
 object PensionsSchemeConnectorSpec extends OptionValues {
 
-  private val registerPsaUrl = "/pensions-scheme/register-psa"
+  private val registerPsaUrl = "/pension-administrator/register-psa"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -249,3 +249,5 @@ object PensionsSchemeConnectorSpec extends OptionValues {
     )
 
 }
+
+

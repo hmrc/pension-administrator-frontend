@@ -38,14 +38,14 @@ class RegistrationConnectorSpec()
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
-        "metrics.enabled" -> false,
-        "features.psa-backend-enabled" -> false
+        "metrics.enabled" -> false
       )
       .build()
 
-  override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
+  override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
+
 
   "registerWithIdOrganisation" should "return the address given a valid UTR" in {
 
@@ -369,8 +369,8 @@ object RegistrationConnectorSpec extends OptionValues {
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
 
-  private val organizationPath = "/pensions-scheme/register-with-id/organisation"
-  private val individualPath = "/pensions-scheme/register-with-id/individual"
+  private val organizationPath = "/pension-administrator/register-with-id/organisation"
+  private val individualPath = "/pension-administrator/register-with-id/individual"
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
