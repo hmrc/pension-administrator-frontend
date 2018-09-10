@@ -49,9 +49,8 @@ class EmailConnectorImpl @Inject()(
                                   ) extends EmailConnector {
 
   private def callBackUrl(psaId: PsaId): String = {
-    val requestType = "PSA"
     val encryptedPsaId = crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value
-    s"${appConfig.pensionsSchemeUrl}/pensions-scheme/$requestType/email-response/$encryptedPsaId"
+    s"${appConfig.pensionAdministratorUrl}/pension-administrator/email-response/$encryptedPsaId"
   }
 
   override def sendEmail(
