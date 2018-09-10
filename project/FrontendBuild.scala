@@ -15,9 +15,9 @@ private object AppDependencies {
   import play.core.PlayVersion
 
   private val playHealthVersion = "2.1.0"
-  private val logbackJsonLoggerVersion = "3.1.0"
+  private val logbackJsonLoggerVersion = "4.0.0"
   private val govukTemplateVersion = "5.20.0"
-  private val playUiVersion = "7.15.0"
+  private val playUiVersion = "7.22.0"
   private val hmrcTestVersion = "3.0.0"
   private val scalaTestVersion = "3.0.4"
   private val scalaTestPlusPlayVersion = "2.0.1"
@@ -27,11 +27,11 @@ private object AppDependencies {
   private val playReactivemongoVersion = "6.2.0"
   private val playConditionalFormMappingVersion = "0.2.0"
   private val playLanguageVersion = "3.4.0"
-  private val bootstrapVersion = "1.6.0"
-  private val scalacheckVersion = "1.13.4"
+  private val bootstrapVersion = "3.3.0"
+  private val scalacheckVersion = "1.14.0"
   private val scalacheckGenRegexp = "0.1.1"
-  private val domainVersion = "5.1.0"
-  private val wireMockVersion = "2.15.0"
+  private val domainVersion = "5.2.0"
+  private val wireMockVersion = "2.18.0"
   private val whitelistVersion = "2.0.0"
 
   val compile = Seq(
@@ -61,7 +61,7 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusPlayVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.jsoup" % "jsoup" % "1.10.3" % scope,
+        "org.jsoup" % "jsoup" % "1.11.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.mockito" % "mockito-all" % mockitoAllVersion % scope,
         "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope,
