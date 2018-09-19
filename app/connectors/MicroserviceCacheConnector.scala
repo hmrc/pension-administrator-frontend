@@ -70,16 +70,20 @@ class MicroserviceCacheConnector @Inject()(
           case JsSuccess(UserAnswers(updatedJson), _) =>
 
             val decrypted = PlainText(Json.stringify(updatedJson))
-            val encrypted = crypto.JsonCrypto.encrypt(decrypted)
+            //val encrypted = crypto.JsonCrypto.encrypt(decrypted)
 
             http.url(url(cacheId))
-              .withHeaders(hc.headers: _*)
-              .post(encrypted.value).flatMap {
+
+              .withHeaders(hc.withExtraHeaders(("content-type", "application/json")).headers: _*)
+
+              //.withHeaders(hc.headers: _*)
+              .post(decrypted.value).flatMap {
               response =>
                 response.status match {
                   case OK =>
                     Future.successful(updatedJson)
-                  case _ =>
+                  case aa =>
+                    println( "\n\n******" + aa)
                     Future.failed(new HttpException(response.body, response.status))
                 }
             }
@@ -103,8 +107,8 @@ class MicroserviceCacheConnector @Inject()(
             case NOT_FOUND =>
               Future.successful(None)
             case OK =>
-              val decrypted = crypto.JsonCrypto.decrypt(Crypted(response.body))
-              Future.successful(Some(Json.parse(decrypted.value)))
+              //val decrypted = crypto.JsonCrypto.decrypt(Crypted(response.body))
+              Future.successful(Some(Json.parse(response.body)))
             case _ =>
               Future.failed(new HttpException(response.body, response.status))
           }

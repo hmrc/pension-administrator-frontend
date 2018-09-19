@@ -22,14 +22,14 @@ class DataCacheModule extends Module {
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
 
-    configuration.underlying.getString("journey-cache") match {
-      case "public" =>
-        Seq(bind[DataCacheConnector].to[MongoCacheConnector])
-      case "protected" =>
-        Seq(bind[DataCacheConnector].to[MicroserviceCacheConnector])
-      case _ =>
-        Logger.warn("No journey-cache set, defaulting to `protected`")
-        Seq(bind[DataCacheConnector].to[MicroserviceCacheConnector])
-    }
+    Seq(bind[DataCacheConnector].to[MicroserviceCacheConnector])
+
+//    configuration.underlying.getString("journey-cache") match {
+//      case "protected" =>
+//        Seq(bind[DataCacheConnector].to[MicroserviceCacheConnector])
+//      case _ =>
+//        Logger.warn("No journey-cache set, defaulting to `protected`")
+//        Seq(bind[DataCacheConnector].to[MicroserviceCacheConnector])
+//    }
   }
 }
