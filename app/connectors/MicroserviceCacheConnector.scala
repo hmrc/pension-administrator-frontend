@@ -82,8 +82,7 @@ class MicroserviceCacheConnector @Inject()(
                 response.status match {
                   case OK =>
                     Future.successful(updatedJson)
-                  case aa =>
-                    println( "\n\n******" + aa)
+                  case _ =>
                     Future.failed(new HttpException(response.body, response.status))
                 }
             }
@@ -108,7 +107,10 @@ class MicroserviceCacheConnector @Inject()(
               Future.successful(None)
             case OK =>
               //val decrypted = crypto.JsonCrypto.decrypt(Crypted(response.body))
-              Future.successful(Some(Json.parse(response.body)))
+              Future.successful{
+                Some(Json.parse(response.body))
+              }
+
             case _ =>
               Future.failed(new HttpException(response.body, response.status))
           }
