@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.{AddressLookupConnector, FakeDataCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -45,7 +45,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyPreviousAddressPostCodeLookupController(
       frontendAppConfig,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
@@ -115,7 +115,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
       controller().onSubmit(NormalMode)(postRequest)
 
-      FakeDataCacheConnector.verify(CompanyPreviousAddressPostCodeLookupId, expected)
+      FakeUserAnswersCacheConnector.verify(CompanyPreviousAddressPostCodeLookupId, expected)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

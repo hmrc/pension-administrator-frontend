@@ -18,7 +18,7 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models._
@@ -111,7 +111,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, 0)
 
         status(result) shouldBe SEE_OTHER
-        FakeDataCacheConnector.verify(fakeAddressListId, viewModel.addresses.head)
+        FakeUserAnswersCacheConnector.verify(fakeAddressListId, viewModel.addresses.head)
       }
 
     }
@@ -126,7 +126,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, 0)
 
         status(result) shouldBe SEE_OTHER
-        FakeDataCacheConnector.verifyNot(fakeAddressId)
+        FakeUserAnswersCacheConnector.verifyNot(fakeAddressId)
       }
 
     }
@@ -157,7 +157,7 @@ object AddressListControllerSpec {
                                   override val messagesApi: MessagesApi
                                 ) extends AddressListController {
 
-    override protected def cacheConnector: DataCacheConnector = FakeDataCacheConnector
+    override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
     override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
 

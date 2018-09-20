@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register.individual._
@@ -59,16 +59,16 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
-  val navigator = new IndividualNavigator(FakeDataCacheConnector, appConfig())
+  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig())
   s"When contact address journey is toggled on ${navigator.getClass.getSimpleName}" must {
     appRunning()
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 }
 

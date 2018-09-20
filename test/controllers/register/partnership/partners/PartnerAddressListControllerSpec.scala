@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -41,7 +41,7 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
     new PartnerAddressListController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

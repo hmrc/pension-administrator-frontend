@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
@@ -52,7 +52,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def controller() =
     new ConfirmDeleteController {
-      override protected def cacheConnector: DataCacheConnector = FakeDataCacheConnector
+      override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
       override protected def appConfig: FrontendAppConfig = frontendAppConfig
 
@@ -93,7 +93,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       val result = controller().post(testIdentifier, FakeNavigator.desiredRoute)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(testIdentifier, person.copy(isDeleted = true))
+      FakeUserAnswersCacheConnector.verify(testIdentifier, person.copy(isDeleted = true))
     }
 
   }

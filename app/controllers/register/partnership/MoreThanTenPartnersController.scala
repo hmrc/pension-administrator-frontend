@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.MoreThanTenController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
@@ -32,7 +32,7 @@ import viewmodels.{Message, MoreThanTenViewModel}
 class MoreThanTenPartnersController @Inject()(
                                                val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
-                                               val dataCacheConnector: DataCacheConnector,
+                                               val dataCacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,

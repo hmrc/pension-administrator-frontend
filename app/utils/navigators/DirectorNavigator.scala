@@ -18,7 +18,7 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
@@ -26,7 +26,7 @@ import models.{AddressYears, CheckMode, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class DirectorNavigator @Inject()(val dataCacheConnector: DataCacheConnector, appConfig: FrontendAppConfig) extends Navigator {
+class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, appConfig: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(index: Int): Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index))

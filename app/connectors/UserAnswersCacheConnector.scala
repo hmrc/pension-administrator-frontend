@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait DataCacheConnector {
+trait UserAnswersCacheConnector {
 
   def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                       (implicit

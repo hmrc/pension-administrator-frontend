@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
@@ -40,7 +40,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
     new DeclarationWorkingKnowledgeController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

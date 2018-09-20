@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
@@ -49,7 +49,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
-    new IndividualAddressYearsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeDataCacheConnector, FakeAuthAction,
+    new IndividualAddressYearsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   def viewAsString(form: Form[_] = form): String = addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString

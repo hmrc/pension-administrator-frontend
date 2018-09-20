@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
@@ -79,13 +79,13 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
       controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
 
-      FakeDataCacheConnector.verifyRemoved(ConfirmCompanyAddressId)
+      FakeUserAnswersCacheConnector.verifyRemoved(ConfirmCompanyAddressId)
     }
 
     "valid data is submitted" when {
       "yes" which {
         "upsert address, organisation name from api response and save company name to PSA Name cache" in {
-          val dataCacheConnector = FakeDataCacheConnector
+          val dataCacheConnector = FakeUserAnswersCacheConnector
 
           val info = RegistrationInfo(
             RegistrationLegalStatus.LimitedCompany,
@@ -264,7 +264,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
       messagesApi,

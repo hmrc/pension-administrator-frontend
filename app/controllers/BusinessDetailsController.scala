@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -36,7 +36,7 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
 
-  protected def dataCacheConnector: DataCacheConnector
+  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

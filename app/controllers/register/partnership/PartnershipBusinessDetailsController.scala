@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.BusinessDetailsController
 import controllers.actions._
 import forms.BusinessDetailsFormModel
@@ -31,7 +31,7 @@ import viewmodels.{BusinessDetailsViewModel, Message}
 
 class PartnershipBusinessDetailsController @Inject()(val appConfig: FrontendAppConfig,
                                                      val messagesApi: MessagesApi,
-                                                     val dataCacheConnector: DataCacheConnector,
+                                                     val dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,

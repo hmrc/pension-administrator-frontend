@@ -18,7 +18,7 @@ package controllers.register.company
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
@@ -94,7 +94,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       controller(getRelevantData).onSubmit(NormalMode)(postRequest)
-      FakeDataCacheConnector.verifyNot(AddCompanyDirectorsId)
+      FakeUserAnswersCacheConnector.verifyNot(AddCompanyDirectorsId)
     }
 
     "set the user answer when directors exist and valid data is submitted" in {
@@ -170,7 +170,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     new AddCompanyDirectorsController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
       dataRetrievalAction,

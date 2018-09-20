@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{UserAnswersCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
@@ -39,7 +39,7 @@ class IndividualDetailsCorrectController @Inject()(
                                                     @Individual navigator: Navigator,
                                                     appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
-                                                    dataCacheConnector: DataCacheConnector,
+                                                    dataCacheConnector: UserAnswersCacheConnector,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,

@@ -17,7 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser._
 import models.requests.IdentifiedRequest
@@ -35,7 +35,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import AdviserNavigatorSpec._
 
-  val navigator = new AdviserNavigator(FakeDataCacheConnector)
+  val navigator = new AdviserNavigator(FakeUserAnswersCacheConnector)
 
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
@@ -49,7 +49,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 }
 

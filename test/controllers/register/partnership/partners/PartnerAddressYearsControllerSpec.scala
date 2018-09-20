@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
@@ -61,7 +61,7 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerAddressYearsController(
       frontendAppConfig,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,

@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import identifiers.register.individual.IndividualDateOfBirthId
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class IndividualDateOfBirthController @Inject()(
                                                  appConfig: FrontendAppConfig,
                                                  override val messagesApi: MessagesApi,
-                                                 dataCacheConnector: DataCacheConnector,
+                                                 dataCacheConnector: UserAnswersCacheConnector,
                                                  @Individual navigator: Navigator,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,

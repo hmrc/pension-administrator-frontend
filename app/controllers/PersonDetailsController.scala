@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import forms.PersonDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -36,7 +36,7 @@ trait PersonDetailsController extends FrontendController with I18nSupport {
 
   def appConfig: FrontendAppConfig
 
-  def dataCacheConnector: DataCacheConnector
+  def dataCacheConnector: UserAnswersCacheConnector
 
   def navigator: Navigator
 

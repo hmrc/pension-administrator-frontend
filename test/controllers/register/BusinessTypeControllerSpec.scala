@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
@@ -41,7 +41,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
     new BusinessTypeController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
@@ -75,7 +75,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
       val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(BusinessTypeId, BusinessType.values.head)
+      FakeUserAnswersCacheConnector.verify(BusinessTypeId, BusinessType.values.head)
     }
 
     "redirect to the next page when valid data is submitted" in {

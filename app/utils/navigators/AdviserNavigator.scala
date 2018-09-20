@@ -16,7 +16,7 @@
 
 package utils.navigators
 
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.register.adviser._
 import identifiers.register.adviser._
 import javax.inject.{Inject, Singleton}
@@ -25,7 +25,7 @@ import play.api.mvc.Call
 import utils.Navigator
 
 @Singleton
-class AdviserNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
+class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
   private def checkYourAnswers(): Call =
     controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()

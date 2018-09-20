@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import controllers.register.individual.IndividualContactAddressPostCodeLookupControllerSpec.getEmptyData
@@ -159,7 +159,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(data),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
       bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
     )) {
       app =>

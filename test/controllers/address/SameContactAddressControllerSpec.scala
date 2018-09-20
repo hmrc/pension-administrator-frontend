@@ -18,7 +18,7 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
 import identifiers.TypedIdentifier
@@ -54,7 +54,7 @@ object SameContactAddressControllerSpec {
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
-                                  override val dataCacheConnector: DataCacheConnector,
+                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: SameContactAddressFormProvider
                                 ) extends SameContactAddressController {
@@ -145,10 +145,10 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       import play.api.inject._
 
-      val cacheConnector = mock[DataCacheConnector]
+      val cacheConnector = mock[UserAnswersCacheConnector]
 
       running(_.overrides(
-        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
@@ -175,11 +175,11 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       import play.api.inject._
 
-      val cacheConnector = mock[DataCacheConnector]
+      val cacheConnector = mock[UserAnswersCacheConnector]
       val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
 
       running(_.overrides(
-        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
         bind[Navigator].toInstance(FakeNavigator),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
       )) {
@@ -209,11 +209,11 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       import play.api.inject._
 
-      val cacheConnector = mock[DataCacheConnector]
+      val cacheConnector = mock[UserAnswersCacheConnector]
       val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
 
       running(_.overrides(
-        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
         bind[Navigator].toInstance(FakeNavigator),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
       )) {
@@ -236,10 +236,10 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
       import play.api.inject._
 
-      val cacheConnector = mock[DataCacheConnector]
+      val cacheConnector = mock[UserAnswersCacheConnector]
 
       running(_.overrides(
-        bind[DataCacheConnector].toInstance(cacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>

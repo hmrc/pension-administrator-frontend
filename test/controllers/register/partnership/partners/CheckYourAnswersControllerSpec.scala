@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.TypedIdentifier
@@ -42,7 +42,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val partnerName = "test first name test middle name test last name"
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  object FakeSectionComplete extends SectionComplete with FakeDataCacheConnector {
+  object FakeSectionComplete extends SectionComplete with FakeUserAnswersCacheConnector {
 
     override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
                             (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {

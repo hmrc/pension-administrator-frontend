@@ -16,14 +16,14 @@
 
 package utils.navigators
 
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import utils.{Navigator, UserAnswers}
 
-class RegisterNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
+class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case BusinessTypeId =>

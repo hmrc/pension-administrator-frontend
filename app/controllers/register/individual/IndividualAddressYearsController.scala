@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
@@ -35,7 +35,7 @@ class IndividualAddressYearsController @Inject()(
                                                   @Individual override val navigator: Navigator,
                                                   override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
-                                                  override val cacheConnector: DataCacheConnector,
+                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,

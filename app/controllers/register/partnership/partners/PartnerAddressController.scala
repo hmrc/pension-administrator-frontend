@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 
 class PartnerAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
-                                         override val dataCacheConnector: DataCacheConnector,
+                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartner override val navigator: Navigator,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,

@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
 import models.NormalMode
@@ -60,12 +60,12 @@ object DirectorDetailsControllerSpec {
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
                     ): DirectorDetailsController =
-    createController(base, dataRetrievalAction)(FakeDataCacheConnector, FakeNavigator)
+    createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
                         base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: DataCacheConnector, nav: Navigator): DirectorDetailsController =
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorDetailsController =
     new DirectorDetailsController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,

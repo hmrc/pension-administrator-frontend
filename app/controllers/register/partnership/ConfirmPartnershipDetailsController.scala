@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{UserAnswersCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
@@ -43,7 +43,7 @@ import scala.concurrent.Future
 class ConfirmPartnershipDetailsController @Inject()(
                                                      appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
+                                                     dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,

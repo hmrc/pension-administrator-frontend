@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.SameContactAddressFormProvider
@@ -58,7 +58,7 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     new IndividualSameContactAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

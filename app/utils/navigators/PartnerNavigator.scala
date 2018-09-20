@@ -18,7 +18,7 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.register.partnership.partners.routes
 import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
@@ -26,7 +26,7 @@ import models.{AddressYears, CheckMode, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class PartnerNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {
+class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, config: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(index: Int): Option[NavigateTo] =
     NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index))

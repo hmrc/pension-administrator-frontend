@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.AddEntityFormProvider
@@ -95,7 +95,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       controller(getRelevantData).onSubmit()(postRequest)
-      FakeDataCacheConnector.verifyNot(AddCompanyDirectorsId)
+      FakeUserAnswersCacheConnector.verifyNot(AddCompanyDirectorsId)
     }
 
     "set the user answer when partners exist and valid data is submitted" in {
@@ -171,7 +171,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     new AddPartnerController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
       dataRetrievalAction,

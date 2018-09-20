@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
 import controllers.{ConfirmDeleteController, Retrievals}
@@ -34,7 +34,7 @@ class ConfirmDeleteDirectorController @Inject()(
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 val cacheConnector: DataCacheConnector
+                                                 val cacheConnector: UserAnswersCacheConnector
                                                ) extends ConfirmDeleteController with Retrievals {
 
 

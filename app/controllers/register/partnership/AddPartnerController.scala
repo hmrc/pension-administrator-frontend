@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.AddEntityController
@@ -34,7 +34,7 @@ import viewmodels.{EntityViewModel, Message, Person}
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
                                       override val messagesApi: MessagesApi,
-                                      override val cacheConnector: DataCacheConnector,
+                                      override val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartner override val navigator: Navigator,
                                       authenticate: AuthAction,
                                       getData: DataRetrievalAction,

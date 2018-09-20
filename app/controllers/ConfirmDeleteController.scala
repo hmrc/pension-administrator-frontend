@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.PersonDetails
 import models.requests.DataRequest
@@ -34,7 +34,7 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call)(implicit request: DataRequest[AnyContent]): Future[Result] =
     if (!isDeleted) {

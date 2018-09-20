@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -44,7 +44,7 @@ trait BusinessDetailsControllerBehaviour {
                                                                         testFormModel: BusinessDetailsFormModel,
                                                                         testViewModel: BusinessDetailsViewModel,
                                                                         id: I,
-                                                                        createController: (DataCacheConnector, Navigator) => BusinessDetailsController
+                                                                        createController: (UserAnswersCacheConnector, Navigator) => BusinessDetailsController
                                                                       ): Unit = {
 
     "return OK and the correct view for a GET request" in {
@@ -110,14 +110,14 @@ object BusinessDetailsControllerBehaviour {
   val testBusinessDetails = BusinessDetails("test company name", "1234567890")
   val invalidBusinessDetails = BusinessDetails("", "")
 
-  case class TestFixture(dataCacheConnector: FakeDataCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetails])
+  case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetails])
 
   def testFixture(
-                   createController: (DataCacheConnector, Navigator) => BusinessDetailsController,
+                   createController: (UserAnswersCacheConnector, Navigator) => BusinessDetailsController,
                    testFormModel: BusinessDetailsFormModel,
                    testViewModel: BusinessDetailsViewModel
                  ): TestFixture = {
-    val connector = new FakeDataCacheConnector() {}
+    val connector = new FakeUserAnswersCacheConnector() {}
     val navigator = new FakeNavigator(onwardRoute)
 
     val controller = createController(connector, navigator)

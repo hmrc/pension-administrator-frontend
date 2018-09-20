@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.actions.AuthAction
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class LoginControllerSpec extends ControllerSpecBase {
 
   def loginController(userType: UserType = UserType.Organisation) = new LoginController(
-    frontendAppConfig, messagesApi, FakeDataCacheConnector, fakeAuthAction(userType)
+    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, fakeAuthAction(userType)
   )
 
   def fakeAuthAction(userType: UserType) = new AuthAction {

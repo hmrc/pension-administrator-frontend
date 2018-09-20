@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.{AddressLookupConnector, FakeDataCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -63,7 +63,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private def controller(dataRetrievalAction: DataRetrievalAction = getRequiredData) =
     new CompanyDirectorAddressPostCodeLookupController(
       frontendAppConfig,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
@@ -151,7 +151,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
       controller().onSubmit(NormalMode, index)(postRequest)
 
-      FakeDataCacheConnector.verify(CompanyDirectorAddressPostCodeLookupId(index), expected)
+      FakeUserAnswersCacheConnector.verify(CompanyDirectorAddressPostCodeLookupId(index), expected)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

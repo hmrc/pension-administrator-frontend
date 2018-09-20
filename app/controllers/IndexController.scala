@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import identifiers.IndexId
 import javax.inject.Inject
@@ -29,7 +29,7 @@ import views.html.index
 class IndexController @Inject()(val appConfig: FrontendAppConfig,
                                 val messagesApi: MessagesApi,
                                 authenticate: AuthAction,
-                                dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport {
+                                dataCacheConnector: UserAnswersCacheConnector) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
     dataCacheConnector.save(request.externalId, IndexId, "").map(_ =>

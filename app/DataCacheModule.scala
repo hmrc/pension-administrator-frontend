@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import connectors.{DataCacheConnector, MicroserviceCacheConnector}
+import connectors.{UserAnswersCacheConnector, MicroserviceCacheConnector}
 import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
 
 class DataCacheModule extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
-    Seq(bind[DataCacheConnector].to[MicroserviceCacheConnector])
+    Seq(bind[UserAnswersCacheConnector].to[MicroserviceCacheConnector])
   }
 }

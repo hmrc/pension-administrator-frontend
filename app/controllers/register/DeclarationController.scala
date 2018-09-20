@@ -18,7 +18,7 @@ package controllers.register
 
 import com.google.inject.Singleton
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
@@ -42,7 +42,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       requireData: DataRequiredAction,
                                       @Register navigator: Navigator,
                                       formProvider: DeclarationFormProvider,
-                                      dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport {
+                                      dataCacheConnector: UserAnswersCacheConnector) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 

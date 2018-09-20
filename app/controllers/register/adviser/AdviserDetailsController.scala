@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class AdviserDetailsController @Inject()(
                                           appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          dataCacheConnector: DataCacheConnector,
+                                          dataCacheConnector: UserAnswersCacheConnector,
                                           @Adviser navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,

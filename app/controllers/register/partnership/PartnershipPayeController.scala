@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.PayeController
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PayeFormProvider
@@ -34,7 +34,7 @@ import viewmodels.{Message, PayeViewModel}
 class PartnershipPayeController @Inject()(
                                            val appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
-                                           override val cacheConnector: DataCacheConnector,
+                                           override val cacheConnector: UserAnswersCacheConnector,
                                            @Partnership val navigator: Navigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,

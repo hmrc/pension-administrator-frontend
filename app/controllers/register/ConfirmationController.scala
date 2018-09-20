@@ -17,7 +17,7 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
@@ -34,7 +34,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       dataCacheConnector: DataCacheConnector) extends FrontendController with I18nSupport with Retrievals {
+                                       dataCacheConnector: UserAnswersCacheConnector) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

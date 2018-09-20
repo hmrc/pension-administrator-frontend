@@ -5,7 +5,7 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.$routeFile$.$className$FormProvider
@@ -19,7 +19,7 @@ import scala.concurrent.Future
 class $className;format="cap"$Controller @Inject() (
                                                      appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
+                                                     dataCacheConnector: UserAnswersCacheConnector,
                                                      navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,

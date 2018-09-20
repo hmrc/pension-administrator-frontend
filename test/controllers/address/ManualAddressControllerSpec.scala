@@ -20,7 +20,7 @@ import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent, AuditService}
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import forms.AddressFormProvider
 import identifiers.TypedIdentifier
 import models._
@@ -60,7 +60,7 @@ object ManualAddressControllerSpec {
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
-                                  override val dataCacheConnector: DataCacheConnector,
+                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: AddressFormProvider,
                                   override val auditService: AuditService
@@ -209,7 +209,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[DataCacheConnector].to(FakeDataCacheConnector),
+          bind[UserAnswersCacheConnector].to(FakeUserAnswersCacheConnector),
           bind[Navigator].to(navigator),
           bind[AuditService].to[StubSuccessfulAuditService]
         )) {
@@ -229,7 +229,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
             val address = Address("value 1", "value 2", None, None, Some("AB1 1AB"), "GB")
 
-            FakeDataCacheConnector.verify(fakeAddressId, address)
+            FakeUserAnswersCacheConnector.verify(fakeAddressId, address)
         }
 
       }
@@ -243,7 +243,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
-          bind[DataCacheConnector].to(FakeDataCacheConnector),
+          bind[UserAnswersCacheConnector].to(FakeUserAnswersCacheConnector),
           bind[Navigator].to(navigator),
           bind[AuditService].toInstance(auditService)
         )) {

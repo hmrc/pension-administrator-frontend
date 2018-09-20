@@ -18,7 +18,7 @@ package controllers.address
 
 import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -37,7 +37,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
 
   protected def appConfig: FrontendAppConfig
 
-  protected def dataCacheConnector: DataCacheConnector
+  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

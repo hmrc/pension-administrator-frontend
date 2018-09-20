@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
@@ -67,7 +67,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
@@ -87,7 +87,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
@@ -103,7 +103,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
@@ -119,7 +119,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
       val onwardRoute = controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(NormalMode)
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
@@ -141,7 +141,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
         val request =
@@ -162,7 +162,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
         val request =

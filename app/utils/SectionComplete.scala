@@ -17,7 +17,7 @@
 package utils
 
 import com.google.inject.{ImplementedBy, Inject}
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import play.api.libs.json.JsResultException
@@ -34,7 +34,7 @@ trait SectionComplete {
 
 }
 
-class SectionCompleteImpl @Inject()(dataCacheConnector: DataCacheConnector) extends SectionComplete {
+class SectionCompleteImpl @Inject()(dataCacheConnector: UserAnswersCacheConnector) extends SectionComplete {
 
   override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
                           (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {

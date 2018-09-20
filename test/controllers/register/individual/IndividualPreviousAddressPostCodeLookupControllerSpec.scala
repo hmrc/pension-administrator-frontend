@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import base.CSRFRequest
-import connectors.{AddressLookupConnector, DataCacheConnector, FakeDataCacheConnector}
+import connectors.{AddressLookupConnector, UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
@@ -99,7 +99,7 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].toInstance(fakeNavigator),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

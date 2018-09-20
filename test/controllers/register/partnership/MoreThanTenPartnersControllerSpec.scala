@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAuthAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
@@ -77,7 +77,7 @@ object MoreThanTenPartnersControllerSpec {
     new MoreThanTenPartnersController(
       base.frontendAppConfig,
       base.messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       FakeNavigator,
       FakeAuthAction,
       base.dontGetAnyData,

@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector, RegistrationConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
@@ -79,14 +79,14 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
       controller(dataRetrievalAction).onPageLoad(postRequest)
 
-      FakeDataCacheConnector.verifyRemoved(ConfirmPartnershipDetailsId)
-      FakeDataCacheConnector.verifyRemoved(PartnershipRegisteredAddressId)
+      FakeUserAnswersCacheConnector.verifyRemoved(ConfirmPartnershipDetailsId)
+      FakeUserAnswersCacheConnector.verifyRemoved(PartnershipRegisteredAddressId)
     }
 
     "valid data is submitted" when {
       "yes" which {
         "upsert address and organisation name from api response" in {
-          val dataCacheConnector = FakeDataCacheConnector
+          val dataCacheConnector = FakeUserAnswersCacheConnector
 
           val info = RegistrationInfo(
             RegistrationLegalStatus.Partnership,
@@ -265,7 +265,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: DataCacheConnector = FakeDataCacheConnector) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new ConfirmPartnershipDetailsController(
       frontendAppConfig,
       messagesApi,

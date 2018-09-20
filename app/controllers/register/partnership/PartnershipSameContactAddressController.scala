@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
@@ -37,7 +37,7 @@ class PartnershipSameContactAddressController @Inject()(
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
                                                          val messagesApi: MessagesApi,
-                                                         val dataCacheConnector: DataCacheConnector,
+                                                         val dataCacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,

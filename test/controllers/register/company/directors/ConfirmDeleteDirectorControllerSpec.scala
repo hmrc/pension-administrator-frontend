@@ -19,7 +19,7 @@ package controllers.register.company.directors
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.directors.DirectorDetailsId
@@ -66,7 +66,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

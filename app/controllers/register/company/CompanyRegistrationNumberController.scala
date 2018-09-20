@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.company.CompanyRegistrationNumberId
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class CompanyRegistrationNumberController @Inject()(
                                                      appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: DataCacheConnector,
+                                                     dataCacheConnector: UserAnswersCacheConnector,
                                                      @RegisterCompany navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,

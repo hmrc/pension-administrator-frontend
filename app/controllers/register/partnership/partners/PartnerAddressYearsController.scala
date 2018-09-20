@@ -17,7 +17,7 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class PartnerAddressYearsController @Inject()(
                                                val appConfig: FrontendAppConfig,
-                                               val cacheConnector: DataCacheConnector,
+                                               val cacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
                                                val messagesApi: MessagesApi,
                                                authenticate: AuthAction,

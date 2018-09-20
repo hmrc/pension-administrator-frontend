@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
@@ -44,14 +44,14 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       val data = Json.obj(
         PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psaId)
       )
-      when(fakeDataCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
       val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-      verify(fakeDataCacheConnector, times(1)).removeAll(any())(any(), any())
+      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
@@ -73,7 +73,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
 object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaId: String = "A1234567"
-  private val fakeDataCacheConnector = mock[DataCacheConnector]
+  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
   private val psaUser = PSAUser(UserType.Individual, None, false, None)
 
@@ -84,7 +84,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeDataCacheConnector
+      fakeUserAnswersCacheConnector
     )
 
   private def viewAsString() =

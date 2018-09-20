@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
@@ -37,7 +37,7 @@ import views.html.register.company.addCompanyDirectors
 class AddCompanyDirectorsController @Inject()(
                                                appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
-                                               dataCacheConnector: DataCacheConnector,
+                                               dataCacheConnector: UserAnswersCacheConnector,
                                                @CompanyDirector navigator: Navigator,
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,

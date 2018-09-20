@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
-import connectors.{AddressLookupConnector, FakeDataCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -52,7 +52,7 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressPostCodeLookupController(
       frontendAppConfig,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,

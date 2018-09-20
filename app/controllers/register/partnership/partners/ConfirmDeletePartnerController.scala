@@ -17,7 +17,7 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{ConfirmDeleteController, Retrievals}
 import identifiers.register.partnership.partners.PartnerDetailsId
@@ -33,7 +33,7 @@ class ConfirmDeletePartnerController @Inject()(
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                val cacheConnector: DataCacheConnector
+                                                val cacheConnector: UserAnswersCacheConnector
                                               ) extends ConfirmDeleteController with Retrievals {
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

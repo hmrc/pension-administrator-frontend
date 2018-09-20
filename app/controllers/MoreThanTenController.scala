@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import forms.MoreThanTenFormProvider
 import models.Mode
 import models.requests.DataRequest
@@ -35,7 +35,7 @@ trait MoreThanTenController extends FrontendController with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
 
-  protected def dataCacheConnector: DataCacheConnector
+  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

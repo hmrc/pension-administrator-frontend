@@ -19,7 +19,7 @@ package controllers.register.company
 import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
@@ -36,7 +36,7 @@ import viewmodels.address.ManualAddressViewModel
 
 class CompanyContactAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
-                                                override val dataCacheConnector: DataCacheConnector,
+                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
