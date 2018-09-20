@@ -24,7 +24,7 @@ import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted, PlainText}
+import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http._
 import utils.UserAnswers
 
@@ -68,16 +68,9 @@ class MicroserviceCacheConnector @Inject()(
       json =>
         modification(UserAnswers(json.getOrElse(Json.obj()))) match {
           case JsSuccess(UserAnswers(updatedJson), _) =>
-
-            val decrypted = PlainText(Json.stringify(updatedJson))
-            //val encrypted = crypto.JsonCrypto.encrypt(decrypted)
-
             http.url(url(cacheId))
-
               .withHeaders(hc.withExtraHeaders(("content-type", "application/json")).headers: _*)
-
-              //.withHeaders(hc.headers: _*)
-              .post(decrypted.value).flatMap {
+              .post(PlainText(Json.stringify(updatedJson)).value).flatMap {
               response =>
                 response.status match {
                   case OK =>
@@ -106,11 +99,7 @@ class MicroserviceCacheConnector @Inject()(
             case NOT_FOUND =>
               Future.successful(None)
             case OK =>
-              //val decrypted = crypto.JsonCrypto.decrypt(Crypted(response.body))
-              Future.successful{
-                Some(Json.parse(response.body))
-              }
-
+              Future.successful(Some(Json.parse(response.body)))
             case _ =>
               Future.failed(new HttpException(response.body, response.status))
           }
