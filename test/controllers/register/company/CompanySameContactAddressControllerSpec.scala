@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
@@ -87,7 +87,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

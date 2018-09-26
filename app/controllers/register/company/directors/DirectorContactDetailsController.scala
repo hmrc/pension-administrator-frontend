@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.company.directors.DirectorContactDetailsId
@@ -33,7 +33,7 @@ class DirectorContactDetailsController @Inject()(
                                                   @CompanyDirector override val navigator: Navigator,
                                                   override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
-                                                  override val cacheConnector: DataCacheConnector,
+                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,

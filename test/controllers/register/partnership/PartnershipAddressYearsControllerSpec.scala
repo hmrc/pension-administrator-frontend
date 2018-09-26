@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import controllers.register.partnership.routes.PartnershipAddressYearsController
@@ -87,7 +87,7 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

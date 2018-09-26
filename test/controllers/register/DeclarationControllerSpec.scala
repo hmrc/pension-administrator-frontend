@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
@@ -65,7 +65,7 @@ class DeclarationControllerSpec extends ControllerSpecBase {
       val result = controller().onSubmit(request)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(DeclarationId, true)
+      FakeUserAnswersCacheConnector.verify(DeclarationId, true)
     }
 
     "reject an invalid POST request and display errors" in {
@@ -136,7 +136,7 @@ object DeclarationControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       fakeNavigator,
       new DeclarationFormProvider(),
-      FakeDataCacheConnector
+      FakeUserAnswersCacheConnector
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =

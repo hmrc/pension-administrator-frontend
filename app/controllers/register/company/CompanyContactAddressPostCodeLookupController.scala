@@ -18,7 +18,7 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{AddressLookupConnector, DataCacheConnector}
+import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
@@ -35,7 +35,7 @@ import viewmodels.address.PostcodeLookupViewModel
 
 class CompanyContactAddressPostCodeLookupController @Inject()(
                                                                override val appConfig: FrontendAppConfig,
-                                                               override val cacheConnector: DataCacheConnector,
+                                                               override val cacheConnector: UserAnswersCacheConnector,
                                                                override val addressLookupConnector: AddressLookupConnector,
                                                                @RegisterCompany override val navigator: Navigator,
                                                                override val messagesApi: MessagesApi,

@@ -17,7 +17,7 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.{AddressLookupConnector, DataCacheConnector}
+import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -37,7 +37,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def addressLookupConnector: AddressLookupConnector
 

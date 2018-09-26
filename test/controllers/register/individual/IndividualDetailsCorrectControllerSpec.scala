@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.{FakeDataCacheConnector, RegistrationConnector}
+import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
@@ -106,7 +106,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       fakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -137,9 +137,9 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
       status(result) mustBe OK
 
-      FakeDataCacheConnector.verify(IndividualDetailsId, individual)
-      FakeDataCacheConnector.verify(IndividualAddressId, address)
-      FakeDataCacheConnector.verify(RegistrationInfoId, registrationInfo)
+      FakeUserAnswersCacheConnector.verify(IndividualDetailsId, individual)
+      FakeUserAnswersCacheConnector.verify(IndividualAddressId, address)
+      FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -178,7 +178,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      FakeDataCacheConnector.verify(IndividualDetailsCorrectId, true)
+      FakeUserAnswersCacheConnector.verify(IndividualDetailsCorrectId, true)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

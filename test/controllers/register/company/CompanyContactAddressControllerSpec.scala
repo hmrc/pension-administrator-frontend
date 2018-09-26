@@ -18,7 +18,7 @@ package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -50,7 +50,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
     new CompanyContactAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

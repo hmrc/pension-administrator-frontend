@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
@@ -32,7 +32,7 @@ import utils.annotations.Partnership
 import viewmodels.address.AddressListViewModel
 
 class PartnershipContactAddressListController @Inject()(
-                                                         val cacheConnector: DataCacheConnector,
+                                                         val cacheConnector: UserAnswersCacheConnector,
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
                                                          val messagesApi: MessagesApi,

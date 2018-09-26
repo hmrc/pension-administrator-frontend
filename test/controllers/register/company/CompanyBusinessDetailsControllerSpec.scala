@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import base.SpecBase
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{BusinessDetailsControllerBehaviour, ControllerSpecBase}
 import forms.BusinessDetailsFormModel
@@ -37,7 +37,7 @@ class CompanyBusinessDetailsControllerSpec extends ControllerSpecBase
     behave like businessDetailsController(testFormModel, testViewModel, BusinessDetailsId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = createController(this, dontGetAnyData)(FakeDataCacheConnector, FakeNavigator).onPageLoad()(fakeRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -45,7 +45,7 @@ class CompanyBusinessDetailsControllerSpec extends ControllerSpecBase
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody()
-      val result = createController(this, dontGetAnyData)(FakeDataCacheConnector, FakeNavigator).onSubmit()(postRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -79,7 +79,7 @@ object CompanyBusinessDetailsControllerSpec {
       utrHint = Message("businessDetails.utr.hint")
     )
 
-  def createController(base: SpecBase, dataRetrieval: DataRetrievalAction): (DataCacheConnector, Navigator) => CompanyBusinessDetailsController = {
+  def createController(base: SpecBase, dataRetrieval: DataRetrievalAction): (UserAnswersCacheConnector, Navigator) => CompanyBusinessDetailsController = {
 
     (connector, nav) =>
       new CompanyBusinessDetailsController(

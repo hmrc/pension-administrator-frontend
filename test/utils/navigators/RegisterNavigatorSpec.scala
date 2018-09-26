@@ -17,7 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
@@ -34,7 +34,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterNavigatorSpec._
 
-  val navigator = new RegisterNavigator(FakeDataCacheConnector)
+  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector)
 
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -56,7 +56,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 
 }

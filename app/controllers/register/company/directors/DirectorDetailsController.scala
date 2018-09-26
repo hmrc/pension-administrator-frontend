@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.PersonDetailsController
 import controllers.actions._
 import identifiers.register.company.directors.DirectorDetailsId
@@ -32,7 +32,7 @@ import viewmodels.{Message, PersonDetailsViewModel}
 class DirectorDetailsController @Inject()(
                                            val appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
-                                           val dataCacheConnector: DataCacheConnector,
+                                           val dataCacheConnector: UserAnswersCacheConnector,
                                            @CompanyDirector val navigator: Navigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,

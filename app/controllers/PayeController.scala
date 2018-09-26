@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Mode, Paye}
@@ -35,7 +35,7 @@ trait PayeController extends FrontendController with Retrievals with I18nSupport
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
 import identifiers.register.partnership.partners.PartnerDetailsId
@@ -69,7 +69,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

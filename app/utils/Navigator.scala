@@ -16,7 +16,7 @@
 
 package utils
 
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.{Identifier, LastPageId}
 import models.requests.IdentifiedRequest
 import models.{CheckMode, LastPage, Mode, NormalMode}
@@ -29,7 +29,7 @@ import scala.util.Failure
 
 abstract class Navigator {
 
-  protected def dataCacheConnector: DataCacheConnector
+  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def routeMap(from: NavigateFrom): Option[NavigateTo]
 

@@ -17,7 +17,7 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.partners.PartnerNinoFormProvider
@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class PartnerNinoController @Inject()(
                                        appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
-                                       dataCacheConnector: DataCacheConnector,
+                                       dataCacheConnector: UserAnswersCacheConnector,
                                        @PartnershipPartner navigator: Navigator,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,

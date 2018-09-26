@@ -33,7 +33,7 @@
 package controllers.register.partnership
 
 import base.SpecBase
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{BusinessDetailsControllerBehaviour, ControllerSpecBase}
 import forms.BusinessDetailsFormModel
@@ -53,7 +53,7 @@ class PartnerShipBusinessDetailsControllerSpec extends ControllerSpecBase
     behave like businessDetailsController(testFormModel, testViewModel, PartnershipDetailsId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = createController(this, dontGetAnyData)(FakeDataCacheConnector, FakeNavigator).onPageLoad()(fakeRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -61,7 +61,7 @@ class PartnerShipBusinessDetailsControllerSpec extends ControllerSpecBase
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody()
-      val result = createController(this, dontGetAnyData)(FakeDataCacheConnector, FakeNavigator).onSubmit()(postRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -95,7 +95,7 @@ object PartnershipCompanyBusinessDetailsControllerSpec {
       utrHint = Message("partnershipBusinessDetails.utr.hint")
     )
 
-  def createController(base: SpecBase, dataRetrieval: DataRetrievalAction): (DataCacheConnector, Navigator) => PartnershipBusinessDetailsController = {
+  def createController(base: SpecBase, dataRetrieval: DataRetrievalAction): (UserAnswersCacheConnector, Navigator) => PartnershipBusinessDetailsController = {
 
     (connector, nav) =>
       new PartnershipBusinessDetailsController(

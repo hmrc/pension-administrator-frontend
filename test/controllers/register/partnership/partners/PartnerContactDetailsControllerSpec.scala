@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.ContactDetailsFormProvider
@@ -92,7 +92,7 @@ object PartnerContactDetailsControllerSpec extends OptionValues {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

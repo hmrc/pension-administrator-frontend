@@ -23,7 +23,6 @@ import org.scalatest._
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
@@ -42,7 +41,6 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
   private def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
 
   private lazy val connector = injector.instanceOf[MicroserviceCacheConnector]
-  private lazy val crypto = injector.instanceOf[ApplicationCrypto].JsonCrypto
 
   ".fetch" must {
 
@@ -61,14 +59,11 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
       }
     }
 
-    "return decrypted data when the server returns 200" in {
-
-      val plaintext = PlainText("{}")
-
+    "return data when the server returns 200" in {
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            ok(crypto.encrypt(plaintext).value)
+            ok("{}")
           )
       )
 
@@ -76,23 +71,6 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         result =>
           result.value mustEqual Json.obj()
       }
-    }
-
-    "return a failed future when the body can't be transformed into json" in {
-
-      val plaintext = PlainText("foobar")
-
-      server.stubFor(
-        get(urlEqualTo(url("foo")))
-          .willReturn(
-            ok(crypto.encrypt(plaintext).value)
-          )
-      )
-
-      recoverToSucceededIf[JsonParseException] {
-        connector.fetch("foo")
-      }
-
     }
 
     "return a failed future on upstream error" in {
@@ -121,7 +99,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         "fake-identifier" -> "foobar"
       )
 
-      val cryptoText = crypto.encrypt(PlainText(Json.stringify(json))).value
+      val value = Json.stringify(json)
 
       server.stubFor(
         get(urlEqualTo(url("foo")))
@@ -132,7 +110,7 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
 
       server.stubFor(
         post(urlEqualTo(url("foo")))
-          .withRequestBody(equalTo(cryptoText))
+          .withRequestBody(equalTo(value))
           .willReturn(
             ok
           )
@@ -154,19 +132,19 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         "fake-identifier" -> "foobar"
       )
 
-      val cryptoText = crypto.encrypt(PlainText(Json.stringify(json))).value
-      val updatedCrypto = crypto.encrypt(PlainText(Json.stringify(updatedJson))).value
+      val value = Json.stringify(json)
+      val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            ok(cryptoText)
+            ok(value)
           )
       )
 
       server.stubFor(
         post(urlEqualTo(url("foo")))
-          .withRequestBody(equalTo(updatedCrypto))
+          .withRequestBody(equalTo(updatedValue))
           .willReturn(
             ok
           )
@@ -187,19 +165,19 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         "fake-identifier" -> "foobar"
       )
 
-      val cryptoText = crypto.encrypt(PlainText(Json.stringify(json))).value
-      val updatedCrypto = crypto.encrypt(PlainText(Json.stringify(updatedJson))).value
+      val value = Json.stringify(json)
+      val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            ok(cryptoText)
+            ok(value)
           )
       )
 
       server.stubFor(
         post(urlEqualTo(url("foo")))
-          .withRequestBody(equalTo(updatedCrypto))
+          .withRequestBody(equalTo(updatedValue))
           .willReturn(
             ok
           )
@@ -220,19 +198,19 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         "fake-identifier" -> "foobar"
       )
 
-      val cryptoText = crypto.encrypt(PlainText(Json.stringify(json))).value
-      val updatedCrypto = crypto.encrypt(PlainText(Json.stringify(updatedJson))).value
+      val value = Json.stringify(json)
+      val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            ok(cryptoText)
+            ok(value)
           )
       )
 
       server.stubFor(
         post(urlEqualTo(url("foo")))
-          .withRequestBody(equalTo(updatedCrypto))
+          .withRequestBody(equalTo(updatedValue))
           .willReturn(
             serverError
           )
@@ -259,19 +237,19 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
         "other-key" -> "meh"
       )
 
-      val cryptoText = crypto.encrypt(PlainText(Json.stringify(json))).value
-      val updatedCrypto = crypto.encrypt(PlainText(Json.stringify(updatedJson))).value
+      val value = Json.stringify(json)
+      val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
-            ok(cryptoText)
+            ok(value)
           )
       )
 
       server.stubFor(
         post(urlEqualTo(url("foo")))
-          .withRequestBody(equalTo(updatedCrypto))
+          .withRequestBody(equalTo(updatedValue))
           .willReturn(
             ok
           )

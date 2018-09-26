@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import forms.address.SameContactAddressFormProvider
@@ -64,7 +64,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

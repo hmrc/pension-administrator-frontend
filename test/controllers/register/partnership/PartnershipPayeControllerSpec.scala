@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.PayeFormProvider
@@ -87,7 +87,7 @@ object PartnershipPayeControllerSpec extends ControllerSpecBase {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).to(fakeNavigator),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

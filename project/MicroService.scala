@@ -35,7 +35,7 @@ trait MicroService {
     .settings(RoutesKeys.routesImport ++= Seq("models.Mode", "models.CheckMode", "models.NormalMode", "models.Index"))
     .settings(
       ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
-        ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*DataCacheConnector;" +
+        ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
         ".*ControllerConfiguration;.*LanguageSwitchController",
       ScoverageKeys.coverageMinimum := 80,
       ScoverageKeys.coverageFailOnMinimum := true,

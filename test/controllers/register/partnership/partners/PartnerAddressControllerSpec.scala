@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -197,7 +197,7 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
     new PartnerAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

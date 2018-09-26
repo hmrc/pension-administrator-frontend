@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
@@ -54,7 +54,7 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
-    new PartnerUniqueTaxReferenceController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute),
+    new PartnerUniqueTaxReferenceController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   private def viewAsString(form: Form[_] = form) = partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, firstIndex,

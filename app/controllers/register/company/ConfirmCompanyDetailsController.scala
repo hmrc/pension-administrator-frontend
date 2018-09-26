@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, RegistrationConnector}
+import connectors.{UserAnswersCacheConnector, RegistrationConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
@@ -42,7 +42,7 @@ import scala.concurrent.Future
 
 class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
-                                                dataCacheConnector: DataCacheConnector,
+                                                dataCacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,

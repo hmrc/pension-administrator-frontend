@@ -18,7 +18,7 @@ package controllers.register.individual
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -63,7 +63,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     new IndividualPreviousAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

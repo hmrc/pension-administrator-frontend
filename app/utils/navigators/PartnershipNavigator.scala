@@ -17,14 +17,14 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers.register.partnership._
 import models._
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class PartnershipNavigator @Inject()(val dataCacheConnector: DataCacheConnector) extends Navigator {
+class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {

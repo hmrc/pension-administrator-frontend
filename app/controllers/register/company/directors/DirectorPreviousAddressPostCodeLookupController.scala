@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{AddressLookupConnector, DataCacheConnector}
+import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class DirectorPreviousAddressPostCodeLookupController @Inject()(
                                                                  override val appConfig: FrontendAppConfig,
-                                                                 override val cacheConnector: DataCacheConnector,
+                                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                                  override val addressLookupConnector: AddressLookupConnector,
                                                                  @CompanyDirector override val navigator: Navigator,
                                                                  override val messagesApi: MessagesApi,

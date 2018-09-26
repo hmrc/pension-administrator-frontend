@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import forms.BusinessDetailsFormModel
 import identifiers.TypedIdentifier
 import models.BusinessDetails
@@ -66,11 +66,11 @@ object BusinessDetailsControllerSpec {
       utrHint = Message("businessDetails.utr.hint")
     )
 
-  def createController(base: SpecBase): (DataCacheConnector, Navigator) => BusinessDetailsController = {
+  def createController(base: SpecBase): (UserAnswersCacheConnector, Navigator) => BusinessDetailsController = {
     (connector, nav) =>
       new BusinessDetailsController {
         override protected val appConfig: FrontendAppConfig = base.frontendAppConfig
-        override protected val dataCacheConnector: DataCacheConnector = connector
+        override protected val dataCacheConnector: UserAnswersCacheConnector = connector
         override protected val navigator: Navigator = nav
         override protected val formModel: BusinessDetailsFormModel = testFormModel
         override protected val viewModel: BusinessDetailsViewModel = testViewModel

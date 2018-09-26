@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
@@ -63,7 +63,7 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorNinoController(frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

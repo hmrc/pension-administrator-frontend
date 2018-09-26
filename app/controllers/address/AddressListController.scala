@@ -17,7 +17,7 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -35,7 +35,7 @@ trait AddressListController extends FrontendController with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
@@ -49,7 +49,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

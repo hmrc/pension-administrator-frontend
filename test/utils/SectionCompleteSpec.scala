@@ -16,7 +16,7 @@
 
 package utils
 
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
@@ -51,7 +51,7 @@ class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues w
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val dataCacheConnector = mock[DataCacheConnector]
+  val dataCacheConnector = mock[UserAnswersCacheConnector]
 
   val userAnswers = UserAnswers(Json.obj(existingId.toString -> "testId"))
 

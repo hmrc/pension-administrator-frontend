@@ -17,7 +17,7 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.NormalMode
@@ -38,7 +38,7 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

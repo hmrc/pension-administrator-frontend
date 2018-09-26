@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -114,14 +114,14 @@ object MoreThanTenControllerSpec {
     )
   }
 
-  case class TestFixture(controller: MoreThanTenController, dataCacheConnector: FakeDataCacheConnector)
+  case class TestFixture(controller: MoreThanTenController, dataCacheConnector: FakeUserAnswersCacheConnector)
 
   def testFixture(base: SpecBase): TestFixture = {
-    val connector = new FakeDataCacheConnector {}
+    val connector = new FakeUserAnswersCacheConnector {}
     val controller: MoreThanTenController = new MoreThanTenController {
       override protected def appConfig: FrontendAppConfig = base.frontendAppConfig
 
-      override protected def dataCacheConnector: DataCacheConnector = connector
+      override protected def dataCacheConnector: UserAnswersCacheConnector = connector
 
       override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
 

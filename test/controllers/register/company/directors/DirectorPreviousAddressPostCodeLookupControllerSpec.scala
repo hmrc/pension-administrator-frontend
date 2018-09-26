@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.{AddressLookupConnector, FakeDataCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -53,7 +53,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
   private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressPostCodeLookupController(
       frontendAppConfig,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,

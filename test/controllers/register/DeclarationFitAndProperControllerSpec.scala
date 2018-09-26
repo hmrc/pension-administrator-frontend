@@ -94,10 +94,10 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
             PartnershipContactDetailsId.toString -> contactDetails
           )
 
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           when(mockEmailConnector.sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -106,9 +106,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
         "on a valid request and not send the email" in {
           reset(mockEmailConnector)
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -123,9 +123,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
             BusinessDetailsId.toString -> businessDetails,
             ContactDetailsId.toString -> contactDetails
           )
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
@@ -138,9 +138,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
             IndividualDetailsId.toString -> individualDetails,
             IndividualContactDetailsId.toString -> contactDetails
           )
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
           psaNameCacheConnector.verify(PsaNameId, individualDetails.fullName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
@@ -152,9 +152,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
             PartnershipDetailsId.toString -> businessDetails,
             PartnershipContactDetailsId.toString -> contactDetails
           )
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
@@ -178,9 +178,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
 
         "known facts cannot be retrieved" in {
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
-            fakeDataCacheConnector = mockDataCacheConnector,
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
             knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
@@ -188,9 +188,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
 
         "enrolment is not successful" in {
-          when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
-            fakeDataCacheConnector = mockDataCacheConnector,
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
             enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST))
           ).onSubmit(validRequest)
 
@@ -225,12 +225,12 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
 
       "save the answer and PSA Subscription response on a valid request" in {
-        when(mockDataCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
-        val result = controller(fakeDataCacheConnector = mockDataCacheConnector).onSubmit(validRequest)
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+        val result = controller(fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
 
         status(result) mustBe SEE_OTHER
-        FakeDataCacheConnector.verify(DeclarationFitAndProperId, true)
-        FakeDataCacheConnector.verify(PsaSubscriptionResponseId, validPsaResponse)
+        FakeUserAnswersCacheConnector.verify(DeclarationFitAndProperId, true)
+        FakeUserAnswersCacheConnector.verify(PsaSubscriptionResponseId, validPsaResponse)
       }
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
@@ -320,7 +320,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     frontendAppConfig,
     mock[WSClient],
     injector.instanceOf[ApplicationCrypto]
-  ) with FakeDataCacheConnector {
+  ) with FakeUserAnswersCacheConnector {
     override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                                 (implicit
                                                  ec: ExecutionContext,
@@ -328,14 +328,14 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
                                                 ): Future[JsValue] = ???
   }
 
-  val mockDataCacheConnector = mock[DataCacheConnector]
+  val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   val mockEmailConnector = mock[EmailConnector]
   val psaNameCacheConnector = PSANameCacheConnector
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
-                          fakeDataCacheConnector: DataCacheConnector = FakeDataCacheConnector,
+                          fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
                           enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
@@ -348,7 +348,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       new DataRequiredActionImpl,
       fakeNavigator,
       new DeclarationFormProvider(),
-      fakeDataCacheConnector,
+      fakeUserAnswersCacheConnector,
       pensionsSchemeConnector,
       knownFactsRetrieval,
       enrolments,

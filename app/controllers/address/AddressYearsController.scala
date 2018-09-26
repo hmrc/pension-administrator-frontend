@@ -17,7 +17,7 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -36,7 +36,7 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

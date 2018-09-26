@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
 import models.NormalMode
@@ -60,12 +60,12 @@ object PartnerDetailsControllerSpec {
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
                     ): PartnerDetailsController =
-    createController(base, dataRetrievalAction)(FakeDataCacheConnector, FakeNavigator)
+    createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
                         base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: DataCacheConnector, nav: Navigator): PartnerDetailsController =
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): PartnerDetailsController =
     new PartnerDetailsController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,

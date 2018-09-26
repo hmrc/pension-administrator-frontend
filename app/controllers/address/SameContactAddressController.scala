@@ -17,7 +17,7 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -36,7 +36,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
 
   protected def appConfig: FrontendAppConfig
 
-  protected def dataCacheConnector: DataCacheConnector
+  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

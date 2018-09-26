@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import identifiers.IndexId
 import javax.inject.Inject
@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
-                                dataCacheConnector: DataCacheConnector,
+                                dataCacheConnector: UserAnswersCacheConnector,
                                 authenticate: AuthAction) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async {

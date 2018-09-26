@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
@@ -48,7 +48,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     new CompanyAddressYearsController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

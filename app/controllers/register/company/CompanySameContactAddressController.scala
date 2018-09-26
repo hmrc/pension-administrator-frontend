@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import controllers.register.company.routes.CompanySameContactAddressController
@@ -38,7 +38,7 @@ class CompanySameContactAddressController @Inject()(
                                                      @RegisterCompany val navigator: Navigator,
                                                      val appConfig: FrontendAppConfig,
                                                      val messagesApi: MessagesApi,
-                                                     val dataCacheConnector: DataCacheConnector,
+                                                     val dataCacheConnector: UserAnswersCacheConnector,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

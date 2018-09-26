@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.register.VatFormProvider
@@ -86,7 +86,7 @@ object PartnershipVatControllerSpec extends PartnershipVatControllerSpec {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
-      bind[DataCacheConnector].toInstance(FakeDataCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     )) {
       app =>
         val req = request(app)

@@ -18,7 +18,7 @@ package controllers.register.adviser
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -171,7 +171,7 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
   val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new AdviserAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector,
+    new AdviserAddressController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
       countryOptions, fakeAuditService)
 

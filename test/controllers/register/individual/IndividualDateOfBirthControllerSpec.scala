@@ -18,7 +18,7 @@ package controllers.register.individual
 
 import java.time.LocalDate
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
@@ -102,7 +102,7 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualDateOfBirthController(frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

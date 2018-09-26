@@ -17,7 +17,7 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -36,7 +36,7 @@ trait VatController extends FrontendController with Retrievals with I18nSupport 
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: DataCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 

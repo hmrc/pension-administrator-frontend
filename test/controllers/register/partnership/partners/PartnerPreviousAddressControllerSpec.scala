@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -72,7 +72,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     new PartnerPreviousAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeDataCacheConnector,
+      FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

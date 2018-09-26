@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import java.time.LocalDate
 
-import connectors.{AddressLookupConnector, FakeDataCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -44,7 +44,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getRequiredData) = new PartnerAddressPostCodeLookupController(
     frontendAppConfig,
-    FakeDataCacheConnector,
+    FakeUserAnswersCacheConnector,
     fakeAddressLookupConnector,
     new FakeNavigator(desiredRoute = onwardRoute),
     messagesApi,
@@ -102,7 +102,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
         controller().onSubmit(NormalMode, firstIndex)(postRequest)
 
-        FakeDataCacheConnector.verify(PartnerAddressPostCodeLookupId(firstIndex), expected)
+        FakeUserAnswersCacheConnector.verify(PartnerAddressPostCodeLookupId(firstIndex), expected)
       }
 
       "return the Bad Request when invalid data is submitted" in {

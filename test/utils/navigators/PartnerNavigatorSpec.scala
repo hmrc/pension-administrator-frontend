@@ -19,7 +19,7 @@ package utils.navigators
 import java.time.LocalDate
 
 import base.SpecBase
-import connectors.FakeDataCacheConnector
+import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.partners.routes
 import identifiers.Identifier
 import identifiers.register.partnership.partners._
@@ -38,7 +38,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 
   import PartnerNavigatorSpec._
 
-  val navigator = new PartnerNavigator(FakeDataCacheConnector, frontendAppConfig)
+  val navigator = new PartnerNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
 
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -68,7 +68,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeDataCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 }
 

@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.PersonDetails
 import play.api.i18n.MessagesApi
@@ -46,11 +46,11 @@ object PersonDetailsControllerSpec {
 
   val testId: TypedIdentifier[PersonDetails] = new TypedIdentifier[PersonDetails] {}
 
-  def createController(base: ControllerSpecBase)(connector: DataCacheConnector, nav: Navigator): PersonDetailsController = {
+  def createController(base: ControllerSpecBase)(connector: UserAnswersCacheConnector, nav: Navigator): PersonDetailsController = {
     new PersonDetailsController {
       override def appConfig: FrontendAppConfig = base.frontendAppConfig
 
-      override def dataCacheConnector: DataCacheConnector = connector
+      override def dataCacheConnector: UserAnswersCacheConnector = connector
 
       override def navigator: Navigator = nav
 

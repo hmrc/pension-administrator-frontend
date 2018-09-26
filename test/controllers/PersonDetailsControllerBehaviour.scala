@@ -18,7 +18,7 @@ package controllers
 
 import java.time.LocalDate
 
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import forms.PersonDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -44,7 +44,7 @@ trait PersonDetailsControllerBehaviour {
   def personDetailsController[I <: TypedIdentifier[PersonDetails]](
                                                                     viewModel: PersonDetailsViewModel,
                                                                     id: I,
-                                                                    createController: (DataCacheConnector, Navigator) => PersonDetailsController
+                                                                    createController: (UserAnswersCacheConnector, Navigator) => PersonDetailsController
                                                                   ): Unit = {
 
     "return OK and the correct view for a GET request" in {
@@ -125,13 +125,13 @@ object PersonDetailsControllerBehaviour {
       dateOfBirth = LocalDate.now().plusDays(1)
     )
 
-  case class TestFixture(dataCacheConnector: FakeDataCacheConnector, controller: PersonDetailsController)
+  case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: PersonDetailsController)
 
   def testFixture(
-                   createController: (DataCacheConnector, Navigator) => PersonDetailsController
+                   createController: (UserAnswersCacheConnector, Navigator) => PersonDetailsController
                  ): TestFixture = {
 
-    val connector = new FakeDataCacheConnector {}
+    val connector = new FakeUserAnswersCacheConnector {}
     val navigator = new FakeNavigator(onwardRoute)
 
     TestFixture(

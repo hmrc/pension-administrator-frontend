@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.MoreThanTenController
 import controllers.actions._
 import identifiers.register.company.MoreThanTenDirectorsId
@@ -32,7 +32,7 @@ import viewmodels.{Message, MoreThanTenViewModel}
 class MoreThanTenDirectorsController @Inject()(
                                                 val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
-                                                val dataCacheConnector: DataCacheConnector,
+                                                val dataCacheConnector: UserAnswersCacheConnector,
                                                 @CompanyDirector val navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,

@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import base.CSRFRequest
-import connectors.{DataCacheConnector, FakeDataCacheConnector}
+import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -67,7 +67,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.IndividualContactAddressListController.onPageLoad(NormalMode)))
@@ -87,7 +87,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.IndividualContactAddressListController.onPageLoad(NormalMode)))
@@ -103,7 +103,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.IndividualContactAddressListController.onPageLoad(NormalMode)))
@@ -119,7 +119,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
       val onwardRoute = controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(NormalMode)
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
@@ -141,7 +141,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
         val request =
@@ -162,7 +162,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
-        bind[DataCacheConnector].toInstance(FakeDataCacheConnector),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
         val request =

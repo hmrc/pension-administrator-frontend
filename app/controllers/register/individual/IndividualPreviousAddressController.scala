@@ -18,7 +18,7 @@ package controllers.register.individual
 
 import audit.AuditService
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 
 class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                     val messagesApi: MessagesApi,
-                                                    val dataCacheConnector: DataCacheConnector,
+                                                    val dataCacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,

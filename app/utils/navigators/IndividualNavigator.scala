@@ -18,14 +18,14 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.UserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.register.individual.{WhatYouWillNeedId, _}
 import models.{AddressYears, CheckMode, Mode, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class IndividualNavigator @Inject()(val dataCacheConnector: DataCacheConnector, config: FrontendAppConfig) extends Navigator {
+class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, config: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(): Option[NavigateTo] =
     NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
