@@ -15,16 +15,19 @@
  *@
 
 @import viewmodels.AnswerSection
+@import viewmodels.SuperSection
 @import views.html._
 
-@(answerSection: AnswerSection, idPath: String)(implicit messages: Messages)
+@(superSection: SuperSection, idPath: String)(implicit messages: Messages)
 
-@if(answerSection.headingKey.isDefined){
-    <h2 id="cya-@idPath-heading" class="heading-medium">@messages(answerSection.headingKey.get)</h2>
+@if(superSection.headingKey.isDefined){
+<header class="page-heading">
+<h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
+</header>
 }
 
-<ul class="govuk-check-your-answers form-group cya-questions-long">
-    @for((row, i) <- answerSection.rows.zipWithIndex){
-        @components.answer_row(row, idPath + "-" + i.toString)
+<ul>
+    @for((section, i) <- superSection.sections.zipWithIndex){
+    @components.answer_section(section, idPath + "-" + i.toString)
     }
 </ul>

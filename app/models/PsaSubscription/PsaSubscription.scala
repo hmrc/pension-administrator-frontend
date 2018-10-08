@@ -49,14 +49,20 @@ object PsaContactDetails {
   implicit val formatsAddress: Format[PsaContactDetails] = Json.format[PsaContactDetails]
 }
 
-case class CorrespondenceAddress(addressLine1: String, addressLine2: String, addressLine3: Option[String], addressLine4: Option[String], countryCode: String, postalCode: Option[String])
+case class CorrespondenceAddress(addressLine1: String, addressLine2: String, addressLine3: Option[String],
+                                 addressLine4: Option[String], countryCode: String, postalCode: Option[String])
 
 object CorrespondenceAddress {
   implicit val formatsAddress: Format[CorrespondenceAddress] = Json.format[CorrespondenceAddress]
 }
 
 case class IndividualDetailType(title: Option[String] = None, firstName: String, middleName: Option[String] = None,
-                                lastName: String, dateOfBirth: java.time.LocalDate)
+                                lastName: String, dateOfBirth: java.time.LocalDate){
+  def fullName: String = middleName match {
+    case Some(middle) => s"$firstName $middle $lastName"
+    case None => s"$firstName $lastName"
+  }
+}
 
 object IndividualDetailType {
   implicit val formatsAddress: Format[IndividualDetailType] = Json.format[IndividualDetailType]
@@ -72,7 +78,12 @@ case class DirectorOrPartner(isDirectorOrPartner: String,
                              utr: Option[String],
                              isSameAddressForLast12Months: Boolean,
                              previousAddress: Option[CorrespondenceAddress],
-                             correspondenceDetails: Option[CorrespondenceDetails])
+                             correspondenceDetails: Option[CorrespondenceDetails]){
+  def fullName: String = middleName match {
+    case Some(middle) => s"$firstName $middle $lastName"
+    case None => s"$firstName $lastName"
+  }
+}
 
 object DirectorOrPartner {
   implicit val formatsAddress: Format[DirectorOrPartner] = Json.format[DirectorOrPartner]
