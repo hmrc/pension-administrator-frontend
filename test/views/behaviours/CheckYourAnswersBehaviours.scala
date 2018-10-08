@@ -23,36 +23,6 @@ import views.ViewSpecBase
 
 trait CheckYourAnswersBehaviours extends ViewSpecBase {
 
-  val answer1 = "test-answer-1"
-  val answer2 = "test-answer-2"
-  val superSectionHeading = "Main Heading"
-
-  val answerRow = AnswerRow("test-label", Seq(answer1, answer2), answerIsMessageKey = false, "http//:google.com")
-
-  val answerSection = AnswerSection(headingKey = Some(""), rows = Seq(answerRow))
-
-  val superSection = SuperSection(Some(superSectionHeading), Seq(answerSection))
-
-  val seqSuperSection = Seq(superSection)
-
-
-
-  def superSectionPage(superSections: Seq[SuperSection] => HtmlFormat.Appendable): Unit = {
-
-
-      "supersection page" must {
-        "display heading" in {
-          val page: Document = asDocument(superSections(seqSuperSection))
-          assertRenderedByIdWithText(page, "supersection-0-heading", superSectionHeading)
-
-        }
-
-
-
-
-      }
-  }
-
   // scalastyle:off method.length
   def checkYourAnswersPage(view: Seq[Section] => HtmlFormat.Appendable): Unit = {
     "behave like a Check your Answers page" when {

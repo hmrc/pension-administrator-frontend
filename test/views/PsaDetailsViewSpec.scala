@@ -16,9 +16,11 @@
 
 package views
 
+import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import viewmodels.SuperSection
+import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import views.PsaDetailsViewSpec._
 import views.behaviours.{CheckYourAnswersBehaviours, ViewBehaviours}
 import views.html.{check_your_answers, psa_details}
 
@@ -36,27 +38,71 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
     psa_details(
       frontendAppConfig,
       emptyAnswerSections,
-      secondaryHeader,
-      fakeCall
+      secondaryHeader
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
       sections,
-      secondaryHeader,
-      fakeCall
+      secondaryHeader
     )(fakeRequest, messages)
 
-  "check_your_answers view" must {
-    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
 
-    "display the correct page title" in {
-      val doc = asDocument(createView())
-      assertPageTitleEqualsMessage(doc, secondaryHeader)
+
+
+    "supersection page" must {
+
+      behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
+
+      "display the correct page title" in {
+        val doc = asDocument(createView())
+        assertPageTitleEqualsMessage(doc, secondaryHeader)
+      }
+      "display heading" in {
+
+        val doc: Document = asDocument(createViewWithData(seqSuperSection))
+        assertRenderedByIdWithText(doc, "supersection-0-heading", superSectionHeading)
+      }
+
+      "correctly display an AnswerSection" in {
+
+        val doc: Document = asDocument(createViewWithData(seqSuperSection))
+        assertRenderedByIdWithText(doc, "cya-0-0-heading", headingKey)
+        assertRenderedByIdWithText(doc, "cya-0-0-0-question", answerRow.label)
+        assertRenderedByIdWithText(doc, "cya-0-0-0-0-answer", answer1)
+        assertRenderedByIdWithText(doc, "cya-0-0-0-1-answer", answer2)
+      }
+
+      "display the correct number of sections" in {
+
+        val doc: Document = asDocument(createViewWithData(seqSuperSection))
+
+        assertRenderedById(doc, "supersection-0-heading")
+        assertRenderedById(doc, "supersection-1-heading")
+        assertNotRenderedById(doc, "supersection-2-heading")
+      }
+
+
     }
 
-    behave like superSectionPage(createViewWithData)
-  }
+
+
+}
+
+object PsaDetailsViewSpec {
+  val answer1 = "test-answer-1"
+  val answer2 = "test-answer-2"
+  val superSectionHeading = "Main Heading"
+  val headingKey = "Director Name"
+
+  val answerRow = AnswerRow("test-label", Seq(answer1, answer2), answerIsMessageKey = false, None)
+
+  val answerSection = AnswerSection(Some(headingKey), rows = Seq(answerRow))
+
+  val superSection = SuperSection(Some(superSectionHeading), Seq(answerSection))
+  val superSection2 = SuperSection(Some(superSectionHeading), Seq(answerSection))
+
+  val seqSuperSection = Seq(superSection, superSection2)
 
 }
