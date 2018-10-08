@@ -19,6 +19,7 @@ package utils.testhelpers
 import java.time.LocalDate
 
 import models.PsaSubscription._
+import viewmodels.AnswerRow
 
 object PsaSubscriptionBuilder {
 
@@ -48,5 +49,12 @@ object PsaSubscriptionBuilder {
 
   val psaSubscription = PsaSubscription(false, customerId, None, Some(individual), address, contactDetails,
   true, Some(previousAddress), Some(Seq(director1, director2)), Some(pensionsAdvisor))
+
+  val psaSubscriptionMinimum = PsaSubscription(false, customerId, None, None, address, contactDetails, false,
+    None, None, None)
+
+  val ninoAnswerRow = AnswerRow("common.nino", Seq("AA999999A"), false, None)
+//  val addressAR = AnswerRow("cya.label.address", addressAnswer(psaDetails.address), false, None)
+
 
 }
