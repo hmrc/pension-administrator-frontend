@@ -706,5 +706,17 @@ partnershipReview.partners.heading = Partners
 partnershipReview.partners.editLink = Add, delete or edit partners
 partnershipReview.partners.changeLink = Change partners
 
+email.label = Contact email address
+phone.label = Contact phone number
+pensions.advisor.label = Who is your pension adviser?
+moreThan12Months.label = Has {0} been at their address for more than 12 months?
+sameAddress.label.true = Yes
+sameAddress.label.false = No
+vat.label = VAT number
+paye.label = Employer PAYE reference number
+crn.label = Company registration number
+utr.label = Unique Taxpayer Reference
+pensionAdvisor.section.header = Pension adviser details
+
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
