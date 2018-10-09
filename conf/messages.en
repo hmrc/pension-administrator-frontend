@@ -725,3 +725,6 @@ paye.label = Employer PAYE reference number
 crn.label = Company registration number
 utr.label = Unique Taxpayer Reference
 pensionAdvisor.section.header = Pension adviser details
+
+director.supersection.header = Director details
+partner.supersection.header = Partner details

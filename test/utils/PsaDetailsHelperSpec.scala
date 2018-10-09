@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import models.PsaSubscription.PsaSubscription
+import models.PsaSubscription.{DirectorOrPartner, PsaSubscription}
 import org.scalatest.{MustMatchers, WordSpec}
 import utils.PsaDetailsHelper._
 import utils.countryOptions.CountryOptions
@@ -30,46 +30,87 @@ class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
   "PsaDetailsHelper" must {
     "display Individual details section with correct labels" in {
-      val actualLabels = actualSeqAnswerRow(individualResult).map(_.label).toSet
+      val actualLabels = actualSeqAnswerRow(individualResult, None).map(_.label).toSet
       val expectedLabels = individualExpectedAnswerRows.map(_.label).toSet
 
       actualLabels mustBe expectedLabels
     }
 
     "display Individual details section with correct values" in {
-      val actualValues = actualSeqAnswerRow(individualResult).map(_.answer).toSet
+      val actualValues = actualSeqAnswerRow(individualResult, None).map(_.answer).toSet
       val expectedValues = individualExpectedAnswerRows.map(_.answer).toSet
 
       actualValues mustBe expectedValues
     }
 
     "display Company details section with correct labels" in {
-      val actualLabels = actualSeqAnswerRow(companyResult).map(_.label).toSet
+      val actualLabels = actualSeqAnswerRow(companyResult, None).map(_.label).toSet
       val expectedLabels = companyExpectedAnswerRows.map(_.label).toSet
 
       actualLabels mustBe expectedLabels
     }
 
     "display Company details section with correct values" in {
-      val actualValues = actualSeqAnswerRow(companyResult).map(_.answer).toSet
+      val actualValues = actualSeqAnswerRow(companyResult, None).map(_.answer).toSet
       val expectedValues = companyExpectedAnswerRows.map(_.answer).toSet
 
       actualValues mustBe expectedValues
     }
 
+    "have a supersection heading for directors" in {
+      companyResult.exists(_.headingKey == directorDetailsSuperSectionKey) mustBe true
+    }
+
+    "display Director details sections with correct labels" in {
+      val actualLabels = actualSeqAnswerRow(companyResult, directorDetailsSuperSectionKey).map(_.label).toSet
+      val expectedLabels = directorOrPartnerExpectedAnswerRows.map(_.label).toSet
+
+      actualLabels mustBe expectedLabels
+    }
+
+    "display Director details section with correct values" in {
+      val actualValues = actualSeqAnswerRow(companyResult, directorDetailsSuperSectionKey).map(_.answer).toSet
+      val expectedValues = directorOrPartnerExpectedAnswerRows.map(_.answer).toSet
+
+      actualValues mustBe expectedValues
+    }
+
+
     "display Partnership details section with correct labels" in {
-      val actualLabels = actualSeqAnswerRow(partnershipResult).map(_.label).toSet
+      val actualLabels = actualSeqAnswerRow(partnershipResult, None).map(_.label).toSet
       val expectedLabels = partnershipExpectedAnswerRows.map(_.label).toSet
 
       actualLabels mustBe expectedLabels
     }
 
     "display Partnership details section with correct values" in {
-      val actualValues = actualSeqAnswerRow(partnershipResult).map(_.answer).toSet
+      val actualValues = actualSeqAnswerRow(partnershipResult, None).map(_.answer).toSet
       val expectedValues = partnershipExpectedAnswerRows.map(_.answer).toSet
 
       actualValues mustBe expectedValues
     }
+
+    "have a supersection heading for partners" in {
+      partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
+    }
+
+    "display Partnership partner details sections with correct labels" in {
+      val actualLabels = actualSeqAnswerRow(partnershipResult, partnerDetailsSuperSectionKey).map(_.label).toSet
+      val expectedLabels = directorOrPartnerExpectedAnswerRows.map(_.label).toSet
+
+      actualLabels mustBe expectedLabels
+    }
+
+    "display Partnership partner details section with correct values" in {
+      val actualValues = actualSeqAnswerRow(partnershipResult, partnerDetailsSuperSectionKey).map(_.answer).toSet
+      val expectedValues = directorOrPartnerExpectedAnswerRows.map(_.answer).toSet
+
+      actualValues mustBe expectedValues
+    }
+
+
+
+
   }
 }
 
@@ -98,6 +139,25 @@ object PsaDetailsHelperSpec extends SpecBase {
   val payeNumber = AnswerRow("paye.label", Seq("9876543210"), false, None)
 
   val crn = AnswerRow("crn.label", Seq("1234567890"), false, None)
+
+
+  private def directorOrPartnerDob =
+    AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None)
+
+  private def directorOrPartnerNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
+
+  private def directorOrPartnerUtr = AnswerRow("utr.label", Seq("1234567892"), false, None)
+
+
+  private def directorOrPartnerAddress =
+   AnswerRow("cya.label.address", addressAnswer(director1Address, countryOptions), false, None)
+
+  private def directorOrPartnerPrevAddress = AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(director1PrevAddress, countryOptions), false, None)
+
+  private def directorOrPartnerPhone = AnswerRow("phone.label", Seq("0044-09876542312"), false, None)
+
+  private def directorOrPartnerEmail = AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false, None)
+
 
   val individualExpectedAnswerRows = Seq(
     individualDateOfBirth,
@@ -130,12 +190,24 @@ object PsaDetailsHelperSpec extends SpecBase {
     phoneNumber("partnership.phone.label")
   )
 
+  def directorOrPartnerExpectedAnswerRows = {
+    Seq(directorOrPartnerDob,
+      directorOrPartnerNino,
+      directorOrPartnerUtr,
+      directorOrPartnerAddress,
+      directorOrPartnerPrevAddress,
+      directorOrPartnerEmail,
+      directorOrPartnerPhone
+    )
+  }
+
   val individualResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionIndividual).individualSections
   val companyResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionCompany).organisationSections
   val partnershipResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionPartnership).organisationSections
 
-  def actualSeqAnswerRow(result: Seq[SuperSection]): Seq[AnswerRow] = result.filter(_.headingKey.isEmpty).flatMap(_.sections).flatMap(_.rows)
+  val partnerDetailsSuperSectionKey = Some("partner.supersection.header")
+  val directorDetailsSuperSectionKey = Some("director.supersection.header")
 
+  def actualSeqAnswerRow(result: Seq[SuperSection], headingKey: Option[String]): Seq[AnswerRow] =
+    result.filter(_.headingKey == headingKey).flatMap(_.sections).take(1).flatMap(_.rows)
 }
-
-
