@@ -22,11 +22,11 @@ import play.twirl.api.HtmlFormat
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 import views.PsaDetailsViewSpec._
 import views.behaviours.{CheckYourAnswersBehaviours, ViewBehaviours}
-import views.html.{check_your_answers, psa_details}
+import views.html.psa_details
 
 class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours {
 
-  private val messageKeyPrefix = "checkYourAnswers"
+  private val messageKeyPrefix = "psaDetails"
 
   private def emptyAnswerSections: Seq[SuperSection] = Nil
 
@@ -48,46 +48,35 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       secondaryHeader
     )(fakeRequest, messages)
 
+  "supersection page" must {
 
+    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
 
-
-    "supersection page" must {
-
-      behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
-
-      "display the correct page title" in {
-        val doc = asDocument(createView())
-        assertPageTitleEqualsMessage(doc, secondaryHeader)
-      }
-      "display heading" in {
-
-        val doc: Document = asDocument(createViewWithData(seqSuperSection))
-        assertRenderedByIdWithText(doc, "supersection-0-heading", superSectionHeading)
-      }
-
-      "correctly display an AnswerSection" in {
-
-        val doc: Document = asDocument(createViewWithData(seqSuperSection))
-        assertRenderedByIdWithText(doc, "cya-0-0-heading", headingKey)
-        assertRenderedByIdWithText(doc, "cya-0-0-0-question", answerRow.label)
-        assertRenderedByIdWithText(doc, "cya-0-0-0-0-answer", answer1)
-        assertRenderedByIdWithText(doc, "cya-0-0-0-1-answer", answer2)
-      }
-
-      "display the correct number of sections" in {
-
-        val doc: Document = asDocument(createViewWithData(seqSuperSection))
-
-        assertRenderedById(doc, "supersection-0-heading")
-        assertRenderedById(doc, "supersection-1-heading")
-        assertNotRenderedById(doc, "supersection-2-heading")
-      }
-
-
+    "display the correct page title" in {
+      val doc = asDocument(createView())
+      assertPageTitleEqualsMessage(doc, secondaryHeader)
+    }
+    "display heading" in {
+      val doc: Document = asDocument(createViewWithData(seqSuperSection))
+      assertRenderedByIdWithText(doc, "supersection-0-heading", superSectionHeading)
     }
 
+    "correctly display an AnswerSection" in {
+      val doc: Document = asDocument(createViewWithData(seqSuperSection))
+      assertRenderedByIdWithText(doc, "cya-0-0-heading", headingKey)
+      assertRenderedByIdWithText(doc, "cya-0-0-0-question", answerRow.label)
+      assertRenderedByIdWithText(doc, "cya-0-0-0-0-answer", answer1)
+      assertRenderedByIdWithText(doc, "cya-0-0-0-1-answer", answer2)
+    }
 
+    "display the correct number of sections" in {
+      val doc: Document = asDocument(createViewWithData(seqSuperSection))
 
+      assertRenderedById(doc, "supersection-0-heading")
+      assertRenderedById(doc, "supersection-1-heading")
+      assertNotRenderedById(doc, "supersection-2-heading")
+    }
+  }
 }
 
 object PsaDetailsViewSpec {
@@ -104,5 +93,4 @@ object PsaDetailsViewSpec {
   val superSection2 = SuperSection(Some(superSectionHeading), Seq(answerSection))
 
   val seqSuperSection = Seq(superSection, superSection2)
-
 }

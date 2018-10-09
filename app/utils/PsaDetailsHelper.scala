@@ -23,6 +23,8 @@ import viewmodels.{AnswerRow, AnswerSection, Message, SuperSection}
 
 class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptions)(implicit messages: Messages) {
 
+  import PsaDetailsHelper._
+
   private val individualDetailsSection = SuperSection(
     None,
     Seq(AnswerSection(
@@ -105,12 +107,12 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
   private def directorOrPartnerAddress(person: DirectorOrPartner): Option[AnswerRow] =
     person.correspondenceDetails map { details =>
-    AnswerRow("cya.label.address", addressAnswer(details.address), false, None)
+    AnswerRow("cya.label.address", addressAnswer(details.address, countryOptions), false, None)
   }
 
   private def directorOrPartnerPrevAddress(person: DirectorOrPartner): Option[AnswerRow] =
     person.previousAddress map { address =>
-      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address), false, None)
+      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false, None)
     }
 
   private def directorOrPartnerPhone(person: DirectorOrPartner): Option[AnswerRow] =
@@ -125,7 +127,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
   //Individual PSA
   private def individualDateOfBirth: Option[AnswerRow] = psaDetails.individual map { ind =>
-    AnswerRow("cya.label.dob", Seq(ind.dateOfBirth.toString), false, None)
+    AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(ind.dateOfBirth)), false, None)
   }
 
   private def individualNino: Option[AnswerRow] = psaDetails.customerIdentification.typeOfId flatMap { id =>
@@ -153,7 +155,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
   //common to all PSAs
   private def psaAdress: Option[AnswerRow] =
-    Some(AnswerRow("cya.label.address", addressAnswer(psaDetails.address), false, None))
+    Some(AnswerRow("cya.label.address", addressAnswer(psaDetails.address, countryOptions), false, None))
 
   private def previousAddressExists(name: Option[String]): Option[AnswerRow] = Some(AnswerRow(
     Message("moreThan12Months.label", name.getOrElse("")).resolve,
@@ -161,14 +163,14 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
   ))
 
   private def psaPreviousAddress: Option[AnswerRow] = psaDetails.previousAddress map { address =>
-    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address), false, None)
+    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false, None)
   }
 
   private def phoneNumber: Option[AnswerRow] =
-    Some(AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(psaDetails.contact.telephone), false, None))
+    Some(AnswerRow("phone.label", Seq(psaDetails.contact.telephone), false, None))
 
   private def emailAddress: Option[AnswerRow] = psaDetails.contact.email map { emailAddress =>
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(emailAddress), false, None)
+    AnswerRow("email.label", Seq(emailAddress), false, None)
   }
 
   //Pension Advisor
@@ -186,7 +188,15 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
     AnswerRow("pensions.advisor.label", Seq(advisor.name), false, None)
   }
 
-  private def addressAnswer(address: CorrespondenceAddress): Seq[String] = {
+  val directorsOrPartnersSuperSection = SuperSection(Some("Director details"), directorsOrPartnersSection.getOrElse(Seq.empty))
+
+  val individualSections = Seq(individualDetailsSection, pensionAdvisorSection)
+  val organisationSections = Seq(organisationDetailsSection, directorsOrPartnersSuperSection, pensionAdvisorSection)
+
+}
+
+object PsaDetailsHelper {
+  def addressAnswer(address: CorrespondenceAddress, countryOptions: CountryOptions): Seq[String] = {
     val country = countryOptions.options
       .find(_.value == address.countryCode)
       .map(_.label)
@@ -201,10 +211,5 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
       Some(country)
     ).flatten
   }
-
-  val directorsOrPartnersSuperSection = SuperSection(Some("Director details"), directorsOrPartnersSection.getOrElse(Seq.empty))
-
-  val individualSections = Seq(individualDetailsSection, pensionAdvisorSection)
-  val organisationSections = Seq(organisationDetailsSection, directorsOrPartnersSuperSection, pensionAdvisorSection)
-
 }
+

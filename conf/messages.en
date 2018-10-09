@@ -2,8 +2,6 @@ checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
 
-viewPsaDetails.title = Registered PSA details
-
 address.line.1 = Address Line 1
 address.line.2 = Address Line 2
 address.line.3 = Address Line 3 (optional)
@@ -707,6 +705,8 @@ partnershipReview.editLink = Edit partnership details
 partnershipReview.partners.heading = Partners
 partnershipReview.partners.editLink = Add, delete or edit partners
 partnershipReview.partners.changeLink = Change partners
+
+psaDetails.title = Registered PSA details
 
 email.label = Contact email address
 phone.label = Contact phone number
