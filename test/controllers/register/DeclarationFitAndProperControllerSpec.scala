@@ -35,7 +35,10 @@ import models.requests.{AuthenticatedRequest, DataRequest}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
+import play.api.{Application, Configuration}
 import play.api.data.Form
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Writes, _}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContent, Call, Request, Result}
@@ -46,6 +49,8 @@ import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
+import play.api.inject.bind
+import utils.annotations.Register
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -117,7 +122,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
 
       "save the PSA Name and Email against the PSA Id" when {
-        "on a valid request for an Organisation" in {
+        "Organisation" in {
           val validData = Json.obj(
             RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = LimitedCompany),
             BusinessDetailsId.toString -> businessDetails,
@@ -131,7 +136,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
         }
 
-        "on a valid request for an Individual" in {
+        "Individual" in {
           val individualDetails = TolerantIndividual(Some("first"), None, Some("last"))
           val validData = Json.obj(
             RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = Individual),
@@ -146,7 +151,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
         }
 
-        "on a valid request for Partnership" in {
+        "Partnership" in {
           val validData = Json.obj(
             RegistrationInfoId.toString -> registrationInfo,
             PartnershipDetailsId.toString -> businessDetails,
@@ -159,6 +164,85 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
         }
+      }
+
+      "not save the PSA Name and Email against the PSA Id" when {
+
+        lazy val app = new GuiceApplicationBuilder()
+          .configure("features.work-package-one-enabled" -> true)
+          .overrides(bind[AuthAction].toInstance(FakeAuthAction))
+          .overrides(bind[TaxEnrolmentsConnector].toInstance(fakeEnrolmentStoreConnector()))
+          .overrides(bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))
+          .overrides(bind[PSANameCacheConnector].toInstance(psaNameCacheConnector))
+          .overrides(bind[PensionsSchemeConnector].toInstance(fakePensionsSchemeConnector))
+          .overrides(bind[KnownFactsRetrieval].toInstance(fakeKnownFactsRetrieval()))
+          .overrides(bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(Json.obj()))))
+          .overrides(bind[FakeNavigator].qualifiedWith(classOf[Register]).toInstance(FakeNavigator))
+          .build()
+
+
+        "Organisation" in {
+
+          psaNameCacheConnector.reset()
+
+          val validData = Json.obj(
+            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = LimitedCompany),
+            BusinessDetailsId.toString -> businessDetails,
+            ContactDetailsId.toString -> contactDetails
+          )
+
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+            .thenReturn(Future.successful(validData))
+
+          val result = app.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
+
+          status(result) mustBe SEE_OTHER
+
+          psaNameCacheConnector.verifyNot(PsaNameId)
+          psaNameCacheConnector.verifyNot(PsaEmailId)
+
+        }
+
+        "Individual" in {
+
+          val validData = Json.obj(
+            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = Individual),
+            IndividualDetailsId.toString -> TolerantIndividual(Some("first"), None, Some("last")),
+            IndividualContactDetailsId.toString -> contactDetails
+          )
+
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+            .thenReturn(Future.successful(validData))
+
+          val result = app.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
+
+          status(result) mustBe SEE_OTHER
+
+          psaNameCacheConnector.verifyNot(PsaNameId)
+          psaNameCacheConnector.verifyNot(PsaEmailId)
+
+        }
+
+        "Partnership" in {
+
+          val validData = Json.obj(
+            RegistrationInfoId.toString -> registrationInfo,
+            PartnershipDetailsId.toString -> businessDetails,
+            PartnershipContactDetailsId.toString -> contactDetails
+          )
+
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+            .thenReturn(Future.successful(validData))
+
+          val result = app.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
+
+          status(result) mustBe SEE_OTHER
+
+          psaNameCacheConnector.verifyNot(PsaNameId)
+          psaNameCacheConnector.verifyNot(PsaEmailId)
+
+        }
+
       }
 
       "reject an invalid request and display errors" in {
@@ -250,6 +334,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
     }
   }
+
 }
 
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
@@ -259,6 +344,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
+
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val contactDetails = ContactDetails("test@test.com", "test Phone")
@@ -316,7 +402,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     }
   }
 
-  object PSANameCacheConnector extends PSANameCacheConnector(
+  object FakePSANameCacheConnector extends PSANameCacheConnector(
     frontendAppConfig,
     mock[WSClient],
     injector.instanceOf[ApplicationCrypto]
@@ -330,7 +416,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
 
   val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   val mockEmailConnector = mock[EmailConnector]
-  val psaNameCacheConnector = PSANameCacheConnector
+  val psaNameCacheConnector = FakePSANameCacheConnector
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
