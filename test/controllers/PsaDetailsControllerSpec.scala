@@ -19,6 +19,8 @@ package controllers
 import connectors.SubscriptionConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import identifiers.PsaId
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.Matchers._
 import org.scalatest.mockito.MockitoSugar
 import org.mockito.Mockito.when
@@ -31,6 +33,7 @@ import viewmodels.SuperSection
 import views.html.psa_details
 import utils.testhelpers.PsaSubscriptionBuilder._
 import play.api.test.Helpers._
+import play.twirl.api.Html
 
 import scala.concurrent.Future
 
@@ -49,6 +52,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       )
     )
 
+  def asDocument(string: String): Document = Jsoup.parse(string)
+
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new PsaDetailsController(
       frontendAppConfig,
@@ -61,7 +66,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     )
 
   "Psa details Controller" must {
-    "return 200 and the correct view for a GET" in {
+    "return 200 and view with the correct title for a GET" in {
 
       when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
         .thenReturn(Future.successful(psaSubscriptionMinimum))
@@ -69,9 +74,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       status(result) mustBe OK
 
-      val expectedViewContent = psa_details(frontendAppConfig, Seq(SuperSection(None, Seq())), name)(fakeRequest, messages).toString
-
-      contentAsString(result) mustBe expectedViewContent
+      val doc = asDocument(contentAsString(result))
+      doc.select("title").text mustBe "Registered PSA details"
     }
 
     "redirect to Session Expired for a GET if not existing data is found" in {

@@ -2,6 +2,8 @@ checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 checkYourAnswers.guidance = Guidance for check your answers
 
+viewPsaDetails.title = Registered PSA details
+
 address.line.1 = Address Line 1
 address.line.2 = Address Line 2
 address.line.3 = Address Line 3 (optional)
