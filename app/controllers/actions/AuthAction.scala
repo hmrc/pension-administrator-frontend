@@ -50,7 +50,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
         if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
-          userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments).getOrElse(throw new RuntimeException)) map { _ =>
+          userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments).getOrElse(throw new RuntimeException("PSA ID missing"))) map { _ =>
             Redirect(routes.InterceptPSAController.onPageLoad())
           }
         } else if (isPSP(enrolments) && !isPSA(enrolments)) {

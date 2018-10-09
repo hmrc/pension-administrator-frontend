@@ -107,7 +107,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
     private val pensionAdvisorSection =
     SuperSection(
-      Some(messages("pensionAdvisor.section.header")),
+      Some("pensionAdvisor.section.header"),
       Seq(
         AnswerSection(
           None,
@@ -254,7 +254,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
     private def pensionAdvisorAddress: Option[AnswerRow]
 
     = psaDetails.pensionAdvisor map { advisor =>
-      AnswerRow("pensions.advisor.label", Seq(advisor.name), false, None)
+      AnswerRow("cya.label.address", addressAnswer(advisor.address, countryOptions), false, None)
     }
 
     def directorsOrPartnersSuperSection: SuperSection= {
