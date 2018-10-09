@@ -81,7 +81,7 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   val individualDateOfBirth = AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None)
   val individualNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
-  val psaAddress = AnswerRow("cya.label.address", addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
+  def psaAddress(addressLabelKey: String) = AnswerRow(addressLabelKey, addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
   val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
     addressAnswer(psaSubscriptionIndividual.previousAddress.get, countryOptions), false, None)
   def previousAddressExists(name: String) = AnswerRow(
@@ -89,9 +89,9 @@ object PsaDetailsHelperSpec extends SpecBase {
     Seq(messages(s"sameAddress.label.true")), false, None
   )
 
-  val phoneNumber = AnswerRow("email.label", Seq("0044-09876542312"), false, None)
+  def phoneNumber(label: String) = AnswerRow(label, Seq("0044-09876542312"), false, None)
 
-  val emailAddress = AnswerRow("phone.label", Seq("aaa@aa.com"), false, None)
+  def emailAddress(label: String) = AnswerRow(label, Seq("aaa@aa.com"), false, None)
 
   val vatNumber = AnswerRow("vat.label", Seq("12345678"), false, None)
 
@@ -102,32 +102,32 @@ object PsaDetailsHelperSpec extends SpecBase {
   val individualExpectedAnswerRows = Seq(
     individualDateOfBirth,
     individualNino,
-    psaAddress,
+    psaAddress("cya.label.address"),
     previousAddressExists("abcdefghijkl abcdefghijkl abcdefjkl"),
     psaPreviousAddress,
-    emailAddress,
-    phoneNumber
+    emailAddress("email.label"),
+    phoneNumber("phone.label")
   )
 
   val companyExpectedAnswerRows = Seq(
     vatNumber,
     payeNumber,
     crn,
-    psaAddress,
+    psaAddress("company.address.label"),
     previousAddressExists("Test company name"),
     psaPreviousAddress,
-    emailAddress,
-    phoneNumber
+    emailAddress("company.email.label"),
+    phoneNumber("company.phone.label")
   )
 
   val partnershipExpectedAnswerRows = Seq(
     vatNumber,
     payeNumber,
-    psaAddress,
+    psaAddress("partnership.address.label"),
     previousAddressExists("Test partnership name"),
     psaPreviousAddress,
-    emailAddress,
-    phoneNumber
+    emailAddress("partnership.email.label"),
+    phoneNumber("partnership.phone.label")
   )
 
   val individualResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionIndividual).individualSections

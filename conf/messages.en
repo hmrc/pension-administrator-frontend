@@ -708,6 +708,12 @@ partnershipReview.partners.changeLink = Change partners
 
 psaDetails.title = Registered PSA details
 
+company.address.label = Company‘s contact address
+company.email.label = Company’s email address
+company.phone.label = Company‘s phone number
+partnership.address.label = Contact address
+partnership.email.label = Partnership’s email address
+partnership.phone.label = Partnership’s phone number
 email.label = Contact email address
 phone.label = Contact phone number
 pensions.advisor.label = Who is your pension adviser?
