@@ -40,13 +40,13 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
       get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
         .willReturn(
           aResponse()
-            .withStatus(OK).withBody(Json.toJson(psaSubscription).toString())
+            .withStatus(OK).withBody(Json.toJson(psaSubscriptionIndividual).toString())
         )
     )
 
     connector.getSubscriptionDetails(psaId).map {
       result =>
-        result shouldBe psaSubscription
+        result shouldBe psaSubscriptionIndividual
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
           .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
     }

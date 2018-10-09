@@ -31,14 +31,42 @@ class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
   "PsaDetailsHelper" must {
     "display Individual details section with correct labels" in {
       val actualLabels = actualSeqAnswerRow(individualResult).map(_.label).toSet
-      val expectedLabels = expectedAnswerRows.map(_.label).toSet
+      val expectedLabels = individualExpectedAnswerRows.map(_.label).toSet
 
       actualLabels mustBe expectedLabels
     }
 
     "display Individual details section with correct values" in {
       val actualValues = actualSeqAnswerRow(individualResult).map(_.answer).toSet
-      val expectedValues = expectedAnswerRows.map(_.answer).toSet
+      val expectedValues = individualExpectedAnswerRows.map(_.answer).toSet
+
+      actualValues mustBe expectedValues
+    }
+
+    "display Company details section with correct labels" in {
+      val actualLabels = actualSeqAnswerRow(companyResult).map(_.label).toSet
+      val expectedLabels = companyExpectedAnswerRows.map(_.label).toSet
+
+      actualLabels mustBe expectedLabels
+    }
+
+    "display Company details section with correct values" in {
+      val actualValues = actualSeqAnswerRow(companyResult).map(_.answer).toSet
+      val expectedValues = companyExpectedAnswerRows.map(_.answer).toSet
+
+      actualValues mustBe expectedValues
+    }
+
+    "display Partnership details section with correct labels" in {
+      val actualLabels = actualSeqAnswerRow(partnershipResult).map(_.label).toSet
+      val expectedLabels = partnershipExpectedAnswerRows.map(_.label).toSet
+
+      actualLabels mustBe expectedLabels
+    }
+
+    "display Partnership details section with correct values" in {
+      val actualValues = actualSeqAnswerRow(partnershipResult).map(_.answer).toSet
+      val expectedValues = partnershipExpectedAnswerRows.map(_.answer).toSet
 
       actualValues mustBe expectedValues
     }
@@ -49,18 +77,15 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val psaSubscriptionIndividual = PsaSubscription(false, customerId, None, Some(individual), address, contactDetails,
-    true, Some(previousAddress), None, Some(pensionsAdvisor))
-
-  val psaDetailsHelperIndividual = new PsaDetailsHelper(psaSubscriptionIndividual, countryOptions)
+  def psaDetailsHelper(psaSubscription: PsaSubscription) = new PsaDetailsHelper(psaSubscription, countryOptions)
 
   val individualDateOfBirth = AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None)
   val individualNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
-  val individualAddress = AnswerRow("cya.label.address", addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
+  val psaAddress = AnswerRow("cya.label.address", addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
   val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
     addressAnswer(psaSubscriptionIndividual.previousAddress.get, countryOptions), false, None)
-  val previousAddressExists = AnswerRow(
-    Message("moreThan12Months.label", "abcdefghijkl abcdefghijkl abcdefjkl").resolve,
+  def previousAddressExists(name: String) = AnswerRow(
+    Message("moreThan12Months.label", name).resolve,
     Seq(messages(s"sameAddress.label.true")), false, None
   )
 
@@ -68,17 +93,46 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   val emailAddress = AnswerRow("phone.label", Seq("aaa@aa.com"), false, None)
 
-  val expectedAnswerRows = Seq(
+  val vatNumber = AnswerRow("vat.label", Seq("12345678"), false, None)
+
+  val payeNumber = AnswerRow("paye.label", Seq("9876543210"), false, None)
+
+  val crn = AnswerRow("crn.label", Seq("1234567890"), false, None)
+
+  val individualExpectedAnswerRows = Seq(
     individualDateOfBirth,
     individualNino,
-    individualAddress,
-    previousAddressExists,
+    psaAddress,
+    previousAddressExists("abcdefghijkl abcdefghijkl abcdefjkl"),
     psaPreviousAddress,
     emailAddress,
     phoneNumber
   )
 
-  val individualResult: Seq[SuperSection] = psaDetailsHelperIndividual.individualSections
+  val companyExpectedAnswerRows = Seq(
+    vatNumber,
+    payeNumber,
+    crn,
+    psaAddress,
+    previousAddressExists("Test company name"),
+    psaPreviousAddress,
+    emailAddress,
+    phoneNumber
+  )
+
+  val partnershipExpectedAnswerRows = Seq(
+    vatNumber,
+    payeNumber,
+    psaAddress,
+    previousAddressExists("Test partnership name"),
+    psaPreviousAddress,
+    emailAddress,
+    phoneNumber
+  )
+
+  val individualResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionIndividual).individualSections
+  val companyResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionCompany).organisationSections
+  val partnershipResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionPartnership).organisationSections
 
   def actualSeqAnswerRow(result: Seq[SuperSection]): Seq[AnswerRow] = result.filter(_.headingKey.isEmpty).flatMap(_.sections).flatMap(_.rows)
 
