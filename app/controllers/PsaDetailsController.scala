@@ -40,8 +40,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-
-      val psaId = request.userAnswers.get(PsaId).getOrElse(throw new RuntimeException)
+      val psaId = request.userAnswers.get(PsaId).getOrElse(throw new RuntimeException("PSA ID not found"))
       subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
 
         case class PsaSections(name: String, details: Seq[SuperSection])
