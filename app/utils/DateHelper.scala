@@ -22,8 +22,10 @@ import java.time.format.DateTimeFormatter
 
 object DateHelper {
 
-  def formatDate(date: LocalDate): String = {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-    date.format(formatter)
-  }
+  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
+
+  def formatDate(date: LocalDate): String = date.format(formatter)
+
+  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
 }
