@@ -726,5 +726,8 @@ crn.label = Company registration number
 utr.label = Unique Taxpayer Reference
 pensionAdvisor.section.header = Pension adviser details
 
+director.supersection.header = Director details
+partner.supersection.header = Partner details
+
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?

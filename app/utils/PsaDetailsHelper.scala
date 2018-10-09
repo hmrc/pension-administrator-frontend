@@ -42,11 +42,9 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
     )
   )
 
-  private val organisationDetailsSection = {
-    val entityType = psaDetails.directorsOrPartners.map {
-      directorsOrPartners =>
-        directorsOrPartners.head.isDirectorOrPartner
-    }
+  private def entityType = psaDetails.directorsOrPartners.map(_.head.isDirectorOrPartner)
+
+  private def organisationDetailsSection = {
     if(entityType.contains("Director")) {
           SuperSection(
             None,
@@ -160,14 +158,14 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
     =
     person.correspondenceDetails flatMap (_.contactDetails map { details =>
-      AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(details.telephone), false, None)
+      AnswerRow("phone.label", Seq(details.telephone), false, None)
     })
 
     private def directorOrPartnerEmail(person: DirectorOrPartner): Option[AnswerRow]
 
     =
     person.correspondenceDetails flatMap (_.contactDetails flatMap (_.email map { email =>
-      AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(email), false, None)
+      AnswerRow("email.label", Seq(email), false, None)
     }))
 
     //Individual PSA
@@ -259,7 +257,13 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
       AnswerRow("pensions.advisor.label", Seq(advisor.name), false, None)
     }
 
-    val directorsOrPartnersSuperSection = SuperSection(Some("Director details"), directorsOrPartnersSection.getOrElse(Seq.empty))
+    def directorsOrPartnersSuperSection: SuperSection= {
+      if (entityType.contains("Director")) {
+        SuperSection(Some("director.supersection.header"), directorsOrPartnersSection.getOrElse(Seq.empty))
+      } else {
+        SuperSection(Some("partner.supersection.header"), directorsOrPartnersSection.getOrElse(Seq.empty))
+      }
+    }
 
     val individualSections = Seq(individualDetailsSection, pensionAdvisorSection)
     val organisationSections = Seq(organisationDetailsSection, directorsOrPartnersSuperSection, pensionAdvisorSection)
