@@ -32,7 +32,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
       Seq(
         individualDateOfBirth,
         individualNino,
-        psaAdress,
+        psaAddress,
         previousAddressExists(psaDetails.individual map(_.fullName)),
         psaPreviousAddress,
         emailAddress,
@@ -51,7 +51,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
             vatNumber,
             payeNumber,
             crn,
-            psaAdress,
+            psaAddress,
             previousAddressExists(psaDetails.organisationOrPartner map(_.name)),
             psaPreviousAddress,
             emailAddress,
@@ -154,7 +154,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
   })
 
   //common to all PSAs
-  private def psaAdress: Option[AnswerRow] =
+  private def psaAddress: Option[AnswerRow] =
     Some(AnswerRow("cya.label.address", addressAnswer(psaDetails.address, countryOptions), false, None))
 
   private def previousAddressExists(name: Option[String]): Option[AnswerRow] = Some(AnswerRow(

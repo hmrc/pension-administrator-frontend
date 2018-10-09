@@ -42,13 +42,24 @@ object PsaSubscriptionBuilder {
   val psaContactDetails = PsaContactDetails("0044-0987654232", Some("aaa@yahoo.com"))
   val pensionsAdvisor = PensionAdvisor("sgfdgssd", psaAddress, Some(psaContactDetails))
 
+  val company = OrganisationOrPartner(name = "Test company name", crn = Some("1234567890"), vatRegistration = Some("12345678"), paye = Some("9876543210"))
+  val partnership = OrganisationOrPartner(name = "Test partnership name", crn = None, vatRegistration = Some("12345678"),
+    paye = Some("9876543210"))
+
   val director1 = DirectorOrPartner("Director", Some("Mr"), "abcdef", Some("dfgdsfff"), "dfgfdgfdg", new org.joda.time.LocalDate("1950-03-29"),
     Some("AA999999A"), Some("1234567892"), true, Some(director1PrevAddress), Some(CorrespondenceDetails(director1Address, Some(director1Contact))))
   val director2 = DirectorOrPartner("Director", Some("Mr"), "sdfdff", Some("sdfdsfsdf"), "dfdsfsf", new org.joda.time.LocalDate("1950-07-29"),
     Some("AA999999A"), Some("7897700000"), true, Some(director2PrevAddress), Some(CorrespondenceDetails(director2Address, Some(director2Contact))))
 
-  val psaSubscription = PsaSubscription(false, customerId, None, Some(individual), address, contactDetails,
-  true, Some(previousAddress), Some(Seq(director1, director2)), Some(pensionsAdvisor))
+  val psaSubscriptionIndividual = PsaSubscription(false, customerId, None, Some(individual), address, contactDetails,
+  true, Some(previousAddress), None, Some(pensionsAdvisor))
+
+  val psaSubscriptionCompany = PsaSubscription(false, customerId, Some(company), None, address, contactDetails,
+    true, Some(previousAddress), Some(Seq(director1, director2)), Some(pensionsAdvisor))
+
+
+  val psaSubscriptionPartnership = PsaSubscription(false, customerId, Some(partnership), None, address, contactDetails,
+    true, Some(previousAddress), Some(Seq(director1.copy(isDirectorOrPartner="Partner"), director2.copy(isDirectorOrPartner="Partner"))), Some(pensionsAdvisor))
 
   val psaSubscriptionMinimum = PsaSubscription(false, customerId, None, None, address, contactDetails, false,
     None, None, None)
