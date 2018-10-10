@@ -27,7 +27,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.PsaDetailsHelper
 import utils.annotations.Enrolled
 import utils.countryOptions.CountryOptions
-import viewmodels.SuperSection
 import views.html.psa_details
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
@@ -42,19 +41,14 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       val psaId = request.userAnswers.get(PsaId).getOrElse(throw new RuntimeException("PSA ID not found"))
       subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
-
-        case class PsaSections(name: String, details: Seq[SuperSection])
-        val psa = response.organisationOrPartner match {
-          case None => PsaSections(response.individual.map(_.fullName).getOrElse(""),
-            new PsaDetailsHelper(response, countryOptions).individualSections)
-          case _ => PsaSections(response.organisationOrPartner.map(_.name).getOrElse(""),
-            new PsaDetailsHelper(response, countryOptions).organisationSections
-          )
+        response.organisationOrPartner match {
+          case None =>
+            Ok(psa_details(appConfig,
+              new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse("")))
+          case _ =>
+            Ok(psa_details(appConfig,
+              new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse("")))
         }
-
-        Ok(psa_details(appConfig, psa.details, psa.name))
       }
   }
-
 }
-

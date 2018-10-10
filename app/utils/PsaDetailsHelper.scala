@@ -45,67 +45,35 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
   private def entityType = psaDetails.directorsOrPartners.map(_.head.isDirectorOrPartner)
 
   private def organisationDetailsSection = {
-    if(entityType.contains("Director")) {
-          SuperSection(
-            None,
-            Seq(
-              AnswerSection(
-                None,
-                Seq(
-                  vatNumber,
-                  payeNumber,
-                  crn,
-                  psaAddress("company.address.label"),
-                  previousAddressExists(psaDetails.organisationOrPartner map (_.name)),
-                  psaPreviousAddress,
-                  emailAddress("company.email.label"),
-                  phoneNumber("company.phone.label")
-                ).flatten
-              )
-            )
-          )
-        } else {
-          SuperSection(
-            None,
-            Seq(
-              AnswerSection(
-                None,
-                Seq(
-                  vatNumber,
-                  payeNumber,
-                  crn,
-                  psaAddress("partnership.address.label"),
-                  previousAddressExists(psaDetails.organisationOrPartner map (_.name)),
-                  psaPreviousAddress,
-                  emailAddress("partnership.email.label"),
-                  phoneNumber("partnership.phone.label")
-                ).flatten
-              )
-            )
-          )
-        }
-    }
-
-    private def directorOrPartnerSection(person: DirectorOrPartner)
-
-    = AnswerSection(
-      Some(person.fullName),
-      Seq(directorOrPartnerDob(person),
-        directorOrPartnerNino(person),
-        directorOrPartnerUtr(person),
-        directorOrPartnerAddress(person),
-        directorOrPartnerPrevAddress(person),
-        directorOrPartnerEmail(person),
-        directorOrPartnerPhone(person)
-      ).flatten
+    val messageKeyPrefix = if (entityType.contains("Director")) "company" else "partnership"
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            vatNumber,
+            payeNumber,
+            crn,
+            psaAddress(s"$messageKeyPrefix.address.label"),
+            previousAddressExists(psaDetails.organisationOrPartner map (_.name)),
+            psaPreviousAddress,
+            emailAddress(s"$messageKeyPrefix.email.label"),
+            phoneNumber(s"$messageKeyPrefix.phone.label")
+          ).flatten
+        )
+      )
     )
+  }
 
-    private val directorsOrPartnersSection =
+
+
+  private val directorsOrPartnersSection =
     psaDetails.directorsOrPartners map { list =>
-      for (person <- list) yield directorOrPartnerSection(person)
+      for (person <- list) yield directorOrPartnerSection(person, countryOptions)
     }
 
-    private val pensionAdvisorSection =
+  private val pensionAdvisorSection =
     SuperSection(
       Some("pensionAdvisor.section.header"),
       Seq(
@@ -120,171 +88,186 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
       )
     )
 
-    //Director Or Partner
-    private def directorOrPartnerDob(person: DirectorOrPartner): Option[AnswerRow]
 
-    =
+
+  //Individual PSA
+  private def individualDateOfBirth: Option[AnswerRow]
+
+  = psaDetails.individual map { ind =>
+    AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(ind.dateOfBirth)), false, None)
+  }
+
+  private def individualNino: Option[AnswerRow]
+
+  = psaDetails.customerIdentification.typeOfId flatMap { id =>
+    if (id.equalsIgnoreCase("NINO")) {
+      psaDetails.customerIdentification.number map { nino =>
+        AnswerRow("common.nino", Seq(nino), false, None)
+      }
+    } else {
+      None
+    }
+  }
+
+  //Company or Partnership PSA
+  private def vatNumber: Option[AnswerRow]
+
+  = psaDetails.organisationOrPartner flatMap (_.vatRegistration.map { vat =>
+    AnswerRow("vat.label", Seq(vat), false, None)
+  })
+
+  private def payeNumber: Option[AnswerRow]
+
+  = psaDetails.organisationOrPartner flatMap (_.paye.map { paye =>
+    AnswerRow("paye.label", Seq(paye), false, None)
+  })
+
+  private def crn: Option[AnswerRow]
+
+  = psaDetails.organisationOrPartner flatMap (_.crn.map { crn =>
+    AnswerRow("crn.label", Seq(crn), false, None)
+  })
+
+  //common to all PSAs
+  private def psaAddress(labelKey: String): Option[AnswerRow]
+
+  =
+    Some(AnswerRow(labelKey, addressAnswer(psaDetails.address, countryOptions), false, None))
+
+  private def previousAddressExists(name: Option[String]): Option[AnswerRow]
+
+  = Some(AnswerRow(
+    Message("moreThan12Months.label", name.getOrElse("")).resolve,
+    Seq(messages(s"sameAddress.label.${psaDetails.isSameAddressForLast12Months}")), false, None
+  ))
+
+  private def psaPreviousAddress: Option[AnswerRow]
+
+  = psaDetails.previousAddress map { address =>
+    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false, None)
+  }
+
+  private def phoneNumber(label: String): Option[AnswerRow]
+
+  =
+    Some(AnswerRow(label, Seq(psaDetails.contact.telephone), false, None))
+
+  private def emailAddress(label: String): Option[AnswerRow]
+
+  = psaDetails.contact.email map { emailAddress =>
+    AnswerRow(label, Seq(emailAddress), false, None)
+  }
+
+  //Pension Advisor
+  private def pensionAdvisor: Option[AnswerRow]
+
+  = psaDetails.pensionAdvisor map { advisor =>
+    AnswerRow("pensions.advisor.label", Seq(advisor.name), false, None)
+  }
+
+  private def pensionAdvisorEmail: Option[AnswerRow]
+
+  = psaDetails.pensionAdvisor flatMap (
+    _.contactDetails.flatMap(_.email.map { email =>
+      AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(email), false, None)
+    }
+    ))
+
+  private def pensionAdvisorAddress: Option[AnswerRow]
+
+  = psaDetails.pensionAdvisor map { advisor =>
+    AnswerRow("cya.label.address", addressAnswer(advisor.address, countryOptions), false, None)
+  }
+
+  def directorsOrPartnersSuperSection: SuperSection = {
+    if (entityType.contains("Director")) {
+      SuperSection(Some("director.supersection.header"), directorsOrPartnersSection.getOrElse(Seq.empty))
+    } else {
+      SuperSection(Some("partner.supersection.header"), directorsOrPartnersSection.getOrElse(Seq.empty))
+    }
+  }
+
+  val individualSections = Seq(individualDetailsSection, pensionAdvisorSection)
+  val organisationSections = Seq(organisationDetailsSection, directorsOrPartnersSuperSection, pensionAdvisorSection)
+
+}
+
+object PsaDetailsHelper {
+  def addressAnswer(address: CorrespondenceAddress, countryOptions: CountryOptions): Seq[String] = {
+    val country = countryOptions.options
+      .find(_.value == address.countryCode)
+      .map(_.label)
+      .getOrElse(address.countryCode)
+
+    Seq(
+      Some(s"${address.addressLine1},"),
+      Some(s"${address.addressLine2},"),
+      address.addressLine3.map(line3 => s"$line3,"),
+      address.addressLine4.map(line4 => s"$line4,"),
+      address.postalCode.map(postcode => s"$postcode,"),
+      Some(country)
+    ).flatten
+  }
+
+  //Director Or Partner
+  private def directorOrPartnerDob(person: DirectorOrPartner): Option[AnswerRow]
+
+  =
     Some(AnswerRow("cya.label.dob", Seq(person.dateOfBirth.toString), false, None))
 
-    private def directorOrPartnerNino(person: DirectorOrPartner): Option[AnswerRow]
+  private def directorOrPartnerNino(person: DirectorOrPartner): Option[AnswerRow]
 
-    =
+  =
     person.nino map { nino =>
       AnswerRow("common.nino", Seq(nino), false, None)
     }
 
-    private def directorOrPartnerUtr(person: DirectorOrPartner): Option[AnswerRow]
+  private def directorOrPartnerUtr(person: DirectorOrPartner): Option[AnswerRow]
 
-    =
+  =
     person.utr map { utr =>
       AnswerRow("utr.label", Seq(utr), false, None)
     }
 
-    private def directorOrPartnerAddress(person: DirectorOrPartner): Option[AnswerRow]
+  private def directorOrPartnerAddress(person: DirectorOrPartner, countryOptions: CountryOptions): Option[AnswerRow]
 
-    =
+  =
     person.correspondenceDetails map { details =>
       AnswerRow("cya.label.address", addressAnswer(details.address, countryOptions), false, None)
     }
 
-    private def directorOrPartnerPrevAddress(person: DirectorOrPartner): Option[AnswerRow]
+  private def directorOrPartnerPrevAddress(person: DirectorOrPartner, countryOptions: CountryOptions): Option[AnswerRow]
 
-    =
+  =
     person.previousAddress map { address =>
       AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false, None)
     }
 
-    private def directorOrPartnerPhone(person: DirectorOrPartner): Option[AnswerRow]
+  private def directorOrPartnerPhone(person: DirectorOrPartner): Option[AnswerRow]
 
-    =
+  =
     person.correspondenceDetails flatMap (_.contactDetails map { details =>
       AnswerRow("phone.label", Seq(details.telephone), false, None)
     })
 
-    private def directorOrPartnerEmail(person: DirectorOrPartner): Option[AnswerRow]
+  private def directorOrPartnerEmail(person: DirectorOrPartner): Option[AnswerRow]
 
-    =
+  =
     person.correspondenceDetails flatMap (_.contactDetails flatMap (_.email map { email =>
       AnswerRow("email.label", Seq(email), false, None)
     }))
 
-    //Individual PSA
-    private def individualDateOfBirth: Option[AnswerRow]
+  private def directorOrPartnerSection(person: DirectorOrPartner, countryOptions: CountryOptions)
 
-    = psaDetails.individual map { ind =>
-      AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(ind.dateOfBirth)), false, None)
-    }
-
-    private def individualNino: Option[AnswerRow]
-
-    = psaDetails.customerIdentification.typeOfId flatMap { id =>
-      if (id.equalsIgnoreCase("NINO")) {
-        psaDetails.customerIdentification.number map { nino =>
-          AnswerRow("common.nino", Seq(nino), false, None)
-        }
-      } else {
-        None
-      }
-    }
-
-    //Company or Partnership PSA
-    private def vatNumber: Option[AnswerRow]
-
-    = psaDetails.organisationOrPartner flatMap (_.vatRegistration.map { vat =>
-      AnswerRow("vat.label", Seq(vat), false, None)
-    })
-
-    private def payeNumber: Option[AnswerRow]
-
-    = psaDetails.organisationOrPartner flatMap (_.paye.map { paye =>
-      AnswerRow("paye.label", Seq(paye), false, None)
-    })
-
-    private def crn: Option[AnswerRow]
-
-    = psaDetails.organisationOrPartner flatMap (_.crn.map { crn =>
-      AnswerRow("crn.label", Seq(crn), false, None)
-    })
-
-    //common to all PSAs
-    private def psaAddress(labelKey: String): Option[AnswerRow]
-
-    =
-    Some(AnswerRow(labelKey, addressAnswer(psaDetails.address, countryOptions), false, None))
-
-    private def previousAddressExists(name: Option[String]): Option[AnswerRow]
-
-    = Some(AnswerRow(
-      Message("moreThan12Months.label", name.getOrElse("")).resolve,
-      Seq(messages(s"sameAddress.label.${psaDetails.isSameAddressForLast12Months}")), false, None
-    ))
-
-    private def psaPreviousAddress: Option[AnswerRow]
-
-    = psaDetails.previousAddress map { address =>
-      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false, None)
-    }
-
-    private def phoneNumber(label: String): Option[AnswerRow]
-
-    =
-    Some(AnswerRow(label, Seq(psaDetails.contact.telephone), false, None))
-
-    private def emailAddress(label: String): Option[AnswerRow]
-
-    = psaDetails.contact.email map { emailAddress =>
-      AnswerRow(label, Seq(emailAddress), false, None)
-    }
-
-    //Pension Advisor
-    private def pensionAdvisor: Option[AnswerRow]
-
-    = psaDetails.pensionAdvisor map { advisor =>
-      AnswerRow("pensions.advisor.label", Seq(advisor.name), false, None)
-    }
-
-    private def pensionAdvisorEmail: Option[AnswerRow]
-
-    = psaDetails.pensionAdvisor flatMap (
-      _.contactDetails.flatMap(_.email.map { email =>
-        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(email), false, None)
-      }
-      ))
-
-    private def pensionAdvisorAddress: Option[AnswerRow]
-
-    = psaDetails.pensionAdvisor map { advisor =>
-      AnswerRow("cya.label.address", addressAnswer(advisor.address, countryOptions), false, None)
-    }
-
-    def directorsOrPartnersSuperSection: SuperSection= {
-      if (entityType.contains("Director")) {
-        SuperSection(Some("director.supersection.header"), directorsOrPartnersSection.getOrElse(Seq.empty))
-      } else {
-        SuperSection(Some("partner.supersection.header"), directorsOrPartnersSection.getOrElse(Seq.empty))
-      }
-    }
-
-    val individualSections = Seq(individualDetailsSection, pensionAdvisorSection)
-    val organisationSections = Seq(organisationDetailsSection, directorsOrPartnersSuperSection, pensionAdvisorSection)
-
-  }
-
-  object PsaDetailsHelper {
-    def addressAnswer(address: CorrespondenceAddress, countryOptions: CountryOptions): Seq[String] = {
-      val country = countryOptions.options
-        .find(_.value == address.countryCode)
-        .map(_.label)
-        .getOrElse(address.countryCode)
-
-      Seq(
-        Some(s"${address.addressLine1},"),
-        Some(s"${address.addressLine2},"),
-        address.addressLine3.map(line3 => s"$line3,"),
-        address.addressLine4.map(line4 => s"$line4,"),
-        address.postalCode.map(postcode => s"$postcode,"),
-        Some(country)
-      ).flatten
-    }
-  }
-
+  = AnswerSection(
+    Some(person.fullName),
+    Seq(directorOrPartnerDob(person),
+      directorOrPartnerNino(person),
+      directorOrPartnerUtr(person),
+      directorOrPartnerAddress(person, countryOptions),
+      directorOrPartnerPrevAddress(person, countryOptions),
+      directorOrPartnerEmail(person),
+      directorOrPartnerPhone(person)
+    ).flatten
+  )
+}

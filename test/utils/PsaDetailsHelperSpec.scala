@@ -28,7 +28,7 @@ import viewmodels.{AnswerRow, Message, SuperSection}
 
 class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
-  def validSection(testName: String, headingKey: Option[String], result: Seq[SuperSection], expectedAnswerRows: Seq[AnswerRow]) = {
+  def validSection(testName: String, headingKey: Option[String], result: Seq[SuperSection], expectedAnswerRows: Seq[AnswerRow]): Unit = {
     s"display Individual details section with correct labels for $testName" in {
       val actualLabels = actualSeqAnswerRow(result, headingKey).map(_.label).toSet
       val expectedLabels = expectedAnswerRows.map(_.label).toSet
@@ -80,33 +80,32 @@ class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
 object PsaDetailsHelperSpec extends SpecBase {
 
-  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  def psaDetailsHelper(psaSubscription: PsaSubscription) = new PsaDetailsHelper(psaSubscription, countryOptions)
+  private def psaDetailsHelper(psaSubscription: PsaSubscription) = new PsaDetailsHelper(psaSubscription, countryOptions)
 
-  val individualDateOfBirth = AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None)
-  val individualNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
+  private val individualDateOfBirth = AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None)
+  private val individualNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
 
-  def psaAddress(addressLabelKey: String) = AnswerRow(addressLabelKey, addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
+  private def psaAddress(addressLabelKey: String) = AnswerRow(addressLabelKey, addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
 
-  val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
+  private val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
     addressAnswer(psaSubscriptionIndividual.previousAddress.get, countryOptions), false, None)
 
-  def previousAddressExists(name: String) = AnswerRow(
+  private def previousAddressExists(name: String) = AnswerRow(
     Message("moreThan12Months.label", name).resolve,
     Seq(messages(s"sameAddress.label.true")), false, None
   )
 
-  def phoneNumber(label: String) = AnswerRow(label, Seq("0044-09876542312"), false, None)
+  private def phoneNumber(label: String) = AnswerRow(label, Seq("0044-09876542312"), false, None)
 
-  def emailAddress(label: String) = AnswerRow(label, Seq("aaa@aa.com"), false, None)
+  private def emailAddress(label: String) = AnswerRow(label, Seq("aaa@aa.com"), false, None)
 
-  val vatNumber = AnswerRow("vat.label", Seq("12345678"), false, None)
+  private val vatNumber = AnswerRow("vat.label", Seq("12345678"), false, None)
 
-  val payeNumber = AnswerRow("paye.label", Seq("9876543210"), false, None)
+  private val payeNumber = AnswerRow("paye.label", Seq("9876543210"), false, None)
 
-  val crn = AnswerRow("crn.label", Seq("1234567890"), false, None)
-
+  private val crn = AnswerRow("crn.label", Seq("1234567890"), false, None)
 
   private def directorOrPartnerDob =
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None)
@@ -132,7 +131,7 @@ object PsaDetailsHelperSpec extends SpecBase {
   private def pensionAdvisorAddress = AnswerRow("cya.label.address", addressAnswer(PsaSubscriptionBuilder.psaAddress, countryOptions), false, None)
 
 
-  val individualExpectedAnswerRows = Seq(
+  private val individualExpectedAnswerRows = Seq(
     individualDateOfBirth,
     individualNino,
     psaAddress("cya.label.address"),
@@ -142,7 +141,7 @@ object PsaDetailsHelperSpec extends SpecBase {
     phoneNumber("phone.label")
   )
 
-  val companyExpectedAnswerRows = Seq(
+  private val companyExpectedAnswerRows = Seq(
     vatNumber,
     payeNumber,
     crn,
@@ -153,7 +152,7 @@ object PsaDetailsHelperSpec extends SpecBase {
     phoneNumber("company.phone.label")
   )
 
-  val partnershipExpectedAnswerRows = Seq(
+  private val partnershipExpectedAnswerRows = Seq(
     vatNumber,
     payeNumber,
     psaAddress("partnership.address.label"),
@@ -163,7 +162,7 @@ object PsaDetailsHelperSpec extends SpecBase {
     phoneNumber("partnership.phone.label")
   )
 
-  val directorOrPartnerExpectedAnswerRows = Seq(
+  private val directorOrPartnerExpectedAnswerRows = Seq(
     directorOrPartnerDob,
     directorOrPartnerNino,
     directorOrPartnerUtr,
@@ -173,20 +172,20 @@ object PsaDetailsHelperSpec extends SpecBase {
     directorOrPartnerPhone
   )
 
-  val pensionAdvisorExpectedAnswerRows = Seq(
+  private val pensionAdvisorExpectedAnswerRows = Seq(
     pensionAdvisor,
     pensionAdvisorEmail,
     pensionAdvisorAddress
   )
 
-  val individualResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionIndividual).individualSections
-  val companyResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionCompany).organisationSections
-  val partnershipResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionPartnership).organisationSections
+  private val individualResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionIndividual).individualSections
+  private val companyResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionCompany).organisationSections
+  private val partnershipResult: Seq[SuperSection] = psaDetailsHelper(psaSubscriptionPartnership).organisationSections
 
-  val partnerDetailsSuperSectionKey = Some("partner.supersection.header")
-  val directorDetailsSuperSectionKey = Some("director.supersection.header")
-  val pensionAdvisorSuperSectionKey = Some("pensionAdvisor.section.header")
+  private val partnerDetailsSuperSectionKey = Some("partner.supersection.header")
+  private val directorDetailsSuperSectionKey = Some("director.supersection.header")
+  private val pensionAdvisorSuperSectionKey = Some("pensionAdvisor.section.header")
 
-  def actualSeqAnswerRow(result: Seq[SuperSection], headingKey: Option[String]): Seq[AnswerRow] =
+  private def actualSeqAnswerRow(result: Seq[SuperSection], headingKey: Option[String]): Seq[AnswerRow] =
     result.filter(_.headingKey == headingKey).flatMap(_.sections).take(1).flatMap(_.rows)
 }
