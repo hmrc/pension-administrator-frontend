@@ -76,6 +76,13 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       assertRenderedById(doc, "supersection-1-heading")
       assertNotRenderedById(doc, "supersection-2-heading")
     }
+
+    "display link to take the user back to manage pensions overview page" in {
+      createView must haveLink(
+        frontendAppConfig.schemesOverviewUrl,
+        "return-to-overview"
+      )
+    }
   }
 }
 

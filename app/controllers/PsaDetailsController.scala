@@ -43,11 +43,16 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
         response.organisationOrPartner match {
           case None =>
-            Ok(psa_details(appConfig,
-              new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse("")))
+            Ok(psa_details(
+              appConfig,
+              new PsaDetailsHelper(response, countryOptions).individualSections,
+              response.individual.map(_.fullName).getOrElse("")))
           case _ =>
-            Ok(psa_details(appConfig,
-              new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse("")))
+            println(new PsaDetailsHelper(response, countryOptions).organisationSections)
+            Ok(psa_details(
+              appConfig,
+              new PsaDetailsHelper(response, countryOptions).organisationSections,
+              response.organisationOrPartner.map(_.name).getOrElse("")))
         }
       }
   }
