@@ -16,28 +16,61 @@
 
 package controllers
 
+import base.SpecBase
 import connectors.SubscriptionConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import identifiers.PsaId
+import models.requests.DataRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Matchers._
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.mockito.MockitoSugar
-import org.mockito.Mockito.when
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import play.api.test.Helpers.{contentAsString, redirectLocation, status}
-import utils.FakeCountryOptions
+import play.api.test.Helpers.{contentAsString, redirectLocation, status, _}
 import utils.countryOptions.CountryOptions
-import viewmodels.SuperSection
-import views.html.psa_details
 import utils.testhelpers.PsaSubscriptionBuilder._
-import play.api.test.Helpers._
-import play.twirl.api.Html
+import utils.{FakeCountryOptions, PsaDetailsHelper}
+import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import views.html.psa_details
 
 import scala.concurrent.Future
 
-class PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
+class PsaDetailsControllerSpec extends ControllerSpecBase {
+  import PsaDetailsControllerSpec._
+
+  "Psa details Controller" must {
+    "return 200 and  correct view for a GET for PSA individual" in {
+
+      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        .thenReturn(Future.successful(psaSubscriptionIndividual))
+      val result = controller().onPageLoad()(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl")
+    }
+
+    "return 200 and  correct view for a GET for PSA company" in {
+
+      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        .thenReturn(Future.successful(psaSubscriptionCompany))
+      val result = controller().onPageLoad()(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name")
+    }
+
+    "redirect to Session Expired for a GET if not existing data is found" in {
+      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+    }
+  }
+}
+
+object PsaDetailsControllerSpec extends ControllerSpecBase with  MockitoSugar {
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val name = "testName"
 
@@ -48,11 +81,9 @@ class PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     Json.obj(
       PsaId.toString ->
         "S1234567890"
-        )
-      )
     )
-
-  def asDocument(string: String): Document = Jsoup.parse(string)
+  )
+  )
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new PsaDetailsController(
@@ -65,24 +96,84 @@ class PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       countryOptions
     )
 
-  "Psa details Controller" must {
-    "return 200 and view with the correct title for a GET" in {
 
-      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-        .thenReturn(Future.successful(psaSubscriptionMinimum))
-      val result = controller().onPageLoad()(fakeRequest)
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "") =
+    psa_details(frontendAppConfig, superSections, name)(fakeRequest, messages).toString
 
-      status(result) mustBe OK
 
-      val doc = asDocument(contentAsString(result))
-      doc.select("title").text mustBe "Registered PSA details"
-    }
+  val individualSuperSections: Seq[SuperSection] = Seq(
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            AnswerRow("cya.label.dob",Seq("29/03/1947"),false,None),
+            AnswerRow("common.nino",Seq("AA999999A"),false,None),
+            AnswerRow("cya.label.address",Seq("Telford1,", "Telford2,", "Telford3,", "Telford3,", "TF3 4ER,", "Country of GB"),false,None),
+            AnswerRow("Has abcdefghijkl abcdefghijkl abcdefjkl been at their address for more than 12 months?",Seq("Yes"),false,None),
+            AnswerRow("common.previousAddress.checkyouranswers",Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"),false,None),
+            AnswerRow("email.label",Seq("aaa@aa.com"),false,None),
+            AnswerRow("phone.label",Seq("0044-09876542312"),false,None))))),
 
-    "redirect to Session Expired for a GET if not existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+    SuperSection(
+      Some("pensionAdvisor.section.header"),
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            AnswerRow("pensions.advisor.label",Seq("sgfdgssd"),false,None),
+            AnswerRow("contactDetails.email.checkYourAnswersLabel",Seq("aaa@yahoo.com"),false,None),
+            AnswerRow("cya.label.address",Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"),false,None))))))
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
-    }
-  }
+  
+  val organisationSuperSections =
+    Seq(
+      SuperSection(
+        None,
+        Seq(
+          AnswerSection(
+            None,
+            Seq(
+              AnswerRow("vat.label",Seq("12345678"),false,None),
+              AnswerRow("paye.label",Seq("9876543210"),false,None),
+              AnswerRow("crn.label",Seq("1234567890"),false,None),
+              AnswerRow("company.address.label",Seq("Telford1,", "Telford2,", "Telford3,", "Telford3,", "TF3 4ER,", "Country of GB"),false,None),
+              AnswerRow("Has Test company name been at their address for more than 12 months?",Seq("Yes"),false,None),
+              AnswerRow("common.previousAddress.checkyouranswers",Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"),false,None),
+              AnswerRow("company.email.label",Seq("aaa@aa.com"),false,None),
+              AnswerRow("company.phone.label",Seq("0044-09876542312"),false,None))))),
+        SuperSection(
+          Some("director.supersection.header"),
+          Seq(
+            AnswerSection(
+              Some("abcdef dfgdsfff dfgfdgfdg"),
+              Seq(
+                AnswerRow("cya.label.dob",Seq("1950-03-29"),false,None),
+                AnswerRow("common.nino",Seq("AA999999A"),false,None),
+                AnswerRow("utr.label",Seq("1234567892"),false,None),
+                AnswerRow("cya.label.address",Seq("addressline1,", "addressline2,", "addressline3,", "addressline4,", "B5 9EX,", "Country of GB"),false,None),
+                AnswerRow("common.previousAddress.checkyouranswers",Seq("line1,", "line2,", "line3,", "line4,", "567253,", "Country of AD"),false,None),
+                AnswerRow("email.label",Seq("abc@hmrc.gsi.gov.uk"),false,None),
+                AnswerRow("phone.label",Seq("0044-09876542312"),false,None))),
+            AnswerSection(
+              Some("sdfdff sdfdsfsdf dfdsfsf"),
+              Seq(
+                AnswerRow("cya.label.dob",Seq("1950-07-29"),false,None),
+                AnswerRow("common.nino",Seq("AA999999A"),false,None),
+                AnswerRow("utr.label",Seq("7897700000"),false,None),
+                AnswerRow("cya.label.address",Seq("fgfdgdfgfd,", "dfgfdgdfg,", "fdrtetegfdgdg,", "dfgfdgdfg,", "56546,", "Country of AD"),false,None),
+                AnswerRow("common.previousAddress.checkyouranswers",Seq("werrertqe,", "ereretfdg,", "asafafg,", "fgdgdasdf,", "23424,", "Country of AD"),false,None),
+                AnswerRow("email.label",Seq("aaa@gmail.com"),false,None),
+                AnswerRow("phone.label",Seq("0044-09876542334"),false,None))))),
+        SuperSection(
+          Some("pensionAdvisor.section.header"),
+          Seq(
+            AnswerSection(
+              None,
+              Seq(
+                AnswerRow("pensions.advisor.label",Seq("sgfdgssd"),false,None),
+                AnswerRow("contactDetails.email.checkYourAnswersLabel",Seq("aaa@yahoo.com"),false,None),
+                AnswerRow("cya.label.address",Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"),false,None))))))
+
 }
