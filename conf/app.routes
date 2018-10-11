@@ -25,4 +25,4 @@ GET        /no-reg-as-psa                               controllers.InterceptPSA
 
 GET        /psp                                         controllers.PensionSchemePractitionerController.onPageLoad()
 
-GET        /psa-view                                    controllers.PsaDetailsController.onPageLoad()
+GET        /registered-psa-details                      controllers.PsaDetailsController.onPageLoad()
