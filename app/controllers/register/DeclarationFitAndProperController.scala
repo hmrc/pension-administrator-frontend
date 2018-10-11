@@ -115,6 +115,9 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
 
   private def savePSANameAndEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Unit] = {
     if (!appConfig.isWorkPackageOneEnabled) {
+
+      Logger.debug("Saving PSA Name to collection")
+
       getName(answers).map { name =>
         for {
           _ <- psaNameCacheConnector.save(psaId, PsaNameId, name)
