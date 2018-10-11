@@ -33,3 +33,6 @@ GET        /registered-in-uk                        controllers.register.AreYouI
 POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit(mode: Mode = NormalMode)
 GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad(mode: Mode = CheckMode)
 POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit(mode: Mode = CheckMode)
+
+GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad()
+POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit()

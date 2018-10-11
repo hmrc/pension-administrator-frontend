@@ -16,6 +16,7 @@
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
+import identifiers.register.RegisterAsBusinessId
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
@@ -148,6 +149,12 @@ package object utils {
 
     def partnerAddress(index: Int, address: Address): UserAnswers = {
       answers.set(PartnerAddressId(index))(address).asOpt.value
+    }
+
+    // Non-UK
+
+    def registerAsBusiness(isBusiness: Boolean): UserAnswers = {
+      answers.set(RegisterAsBusinessId)(isBusiness).asOpt.value
     }
 
     // Converters
