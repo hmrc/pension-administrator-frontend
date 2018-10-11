@@ -49,15 +49,21 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
-          userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments))
-            .map(_ => Redirect(routes.InterceptPSAController.onPageLoad()))
+        val alreadyEnrolled = alreadyEnrolledInPODS(enrolments)
+        if (alreadyEnrolled && notNewRegPages(request)) {
+          Future.successful(Redirect(routes.InterceptPSAController.onPageLoad()))
         } else if (isPSP(enrolments) && !isPSA(enrolments)) {
           Future.successful(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
         } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
           Future.successful(Redirect(ivUpliftUrl))
         } else {
-          block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+          if(alreadyEnrolled) {
+            userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
+              _ => block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+            }
+          } else {
+            block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+          }
         }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
@@ -105,8 +111,8 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   protected def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
-  private def notConfirmation[A](request: Request[A]): Boolean = {
-    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri)
+  private def notNewRegPages[A](request: Request[A]): Boolean = {
+    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri, config.registeredPsaDetailsUri)
     !confirmationSeq.contains(request.uri)
   }
 

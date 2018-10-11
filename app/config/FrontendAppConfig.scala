@@ -64,6 +64,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val emailSendForce: Boolean = runModeConfiguration.getBoolean("email.force").getOrElse(false)
   lazy val confirmationUri = "/register-as-pension-scheme-administrator/register/confirmation"
   lazy val duplicateRegUri = "/register-as-pension-scheme-administrator/register/duplicate-registration"
+  lazy val registeredPsaDetailsUri = "/register-as-pension-scheme-administrator/registered-psa-details"
   lazy val tpssUrl: String = loadConfig("urls.tpss")
   lazy val subscriptionDetailsUrl: String = s"${baseUrl("pension-administrator")}${runModeConfiguration
     .underlying.getString("urls.pension-administrator.subscriptionDetails")}"
