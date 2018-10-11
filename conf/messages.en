@@ -397,6 +397,11 @@ businessType.unlimitedCompany = Unlimited company
 businessType.overseasCompany = Overseas company
 businessType.error.required = Select your business type
 
+nonUKBusinessType.title = What is the business registered as?
+nonUKBusinessType.heading = What is the business registered as?
+nonUKBusinessType.company = Company
+nonUKBusinessType.businessPartnership = Partnership
+
 companyAddress.title = Company address
 companyAddress.heading = Company address
 companyAddress.error.required = You must make a selection
