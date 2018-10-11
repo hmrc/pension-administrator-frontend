@@ -18,7 +18,7 @@ package controllers.actions
 
 import java.net.URLEncoder
 
-import com.google.inject.Inject
+import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.routes
@@ -132,11 +132,5 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
 
-class AuthActionEnrolledPSAImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig,
-                                          userAnswersCacheConnector: UserAnswersCacheConnector)
-                               (implicit ec: ExecutionContext) extends AuthActionImpl (authConnector,
-  config, userAnswersCacheConnector) {
-  override protected def alreadyEnrolledInPODS(enrolments: Enrolments) = false
-}
-
+@ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

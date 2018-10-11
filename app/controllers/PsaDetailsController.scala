@@ -25,13 +25,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.PsaDetailsHelper
-import utils.annotations.Enrolled
 import utils.countryOptions.CountryOptions
 import views.html.psa_details
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
-                                     @Enrolled authenticate: AuthAction,
+                                     authenticate: AuthAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
                                      subscriptionConnector: SubscriptionConnector,
@@ -48,7 +47,6 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
               new PsaDetailsHelper(response, countryOptions).individualSections,
               response.individual.map(_.fullName).getOrElse("")))
           case _ =>
-            println(new PsaDetailsHelper(response, countryOptions).organisationSections)
             Ok(psa_details(
               appConfig,
               new PsaDetailsHelper(response, countryOptions).organisationSections,
