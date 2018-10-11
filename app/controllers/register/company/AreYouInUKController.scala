@@ -49,22 +49,16 @@ class AreYouInUKController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AreYouInUKId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      val preparedForm = request.userAnswers.get(AreYouInUKId).fold(form)(v=>form.fill(v))
       Ok(areYouInUK(appConfig, preparedForm))
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          println(">>>>>>>>>>>>>>>>>>>>here with error")
-          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors)))},
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors))),
         value => {
-          println(">>>>>>>>>>>>>>>>>>>>here with value" + value)
-
           dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AreYouInUKId, NormalMode, UserAnswers(cacheMap))))
         })
