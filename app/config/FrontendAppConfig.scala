@@ -85,6 +85,9 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val registerPsaUrl: String = baseUrl("pension-administrator") +
         runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
 
+  def psaSubmissionEmailCallback(encryptedPsaId: String) = baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(encryptedPsaId)
+
   def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
     s"service/$serviceName/enrolment"
