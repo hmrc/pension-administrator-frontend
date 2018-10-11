@@ -705,3 +705,6 @@ partnershipReview.editLink = Edit partnership details
 partnershipReview.partners.heading = Partners
 partnershipReview.partners.editLink = Add, delete or edit partners
 partnershipReview.partners.changeLink = Change partners
+
+areYouInUK.title = Country of work
+areYouInUK.heading = Is the business registered in the UK?
