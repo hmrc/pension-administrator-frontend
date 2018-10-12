@@ -16,7 +16,7 @@
 
 package views.register
 
-import forms.register.BusinessTypeFormProvider
+import forms.register.{BusinessTypeFormProvider, NonUKBusinessTypeFormProvider}
 import models.NormalMode
 import models.register.NonUKBusinessType
 import play.api.data.Form
@@ -26,12 +26,12 @@ import views.html.register.{businessType, nonUKBusinessType}
 class NonUKBusinessTypeViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "nonUKBusinessType"
-  private val form = new BusinessTypeFormProvider()()
+  private val form = new NonUKBusinessTypeFormProvider()()
   private val nonUKBusinessTypeOptions = NonUKBusinessType.options
 
   private def createView = () => nonUKBusinessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => nonUKBusinessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "NonUKBusinessType view" must {
 
@@ -46,7 +46,6 @@ class NonUKBusinessTypeViewSpec extends ViewBehaviours {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- nonUKBusinessTypeOptions) {
-          println( "\n**" + option)
           assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, isChecked = false)
         }
       }
