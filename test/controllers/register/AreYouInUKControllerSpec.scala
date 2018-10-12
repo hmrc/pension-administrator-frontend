@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
-import forms.register.company.CompanyDetailsFormProvider
-import identifiers.register.company.AreYouInUKId
+import identifiers.register.AreYouInUKId
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.areYouInUK
+import views.html.register.areYouInUK
 
 class AreYouInUKControllerSpec extends ControllerSpecBase {
 
@@ -49,7 +48,7 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def viewAsString(form: Form[_] = form) = areYouInUK(frontendAppConfig, form)(fakeRequest, messages).toString
 
-  "CompanyDetails Controller" must {
+  "Are You In the  UK Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
