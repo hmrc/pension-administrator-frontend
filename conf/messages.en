@@ -708,3 +708,9 @@ partnershipReview.partners.changeLink = Change partners
 
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
+
+nonUKRegisteredAddress.title = Enter the address
+nonUKRegisteredAddress.heading = What is {0}’s address?
+nonUKRegisteredAddress.hintText = This is the company’s address outside of the UK.
+
+

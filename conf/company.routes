@@ -86,3 +86,8 @@ POST       /change-select-contact-address               controllers.register.com
 
 GET        /country-of-work                             controllers.register.company.AreYouInUKController.onPageLoad()
 POST       /country-of-work                             controllers.register.company.AreYouInUKController.onSubmit()
+
+GET        /enter-registered-address                    controllers.register.company.CompanyNonUKAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /enter-registered-address                    controllers.register.company.CompanyNonUKAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /enter-registered-address                    controllers.register.company.CompanyNonUKAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /enter-registered-address                    controllers.register.company.CompanyNonUKAddressController.onSubmit(mode: Mode = CheckMode)
