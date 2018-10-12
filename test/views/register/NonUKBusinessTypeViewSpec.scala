@@ -16,12 +16,11 @@
 
 package views.register
 
-import forms.register.{BusinessTypeFormProvider, NonUKBusinessTypeFormProvider}
-import models.NormalMode
+import forms.register.NonUKBusinessTypeFormProvider
 import models.register.NonUKBusinessType
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
-import views.html.register.{businessType, nonUKBusinessType}
+import views.html.register.nonUKBusinessType
 
 class NonUKBusinessTypeViewSpec extends ViewBehaviours {
 
@@ -29,9 +28,9 @@ class NonUKBusinessTypeViewSpec extends ViewBehaviours {
   private val form = new NonUKBusinessTypeFormProvider()()
   private val nonUKBusinessTypeOptions = NonUKBusinessType.options
 
-  private def createView = () => nonUKBusinessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView = () => nonUKBusinessType(frontendAppConfig, form)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => nonUKBusinessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => nonUKBusinessType(frontendAppConfig, form)(fakeRequest, messages)
 
   "NonUKBusinessType view" must {
 

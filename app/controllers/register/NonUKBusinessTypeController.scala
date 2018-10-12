@@ -16,14 +16,14 @@
 
 package controllers.register
 
+import javax.inject.Inject
+
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import forms.register.{BusinessTypeFormProvider, NonUKBusinessTypeFormProvider}
-import identifiers.register.{BusinessTypeId, NonUKBusinessTypeId}
-import javax.inject.Inject
-
-import models.Mode
+import forms.register.NonUKBusinessTypeFormProvider
+import identifiers.register.NonUKBusinessTypeId
+import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -47,24 +47,23 @@ class NonUKBusinessTypeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(NonUKBusinessTypeId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-     // import controllers.register.routes.NonUKBusinessTypeController.
-      Ok(nonUKBusinessType(appConfig, preparedForm, mode))
+      Ok(nonUKBusinessType(appConfig, preparedForm))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(nonUKBusinessType(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(nonUKBusinessType(appConfig, formWithErrors))),
         value =>
           dataCacheConnector.save(request.externalId, NonUKBusinessTypeId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(NonUKBusinessTypeId, mode, UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(NonUKBusinessTypeId, NormalMode, UserAnswers(cacheMap))))
       )
   }
 

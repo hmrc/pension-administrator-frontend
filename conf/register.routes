@@ -8,10 +8,8 @@ POST       /business-type                           controllers.register.Busines
 GET        /change-business-type                    controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-business-type                    controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = CheckMode)
+GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad()
+POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit()
 
 GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
