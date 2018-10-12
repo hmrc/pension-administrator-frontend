@@ -16,27 +16,62 @@
 
 package controllers.register.company
 
+import audit.AuditService
 import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.address.{ManualAddressController, NonUKAddressController}
+import forms.AddressFormProvider
+import forms.address.NonUKAddressFormProvider
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
+import identifiers.register.company.CompanyRegisteredAddressId
 import javax.inject.Inject
-import models.Mode
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import models.{Address, Mode}
+import play.api.data.Form
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.HtmlFormat
+import utils.Navigator
+import utils.annotations.RegisterCompany
+import utils.countryOptions.CountryOptions
+import viewmodels.Message
+import viewmodels.address.ManualAddressViewModel
+import views.html.address.nonukAddress
 
-class CompanyNonUKAddressController @Inject()(appConfig: FrontendAppConfig,
-                                              override val messagesApi: MessagesApi,
-                                              authenticate: AuthAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+class CompanyNonUKAddressController @Inject()(
+                                               override val appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               override val dataCacheConnector: UserAnswersCacheConnector,
+                                               @RegisterCompany override val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: NonUKAddressFormProvider,
+                                               val countryOptions: CountryOptions
+                                             ) extends NonUKAddressController {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate) {
+  protected val form: Form[Address] = formProvider()
+
+  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
+    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
+    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+
+  private def addressViewModel(mode: Mode) = ManualAddressViewModel(
+    routes.CompanyNonUKAddressController.onSubmit(mode),
+    countryOptions.options,
+    Message("nonUKRegisteredAddress.title"),
+    Message("nonUKRegisteredAddress.heading"),
+    None,
+    Some(Message("nonUKRegisteredAddress.hinText"))
+  )
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Ok
+      get(CompanyRegisteredAddressId, addressViewModel(mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Ok
+      post(CompanyRegisteredAddressId, addressViewModel(mode), mode)
   }
 }
