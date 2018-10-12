@@ -16,13 +16,19 @@
 
 package controllers.address
 
+import audit.AuditService
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import forms.AddressFormProvider
 import forms.address.NonUKAddressFormProvider
+import identifiers.TypedIdentifier
 import models._
+import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._
 import play.api.libs.json.Json
@@ -34,10 +40,12 @@ import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import scala.concurrent.Future
+
 
 class NonUKAddressControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
 
-  import ManualAddressControllerSpec._
+  import NonUKAddressControllerSpec._
 
   val addressData: Map[String, String] = Map(
     "addressLine1" -> "address line 1",
@@ -77,10 +85,6 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-
-            println("############## data : " + contentAsString(result))
-            println("\n\n\n\n")
-            println("############## data : " + nonukAddress(appConfig, formProvider(), viewModel)(request, messages).toString)
             contentAsString(result) mustEqual nonukAddress(appConfig, formProvider(), viewModel)(request, messages).toString
 
         }
@@ -180,6 +184,34 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
       }
 
     }
+  }
+
+}
+
+
+object NonUKAddressControllerSpec {
+
+  val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address] {
+    override def toString = "fakeAddressId"
+  }
+  val externalId: String = "test-external-id"
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+
+  class TestController @Inject()(
+                                  override val appConfig: FrontendAppConfig,
+                                  override val messagesApi: MessagesApi,
+                                  override val dataCacheConnector: UserAnswersCacheConnector,
+                                  override val navigator: Navigator,
+                                  formProvider: NonUKAddressFormProvider
+                                ) extends NonUKAddressController {
+
+    def onPageLoad(viewModel: ManualAddressViewModel, answers: UserAnswers): Future[Result] =
+      get(fakeAddressId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
+
+    def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
+      post(fakeAddressId, viewModel, NormalMode)(DataRequest(request, externalId, psaUser, answers))
+
+    override protected val form: Form[Address] = formProvider()
   }
 
 }

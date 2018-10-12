@@ -19,12 +19,13 @@ package controllers.register.company
 import audit.AuditService
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.{ManualAddressController, NonUKAddressController}
 import forms.AddressFormProvider
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
-import identifiers.register.company.CompanyRegisteredAddressId
+import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
@@ -48,7 +49,7 @@ class CompanyNonUKAddressController @Inject()(
                                                requireData: DataRequiredAction,
                                                formProvider: NonUKAddressFormProvider,
                                                val countryOptions: CountryOptions
-                                             ) extends NonUKAddressController {
+                                             ) extends NonUKAddressController with Retrievals{
 
   protected val form: Form[Address] = formProvider()
 
@@ -56,22 +57,26 @@ class CompanyNonUKAddressController @Inject()(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
     nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
 
-  private def addressViewModel(mode: Mode) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode, companyName: String) = ManualAddressViewModel(
     routes.CompanyNonUKAddressController.onSubmit(mode),
     countryOptions.options,
     Message("nonUKRegisteredAddress.title"),
-    Message("nonUKRegisteredAddress.heading"),
+    Message("nonUKRegisteredAddress.heading", companyName),
     None,
     Some(Message("nonUKRegisteredAddress.hinText"))
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(CompanyRegisteredAddressId, addressViewModel(mode))
+      CompanyNameId.retrieve.right.map { companyName =>
+        get(CompanyRegisteredAddressId, addressViewModel(mode, companyName))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyRegisteredAddressId, addressViewModel(mode), mode)
+      CompanyNameId.retrieve.right.map { companyName =>
+        post(CompanyRegisteredAddressId, addressViewModel(mode, companyName), mode)
+      }
   }
 }
