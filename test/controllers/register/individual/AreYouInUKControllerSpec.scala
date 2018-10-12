@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.individual
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
-import identifiers.register.company.AreYouInUKId
+import identifiers.register.individual.AreYouInUKId
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.areYouInUK
+import views.html.register.individual.areYouInUK
 
 class AreYouInUKControllerSpec extends ControllerSpecBase {
 

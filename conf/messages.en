@@ -708,3 +708,8 @@ partnershipReview.partners.changeLink = Change partners
 
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
+
+areYouInUKIndividual.title = Country of work
+areYouInUKIndividual.heading = Are you based in the UK?
+areYouInUKIndividual.body = This is where you usually work. If the business you work for is registered in the UK but you work abroad, you are not based in the UK.
+
