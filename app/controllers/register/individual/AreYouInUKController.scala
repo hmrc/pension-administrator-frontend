@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.individual
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
-import identifiers.register.company.AreYouInUKId
+import identifiers.register.individual.AreYouInUKId
 import javax.inject.Inject
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.RegisterCompany
+import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
-import views.html.register.company.areYouInUK
+import views.html.register.individual.areYouInUK
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class AreYouInUKController @Inject()(
                                           appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           dataCacheConnector: UserAnswersCacheConnector,
-                                          @RegisterCompany navigator: Navigator,
+                                          @Individual navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
