@@ -25,3 +25,6 @@ POST       /confirmation                            controllers.register.Confirm
 GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad()
 
 GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
+
+GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad()
+POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit()
