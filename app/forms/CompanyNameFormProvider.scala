@@ -26,8 +26,8 @@ class CompanyNameFormProvider @Inject() extends CompanyNameMapping {
     Form(
       "value" -> nameMapping(
         "companyName.error.required",
-        "companyName.error.length",
-        "companyName.error.invalid"
+        "companyName.error.invalid",
+        "companyName.error.length"
       )
     )
 
