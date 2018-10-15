@@ -60,7 +60,7 @@ class CompanyRegisteredAddressController @Inject()(
     Message("nonUKRegisteredAddress.title"),
     Message("nonUKRegisteredAddress.heading", companyName),
     None,
-    Some(Message("nonUKRegisteredAddress.hinText"))
+    Some(Message("nonUKRegisteredAddress.hintText"))
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

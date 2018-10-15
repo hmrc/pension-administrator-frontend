@@ -64,7 +64,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
     Message("nonUKRegisteredAddress.title"),
     Message("nonUKRegisteredAddress.heading", companyName),
     None,
-    Some(Message("nonUKRegisteredAddress.hinText"))
+    Some(Message("nonUKRegisteredAddress.hintText"))
   )
 
   private def viewAsString(form: Form[_] = form) =
