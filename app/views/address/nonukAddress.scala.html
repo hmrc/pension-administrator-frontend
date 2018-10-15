@@ -34,8 +34,7 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        headingKey=components.hyphen(messages(viewmodel.heading)).toString,
-        secondaryHeaderKey = viewmodel.secondaryHeader.map{x=>components.hyphen(messages(x)).toString}
+        headingKey=components.hyphen(messages(viewmodel.heading)).toString
     )
 
     @viewmodel.hint.map{hintText =>

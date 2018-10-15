@@ -28,17 +28,17 @@ import views.html.address.nonukAddress
 
 class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
 
-  val messageKeyPrefix = "nonUKRegisteredAddress"
+  val messageKeyPrefix = "companyRegisteredNonUKAddress"
   val countryOptions: Seq[InputOption] = Seq(InputOption("AF", "Afghanistan"), InputOption("territory:AE-AZ", "Abu Dhabi"))
   val companyName: String = "Test Company Name"
 
   val viewModel = ManualAddressViewModel(
     Call("GET", "/"),
     countryOptions,
-    Message("nonUKRegisteredAddress.title"),
-    Message("nonUKRegisteredAddress.heading", companyName),
+    Message("companyRegisteredNonUKAddress.title"),
+    Message("companyRegisteredNonUKAddress.heading", companyName),
     None,
-    Some(Message("nonUKRegisteredAddress.hintText"))
+    Some(Message("companyRegisteredNonUKAddress.hintText"))
   )
 
   override val form = new NonUKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
@@ -53,16 +53,19 @@ class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
   "ManualAddress view" must {
 
     behave like normalPageWithDynamicTitle(
-      createView, messageKeyPrefix, Message("nonUKRegisteredAddress.heading", companyName),  "hintText")
+      createView, messageKeyPrefix, Message("companyRegisteredNonUKAddress.heading", companyName),  "hintText")
 
     behave like pageWithBackLink(createView)
 
+
     behave like pageWithTextFields(
-      createViewUsingForm,
-      messageKeyPrefix,
-      controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit(NormalMode).url,
-      "addressLine1", "addressLine2", "addressLine3", "addressLine4"
+        createViewUsingForm,
+        messageKeyPrefix,
+        controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit(NormalMode).url,
+    "addressLine1", "addressLine2", "addressLine3", "addressLine4"
     )
+
+    behave like pageWithSubmitButton(createView)
 
   }
 

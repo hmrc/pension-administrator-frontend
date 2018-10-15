@@ -57,10 +57,10 @@ class CompanyRegisteredAddressController @Inject()(
   private def addressViewModel(mode: Mode, companyName: String) = ManualAddressViewModel(
     routes.CompanyRegisteredAddressController.onSubmit(mode),
     countryOptions.options,
-    Message("nonUKRegisteredAddress.title"),
-    Message("nonUKRegisteredAddress.heading", companyName),
+    Message("companyRegisteredNonUKAddress.title"),
+    Message("companyRegisteredNonUKAddress.heading", companyName),
     None,
-    Some(Message("nonUKRegisteredAddress.hintText"))
+    Some(Message("companyRegisteredNonUKAddress.hintText"))
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

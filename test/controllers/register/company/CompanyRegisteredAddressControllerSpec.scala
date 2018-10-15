@@ -61,10 +61,10 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
   private def viewModel = ManualAddressViewModel(
     routes.CompanyRegisteredAddressController.onSubmit(NormalMode),
     countryOptions.options,
-    Message("nonUKRegisteredAddress.title"),
-    Message("nonUKRegisteredAddress.heading", companyName),
+    Message("companyRegisteredNonUKAddress.title"),
+    Message("companyRegisteredNonUKAddress.heading", companyName),
     None,
-    Some(Message("nonUKRegisteredAddress.hintText"))
+    Some(Message("companyRegisteredNonUKAddress.hintText"))
   )
 
   private def viewAsString(form: Form[_] = form) =
@@ -74,7 +74,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
       viewModel
     )(fakeRequest, messages).toString()
 
-  "CompanyNonUKAddress Controller" must {
+  "CompanyRegisteredAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
