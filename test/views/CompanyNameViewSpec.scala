@@ -51,7 +51,7 @@ class CompanyNameViewSpec extends StringViewBehaviours {
     behave like stringPage(
       createViewUsingForm,
       messageKeyPrefix,
-      "",
+      "http://www.test.com",
       None
     )
   }

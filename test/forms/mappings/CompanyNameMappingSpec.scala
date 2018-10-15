@@ -49,6 +49,12 @@ class CompanyNameMappingSpec extends StringFieldBehaviours with CompanyNameMappi
         requiredError = FormError(fieldName, requiredKey)
       )
 
+      behave like formWithTransform(
+        form,
+        Map(fieldName -> " test company name "),
+        "test company name"
+      )
+
       behave like fieldWithMaxLength(
         form,
         fieldName,

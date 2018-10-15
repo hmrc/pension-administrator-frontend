@@ -20,7 +20,7 @@ import forms.mappings.CompanyNameMapping
 import javax.inject.Inject
 import play.api.data.Form
 
-class CompanyNameFormProvider @Inject() extends FormErrorHelper with CompanyNameMapping {
+class CompanyNameFormProvider @Inject() extends CompanyNameMapping {
 
   def apply(): Form[String] =
     Form(
