@@ -708,3 +708,8 @@ partnershipReview.partners.changeLink = Change partners
 
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
+
+outsideEuEea.title = Unable to register as a PSA
+outsideEuEea.heading = You cannot register {0} as a PSA
+outsideEuEea.currentCountry.text = This is because {0} was registered in {1} and outside of the European Union and European Economic Area.
+outsideEuEea.body = Only companies registered inside the European Union and European Economic Area can register as a PSA.
