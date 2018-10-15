@@ -39,7 +39,7 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
               Redirect(controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
           case UserType.Organisation =>
             if(appConfig.nonUkJourneys) {
-              Redirect(controllers.register.routes.AreYouInUKController.onPageLoad())
+              Redirect(controllers.register.routes.AreYouInUKController.onPageLoad(NormalMode))
             } else {
               Redirect(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
             }

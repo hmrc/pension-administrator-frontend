@@ -29,5 +29,7 @@ GET        /duplicate-registration                  controllers.register.Duplica
 
 GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
 
-GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad()
-POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit()
+GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit(mode: Mode = NormalMode)
+GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit(mode: Mode = CheckMode)

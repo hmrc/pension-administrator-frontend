@@ -737,6 +737,8 @@ partner.supersection.header = Partner details
 
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
+areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
+areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
 companyName.title = What is the company’s name?
 companyName.heading = What is the company’s name?
