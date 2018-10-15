@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers.register.company
 
+import identifiers._
+import models.Address
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-object DateHelper {
-
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
-
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
+case object CompanyRegisteredAddressId extends TypedIdentifier[Address] {
+  override def toString: String = "companyRegisteredAddress"
 }
