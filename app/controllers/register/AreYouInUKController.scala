@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
-import forms.register.company.CompanyDetailsFormProvider
-import identifiers.register.company.{AreYouInUKId, CompanyDetailsId}
+import identifiers.register.AreYouInUKId
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
-import views.html.register.company.areYouInUK
+import views.html.register.areYouInUK
 
 import scala.concurrent.Future
 

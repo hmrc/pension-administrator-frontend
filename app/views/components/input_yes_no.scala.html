@@ -31,6 +31,9 @@
 
         <legend>
             <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
+            @secondaryLabel.map { secLabel =>
+                <span>@secLabel</span>
+            }
             @if(hint.nonEmpty){
                 <span class="form-hint">@hint</span>
             }

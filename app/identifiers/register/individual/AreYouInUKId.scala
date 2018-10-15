@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package identifiers.register.individual
 
 import identifiers._
 

@@ -16,11 +16,13 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
 import controllers.actions.AuthAction
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{NormalMode, PSAUser, UserType}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 
@@ -28,8 +30,12 @@ import scala.concurrent.Future
 
 class LoginControllerSpec extends ControllerSpecBase {
 
-  def loginController(userType: UserType = UserType.Organisation) = new LoginController(
-    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, fakeAuthAction(userType)
+   val appConfig = new GuiceApplicationBuilder().configure(
+    "features.non-uk-journeys" -> false
+  ).build().injector.instanceOf[FrontendAppConfig]
+
+  def loginController(appConfig: FrontendAppConfig = frontendAppConfig, userType: UserType = UserType.Organisation) = new LoginController(
+    appConfig, messagesApi, FakeUserAnswersCacheConnector, fakeAuthAction(userType)
   )
 
   def fakeAuthAction(userType: UserType) = new AuthAction {
@@ -37,20 +43,39 @@ class LoginControllerSpec extends ControllerSpecBase {
       block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
   }
 
+  appRunning()
+
   "Login Controller" must {
 
     "redirect to Individual details correct page for an Individual" in {
-      val result = loginController(UserType.Individual).onPageLoad(fakeRequest)
+      val result = loginController(userType = UserType.Individual).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode).url)
     }
 
-    "redirect to business type page for an Organisation" in {
-      val result = loginController().onPageLoad(fakeRequest)
+    "redirect to business type page for an Organisation when non-uk journeys are toggled off" in {
+
+      val appConfig = new GuiceApplicationBuilder().configure(
+        "features.non-uk-journeys" -> false
+      ).build().injector.instanceOf[FrontendAppConfig]
+
+      val result = loginController(appConfig).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(register.routes.BusinessTypeController.onPageLoad(NormalMode).url)
+    }
+
+    "redirect to are you in the UK page for organisation when non-uk journeys are toggled on" in {
+
+      val appConfig = new GuiceApplicationBuilder().configure(
+        "features.non-uk-journeys" -> true
+      ).build().injector.instanceOf[FrontendAppConfig]
+
+      val result = loginController(appConfig).onPageLoad(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(register.routes.AreYouInUKController.onPageLoad().url)
     }
   }
 }
