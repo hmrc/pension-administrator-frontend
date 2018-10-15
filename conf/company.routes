@@ -89,3 +89,8 @@ POST       /company-name                                controllers.register.com
 GET        /change-company-name                         controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-company-name                         controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = CheckMode)
 
+
+GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = CheckMode)

@@ -40,9 +40,21 @@ case class Address(addressLine1: String,
       postcode
     ).flatten.mkString(", ")
   }
+
+
 }
 
 object Address {
+
+  def applyNonUK(addressLine1: String,
+                 addressLine2: String,
+                 addressLine3: Option[String],
+                 addressLine4: Option[String],
+                 country: String): Address = new Address(addressLine1, addressLine2, addressLine3, addressLine4, None, country)
+
+  def unapplyNonUK(address: Address): Option[(String, String, Option[String], Option[String], String)] = {
+    Some((address.addressLine1, address.addressLine2, address.addressLine3, address.addressLine4, address.country))
+  }
 
   implicit val formatsAddress: Format[Address] = Json.format[Address]
 
