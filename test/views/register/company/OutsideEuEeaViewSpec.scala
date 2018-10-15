@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.register
+package views.register.company
 
 import views.behaviours.ViewBehaviours
-import views.html.register.outsideEuEea
+import views.html.register.company.outsideEuEea
 
 class OutsideEuEeaViewSpec extends ViewBehaviours {
 

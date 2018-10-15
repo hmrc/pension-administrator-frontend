@@ -14,26 +14,43 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers.register.company
 
 import config.FrontendAppConfig
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
 import javax.inject.Inject
+import models.Address
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.register.outsideEuEea
+import utils.countryOptions.CountryOptions
+import views.html.register.company.outsideEuEea
+
+import scala.concurrent.Future
 
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                                requireData: DataRequiredAction,
+                                       countryOptions: CountryOptions
+                                      ) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val organisationName = "Test company name"
-      val country = "Canada"
-      Ok(outsideEuEea(appConfig, organisationName, country))
+
+      (CompanyNameId and CompanyRegisteredAddressId).retrieve.right.map {
+        case name ~ address =>
+          Future.successful(Ok(outsideEuEea(appConfig, name, getCountryNameFromCode(address))))
+        }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+
   }
+
+  def getCountryNameFromCode(address: Address) = countryOptions.options
+    .find(_.value == address.country)
+    .map(_.label)
+    .getOrElse(address.country)
+
 }

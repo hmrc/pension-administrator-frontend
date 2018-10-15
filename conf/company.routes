@@ -86,3 +86,5 @@ POST       /change-select-contact-address               controllers.register.com
 
 GET        /registered-in-uk                            controllers.register.company.AreYouInUKController.onPageLoad()
 POST       /registered-in-uk                            controllers.register.company.AreYouInUKController.onSubmit()
+
+GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad()
