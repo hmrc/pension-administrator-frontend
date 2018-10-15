@@ -19,6 +19,7 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
+import forms.CompanyNameFormProvider
 import identifiers.TypedIdentifier
 import models.Mode
 import models.requests.DataRequest
@@ -40,7 +41,9 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
 
   protected def navigator: Navigator
 
-  protected def get(id: TypedIdentifier[String], form: Form[String], viewmodel: CompanyNameViewModel)
+  protected val form: Form[String] = new CompanyNameFormProvider().apply()
+
+  protected def get(id: TypedIdentifier[String], viewmodel: CompanyNameViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm =
@@ -52,7 +55,6 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
   protected def post(
                       id: TypedIdentifier[String],
                       mode: Mode,
-                      form: Form[String],
                       viewmodel: CompanyNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
