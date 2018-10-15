@@ -67,7 +67,7 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
       assertContainsText(doc, viewModel.hint.resolve)
     }
 
-    behave like stringPage(createViewUsingForm, messageKeyPrefix, "www.example.com", None, "form-label")
+    behave like stringPage(createViewUsingForm, messageKeyPrefix, "", None, "form-label")
 
     behave like pageWithSubmitButton(createView)
   }
