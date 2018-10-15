@@ -14,10 +14,28 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms.mappings
 
-import identifiers._
+import play.api.data.Mapping
 
-case object AreYouInUKId extends TypedIdentifier[Boolean] {
-  override def toString: String = "areYouInUK"
+trait CompanyNameMapping extends Mappings with Transforms {
+
+  def nameMapping(keyNameRequired: String, keyNameInvalid: String, keyNameMaxLength: String): Mapping[String] = {
+    text(keyNameRequired)
+      .transform(standardTextTransform, noTransform)
+      .verifying(
+        firstError(
+          maxLength(
+            CompanyNameMapping.maxLength,
+            keyNameMaxLength
+          ),
+          companyName(keyNameInvalid)
+        )
+      )
+  }
+
+}
+
+object CompanyNameMapping {
+  val maxLength = 105
 }

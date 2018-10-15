@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package utils
+package viewmodels
 
+import play.api.mvc.Call
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-object DateHelper {
-
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
-
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
-}
+case class CompanyNameViewModel(
+                         postCall: Call,
+                         title: Message,
+                         heading: Message
+                       )

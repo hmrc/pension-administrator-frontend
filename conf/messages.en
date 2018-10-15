@@ -82,6 +82,7 @@ site.start = Start
 site.finishAndSignOut = Finish and sign out
 site.printThisPage = Print this page
 site.signOut=Sign out
+site.return_to_overview = Return to manage and register your pension schemes
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -706,8 +707,41 @@ partnershipReview.partners.heading = Partners
 partnershipReview.partners.editLink = Add, delete or edit partners
 partnershipReview.partners.changeLink = Change partners
 
+psaDetails.title = Registered PSA details
+
+company.address.label = Company‘s contact address
+company.email.label = Company’s email address
+company.phone.label = Company‘s phone number
+partnership.address.label = Contact address
+partnership.email.label = Partnership’s email address
+partnership.phone.label = Partnership’s phone number
+email.label = Contact email address
+phone.label = Contact phone number
+pensions.advisor.label = Who is your pension adviser?
+moreThan12Months.label = Has {0} been at their address for more than 12 months?
+sameAddress.label.true = No
+sameAddress.label.false = Yes
+vat.label = VAT number
+paye.label = Employer PAYE reference number
+crn.label = Company registration number
+utr.label = Unique Taxpayer Reference
+pensionAdvisor.section.header = Pension adviser details
+
+director.supersection.header = Director details
+partner.supersection.header = Partner details
+
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
+
+companyName.title = What is the company’s name?
+companyName.heading = What is the company’s name?
+companyName.error.required = Enter the registered company name
+companyName.error.length = The name cannot be more than 105 characters
+companyName.error.invalid = Enter a valid registered company name
+
+areYouInUKIndividual.title = Country of work
+areYouInUKIndividual.heading = Are you based in the UK?
+areYouInUKIndividual.body = This is where you usually work. If the business you work for is registered in the UK but you work abroad, you are not based in the UK.
 
 companyRegisteredNonUKAddress.title = Enter the address
 companyRegisteredNonUKAddress.heading = What is {0}’s address?

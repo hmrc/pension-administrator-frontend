@@ -22,18 +22,27 @@ import views.ViewSpecBase
 
 trait ViewBehaviours extends ViewSpecBase {
 
-  def normalPage(view: () => HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*) = {
+  def normalPageWithoutPageTitleCheck(view: () => HtmlFormat.Appendable,
+                                      messageKeyPrefix: String,
+                                      expectedGuidanceKeys: String*) = {
 
     "behave like a normal page" when {
       "rendered" must {
-
-        behave like commonNormalPage(view, messageKeyPrefix, expectedGuidanceKeys: _*)
-
-        "display the correct page title" in {
+        "have the correct banner title" in {
           val doc = asDocument(view())
-          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
+          val nav = doc.getElementById("proposition-menu")
+          val span = nav.children.first
+          span.text mustBe messagesApi("site.service_name")
+        }
+
+        "display the correct browser title" in {
+          val doc = asDocument(view())
+          assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+        }
+
+        "display the correct guidance" in {
+          val doc = asDocument(view())
+          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
         }
       }
     }
@@ -47,11 +56,27 @@ trait ViewBehaviours extends ViewSpecBase {
     "behave like a normal page" when {
       "rendered" must {
 
-        behave like commonNormalPage(view, messageKeyPrefix, expectedGuidanceKeys: _*)
+        normalPageWithoutPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
 
+        "display the correct guidance" in {
+          val doc = asDocument(view())
+          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+        }
+      }
+    }
+  }
+
+  def normalPage(view: () => HtmlFormat.Appendable,
+                 messageKeyPrefix: String,
+                 expectedGuidanceKeys: String*) = {
+
+    normalPageWithoutPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
+
+    "behave like a normal page" when {
+      "rendered" must {
         "display the correct page title" in {
           val doc = asDocument(view())
-          assertPageTitleEqualsMessage(doc, heading)
+          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
         }
       }
     }

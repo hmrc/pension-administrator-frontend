@@ -20,12 +20,14 @@ import java.net.URLEncoder
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
 import controllers.routes
+import identifiers.{PsaId => UserPsaId}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
 import play.api.mvc.Results._
-import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
+import play.api.mvc._
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
@@ -34,7 +36,7 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
@@ -47,14 +49,21 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        if (alreadyEnrolledInPODS(enrolments) && notConfirmation(request)) {
+        val alreadyEnrolled = alreadyEnrolledInPODS(enrolments)
+        if (alreadyEnrolled && notNewRegPages(request)) {
           Future.successful(Redirect(routes.InterceptPSAController.onPageLoad()))
         } else if (isPSP(enrolments) && !isPSA(enrolments)) {
           Future.successful(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
         } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
           Future.successful(Redirect(ivUpliftUrl))
         } else {
-          block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+          if(alreadyEnrolled) {
+            userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
+              _ => block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+            }
+          } else {
+            block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+          }
         }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
@@ -99,11 +108,11 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   private def isPSA(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment(key = "HMRC-PSA-ORG").nonEmpty
 
-  private def alreadyEnrolledInPODS(enrolments: Enrolments) =
+  protected def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
-  private def notConfirmation[A](request: Request[A]): Boolean = {
-    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri)
+  private def notNewRegPages[A](request: Request[A]): Boolean = {
+    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri, config.registeredPsaDetailsUri)
     !confirmationSeq.contains(request.uri)
   }
 
@@ -123,6 +132,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     val psa = existingPSA(enrolments)
     PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
   }
+
+  private def getPSAId(enrolments: Enrolments): String =
+    enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
+      .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
 
 @ImplementedBy(classOf[AuthActionImpl])

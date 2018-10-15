@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@import viewmodels.AnswerSection
+@import viewmodels.SuperSection
+@import views.html._
 
+@(superSection: SuperSection, idPath: String)(implicit messages: Messages)
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-object DateHelper {
-
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
-
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
+@if(superSection.headingKey.isDefined){
+<header class="page-heading">
+<h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
+</header>
 }
+
+<ul>
+    @for((section, i) <- superSection.sections.zipWithIndex){
+    @components.answer_section(section, idPath + "-" + i.toString)
+    }
+</ul>
