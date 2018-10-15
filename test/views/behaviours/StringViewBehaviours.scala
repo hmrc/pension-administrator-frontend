@@ -64,6 +64,14 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
           errorSpan.text mustBe messages(errorMessage)
         }
       }
+
+      "on form action " must {
+        "have the correct action" in {
+          val doc = asDocument(createView(form.withError(error)))
+          val actualFormAction = doc.getElementsByTag("form").attr("action")
+          actualFormAction mustBe expectedFormAction
+        }
+      }
     }
   }
 }
