@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package views
+package views.register
 
-import org.jsoup.Jsoup
 import views.behaviours.ViewBehaviours
-import views.html.outsideEuEea
+import views.html.register.outsideEuEea
 
 class OutsideEuEeaViewSpec extends ViewBehaviours {
 

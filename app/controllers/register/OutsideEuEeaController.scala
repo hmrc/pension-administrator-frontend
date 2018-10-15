@@ -22,7 +22,7 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.outsideEuEea
+import views.html.register.outsideEuEea
 
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
