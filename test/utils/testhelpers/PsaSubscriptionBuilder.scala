@@ -24,6 +24,7 @@ import viewmodels.AnswerRow
 object PsaSubscriptionBuilder {
 
   val customerId = CustomerIdentification("Individual", Some("NINO"), Some("AA999999A"), true)
+  val orgCustomerId = CustomerIdentification("Company", Some("UTR"), Some("121414151"), true)
   val individual = IndividualDetailType(Some("Mr"), "abcdefghijkl", Some("abcdefghijkl"), "abcdefjkl", LocalDate.parse("1947-03-29"))
 
   val address = CorrespondenceAddress("Telford1", "Telford2",Some("Telford3"), Some("Telford3"), "GB", Some("TF3 4ER"))
@@ -54,11 +55,11 @@ object PsaSubscriptionBuilder {
   val psaSubscriptionIndividual = PsaSubscription(false, customerId, None, Some(individual), address, contactDetails,
   true, Some(previousAddress), None, Some(pensionsAdvisor))
 
-  val psaSubscriptionCompany = PsaSubscription(false, customerId, Some(company), None, address, contactDetails,
+  val psaSubscriptionCompany = PsaSubscription(false, orgCustomerId, Some(company), None, address, contactDetails,
     true, Some(previousAddress), Some(Seq(director1, director2)), Some(pensionsAdvisor))
 
 
-  val psaSubscriptionPartnership = PsaSubscription(false, customerId, Some(partnership), None, address, contactDetails,
+  val psaSubscriptionPartnership = PsaSubscription(false, orgCustomerId, Some(partnership), None, address, contactDetails,
     true, Some(previousAddress), Some(Seq(director1.copy(isDirectorOrPartner="Partner"), director2.copy(isDirectorOrPartner="Partner"))), Some(pensionsAdvisor))
 
   val psaSubscriptionMinimum = PsaSubscription(false, customerId, None, None, address, contactDetails, false,

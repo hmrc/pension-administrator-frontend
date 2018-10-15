@@ -107,6 +107,8 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   private val crn = AnswerRow("crn.label", Seq("1234567890"), false, None)
 
+  private val utr = AnswerRow("utr.label",Seq("121414151"),false,None)
+
   private def directorOrPartnerDob =
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None)
 
@@ -145,6 +147,7 @@ object PsaDetailsHelperSpec extends SpecBase {
     vatNumber,
     payeNumber,
     crn,
+    utr,
     psaAddress("company.address.label"),
     previousAddressExists("Test company name"),
     psaPreviousAddress,
@@ -155,6 +158,7 @@ object PsaDetailsHelperSpec extends SpecBase {
   private val partnershipExpectedAnswerRows = Seq(
     vatNumber,
     payeNumber,
+    utr,
     psaAddress("partnership.address.label"),
     previousAddressExists("Test partnership name"),
     psaPreviousAddress,
