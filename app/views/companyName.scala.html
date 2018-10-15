@@ -31,11 +31,11 @@
 
       @components.error_summary(form.errors)
 
-      @components.heading(viewModel.heading, "heading-xlarge", None))
+      @components.heading(messages(viewModel.heading), "heading-xlarge", None)
 
       @components.input_text(
         field = form("value"),
-        label = viewModel.heading,
+        label = messages(viewModel.heading),
         labelClass = Some("visually-hidden")
       )
 
