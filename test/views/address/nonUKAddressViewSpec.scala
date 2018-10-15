@@ -16,8 +16,6 @@
 
 package views.address
 
-import controllers.register.individual.routes
-import forms.AddressFormProvider
 import forms.address.NonUKAddressFormProvider
 import models.{Address, NormalMode}
 import play.api.data.Form
@@ -49,7 +47,7 @@ class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     nonukAddress(frontendAppConfig, new NonUKAddressFormProvider(
       new FakeCountryOptions(environment, frontendAppConfig)).apply(), viewModel)(fakeRequest, messages)
 
-  def createViewUsingForm: (Form[_]) => _root_.play.twirl.api.HtmlFormat.Appendable = (form: Form[_]) =>
+  def createViewUsingForm: Form[_] => _root_.play.twirl.api.HtmlFormat.Appendable = (form: Form[_]) =>
     nonukAddress(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
   "ManualAddress view" must {
@@ -62,7 +60,7 @@ class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.company.routes.CompanyNonUKAddressController.onSubmit(NormalMode).url,
+      controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit(NormalMode).url,
       "addressLine1", "addressLine2", "addressLine3", "addressLine4"
     )
 

@@ -42,34 +42,7 @@
         <p>@messages(hintText)</p>
     }
 
-    @components.input_text(
-        field = form("addressLine1"),
-        label = messages("address.line.1"),
-        inputClass = Some("form-control-3-4")
-    )
-
-    @components.input_text(
-        field = form("addressLine2"),
-        label = messages("address.line.2"),
-        inputClass = Some("form-control-3-4")
-    )
-
-    @components.input_text(
-        field = form("addressLine3"),
-        label = messages("address.line.3")
-    )
-
-    @components.input_text(
-        field = form("addressLine4"),
-        label = messages("address.line.4")
-    )
-
-    @components.select(field = form("country"),
-        label = messages("address.country"),
-        options = viewmodel.countryOptions,
-        placeholder = Some("address.country.select"),
-        formGroupClasses = Set("autocomplete-wrapper")
-    )
+    @components.address_without_postcode(form, viewmodel.countryOptions)
 
     @components.submit_button("site.save_and_continue")
   }

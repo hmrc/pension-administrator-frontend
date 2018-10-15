@@ -21,8 +21,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyNameId, CompanyRegisteredAddressId}
-import models.{Address, BusinessDetails, NormalMode}
+import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
+import models.{Address, NormalMode}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -34,7 +34,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-class CompanyNonUKAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
+class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -46,7 +46,7 @@ class CompanyNonUKAddressControllerSpec extends ControllerSpecBase with ScalaFut
   val companyName = "Test Company Name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompanyName) =
-    new CompanyNonUKAddressController(
+    new CompanyRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -59,7 +59,7 @@ class CompanyNonUKAddressControllerSpec extends ControllerSpecBase with ScalaFut
     )
 
   private def viewModel = ManualAddressViewModel(
-    routes.CompanyNonUKAddressController.onSubmit(NormalMode),
+    routes.CompanyRegisteredAddressController.onSubmit(NormalMode),
     countryOptions.options,
     Message("nonUKRegisteredAddress.title"),
     Message("nonUKRegisteredAddress.heading", companyName),

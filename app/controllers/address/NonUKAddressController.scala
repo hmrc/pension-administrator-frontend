@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals

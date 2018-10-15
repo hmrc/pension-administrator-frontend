@@ -16,15 +16,12 @@
 
 package controllers.register.company
 
-import audit.AuditService
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.address.{ManualAddressController, NonUKAddressController}
-import forms.AddressFormProvider
+import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
 import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -39,7 +36,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-class CompanyNonUKAddressController @Inject()(
+class CompanyRegisteredAddressController @Inject()(
                                                override val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
                                                override val dataCacheConnector: UserAnswersCacheConnector,
@@ -58,7 +55,7 @@ class CompanyNonUKAddressController @Inject()(
     nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
 
   private def addressViewModel(mode: Mode, companyName: String) = ManualAddressViewModel(
-    routes.CompanyNonUKAddressController.onSubmit(mode),
+    routes.CompanyRegisteredAddressController.onSubmit(mode),
     countryOptions.options,
     Message("nonUKRegisteredAddress.title"),
     Message("nonUKRegisteredAddress.heading", companyName),
