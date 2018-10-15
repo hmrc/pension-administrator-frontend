@@ -55,5 +55,4 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
     implicit request =>
       post(CompanyNameId, mode, companyNameViewModel(mode))
   }
-
 }
