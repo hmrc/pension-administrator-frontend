@@ -55,6 +55,7 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
             vatNumber,
             payeNumber,
             crn,
+            utr,
             psaAddress(s"$messageKeyPrefix.address.label"),
             previousAddressExists(psaDetails.organisationOrPartner map (_.name)),
             psaPreviousAddress,
@@ -121,6 +122,18 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
   = psaDetails.organisationOrPartner flatMap (_.paye.map { paye =>
     AnswerRow("paye.label", Seq(paye), false, None)
   })
+
+  private def utr: Option[AnswerRow]
+
+  = psaDetails.customerIdentification.typeOfId flatMap { id =>
+    if (id.equalsIgnoreCase("UTR")) {
+      psaDetails.customerIdentification.number map { utr =>
+        AnswerRow("utr.label", Seq(utr), false, None)
+      }
+    } else {
+      None
+    }
+  }
 
   private def crn: Option[AnswerRow]
 
