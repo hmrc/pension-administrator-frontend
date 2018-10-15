@@ -61,3 +61,6 @@ GET         /is-this-the-contact-address            controllers.register.individ
 POST        /is-this-the-contact-address            controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /change-is-this-the-contact-address     controllers.register.individual.IndividualSameContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-is-this-the-contact-address     controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET         /based-in-uk                            controllers.register.individual.AreYouInUKController.onPageLoad()
+POST        /based-in-uk                            controllers.register.individual.AreYouInUKController.onSubmit()

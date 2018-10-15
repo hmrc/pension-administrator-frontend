@@ -16,6 +16,7 @@
 
 package views.behaviours
 
+import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import viewmodels._
 import views.ViewSpecBase
@@ -23,7 +24,7 @@ import views.ViewSpecBase
 trait CheckYourAnswersBehaviours extends ViewSpecBase {
 
   // scalastyle:off method.length
-  def checkYourAnswersPage(view: (Seq[Section]) => HtmlFormat.Appendable): Unit = {
+  def checkYourAnswersPage(view: Seq[Section] => HtmlFormat.Appendable): Unit = {
     "behave like a Check your Answers page" when {
       "there are answers to render" must {
         "correctly display an AnswerSection" in {

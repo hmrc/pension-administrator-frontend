@@ -28,7 +28,7 @@ class OutsideEuEeaViewSpec extends ViewBehaviours {
   def createView = () => outsideEuEea(frontendAppConfig, organisationName, country)(fakeRequest, messages)
 
   "OutsideEuEea view" must {
-    behave like normalPageWithoutHeading(createView, messageKeyPrefix, "body")
+    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix, "body")
 
     "display the correct page heading" in {
       val doc = asDocument(createView())
