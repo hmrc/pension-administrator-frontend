@@ -708,3 +708,9 @@ partnershipReview.partners.changeLink = Change partners
 
 areYouInUK.title = Country of work
 areYouInUK.heading = Is the business registered in the UK?
+
+companyName.title = What is the company’s name?
+companyName.heading = What is the company’s name?
+companyName.error.required = Enter the registered company name
+companyName.error.length = The name cannot be more than 105 characters
+companyName.error.invalid = Enter a valid registered company name
