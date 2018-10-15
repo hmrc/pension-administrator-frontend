@@ -36,9 +36,13 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
       dataCacheConnector.save(request.externalId, IndexId, "").map { _ =>
         request.user.userType match {
           case UserType.Individual =>
-            Redirect(controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+              Redirect(controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
           case UserType.Organisation =>
-            Redirect(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+            if(appConfig.nonUkJourneys) {
+              Redirect(controllers.register.routes.AreYouInUKController.onPageLoad())
+            } else {
+              Redirect(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+            }
         }
       }
   }
