@@ -8,6 +8,9 @@ POST       /business-type                           controllers.register.Busines
 GET        /change-business-type                    controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-business-type                    controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
 
+GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad()
+POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit()
+
 GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
 GET        /change-declaration-working-knowledge    controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
@@ -25,3 +28,6 @@ POST       /confirmation                            controllers.register.Confirm
 GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad()
 
 GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
+
+GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad()
+POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit()

@@ -15,13 +15,13 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.register.individual.routes._
+@import controllers.register.routes._
 @import uk.gov.hmrc.play.views.html._
 
 @(appConfig: FrontendAppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("areYouInUKIndividual.title"),
+    title = messages("areYouInUK.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -30,13 +30,12 @@
 
             @components.error_summary(form.errors)
 
-            @components.heading(messages("areYouInUKIndividual.heading"))
+            @components.heading(messages("areYouInUK.heading"))
 
             @components.input_yes_no(
                 field = form("value"),
-                label = messages("areYouInUKIndividual.heading"),
-                labelClass = Some("visually-hidden"),
-                secondaryLabel = Some(messages("areYouInUKIndividual.body"))
+                label = messages("areYouInUK.title"),
+                labelClass = Some("visually-hidden")
             )
 
             @components.submit_button("site.save_and_continue")

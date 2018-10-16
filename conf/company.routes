@@ -84,7 +84,15 @@ POST       /select-contact-address                      controllers.register.com
 GET        /change-select-contact-address               controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-select-contact-address               controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = CheckMode)
 
-GET        /registered-in-uk                            controllers.register.company.AreYouInUKController.onPageLoad()
-POST       /registered-in-uk                            controllers.register.company.AreYouInUKController.onSubmit()
+GET        /company-name                                controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /company-name                                controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-company-name                         controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-company-name                         controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = CheckMode)
+
+
+GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad()

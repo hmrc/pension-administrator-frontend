@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms.register
 
-import identifiers._
+import javax.inject.Inject
 
-case object AreYouInUKId extends TypedIdentifier[Boolean] {
-  override def toString: String = "areYouInUK"
+import forms.FormErrorHelper
+import forms.mappings.Mappings
+import models.register.NonUKBusinessType
+import play.api.data.Form
+
+class NonUKBusinessTypeFormProvider @Inject() extends FormErrorHelper with Mappings {
+
+  def apply(): Form[NonUKBusinessType] =
+    Form(
+      "value" -> enumerable[NonUKBusinessType]("businessType.error.required")
+    )
+
 }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.register.company
+package views.register
 
 import forms.register.AreYouInUKFormProvider
 import play.api.data.Form
 import views.behaviours.{ViewBehaviours, YesNoViewBehaviours}
-import views.html.register.company.areYouInUK
+import views.html.register.areYouInUK
 
 class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 

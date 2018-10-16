@@ -15,30 +15,30 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.register.individual.routes._
 @import uk.gov.hmrc.play.views.html._
+@import controllers.register.routes._
+@import models.register.NonUKBusinessType
 
 @(appConfig: FrontendAppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("areYouInUKIndividual.title"),
+    title = messages("nonUKBusinessType.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-        @helpers.form(action = AreYouInUKController.onSubmit(), 'autoComplete -> "off") {
-            @components.back_link()
+    @helpers.form(action = NonUKBusinessTypeController.onSubmit(), 'autoComplete -> "off") {
 
-            @components.error_summary(form.errors)
+        @components.error_summary(form.errors)
 
-            @components.heading(messages("areYouInUKIndividual.heading"))
+        @components.heading(messages("nonUKBusinessType.heading"))
 
-            @components.input_yes_no(
-                field = form("value"),
-                label = messages("areYouInUKIndividual.heading"),
-                labelClass = Some("visually-hidden"),
-                secondaryLabel = Some(messages("areYouInUKIndividual.body"))
-            )
+        @components.input_radio(
+            field = form("value"),
+            legend = messages("nonUKBusinessType.heading"),
+            legendClass = Some("visually-hidden"),
+            inputs = NonUKBusinessType.options
+        )
 
-            @components.submit_button("site.save_and_continue")
-        }
+        @components.submit_button("site.save_and_continue")
     }
+}
