@@ -19,6 +19,7 @@ package utils.countryOptions
 import base.SpecBase
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
+import models.InternationalRegion._
 import org.scalatest.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
@@ -40,6 +41,25 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
       running(app) {
         val countryOption: CountryOptions = app.injector.instanceOf[CountryOptionsEUAndEEA]
         countryOption.options mustEqual Seq(InputOption("AT", "Austria"), InputOption("BE", "Belgium"))
+      }
+
+    }
+
+    "build correctly the list of country codes with EU and EEA country list and country code" in {
+
+      val app =
+        new GuiceApplicationBuilder()
+          .configure(Map(
+            "location.canonical.list.EUAndEEA" -> "eu-eea-countries-canonical-list-test.json",
+            "metrics.enabled" -> "false"
+          )).build()
+
+
+      running(app) {
+        val countryOption: CountryOptions = app.injector.instanceOf[CountryOptions]
+        countryOption.regions("GB") mustEqual UK
+        countryOption.regions("AT") mustEqual EuEea
+        countryOption.regions("XX") mustEqual RestOfTheWorld
       }
 
     }
