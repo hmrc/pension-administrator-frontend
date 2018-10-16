@@ -19,6 +19,8 @@ package utils.countryOptions
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
+import models.InternationalRegion
+import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import play.api.Environment
 import play.api.libs.json.Json
 import utils.InputOption
@@ -27,11 +29,13 @@ import utils.InputOption
 class CountryOptions @Inject()(environment: Environment, config: FrontendAppConfig) {
 
   def options: Seq[InputOption] = CountryOptions.getCountries(environment, config.locationCanonicalList)
+  def regions(countryCode: String): InternationalRegion =
+    CountryOptions.getInternationalRegion(environment, config, countryCode)
 }
 
 object CountryOptions {
 
-  def getCountries(environment: Environment, fileName: String) = {
+  def getCountries(environment: Environment, fileName: String): Seq[InputOption] = {
     environment.resourceAsStream(fileName).flatMap {
       in =>
         val locationJsValue = Json.parse(in)
@@ -42,6 +46,28 @@ object CountryOptions {
         }
     }.getOrElse {
       throw new ConfigException.BadValue(fileName, "country json does not exist")
+    }
+  }
+
+  def getCountryCodes(environment: Environment, fileName: String) : Seq[String] = {
+    environment.resourceAsStream(fileName).map { in =>
+        val locationJsValue = Json.parse(in)
+        Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
+          _.map { countryList =>
+            countryList(1).replaceAll("country:", "")
+          }
+        }.fold[Seq[String]](List.empty)(identity)
+    }.getOrElse {
+      throw new ConfigException.BadValue(fileName, "country json does not exist")
+    }
+  }
+
+  def getInternationalRegion(environment: Environment, config: FrontendAppConfig, countryCode: String): InternationalRegion = {
+    val regionEuEea = getCountryCodes(environment, config.locationCanonicalListEUAndEEA)
+      countryCode match {
+      case "GB" => UK()
+      case code if regionEuEea.contains(code) => EuEea()
+      case _ => RestOfTheWorld()
     }
   }
 }
