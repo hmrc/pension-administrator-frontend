@@ -65,9 +65,9 @@ object CountryOptions {
   def getInternationalRegion(environment: Environment, config: FrontendAppConfig, countryCode: String): InternationalRegion = {
     val regionEuEea = getCountryCodes(environment, config.locationCanonicalListEUAndEEA)
       countryCode match {
-      case "GB" => UK()
-      case code if regionEuEea.contains(code) => EuEea()
-      case _ => RestOfTheWorld()
+      case "GB" => UK
+      case code if regionEuEea.contains(code) => EuEea
+      case _ => RestOfTheWorld
     }
   }
 }

@@ -20,9 +20,9 @@ sealed trait InternationalRegion
 
 object InternationalRegion {
 
-  case class UK() extends InternationalRegion
-  case class EuEea() extends InternationalRegion
-  case class RestOfTheWorld() extends InternationalRegion
+  case object UK extends InternationalRegion
+  case object EuEea extends InternationalRegion
+  case object RestOfTheWorld extends InternationalRegion
 
 }
 

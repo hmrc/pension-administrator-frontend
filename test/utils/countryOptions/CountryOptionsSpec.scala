@@ -57,9 +57,9 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
 
       running(app) {
         val countryOption: CountryOptions = app.injector.instanceOf[CountryOptions]
-        countryOption.regions("GB") mustEqual UK()
-        countryOption.regions("AT") mustEqual EuEea()
-        countryOption.regions("XX") mustEqual RestOfTheWorld()
+        countryOption.regions("GB") mustEqual UK
+        countryOption.regions("AT") mustEqual EuEea
+        countryOption.regions("XX") mustEqual RestOfTheWorld
       }
 
     }
