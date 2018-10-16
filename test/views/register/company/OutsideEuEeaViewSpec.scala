@@ -38,5 +38,9 @@ class OutsideEuEeaViewSpec extends ViewBehaviours {
     "display dynamic text about current country" in {
       createView must haveDynamicText(messages("outsideEuEea.currentCountry.text", organisationName, country))
     }
+
+    "display link to return to gov uk" in {
+      createView must haveLink(frontendAppConfig.govUkUrl, "return-gov-uk")
+    }
   }
 }

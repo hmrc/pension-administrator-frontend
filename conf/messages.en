@@ -83,6 +83,7 @@ site.finishAndSignOut = Finish and sign out
 site.printThisPage = Print this page
 site.signOut=Sign out
 site.return_to_overview = Return to manage and register your pension schemes
+site.return.govuk = Return to GOV.UK
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
