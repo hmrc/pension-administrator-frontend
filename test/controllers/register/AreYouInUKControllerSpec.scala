@@ -21,6 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
 import identifiers.register.AreYouInUKId
+import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -46,22 +47,22 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form) = areYouInUK(frontendAppConfig, form)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode) = areYouInUK(frontendAppConfig, form, mode)(fakeRequest, messages).toString
 
   "Are You In the  UK Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(CheckMode)(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(mode = CheckMode)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(AreYouInUKId.toString -> true)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
@@ -73,7 +74,7 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
             ("value", "true")
           )
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -83,14 +84,14 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "xxx"))
       val boundForm = form.bind(Map("value" -> "xxx"))
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -98,7 +99,7 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
-      val result = controller(dontGetAnyData).onSubmit()(postRequest)
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
