@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.register.AreYouInUKFormProvider
 import identifiers.register.AreYouInUKId
 import javax.inject.Inject
-import models.NormalMode
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -46,17 +46,17 @@ class AreYouInUKController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AreYouInUKId).fold(form)(v=>form.fill(v))
-      Ok(areYouInUK(appConfig, preparedForm))
+      Ok(areYouInUK(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors))),
+          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors, mode))),
         value => {
           dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AreYouInUKId, NormalMode, UserAnswers(cacheMap))))
