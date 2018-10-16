@@ -69,9 +69,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     //NON UK
     (CompanyNameId, emptyAnswers, nonUkAddress(NormalMode), false, None, false),
-    (CompanyRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
-    (CompanyRegisteredAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
-    (CompanyRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
+    (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
+    (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
+    (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
   )
 
   //scalastyle:on line.size.limit

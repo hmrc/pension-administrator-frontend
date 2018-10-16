@@ -65,7 +65,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
       NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case CompanyNameId =>
       NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad(NormalMode))
-    case CompanyRegisteredAddressId =>
+    case CompanyAddressId =>
       regionBasedNavigation(from.userAnswers)
     case _ => None
   }
@@ -134,8 +134,8 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
   }
 
   private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(CompanyRegisteredAddressId) flatMap { address =>
-      countryOptions.regions(address.country) match {
+    answers.get(CompanyAddressId) flatMap { address =>
+      countryOptions.regions(address.country.get) match {
         case UK => NavigateTo.dontSave(controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode))
         case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
         case _ => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
