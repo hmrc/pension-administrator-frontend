@@ -33,6 +33,10 @@ package object utils {
       answers.set(LastPageId)(page).asOpt.value
     }
 
+    def areYouInUk(answer: Boolean): UserAnswers = {
+      answers.set(identifiers.register.AreYouInUKId)(answer).asOpt.value
+    }
+
     // Individual PSA Contact
     def individualContactAddress(address: Address): UserAnswers = {
       answers.set(IndividualContactAddressId)(address).asOpt.value

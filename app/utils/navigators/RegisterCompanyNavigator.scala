@@ -19,6 +19,7 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
+import identifiers.register.AreYouInUKId
 import identifiers.register.company._
 import models._
 import utils.{Navigator, UserAnswers}
@@ -32,10 +33,8 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
       NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-
-    //TODO: Change for Non-uk journey
     case WhatYouWillNeedId =>
-      NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+      whatYouWillNeedRoutes(from.userAnswers)
     case CompanySameContactAddressId =>
       sameContactAddress(NormalMode, from.userAnswers)
     case CompanyContactAddressPostCodeLookupId =>
@@ -117,10 +116,18 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
   }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(CompanySameContactAddressId) match {
-      case Some(true) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
-      case Some(false) => NavigateTo.save(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))
+    (answers.get(CompanySameContactAddressId), answers.get(AreYouInUKId)) match {
+      case (Some(true), _) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
+      case (Some(false), Some(true)) => NavigateTo.save (routes.CompanyContactAddressPostCodeLookupController.onPageLoad (mode) )
+      case (Some(false), Some(false)) => NavigateTo.save (routes.CompanyContactAddressController.onPageLoad (mode) )
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def whatYouWillNeedRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(AreYouInUKId) match {
+      case Some(true) => NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+      case _ => NavigateTo.save(routes.NonUkCompanySameContactAddressController.onPageLoad(NormalMode))
     }
   }
 

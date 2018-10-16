@@ -19,6 +19,7 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
+import identifiers.register.AreYouInUKId
 import identifiers.register.company._
 import identifiers.{Identifier, LastPageId}
 import models._
@@ -40,12 +41,14 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessDetailsId, emptyAnswers, confirmCompanyDetailsPage, false, None, false),
     (ConfirmCompanyAddressId, emptyAnswers, whatYouWillNeedPage, false, None, false),
     (ConfirmCompanyAddressId, lastPage, whatYouWillNeedPage, false, None, false),
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
+    (WhatYouWillNeedId, uk, sameContactAddress(NormalMode), true, None, false),
+    (WhatYouWillNeedId, nonUk, nonUkSameContactAddress(NormalMode), true, None, false),
     (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
-    (CompanySameContactAddressId, notSameContactAddress, contactAddressPostCode(NormalMode), true, Some(contactAddressPostCode(CheckMode)), true),
+    (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode), true, Some(contactAddressPostCode(CheckMode)), true),
+    (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
     (CompanySameContactAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode), true, Some(contactAddressList(CheckMode)), true),
-    (CompanyContactAddressListId, emptyAnswers, contatAddress(NormalMode), true, Some(contatAddress(CheckMode)), true),
+    (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
 
     (CompanyAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
@@ -112,10 +115,11 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def contactAddressList(mode: Mode) = routes.CompanyContactAddressListController.onPageLoad(mode)
 
-  private def contatAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
+  private def contactAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
   private def nonUkAddress(mode: Mode) = routes.CompanyRegisteredAddressController.onPageLoad(NormalMode)
+  private def nonUkSameContactAddress(mode: Mode) = routes.NonUkCompanySameContactAddressController.onPageLoad(NormalMode)
 
   private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
@@ -123,9 +127,16 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
   private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
-  private val notSameContactAddress = UserAnswers().companySameContactAddress(false)
+  private val notSameContactAddressUk = UserAnswers().companySameContactAddress(false).areYouInUk(true)
+  private val notSameContactAddressNonUk = UserAnswers().companySameContactAddress(false).areYouInUk(false)
   private lazy val lastPage = UserAnswers(Json.obj())
     .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
+
+  private val uk = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(true).asOpt.value
+  private val nonUk = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(false).asOpt.value
+
 
   private def dataDescriber(answers: UserAnswers): String = answers.toString
 
