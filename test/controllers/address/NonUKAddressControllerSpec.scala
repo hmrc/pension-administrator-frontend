@@ -114,7 +114,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
 
-            val result = controller.onPageLoad(viewModel, UserAnswers(Json.obj(fakeAddressId.toString -> testAddress)))
+            val result = controller.onPageLoad(viewModel, UserAnswers(Json.obj(fakeAddressId.toString -> testAddress.toTolerantAddress)))
 
             status(result) mustEqual OK
             contentAsString(result) mustEqual nonukAddress(appConfig, formProvider().fill(testAddress), viewModel)(request, messages).toString
@@ -153,7 +153,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 
             val address = Address("value 1", "value 2", None, None, None, "IN")
 
-            FakeUserAnswersCacheConnector.verify(fakeAddressId, address)
+            FakeUserAnswersCacheConnector.verify(fakeAddressId, address.toTolerantAddress)
         }
 
       }
@@ -191,7 +191,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 
 object NonUKAddressControllerSpec {
 
-  val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address] {
+  val fakeAddressId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress] {
     override def toString = "fakeAddressId"
   }
   val externalId: String = "test-external-id"

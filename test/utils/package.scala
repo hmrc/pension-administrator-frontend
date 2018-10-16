@@ -79,7 +79,7 @@ package object utils {
     //company non uk
 
     def nonUkCompanyAddress(address: Address): UserAnswers = {
-      answers.set(CompanyRegisteredAddressId)(address).asOpt.value
+      answers.set(CompanyAddressId)(address.toTolerantAddress).asOpt.value
     }
 
     // Company director

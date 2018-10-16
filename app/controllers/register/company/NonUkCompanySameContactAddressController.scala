@@ -56,7 +56,7 @@ class NonUkCompanySameContactAddressController @Inject()(
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (CompanyRegisteredAddressId and CompanyNameId).retrieve.right.map {
+        (CompanyAddressId and CompanyNameId).retrieve.right.map {
           case address ~ name =>
             SameContactAddressViewModel(
               postCall(mode),
@@ -64,7 +64,7 @@ class NonUkCompanySameContactAddressController @Inject()(
               heading = Message(heading).withArgs(name),
               hint = Some(Message(hint).withArgs(name)),
               secondaryHeader = Some(secondaryHeader),
-              address = address.toTolerantAddress
+              address = address
             )
         }
     )

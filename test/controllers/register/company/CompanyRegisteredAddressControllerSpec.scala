@@ -21,7 +21,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
+import identifiers.register.company.{CompanyNameId, CompanyAddressId}
 import models.{Address, NormalMode}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -86,7 +86,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
         CompanyNameId.toString -> "Test Company Name",
-        CompanyRegisteredAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN"))
+        CompanyAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
