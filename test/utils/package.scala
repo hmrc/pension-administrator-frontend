@@ -76,6 +76,12 @@ package object utils {
       answers.set(CompanySameContactAddressId)(same).asOpt.value
     }
 
+    //company non uk
+
+    def nonUkCompanyAddress(address: Address): UserAnswers = {
+      answers.set(CompanyRegisteredAddressId)(address).asOpt.value
+    }
+
     // Company director
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value

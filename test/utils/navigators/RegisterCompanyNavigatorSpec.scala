@@ -68,7 +68,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     //NON UK
     (CompanyNameId, emptyAnswers, nonUkAddress(NormalMode), false, None, false),
-    (CompanyRegisteredAddressId, emptyAnswers, whatYouWillNeedPage, false, None, false)
+    (CompanyRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
+    (CompanyRegisteredAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
+    (CompanyRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
   )
 
   //scalastyle:on line.size.limit
@@ -119,7 +121,9 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
   private def nonUkAddress(mode: Mode) = routes.CompanyRegisteredAddressController.onPageLoad(NormalMode)
-  private def nonUkSameContactAddress(mode: Mode) = routes.NonUkCompanySameContactAddressController.onPageLoad(NormalMode)
+  private def nonUkSameContactAddress(mode: Mode) = routes.NonUkCompanySameContactAddressController.onPageLoad(mode)
+  private def reconsiderAreYouInUk = controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode)
+  private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
   private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
@@ -136,6 +140,12 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
     .set(AreYouInUKId)(true).asOpt.value
   private val nonUk = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
+
+  private val nonUkEuAddress = UserAnswers().nonUkCompanyAddress(address("AT"))
+  private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
+  private val nonUkNonEuAddress = UserAnswers().nonUkCompanyAddress(address("AF"))
+
+  private def address(countryCode: String) =Address("addressLine1","addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
 
   private def dataDescriber(answers: UserAnswers): String = answers.toString
