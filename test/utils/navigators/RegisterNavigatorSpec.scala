@@ -20,9 +20,9 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
-import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register._
 import models.NormalMode
-import models.register.{BusinessType, DeclarationWorkingKnowledge}
+import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
@@ -48,7 +48,10 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, true, None, false),
     (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserDetailsPage, true, None, false),
     (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
-    (DeclarationFitAndProperId, emptyAnswers, confirmationPage, false, None, false)
+    (DeclarationFitAndProperId, emptyAnswers, confirmationPage, false, None, false),
+    (AreYouInUKId, inUk,   ukBusinessTypePage, false, None, false),
+    (AreYouInUKId, notInUk,   nonUkBusinessTypePage, false, None, false),
+    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false)
   )
 
   //scalastyle:on line.size.limit
@@ -71,6 +74,9 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
   lazy val confirmationPage: Call = routes.ConfirmationController.onPageLoad()
   lazy val surveyPage: Call = controllers.routes.LogoutController.onPageLoad()
+  lazy val ukBusinessTypePage: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+  lazy val nonUkBusinessTypePage: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
+  lazy val nonUkCompanyName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
@@ -86,6 +92,14 @@ object RegisterNavigatorSpec extends OptionValues {
     .set(BusinessTypeId)(BusinessType.LimitedPartnership).asOpt.value
   val limitedLiabilityPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.LimitedLiabilityPartnership).asOpt.value
+  val inUk: UserAnswers = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(true).asOpt.value
+  val notInUk: UserAnswers = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(false).asOpt.value
+  val nonUkCompany: UserAnswers = UserAnswers(Json.obj())
+    .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
+  val nonUkPartnership: UserAnswers = UserAnswers(Json.obj())
+    .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
