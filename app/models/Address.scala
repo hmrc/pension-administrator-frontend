@@ -41,6 +41,17 @@ case class Address(addressLine1: String,
     ).flatten.mkString(", ")
   }
 
+  def toTolerantAddress: TolerantAddress = {
+    TolerantAddress(
+      Some(addressLine1),
+      Some(addressLine2),
+      addressLine3,
+      addressLine4,
+      postcode,
+      Some(country)
+    )
+  }
+
 
 }
 
