@@ -61,7 +61,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, addCompanyDirectors(NormalMode), true, None, false),
-    (CompanyReviewId, emptyAnswers, declarationPage, true, None, false)
+    (CompanyReviewId, emptyAnswers, declarationPage, true, None, false),
+
+    //NON UK
+    (CompanyNameId, emptyAnswers, nonUkAddress(NormalMode), false, None, false),
+    (CompanyRegisteredAddressId, emptyAnswers, whatYouWillNeedPage, false, None, false)
   )
 
   //scalastyle:on line.size.limit
@@ -111,6 +115,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def contatAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
+  private def nonUkAddress(mode: Mode) = routes.CompanyRegisteredAddressController.onPageLoad(NormalMode)
 
   private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())

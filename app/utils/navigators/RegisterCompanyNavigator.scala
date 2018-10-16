@@ -32,6 +32,8 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
       NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+
+    //TODO: Change for Non-uk journey
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
     case CompanySameContactAddressId =>
