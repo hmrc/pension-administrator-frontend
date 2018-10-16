@@ -59,7 +59,7 @@ class AreYouInUKController @Inject()(
           Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors, mode))),
         value => {
           dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AreYouInUKId, NormalMode, UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
         })
   }
 }

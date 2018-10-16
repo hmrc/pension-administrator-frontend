@@ -27,13 +27,14 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, UserAnswers}
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterCompanyNavigatorSpec._
-
-  val navigator = new RegisterCompanyNavigator(FakeUserAnswersCacheConnector)
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  val navigator = new RegisterCompanyNavigator(FakeUserAnswersCacheConnector, countryOptions)
 
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(

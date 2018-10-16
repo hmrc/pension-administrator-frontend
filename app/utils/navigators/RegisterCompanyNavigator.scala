@@ -21,11 +21,13 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register.AreYouInUKId
 import identifiers.register.company._
+import models.InternationalRegion._
 import models._
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
+class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, countryOptions: CountryOptions) extends Navigator {
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
@@ -64,7 +66,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
     case CompanyNameId =>
       NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad(NormalMode))
     case CompanyRegisteredAddressId =>
-      NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+      regionBasedNavigation(from.userAnswers)
     case _ => None
   }
 
@@ -130,5 +132,16 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
       case _ => NavigateTo.save(routes.NonUkCompanySameContactAddressController.onPageLoad(NormalMode))
     }
   }
+
+  private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(CompanyRegisteredAddressId) flatMap { address =>
+      countryOptions.regions(address.country) match {
+        case UK => NavigateTo.dontSave(controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode))
+        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+        case _ => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
+      }
+    }
+  }
+
 
 }
