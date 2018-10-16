@@ -17,11 +17,11 @@
 package controllers
 
 import base.SpecBase
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{BusinessDetails, PSAUser, UserType}
+import models.{BusinessDetails, BusinessDetailsMandatory, PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
@@ -63,7 +63,7 @@ trait BusinessDetailsControllerBehaviour {
       val result = Future(fixture.controller.get(id)(testRequest(answers)))
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(fixture.form.fill(testBusinessDetails), testViewModel, this)
+      contentAsString(result) mustBe viewAsString(fixture.form.fill(testBusinessDetails.toBusinessDetailsMandatory), testViewModel, this)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -107,10 +107,10 @@ object BusinessDetailsControllerBehaviour {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val testBusinessDetails = BusinessDetails("test company name", "1234567890")
-  val invalidBusinessDetails = BusinessDetails("", "")
+  val testBusinessDetails = BusinessDetails("test company name", Some("1234567890"))
+  val invalidBusinessDetails = BusinessDetails("", None)
 
-  case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetails])
+  case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetailsMandatory])
 
   def testFixture(
                    createController: (UserAnswersCacheConnector, Navigator) => BusinessDetailsController,
@@ -134,7 +134,7 @@ object BusinessDetailsControllerBehaviour {
       details =>
         fakeRequest.withFormUrlEncodedBody(
           ("companyName", details.companyName),
-          ("utr", details.uniqueTaxReferenceNumber)
+          ("utr", details.uniqueTaxReferenceNumberOrEmptyString)
         )
     } getOrElse fakeRequest
 

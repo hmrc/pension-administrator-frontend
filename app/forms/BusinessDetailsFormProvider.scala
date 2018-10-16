@@ -17,13 +17,13 @@
 package forms
 
 import forms.mappings.{Mappings, Transforms}
-import models.BusinessDetails
+import models.BusinessDetailsMandatory
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
 class BusinessDetailsFormProvider extends Mappings with Transforms {
 
-  def apply(model: BusinessDetailsFormModel): Form[BusinessDetails] = Form(
+  def apply(model: BusinessDetailsFormModel): Form[BusinessDetailsMandatory] = Form(
     mapping(
       "companyName" -> text(model.companyNameRequiredMsg)
         .verifying(
@@ -43,7 +43,7 @@ class BusinessDetailsFormProvider extends Mappings with Transforms {
             uniqueTaxReference(model.utrInvalidMsg)
           )
         )
-    )(BusinessDetails.apply)(BusinessDetails.unapply)
+    )(BusinessDetailsMandatory.apply)(BusinessDetailsMandatory.unapply)
   )
 
 }

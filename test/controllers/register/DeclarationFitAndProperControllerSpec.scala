@@ -260,7 +260,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails = BusinessDetails("MyCompany", "1234567890")
+  val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val contactDetails = ContactDetails("test@test.com", "test Phone")
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, UTR, "")
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,

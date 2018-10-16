@@ -44,7 +44,7 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
 
 
   val validData: JsObject = Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, "1234567890"),
+    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some("1234567890")),
     "partners" -> Json.arr(
       Json.obj(
         PartnerDetailsId.toString ->

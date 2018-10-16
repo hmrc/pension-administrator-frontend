@@ -18,7 +18,24 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: String)
+case class BusinessDetailsMandatory(companyName: String, uniqueTaxReferenceNumber: String) {
+  def toBusinessDetails: BusinessDetails = BusinessDetails(
+    companyName,
+    Some(uniqueTaxReferenceNumber)
+  )
+}
+
+object BusinessDetailsMandatory {
+  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+}
+
+case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: Option[String]) {
+  def toBusinessDetailsMandatory: BusinessDetailsMandatory = BusinessDetailsMandatory(
+    companyName,
+    uniqueTaxReferenceNumberOrEmptyString
+  )
+  def uniqueTaxReferenceNumberOrEmptyString : String = uniqueTaxReferenceNumber.getOrElse("")
+}
 
 object BusinessDetails {
   implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]

@@ -18,7 +18,7 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import models.BusinessDetails
+import models.{BusinessDetails, BusinessDetailsMandatory}
 import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
@@ -96,9 +96,9 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
 
   "form" must {
     val rawData = Map("companyName" -> "test", "utr" -> " 1234567890 ")
-    val expectedData = BusinessDetails("test", "1234567890")
+    val expectedData = BusinessDetails("test", Some("1234567890")).toBusinessDetailsMandatory
 
-    behave like formWithTransform[BusinessDetails](
+    behave like formWithTransform[BusinessDetailsMandatory](
       form(),
       rawData,
       expectedData
@@ -109,7 +109,7 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
 
 object BusinessDetailsFormProviderSpec {
 
-  def form(): Form[BusinessDetails] = {
+  def form(): Form[BusinessDetailsMandatory] = {
     new BusinessDetailsFormProvider().apply(formModel)
   }
 
