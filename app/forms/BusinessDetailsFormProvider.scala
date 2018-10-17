@@ -22,51 +22,43 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 
 class BusinessDetailsFormProvider(isUK: Boolean) extends Mappings with Transforms {
-  def apply(model: BusinessDetailsFormModel): Form[BusinessDetails] = Form(
-    if (isUK) {
-      mapping(
-        "companyName" -> text(model.companyNameRequiredMsg)
-          .verifying(
-            firstError(
-              maxLength(
-                model.companyNameMaxLength,
-                model.companyNameLengthMsg
-              ),
-              companyName(model.companyNameInvalidMsg)
-            )
+  def apply(model: BusinessDetailsFormModel): Form[BusinessDetails] = {
+    val companyNameMapping = "companyName" -> text(model.companyNameRequiredMsg)
+      .verifying(
+        firstError(
+          maxLength(
+            model.companyNameMaxLength,
+            model.companyNameLengthMsg
           ),
-
-        "utr" -> text(model.utrRequiredMsg)
-          .verifying(
-            firstError(
-              maxLength(model.utrMaxLength, model.utrLengthMsg),
-              uniqueTaxReference(model.utrInvalidMsg)
+          companyName(model.companyNameInvalidMsg)
+        )
+      )
+    Form(
+      if (isUK) {
+        mapping(
+          companyNameMapping,
+          "utr" -> text(model.utrRequiredMsg)
+            .verifying(
+              firstError(
+                maxLength(model.utrMaxLength, model.utrLengthMsg),
+                uniqueTaxReference(model.utrInvalidMsg)
+              )
             )
-          )
-      )(BusinessDetails.applyForMandatoryUTR)(BusinessDetails.unapplyForMandatoryUTR)
-    } else {
-      mapping(
-        "companyName" -> text(model.companyNameRequiredMsg)
-          .verifying(
-            firstError(
-              maxLength(
-                model.companyNameMaxLength,
-                model.companyNameLengthMsg
-              ),
-              companyName(model.companyNameInvalidMsg)
+        )(BusinessDetails.applyForMandatoryUTR)(BusinessDetails.unapplyForMandatoryUTR)
+      } else {
+        mapping(
+          companyNameMapping,
+          "utr" -> optionalText()
+            .verifying(
+              firstError(
+                maxLength(model.utrMaxLength, model.utrLengthMsg),
+                uniqueTaxReference(model.utrInvalidMsg)
+              )
             )
-          ),
-
-        "utr" -> optionalText()
-          .verifying(
-            firstError(
-              maxLength(model.utrMaxLength, model.utrLengthMsg),
-              uniqueTaxReference(model.utrInvalidMsg)
-            )
-          )
-      )(BusinessDetails.apply)(BusinessDetails.unapply)
-    }
-  )
+        )(BusinessDetails.apply)(BusinessDetails.unapply)
+      }
+    )
+  }
 }
 
 case class BusinessDetailsFormModel(
