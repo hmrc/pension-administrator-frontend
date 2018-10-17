@@ -32,9 +32,10 @@ object BusinessDetailsMandatory {
 case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: Option[String]) {
   def toBusinessDetailsMandatory: BusinessDetailsMandatory = BusinessDetailsMandatory(
     companyName,
-    uniqueTaxReferenceNumberOrEmptyString
+    uniqueTaxReferenceNumberOrException
   )
-  def uniqueTaxReferenceNumberOrEmptyString : String = uniqueTaxReferenceNumber.getOrElse("")
+  def uniqueTaxReferenceNumberOrException : String = uniqueTaxReferenceNumber
+    .getOrElse(throw new RuntimeException("Missing UTR"))
 }
 
 object BusinessDetails {

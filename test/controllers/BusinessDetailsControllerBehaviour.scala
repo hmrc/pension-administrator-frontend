@@ -108,7 +108,7 @@ object BusinessDetailsControllerBehaviour {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val testBusinessDetails = BusinessDetails("test company name", Some("1234567890"))
-  val invalidBusinessDetails = BusinessDetails("", None)
+  val invalidBusinessDetails = BusinessDetails("", Some(""))
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetailsMandatory])
 
@@ -134,7 +134,7 @@ object BusinessDetailsControllerBehaviour {
       details =>
         fakeRequest.withFormUrlEncodedBody(
           ("companyName", details.companyName),
-          ("utr", details.uniqueTaxReferenceNumberOrEmptyString)
+          ("utr", details.uniqueTaxReferenceNumberOrException)
         )
     } getOrElse fakeRequest
 

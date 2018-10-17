@@ -99,7 +99,7 @@ class ConfirmPartnershipDetailsController @Inject()(
       case businessDetails ~ businessType =>
         val organisation = Organisation(businessDetails.companyName, businessType)
         val legalStatus = RegistrationLegalStatus.Partnership
-        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumberOrEmptyString, organisation, legalStatus).flatMap {
+        registrationConnector.registerWithIdOrganisation(businessDetails.uniqueTaxReferenceNumberOrException, organisation, legalStatus).flatMap {
           registration =>
             fn(businessDetails, registration)
         } recoverWith {

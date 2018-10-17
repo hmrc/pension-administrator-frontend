@@ -192,7 +192,7 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
         )
         val utrRow = AnswerRow(
           utrLabel,
-          Seq(businessDetails.uniqueTaxReferenceNumberOrEmptyString),
+          Seq(businessDetails.uniqueTaxReferenceNumberOrException),
           false,
           None
         )
