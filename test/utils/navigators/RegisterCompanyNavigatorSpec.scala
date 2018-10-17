@@ -39,7 +39,8 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save (NM)", "Next Page (Check Mode)", "Save (CM)"),
-    (BusinessDetailsId, emptyAnswers, confirmCompanyDetailsPage, false, None, false),
+    (BusinessDetailsId, uk, confirmCompanyDetailsPage, false, None, false),
+    (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
     (ConfirmCompanyAddressId, emptyAnswers, whatYouWillNeedPage, false, None, false),
     (ConfirmCompanyAddressId, lastPage, whatYouWillNeedPage, false, None, false),
     (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
@@ -52,14 +53,16 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
 
     (CompanyAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (CompanyAddressYearsId, addressYearsUnderAYear, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
+    (CompanyAddressYearsId, addressYearsUnderAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
+    (CompanyAddressYearsId, addressYearsUnderAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
 
-    (ContactDetailsId, emptyAnswers, companyDetailsPage, true, Some(checkYourAnswersPage), true),
+    (ContactDetailsId, uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
+    (ContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (CompanyDetailsId, emptyAnswers, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
     (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
@@ -67,7 +70,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyReviewId, emptyAnswers, declarationPage, true, None, false),
 
     //NON UK
-//    (CompanyNameId, emptyAnswers, nonUkAddress(NormalMode), false, None, false),
     (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
     (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
     (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
@@ -120,15 +122,17 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def contactAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
-  private def nonUkAddress(mode: Mode) = routes.CompanyRegisteredAddressController.onPageLoad()
+  private def nonUkAddress = routes.CompanyRegisteredAddressController.onPageLoad()
   private def reconsiderAreYouInUk = controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode)
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
   private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYear = UserAnswers(Json.obj())
-    .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+  private val addressYearsUnderAYearUk = UserAnswers(Json.obj())
+    .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value.areYouInUk(true)
+  private val addressYearsUnderAYearNonUk = UserAnswers(Json.obj())
+    .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value.areYouInUk(false)
   private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
   private val notSameContactAddressUk = UserAnswers().companySameContactAddress(false).areYouInUk(true)
   private val notSameContactAddressNonUk = UserAnswers().companySameContactAddress(false).areYouInUk(false)
