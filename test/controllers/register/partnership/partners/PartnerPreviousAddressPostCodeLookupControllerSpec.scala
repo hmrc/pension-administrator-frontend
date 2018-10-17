@@ -94,7 +94,7 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   )
 
   private val validData = Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", "1234567890"),
+    PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
     "partners" -> Json.arr(
       Json.obj(
         PartnerDetailsId.toString ->

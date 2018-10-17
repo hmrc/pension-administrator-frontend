@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models.{BusinessDetails, NormalMode}
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -44,7 +44,7 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
 
   protected def viewModel: BusinessDetailsViewModel
 
-  private lazy val form = new BusinessDetailsFormProvider()(formModel)
+  private lazy val form = new BusinessDetailsFormProvider(isUK=true)(formModel)
 
   def get[I <: TypedIdentifier[BusinessDetails]](id: I)(implicit request: DataRequest[AnyContent]): Result = {
 

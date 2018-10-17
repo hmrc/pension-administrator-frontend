@@ -36,7 +36,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new AddressListFormProvider()
   private val companyName = "ThisCompanyName"
-  private val companyDetails = Json.obj("businessDetails" -> BusinessDetails(companyName, "Test UTR"))
+  private val companyDetails = Json.obj("businessDetails" -> BusinessDetails(companyName, Some("Test UTR")))
 
   private val addresses = Seq(
     address("test post code 1"),

@@ -96,7 +96,7 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
 
   "form" must {
     val rawData = Map("companyName" -> "test", "utr" -> " 1234567890 ")
-    val expectedData = BusinessDetails("test", "1234567890")
+    val expectedData = BusinessDetails("test", Some("1234567890"))
 
     behave like formWithTransform[BusinessDetails](
       form(),
@@ -109,8 +109,8 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
 
 object BusinessDetailsFormProviderSpec {
 
-  def form(): Form[BusinessDetails] = {
-    new BusinessDetailsFormProvider().apply(formModel)
+  def form(isUK:Boolean = true): Form[BusinessDetails] = {
+    new BusinessDetailsFormProvider(isUK).apply(formModel)
   }
 
   val formModel: BusinessDetailsFormModel =

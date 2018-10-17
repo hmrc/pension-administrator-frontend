@@ -43,7 +43,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val messagePrefix = "partnership.contactAddress"
-  val partnershipDetails = models.BusinessDetails("Test Partnership Name", "1234567890")
+  val partnershipDetails = models.BusinessDetails("Test Partnership Name", Some("1234567890"))
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")

@@ -16,9 +16,10 @@
 
 package connectors
 
+import javax.inject.Singleton
+
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import javax.inject.Singleton
 import models._
 import play.api.Logger
 import play.api.http.Status
@@ -28,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
+
 
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {

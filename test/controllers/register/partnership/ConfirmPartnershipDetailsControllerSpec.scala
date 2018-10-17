@@ -53,7 +53,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        PartnershipDetailsId.toString -> BusinessDetails(partnershipName, validBusinessPartnershipUtr)
+        PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some(validBusinessPartnershipUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
@@ -65,7 +65,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", invalidUtr)
+        PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(invalidUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
@@ -139,7 +139,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyPartnership", validBusinessPartnershipUtr)
+            BusinessDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -170,7 +170,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyPartnership", validBusinessPartnershipUtr)
+            BusinessDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -220,7 +220,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   private val invalidUtr = "INVALID"
   private val sapNumber = "test-sap-number"
 
-  val partnershipDetails = BusinessDetails("MyPartnership", validBusinessPartnershipUtr)
+  val partnershipDetails = BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
 
   private val data = Json.obj(

@@ -53,7 +53,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        BusinessDetailsId.toString -> BusinessDetails(companyName, validBusinessPartnershipUtr)
+        BusinessDetailsId.toString -> BusinessDetails(companyName, Some(validBusinessPartnershipUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -65,7 +65,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         BusinessTypeId.toString -> LimitedCompany.toString,
-        BusinessDetailsId.toString -> BusinessDetails("MyCo", invalidUtr)
+        BusinessDetailsId.toString -> BusinessDetails("MyCo", Some(invalidUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -138,7 +138,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyCo", validBusinessPartnershipUtr)
+            BusinessDetailsId.toString -> BusinessDetails("MyCo", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -169,7 +169,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyCo", validLimitedCompanyUtr)
+            BusinessDetailsId.toString -> BusinessDetails("MyCo", Some(validLimitedCompanyUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -220,7 +220,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
   private val invalidUtr = "INVALID"
   private val sapNumber = "test-sap-number"
 
-  val companyDetails = BusinessDetails("MyCompany", validLimitedCompanyUtr)
+  val companyDetails = BusinessDetails("MyCompany", Some(validLimitedCompanyUtr))
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
   private val data = Json.obj(

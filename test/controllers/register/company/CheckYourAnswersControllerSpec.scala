@@ -43,7 +43,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails("Test Company Name", "Test UTR")
+          BusinessDetailsId.toString -> BusinessDetails("Test Company Name", Some("Test UTR"))
         )
         testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
       }

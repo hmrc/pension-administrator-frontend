@@ -42,7 +42,7 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
 
   val validData: JsObject = Json.obj(
     BusinessDetailsId.toString ->
-      BusinessDetails(companyName, "test utr"),
+      BusinessDetails(companyName, Some("test utr")),
     "directors" -> Json.arr(director("a"), director("b"), director("c"), director("d", true))
   )
 
