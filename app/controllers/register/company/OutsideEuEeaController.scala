@@ -19,7 +19,7 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.company.{CompanyNameId, CompanyAddressId}
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import javax.inject.Inject
 import models.Address
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,9 +41,9 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
-      (CompanyNameId and CompanyAddressId).retrieve.right.map {
-        case name ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, name, getCountryNameFromCode(address.toAddress))))
+      (BusinessDetailsId and CompanyAddressId).retrieve.right.map {
+        case details ~ address =>
+          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, getCountryNameFromCode(address.toAddress))))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

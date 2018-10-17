@@ -18,8 +18,8 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import identifiers.register.company.{CompanyNameId, CompanyAddressId}
-import models.Address
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import models.{Address, BusinessDetails}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
@@ -42,8 +42,8 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
   def validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
-      CompanyNameId.toString ->
-        organisationName,
+      BusinessDetailsId.toString ->
+        BusinessDetails(organisationName, None),
       CompanyAddressId.toString -> Address(
         "value 1",
         "value 2",

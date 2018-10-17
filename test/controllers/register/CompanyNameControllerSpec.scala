@@ -186,7 +186,7 @@ object CompanyNameControllerSpec extends OptionValues {
     }
 
     def onSubmit(viewmodel: CompanyNameViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, viewmodel)(DataRequest(fakeRequest, "cacheId",
+      post(FakeIdentifier, viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 

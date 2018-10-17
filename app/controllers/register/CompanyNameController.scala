@@ -22,7 +22,7 @@ import controllers.Retrievals
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{BusinessDetails, Mode}
+import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -56,7 +56,6 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
 
   protected def post(
                       id: TypedIdentifier[BusinessDetails],
-                      mode: Mode,
                       viewmodel: CompanyNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
@@ -65,7 +64,7 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
       companyName =>
         cacheConnector.save(request.externalId, id, companyName).map {
           answers =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+            Redirect(navigator.nextPage(id, NormalMode, UserAnswers(answers)))
         }
     )
   }

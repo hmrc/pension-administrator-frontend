@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode, TolerantAddress}
+import models.{Address, Mode, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AnyContent, Request, Result}
@@ -56,7 +56,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
     Future.successful(Ok(view()))
   }
 
-  protected def post(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, mode: Mode)(
+  protected def post(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel)(
     implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => {
@@ -67,7 +67,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
 
         dataCacheConnector.save(request.externalId, id, address.toTolerantAddress).map {
           cacheMap =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
         }
       }
     )

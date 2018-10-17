@@ -38,21 +38,21 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector) extends CompanyNameController {
 
-  private def companyNameViewModel(mode: Mode) =
+  private def companyNameViewModel() =
     CompanyNameViewModel(
-      routes.CompanyRegisteredNameController.onSubmit(mode),
+      routes.CompanyRegisteredNameController.onSubmit(),
       Message("companyName.title"),
       Message("companyName.heading")
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(BusinessDetailsId, companyNameViewModel(mode))
+      get(BusinessDetailsId, companyNameViewModel)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(BusinessDetailsId, mode, companyNameViewModel(mode))
+      post(BusinessDetailsId, companyNameViewModel())
   }
 
   override protected val formModel: BusinessDetailsFormModel =

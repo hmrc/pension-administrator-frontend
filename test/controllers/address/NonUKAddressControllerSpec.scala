@@ -209,7 +209,7 @@ object NonUKAddressControllerSpec {
       get(fakeAddressId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
 
     def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(fakeAddressId, viewModel, NormalMode)(DataRequest(request, externalId, psaUser, answers))
+      post(fakeAddressId, viewModel)(DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
   }

@@ -42,8 +42,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessDetailsId, emptyAnswers, confirmCompanyDetailsPage, false, None, false),
     (ConfirmCompanyAddressId, emptyAnswers, whatYouWillNeedPage, false, None, false),
     (ConfirmCompanyAddressId, lastPage, whatYouWillNeedPage, false, None, false),
-    (WhatYouWillNeedId, uk, sameContactAddress(NormalMode), true, None, false),
-    (WhatYouWillNeedId, nonUk, nonUkSameContactAddress(NormalMode), true, None, false),
+    (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
     (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
     (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode), true, Some(contactAddressPostCode(CheckMode)), true),
     (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
@@ -68,7 +67,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyReviewId, emptyAnswers, declarationPage, true, None, false),
 
     //NON UK
-    (CompanyNameId, emptyAnswers, nonUkAddress(NormalMode), false, None, false),
+//    (CompanyNameId, emptyAnswers, nonUkAddress(NormalMode), false, None, false),
     (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
     (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
     (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
@@ -121,8 +120,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def contactAddress(mode: Mode) = routes.CompanyContactAddressController.onPageLoad(mode)
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
-  private def nonUkAddress(mode: Mode) = routes.CompanyRegisteredAddressController.onPageLoad(NormalMode)
-  private def nonUkSameContactAddress(mode: Mode) = routes.NonUkCompanySameContactAddressController.onPageLoad(mode)
+  private def nonUkAddress(mode: Mode) = routes.CompanyRegisteredAddressController.onPageLoad()
   private def reconsiderAreYouInUk = controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode)
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
