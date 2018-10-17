@@ -36,7 +36,6 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: CompanyNameFormProvider,
                                                 val cacheConnector: UserAnswersCacheConnector) extends CompanyNameController {
 
   private def companyNameViewModel(mode: Mode) =

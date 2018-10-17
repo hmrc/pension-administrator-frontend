@@ -52,7 +52,6 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
       FakeUserAnswersCacheConnector
     )
 
