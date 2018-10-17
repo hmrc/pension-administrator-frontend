@@ -25,7 +25,6 @@ import utils.checkyouranswers.CheckYourAnswers.addressAnswer
 import utils.countryOptions.CountryOptions
 import utils.{DateHelper, UserAnswers}
 import viewmodels.AnswerRow
-import utils.OptionUtils._
 
 import scala.language.implicitConversions
 
@@ -193,7 +192,7 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
         )
         val utrRow = AnswerRow(
           utrLabel,
-          Seq(getOrException(businessDetails.uniqueTaxReferenceNumber)),
+          Seq(businessDetails.utrOrException),
           false,
           None
         )

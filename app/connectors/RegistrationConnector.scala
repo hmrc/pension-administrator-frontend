@@ -16,17 +16,16 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
-import config.FrontendAppConfig
 import javax.inject.Singleton
 
+import com.google.inject.{ImplementedBy, Inject}
+import config.FrontendAppConfig
 import models._
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.OptionUtils._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
@@ -35,7 +34,7 @@ import scala.util.Failure
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {
   def registerWithIdOrganisation
-  (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
+  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
 
   def registerWithIdIndividual
@@ -49,13 +48,13 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
   override def registerWithIdOrganisation
-  (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
+  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
     val url = config.registerWithIdOrganisationUrl
 
     val body = Json.obj(
-      "utr" -> getOrException[String](utr),
+      "utr" -> utr,
       "organisationName" -> organisation.organisationName,
       "organisationType" -> organisation.organisationType.toString
     )
@@ -67,7 +66,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
       json.validate[OrganizationRegisterWithIdResponse] match {
         case JsSuccess(value, _) =>
-          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, getOrException(utr))
+          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, utr)
           OrganizationRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }

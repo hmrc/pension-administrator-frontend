@@ -74,7 +74,7 @@ class RegistrationConnectorSpec()
       noIdentifier = false,
       RegistrationCustomerType.UK,
       RegistrationIdType.UTR,
-      utr.get
+      utr
     )
 
     server.stubFor(
@@ -102,7 +102,7 @@ class RegistrationConnectorSpec()
       noIdentifier = false,
       RegistrationCustomerType.NonUK,
       RegistrationIdType.UTR,
-      utr.get
+      utr
     )
 
     server.stubFor(
@@ -365,7 +365,7 @@ class RegistrationConnectorSpec()
 }
 
 object RegistrationConnectorSpec extends OptionValues {
-  private val utr = Some("test-utr")
+  private val utr = "test-utr"
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
 
