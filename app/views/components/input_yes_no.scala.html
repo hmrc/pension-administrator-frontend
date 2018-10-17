@@ -22,7 +22,8 @@
         hint: Option[String] = None,
         yesAssoc: Option[String] = None,
         noAssoc: Option[String] = None,
-        labelClass: Option[String] = None
+        labelClass: Option[String] = None,
+        noLabelKey: String = "site.no"
 )(implicit messages: Messages)
 
 
@@ -51,7 +52,7 @@
         <div class="multiple-choice">
             <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"} />
             <label class="block-label selection-button-radio" for="@{field.id}-no" data-target="@if(noAssoc.nonEmpty){@noAssoc}">
-                @messages("site.no")
+                @messages(noLabelKey)
             </label>
         </div>
 
