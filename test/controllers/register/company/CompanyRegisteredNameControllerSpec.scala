@@ -19,9 +19,9 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.CompanyNameFormProvider
-import identifiers.register.company.CompanyNameId
-import models.NormalMode
+import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, CompanyNameFormProvider}
+import identifiers.register.company.{BusinessDetailsId, CompanyNameId}
+import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -34,9 +34,21 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyNameFormProvider()
-  val form = formProvider()
+  val businessDetailsFormModel = BusinessDetailsFormModel(
+    companyNameMaxLength = 105,
+    companyNameRequiredMsg = "companyName.error.required",
+    companyNameLengthMsg = "companyName.error.length",
+    companyNameInvalidMsg = "companyName.error.invalid",
+    utrMaxLength = 10,
+    utrRequiredMsg = "",
+    utrLengthMsg = "",
+    utrInvalidMsg = ""
+  )
+
+  val formProvider = new BusinessDetailsFormProvider(isUK = false)
+  val form = formProvider(businessDetailsFormModel)
   val testCompanyName = "test company name"
+  val testBusinessDetails = BusinessDetails(testCompanyName, None)
 
   def viewmodel = CompanyNameViewModel(
     postCall = controllers.register.company.routes.CompanyRegisteredNameController.onSubmit(NormalMode),
@@ -68,12 +80,12 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = Json.obj(CompanyNameId.toString -> testCompanyName)
+        val validData = Json.obj(BusinessDetailsId.toString -> testBusinessDetails)
         val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
         val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-        contentAsString(result) mustBe viewAsString(form.fill(testCompanyName))
+        contentAsString(result) mustBe viewAsString(form.fill(testBusinessDetails))
       }
 
       "redirect to Session Expired for a GET if no existing data is found" in {
@@ -87,7 +99,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
     "on a POST" must {
 
       "redirect to the next page when valid data is submitted" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testCompanyName))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", testCompanyName))
 
         val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -96,8 +108,8 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "[invalid value]"))
-        val boundForm = form.bind(Map("value" -> "[invalid value]"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", "[invalid value]"))
+        val boundForm = form.bind(Map("companyName" -> "[invalid value]"))
 
         val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -106,7 +118,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "redirect to Session Expired for a POST if no existing data is found" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testCompanyName))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", testCompanyName))
         val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
