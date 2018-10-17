@@ -17,35 +17,56 @@
 package forms
 
 import forms.mappings.{Mappings, Transforms}
-import models.BusinessDetailsMandatory
+import models.BusinessDetails
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
-class BusinessDetailsFormProvider(isUK:Boolean) extends Mappings with Transforms {
+class BusinessDetailsFormProvider(isUK: Boolean) extends Mappings with Transforms {
+  def apply(model: BusinessDetailsFormModel): Form[BusinessDetails] = Form(
+    if (isUK) {
+      mapping(
+        "companyName" -> text(model.companyNameRequiredMsg)
+          .verifying(
+            firstError(
+              maxLength(
+                model.companyNameMaxLength,
+                model.companyNameLengthMsg
+              ),
+              companyName(model.companyNameInvalidMsg)
+            )
+          ),
 
-  def apply(model: BusinessDetailsFormModel): Form[BusinessDetailsMandatory] = Form(
-    mapping(
-      "companyName" -> text(model.companyNameRequiredMsg)
-        .verifying(
-          firstError(
-            maxLength(
-              model.companyNameMaxLength,
-              model.companyNameLengthMsg
-            ),
-            companyName(model.companyNameInvalidMsg)
+        "utr" -> text(model.utrRequiredMsg)
+          .verifying(
+            firstError(
+              maxLength(model.utrMaxLength, model.utrLengthMsg),
+              uniqueTaxReference(model.utrInvalidMsg)
+            )
           )
-        ),
+      )(BusinessDetails.applyForMandatoryUTR)(BusinessDetails.unapplyForMandatoryUTR)
+    } else {
+      mapping(
+        "companyName" -> text(model.companyNameRequiredMsg)
+          .verifying(
+            firstError(
+              maxLength(
+                model.companyNameMaxLength,
+                model.companyNameLengthMsg
+              ),
+              companyName(model.companyNameInvalidMsg)
+            )
+          ),
 
-      "utr" -> text(model.utrRequiredMsg)
-        .verifying(
-          firstError(
-            maxLength(model.utrMaxLength, model.utrLengthMsg),
-            uniqueTaxReference(model.utrInvalidMsg)
+        "utr" -> optionalText()
+          .verifying(
+            firstError(
+              maxLength(model.utrMaxLength, model.utrLengthMsg),
+              uniqueTaxReference(model.utrInvalidMsg)
+            )
           )
-        )
-    )(BusinessDetailsMandatory.apply)(BusinessDetailsMandatory.unapply)
+      )(BusinessDetails.apply)(BusinessDetails.unapply)
+    }
   )
-
 }
 
 case class BusinessDetailsFormModel(

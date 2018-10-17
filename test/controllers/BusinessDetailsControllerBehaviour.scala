@@ -21,7 +21,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{BusinessDetails, BusinessDetailsMandatory, PSAUser, UserType}
+import models.{BusinessDetails, PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
@@ -63,7 +63,7 @@ trait BusinessDetailsControllerBehaviour {
       val result = Future(fixture.controller.get(id)(testRequest(answers)))
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(fixture.form.fill(testBusinessDetails.toBusinessDetailsMandatory), testViewModel, this)
+      contentAsString(result) mustBe viewAsString(fixture.form.fill(testBusinessDetails), testViewModel, this)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -110,7 +110,7 @@ object BusinessDetailsControllerBehaviour {
   val testBusinessDetails = BusinessDetails("test company name", Some("1234567890"))
   val invalidBusinessDetails = BusinessDetails("", Some(""))
 
-  case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetailsMandatory])
+  case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetails])
 
   def testFixture(
                    createController: (UserAnswersCacheConnector, Navigator) => BusinessDetailsController,
@@ -134,7 +134,7 @@ object BusinessDetailsControllerBehaviour {
       details =>
         fakeRequest.withFormUrlEncodedBody(
           ("companyName", details.companyName),
-          ("utr", details.uniqueTaxReferenceNumberOrException)
+          ("utr", details.uniqueTaxReferenceNumber.get)
         )
     } getOrElse fakeRequest
 

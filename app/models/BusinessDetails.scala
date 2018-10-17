@@ -18,26 +18,14 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class BusinessDetailsMandatory(companyName: String, uniqueTaxReferenceNumber: String) {
-  def toBusinessDetails: BusinessDetails = BusinessDetails(
-    companyName,
-    Some(uniqueTaxReferenceNumber)
-  )
-}
 
-object BusinessDetailsMandatory {
-  implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
-}
-
-case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: Option[String]) {
-  def toBusinessDetailsMandatory: BusinessDetailsMandatory = BusinessDetailsMandatory(
-    companyName,
-    uniqueTaxReferenceNumberOrException
-  )
-  def uniqueTaxReferenceNumberOrException : String = uniqueTaxReferenceNumber
-    .getOrElse(throw new RuntimeException("Missing UTR"))
-}
+case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: Option[String])
 
 object BusinessDetails {
   implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+  val applyForMandatoryUTR: (String, String) => BusinessDetails = (name, utr) =>
+    BusinessDetails(name, Some(utr))
+
+  val unapplyForMandatoryUTR: BusinessDetails => Option[(String, String)] = bd =>
+    Option((bd.companyName, bd.uniqueTaxReferenceNumber.get))
 }

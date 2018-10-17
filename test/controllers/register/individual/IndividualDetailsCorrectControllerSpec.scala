@@ -77,7 +77,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   private object FakeRegistrationConnector extends RegistrationConnector {
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+    (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
     override def registerWithIdIndividual
@@ -91,7 +91,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
     //noinspection NotImplementedCode
     override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+    (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
     override def registerWithIdIndividual

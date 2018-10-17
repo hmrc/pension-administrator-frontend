@@ -33,7 +33,7 @@ package views
  */
 
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
-import models.{BusinessDetails, BusinessDetailsMandatory, NormalMode}
+import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -43,7 +43,7 @@ import views.html.businessDetails
 
 //scalastyle:off magic.number
 
-class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetailsMandatory] {
+class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
   val formModel: BusinessDetailsFormModel =
     BusinessDetailsFormModel(

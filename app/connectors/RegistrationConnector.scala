@@ -32,7 +32,7 @@ import scala.util.Failure
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {
   def registerWithIdOrganisation
-  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+  (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
 
   def registerWithIdIndividual
@@ -46,13 +46,13 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
   override def registerWithIdOrganisation
-  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+  (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
     val url = config.registerWithIdOrganisationUrl
 
     val body = Json.obj(
-      "utr" -> utr,
+      "utr" -> utr.get,
       "organisationName" -> organisation.organisationName,
       "organisationType" -> organisation.organisationType.toString
     )
@@ -64,7 +64,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
       json.validate[OrganizationRegisterWithIdResponse] match {
         case JsSuccess(value, _) =>
-          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, utr)
+          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, utr.get)
           OrganizationRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }

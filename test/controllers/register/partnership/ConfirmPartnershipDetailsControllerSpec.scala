@@ -236,7 +236,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+    (utr: Option[String], organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
       val info = RegistrationInfo(
@@ -245,13 +245,13 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         false,
         RegistrationCustomerType.UK,
         RegistrationIdType.UTR,
-        utr
+        utr.get
       )
 
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
+      if ((utr contains validLimitedCompanyUtr) && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
       }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
+      else if ((utr contains validBusinessPartnershipUtr) && organisation.organisationType == OrganisationTypeEnum.Partnership) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {

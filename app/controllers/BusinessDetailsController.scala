@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models.{BusinessDetails, NormalMode}
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -29,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.BusinessDetailsViewModel
 import views.html.businessDetails
-import models.{BusinessDetailsMandatory, BusinessDetails}
 
 import scala.concurrent.Future
 
@@ -51,7 +50,7 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form
-      case Some(value) => form.fill(value.toBusinessDetailsMandatory)
+      case Some(value) => form.fill(value)
     }
 
     Ok(businessDetails(appConfig, preparedForm, viewModel))
@@ -64,7 +63,7 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(businessDetails(appConfig, formWithErrors, viewModel))),
       value =>
-        dataCacheConnector.save(request.externalId, id, value.toBusinessDetails).map(cacheMap =>
+        dataCacheConnector.save(request.externalId, id, value).map(cacheMap =>
           Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap))))
     )
 
