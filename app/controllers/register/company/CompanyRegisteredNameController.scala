@@ -21,8 +21,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.CompanyNameController
-import forms.CompanyNameFormProvider
-import identifiers.register.company.CompanyNameId
+import forms.BusinessDetailsFormModel
+import identifiers.register.company.BusinessDetailsId
 import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -36,7 +36,6 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: CompanyNameFormProvider,
                                                 val cacheConnector: UserAnswersCacheConnector) extends CompanyNameController {
 
   private def companyNameViewModel(mode: Mode) =
@@ -48,11 +47,25 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(CompanyNameId, companyNameViewModel(mode))
+      get(BusinessDetailsId, companyNameViewModel(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyNameId, mode, companyNameViewModel(mode))
+      post(BusinessDetailsId, mode, companyNameViewModel(mode))
   }
+
+
+  override protected val formModel: BusinessDetailsFormModel =
+    BusinessDetailsFormModel(
+      companyNameMaxLength = 105,
+      companyNameRequiredMsg = "companyName.error.required",
+      companyNameLengthMsg = "companyName.error.length",
+      companyNameInvalidMsg = "companyName.error.invalid",
+      utrMaxLength = 10,
+      utrRequiredMsg = "",
+      utrLengthMsg = "",
+      utrInvalidMsg = ""
+    )
+
 }

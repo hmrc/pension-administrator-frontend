@@ -15,6 +15,7 @@
  */
 
 import com.google.inject.AbstractModule
+import forms.BusinessDetailsFormProvider
 import utils.Navigator
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
@@ -55,5 +56,6 @@ class PODSModule extends AbstractModule {
     bind(classOf[CountryOptions])
       .annotatedWith(classOf[EUAndEEA])
       .to(classOf[CountryOptionsEUAndEEA])
+
   }
 }

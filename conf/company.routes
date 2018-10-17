@@ -96,9 +96,3 @@ GET        /enter-registered-address                    controllers.register.com
 POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad()
-
-GET        /same-as-registered-address                 controllers.register.company.NonUkCompanySameContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /same-as-registered-address                 controllers.register.company.NonUkCompanySameContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /change-same-as-registered-address          controllers.register.company.NonUkCompanySameContactAddressController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-same-as-registered-address          controllers.register.company.NonUkCompanySameContactAddressController.onSubmit(mode: Mode = CheckMode)
-
