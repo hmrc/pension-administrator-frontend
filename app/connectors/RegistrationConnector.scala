@@ -55,7 +55,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     val url = config.registerWithIdOrganisationUrl
 
     val body = Json.obj(
-      "utr" -> getOrException(utr),
+      "utr" -> getOrException[String](utr),
       "organisationName" -> organisation.organisationName,
       "organisationType" -> organisation.organisationType.toString
     )
