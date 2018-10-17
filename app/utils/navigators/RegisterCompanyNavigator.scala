@@ -36,7 +36,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
-      NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+      whatYouWillNeedRoutes(from.userAnswers)
     case CompanySameContactAddressId =>
       sameContactAddress(NormalMode, from.userAnswers)
     case CompanyContactAddressPostCodeLookupId =>
@@ -123,6 +123,13 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
       case (Some(false), Some(true)) => NavigateTo.save (routes.CompanyContactAddressPostCodeLookupController.onPageLoad (mode) )
       case (Some(false), Some(false)) => NavigateTo.save (routes.CompanyContactAddressController.onPageLoad (mode) )
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def whatYouWillNeedRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(AreYouInUKId) match {
+      case Some(true) => NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+      case _ => NavigateTo.save(routes.NonUkCompanySameContactAddressController.onPageLoad(NormalMode))
     }
   }
 

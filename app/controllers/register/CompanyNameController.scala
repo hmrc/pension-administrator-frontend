@@ -19,9 +19,9 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, CompanyNameFormProvider}
+import forms.CompanyNameFormProvider
 import identifiers.TypedIdentifier
-import models.{BusinessDetails, Mode}
+import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,11 +41,9 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
 
   protected def navigator: Navigator
 
-  protected def formModel: BusinessDetailsFormModel
+  protected val form: Form[String] = new CompanyNameFormProvider().apply()
 
-  protected val form: Form[BusinessDetails] = new BusinessDetailsFormProvider(isUK=true)(formModel)
-
-  protected def get(id: TypedIdentifier[BusinessDetails], viewmodel: CompanyNameViewModel)
+  protected def get(id: TypedIdentifier[String], viewmodel: CompanyNameViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm =
@@ -55,15 +53,15 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
   }
 
   protected def post(
-                      id: TypedIdentifier[BusinessDetails],
+                      id: TypedIdentifier[String],
                       mode: Mode,
                       viewmodel: CompanyNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(companyName(appConfig, formWithErrors, viewmodel))),
-      businessDetails =>
-        cacheConnector.save(request.externalId, id, businessDetails).map {
+      companyName =>
+        cacheConnector.save(request.externalId, id, companyName).map {
           answers =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
         }
