@@ -19,15 +19,18 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import javax.inject.Singleton
+
 import models._
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.OptionUtils._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
+
 
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {
@@ -52,7 +55,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     val url = config.registerWithIdOrganisationUrl
 
     val body = Json.obj(
-      "utr" -> utr.get,
+      "utr" -> getOrException(utr),
       "organisationName" -> organisation.organisationName,
       "organisationType" -> organisation.organisationType.toString
     )
@@ -64,7 +67,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
       json.validate[OrganizationRegisterWithIdResponse] match {
         case JsSuccess(value, _) =>
-          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, utr.get)
+          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, getOrException(utr))
           OrganizationRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }

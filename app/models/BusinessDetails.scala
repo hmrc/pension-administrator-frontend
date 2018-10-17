@@ -17,7 +17,7 @@
 package models
 
 import play.api.libs.json.{Format, Json}
-
+import utils.OptionUtils._
 
 case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: Option[String])
 
@@ -27,5 +27,5 @@ object BusinessDetails {
     BusinessDetails(name, Some(utr))
 
   val unapplyForMandatoryUTR: BusinessDetails => Option[(String, String)] = bd =>
-    Option((bd.companyName, bd.uniqueTaxReferenceNumber.get))
+    Option((bd.companyName, getOrException(bd.uniqueTaxReferenceNumber)))
 }
