@@ -59,7 +59,7 @@ class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
   val messageKeyPrefix = "businessDetails"
 
-  val form = new BusinessDetailsFormProvider()(formModel)
+  val form = new BusinessDetailsFormProvider(isUK=true)(formModel)
 
   val viewModel = BusinessDetailsViewModel(
     postCall = Call("GET", "/"),

@@ -99,7 +99,7 @@ package object utils {
     }
 
     def businessDetails: UserAnswers = {
-      answers.set(BusinessDetailsId)(BusinessDetails("test company", "1111111111")).asOpt.value
+      answers.set(BusinessDetailsId)(BusinessDetails("test company", Some("1111111111"))).asOpt.value
     }
 
     def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {

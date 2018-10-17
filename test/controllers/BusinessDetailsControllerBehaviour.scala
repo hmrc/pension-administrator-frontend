@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -107,8 +107,8 @@ object BusinessDetailsControllerBehaviour {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val testBusinessDetails = BusinessDetails("test company name", "1234567890")
-  val invalidBusinessDetails = BusinessDetails("", "")
+  val testBusinessDetails = BusinessDetails("test company name", Some("1234567890"))
+  val invalidBusinessDetails = BusinessDetails("", Some(""))
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: BusinessDetailsController, form: Form[BusinessDetails])
 
@@ -122,7 +122,7 @@ object BusinessDetailsControllerBehaviour {
 
     val controller = createController(connector, navigator)
 
-    val form = new BusinessDetailsFormProvider().apply(testFormModel)
+    val form = new BusinessDetailsFormProvider(isUK=true).apply(testFormModel)
 
     TestFixture(connector, controller, form)
   }
@@ -134,7 +134,7 @@ object BusinessDetailsControllerBehaviour {
       details =>
         fakeRequest.withFormUrlEncodedBody(
           ("companyName", details.companyName),
-          ("utr", details.uniqueTaxReferenceNumber)
+          ("utr", details.uniqueTaxReferenceNumber.get)
         )
     } getOrElse fakeRequest
 

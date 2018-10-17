@@ -42,7 +42,7 @@ trait ControllerSpecBase extends SpecBase {
   def getCompany: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       BusinessDetailsId.toString ->
-        BusinessDetails("Test Company Name", "Test UTR")
+        BusinessDetails("Test Company Name", Some("Test UTR"))
     )))
 
   def getCompanyName: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
@@ -53,7 +53,7 @@ trait ControllerSpecBase extends SpecBase {
   def getDirector: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       BusinessDetailsId.toString ->
-        BusinessDetails("Test Company Name", "Test UTR"),
+        BusinessDetails("Test Company Name", Some("Test UTR")),
       "directors" -> Json.arr(
         Json.obj(
           DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
@@ -68,12 +68,12 @@ trait ControllerSpecBase extends SpecBase {
     )))
 
   def getPartnership: DataRetrievalAction =
-    UserAnswers().partnershipDetails(details = models.BusinessDetails("Test Partnership Name", "1234567890")).dataRetrievalAction
+    UserAnswers().partnershipDetails(details = models.BusinessDetails("Test Partnership Name", Some("1234567890"))).dataRetrievalAction
 
   def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(
       Json.obj(
-        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", "1234567890"),
+        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
         "partners" -> Json.arr(
           Json.obj(
             PartnerDetailsId.toString ->

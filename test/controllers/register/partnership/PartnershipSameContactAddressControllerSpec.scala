@@ -43,7 +43,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     Some("test post code"), Some("GB")
   )
 
-  private val partnershipDetails = models.BusinessDetails("Test Partnership Name", "1234567890")
+  private val partnershipDetails = models.BusinessDetails("Test Partnership Name", Some("1234567890"))
 
   private val requiredData = UserAnswers()
     .partnershipDetails(partnershipDetails)

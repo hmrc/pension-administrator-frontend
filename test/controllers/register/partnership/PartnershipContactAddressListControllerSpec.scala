@@ -102,7 +102,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(testName, "UTR"),
+    PartnershipDetailsId.toString -> BusinessDetails(testName, Some("UTR")),
     PartnershipContactAddressPostCodeLookupId.toString -> addresses
   )))
 

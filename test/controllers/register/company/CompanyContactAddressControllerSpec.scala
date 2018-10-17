@@ -87,7 +87,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", "Test UTR"),
+        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", Some("Test UTR")),
         CompanyContactAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 

@@ -48,7 +48,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     CompanyAddressId.toString -> address,
-    BusinessDetailsId.toString -> BusinessDetails(companyName, "UTR")
+    BusinessDetailsId.toString -> BusinessDetails(companyName, Some("UTR"))
   )))
 
   val viewModel = SameContactAddressViewModel(

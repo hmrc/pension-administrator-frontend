@@ -18,8 +18,17 @@ package models
 
 import play.api.libs.json.{Format, Json}
 
-case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: String)
+case class BusinessDetails(companyName: String, uniqueTaxReferenceNumber: Option[String]) {
+  lazy val utrOrException: String =
+    uniqueTaxReferenceNumber.getOrElse(throw new RuntimeException("No element found in option"))
+}
 
 object BusinessDetails {
   implicit val format: Format[BusinessDetails] = Json.format[BusinessDetails]
+  val applyForMandatoryUTR: (String, String) => BusinessDetails = (name, utr) =>
+    BusinessDetails(name, Some(utr))
+
+  val unapplyForMandatoryUTR: BusinessDetails => Option[(String, String)] = bd =>
+    Option((bd.companyName, bd.utrOrException))
+
 }

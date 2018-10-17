@@ -99,7 +99,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   )
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, "UTR")
+    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some("UTR"))
   )))
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
