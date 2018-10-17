@@ -122,7 +122,7 @@ object BusinessDetailsControllerBehaviour {
 
     val controller = createController(connector, navigator)
 
-    val form = new BusinessDetailsFormProvider().apply(testFormModel)
+    val form = new BusinessDetailsFormProvider(isUK=true).apply(testFormModel)
 
     TestFixture(connector, controller, form)
   }

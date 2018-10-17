@@ -45,7 +45,7 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
 
   protected def viewModel: BusinessDetailsViewModel
 
-  private lazy val form = new BusinessDetailsFormProvider()(formModel)
+  private lazy val form = new BusinessDetailsFormProvider(isUK=true)(formModel)
 
   def get[I <: TypedIdentifier[BusinessDetails]](id: I)(implicit request: DataRequest[AnyContent]): Result = {
 

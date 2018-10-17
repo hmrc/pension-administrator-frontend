@@ -109,8 +109,8 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
 
 object BusinessDetailsFormProviderSpec {
 
-  def form(): Form[BusinessDetailsMandatory] = {
-    new BusinessDetailsFormProvider().apply(formModel)
+  def form(isUK:Boolean = true): Form[BusinessDetailsMandatory] = {
+    new BusinessDetailsFormProvider(isUK).apply(formModel)
   }
 
   val formModel: BusinessDetailsFormModel =

@@ -21,7 +21,7 @@ import models.BusinessDetailsMandatory
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
-class BusinessDetailsFormProvider extends Mappings with Transforms {
+class BusinessDetailsFormProvider(isUK:Boolean) extends Mappings with Transforms {
 
   def apply(model: BusinessDetailsFormModel): Form[BusinessDetailsMandatory] = Form(
     mapping(
