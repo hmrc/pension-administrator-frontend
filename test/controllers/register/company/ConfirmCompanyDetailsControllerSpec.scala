@@ -263,6 +263,10 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
     def registerWithIdIndividual
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new ConfirmCompanyDetailsController(

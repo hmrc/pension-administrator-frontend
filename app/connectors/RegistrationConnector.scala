@@ -16,12 +16,13 @@
 
 package connectors
 
-import javax.inject.Singleton
+import java.util.UUID.randomUUID
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import javax.inject.Singleton
 import models._
-import play.api.Logger
+import play.Logger
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
@@ -40,6 +41,10 @@ trait RegistrationConnector {
   def registerWithIdIndividual
   (nino: String)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
+
+  def registerWithNoIdOrganisation
+  (name: String, address: Address)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 }
 
 @Singleton
@@ -125,4 +130,30 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   }
 
+  override def registerWithNoIdOrganisation
+  (name: String, address: Address)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+
+    val organisationRegistrant = OrganisationRegistrant(
+      acknowledgementReference = getCorrelationId(hc.requestId.map(_.value)),
+      organisation = OrganisationName(name),
+      address = address,
+      contactDetails = ContactDetailsType(None, None)
+    )
+    http.POST(config.registerWithNoIdOrganisationUrl, Json.toJson(organisationRegistrant)) map { response =>
+      require(response.status == Status.OK, "The only valid response to registerWithNoIdOrganisation is 200 OK")
+    } andThen {
+      case Failure(ex) =>
+        Logger.error("Unable to connect to registerWithNoIdOrganisation", ex)
+        ex
+    }
+  }
+
+
+  def getCorrelationId(requestId: Option[String]): String = {
+    requestId.getOrElse {
+      Logger.error("No Request Id found while calling register with Id")
+      randomUUID.toString
+    }.replaceAll("(govuk-tax-|-)", "").slice(0, 32)
+  }
 }

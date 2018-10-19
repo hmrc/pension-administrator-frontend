@@ -86,6 +86,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
       Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
     }
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
@@ -99,6 +103,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       throw new Exception("registerWithIdIndividual should not be called in this test")
     }
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, registrationConnector: RegistrationConnector = FakeRegistrationConnector) =
