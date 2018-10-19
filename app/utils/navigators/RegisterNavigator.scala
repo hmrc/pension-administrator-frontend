@@ -17,17 +17,21 @@
 package utils.navigators
 
 import connectors.UserAnswersCacheConnector
-import identifiers.register.{BusinessTypeId, DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register._
 import javax.inject.Inject
 import models.NormalMode
-import models.register.{BusinessType, DeclarationWorkingKnowledge}
+import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import utils.{Navigator, UserAnswers}
 
 class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AreYouInUKId =>
+      countryOfRegistrationRoutes(from.userAnswers)
     case BusinessTypeId =>
       businessTypeRoutes(from.userAnswers)
+    case NonUKBusinessTypeId =>
+      nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
     case DeclarationWorkingKnowledgeId =>
       declarationWorkingKnowledgeRoutes(from.userAnswers)
@@ -62,7 +66,35 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     }
   }
 
+  private def countryOfRegistrationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+    userAnswers.get(AreYouInUKId) match {
+      case Some(true) =>
+        NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+      case _ =>
+        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
+    }
+  }
+
+  private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+    userAnswers.get(AreYouInUKId) match {
+      case Some(true) =>
+        NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+      case _ =>
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad())
+    }
+  }
+
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AreYouInUKId =>
+      countryOfRegistrationEditRoutes(from.userAnswers)
     case _ => None
+  }
+
+  private def nonUkBusinessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+    userAnswers.get(NonUKBusinessTypeId) match {
+      case Some(NonUKBusinessType.Company) =>
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
   }
 }
