@@ -18,14 +18,6 @@ package models
 
 import play.api.libs.json._
 
-case class ContactDetailsType(phoneNumber: Option[String],
-                              emailAddress: Option[String])
-
-object ContactDetailsType {
-
-  implicit val format: Format[ContactDetailsType] = Json.format[ContactDetailsType]
-}
-
 case class OrganisationName(organisationName: String)
 
 object OrganisationName {
@@ -34,10 +26,8 @@ object OrganisationName {
 }
 
 case class OrganisationRegistrant(
-                                   acknowledgementReference: String,
                                    organisation: OrganisationName,
-                                   address: Address,
-                                   contactDetails: ContactDetailsType
+                                   address: Address
                                  )
 
 object OrganisationRegistrant {

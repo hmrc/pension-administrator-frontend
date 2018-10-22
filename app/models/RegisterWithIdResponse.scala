@@ -29,6 +29,8 @@ case class OrganizationRegistration(response: OrganizationRegisterWithIdResponse
 
 case class IndividualRegistration(response: IndividualRegisterWithIdResponse, info: RegistrationInfo)
 
+case class RegisterWithNoIdResponse()
+
 object RegisterWithIdResponse {
 
   implicit lazy val readsOrganizationRegisterWithIdResponse: Reads[OrganizationRegisterWithIdResponse] =

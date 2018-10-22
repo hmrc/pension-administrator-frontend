@@ -24,8 +24,8 @@ case class RegistrationInfo(
                              sapNumber: String,
                              noIdentifier: Boolean,
                              customerType: RegistrationCustomerType,
-                             idType: RegistrationIdType,
-                             idNumber: String
+                             idType: Option[RegistrationIdType],
+                             idNumber: Option[String]
                            )
 
 object RegistrationInfo {

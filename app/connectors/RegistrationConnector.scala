@@ -27,10 +27,8 @@ import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
-
 
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {
@@ -44,7 +42,7 @@ trait RegistrationConnector {
 
   def registerWithNoIdOrganisation
   (name: String, address: Address)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
 }
 
 @Singleton
@@ -71,7 +69,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
       json.validate[OrganizationRegisterWithIdResponse] match {
         case JsSuccess(value, _) =>
-          val info = registrationInfo(json, legalStatus, value.address, RegistrationIdType.UTR, utr)
+          val info = registrationInfo(json, legalStatus, RegistrationCustomerType.fromAddress(value.address), Some(RegistrationIdType.UTR), Some(utr))
           OrganizationRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }
@@ -82,6 +80,21 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithIdOrganisation", ex)
         ex
+    }
+
+  }
+
+  private def registrationInfo(
+                                json: JsValue,
+                                legalStatus: RegistrationLegalStatus,
+                                customerType: RegistrationCustomerType,
+                                idType: Option[RegistrationIdType],
+                                idNumber: Option[String]): RegistrationInfo = {
+
+    json.validate[String](readsSapNumber) match {
+      case JsSuccess(sapNumber, _) =>
+        RegistrationInfo(legalStatus, sapNumber, false, customerType, idType, idNumber)
+      case JsError(errors) => throw JsResultException(errors)
     }
 
   }
@@ -99,7 +112,9 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
       json.validate[IndividualRegisterWithIdResponse] match {
         case JsSuccess(value, _) =>
-          val info = registrationInfo(json, RegistrationLegalStatus.Individual, value.address, RegistrationIdType.Nino, nino)
+          val info = registrationInfo(json, RegistrationLegalStatus.Individual,
+            RegistrationCustomerType.fromAddress(value.address),
+            Some(RegistrationIdType.Nino), Some(nino))
           IndividualRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
       }
@@ -114,41 +129,23 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   }
 
-  private def registrationInfo(
-                                json: JsValue,
-                                legalStatus: RegistrationLegalStatus,
-                                address: TolerantAddress,
-                                idType: RegistrationIdType,
-                                idNumber: String): RegistrationInfo = {
-
-    json.validate[String](readsSapNumber) match {
-      case JsSuccess(sapNumber, _) =>
-        val customerType = RegistrationCustomerType.fromAddress(address)
-        RegistrationInfo(legalStatus, sapNumber, false, customerType, idType, idNumber)
-      case JsError(errors) => throw JsResultException(errors)
-    }
-
-  }
-
   override def registerWithNoIdOrganisation
   (name: String, address: Address)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
 
-    val organisationRegistrant = OrganisationRegistrant(
-      acknowledgementReference = getCorrelationId(hc.requestId.map(_.value)),
-      organisation = OrganisationName(name),
-      address = address,
-      contactDetails = ContactDetailsType(None, None)
+    val organisationRegistrant = OrganisationRegistrant(organisation = OrganisationName(name),
+      address = address
     )
     http.POST(config.registerWithNoIdOrganisationUrl, Json.toJson(organisationRegistrant)) map { response =>
       require(response.status == Status.OK, "The only valid response to registerWithNoIdOrganisation is 200 OK")
+      val jsValue = Json.parse(response.body)
+      registrationInfo(jsValue, RegistrationLegalStatus.LimitedCompany, RegistrationCustomerType.NonUK, None, None)
     } andThen {
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithNoIdOrganisation", ex)
         ex
     }
   }
-
 
   def getCorrelationId(requestId: Option[String]): String = {
     requestId.getOrElse {
