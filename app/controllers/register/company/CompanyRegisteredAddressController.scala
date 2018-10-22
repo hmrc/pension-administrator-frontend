@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
@@ -54,8 +54,8 @@ class CompanyRegisteredAddressController @Inject()(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
     nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
 
-  private def addressViewModel(mode: Mode, companyName: String) = ManualAddressViewModel(
-    routes.CompanyRegisteredAddressController.onSubmit(mode),
+  private def addressViewModel(companyName: String) = ManualAddressViewModel(
+    routes.CompanyRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("companyRegisteredNonUKAddress.title"),
     Message("companyRegisteredNonUKAddress.heading", companyName),
@@ -63,17 +63,17 @@ class CompanyRegisteredAddressController @Inject()(
     Some(Message("companyRegisteredNonUKAddress.hintText"))
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      CompanyNameId.retrieve.right.map { companyName =>
-        get(CompanyRegisteredAddressId, addressViewModel(mode, companyName))
+      BusinessDetailsId.retrieve.right.map { details =>
+        get(CompanyAddressId, addressViewModel(details.companyName))
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      CompanyNameId.retrieve.right.map { companyName =>
-        post(CompanyRegisteredAddressId, addressViewModel(mode, companyName), mode)
+      BusinessDetailsId.retrieve.right.map { details =>
+        post(CompanyAddressId, addressViewModel(details.companyName))
       }
   }
 }

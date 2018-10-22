@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.register.company.{BusinessDetailsId, CompanyNameId}
+import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
@@ -43,11 +43,6 @@ trait ControllerSpecBase extends SpecBase {
     Json.obj(
       BusinessDetailsId.toString ->
         BusinessDetails("Test Company Name", Some("Test UTR"))
-    )))
-
-  def getCompanyName: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
-    Json.obj(
-      CompanyNameId.toString ->"Test Company Name"
     )))
 
   def getDirector: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(

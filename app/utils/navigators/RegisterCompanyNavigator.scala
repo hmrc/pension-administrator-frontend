@@ -19,17 +19,20 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
+import identifiers.register.AreYouInUKId
 import identifiers.register.company._
+import models.InternationalRegion._
 import models._
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
+class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, countryOptions: CountryOptions) extends Navigator {
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case BusinessDetailsId =>
-      NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+      regionBasedNameNavigation(from.userAnswers)
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
@@ -51,7 +54,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
     case CompanyPreviousAddressId =>
       NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
     case ContactDetailsId =>
-      NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
+      regionBasedContactDetailsRoutes(from.userAnswers)
     case CompanyDetailsId =>
       NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId =>
@@ -60,6 +63,8 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
       NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
     case CompanyReviewId =>
       NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
+    case CompanyAddressId =>
+      regionBasedNavigation(from.userAnswers)
     case _ => None
   }
 
@@ -95,27 +100,56 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
     NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(CompanyAddressYearsId) match {
-      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-      case Some(AddressYears.OverAYear) => NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
-      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-  }
-
-  private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(CompanyAddressYearsId) match {
-      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
-      case Some(AddressYears.OverAYear) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-  }
-
-  private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(CompanySameContactAddressId) match {
-      case Some(true) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
-      case Some(false) => NavigateTo.save(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))
+    (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
+      case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+      case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
+      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
+  private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
+      case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
+      case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
+      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
+    (answers.get(CompanySameContactAddressId), answers.get(AreYouInUKId)) match {
+      case (Some(true), _) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
+      case (Some(false), Some(true)) => NavigateTo.save (routes.CompanyContactAddressPostCodeLookupController.onPageLoad (mode) )
+      case (Some(false), Some(false)) => NavigateTo.save (routes.CompanyContactAddressController.onPageLoad (mode) )
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(CompanyAddressId) flatMap { address =>
+      countryOptions.regions(address.country.get) match {
+        case UK => NavigateTo.dontSave(controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode))
+        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+        case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+    }
+  }
+
+  private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(AreYouInUKId) match {
+        case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+        case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+  }
+
+  private def regionBasedContactDetailsRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(AreYouInUKId) match {
+      case Some(true) => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
+      case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
 }

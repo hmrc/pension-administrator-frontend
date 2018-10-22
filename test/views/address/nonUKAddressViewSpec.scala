@@ -61,7 +61,7 @@ class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like pageWithTextFields(
         createViewUsingForm,
         messageKeyPrefix,
-        controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit(NormalMode).url,
+        controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit().url,
     "addressLine1", "addressLine2", "addressLine3", "addressLine4"
     )
 
