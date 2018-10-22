@@ -22,7 +22,3 @@ import models.TolerantIndividual
 case object IndividualDetailsId extends TypedIdentifier[TolerantIndividual] {
   override def toString: String = "individualDetails"
 }
-
-case object IndividualNameId extends TypedIdentifier[String] {
-  override def toString: String = "individualDetails"
-}

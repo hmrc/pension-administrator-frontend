@@ -65,8 +65,8 @@ POST        /change-is-this-the-contact-address     controllers.register.individ
 GET         /based-in-uk                            controllers.register.individual.AreYouInUKController.onPageLoad()
 POST        /based-in-uk                            controllers.register.individual.AreYouInUKController.onSubmit()
 
-GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad(mode: Mode = CheckMode)
-POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit(mode: Mode = CheckMode)
+GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
+POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
+GET         /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
+POST        /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
 

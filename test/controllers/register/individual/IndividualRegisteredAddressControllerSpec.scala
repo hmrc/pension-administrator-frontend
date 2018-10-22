@@ -21,8 +21,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
-import models.{Address, NormalMode}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
+import models.{Address, TolerantIndividual}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -43,9 +43,9 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
-  val companyName = "Test Company Name"
+  val individualName = "TestFirstName TestLastName"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompanyName) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
@@ -59,10 +59,10 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     )
 
   private def viewModel = ManualAddressViewModel(
-    routes.IndividualRegisteredAddressController.onSubmit(NormalMode),
+    routes.IndividualRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("individualRegisteredNonUKAddress.title"),
-    Message("individualRegisteredNonUKAddress.heading", companyName),
+    Message("individualRegisteredNonUKAddress.heading", individualName),
     None,
     Some(Message("individualRegisteredNonUKAddress.hintText"))
   )
@@ -74,10 +74,10 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       viewModel
     )(fakeRequest, messages).toString()
 
-  "CompanyRegisteredAddress Controller" must {
+  "IndividualRegisteredAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -85,11 +85,11 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        CompanyNameId.toString -> "Test Company Name",
-        CompanyRegisteredAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN"))
+        IndividualDetailsId.toString -> TolerantIndividual(Some("fName"), Some("mName"), Some("fName")),
+        IndividualAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "IN")))
     }
@@ -101,7 +101,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
         "country" -> "IN"
       )
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -111,7 +111,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -120,14 +120,14 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     "redirect to Session Expired" when {
       "no existing data is found" when {
         "GET" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+          val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

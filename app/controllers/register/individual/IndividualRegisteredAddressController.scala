@@ -22,8 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.CompanyNameId
-import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId, IndividualNameId, IndividualNonUkAddressId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
@@ -31,7 +30,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.HtmlFormat
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -41,7 +40,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                override val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
                                                override val dataCacheConnector: UserAnswersCacheConnector,
-                                               @RegisterCompany override val navigator: Navigator,
+                                               @Individual override val navigator: Navigator,
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
@@ -55,8 +54,8 @@ class IndividualRegisteredAddressController @Inject()(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
     nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
 
-  private def addressViewModel(mode: Mode, companyName: String) = ManualAddressViewModel(
-    routes.IndividualRegisteredAddressController.onSubmit(mode),
+  private def addressViewModel(companyName: String) = ManualAddressViewModel(
+    routes.IndividualRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("individualRegisteredNonUKAddress.title"),
     Message("individualRegisteredNonUKAddress.heading", companyName),
@@ -64,17 +63,17 @@ class IndividualRegisteredAddressController @Inject()(
     Some(Message("individualRegisteredNonUKAddress.hintText"))
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      IndividualNameId.retrieve.right.map { individualName =>
-        get(IndividualNonUkAddressId, addressViewModel(mode, individualName))
+      IndividualDetailsId.retrieve.right.map { individual =>
+        get(IndividualAddressId, addressViewModel(individual.fullName))
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      IndividualNameId.retrieve.right.map { individualName =>
-        post(IndividualNonUkAddressId, addressViewModel(mode, individualName), mode)
+      IndividualDetailsId.retrieve.right.map { individual =>
+        post(IndividualAddressId, addressViewModel(individual.fullName))
       }
   }
 }
