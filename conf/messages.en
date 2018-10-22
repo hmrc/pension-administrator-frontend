@@ -764,3 +764,7 @@ registerAsBusiness.title = Business type
 registerAsBusiness.heading = Do you want to register a business as the pension scheme administrator (PSA)?
 registerAsBusiness.error.required = You must make a selection
 registerAsBusiness.no.label = No - I want to register in my own name
+
+individualRegisteredNonUKAddress.title = Enter the address
+individualRegisteredNonUKAddress.heading = What is {0}’s address?
+individualRegisteredNonUKAddress.hintText = This is the company’s address outside of the UK.
