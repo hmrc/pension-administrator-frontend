@@ -26,15 +26,11 @@ import utils.{Navigator, UserAnswers}
 class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AreYouInUKId =>
-      countryOfRegistrationRoutes(from.userAnswers)
-    case BusinessTypeId =>
-      businessTypeRoutes(from.userAnswers)
-    case NonUKBusinessTypeId =>
-      nonUkBusinessTypeRoutes(from.userAnswers)
+    case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
+    case BusinessTypeId => businessTypeRoutes(from.userAnswers)
+    case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
-    case DeclarationWorkingKnowledgeId =>
-      declarationWorkingKnowledgeRoutes(from.userAnswers)
+    case DeclarationWorkingKnowledgeId => declarationWorkingKnowledgeRoutes(from.userAnswers)
     case DeclarationFitAndProperId => NavigateTo.dontSave(controllers.register.routes.ConfirmationController.onPageLoad())
     case _ => None
   }
@@ -61,8 +57,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         NavigateTo.save(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
       case Some(DeclarationWorkingKnowledge.Adviser) =>
         NavigateTo.save(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode))
-      case None =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
@@ -85,8 +80,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   }
 
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AreYouInUKId =>
-      countryOfRegistrationEditRoutes(from.userAnswers)
+    case AreYouInUKId => countryOfRegistrationEditRoutes(from.userAnswers)
     case _ => None
   }
 

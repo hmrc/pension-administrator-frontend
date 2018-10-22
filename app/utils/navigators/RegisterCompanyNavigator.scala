@@ -131,7 +131,7 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
 
   private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(CompanyAddressId) flatMap { address =>
-      countryOptions.regions(address.country.get) match {
+      countryOptions.regions(address.country.getOrElse("")) match {
         case UK => NavigateTo.dontSave(controllers.register.routes.AreYouInUKController.onPageLoad(CheckMode))
         case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
         case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())

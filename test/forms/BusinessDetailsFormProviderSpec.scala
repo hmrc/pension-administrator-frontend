@@ -75,7 +75,7 @@ class BusinessDetailsFormProviderSpec extends StringFieldBehaviours with Constra
     behave like mandatoryField(
       form(),
       fieldName,
-      requiredError = FormError(fieldName, formModel.utrRequiredMsg)
+      requiredError = FormError(fieldName, formModel.utrRequiredMsg.getOrElse(""))
     )
 
     behave like fieldWithRegex(
@@ -120,7 +120,7 @@ object BusinessDetailsFormProviderSpec {
       companyNameLengthMsg = "businessDetails.error.companyName.length",
       companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
       utrMaxLength = 10,
-      utrRequiredMsg = "businessDetails.error.utr.required",
+      utrRequiredMsg = Some("businessDetails.error.utr.required"),
       utrLengthMsg = "businessDetails.error.utr.length",
       utrInvalidMsg = "businessDetails.error.utr.invalid"
     )

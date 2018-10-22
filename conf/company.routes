@@ -92,7 +92,7 @@ POST       /change-company-name                         controllers.register.com
 
 GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad()
 POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit()
-GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad()
-POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit()
+GET        /change-enter-registered-address             controllers.register.company.CompanyRegisteredAddressController.onPageLoad()
+POST       /change-enter-registered-address             controllers.register.company.CompanyRegisteredAddressController.onSubmit()
 
 GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad()

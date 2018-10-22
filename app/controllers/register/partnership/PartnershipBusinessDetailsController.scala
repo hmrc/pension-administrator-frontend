@@ -56,7 +56,7 @@ class PartnershipBusinessDetailsController @Inject()(val appConfig: FrontendAppC
       companyNameLengthMsg = "partnershipBusinessDetails.error.partnershipName.length",
       companyNameInvalidMsg = "partnershipBusinessDetails.error.partnershipName.invalid",
       utrMaxLength = 10,
-      utrRequiredMsg = "partnershipBusinessDetails.error.utr.required",
+      utrRequiredMsg = Some("partnershipBusinessDetails.error.utr.required"),
       utrLengthMsg = "partnershipBusinessDetails.error.utr.length",
       utrInvalidMsg = "partnershipBusinessDetails.error.utr.invalid"
     )

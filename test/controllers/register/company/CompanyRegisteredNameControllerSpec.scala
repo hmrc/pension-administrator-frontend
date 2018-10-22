@@ -40,9 +40,9 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
     companyNameLengthMsg = "companyName.error.length",
     companyNameInvalidMsg = "companyName.error.invalid",
     utrMaxLength = 10,
-    utrRequiredMsg = "",
-    utrLengthMsg = "",
-    utrInvalidMsg = ""
+    utrRequiredMsg = None,
+    utrLengthMsg = "businessDetails.error.utr.length",
+    utrInvalidMsg = "businessDetails.error.utr.invalid"
   )
 
   val formProvider = new BusinessDetailsFormProvider(isUK = false)

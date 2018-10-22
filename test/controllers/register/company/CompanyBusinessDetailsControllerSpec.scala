@@ -63,7 +63,7 @@ object CompanyBusinessDetailsControllerSpec {
       companyNameLengthMsg = "businessDetails.error.companyName.length",
       companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
       utrMaxLength = 10,
-      utrRequiredMsg = "businessDetails.error.utr.required",
+      utrRequiredMsg = Some("businessDetails.error.utr.required"),
       utrLengthMsg = "businessDetails.error.utr.length",
       utrInvalidMsg = "businessDetails.error.utr.invalid"
     )
