@@ -37,7 +37,7 @@ case class OrganisationRegistrant(
                                    acknowledgementReference: String,
                                    organisation: OrganisationName,
                                    address: Address,
-                                   contactDetails: ContactDetails
+                                   contactDetails: ContactDetailsType
                                  )
 
 object OrganisationRegistrant {
