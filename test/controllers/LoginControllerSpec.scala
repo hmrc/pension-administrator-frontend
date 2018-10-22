@@ -30,10 +30,6 @@ import scala.concurrent.Future
 
 class LoginControllerSpec extends ControllerSpecBase {
 
-   val appConfig = new GuiceApplicationBuilder().configure(
-    "features.non-uk-journeys" -> false
-  ).build().injector.instanceOf[FrontendAppConfig]
-
   def loginController(appConfig: FrontendAppConfig = frontendAppConfig, userType: UserType = UserType.Organisation) = new LoginController(
     appConfig, messagesApi, FakeUserAnswersCacheConnector, fakeAuthAction(userType)
   )
@@ -47,11 +43,28 @@ class LoginControllerSpec extends ControllerSpecBase {
 
   "Login Controller" must {
 
-    "redirect to Individual details correct page for an Individual" in {
-      val result = loginController(userType = UserType.Individual).onPageLoad(fakeRequest)
+    "redirect to Individual details correct page for an Individual when non-uk journeys are toggled off" in {
+
+      val appConfig = new GuiceApplicationBuilder().configure(
+        "features.non-uk-journeys" -> false
+      ).build().injector.instanceOf[FrontendAppConfig]
+
+      val result = loginController(appConfig, userType = UserType.Individual).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode).url)
+    }
+
+    "redirect to are you in the UK page for Individual when non-uk journeys are toggled on" in {
+
+      val appConfig = new GuiceApplicationBuilder().configure(
+        "features.non-uk-journeys" -> true
+      ).build().injector.instanceOf[FrontendAppConfig]
+
+      val result = loginController(appConfig, userType = UserType.Individual).onPageLoad(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(register.individual.routes.AreYouInUKController.onPageLoad().url)
     }
 
     "redirect to business type page for an Organisation when non-uk journeys are toggled off" in {
