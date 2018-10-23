@@ -31,13 +31,6 @@ case class OrganisationRegistrant(
                                  )
 
 object OrganisationRegistrant {
-
   implicit val format: Format[OrganisationRegistrant] = Json.format[OrganisationRegistrant]
-
 }
-
-
-
-
-
 

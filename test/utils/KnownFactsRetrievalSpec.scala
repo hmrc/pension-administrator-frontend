@@ -51,8 +51,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
             sapNumber,
             false,
             RegistrationCustomerType.UK,
-            RegistrationIdType.Nino,
-            nino
+            Some(RegistrationIdType.Nino),
+            Some(nino)
           )
 
           implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -91,8 +91,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.UK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -128,8 +128,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -167,8 +167,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -205,8 +205,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.UK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -242,8 +242,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -281,8 +281,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(

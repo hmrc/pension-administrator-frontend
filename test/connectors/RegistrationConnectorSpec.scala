@@ -73,8 +73,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.UK,
-      RegistrationIdType.UTR,
-      utr
+      Some(RegistrationIdType.UTR),
+      Some(utr)
     )
 
     server.stubFor(
@@ -101,8 +101,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.NonUK,
-      RegistrationIdType.UTR,
-      utr
+      Some(RegistrationIdType.UTR),
+      Some(utr)
     )
 
     server.stubFor(
@@ -231,8 +231,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.UK,
-      RegistrationIdType.Nino,
-      nino
+      Some(RegistrationIdType.Nino),
+      Some(nino)
     )
 
     server.stubFor(
@@ -259,8 +259,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.NonUK,
-      RegistrationIdType.Nino,
-      nino
+      Some(RegistrationIdType.Nino),
+      Some(nino)
     )
 
     server.stubFor(
@@ -370,14 +370,14 @@ class RegistrationConnectorSpec()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validNonUkOrganizationResponse))
         )
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress).map { _ =>
-      succeed
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress).map { registration =>
+      registration.sapNumber shouldBe sapNumber
     }
-
   }
 
 
@@ -451,6 +451,11 @@ object RegistrationConnectorSpec extends OptionValues {
     "addressLine4" -> address.addressLine4.value,
     "countryCode" -> address.country.value,
     "postalCode" -> address.postcode.value
+  )
+
+  private def validNonUkOrganizationResponse = Json.obj(
+    "safeId" -> "",
+    "sapNumber" -> sapNumber
   )
 
   private def validOrganizationResponse(uk: Boolean) = Json.obj(

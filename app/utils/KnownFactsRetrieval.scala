@@ -35,13 +35,13 @@ class KnownFactsRetrieval {
 
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
     request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
-      registrationInfo.legalStatus  match {
-        case Individual =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, registrationInfo.idNumber))))
+      registrationInfo.legalStatus match {
+        case Individual if registrationInfo.customerType equals UK =>
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, registrationInfo.idNumber.getOrElse("")))))
         case LimitedCompany if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, registrationInfo.idNumber))))
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, registrationInfo.idNumber.getOrElse("")))))
         case Partnership if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, registrationInfo.idNumber))))
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, registrationInfo.idNumber.getOrElse("")))))
         case LimitedCompany | Partnership =>
           for {
             address <- request.userAnswers.get(ConfirmCompanyAddressId)
