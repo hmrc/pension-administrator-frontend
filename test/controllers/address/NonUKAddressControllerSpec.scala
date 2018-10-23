@@ -16,13 +16,12 @@
 
 package controllers.address
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import forms.AddressFormProvider
+import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
 import forms.address.NonUKAddressFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.RegistrationInfoId
 import models._
 import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
@@ -35,12 +34,13 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class NonUKAddressControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
@@ -127,7 +127,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
   "post" must {
 
     "redirect to the postCall on valid data request" which {
-      "will save address to answers" in {
+      "will save address and registration info to answers" in {
 
         val onwardRoute = Call("GET", "/")
 
@@ -136,7 +136,8 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
           bind[UserAnswersCacheConnector].to(FakeUserAnswersCacheConnector),
-          bind[Navigator].to(navigator)
+          bind[Navigator].to(navigator),
+          bind[RegistrationConnector].to(fakeRegistrationConnector)
         )) {
           app =>
 
@@ -154,6 +155,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val address = Address("value 1", "value 2", None, None, None, "IN")
 
             FakeUserAnswersCacheConnector.verify(fakeAddressId, address.toTolerantAddress)
+            FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
         }
 
       }
@@ -195,12 +197,37 @@ object NonUKAddressControllerSpec {
     override def toString = "fakeAddressId"
   }
   val externalId: String = "test-external-id"
+  val companyName = "test company name"
+  val sapNumber = "test-sap-number"
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany,
+    sapNumber,
+    false,
+    RegistrationCustomerType.NonUK,
+    None,
+    None
+  )
+
+  private def fakeRegistrationConnector = new RegistrationConnector {
+    override def registerWithIdOrganisation
+    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
+
+    override def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
+
+    override def registerWithIdIndividual
+    (nino: String)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+  }
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
+                                  override val registrationConnector: RegistrationConnector,
                                   override val navigator: Navigator,
                                   formProvider: NonUKAddressFormProvider
                                 ) extends NonUKAddressController {
@@ -209,7 +236,7 @@ object NonUKAddressControllerSpec {
       get(fakeAddressId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
 
     def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(fakeAddressId, viewModel)(DataRequest(request, externalId, psaUser, answers))
+      post(companyName, fakeAddressId, viewModel)(DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
   }

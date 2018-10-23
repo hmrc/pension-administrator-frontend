@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
@@ -37,16 +37,17 @@ import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
 class CompanyRegisteredAddressController @Inject()(
-                                               override val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               override val dataCacheConnector: UserAnswersCacheConnector,
-                                               @RegisterCompany override val navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: NonUKAddressFormProvider,
-                                               val countryOptions: CountryOptions
-                                             ) extends NonUKAddressController with Retrievals{
+                                                    override val appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    override val dataCacheConnector: UserAnswersCacheConnector,
+                                                    override val registrationConnector: RegistrationConnector,
+                                                    @RegisterCompany override val navigator: Navigator,
+                                                    authenticate: AuthAction,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: NonUKAddressFormProvider,
+                                                    val countryOptions: CountryOptions
+                                                  ) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
@@ -73,7 +74,7 @@ class CompanyRegisteredAddressController @Inject()(
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right.map { details =>
-        post(CompanyAddressId, addressViewModel(details.companyName))
+        post(details.companyName, CompanyAddressId, addressViewModel(details.companyName))
       }
   }
 }
