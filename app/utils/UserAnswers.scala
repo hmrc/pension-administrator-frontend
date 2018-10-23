@@ -24,6 +24,7 @@ import models.{Index, NormalMode, PersonDetails}
 import play.api.libs.json._
 import viewmodels.Person
 
+import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
@@ -127,6 +128,23 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     JsLens.fromPath(id.path)
       .remove(json)
       .flatMap(json => id.cleanup(None, UserAnswers(json)))
+  }
+
+  def removeAllOf[I <: TypedIdentifier.PathDependent](ids: List[I]): JsResult[UserAnswers] = {
+
+    @tailrec
+    def removeRec[II <: TypedIdentifier.PathDependent](localIds: List[II], result: JsResult[UserAnswers]): JsResult[UserAnswers] = {
+      result match {
+        case JsSuccess(value, path) =>
+          localIds match {
+            case Nil => result
+            case id :: tail => removeRec(tail, result.flatMap(_.remove(id)))
+          }
+        case failure => failure
+      }
+    }
+
+    removeRec(ids, JsSuccess(this))
   }
 
 }
