@@ -19,16 +19,16 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import forms.CompanyNameFormProvider
+import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
-import models.Mode
 import models.requests.DataRequest
+import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import viewmodels.CompanyNameViewModel
+import viewmodels.{BusinessDetailsViewModel, CompanyNameViewModel}
 import views.html.companyName
 
 import scala.concurrent.Future
@@ -41,9 +41,11 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
 
   protected def navigator: Navigator
 
-  protected val form: Form[String] = new CompanyNameFormProvider().apply()
+  protected def formModel: BusinessDetailsFormModel
 
-  protected def get(id: TypedIdentifier[String], viewmodel: CompanyNameViewModel)
+  private lazy val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
+
+  protected def get(id: TypedIdentifier[BusinessDetails], viewmodel: CompanyNameViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm =
@@ -53,8 +55,7 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
   }
 
   protected def post(
-                      id: TypedIdentifier[String],
-                      mode: Mode,
+                      id: TypedIdentifier[BusinessDetails],
                       viewmodel: CompanyNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
@@ -63,8 +64,9 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
       companyName =>
         cacheConnector.save(request.externalId, id, companyName).map {
           answers =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+            Redirect(navigator.nextPage(id, NormalMode, UserAnswers(answers)))
         }
     )
   }
+
 }

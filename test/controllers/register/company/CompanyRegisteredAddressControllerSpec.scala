@@ -21,8 +21,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{CompanyNameId, CompanyRegisteredAddressId}
-import models.{Address, NormalMode}
+import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import models.{Address, BusinessDetails, NormalMode}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -45,7 +45,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
   val fakeAuditService = new StubSuccessfulAuditService()
   val companyName = "Test Company Name"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompanyName) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
@@ -59,7 +59,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
     )
 
   private def viewModel = ManualAddressViewModel(
-    routes.CompanyRegisteredAddressController.onSubmit(NormalMode),
+    routes.CompanyRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("companyRegisteredNonUKAddress.title"),
     Message("companyRegisteredNonUKAddress.heading", companyName),
@@ -77,7 +77,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
   "CompanyRegisteredAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -85,11 +85,11 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        CompanyNameId.toString -> "Test Company Name",
-        CompanyRegisteredAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN"))
+        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None),
+        CompanyAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "IN")))
     }
@@ -101,7 +101,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
         "country" -> "IN"
       )
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -111,7 +111,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -120,14 +120,14 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
     "redirect to Session Expired" when {
       "no existing data is found" when {
         "GET" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+          val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
