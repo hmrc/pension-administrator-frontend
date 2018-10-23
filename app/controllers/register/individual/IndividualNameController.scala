@@ -14,49 +14,68 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.individual
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.PersonDetailsController
 import controllers.actions._
-import identifiers.register.company.directors.DirectorDetailsId
+import forms.register.individual.IndividualNameFormProvider
+import identifiers.register.individual.IndividualDetailsId
 import javax.inject.Inject
-import models.{Index, Mode}
-import play.api.i18n.MessagesApi
+import models.{Mode, TolerantIndividual}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
-import utils.annotations.CompanyDirector
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.Individual
+import utils.{Navigator, UserAnswers}
 import viewmodels.{Message, PersonDetailsViewModel}
+import views.html.register.individual.individualName
 
-class DirectorDetailsController @Inject()(
-                                           val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           val dataCacheConnector: UserAnswersCacheConnector,
-                                           @CompanyDirector val navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction
-                                         ) extends PersonDetailsController {
+import scala.concurrent.Future
 
-  private[directors] def viewModel(mode: Mode, index: Index) =
+class IndividualNameController @Inject()(
+                                          val appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          val dataCacheConnector: UserAnswersCacheConnector,
+                                          @Individual val navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider : IndividualNameFormProvider
+                                        ) extends FrontendController with I18nSupport {
+
+
+  val form : Form[TolerantIndividual] =  formProvider()
+
+  private[individual] def viewModel(mode: Mode) =
     PersonDetailsViewModel(
-      title = "directorDetails.title",
-      heading = Message("directorDetails.title"),
-      postCall = routes.DirectorDetailsController.onSubmit(mode, index)
+      title = "individualName.title",
+      heading = Message("individualName.title"),
+      postCall = routes.IndividualNameController.onSubmit(mode)
     )
 
-  private[directors] def id(index: Index): DirectorDetailsId =
-    DirectorDetailsId(index)
-
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      get(id(index), viewModel(mode, index))
+
+      val preparedForm = request.userAnswers.get(IndividualDetailsId) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
+
+      Ok(individualName(appConfig, preparedForm, viewModel(mode)))
   }
 
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(id(index), viewModel(mode, index), mode)
+
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(individualName(appConfig, formWithErrors, viewModel(mode)))),
+        value =>
+          dataCacheConnector.save(request.externalId, IndividualDetailsId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(IndividualDetailsId, mode, UserAnswers(cacheMap))))
+      )
   }
 
 }

@@ -764,3 +764,11 @@ registerAsBusiness.title = Business type
 registerAsBusiness.heading = Do you want to register a business as the pension scheme administrator (PSA)?
 registerAsBusiness.error.required = You must make a selection
 registerAsBusiness.no.label = No - I want to register in my own name
+
+individualName.title = What is your name?
+individualName.error.firstName.required = Enter the first name
+individualName.error.firstName.length = The first name cannot be more than 35 characters
+individualName.error.firstName.invalid = The first name must start with an alphabetic character
+individualName.error.lastName.required = Enter the last name
+individualName.error.lastName.length = The last name cannot be more than 35 characters
+individualName.error.lastName.invalid = The last name must start with an alphabetic character

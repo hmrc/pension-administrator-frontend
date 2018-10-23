@@ -42,19 +42,8 @@
         )
 
         @components.input_text(
-            field = form("middleName"),
-            label = messages("personDetails.middleName")
-        )
-
-        @components.input_text(
             field = form("lastName"),
             label = messages("personDetails.lastName")
-        )
-
-        @components.input_date(
-            field = form("dateOfBirth"),
-            label = messages("common.dateOfBirth"),
-            hint = Some(messages("common.dateOfBirth.hint"))
         )
 
         @components.submit_button()

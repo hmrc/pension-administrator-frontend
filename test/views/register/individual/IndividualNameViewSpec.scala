@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package views
+package views.register.individual
 
-import forms.PersonDetailsFormProvider
-import models.{NormalMode, PersonDetails}
+import forms.register.individual.IndividualNameFormProvider
+import models.{NormalMode, TolerantIndividual}
 import play.api.data.Form
 import play.api.mvc.Call
 import viewmodels.{Message, PersonDetailsViewModel}
 import views.behaviours.QuestionViewBehaviours
-import views.html.personDetails
+import views.html.register.individual.individualName
 
-class PersonDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
+class IndividualNameViewSpec extends QuestionViewBehaviours[TolerantIndividual] {
 
-  private val messageKeyPrefix = "directorDetails"
+  private val messageKeyPrefix = "individualName"
 
-  override val form = new PersonDetailsFormProvider()()
+  override val form = new IndividualNameFormProvider()()
 
   private lazy val viewModel =
     PersonDetailsViewModel(
-      title = "directorDetails.title",
-      heading = Message("directorDetails.heading"),
+      title = "individualName.title",
+      heading = Message("individualName.heading"),
       postCall = Call("POST", "http://www.test.com")
     )
 
-  private def createView = () => personDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createView = () => individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => personDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  "PersonDetails view" must {
+  "IndividualName view" must {
 
     behave like normalPage(createView, messageKeyPrefix)
 
@@ -52,19 +52,10 @@ class PersonDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.company.directors.routes.DirectorDetailsController.onSubmit(NormalMode, 0).url,
+      controllers.register.individual.routes.IndividualNameController.onSubmit(NormalMode).url,
       "firstName",
-      "middleName",
       "lastName"
     )
-
-    behave like pageWithDateField(
-      createViewUsingForm,
-      "dateOfBirth",
-      messages("common.dateOfBirth"),
-      Some(messages("common.dateOfBirth.hint"))
-    )
-
   }
 
 }

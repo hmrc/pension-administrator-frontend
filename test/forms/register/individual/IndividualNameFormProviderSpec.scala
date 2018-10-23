@@ -16,11 +16,9 @@
 
 package forms.register.individual
 
-import java.time.LocalDate
-
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import models.{PersonDetails, TolerantAddress, TolerantIndividual}
+import models.TolerantIndividual
 import org.scalatest.Matchers
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -29,16 +27,14 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Constrai
 
   val form = new IndividualNameFormProvider()()
 
-  // scalastyle:off magic.number
   private val johnDoe = TolerantIndividual(Some("John Doherty"), None, Some("Doe"))
-  // scalastyle:on magic.number
 
   ".firstName" must {
 
     val fieldName = "firstName"
-    val requiredKey = "personDetails.error.firstName.required"
-    val lengthKey = "personDetails.error.firstName.length"
-    val invalidKey = "personDetails.error.firstName.invalid"
+    val requiredKey = "individualName.error.firstName.required"
+    val lengthKey = "individualName.error.firstName.length"
+    val invalidKey = "individualName.error.firstName.invalid"
     val maxLength = IndividualNameFormProvider.firstNameLength
 
     behave like fieldThatBindsValidData(
@@ -86,9 +82,9 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Constrai
   ".lastName" must {
 
     val fieldName = "lastName"
-    val requiredKey = "personDetails.error.lastName.required"
-    val lengthKey = "personDetails.error.lastName.length"
-    val invalidKey = "personDetails.error.lastName.invalid"
+    val requiredKey = "individualName.error.lastName.required"
+    val lengthKey = "individualName.error.lastName.length"
+    val invalidKey = "individualName.error.lastName.invalid"
     val maxLength = IndividualNameFormProvider.lastNameLength
 
     behave like fieldThatBindsValidData(
@@ -129,8 +125,9 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Constrai
     )
   }
 
-  "PersonDetailsFormProvider" must {
-    "apply PersonDetails correctly" in {
+  "IndividualNameFormProvider" must {
+
+    "applyNonUK TolerantIndividual correctly" in {
       val details = form.bind(
         Map(
           "firstName" -> johnDoe.firstName.get,
@@ -142,10 +139,10 @@ class IndividualNameFormProviderSpec extends StringFieldBehaviours with Constrai
       details.lastName shouldBe johnDoe.lastName
     }
 
-    "unapply PersonDetails corectly" in {
+    "unapplyNonUK TolerantIndividual corectly" in {
       val filled = form.fill(johnDoe)
-      filled("firstName").value.value shouldBe johnDoe.firstName
-      filled("lastName").value.value shouldBe johnDoe.lastName
+      filled("firstName").value shouldBe johnDoe.firstName
+      filled("lastName").value shouldBe johnDoe.lastName
     }
   }
 

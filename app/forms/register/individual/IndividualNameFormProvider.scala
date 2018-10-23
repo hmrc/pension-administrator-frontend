@@ -27,23 +27,23 @@ class IndividualNameFormProvider @Inject() extends Mappings with Transforms {
   def apply(): Form[TolerantIndividual] = Form(
     mapping(
       "firstName" ->
-        text("personDetails.error.firstName.required")
+        text("individualName.error.firstName.required")
           .verifying(
             firstError(
               maxLength(IndividualNameFormProvider.firstNameLength,
-                "personDetails.error.firstName.length"
+                "individualName.error.firstName.length"
               ),
-              name("personDetails.error.firstName.invalid")
+              name("individualName.error.firstName.invalid")
             )
           ),
       "lastName" ->
-        text("personDetails.error.lastName.required")
+        text("individualName.error.lastName.required")
           .verifying(
             firstError(
               maxLength(IndividualNameFormProvider.lastNameLength,
-                "personDetails.error.lastName.length"
+                "individualName.error.lastName.length"
               ),
-              name("personDetails.error.lastName.invalid")
+              name("individualName.error.lastName.invalid")
             )
           )
     )(TolerantIndividual.applyNonUK)(TolerantIndividual.unapplyNonUK)

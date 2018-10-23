@@ -16,26 +16,25 @@
 
 package controllers.register.individual
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.individual.IndividualDateOfBirthFormProvider
-import identifiers.register.individual.IndividualDateOfBirthId
-import models.NormalMode
+import forms.register.individual.IndividualNameFormProvider
+import identifiers.register.individual.IndividualDetailsId
+import models.{NormalMode, TolerantIndividual}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.{DateHelper, FakeNavigator}
-import views.html.register.individual.individualDateOfBirth
+import utils.FakeNavigator
+import viewmodels.{Message, PersonDetailsViewModel}
+import views.html.register.individual.individualName
 
-class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
+class IndividualNameControllerSpec extends ControllerSpecBase {
 
-  import IndividualDateOfBirthControllerSpec._
+  import IndividualNameControllerSpec._
 
-  "IndividualDateOfBirth Controller" must {
+  "IndividualNameController" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -45,7 +44,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(IndividualDateOfBirthId.toString -> testAnswer)
+      val validData = Json.obj(IndividualDetailsId.toString -> testAnswer)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -55,9 +54,8 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("dateOfBirth.day", "9"),
-        ("dateOfBirth.month", "6"),
-        ("dateOfBirth.year", "1862"))
+        ("firstName", "fName"),
+        ("lastName", "lName"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -66,8 +64,8 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("dateOfBirth", ""))
-      val boundForm = form.bind(Map("dateOfBirth" -> ""))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", ""),("lastName", ""))
+      val boundForm = form.bind(Map("firstName" -> "", "lastName" -> ""))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -83,7 +81,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("dateOfBirth", DateHelper.formatDate(testAnswer)))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", ""),("lastName", ""))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
@@ -92,15 +90,21 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
   }
 }
 
-object IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
+
+object IndividualNameControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new IndividualDateOfBirthFormProvider()
+  private val formProvider = new IndividualNameFormProvider()
   private val form = formProvider()
 
+  def viewModel = PersonDetailsViewModel(title = "individualName.title",
+                                         heading = Message("individualName.title"),
+                                         postCall = controllers.register.individual.routes.IndividualNameController.onSubmit(NormalMode)
+                                        )
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualDateOfBirthController(frontendAppConfig,
+    new IndividualNameController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -110,7 +114,9 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form): String = individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
-  private val testAnswer = LocalDate.now()
+  private val testAnswer = TolerantIndividual(Some("John"), None, Some("Doe"))
 }
+
+
