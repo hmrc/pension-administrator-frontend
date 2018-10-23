@@ -42,9 +42,9 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       companyNameLengthMsg = "companyName.error.length",
       companyNameInvalidMsg = "companyName.error.invalid",
       utrMaxLength = 10,
-      utrRequiredMsg = "",
-      utrLengthMsg = "",
-      utrInvalidMsg = ""
+      utrRequiredMsg = None,
+      utrLengthMsg = "businessDetails.error.utr.length",
+      utrInvalidMsg = "businessDetails.error.utr.invalid"
     )
 
   val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
