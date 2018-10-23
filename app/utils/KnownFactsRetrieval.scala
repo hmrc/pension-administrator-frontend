@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.register.RegistrationInfoId
-import identifiers.register.company.ConfirmCompanyAddressId
+import identifiers.register.company.CompanyAddressId
 import models.RegistrationCustomerType.{NonUK, UK}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.register.{KnownFact, KnownFacts}
@@ -45,13 +45,10 @@ class KnownFactsRetrieval {
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
         case (LimitedCompany | Partnership, _, NonUK) =>
           for {
-            address <- request.userAnswers.get(ConfirmCompanyAddressId)
+            address <- request.userAnswers.get(CompanyAddressId)
             country <- address.country
           } yield {
-            val knownFacts = KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
-            address.postcode.fold(knownFacts) { postalCode =>
-              KnownFacts(knownFacts.identifiers, knownFacts.verifiers + KnownFact(postalKey, transformNonUKPostalCode(postalCode)))
-            }
+            KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
           }
         case _ => None
       }
