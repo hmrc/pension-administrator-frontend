@@ -69,8 +69,8 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
       address => {
         for {
           registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
-          _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
           cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
+          _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
         } yield {
           Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
         }

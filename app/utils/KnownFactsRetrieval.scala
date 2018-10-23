@@ -18,7 +18,7 @@ package utils
 
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.ConfirmCompanyAddressId
-import models.RegistrationCustomerType.UK
+import models.RegistrationCustomerType.{NonUK, UK}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
@@ -35,14 +35,15 @@ class KnownFactsRetrieval {
 
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
     request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
-      registrationInfo.legalStatus match {
-        case Individual if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, registrationInfo.idNumber.getOrElse("")))))
-        case LimitedCompany if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, registrationInfo.idNumber.getOrElse("")))))
-        case Partnership if registrationInfo.customerType equals UK =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, registrationInfo.idNumber.getOrElse("")))))
-        case LimitedCompany | Partnership =>
+
+      (registrationInfo.legalStatus, registrationInfo.idNumber, registrationInfo.customerType) match {
+        case (Individual, Some(idNumber), UK) =>
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))
+        case (LimitedCompany, Some(idNumber), UK) =>
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, idNumber))))
+        case (Partnership, Some(idNumber), UK) =>
+          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
+        case (LimitedCompany | Partnership, _, NonUK) =>
           for {
             address <- request.userAnswers.get(ConfirmCompanyAddressId)
             country <- address.country
