@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 
-@(appConfig: FrontendAppConfig, organisationName: String, country: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, organisationName: String, country: String, organisationType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("outsideEuEea.title"),
@@ -28,7 +28,7 @@
 
         <p>@messages("outsideEuEea.currentCountry.text", organisationName, country)</p>
 
-        <p>@messages("outsideEuEea.body")</p>
+        <p>@messages("outsideEuEea.body", organisationType)</p>
 
         <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
 
