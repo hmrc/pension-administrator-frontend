@@ -64,3 +64,11 @@ POST        /change-is-this-the-contact-address     controllers.register.individ
 
 GET         /based-in-uk                            controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
 POST        /based-in-uk                            controllers.register.individual.IndividualAreYouInUKController.onSubmit(mode: Mode = NormalMode)
+GET         /change-based-in-uk                     controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-based-in-uk                     controllers.register.individual.IndividualAreYouInUKController.onSubmit(mode: Mode = CheckMode)
+
+GET         /what-is-your-name                      controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-is-your-name                      controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = NormalMode)
+GET         /change-what-is-your-name               controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-what-is-your-name               controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = CheckMode)
+

@@ -42,7 +42,7 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
 
   protected def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
-      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(),
+      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
       secondaryLabel=Some(Message("areYouInUKIndividual.hint"))

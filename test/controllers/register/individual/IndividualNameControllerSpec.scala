@@ -19,46 +19,22 @@ package controllers.register.individual
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.AreYouInUKFormProvider
-import identifiers.register.individual.AreYouInUKId
-import models.{Mode, NormalMode}
+import forms.register.individual.IndividualNameFormProvider
+import identifiers.register.individual.IndividualDetailsId
+import models.{NormalMode, TolerantIndividual}
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import viewmodels.{AreYouInUKViewModel, Message}
-import views.html.register.areYouInUK
+import viewmodels.{Message, PersonDetailsViewModel}
+import views.html.register.individual.individualName
 
-class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
+class IndividualNameControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  import IndividualNameControllerSpec._
 
-  private val formProvider = new AreYouInUKFormProvider()
-  private val form = formProvider()
-
-  def viewmodel(mode: Mode) =
-    AreYouInUKViewModel(mode,
-      postCall = routes.IndividualAreYouInUKController.onSubmit(mode),
-      title = Message("areYouInUKIndividual.title"),
-      heading = Message("areYouInUKIndividual.heading"),
-      secondaryLabel=Some(Message("areYouInUKIndividual.hint"))
-    )
-
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualAreYouInUKController(
-      frontendAppConfig,
-      messagesApi,
-      FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider
-    )
-
-  private def viewAsString(form: Form[_] = form) = areYouInUK(frontendAppConfig, form, viewmodel(NormalMode))(fakeRequest, messages).toString
-
-  "Individual AreYouInUK Controller" must {
+  "IndividualNameController" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -68,20 +44,18 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(AreYouInUKId.toString -> true)
+      val validData = Json.obj(IndividualDetailsId.toString -> testAnswer)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(true))
+      contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest =
-        fakeRequest
-          .withFormUrlEncodedBody(
-            ("value", "true")
-          )
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("firstName", "fName"),
+        ("lastName", "lName"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -90,8 +64,8 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "xxx"))
-      val boundForm = form.bind(Map("value" -> "xxx"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", ""),("lastName", ""))
+      val boundForm = form.bind(Map("firstName" -> "", "lastName" -> ""))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -107,7 +81,7 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", ""),("lastName", ""))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
@@ -115,3 +89,34 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
     }
   }
 }
+
+
+object IndividualNameControllerSpec extends ControllerSpecBase {
+
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  private val formProvider = new IndividualNameFormProvider()
+  private val form = formProvider()
+
+  def viewModel = PersonDetailsViewModel(title = "individualName.title",
+                                         heading = Message("individualName.title"),
+                                         postCall = controllers.register.individual.routes.IndividualNameController.onSubmit(NormalMode)
+                                        )
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new IndividualNameController(frontendAppConfig,
+      messagesApi,
+      FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
+
+  def viewAsString(form: Form[_] = form): String = individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+
+  private val testAnswer = TolerantIndividual(Some("John"), None, Some("Doe"))
+}
+
+

@@ -64,7 +64,7 @@ class LoginControllerSpec extends ControllerSpecBase {
       val result = loginController(appConfig, userType = UserType.Individual).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(register.individual.routes.IndividualAreYouInUKController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode).url)
     }
 
     "redirect to business type page for an Organisation when non-uk journeys are toggled off" in {
