@@ -17,7 +17,7 @@
 package views.register.individual
 
 import forms.register.AreYouInUKFormProvider
-import models.{Mode, NormalMode}
+import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.behaviours.{ViewBehaviours, YesNoViewBehaviours}
@@ -32,7 +32,9 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
       postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
-      secondaryLabel=Some(Message("areYouInUKIndividual.hint"))
+      secondaryLabel= if(mode==NormalMode) Some(Message("areYouInUKIndividual.hint")) else None,
+      p1 = Some("areYouInUKIndividual.check.selectedUkAddress"),
+      p2 = Some("areYouInUKIndividual.check.provideNonUkAddress")
     )
 
 
@@ -65,8 +67,15 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
       expectedHintKey = Some(messages("areYouInUKIndividual.hint")))
 
     "not display dynamic content of CheckMode in NormalMode" in {
+      createView() must haveDynamicText("areYouInUKIndividual.hint")
       createView() mustNot haveDynamicText("areYouInUKIndividual.check.selectedUkAddress")
       createView() mustNot haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
+    }
+
+    "display dynamic content of CheckMode in NormalMode" in {
+      createView(CheckMode) mustNot haveDynamicText("areYouInUKIndividual.hint")
+      createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.selectedUkAddress")
+      createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
     }
   }
 

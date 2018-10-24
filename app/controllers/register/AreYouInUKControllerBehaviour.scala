@@ -36,7 +36,6 @@ import scala.concurrent.Future
 
 trait AreYouInUKControllerBehaviour extends FrontendController with I18nSupport {
 
-  val messagesApi: MessagesApi
   protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator

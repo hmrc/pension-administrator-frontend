@@ -28,7 +28,7 @@ import utils.annotations.Register
 import viewmodels.{AreYouInUKViewModel, Message}
 
 class CompanyAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
+                                            val messagesApi: MessagesApi,
                                             override val dataCacheConnector: UserAnswersCacheConnector,
                                             @Register override val navigator: Navigator,
                                             override val authenticate: AuthAction,

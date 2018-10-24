@@ -29,7 +29,7 @@ import utils.annotations.Individual
 import viewmodels.{AreYouInUKViewModel, Message}
 
 class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
+                                               val messagesApi: MessagesApi,
                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                @Individual override val navigator: Navigator,
                                                override val authenticate: AuthAction,
@@ -45,6 +45,8 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
       postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
-      secondaryLabel=Some(Message("areYouInUKIndividual.hint"))
+      secondaryLabel= if(mode==NormalMode) Some(Message("areYouInUKIndividual.hint")) else None,
+      p1 = Some("areYouInUKIndividual.check.selectedUkAddress"),
+      p2 = Some("areYouInUKIndividual.check.provideNonUkAddress")
     )
 }
