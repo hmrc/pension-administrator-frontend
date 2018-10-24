@@ -772,3 +772,8 @@ individualName.error.firstName.invalid = The first name must start with an alpha
 individualName.error.lastName.required = Enter the last name
 individualName.error.lastName.length = The last name cannot be more than 35 characters
 individualName.error.lastName.invalid = The last name must start with an alphabetic character
+
+outsideEuEea.individual.title = Unable to register as a PSA
+outsideEuEea.individual.heading = You cannot register as a PSA
+outsideEuEea.individual.currentCountry.text = This is because you are based in {0} and outside of the European Union and European Economic Area.
+outsideEuEea.individual.body = Only people based inside the European Union and European Economic Area can register as a PSA.
