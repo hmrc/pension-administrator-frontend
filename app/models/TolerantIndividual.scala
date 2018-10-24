@@ -31,4 +31,12 @@ object TolerantIndividual {
       (JsPath \ "lastName").formatNullable[String]
     ) (TolerantIndividual.apply, unlift(TolerantIndividual.unapply))
 
+  def applyNonUK(firstName: String, lastName: String): TolerantIndividual = {
+    new TolerantIndividual(Some(firstName), None, Some(lastName))
+  }
+
+  def unapplyNonUK(individual: TolerantIndividual): Option[(String, String)] = {
+    Some((individual.firstName.getOrElse(""), individual.lastName.getOrElse("")))
+  }
+
 }
