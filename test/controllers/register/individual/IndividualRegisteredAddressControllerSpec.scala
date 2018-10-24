@@ -17,22 +17,25 @@
 package controllers.register.individual
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.FakeUserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
-import models.{Address, TolerantIndividual}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
@@ -44,6 +47,30 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
   val individualName = "TestFirstName TestLastName"
+  val sapNumber = "test-sap-number"
+  val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany,
+    sapNumber,
+    false,
+    RegistrationCustomerType.NonUK,
+    None,
+    None
+  )
+
+  private def fakeRegistrationConnector = new RegistrationConnector {
+    override def registerWithIdOrganisation
+    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
+
+    override def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
+
+    override def registerWithIdIndividual
+    (nino: String)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+  }
+
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualRegisteredAddressController(
@@ -55,7 +82,8 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      fakeRegistrationConnector
     )
 
   private def viewModel = ManualAddressViewModel(
