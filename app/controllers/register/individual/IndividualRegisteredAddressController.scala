@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
@@ -45,7 +45,8 @@ class IndividualRegisteredAddressController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: NonUKAddressFormProvider,
-                                               val countryOptions: CountryOptions
+                                               val countryOptions: CountryOptions,
+                                               override val registrationConnector: RegistrationConnector
                                              ) extends NonUKAddressController with Retrievals{
 
   protected val form: Form[Address] = formProvider()
@@ -73,7 +74,8 @@ class IndividualRegisteredAddressController @Inject()(
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       IndividualDetailsId.retrieve.right.map { individual =>
-        post(IndividualAddressId, addressViewModel(individual.fullName))
+        post(individual.fullName, IndividualAddressId, addressViewModel(individual.fullName))
       }
   }
+
 }
