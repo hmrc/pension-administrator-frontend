@@ -10,6 +10,7 @@ address.line.4 = Address Line 4 (optional)
 address.postcode = Postal code
 address.country = Country
 address.country.select = Select a country
+address.country.hint = Enter text and then choose from the list
 
 date.day = Day
 date.month = Month
