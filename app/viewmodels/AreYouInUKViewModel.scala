@@ -16,12 +16,13 @@
 
 package viewmodels
 
+import models.Mode
 import play.api.mvc.Call
 
-case class PayeViewModel(
-                          postCall: Call,
-                          title: Message,
-                          heading: Message,
-                          hint: Option[Message] = None,
-                          subHeading: Option[Message] = None
-                        )
+case class AreYouInUKViewModel(mode: Mode,
+                               postCall: Call,
+                               title: Message,
+                               heading: Message,
+                               p1: Option[String] = None,
+                               p2: Option[String] = None,
+                               secondaryLabel: Option[String] = None)

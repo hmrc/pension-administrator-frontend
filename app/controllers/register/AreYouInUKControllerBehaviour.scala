@@ -34,27 +34,20 @@ import views.html.register.areYouInUK
 
 import scala.concurrent.Future
 
-class AreYouInUKController @Inject()(
-                                          appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
-                                          dataCacheConnector: UserAnswersCacheConnector,
-                                          @Register navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: AreYouInUKFormProvider
-                                        ) extends FrontendController with I18nSupport {
+trait AreYouInUKControllerBehaviour extends FrontendController with I18nSupport {
+
+  val messagesApi: MessagesApi
+  protected val appConfig: FrontendAppConfig
+  protected val dataCacheConnector: UserAnswersCacheConnector
+  protected val navigator: Navigator
+  protected val authenticate: AuthAction
+  protected val getData: DataRetrievalAction
+  protected val requireData: DataRequiredAction
+  protected val formProvider: AreYouInUKFormProvider
 
   protected val form = formProvider()
 
-  protected def viewmodel(mode: Mode) =
-    AreYouInUKViewModel(mode,
-      postCall = routes.AreYouInUKController.onSubmit(mode),
-      title = Message("areYouInUK.title"),
-      heading = Message("areYouInUK.heading"),
-      p1 = Some("areYouInUK.check.selectedUkAddress"),
-      p2 = Some("areYouInUK.check.provideNonUkAddress")
-    )
+  protected def viewmodel(mode: Mode) : AreYouInUKViewModel
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>

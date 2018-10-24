@@ -16,9 +16,11 @@
 
 package views.register
 
+import controllers.register.routes
 import forms.register.AreYouInUKFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
+import viewmodels.{AreYouInUKViewModel, Message}
 import views.behaviours.{ViewBehaviours, YesNoViewBehaviours}
 import views.html.register.areYouInUK
 
@@ -26,23 +28,31 @@ class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 
   private val messageKeyPrefix = "areYouInUK"
 
-
   val formProvider = new AreYouInUKFormProvider
 
   val form: Form[Boolean] = formProvider()
+
+  private def viewmodel(mode: Mode) =
+    AreYouInUKViewModel(mode,
+      postCall = controllers.register.routes.CompanyAreYouInUKController.onSubmit(mode),
+      title = Message("areYouInUK.title"),
+      heading = Message("areYouInUK.heading"),
+      p1 = Some("areYouInUK.check.selectedUkAddress"),
+      p2 = Some("areYouInUK.check.provideNonUkAddress")
+    )
 
   private def createView(mode: Mode = NormalMode) =
     () => areYouInUK(
       frontendAppConfig,
       form,
-      mode
+      viewmodel(mode)
     )(fakeRequest, messages)
 
   private def createViewUsingForm =
     (form: Form[_]) => areYouInUK(
       frontendAppConfig,
       form,
-      NormalMode
+      viewmodel(NormalMode)
     )(fakeRequest, messages)
 
   "Are you in UK view" must {
@@ -53,7 +63,7 @@ class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.title")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading")
 
     "not display dynamic content of CheckMode in NormalMode" in {
       createView() mustNot haveDynamicText("areYouInUK.check.selectedUkAddress")

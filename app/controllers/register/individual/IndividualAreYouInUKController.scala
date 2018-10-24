@@ -19,47 +19,32 @@ package controllers.register.individual
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
+import controllers.register.AreYouInUKControllerBehaviour
 import forms.register.AreYouInUKFormProvider
-import identifiers.register.individual.AreYouInUKId
 import javax.inject.Inject
-import models.NormalMode
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import models.{Mode, NormalMode}
+import play.api.i18n.MessagesApi
+import utils.Navigator
 import utils.annotations.Individual
-import utils.{Navigator, UserAnswers}
-import views.html.register.individual.areYouInUK
+import viewmodels.{AreYouInUKViewModel, Message}
 
-import scala.concurrent.Future
+class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               override val dataCacheConnector: UserAnswersCacheConnector,
+                                               @Individual override val navigator: Navigator,
+                                               override val authenticate: AuthAction,
+                                               override val getData: DataRetrievalAction,
+                                               override val requireData: DataRequiredAction,
+                                               override val formProvider: AreYouInUKFormProvider
+                                              ) extends AreYouInUKControllerBehaviour {
 
-class AreYouInUKController @Inject()(
-                                          appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
-                                          dataCacheConnector: UserAnswersCacheConnector,
-                                          @Individual navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: AreYouInUKFormProvider
-                                        ) extends FrontendController with I18nSupport {
+  protected override val form = formProvider()
 
-  private val form = formProvider()
-
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AreYouInUKId).fold(form)(v=>form.fill(v))
-      Ok(areYouInUK(appConfig, preparedForm))
-  }
-
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors))),
-        value => {
-          dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AreYouInUKId, NormalMode, UserAnswers(cacheMap))))
-        })
-  }
+  protected def viewmodel(mode: Mode) =
+    AreYouInUKViewModel(mode,
+      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(),
+      title = Message("areYouInUKIndividual.title"),
+      heading = Message("areYouInUKIndividual.heading"),
+      secondaryLabel=Some(Message("areYouInUKIndividual.hint"))
+    )
 }

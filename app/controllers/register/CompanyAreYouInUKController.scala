@@ -27,21 +27,21 @@ import utils.Navigator
 import utils.annotations.Register
 import viewmodels.{AreYouInUKViewModel, Message}
 
-class AreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
-                                     override val messagesApi: MessagesApi,
-                                     override val dataCacheConnector: UserAnswersCacheConnector,
-                                     @Register override val navigator: Navigator,
-                                     override val authenticate: AuthAction,
-                                     override val getData: DataRetrievalAction,
-                                     override val requireData: DataRequiredAction,
-                                     override val formProvider: AreYouInUKFormProvider
-                                    ) extends AreYouInUKControllerBehaviour {
+class CompanyAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
+                                            override val messagesApi: MessagesApi,
+                                            override val dataCacheConnector: UserAnswersCacheConnector,
+                                            @Register override val navigator: Navigator,
+                                            override val authenticate: AuthAction,
+                                            override val getData: DataRetrievalAction,
+                                            override val requireData: DataRequiredAction,
+                                            override val formProvider: AreYouInUKFormProvider
+                                           ) extends AreYouInUKControllerBehaviour {
 
   protected override val form = formProvider()
 
   protected def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
-      postCall = controllers.register.routes.AreYouInUKController.onSubmit(mode),
+      postCall = controllers.register.routes.CompanyAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUK.title"),
       heading = Message("areYouInUK.heading"),
       p1 = Some("areYouInUK.check.selectedUkAddress"),

@@ -29,7 +29,7 @@ import utils.FakeNavigator
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
-class AreYouInUKControllerSpec extends ControllerSpecBase {
+class CompanyAreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -37,7 +37,7 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new AreYouInUKController(
+    new CompanyAreYouInUKController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -50,7 +50,7 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
-      postCall = routes.AreYouInUKController.onSubmit(mode),
+      postCall = routes.CompanyAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUK.title"),
       heading = Message("areYouInUK.heading"),
       p1 = Some("areYouInUK.check.selectedUkAddress"),

@@ -29,10 +29,10 @@ GET        /duplicate-registration                  controllers.register.Duplica
 
 GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
 
-GET        /registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad(mode: Mode = NormalMode)
-POST       /registered-in-uk                        controllers.register.AreYouInUKController.onSubmit(mode: Mode = NormalMode)
-GET        /change-registered-in-uk                        controllers.register.AreYouInUKController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-registered-in-uk                        controllers.register.AreYouInUKController.onSubmit(mode: Mode = CheckMode)
+GET        /registered-in-uk                        controllers.register.CompanyAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /registered-in-uk                        controllers.register.CompanyAreYouInUKController.onSubmit(mode: Mode = NormalMode)
+GET        /change-registered-in-uk                 controllers.register.CompanyAreYouInUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-registered-in-uk                 controllers.register.CompanyAreYouInUKController.onSubmit(mode: Mode = CheckMode)
 
 GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad()
 POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit()
