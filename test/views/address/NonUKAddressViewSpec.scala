@@ -26,7 +26,7 @@ import viewmodels.address.ManualAddressViewModel
 import views.behaviours.QuestionViewBehaviours
 import views.html.address.nonukAddress
 
-class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
+class NonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val messageKeyPrefix = "companyRegisteredNonUKAddress"
   val countryOptions: Seq[InputOption] = Seq(InputOption("AF", "Afghanistan"), InputOption("territory:AE-AZ", "Abu Dhabi"))

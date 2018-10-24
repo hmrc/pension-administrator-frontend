@@ -70,3 +70,8 @@ POST        /what-is-your-name                      controllers.register.individ
 GET         /change-what-is-your-name               controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-what-is-your-name               controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = CheckMode)
 
+GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
+POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
+GET         /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
+POST        /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
+
