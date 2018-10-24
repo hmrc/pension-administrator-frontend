@@ -17,22 +17,25 @@
 package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.FakeUserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.{Address, BusinessDetails, NormalMode}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
@@ -43,13 +46,37 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
   val formProvider = new NonUKAddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
-  val companyName = "Test Company Name"
+  private val companyName = "Test Company Name"
+
+  private def fakeRegistrationConnector = new RegistrationConnector {
+    override def registerWithIdOrganisation
+    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
+
+    override def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(
+      RegistrationInfo(
+      RegistrationLegalStatus.LimitedCompany,
+      "test-sap-number",
+      false,
+      RegistrationCustomerType.NonUK,
+      None,
+      None
+    )
+    )
+
+    override def registerWithIdIndividual
+    (nino: String)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+  }
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
+      fakeRegistrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
