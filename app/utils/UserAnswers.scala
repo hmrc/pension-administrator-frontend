@@ -115,12 +115,19 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def set[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data]): JsResult[UserAnswers] = {
-
     val jsValue = Json.toJson(value)
-
-    JsLens.fromPath(id.path)
+    val oldValue = json
+    val jsResultJsValue = JsLens.fromPath(id.path)
       .set(jsValue, json)
-      .flatMap(json => id.cleanup(Some(value), UserAnswers(json)))
+    jsResultJsValue.flatMap { newValue =>
+      if (oldValue == newValue) {
+        println("\nNO CLEAN UP as value not changed")
+        JsSuccess(UserAnswers(json))
+      } else {
+        println(s"\nCLEAN UP: old value = $oldValue and new value = $newValue")
+        jsResultJsValue.flatMap(json => id.cleanup(Some(value), UserAnswers(json)))
+      }
+    }
   }
 
   def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {
