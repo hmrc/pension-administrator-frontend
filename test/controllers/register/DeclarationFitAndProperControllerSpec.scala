@@ -262,7 +262,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val contactDetails = ContactDetails("test@test.com", "test Phone")
-  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, UTR, "")
+  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     PartnershipDetailsId.toString -> businessDetails
   )

@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import identifiers.register.RegistrationInfoId
-import identifiers.register.company.ConfirmCompanyAddressId
+import identifiers.register.company.{CompanyAddressId, ConfirmCompanyAddressId}
 import models._
 import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
@@ -51,8 +51,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
             sapNumber,
             false,
             RegistrationCustomerType.UK,
-            RegistrationIdType.Nino,
-            nino
+            Some(RegistrationIdType.Nino),
+            Some(nino)
           )
 
           implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -91,8 +91,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.UK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -119,7 +119,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
         }
 
-        "comprise of Postal ID and Country Code" when {
+        "comprise of PSA ID and Country Code" when {
 
           "company is Non-UK" in {
 
@@ -128,8 +128,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
+              None,
+              None
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -137,46 +137,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
               externalId,
               PSAUser(UserType.Organisation, None, false, None),
               UserAnswers(Json.obj(
-                ConfirmCompanyAddressId.toString -> TolerantAddress(
-                  Some("1 Street"),
-                  Some("Somewhere"),
-                  None, None,
-                  Some(postalCode),
-                  Some(nonUk)
-                ),
-                RegistrationInfoId.toString -> registration
-              ))
-            )
-
-            generator.retrieve(psa) mustEqual Some(KnownFacts(
-              Set(KnownFact("PSAID", psa)),
-              Set(
-                KnownFact("NonUKPostalCode", "TESTPCODE"),
-                KnownFact("CountryCode", nonUk)
-              )))
-          }
-
-        }
-
-        "comprise of PSA ID and Country Code" when {
-
-          "company is Non-UK and Postal ID does not exist" in {
-
-            val registration = RegistrationInfo(
-              RegistrationLegalStatus.Partnership,
-              sapNumber,
-              false,
-              RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
-            )
-
-            implicit val request: DataRequest[AnyContent] = DataRequest(
-              FakeRequest(),
-              externalId,
-              PSAUser(UserType.Organisation, None, false, None),
-              UserAnswers(Json.obj(
-                ConfirmCompanyAddressId.toString -> TolerantAddress(
+                CompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
                   None, None, None,
@@ -205,8 +166,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.UK,
-              RegistrationIdType.UTR,
-              utr
+              Some(RegistrationIdType.UTR),
+              Some(utr)
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -233,7 +194,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
         }
 
-        "comprise of Postal ID and Country Code" when {
+        "comprise of PSA ID and Country Code" when {
 
           "company is Non-UK" in {
 
@@ -242,8 +203,8 @@ class KnownFactsRetrievalSpec extends SpecBase {
               sapNumber,
               false,
               RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
+              None,
+              None
             )
 
             implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -251,46 +212,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
               externalId,
               PSAUser(UserType.Organisation, None, false, None),
               UserAnswers(Json.obj(
-                ConfirmCompanyAddressId.toString -> TolerantAddress(
-                  Some("1 Street"),
-                  Some("Somewhere"),
-                  None, None,
-                  Some(postalCode),
-                  Some(nonUk)
-                ),
-                RegistrationInfoId.toString -> registration
-              ))
-            )
-
-            generator.retrieve(psa) mustEqual Some(KnownFacts(
-              Set(KnownFact("PSAID", psa)),
-              Set(
-                KnownFact("NonUKPostalCode", "TESTPCODE"),
-                KnownFact("CountryCode", nonUk)
-              )))
-          }
-
-        }
-
-        "comprise of PSA ID and Country Code" when {
-
-          "company is Non-UK and Postal ID does not exist" in {
-
-            val registration = RegistrationInfo(
-              RegistrationLegalStatus.LimitedCompany,
-              sapNumber,
-              false,
-              RegistrationCustomerType.NonUK,
-              RegistrationIdType.UTR,
-              utr
-            )
-
-            implicit val request: DataRequest[AnyContent] = DataRequest(
-              FakeRequest(),
-              externalId,
-              PSAUser(UserType.Organisation, None, false, None),
-              UserAnswers(Json.obj(
-                ConfirmCompanyAddressId.toString -> TolerantAddress(
+                CompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
                   None, None, None,

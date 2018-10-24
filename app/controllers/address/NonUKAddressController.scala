@@ -17,9 +17,10 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
+import identifiers.register.RegistrationInfoId
 import models.requests.DataRequest
 import models.{Address, Mode, NormalMode, TolerantAddress}
 import play.api.data.Form
@@ -39,6 +40,8 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
 
   protected def dataCacheConnector: UserAnswersCacheConnector
 
+  protected def registrationConnector: RegistrationConnector
+
   protected def navigator: Navigator
 
   protected val form: Form[Address]
@@ -56,7 +59,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
     Future.successful(Ok(view()))
   }
 
-  protected def post(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel)(
+  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel)(
     implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => {
@@ -64,10 +67,12 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
         Future.successful(BadRequest(view()))
       },
       address => {
-
-        dataCacheConnector.save(request.externalId, id, address.toTolerantAddress).map {
-          cacheMap =>
-            Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
+        for {
+          registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
+          cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
+          _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
+        } yield {
+          Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
         }
       }
     )

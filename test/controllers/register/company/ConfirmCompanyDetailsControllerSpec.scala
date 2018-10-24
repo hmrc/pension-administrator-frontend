@@ -92,8 +92,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
             sapNumber,
             false,
             RegistrationCustomerType.UK,
-            RegistrationIdType.UTR,
-            validLimitedCompanyUtr
+            Some(RegistrationIdType.UTR),
+            Some(validLimitedCompanyUtr)
           )
 
           val expectedJson =
@@ -244,8 +244,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
         sapNumber,
         false,
         RegistrationCustomerType.UK,
-        RegistrationIdType.UTR,
-        utr
+        Some(RegistrationIdType.UTR),
+        Some(utr)
       )
 
       if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
@@ -263,6 +263,10 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
     def registerWithIdIndividual
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new ConfirmCompanyDetailsController(
