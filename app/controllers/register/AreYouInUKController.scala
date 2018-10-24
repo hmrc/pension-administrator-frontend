@@ -34,7 +34,7 @@ import views.html.register.areYouInUK
 
 import scala.concurrent.Future
 
-trait AreYouInUKControllerBehaviour extends FrontendController with I18nSupport {
+trait AreYouInUKController extends FrontendController with I18nSupport {
 
   protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector

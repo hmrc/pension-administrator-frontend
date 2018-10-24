@@ -19,7 +19,7 @@ package controllers.register.individual
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.register.AreYouInUKControllerBehaviour
+import controllers.register.AreYouInUKController
 import forms.register.AreYouInUKFormProvider
 import javax.inject.Inject
 import models.{Mode, NormalMode}
@@ -36,7 +36,7 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                override val getData: DataRetrievalAction,
                                                override val requireData: DataRequiredAction,
                                                override val formProvider: AreYouInUKFormProvider
-                                              ) extends AreYouInUKControllerBehaviour {
+                                              ) extends AreYouInUKController {
 
   protected override val form = formProvider()
 

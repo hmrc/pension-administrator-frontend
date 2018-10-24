@@ -123,7 +123,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
   private def nonUkAddress = routes.CompanyRegisteredAddressController.onPageLoad()
-  private def reconsiderAreYouInUk = controllers.register.routes.CompanyAreYouInUKController.onPageLoad(CheckMode)
+  private def reconsiderAreYouInUk = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
   private val emptyAnswers = UserAnswers(Json.obj())

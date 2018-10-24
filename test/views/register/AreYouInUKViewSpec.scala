@@ -34,7 +34,7 @@ class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 
   private def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
-      postCall = controllers.register.routes.CompanyAreYouInUKController.onSubmit(mode),
+      postCall = controllers.register.routes.BusinessTypeAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUK.title"),
       heading = Message("areYouInUK.heading"),
       p1 = Some("areYouInUK.check.selectedUkAddress"),
