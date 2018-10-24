@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package controllers.actions
 
-import identifiers._
-import models.Address
+import controllers.routes
+import models.requests.AuthenticatedRequest
+import play.api.mvc.Results._
+import play.api.mvc.{Request, Result}
 
-case object CompanyNameId extends TypedIdentifier[String] {
-  override def toString: String = "companyName"
+import scala.concurrent.Future
+
+object FakeUnAuthorisedAction {
+  def apply(): AuthAction = {
+    new AuthAction {
+      override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+    }
+  }
 }
+

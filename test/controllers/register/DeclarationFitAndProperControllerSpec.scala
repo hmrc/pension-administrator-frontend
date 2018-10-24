@@ -34,25 +34,19 @@ import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.{AuthenticatedRequest, DataRequest}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
-import org.scalatest.Matchers
 import org.scalatest.mockito.MockitoSugar
-import play.api.Application
 import play.api.data.Form
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Writes, _}
 import play.api.libs.ws.WSClient
-import play.api.mvc._
+import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
-import utils.annotations.Register
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
 
-import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
@@ -122,139 +116,49 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
       }
 
-      "save the PSA Name and Email against the PSA Id if WP1 is disabled" when {
-
-        "Organisation" in {
-
-          psaNameCacheConnector.reset()
-
+      "save the PSA Name and Email against the PSA Id" when {
+        "on a valid request for an Organisation" in {
           val validData = Json.obj(
             RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = LimitedCompany),
             BusinessDetailsId.toString -> businessDetails,
             ContactDetailsId.toString -> contactDetails
           )
-
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(validData))
-
-          val result = appWithWP1Off.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
-
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
-
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
-
         }
 
-        "Individual" in {
-
-          psaNameCacheConnector.reset()
-
+        "on a valid request for an Individual" in {
           val individualDetails = TolerantIndividual(Some("first"), None, Some("last"))
-
           val validData = Json.obj(
             RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = Individual),
             IndividualDetailsId.toString -> individualDetails,
             IndividualContactDetailsId.toString -> contactDetails
           )
-
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(validData))
-
-          val result = appWithWP1Off.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
-
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
-
           psaNameCacheConnector.verify(PsaNameId, individualDetails.fullName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
         }
 
-        "Partnership" in {
-
-          psaNameCacheConnector.reset()
-
+        "on a valid request for Partnership" in {
           val validData = Json.obj(
             RegistrationInfoId.toString -> registrationInfo,
             PartnershipDetailsId.toString -> businessDetails,
             PartnershipContactDetailsId.toString -> contactDetails
           )
-
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(validData))
-
-          val result = appWithWP1Off.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
-
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
-
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
         }
-      }
-
-      "not save the PSA Name and Email against the PSA Id if WP1 is enabled" when {
-
-        "Organisation" in {
-
-          psaNameCacheConnector.reset()
-
-          val validData = Json.obj(
-            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = LimitedCompany),
-            BusinessDetailsId.toString -> businessDetails,
-            ContactDetailsId.toString -> contactDetails
-          )
-
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(validData))
-
-          val result = appWithWP1On.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
-
-          status(result) mustBe SEE_OTHER
-
-          psaNameCacheConnector.verifyNot(PsaNameId)
-          psaNameCacheConnector.verifyNot(PsaEmailId)
-
-        }
-
-        "Individual" in {
-
-          val validData = Json.obj(
-            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = Individual),
-            IndividualDetailsId.toString -> TolerantIndividual(Some("first"), None, Some("last")),
-            IndividualContactDetailsId.toString -> contactDetails
-          )
-
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(validData))
-
-          val result = appWithWP1On.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
-
-          status(result) mustBe SEE_OTHER
-
-          psaNameCacheConnector.verifyNot(PsaNameId)
-          psaNameCacheConnector.verifyNot(PsaEmailId)
-
-        }
-
-        "Partnership" in {
-
-          val validData = Json.obj(
-            RegistrationInfoId.toString -> registrationInfo,
-            PartnershipDetailsId.toString -> businessDetails,
-            PartnershipContactDetailsId.toString -> contactDetails
-          )
-
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(validData))
-
-          val result = appWithWP1On.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
-
-          status(result) mustBe SEE_OTHER
-
-          psaNameCacheConnector.verifyNot(PsaNameId)
-          psaNameCacheConnector.verifyNot(PsaEmailId)
-
-        }
-
       }
 
       "reject an invalid request and display errors" in {
@@ -295,10 +199,8 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
 
         "no PSA Name is found" in {
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
-            .thenReturn(Future.successful(Json.obj()))
-
-          val result = appWithWP1Off.injector.instanceOf[DeclarationFitAndProperController].onSubmit(validRequest)
+          val data = Json.obj(RegistrationInfoId.toString -> registrationInfo)
+          val result = controller(new FakeDataRetrievalAction(Some(data))).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -348,7 +250,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
     }
   }
-
 }
 
 object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
@@ -358,12 +259,11 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
-
-  val validRequest: FakeRequest[AnyContentAsFormUrlEncoded] = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val contactDetails = ContactDetails("test@test.com", "test Phone")
-  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, UTR, "")
-  val data: JsObject = Json.obj(RegistrationInfoId.toString -> registrationInfo,
+  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
+  val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     PartnershipDetailsId.toString -> businessDetails
   )
 
@@ -408,8 +308,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
 
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
     new TaxEnrolmentsConnector {
-      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-        (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
           case ex => Future.failed(new HttpException("Fail", ex))
@@ -417,53 +316,21 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     }
   }
 
-  object FakePSANameCacheConnector extends PSANameCacheConnector(
+  object PSANameCacheConnector extends PSANameCacheConnector(
     frontendAppConfig,
     mock[WSClient],
     injector.instanceOf[ApplicationCrypto]
-  ) with Matchers {
-
-    private val data: mutable.HashMap[String, JsValue] = mutable.HashMap()
-
-    override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
-      (implicit fmt: Format[A], ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
-      data += (id.toString -> Json.toJson(value))
-      Future.successful(Json.obj())
-    }
-
-    override def fetch(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
-      throw new NotImplementedError()
-
-    override protected def url(id: String): String =
-      throw new NotImplementedError()
-
+  ) with FakeUserAnswersCacheConnector {
     override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
-      (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
-      throw new NotImplementedError()
-
-    override def removeAll(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
-      throw new NotImplementedError()
-
-    override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
-      throw new NotImplementedError()
-
-    def verify[A, I <: TypedIdentifier[A]](id: I, value: A)(implicit fmt: Format[A]): Unit = {
-      data should contain(id.toString -> Json.toJson(value))
-    }
-
-    def verifyNot(id: TypedIdentifier[_]): Unit = {
-      data should not contain key(id.toString)
-    }
-
-    def reset(): Unit = {
-      data.clear()
-    }
-
+                                                (implicit
+                                                 ec: ExecutionContext,
+                                                 hc: HeaderCarrier
+                                                ): Future[JsValue] = ???
   }
 
-  val mockUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  val mockEmailConnector: EmailConnector = mock[EmailConnector]
-  val psaNameCacheConnector: FakePSANameCacheConnector.type = FakePSANameCacheConnector
+  val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  val mockEmailConnector = mock[EmailConnector]
+  val psaNameCacheConnector = PSANameCacheConnector
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -495,31 +362,5 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       form,
       cancelCall
     )(fakeRequest, messages).toString
-
-  lazy val appWithWP1On: Application =
-    new GuiceApplicationBuilder()
-      .configure("features.work-package-one-enabled" -> true)
-      .overrides(bind[AuthAction].toInstance(FakeAuthAction))
-      .overrides(bind[TaxEnrolmentsConnector].toInstance(fakeEnrolmentStoreConnector()))
-      .overrides(bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))
-      .overrides(bind[PSANameCacheConnector].toInstance(psaNameCacheConnector))
-      .overrides(bind[PensionsSchemeConnector].toInstance(fakePensionsSchemeConnector))
-      .overrides(bind[KnownFactsRetrieval].toInstance(fakeKnownFactsRetrieval()))
-      .overrides(bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(Json.obj()))))
-      .overrides(bind[FakeNavigator].qualifiedWith(classOf[Register]).toInstance(FakeNavigator))
-      .build()
-
-  lazy val appWithWP1Off: Application =
-    new GuiceApplicationBuilder()
-      .configure("features.work-package-one-enabled" -> false)
-      .overrides(bind[AuthAction].toInstance(FakeAuthAction))
-      .overrides(bind[TaxEnrolmentsConnector].toInstance(fakeEnrolmentStoreConnector()))
-      .overrides(bind[UserAnswersCacheConnector].toInstance(mockUserAnswersCacheConnector))
-      .overrides(bind[PSANameCacheConnector].toInstance(psaNameCacheConnector))
-      .overrides(bind[PensionsSchemeConnector].toInstance(fakePensionsSchemeConnector))
-      .overrides(bind[KnownFactsRetrieval].toInstance(fakeKnownFactsRetrieval()))
-      .overrides(bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(Json.obj()))))
-      .overrides(bind[FakeNavigator].qualifiedWith(classOf[Register]).toInstance(FakeNavigator))
-      .build()
 
 }

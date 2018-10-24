@@ -37,7 +37,7 @@ class BusinessDetailsFormProvider(isUK: Boolean) extends Mappings with Transform
       if (isUK) {
         mapping(
           companyNameMapping,
-          "utr" -> text(model.utrRequiredMsg)
+          "utr" -> text(model.utrRequiredMsg.getOrElse("businessDetails.error.utr.required"))
             .verifying(
               firstError(
                 maxLength(model.utrMaxLength, model.utrLengthMsg),
@@ -67,7 +67,7 @@ case class BusinessDetailsFormModel(
                                      companyNameLengthMsg: String,
                                      companyNameInvalidMsg: String,
                                      utrMaxLength: Int,
-                                     utrRequiredMsg: String,
+                                     utrRequiredMsg: Option[String],
                                      utrLengthMsg: String,
                                      utrInvalidMsg: String
                                    )

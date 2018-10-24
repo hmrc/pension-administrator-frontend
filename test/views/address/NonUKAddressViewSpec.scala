@@ -26,7 +26,7 @@ import viewmodels.address.ManualAddressViewModel
 import views.behaviours.QuestionViewBehaviours
 import views.html.address.nonukAddress
 
-class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
+class NonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   val messageKeyPrefix = "companyRegisteredNonUKAddress"
   val countryOptions: Seq[InputOption] = Seq(InputOption("AF", "Afghanistan"), InputOption("territory:AE-AZ", "Abu Dhabi"))
@@ -61,7 +61,7 @@ class nonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like pageWithTextFields(
         createViewUsingForm,
         messageKeyPrefix,
-        controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit(NormalMode).url,
+        controllers.register.company.routes.CompanyRegisteredAddressController.onSubmit().url,
     "addressLine1", "addressLine2", "addressLine3", "addressLine4"
     )
 

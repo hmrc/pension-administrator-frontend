@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package models
 
-import identifiers._
-import models.Address
+import play.api.libs.json._
 
-case object CompanyRegisteredAddressId extends TypedIdentifier[Address] {
-  override def toString: String = "companyRegisteredAddress"
+case class OrganisationName(organisationName: String)
+
+object OrganisationName {
+
+  implicit val format: Format[OrganisationName] = Json.format[OrganisationName]
 }
+
+case class OrganisationRegistrant(
+                                   organisation: OrganisationName,
+                                   address: Address
+                                 )
+
+object OrganisationRegistrant {
+  implicit val format: Format[OrganisationRegistrant] = Json.format[OrganisationRegistrant]
+}
+

@@ -184,19 +184,23 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
   def apply()(implicit rds: Reads[BusinessDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] =
       userAnswers.get(id).map { businessDetails =>
+        val optionAnswerRow = businessDetails.uniqueTaxReferenceNumber.map{ utr =>
+          AnswerRow(
+            utrLabel,
+            Seq(utr),
+            false,
+            None
+          )
+        }.toSeq
+
         val nameRow = AnswerRow(
           nameLabel,
           Seq(businessDetails.companyName),
           false,
           None
         )
-        val utrRow = AnswerRow(
-          utrLabel,
-          Seq(businessDetails.utrOrException),
-          false,
-          None
-        )
-        Seq(nameRow, utrRow)
+
+        Seq(nameRow) ++ optionAnswerRow
       } getOrElse Seq.empty[AnswerRow]
   }
 }

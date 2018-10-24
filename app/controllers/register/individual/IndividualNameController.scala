@@ -14,52 +14,68 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers.register.individual
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import forms.register.AreYouInUKFormProvider
-import identifiers.register.AreYouInUKId
+import forms.register.individual.IndividualNameFormProvider
+import identifiers.register.individual.IndividualDetailsId
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.{Mode, TolerantIndividual}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.{Register, RegisterCompany}
+import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
-import views.html.register.areYouInUK
+import viewmodels.{Message, PersonDetailsViewModel}
+import views.html.register.individual.individualName
 
 import scala.concurrent.Future
 
-class AreYouInUKController @Inject()(
-                                          appConfig: FrontendAppConfig,
+class IndividualNameController @Inject()(
+                                          val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          dataCacheConnector: UserAnswersCacheConnector,
-                                          @Register navigator: Navigator,
+                                          val dataCacheConnector: UserAnswersCacheConnector,
+                                          @Individual val navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          formProvider: AreYouInUKFormProvider
+                                          formProvider : IndividualNameFormProvider
                                         ) extends FrontendController with I18nSupport {
 
-  private val form = formProvider()
+
+  val form : Form[TolerantIndividual] =  formProvider()
+
+  private[individual] def viewModel(mode: Mode) =
+    PersonDetailsViewModel(
+      title = "individualName.title",
+      heading = Message("individualName.title"),
+      postCall = routes.IndividualNameController.onSubmit(mode)
+    )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AreYouInUKId).fold(form)(v=>form.fill(v))
-      Ok(areYouInUK(appConfig, preparedForm, mode))
+
+      val preparedForm = request.userAnswers.get(IndividualDetailsId) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
+
+      Ok(individualName(appConfig, preparedForm, viewModel(mode)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors, mode))),
-        value => {
-          dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
-        })
+          Future.successful(BadRequest(individualName(appConfig, formWithErrors, viewModel(mode)))),
+        value =>
+          dataCacheConnector.save(request.externalId, IndividualDetailsId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(IndividualDetailsId, mode, UserAnswers(cacheMap))))
+      )
   }
+
 }
