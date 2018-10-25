@@ -16,7 +16,8 @@
 
 package identifiers.register
 
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import identifiers.register.company.directors.DirectorPreviousAddressListId
 import models.TolerantAddress
 import models.register.DeclarationWorkingKnowledge
 import models.register.adviser.AdviserDetails
@@ -39,6 +40,25 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
       .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
       .flatMap(_.set(AdviserAddressId)(address.toAddress))
+      .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
+        Some("SuttonStreet"),
+        Some("Wokingham"),
+        Some("Surrey"),
+        Some("NE39 1HX"),
+        Some("GB"))))
+      .asOpt.value
+
+    val answersWithAdviser2 = UserAnswers(Json.obj())
+      .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser)
+      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
+      .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
+      .flatMap(_.set(AdviserAddressId)(address.toAddress))
+      .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
+        Some("SuttonStreet"),
+        Some("Wokingham"),
+        Some("Surrey"),
+        Some("NE39 1HX"),
+        Some("GB"))))
       .asOpt.value
 
 
@@ -50,6 +70,11 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
       "not remove the data for Postcode lookup (when nothing changed)" in {
         result.get(AdviserAddressPostCodeLookupId) must be(defined)
       }
+
+      "not remove the data for address list (when nothing changed)" in {
+        result.get(AdviserAddressListId) must be(defined)
+      }
+
       "not remove the data for address (when nothing changed)" in {
         result.get(AdviserAddressId) must be(defined)
       }
@@ -59,12 +84,39 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
       }
     }
 
+    "where Declaration have pension adviser" must {
+      val result: UserAnswers =
+        answersWithAdviser2.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
+          .asOpt.value
+
+      "remove the data for Postcode lookup" in {
+        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
+      }
+
+      "remove the data for address list" in {
+        result.get(AdviserAddressListId) mustNot be(defined)
+      }
+
+      "remove the data for address" in {
+        result.get(AdviserAddressId) mustNot be(defined)
+      }
+
+      "remove date for adviser details" in {
+        result.get(AdviserDetailsId) mustNot be(defined)
+      }
+    }
+
     "Declaration has an adviser" must {
       val result: UserAnswers = answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
 
       "not remove the data for Postcode lookup" in {
         result.get(AdviserAddressPostCodeLookupId) mustBe defined
       }
+
+      "not remove the data for address list" in {
+        result.get(AdviserAddressListId) mustBe defined
+      }
+
       "not remove the data for address" in {
         result.get(AdviserAddressId) mustBe defined
       }
