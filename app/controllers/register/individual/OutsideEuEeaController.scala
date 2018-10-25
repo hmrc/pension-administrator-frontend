@@ -42,14 +42,9 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
 
       (IndividualAddressId).retrieve.right.map { address =>
-          Future.successful(Ok(outsideEuEea(appConfig, getCountryNameFromCode(address.toAddress))))
+          Future.successful(Ok(outsideEuEea(appConfig, countryOptions.getCountryNameFromCode(address.toAddress))))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }
-
-  def getCountryNameFromCode(address: Address) = countryOptions.options
-    .find(_.value == address.country)
-    .map(_.label)
-    .getOrElse(address.country)
 
 }
