@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
@@ -22,44 +22,44 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.BusinessTypeNameController
 import forms.BusinessDetailsFormModel
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{BusinessTypeNameViewModel, Message}
 
-class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                @RegisterCompany override val navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                val cacheConnector: UserAnswersCacheConnector) extends BusinessTypeNameController {
+class PartnershipRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    @RegisterCompany override val navigator: Navigator,
+                                                    authenticate: AuthAction,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    val cacheConnector: UserAnswersCacheConnector) extends BusinessTypeNameController {
 
-  private def companyNameViewModel() =
+  private def partnershipNameViewModel() =
     BusinessTypeNameViewModel(
-      routes.CompanyRegisteredNameController.onSubmit(),
-      Message("companyName.title"),
-      Message("companyName.heading")
+      routes.PartnershipRegisteredNameController.onSubmit(),
+      Message("partnershipName.title"),
+      Message("partnershipName.heading")
     )
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      get(BusinessDetailsId, companyNameViewModel)
+      get(PartnershipDetailsId, partnershipNameViewModel)
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(BusinessDetailsId, companyNameViewModel())
+      post(PartnershipDetailsId, partnershipNameViewModel())
   }
 
   override protected val formModel: BusinessDetailsFormModel =
     BusinessDetailsFormModel(
       companyNameMaxLength = 105,
-      companyNameRequiredMsg = "companyName.error.required",
-      companyNameLengthMsg = "companyName.error.length",
-      companyNameInvalidMsg = "companyName.error.invalid",
+      companyNameRequiredMsg = "partnershipName.error.required",
+      companyNameLengthMsg = "partnershipName.error.length",
+      companyNameInvalidMsg = "partnershipName.error.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = None,
       utrLengthMsg = "businessDetails.error.utr.length",

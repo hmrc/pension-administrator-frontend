@@ -16,9 +16,9 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import viewmodels.CompanyNameViewModel
+@import viewmodels.BusinessTypeNameViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: CompanyNameViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: BusinessTypeNameViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages(viewModel.title),
@@ -34,7 +34,7 @@
       @components.heading(messages(viewModel.heading), "heading-xlarge", None)
 
       @components.input_text(
-        field = form("companyName"),
+        field = form("businessTypeName"),
         label = messages(viewModel.heading),
         labelClass = Some("visually-hidden")
       )

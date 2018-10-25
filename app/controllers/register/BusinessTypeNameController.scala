@@ -22,18 +22,17 @@ import controllers.Retrievals
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{BusinessDetails, Mode, NormalMode}
-import play.api.data.Form
+import models.{BusinessDetails, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import viewmodels.{BusinessDetailsViewModel, CompanyNameViewModel}
-import views.html.companyName
+import viewmodels.BusinessTypeNameViewModel
+import views.html.businessTypeName
 
 import scala.concurrent.Future
 
-trait CompanyNameController extends FrontendController with Retrievals with I18nSupport {
+trait BusinessTypeNameController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
 
@@ -45,22 +44,22 @@ trait CompanyNameController extends FrontendController with Retrievals with I18n
 
   private lazy val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
 
-  protected def get(id: TypedIdentifier[BusinessDetails], viewmodel: CompanyNameViewModel)
+  protected def get(id: TypedIdentifier[BusinessDetails], viewmodel: BusinessTypeNameViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(companyName(appConfig, filledForm, viewmodel)))
+    Future.successful(Ok(businessTypeName(appConfig, filledForm, viewmodel)))
   }
 
   protected def post(
                       id: TypedIdentifier[BusinessDetails],
-                      viewmodel: CompanyNameViewModel
+                      viewmodel: BusinessTypeNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(companyName(appConfig, formWithErrors, viewmodel))),
+        Future.successful(BadRequest(businessTypeName(appConfig, formWithErrors, viewmodel))),
       companyName =>
         cacheConnector.save(request.externalId, id, companyName).map {
           answers =>
