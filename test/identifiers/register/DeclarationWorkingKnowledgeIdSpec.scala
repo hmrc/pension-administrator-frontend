@@ -47,15 +47,15 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
         answersWithAdviser.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
           .asOpt.value
 
-      "remove the data for Postcode lookup" in {
-        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
+      "not remove the data for Postcode lookup (when nothing changed)" in {
+        result.get(AdviserAddressPostCodeLookupId) must be(defined)
       }
-      "remove the data for address" in {
-        result.get(AdviserAddressId) mustNot be(defined)
+      "not remove the data for address (when nothing changed)" in {
+        result.get(AdviserAddressId) must be(defined)
       }
 
-      "remove date for adviser details" in {
-        result.get(AdviserDetailsId) mustNot be(defined)
+      "not remove date for adviser details (when nothing changed)" in {
+        result.get(AdviserDetailsId) must be(defined)
       }
     }
 
