@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
-import identifiers.register.individual.AreYouInUKId
+import identifiers.register.AreYouInUKId
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json

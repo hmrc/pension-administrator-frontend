@@ -56,6 +56,10 @@ package object utils {
       answers.set(IndividualPreviousAddressListId)(address).asOpt.value
     }
 
+    def nonUkIndividualAddress(address: Address): UserAnswers = {
+      answers.set(IndividualAddressId)(address.toTolerantAddress).asOpt.value
+    }
+
     // Company PSA
     def companyPreviousAddress(address: Address): UserAnswers = {
       answers.set(CompanyPreviousAddressId)(address).asOpt.value
