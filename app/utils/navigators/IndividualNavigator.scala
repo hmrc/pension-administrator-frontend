@@ -21,18 +21,23 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.register.individual.{WhatYouWillNeedId, _}
+import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models.{AddressYears, CheckMode, Mode, NormalMode}
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, config: FrontendAppConfig) extends Navigator {
+class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, config: FrontendAppConfig, countryOptions: CountryOptions) extends Navigator {
 
   private def checkYourAnswers(): Option[NavigateTo] =
     NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
 
   //noinspection ScalaStyle
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
     case IndividualDetailsCorrectId => detailsCorrect(from.userAnswers)
+    case IndividualDetailsId => NavigateTo.save(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
+    case IndividualAddressId => regionBasedNavigation(from.userAnswers)
     case WhatYouWillNeedId => NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
     case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, NormalMode)
     case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(NormalMode))
@@ -43,7 +48,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(NormalMode))
     case IndividualPreviousAddressId => NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
     case IndividualContactDetailsId => NavigateTo.save(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
-    case IndividualDateOfBirthId => checkYourAnswers()
+    case IndividualDateOfBirthId => countryBasedDobNavigation(from.userAnswers)
     case CheckYourAnswersId => NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
@@ -111,4 +116,30 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
+
+  def countryOfRegistrationRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(AreYouInUKId) match {
+      case Some(false) => NavigateTo.save(routes.IndividualNameController.onPageLoad(NormalMode))
+      case _ => NavigateTo.save(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+    }
+  }
+
+  def countryBasedDobNavigation(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(AreYouInUKId) match {
+      case Some(false) => NavigateTo.save(routes.IndividualRegisteredAddressController.onPageLoad())
+      case _ => checkYourAnswers()
+    }
+  }
+
+  private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(IndividualAddressId) flatMap { address =>
+      countryOptions.regions(address.country.getOrElse("")) match {
+        case UK => NavigateTo.dontSave(routes.IndividualAreYouInUKController.onPageLoad(CheckMode))
+        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+  //      case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+    }
+  }
+
 }
