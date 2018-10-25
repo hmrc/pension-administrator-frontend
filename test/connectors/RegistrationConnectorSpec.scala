@@ -415,6 +415,61 @@ class RegistrationConnectorSpec()
     }
 
   }
+
+  "registerWithNoIdIndividual" should "return successfully given a valid name, dob and address" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validNonUkOrganizationResponse))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithNoIdIndividual(organisation.organisationName, expectedAddress(uk=false).toAddress).map { registration =>
+      registration.sapNumber shouldBe sapNumber
+    }
+  }
+
+
+  it should "only accept responses with status 200 OK" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.ACCEPTED)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[IllegalArgumentException] {
+      connector.registerWithNoIdIndividual(organisation.organisationName, expectedAddress(uk=false).toAddress)
+    }
+
+  }
+
+  it should "propagate exceptions from HttpClient" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.NOT_FOUND)
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[NotFoundException] {
+      connector.registerWithNoIdIndividual(organisation.organisationName, expectedAddress(uk=false).toAddress)
+    }
+
+  }  
+  
 }
 
 object RegistrationConnectorSpec extends OptionValues {
@@ -424,6 +479,7 @@ object RegistrationConnectorSpec extends OptionValues {
 
   private val organizationPath = "/pension-administrator/register-with-id/organisation"
   private val noIdOrganisationPath = "/pension-administrator/register-with-no-id/organisation"
+  private val noIdIndividualPath = "/pension-administrator/register-with-no-id/individual"
   private val individualPath = "/pension-administrator/register-with-id/individual"
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)

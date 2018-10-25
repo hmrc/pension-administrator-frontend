@@ -43,6 +43,10 @@ trait RegistrationConnector {
   def registerWithNoIdOrganisation
   (name: String, address: Address)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
+
+  def registerWithNoIdIndividual
+  (name: String, address: Address)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
 }
 
 @Singleton
@@ -143,6 +147,30 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     } andThen {
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithNoIdOrganisation", ex)
+        ex
+    }
+  }
+
+  override def registerWithNoIdIndividual
+  (name: String, address: Address)
+  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
+
+    val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
+
+    http.POST(config.registerWithNoIdIndividualUrl, Json.toJson(organisationRegistrant)) map { response =>
+      require(response.status == Status.OK, "The only valid response to registerWithNoIdIndividual is 200 OK")
+      val jsValue = Json.parse(response.body)
+
+      registrationInfo(
+        jsValue,
+        RegistrationLegalStatus.Individual,
+        RegistrationCustomerType.NonUK,
+        None,
+        None
+      )
+    } andThen {
+      case Failure(ex) =>
+        Logger.error("Unable to connect to registerWithNoIdIndividual", ex)
         ex
     }
   }
