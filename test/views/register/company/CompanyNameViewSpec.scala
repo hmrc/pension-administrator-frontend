@@ -65,9 +65,9 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       createViewUsingForm,
       messageKeyPrefix,
       controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url,
-      "businessTypeName")
+      "companyName")
 
-    behave like pageWithLabel(createViewUsingForm, "businessTypeName", messages("companyName.heading"))
+    behave like pageWithLabel(createViewUsingForm, "companyName", messages("companyName.heading"))
 
 
   }
