@@ -102,5 +102,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
 
   lazy val nonUkJourneys: Boolean = runModeConfiguration.getBoolean("features.non-uk-journeys").getOrElse(false)
+  lazy val isWorkPackageOneEnabled: Boolean = runModeConfiguration.getBoolean("features.work-package-one-enabled").getOrElse(false)
 
 }
