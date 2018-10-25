@@ -90,6 +90,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     def registerWithNoIdOrganisation
     (name: String, address: Address)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
+
+    def registerWithNoIdIndividual
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
 
   private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
@@ -105,6 +109,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     }
 
     def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
+
+    def registerWithNoIdIndividual
     (name: String, address: Address)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }

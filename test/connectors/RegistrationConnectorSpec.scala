@@ -370,7 +370,7 @@ class RegistrationConnectorSpec()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validNonUkOrganizationResponse))
+            .withBody(Json.stringify(validNonUkResponse))
         )
     )
 
@@ -424,7 +424,7 @@ class RegistrationConnectorSpec()
           aResponse()
             .withStatus(Status.OK)
             .withHeader("Content-Type", "application/json")
-            .withBody(Json.stringify(validNonUkOrganizationResponse))
+            .withBody(Json.stringify(validNonUkResponse))
         )
     )
 
@@ -509,7 +509,7 @@ object RegistrationConnectorSpec extends OptionValues {
     "postalCode" -> address.postcode.value
   )
 
-  private def validNonUkOrganizationResponse = Json.obj(
+  private def validNonUkResponse = Json.obj(
     "safeId" -> "",
     "sapNumber" -> sapNumber
   )

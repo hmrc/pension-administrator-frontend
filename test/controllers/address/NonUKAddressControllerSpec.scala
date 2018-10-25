@@ -19,6 +19,7 @@ package controllers.address
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
+import controllers.actions.FakeRegistrationConnector
 import forms.address.NonUKAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
@@ -209,18 +210,11 @@ object NonUKAddressControllerSpec {
     None
   )
 
-  private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
-
+  private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithNoIdOrganisation
     (name: String, address: Address)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
-
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =
+      Future.successful(registrationInfo)
   }
 
   class TestController @Inject()(
