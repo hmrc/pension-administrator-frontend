@@ -19,7 +19,7 @@ package utils.countryOptions
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import models.InternationalRegion
+import models.{Address, InternationalRegion}
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import play.api.Environment
 import play.api.libs.json.Json
@@ -31,6 +31,12 @@ class CountryOptions @Inject()(environment: Environment, config: FrontendAppConf
   def options: Seq[InputOption] = CountryOptions.getCountries(environment, config.locationCanonicalList)
   def regions(countryCode: String): InternationalRegion =
     CountryOptions.getInternationalRegion(environment, config, countryCode)
+
+
+  def getCountryNameFromCode(address: Address) = options
+    .find(_.value == address.country)
+    .map(_.label)
+    .getOrElse(address.country)
 }
 
 object CountryOptions {
@@ -70,4 +76,5 @@ object CountryOptions {
       case _ => RestOfTheWorld
     }
   }
+
 }
