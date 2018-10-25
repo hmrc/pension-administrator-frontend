@@ -82,3 +82,9 @@ POST       /add-partners                       controllers.register.partnership.
 
 GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad
 POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit
+
+GET        /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad()
+POST       /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit()
+GET        /change-enter-registered-address             controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad()
+POST       /change-enter-registered-address             controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit()
+
