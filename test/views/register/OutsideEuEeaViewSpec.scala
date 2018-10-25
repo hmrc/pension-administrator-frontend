@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.register.company
+package views.register
 
 import views.behaviours.ViewBehaviours
-import views.html.register.company.outsideEuEea
+import views.html.register.outsideEuEea
 
 class OutsideEuEeaViewSpec extends ViewBehaviours {
 
@@ -25,22 +25,30 @@ class OutsideEuEeaViewSpec extends ViewBehaviours {
   val organisationName = "Test company name"
   val country = "Canada"
 
-  def createView = () => outsideEuEea(frontendAppConfig, organisationName, country)(fakeRequest, messages)
+  def createView(orgType: String= "companies") = () => outsideEuEea(frontendAppConfig, organisationName, country, orgType)(fakeRequest, messages)
 
   "OutsideEuEea view" must {
-    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix, "body")
+    behave like normalPageWithoutPageTitleCheck(createView(), messageKeyPrefix)
 
     "display the correct page heading" in {
-      val doc = asDocument(createView())
+      val doc = asDocument(createView()())
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", organisationName)
     }
 
     "display dynamic text about current country" in {
-      createView must haveDynamicText(messages("outsideEuEea.currentCountry.text", organisationName, country))
+      createView() must haveDynamicText(messages("outsideEuEea.currentCountry.text", organisationName, country))
+    }
+
+    "display dynamic text body for companies" in {
+      createView() must haveDynamicText(messages("outsideEuEea.body", "companies"))
+    }
+
+    "display dynamic text body for partnerships" in {
+      createView("partnerships") must haveDynamicText(messages("outsideEuEea.body", "partnerships"))
     }
 
     "display link to return to gov uk" in {
-      createView must haveLink(frontendAppConfig.govUkUrl, "return-gov-uk")
+      createView() must haveLink(frontendAppConfig.govUkUrl, "return-gov-uk")
     }
   }
 }

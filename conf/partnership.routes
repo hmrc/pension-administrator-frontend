@@ -82,3 +82,5 @@ POST       /add-partners                       controllers.register.partnership.
 
 GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad
 POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit
+
+GET        /outside-eu-eea                              controllers.register.partnership.OutsideEuEeaController.onPageLoad()
