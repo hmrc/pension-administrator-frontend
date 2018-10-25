@@ -82,6 +82,9 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val registerWithIdOrganisationUrl: String = baseUrl ("pension-administrator") +
         runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithIdOrganisation")
 
+  lazy val registerWithNoIdOrganisationUrl: String = baseUrl ("pension-administrator") +
+        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdOrganisation")
+
   lazy val registerWithIdIndividualUrl: String = baseUrl("pension-administrator") +
         runModeConfiguration.underlying.getString("urls.pension-administrator.registerWithIdIndividual")
 
