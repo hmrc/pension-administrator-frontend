@@ -72,5 +72,24 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyAddressId) mustNot be(defined)
       }
     }
+
+    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
+      val result: UserAnswers =
+        answersForNo.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "not remove the data for Business details " in {
+        result.get(BusinessDetailsId) must be(defined)
+      }
+
+      "not remove the data for non uk Business type " in {
+        result.get(NonUKBusinessTypeId) must be(defined)
+      }
+
+      "not remove the data for non uk company address " in {
+        result.get(CompanyAddressId) must be(defined)
+      }
+    }
+
   }
 }
