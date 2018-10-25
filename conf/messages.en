@@ -778,3 +778,8 @@ individualName.error.lastName.invalid = The last name must start with an alphabe
 individualRegisteredNonUKAddress.title = Your address
 individualRegisteredNonUKAddress.heading = What is your address?
 individualRegisteredNonUKAddress.hintText = This is your address outside of the UK.
+
+outsideEuEea.individual.title = You cannot register as a PSA
+outsideEuEea.individual.heading = You cannot register as a PSA
+outsideEuEea.individual.currentCountry.text = This is because you are based in {0} and outside of the European Union and European Economic Area.
+outsideEuEea.individual.body = Only people based inside the European Union and European Economic Area can register as a PSA.
