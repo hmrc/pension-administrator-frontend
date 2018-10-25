@@ -120,10 +120,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     val jsResultSetValue = JsLens.fromPath(id.path).set(jsValue, json)
     jsResultSetValue.flatMap { newValue =>
       if (oldValue == newValue) {
-        println("\nNO CLEAN UP as value not changed")
         JsSuccess(UserAnswers(newValue))
       } else {
-        println(s"\nCLEAN UP: old value = $oldValue and new value = $newValue")
         jsResultSetValue.flatMap(json => id.cleanup(Some(value), UserAnswers(json)))
       }
     }
