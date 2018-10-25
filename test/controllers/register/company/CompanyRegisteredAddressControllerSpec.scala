@@ -17,59 +17,26 @@
 package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
-import controllers.ControllerSpecBase
+import connectors.FakeUserAnswersCacheConnector
 import controllers.actions._
+import controllers.address.NonUKAddressControllerDataMocks
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator}
+import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.{ExecutionContext, Future}
-
-class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
-
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
-  private val companyName = "Test Company Name"
-
-  private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
-
-    override def registerWithNoIdOrganisation
-    (name: String, address: Address)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(
-      RegistrationInfo(
-      RegistrationLegalStatus.LimitedCompany,
-      "test-sap-number",
-      false,
-      RegistrationCustomerType.NonUK,
-      None,
-      None
-    )
-    )
-
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
-  }
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegisteredAddressController(

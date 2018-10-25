@@ -191,37 +191,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 }
 
 
-object NonUKAddressControllerSpec {
-
-  val fakeAddressId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress] {
-    override def toString = "fakeAddressId"
-  }
-  val externalId: String = "test-external-id"
-  val companyName = "test company name"
-  val sapNumber = "test-sap-number"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
-  val registrationInfo = RegistrationInfo(
-    RegistrationLegalStatus.LimitedCompany,
-    sapNumber,
-    false,
-    RegistrationCustomerType.NonUK,
-    None,
-    None
-  )
-
-  private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
-
-    override def registerWithNoIdOrganisation
-    (name: String, address: Address)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
-
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
-  }
+object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
