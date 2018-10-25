@@ -93,8 +93,8 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
             sapNumber,
             noIdentifier = false,
             RegistrationCustomerType.UK,
-            RegistrationIdType.UTR,
-            validBusinessPartnershipUtr
+            Some(RegistrationIdType.UTR),
+            Some(validBusinessPartnershipUtr)
           )
 
           val expectedJson =
@@ -244,8 +244,8 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         sapNumber,
         false,
         RegistrationCustomerType.UK,
-        RegistrationIdType.UTR,
-        utr
+        Some(RegistrationIdType.UTR),
+        Some(utr)
       )
 
       if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
@@ -263,6 +263,10 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     def registerWithIdIndividual
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =

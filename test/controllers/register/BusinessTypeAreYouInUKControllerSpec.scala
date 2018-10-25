@@ -26,9 +26,10 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.FakeNavigator
+import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
-class AreYouInUKControllerSpec extends ControllerSpecBase {
+class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -36,7 +37,7 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new AreYouInUKController(
+    new BusinessTypeAreYouInUKController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -47,7 +48,16 @@ class AreYouInUKControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode) = areYouInUK(frontendAppConfig, form, mode)(fakeRequest, messages).toString
+  private def viewmodel(mode: Mode) =
+    AreYouInUKViewModel(mode,
+      postCall = routes.BusinessTypeAreYouInUKController.onSubmit(mode),
+      title = Message("areYouInUK.title"),
+      heading = Message("areYouInUK.heading"),
+      p1 = Some("areYouInUK.check.selectedUkAddress"),
+      p2 = Some("areYouInUK.check.provideNonUkAddress")
+    )
+
+  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode) = areYouInUK(frontendAppConfig, form, viewmodel(mode))(fakeRequest, messages).toString
 
   "Are You In the  UK Controller" must {
 

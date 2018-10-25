@@ -55,8 +55,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     sapNumber,
     noIdentifier = false,
     RegistrationCustomerType.UK,
-    RegistrationIdType.Nino,
-    nino
+    Some(RegistrationIdType.Nino),
+    Some(nino)
   )
 
   private val individual = TolerantIndividual(
@@ -86,6 +86,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
       Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
     }
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
 
   private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
@@ -99,6 +103,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       throw new Exception("registerWithIdIndividual should not be called in this test")
     }
+
+    def registerWithNoIdOrganisation
+    (name: String, address: Address)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, registrationConnector: RegistrationConnector = FakeRegistrationConnector) =

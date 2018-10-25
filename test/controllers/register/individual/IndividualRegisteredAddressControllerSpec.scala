@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.individual
 
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -37,7 +37,7 @@ import views.html.address.nonukAddress
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
+class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -46,7 +46,16 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
   val formProvider = new NonUKAddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
-  private val companyName = "Test Company Name"
+  val individualName = "TestFirstName TestLastName"
+  val sapNumber = "test-sap-number"
+  val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany,
+    sapNumber,
+    false,
+    RegistrationCustomerType.NonUK,
+    None,
+    None
+  )
 
   private def fakeRegistrationConnector = new RegistrationConnector {
     override def registerWithIdOrganisation
@@ -55,43 +64,35 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
 
     override def registerWithNoIdOrganisation
     (name: String, address: Address)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(
-      RegistrationInfo(
-      RegistrationLegalStatus.LimitedCompany,
-      "test-sap-number",
-      false,
-      RegistrationCustomerType.NonUK,
-      None,
-      None
-    )
-    )
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
 
     override def registerWithIdIndividual
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new CompanyRegisteredAddressController(
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
+    new IndividualRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
-      fakeRegistrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      fakeRegistrationConnector
     )
 
   private def viewModel = ManualAddressViewModel(
-    routes.CompanyRegisteredAddressController.onSubmit(),
+    routes.IndividualRegisteredAddressController.onSubmit(),
     countryOptions.options,
-    Message("companyRegisteredNonUKAddress.title"),
-    Message("companyRegisteredNonUKAddress.heading", companyName),
+    Message("individualRegisteredNonUKAddress.title"),
+    Message("individualRegisteredNonUKAddress.heading", individualName),
     None,
-    Some(Message("companyRegisteredNonUKAddress.hintText"))
+    Some(Message("individualRegisteredNonUKAddress.hintText"))
   )
 
   private def viewAsString(form: Form[_] = form) =
@@ -101,7 +102,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
       viewModel
     )(fakeRequest, messages).toString()
 
-  "CompanyRegisteredAddress Controller" must {
+  "IndividualRegisteredAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
@@ -112,8 +113,8 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None),
-        CompanyAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
+        IndividualDetailsId.toString -> TolerantIndividual(Some("fName"), Some("mName"), Some("fName")),
+        IndividualAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
