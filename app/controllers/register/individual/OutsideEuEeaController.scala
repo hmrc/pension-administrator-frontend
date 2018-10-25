@@ -14,35 +14,35 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.individual
 
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.individual.IndividualAddressId
 import javax.inject.Inject
+import models.Address
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.countryOptions.CountryOptions
-import views.html.register.company.outsideEuEea
+import views.html.register.individual.outsideEuEea
 
 import scala.concurrent.Future
 
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
+                                       override val messagesApi: MessagesApi,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
                                        countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
-      (BusinessDetailsId and CompanyAddressId).retrieve.right.map {
-        case details ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, countryOptions.getCountryNameFromCode(address.toAddress))))
+      (IndividualAddressId).retrieve.right.map { address =>
+          Future.successful(Ok(outsideEuEea(appConfig, countryOptions.getCountryNameFromCode(address.toAddress))))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }
