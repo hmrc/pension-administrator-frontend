@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.individual
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.{Address, BusinessDetails}
+import identifiers.register.individual.IndividualAddressId
+import models.Address
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import views.html.register.outsideEuEea
+import views.html.register.individual.outsideEuEea
 
 class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
@@ -42,9 +42,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
   def validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
-      BusinessDetailsId.toString ->
-        BusinessDetails(organisationName, None),
-      CompanyAddressId.toString -> Address(
+      IndividualAddressId.toString -> Address(
         "value 1",
         "value 2",
         None,
@@ -54,14 +52,13 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
       ).toTolerantAddress
     )))
 
-  val organisationName = "Test company name"
   val country = "Afghanistan"
 
   "OutsideEuEea Controller" must {
     "return 200 and correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
       status(result) mustBe OK
-      contentAsString(result) mustBe outsideEuEea(frontendAppConfig, organisationName, country, "companies")(fakeRequest, messages).toString
+      contentAsString(result) mustBe outsideEuEea(frontendAppConfig, country)(fakeRequest, messages).toString
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {

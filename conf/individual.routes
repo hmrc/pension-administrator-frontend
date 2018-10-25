@@ -77,3 +77,5 @@ POST        /address-manual                         controllers.register.individ
 GET         /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
 POST        /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
 
+GET         /outside-eu-eea                         controllers.register.individual.OutsideEuEeaController.onPageLoad()
+

@@ -16,19 +16,19 @@
 
 @import config.FrontendAppConfig
 
-@(appConfig: FrontendAppConfig, organisationName: String, country: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, country: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("outsideEuEea.title"),
+    title = messages("outsideEuEea.individual.title"),
     appConfig = appConfig,
     bodyClasses = None
     ) {
 
-        @components.heading(messages("outsideEuEea.heading", organisationName))
+        @components.heading(messages("outsideEuEea.individual.heading"))
 
-        <p>@messages("outsideEuEea.currentCountry.text", organisationName, country)</p>
+        <p>@messages("outsideEuEea.individual.currentCountry.text", country)</p>
 
-        <p>@messages("outsideEuEea.body")</p>
+        <p>@messages("outsideEuEea.individual.body")</p>
 
         <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
 

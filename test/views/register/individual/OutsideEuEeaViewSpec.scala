@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package views.register.company
+package views.register.individual
 
 import views.behaviours.ViewBehaviours
-import views.html.register.company.outsideEuEea
+import views.html.register.individual.outsideEuEea
 
 class OutsideEuEeaViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "outsideEuEea"
-  val organisationName = "Test company name"
+  val messageKeyPrefix = "outsideEuEea.individual"
   val country = "Canada"
 
-  def createView = () => outsideEuEea(frontendAppConfig, organisationName, country)(fakeRequest, messages)
+  def createView = () => outsideEuEea(frontendAppConfig, country)(fakeRequest, messages)
 
   "OutsideEuEea view" must {
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix, "body")
 
     "display the correct page heading" in {
       val doc = asDocument(createView())
-      assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", organisationName)
+      assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
     }
 
     "display dynamic text about current country" in {
-      createView must haveDynamicText(messages("outsideEuEea.currentCountry.text", organisationName, country))
+      createView must haveDynamicText(messages("outsideEuEea.individual.currentCountry.text", country))
     }
 
     "display link to return to gov uk" in {
