@@ -18,6 +18,8 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
+import models.registrationnoid.RegistrationNoIdIndividualRequest
+import org.joda.time.LocalDate
 import org.scalatest._
 import play.api.Application
 import play.api.http.Status
@@ -420,6 +422,7 @@ class RegistrationConnectorSpec()
 
     server.stubFor(
       post(urlEqualTo(noIdIndividualPath))
+        .withRequestBody(equalToJson(Json.stringify(registerWithoutIdIndividualRequest)))
         .willReturn(
           aResponse()
             .withStatus(Status.OK)
@@ -429,7 +432,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(organisation.organisationName, expectedAddress(uk=false).toAddress).map { registration =>
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth).map { registration =>
       registration.sapNumber shouldBe sapNumber
     }
   }
@@ -448,27 +451,28 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[IllegalArgumentException] {
-      connector.registerWithNoIdIndividual(organisation.organisationName, expectedAddress(uk=false).toAddress)
+      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth)
     }
 
   }
 
-  it should "propagate exceptions from HttpClient" in {
 
-    server.stubFor(
-      post(urlEqualTo(noIdIndividualPath))
-        .willReturn(
-          aResponse()
-            .withStatus(Status.NOT_FOUND)
-        )
-    )
+    it should "propagate exceptions from HttpClient" in {
 
-    val connector = injector.instanceOf[RegistrationConnector]
-    recoverToSucceededIf[NotFoundException] {
-      connector.registerWithNoIdIndividual(organisation.organisationName, expectedAddress(uk=false).toAddress)
+      server.stubFor(
+        post(urlEqualTo(noIdIndividualPath))
+          .willReturn(
+            aResponse()
+              .withStatus(Status.NOT_FOUND)
+          )
+      )
+
+      val connector = injector.instanceOf[RegistrationConnector]
+      recoverToSucceededIf[NotFoundException] {
+        connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth)
+      }
+
     }
-
-  }  
   
 }
 
@@ -483,7 +487,12 @@ object RegistrationConnectorSpec extends OptionValues {
   private val individualPath = "/pension-administrator/register-with-id/individual"
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
+  private val firstName = "John"
+  private val lastName = "Doe"
+  private val individualDateOfBirth = LocalDate.parse("20150808")
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
+  private val registerWithoutIdIndividualRequest = Json.toJson(
+    RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk=false).toAddress))
 
   private val expectedIndividual = TolerantIndividual(
     Some("John"),

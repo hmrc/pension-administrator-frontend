@@ -21,12 +21,16 @@ import java.util.UUID.randomUUID
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import javax.inject.Singleton
+
 import models._
+import models.registrationnoid.RegistrationNoIdIndividualRequest
+import org.joda.time.LocalDate
 import play.Logger
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -45,7 +49,7 @@ trait RegistrationConnector {
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
 
   def registerWithNoIdIndividual
-  (name: String, address: Address)
+  (firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
 }
 
@@ -152,12 +156,12 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   }
 
   override def registerWithNoIdIndividual
-  (name: String, address: Address)
+  (firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
 
-    val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
+    val registrant = RegistrationNoIdIndividualRequest(firstName, lastName, dateOfBirth, address)
 
-    http.POST(config.registerWithNoIdIndividualUrl, Json.toJson(organisationRegistrant)) map { response =>
+    http.POST(config.registerWithNoIdIndividualUrl, Json.toJson(registrant)) map { response =>
       require(response.status == Status.OK, "The only valid response to registerWithNoIdIndividual is 200 OK")
       val jsValue = Json.parse(response.body)
 

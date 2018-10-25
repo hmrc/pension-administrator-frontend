@@ -18,6 +18,7 @@ package controllers.actions
 
 import connectors.RegistrationConnector
 import models._
+import org.joda.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +38,6 @@ abstract class FakeRegistrationConnector extends RegistrationConnector {
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
 
   override def registerWithNoIdIndividual
-  (name: String, address: Address)
+  (firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
 }
