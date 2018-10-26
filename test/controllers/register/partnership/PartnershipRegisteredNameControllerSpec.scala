@@ -27,8 +27,8 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import utils.FakeNavigator
-import viewmodels.BusinessTypeNameViewModel
-import views.html.businessTypeName
+import viewmodels.OrganizationNameViewModel
+import views.html.organizationName
 
 class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
 
@@ -50,7 +50,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
   val testCompanyName = "test company name"
   val testBusinessDetails = BusinessDetails(testCompanyName, None)
 
-  def viewmodel = BusinessTypeNameViewModel(
+  def viewmodel = OrganizationNameViewModel(
     postCall = controllers.register.partnership.routes.PartnershipRegisteredNameController.onSubmit(),
     title = "partnershipName.title",
     heading = "partnershipName.heading"
@@ -67,7 +67,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector
     )
 
-  def viewAsString(form: Form[_] = form): String = businessTypeName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = organizationName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
   "CompanyRegisteredName Controller" when {
 

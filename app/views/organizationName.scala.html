@@ -16,9 +16,9 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import viewmodels.BusinessTypeNameViewModel
+@import viewmodels.OrganizationNameViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: BusinessTypeNameViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: OrganizationNameViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages(viewModel.title),

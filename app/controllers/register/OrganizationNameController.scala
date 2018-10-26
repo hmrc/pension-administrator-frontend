@@ -27,12 +27,12 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import viewmodels.BusinessTypeNameViewModel
-import views.html.businessTypeName
+import viewmodels.OrganizationNameViewModel
+import views.html.organizationName
 
 import scala.concurrent.Future
 
-trait BusinessTypeNameController extends FrontendController with Retrievals with I18nSupport {
+trait OrganizationNameController extends FrontendController with Retrievals with I18nSupport {
 
   protected def appConfig: FrontendAppConfig
 
@@ -44,22 +44,22 @@ trait BusinessTypeNameController extends FrontendController with Retrievals with
 
   private lazy val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
 
-  protected def get(id: TypedIdentifier[BusinessDetails], viewmodel: BusinessTypeNameViewModel)
+  protected def get(id: TypedIdentifier[BusinessDetails], viewmodel: OrganizationNameViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(businessTypeName(appConfig, filledForm, viewmodel)))
+    Future.successful(Ok(organizationName(appConfig, filledForm, viewmodel)))
   }
 
   protected def post(
                       id: TypedIdentifier[BusinessDetails],
-                      viewmodel: BusinessTypeNameViewModel
+                      viewmodel: OrganizationNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(businessTypeName(appConfig, formWithErrors, viewmodel))),
+        Future.successful(BadRequest(organizationName(appConfig, formWithErrors, viewmodel))),
       companyName =>
         cacheConnector.save(request.externalId, id, companyName).map {
           answers =>

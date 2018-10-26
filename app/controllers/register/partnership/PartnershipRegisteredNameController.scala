@@ -20,14 +20,14 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.BusinessTypeNameController
+import controllers.register.OrganizationNameController
 import forms.BusinessDetailsFormModel
 import identifiers.register.partnership.PartnershipDetailsId
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
-import viewmodels.{BusinessTypeNameViewModel, Message}
+import viewmodels.{OrganizationNameViewModel, Message}
 
 class PartnershipRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
@@ -35,10 +35,10 @@ class PartnershipRegisteredNameController @Inject()(override val appConfig: Fron
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    val cacheConnector: UserAnswersCacheConnector) extends BusinessTypeNameController {
+                                                    val cacheConnector: UserAnswersCacheConnector) extends OrganizationNameController {
 
   private def partnershipNameViewModel() =
-    BusinessTypeNameViewModel(
+    OrganizationNameViewModel(
       routes.PartnershipRegisteredNameController.onSubmit(),
       Message("partnershipName.title"),
       Message("partnershipName.heading")

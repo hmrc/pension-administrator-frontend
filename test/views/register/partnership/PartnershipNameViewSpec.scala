@@ -20,16 +20,16 @@ import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
-import viewmodels.{BusinessTypeNameViewModel, Message}
+import viewmodels.{OrganizationNameViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
-import views.html.businessTypeName
+import views.html.organizationName
 
 class PartnershipNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
   private val messageKeyPrefix = "partnershipName"
 
   private lazy val viewModel =
-    BusinessTypeNameViewModel(
+    OrganizationNameViewModel(
       title = "partnershipName.title",
       heading = Message("partnershipName.heading"),
       postCall = Call("POST", "http://www.test.com")
@@ -49,9 +49,9 @@ class PartnershipNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
   val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
 
-  private def createView = () => businessTypeName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createView = () => organizationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => businessTypeName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => organizationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
   "Partnership Name view" must {
 
