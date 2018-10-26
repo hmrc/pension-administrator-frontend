@@ -57,18 +57,10 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     None
   )
 
-  private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
-
+  private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithNoIdOrganisation
     (name: String, address: Address)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
-
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
 
