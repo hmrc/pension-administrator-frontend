@@ -48,10 +48,7 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
   val fakeAuditService = new StubSuccessfulAuditService()
   private val companyName = "Test Company Name"
 
-  private def fakeRegistrationConnector = new RegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
+  private def fakeRegistrationConnector = new FakeRegistrationConnector {
 
     override def registerWithNoIdOrganisation
     (name: String, address: Address)
@@ -65,10 +62,6 @@ class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with Sca
       None
     )
     )
-
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =

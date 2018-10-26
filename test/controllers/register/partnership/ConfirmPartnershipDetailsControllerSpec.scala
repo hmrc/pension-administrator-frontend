@@ -234,7 +234,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   val form: Form[Boolean] = formProvider()
 
-  private def fakeRegistrationConnector = new RegistrationConnector {
+  private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
@@ -258,15 +258,6 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
       }
     }
-
-    //noinspection NotImplementedCode
-    def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
-
-    def registerWithNoIdOrganisation
-    (name: String, address: Address)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
