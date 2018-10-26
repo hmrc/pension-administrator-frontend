@@ -35,18 +35,18 @@ import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import utils.{FakeNavigator, Navigator, UserAnswers}
-import viewmodels.CompanyNameViewModel
-import views.html.companyName
+import viewmodels.OrganisationNameViewModel
+import views.html.organisationName
 
 import scala.concurrent.Future
 
-class CompanyNameControllerSpec extends WordSpec with MustMatchers with MockitoSugar {
+class OrganisationNameControllerSpec extends WordSpec with MustMatchers with MockitoSugar {
 
-  import CompanyNameControllerSpec._
+  import OrganisationNameControllerSpec._
 
   val testCompanyName = "test company name"
 
-  val viewmodel = CompanyNameViewModel(
+  val viewmodel = OrganisationNameViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading"
@@ -71,7 +71,7 @@ class CompanyNameControllerSpec extends WordSpec with MustMatchers with MockitoS
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual companyName(appConfig, formProvider(businessDetailsFormModel), viewmodel)(request, messages).toString
+          contentAsString(result) mustEqual organisationName(appConfig, formProvider(businessDetailsFormModel), viewmodel)(request, messages).toString
       }
     }
 
@@ -93,7 +93,7 @@ class CompanyNameControllerSpec extends WordSpec with MustMatchers with MockitoS
           val result = controller.onPageLoad(viewmodel, answers)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual companyName(
+          contentAsString(result) mustEqual organisationName(
             appConfig,
             formProvider(businessDetailsFormModel).fill(BusinessDetails(testCompanyName, None)),
             viewmodel
@@ -148,7 +148,7 @@ class CompanyNameControllerSpec extends WordSpec with MustMatchers with MockitoS
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual companyName(
+          contentAsString(result) mustEqual organisationName(
             appConfig,
             formProvider(businessDetailsFormModel).bind(Map.empty[String, String]),
             viewmodel
@@ -158,7 +158,7 @@ class CompanyNameControllerSpec extends WordSpec with MustMatchers with MockitoS
   }
 }
 
-object CompanyNameControllerSpec extends OptionValues {
+object OrganisationNameControllerSpec extends OptionValues {
 
   object FakeIdentifier extends TypedIdentifier[BusinessDetails]
   val businessDetailsFormModel = BusinessDetailsFormModel(
@@ -178,14 +178,14 @@ object CompanyNameControllerSpec extends OptionValues {
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: CompanyNameFormProvider
-                                ) extends CompanyNameController {
+                                ) extends OrganisationNameController {
 
-    def onPageLoad(viewmodel: CompanyNameViewModel, answers: UserAnswers): Future[Result] = {
+    def onPageLoad(viewmodel: OrganisationNameViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    def onSubmit(viewmodel: CompanyNameViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
+    def onSubmit(viewmodel: OrganisationNameViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }

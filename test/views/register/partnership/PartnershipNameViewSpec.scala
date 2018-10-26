@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package views
+package views.register.partnership
 
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, CompanyNameFormProvider}
+import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
-import viewmodels.{CompanyNameViewModel, Message}
-import views.behaviours.{QuestionViewBehaviours, StringViewBehaviours}
-import views.html.companyName
+import viewmodels.{OrganisationNameViewModel, Message}
+import views.behaviours.QuestionViewBehaviours
+import views.html.organisationName
 
-class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
+class PartnershipNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
-  private val messageKeyPrefix = "companyName"
+  private val messageKeyPrefix = "partnershipName"
 
   private lazy val viewModel =
-    CompanyNameViewModel(
-      title = "companyName.title",
-      heading = Message("companyName.heading"),
+    OrganisationNameViewModel(
+      title = "partnershipName.title",
+      heading = Message("partnershipName.heading"),
       postCall = Call("POST", "http://www.test.com")
     )
 
   protected val formModel: BusinessDetailsFormModel =
     BusinessDetailsFormModel(
       companyNameMaxLength = 105,
-      companyNameRequiredMsg = "companyName.error.required",
-      companyNameLengthMsg = "companyName.error.length",
-      companyNameInvalidMsg = "companyName.error.invalid",
+      companyNameRequiredMsg = "partnershipName.error.required",
+      companyNameLengthMsg = "partnershipName.error.length",
+      companyNameInvalidMsg = "partnershipName.error.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = None,
       utrLengthMsg = "businessDetails.error.utr.length",
@@ -49,11 +49,11 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
   val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
 
-  private def createView = () => companyName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createView = () => organisationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => companyName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => organisationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
-  "Company Name view" must {
+  "Partnership Name view" must {
 
     behave like normalPage(createView, messageKeyPrefix)
 
@@ -67,7 +67,7 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url,
       "companyName")
 
-    behave like pageWithLabel(createViewUsingForm, "companyName", messages("companyName.heading"))
+    behave like pageWithLabel(createViewUsingForm, "companyName", messages("partnershipName.heading"))
 
 
   }

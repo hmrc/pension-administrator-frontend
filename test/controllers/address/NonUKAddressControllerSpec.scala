@@ -19,6 +19,7 @@ package controllers.address
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
+import controllers.actions.FakeRegistrationConnector
 import forms.address.NonUKAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId

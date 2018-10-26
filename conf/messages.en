@@ -784,6 +784,12 @@ outsideEuEea.individual.heading = You cannot register as a PSA
 outsideEuEea.individual.currentCountry.text = This is because you are based in {0} and outside of the European Union and European Economic Area.
 outsideEuEea.individual.body = Only people based inside the European Union and European Economic Area can register as a PSA.
 
+partnershipName.title = What is the partnership’s name?
+partnershipName.heading = What is the partnership’s name?
+partnershipName.error.required = Enter the registered partnership’s name
+partnershipName.error.length = The name cannot be more than 105 characters
+partnershipName.error.invalid = Enter a valid registered partnership’s name
+
 partnershipRegisteredNonUKAddress.title = Enter the address
 partnershipRegisteredNonUKAddress.heading = What is {0}’s address?
 partnershipRegisteredNonUKAddress.hintText = TThis is the partnership’s address outside of the UK.
