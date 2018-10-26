@@ -55,11 +55,11 @@ class PartnershipRegisteredAddressController @Inject()(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
     nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
 
-  private def addressViewModel(companyName: String) = ManualAddressViewModel(
+  private def addressViewModel(partnershipName: String) = ManualAddressViewModel(
     routes.PartnershipRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("partnershipRegisteredNonUKAddress.title"),
-    Message("partnershipRegisteredNonUKAddress.heading", companyName),
+    Message("partnershipRegisteredNonUKAddress.heading", partnershipName),
     None,
     Some(Message("partnershipRegisteredNonUKAddress.hintText"))
   )

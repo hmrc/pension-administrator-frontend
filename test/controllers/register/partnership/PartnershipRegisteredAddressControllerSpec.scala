@@ -62,7 +62,7 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
     Some(Message("partnershipRegisteredNonUKAddress.hintText"))
   )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[_] = form) : String =
     nonukAddress(
       frontendAppConfig,
       form,
