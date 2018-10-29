@@ -128,8 +128,7 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheCon
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.PartnershipRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
     }
   }
 
@@ -147,8 +146,7 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheCon
   private def regionBasedContactDetailsRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case Some(true) => NavigateTo.save(routes.PartnershipVatController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => NavigateTo.save(routes.PartnershipVatController.onPageLoad(NormalMode))
     }
   }
 }

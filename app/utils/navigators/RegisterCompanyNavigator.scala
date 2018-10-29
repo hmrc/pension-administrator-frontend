@@ -143,16 +143,14 @@ class RegisterCompanyNavigator @Inject()(val dataCacheConnector: UserAnswersCach
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
       }
   }
 
   private def regionBasedContactDetailsRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case Some(true) => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
     }
   }
 }
