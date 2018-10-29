@@ -18,16 +18,18 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
-import controllers.actions.FakeRegistrationConnector
+import connectors.FakeUserAnswersCacheConnector
+import connectors.RegistrationConnector
+import connectors.UserAnswersCacheConnector
 import forms.address.NonUKAddressFormProvider
-import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
 import models._
 import models.requests.DataRequest
+import org.scalatest.MustMatchers
+import org.scalatest.OptionValues
+import org.scalatest.WordSpec
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._
@@ -35,13 +37,12 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 
 class NonUKAddressControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
@@ -192,30 +193,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 }
 
 
-object NonUKAddressControllerSpec {
-
-  val fakeAddressId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress] {
-    override def toString = "fakeAddressId"
-  }
-  val externalId: String = "test-external-id"
-  val companyName = "test company name"
-  val sapNumber = "test-sap-number"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
-  val registrationInfo = RegistrationInfo(
-    RegistrationLegalStatus.LimitedCompany,
-    sapNumber,
-    false,
-    RegistrationCustomerType.NonUK,
-    None,
-    None
-  )
-
-  private def fakeRegistrationConnector = new FakeRegistrationConnector {
-    override def registerWithNoIdOrganisation
-    (name: String, address: Address)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =
-      Future.successful(registrationInfo)
-  }
+object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,

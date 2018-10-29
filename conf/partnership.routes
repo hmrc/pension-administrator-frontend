@@ -89,3 +89,9 @@ GET        /partnership-name                            controllers.register.par
 POST       /partnership-name                            controllers.register.partnership.PartnershipRegisteredNameController.onSubmit()
 GET        /change-partnership-name                     controllers.register.partnership.PartnershipRegisteredNameController.onPageLoad()
 POST       /change-partnership-name                     controllers.register.partnership.PartnershipRegisteredNameController.onSubmit()
+
+GET        /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad()
+POST       /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit()
+GET        /change-enter-registered-address             controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad()
+POST       /change-enter-registered-address             controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit()
+
