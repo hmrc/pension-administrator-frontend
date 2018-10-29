@@ -51,7 +51,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationFitAndProperId, emptyAnswers, confirmationPage, false, None, false),
     (AreYouInUKId, inUk,   ukBusinessTypePage, false, None, false),
     (AreYouInUKId, notInUk,   nonUkBusinessTypePage, false, None, false),
-    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false)
+    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false),
+    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipName, false, None, false)
   )
 
   //scalastyle:on line.size.limit
@@ -77,6 +78,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val ukBusinessTypePage: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
   lazy val nonUkBusinessTypePage: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
   lazy val nonUkCompanyName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad()
+  lazy val nonUkPartnershipName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
