@@ -792,4 +792,4 @@ partnershipName.error.invalid = Enter a valid registered partnership’s name
 
 partnershipRegisteredNonUKAddress.title = Enter the address
 partnershipRegisteredNonUKAddress.heading = What is {0}’s address?
-partnershipRegisteredNonUKAddress.hintText = TThis is the partnership’s address outside of the UK.
+partnershipRegisteredNonUKAddress.hintText = This is the partnership’s address outside of the UK.

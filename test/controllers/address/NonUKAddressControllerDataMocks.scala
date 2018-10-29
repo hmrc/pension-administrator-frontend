@@ -18,15 +18,16 @@ package controllers.address
 
 import connectors.RegistrationConnector
 import controllers.ControllerSpecBase
+import controllers.actions.FakeRegistrationConnector
 import identifiers.TypedIdentifier
 import models._
-import org.joda.time.LocalDate
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeCountryOptions
 import utils.countryOptions.CountryOptions
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
 
@@ -52,18 +53,9 @@ trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
     None
   )
 
-  def fakeRegistrationConnector :RegistrationConnector = new RegistrationConnector {
-
-    override def registerWithIdOrganisation(utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)(
-      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
+  def fakeRegistrationConnector :RegistrationConnector = new FakeRegistrationConnector {
 
     override def registerWithNoIdOrganisation(name: String, address: Address)(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
-
-    override def registerWithIdIndividual(nino: String)(
-      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
-
-    override def registerWithNoIdIndividual(firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)(
-        implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
   }
 }
