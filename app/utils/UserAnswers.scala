@@ -122,7 +122,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       if (oldValue == newValue) {
         JsSuccess(UserAnswers(newValue))
       } else {
-        jsResultSetValue.flatMap(json => id.cleanup(Some(value), UserAnswers(json)))
+        id.cleanup(Some(value), UserAnswers(newValue))
       }
     }
   }
