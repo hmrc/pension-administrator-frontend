@@ -145,6 +145,9 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
   private val nonUkNonEuAddress = UserAnswers().nonUkCompanyAddress(address("AF"))
 
+  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
+  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
   private def address(countryCode: String) =Address("addressLine1","addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
 }

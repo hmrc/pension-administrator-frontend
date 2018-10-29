@@ -137,6 +137,9 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
 
+  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
+  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
   private val nonUkEuAddress = UserAnswers().nonUkPartnershipAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkPartnershipAddress(address("GB"))
   private val nonUkNonEuAddress = UserAnswers().nonUkPartnershipAddress(address("AF"))
