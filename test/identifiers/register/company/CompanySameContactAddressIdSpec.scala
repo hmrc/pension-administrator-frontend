@@ -58,28 +58,24 @@ class CompanySameContactAddressIdSpec extends WordSpec with MustMatchers with Op
       }
     }
 
-    "`CompanySameContactAddress` is set to `false`" must {
+    "`CompanySameContactAddress` is set to `false` (when already set to false)" must {
 
       val result: UserAnswers = answersWithContactAddress.set(CompanySameContactAddressId)(false).asOpt.value
 
-      "remove the data for `CompanyContactAddress`" in {
-        result.get(CompanyContactAddressId) mustNot be(defined)
+      "not remove the data for `CompanyContactAddress`" in {
+        result.get(CompanyContactAddressId) must be(defined)
       }
 
-      "remove the data for `CompanyContactAddressPostCodeLookup`" in {
-        result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
+      "not remove the data for `CompanyContactAddressPostCodeLookup`" in {
+        result.get(CompanyContactAddressPostCodeLookupId) must be(defined)
       }
 
-      "remove the data for `PreviousPostCodeLookup`" in {
-        result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
+      "not remove the data for `PreviousPostCodeLookup`" in {
+        result.get(CompanyPreviousAddressPostCodeLookupId) must be(defined)
       }
 
-      "remove the data for `PreviousAddress`" in {
-        result.get(CompanyPreviousAddressId) mustNot be(defined)
-      }
-
-      "remove the data for `AddressYears`" in {
-        result.get(CompanyAddressYearsId) mustNot be(defined)
+      "not remove the data for `PreviousAddress`" in {
+        result.get(CompanyPreviousAddressId) must be(defined)
       }
     }
 
