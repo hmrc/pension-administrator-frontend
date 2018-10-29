@@ -137,6 +137,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
     val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
 
+    println( "\n\n****" + organisationRegistrant)
+
     http.POST(config.registerWithNoIdOrganisationUrl, Json.toJson(organisationRegistrant)) map { response =>
       require(response.status == Status.OK, "The only valid response to registerWithNoIdOrganisation is 200 OK")
       val jsValue = Json.parse(response.body)
