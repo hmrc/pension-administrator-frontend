@@ -17,12 +17,19 @@
 package utils
 
 import connectors.FakeUserAnswersCacheConnector
-import identifiers.{Identifier, LastPageId}
+import identifiers.Identifier
+import identifiers.LastPageId
+import models.CheckMode
+import models.LastPage
+import models.NormalMode
 import models.requests.IdentifiedRequest
-import models.{CheckMode, LastPage, NormalMode}
+import org.scalatest.MustMatchers
+import org.scalatest.OptionValues
+import org.scalatest.WordSpec
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
-import org.scalatest.prop.{PropertyChecks, TableFor6}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.prop.PropertyChecks
+import org.scalatest.prop.TableFor6
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,6 +37,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait NavigatorBehaviour extends PropertyChecks with OptionValues {
   this: WordSpec with MustMatchers =>
+
+  protected val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
+  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
+  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
+  protected def dataDescriber(answers: UserAnswers): String = answers.toString
 
   protected implicit val request: IdentifiedRequest = new IdentifiedRequest {
     override def externalId: String = "test-external-id"
@@ -114,9 +127,6 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
     }
 
   }
-
-  //scalastyle:on method.length
-  //scalastyle:on regex
 
   def nonMatchingNavigator(navigator: Navigator): Unit = {
 

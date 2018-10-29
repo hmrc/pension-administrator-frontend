@@ -19,16 +19,18 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.AreYouInUKId
+import identifiers.Identifier
+import identifiers.LastPageId
 import identifiers.register.company._
-import identifiers.{Identifier, LastPageId}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
+import utils.FakeCountryOptions
+import utils.NavigatorBehaviour
+import utils.UserAnswers
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -42,12 +44,13 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessDetailsId, uk, confirmCompanyDetailsPage, false, None, false),
     (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
     (ConfirmCompanyAddressId, emptyAnswers, whatYouWillNeedPage, false, None, false),
-    (ConfirmCompanyAddressId, lastPage, whatYouWillNeedPage, false, None, false),
     (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
+
     (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
     (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode), true, Some(contactAddressPostCode(CheckMode)), true),
     (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
     (CompanySameContactAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+
     (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode), true, Some(contactAddressList(CheckMode)), true),
     (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
@@ -126,7 +129,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def reconsiderAreYouInUk = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
-  private val emptyAnswers = UserAnswers(Json.obj())
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYearUk = UserAnswers(Json.obj())
@@ -139,18 +141,10 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private lazy val lastPage = UserAnswers(Json.obj())
     .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
 
-  private val uk = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(true).asOpt.value
-  private val nonUk = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(false).asOpt.value
-
   private val nonUkEuAddress = UserAnswers().nonUkCompanyAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
   private val nonUkNonEuAddress = UserAnswers().nonUkCompanyAddress(address("AF"))
 
   private def address(countryCode: String) =Address("addressLine1","addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
-
-
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }

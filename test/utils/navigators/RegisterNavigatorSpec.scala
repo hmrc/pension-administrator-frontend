@@ -107,6 +107,4 @@ object RegisterNavigatorSpec extends OptionValues {
     val externalId: String = "test-external-id"
   }
 
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
-
 }

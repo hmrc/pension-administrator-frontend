@@ -26,8 +26,10 @@ import identifiers.register.partnership.{PartnershipContactAddressListId, Partne
 import models._
 import org.scalatest.OptionValues
 
+
 package object utils {
 
+  //scalastyle:off number.of.methods
   implicit class UserAnswerOps(answers: UserAnswers) extends OptionValues {
 
     def lastPage(page: LastPage): UserAnswers = {
@@ -83,6 +85,12 @@ package object utils {
       answers.set(CompanyAddressId)(address.toTolerantAddress).asOpt.value
     }
 
+    //partnership non uk
+
+    def nonUkPartnershipAddress(address: Address): UserAnswers = {
+      answers.set(PartnershipRegisteredAddressId)(address.toTolerantAddress).asOpt.value
+    }
+
     // Company director
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value
@@ -128,6 +136,10 @@ package object utils {
 
     def partnershipSameContactAddress(areSame: Boolean): UserAnswers = {
       answers.set(PartnershipSameContactAddressId)(areSame).asOpt.value
+    }
+
+    def partnershipAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
+      answers.set(PartnershipAddressYearsId)(underOrOverAddressYear).asOpt.value
     }
 
     def partnershipContactAddress(address: Address): UserAnswers = {

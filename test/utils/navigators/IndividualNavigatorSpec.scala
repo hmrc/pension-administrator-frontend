@@ -123,6 +123,4 @@ object IndividualNavigatorSpec extends OptionValues {
   private val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value
 
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
-
 }
