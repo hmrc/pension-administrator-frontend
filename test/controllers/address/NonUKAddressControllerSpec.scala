@@ -16,18 +16,20 @@
 
 package controllers.address
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import forms.AddressFormProvider
+import connectors.FakeUserAnswersCacheConnector
+import connectors.RegistrationConnector
+import connectors.UserAnswersCacheConnector
 import forms.address.NonUKAddressFormProvider
-import identifiers.TypedIdentifier
+import identifiers.register.RegistrationInfoId
 import models._
 import models.requests.DataRequest
+import org.scalatest.MustMatchers
+import org.scalatest.OptionValues
+import org.scalatest.WordSpec
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._
@@ -127,7 +129,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
   "post" must {
 
     "redirect to the postCall on valid data request" which {
-      "will save address to answers" in {
+      "will save address and registration info to answers" in {
 
         val onwardRoute = Call("GET", "/")
 
@@ -136,7 +138,8 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
           bind[UserAnswersCacheConnector].to(FakeUserAnswersCacheConnector),
-          bind[Navigator].to(navigator)
+          bind[Navigator].to(navigator),
+          bind[RegistrationConnector].to(fakeRegistrationConnector)
         )) {
           app =>
 
@@ -154,6 +157,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val address = Address("value 1", "value 2", None, None, None, "IN")
 
             FakeUserAnswersCacheConnector.verify(fakeAddressId, address.toTolerantAddress)
+            FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
         }
 
       }
@@ -189,18 +193,13 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 }
 
 
-object NonUKAddressControllerSpec {
-
-  val fakeAddressId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress] {
-    override def toString = "fakeAddressId"
-  }
-  val externalId: String = "test-external-id"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
+                                  override val registrationConnector: RegistrationConnector,
                                   override val navigator: Navigator,
                                   formProvider: NonUKAddressFormProvider
                                 ) extends NonUKAddressController {
@@ -209,7 +208,7 @@ object NonUKAddressControllerSpec {
       get(fakeAddressId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
 
     def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(fakeAddressId, viewModel)(DataRequest(request, externalId, psaUser, answers))
+      post(companyName, fakeAddressId, viewModel)(DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
   }

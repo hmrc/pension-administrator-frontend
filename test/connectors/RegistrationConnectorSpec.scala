@@ -18,6 +18,8 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
+import models.registrationnoid.RegistrationNoIdIndividualRequest
+import org.joda.time.LocalDate
 import org.scalatest._
 import play.api.Application
 import play.api.http.Status
@@ -73,8 +75,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.UK,
-      RegistrationIdType.UTR,
-      utr
+      Some(RegistrationIdType.UTR),
+      Some(utr)
     )
 
     server.stubFor(
@@ -101,8 +103,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.NonUK,
-      RegistrationIdType.UTR,
-      utr
+      Some(RegistrationIdType.UTR),
+      Some(utr)
     )
 
     server.stubFor(
@@ -231,8 +233,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.UK,
-      RegistrationIdType.Nino,
-      nino
+      Some(RegistrationIdType.Nino),
+      Some(nino)
     )
 
     server.stubFor(
@@ -259,8 +261,8 @@ class RegistrationConnectorSpec()
       sapNumber,
       noIdentifier = false,
       RegistrationCustomerType.NonUK,
-      RegistrationIdType.Nino,
-      nino
+      Some(RegistrationIdType.Nino),
+      Some(nino)
     )
 
     server.stubFor(
@@ -362,6 +364,116 @@ class RegistrationConnectorSpec()
 
   }
 
+  "registerWithNoIdOrganisation" should "return successfully given a valid name and address" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdOrganisationPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validNonUkResponse))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress).map { registration =>
+      registration.sapNumber shouldBe sapNumber
+    }
+  }
+
+
+  it should "only accept responses with status 200 OK" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdOrganisationPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.ACCEPTED)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[IllegalArgumentException] {
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress)
+    }
+
+  }
+
+  it should "propagate exceptions from HttpClient" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdOrganisationPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.NOT_FOUND)
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[NotFoundException] {
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress)
+    }
+
+  }
+
+  "registerWithNoIdIndividual" should "return successfully given a valid name, dob and address" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .withRequestBody(equalToJson(Json.stringify(registerWithoutIdIndividualRequest)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validNonUkResponse))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth).map { registration =>
+      registration.sapNumber shouldBe sapNumber
+    }
+  }
+
+
+  it should "only accept responses with status 200 OK" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.ACCEPTED)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[IllegalArgumentException] {
+      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth)
+    }
+
+  }
+
+
+    it should "propagate exceptions from HttpClient" in {
+
+      server.stubFor(
+        post(urlEqualTo(noIdIndividualPath))
+          .willReturn(
+            aResponse()
+              .withStatus(Status.NOT_FOUND)
+          )
+      )
+
+      val connector = injector.instanceOf[RegistrationConnector]
+      recoverToSucceededIf[NotFoundException] {
+        connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth)
+      }
+
+    }
+  
 }
 
 object RegistrationConnectorSpec extends OptionValues {
@@ -370,10 +482,17 @@ object RegistrationConnectorSpec extends OptionValues {
   private val sapNumber = "test-sap-number"
 
   private val organizationPath = "/pension-administrator/register-with-id/organisation"
+  private val noIdOrganisationPath = "/pension-administrator/register-with-no-id/organisation"
+  private val noIdIndividualPath = "/pension-administrator/register-with-no-id/individual"
   private val individualPath = "/pension-administrator/register-with-id/individual"
 
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
+  private val firstName = "John"
+  private val lastName = "Doe"
+  private val individualDateOfBirth = LocalDate.parse("20150808")
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
+  private val registerWithoutIdIndividualRequest = Json.toJson(
+    RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk=false).toAddress))
 
   private val expectedIndividual = TolerantIndividual(
     Some("John"),
@@ -397,6 +516,11 @@ object RegistrationConnectorSpec extends OptionValues {
     "addressLine4" -> address.addressLine4.value,
     "countryCode" -> address.country.value,
     "postalCode" -> address.postcode.value
+  )
+
+  private def validNonUkResponse = Json.obj(
+    "safeId" -> "",
+    "sapNumber" -> sapNumber
   )
 
   private def validOrganizationResponse(uk: Boolean) = Json.obj(

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package viewmodels
+@import config.FrontendAppConfig
 
-import play.api.mvc.Call
+@(appConfig: FrontendAppConfig, country: String)(implicit request: Request[_], messages: Messages)
 
-case class CompanyNameViewModel(
-                         postCall: Call,
-                         title: Message,
-                         heading: Message
-                       )
+@main_template(
+    title = messages("outsideEuEea.individual.title"),
+    appConfig = appConfig,
+    bodyClasses = None
+    ) {
+
+        @components.heading(messages("outsideEuEea.individual.heading"))
+
+        <p>@messages("outsideEuEea.individual.currentCountry.text", country)</p>
+
+        <p>@messages("outsideEuEea.individual.body")</p>
+
+        <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
+
+    }

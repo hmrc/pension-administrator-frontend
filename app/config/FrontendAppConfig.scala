@@ -82,11 +82,20 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val registerWithIdOrganisationUrl: String = baseUrl ("pension-administrator") +
         runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithIdOrganisation")
 
+  lazy val registerWithNoIdOrganisationUrl: String = baseUrl ("pension-administrator") +
+        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdOrganisation")
+
+  lazy val registerWithNoIdIndividualUrl: String = baseUrl ("pension-administrator") +
+    runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdIndividual")
+
   lazy val registerWithIdIndividualUrl: String = baseUrl("pension-administrator") +
         runModeConfiguration.underlying.getString("urls.pension-administrator.registerWithIdIndividual")
 
   lazy val registerPsaUrl: String = baseUrl("pension-administrator") +
         runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
+
+  def psaSubmissionEmailCallback(encryptedPsaId: String) = baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(encryptedPsaId)
 
   def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
@@ -99,5 +108,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
 
   lazy val nonUkJourneys: Boolean = runModeConfiguration.getBoolean("features.non-uk-journeys").getOrElse(false)
+  lazy val isWorkPackageOneEnabled: Boolean = runModeConfiguration.getBoolean("features.work-package-one-enabled").getOrElse(false)
 
 }

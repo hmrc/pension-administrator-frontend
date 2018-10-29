@@ -21,12 +21,11 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import javax.inject.Inject
-import models.Address
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.countryOptions.CountryOptions
-import views.html.register.company.outsideEuEea
+import views.html.register.outsideEuEea
 
 import scala.concurrent.Future
 
@@ -43,14 +42,9 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
 
       (BusinessDetailsId and CompanyAddressId).retrieve.right.map {
         case details ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, getCountryNameFromCode(address.toAddress))))
+          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, countryOptions.getCountryNameFromCode(address.toAddress), "companies")))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }
-
-  def getCountryNameFromCode(address: Address) = countryOptions.options
-    .find(_.value == address.country)
-    .map(_.label)
-    .getOrElse(address.country)
 
 }

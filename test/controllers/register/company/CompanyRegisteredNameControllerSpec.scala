@@ -21,14 +21,14 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.register.company.BusinessDetailsId
-import models.{BusinessDetails, NormalMode}
+import models.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import utils.FakeNavigator
-import viewmodels.CompanyNameViewModel
-import views.html.companyName
+import viewmodels.OrganisationNameViewModel
+import views.html.organisationName
 
 class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
 
@@ -50,7 +50,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
   val testCompanyName = "test company name"
   val testBusinessDetails = BusinessDetails(testCompanyName, None)
 
-  def viewmodel = CompanyNameViewModel(
+  def viewmodel = OrganisationNameViewModel(
     postCall = controllers.register.company.routes.CompanyRegisteredNameController.onSubmit(),
     title = "companyName.title",
     heading = "companyName.heading"
@@ -67,7 +67,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector
     )
 
-  def viewAsString(form: Form[_] = form): String = companyName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = organisationName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
 
   "CompanyRegisteredName Controller" when {
 

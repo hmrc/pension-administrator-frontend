@@ -18,38 +18,32 @@ package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.FakeUserAnswersCacheConnector
-import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.address.NonUKAddressControllerDataMocks
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.{Address, BusinessDetails, NormalMode}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator}
+import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-class CompanyRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
-
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
-  val companyName = "Test Company Name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
+      fakeRegistrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

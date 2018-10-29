@@ -93,8 +93,8 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
             sapNumber,
             noIdentifier = false,
             RegistrationCustomerType.UK,
-            RegistrationIdType.UTR,
-            validBusinessPartnershipUtr
+            Some(RegistrationIdType.UTR),
+            Some(validBusinessPartnershipUtr)
           )
 
           val expectedJson =
@@ -234,7 +234,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   val form: Form[Boolean] = formProvider()
 
-  private def fakeRegistrationConnector = new RegistrationConnector {
+  private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
@@ -244,8 +244,8 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         sapNumber,
         false,
         RegistrationCustomerType.UK,
-        RegistrationIdType.UTR,
-        utr
+        Some(RegistrationIdType.UTR),
+        Some(utr)
       )
 
       if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
@@ -258,11 +258,6 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
       }
     }
-
-    //noinspection NotImplementedCode
-    def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
   }
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =

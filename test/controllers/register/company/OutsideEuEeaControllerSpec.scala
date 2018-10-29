@@ -23,7 +23,7 @@ import models.{Address, BusinessDetails}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import views.html.register.company.outsideEuEea
+import views.html.register.outsideEuEea
 
 class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
@@ -61,7 +61,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
     "return 200 and correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
       status(result) mustBe OK
-      contentAsString(result) mustBe outsideEuEea(frontendAppConfig, organisationName, country)(fakeRequest, messages).toString
+      contentAsString(result) mustBe outsideEuEea(frontendAppConfig, organisationName, country, "companies")(fakeRequest, messages).toString
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {

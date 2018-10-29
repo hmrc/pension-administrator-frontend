@@ -62,5 +62,20 @@ POST        /is-this-the-contact-address            controllers.register.individ
 GET         /change-is-this-the-contact-address     controllers.register.individual.IndividualSameContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-is-this-the-contact-address     controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET         /based-in-uk                            controllers.register.individual.AreYouInUKController.onPageLoad()
-POST        /based-in-uk                            controllers.register.individual.AreYouInUKController.onSubmit()
+GET         /based-in-uk                            controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
+POST        /based-in-uk                            controllers.register.individual.IndividualAreYouInUKController.onSubmit(mode: Mode = NormalMode)
+GET         /change-based-in-uk                     controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-based-in-uk                     controllers.register.individual.IndividualAreYouInUKController.onSubmit(mode: Mode = CheckMode)
+
+GET         /what-is-your-name                      controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-is-your-name                      controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = NormalMode)
+GET         /change-what-is-your-name               controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-what-is-your-name               controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = CheckMode)
+
+GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
+POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
+GET         /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
+POST        /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
+
+GET         /outside-eu-eea                         controllers.register.individual.OutsideEuEeaController.onPageLoad()
+

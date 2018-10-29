@@ -16,6 +16,7 @@
 
 package controllers.register
 
+import config.FrontendAppConfig
 import connectors._
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -36,6 +37,7 @@ import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Writes, _}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContent, Call, Request, Result}
@@ -125,7 +127,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           )
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector, isWp1Enabled = false).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
@@ -140,7 +142,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           )
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,  isWp1Enabled = false).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
           psaNameCacheConnector.verify(PsaNameId, individualDetails.fullName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
@@ -154,7 +156,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           )
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector, isWp1Enabled = false).onSubmit(validRequest)
           status(result) mustBe SEE_OTHER
           psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
           psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
@@ -200,7 +202,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
         "no PSA Name is found" in {
           val data = Json.obj(RegistrationInfoId.toString -> registrationInfo)
-          val result = controller(new FakeDataRetrievalAction(Some(data))).onSubmit(validRequest)
+          val result = controller(new FakeDataRetrievalAction(Some(data)), isWp1Enabled = false).onSubmit(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -262,7 +264,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val contactDetails = ContactDetails("test@test.com", "test Phone")
-  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, UTR, "")
+  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     PartnershipDetailsId.toString -> businessDetails
   )
@@ -331,6 +333,9 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   val mockEmailConnector = mock[EmailConnector]
   val psaNameCacheConnector = PSANameCacheConnector
+  def appConfig(isWp1Enabled: Boolean) = new GuiceApplicationBuilder().configure(
+    "features.work-package-one-enabled" -> isWp1Enabled
+  ).build().injector.instanceOf[FrontendAppConfig]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -338,10 +343,11 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
+                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector(),
+                          isWp1Enabled: Boolean = true
                         ) =
     new DeclarationFitAndProperController(
-      frontendAppConfig,
+      appConfig(isWp1Enabled),
       messagesApi,
       fakeAuthAction(userType),
       dataRetrievalAction,

@@ -55,8 +55,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     sapNumber,
     noIdentifier = false,
     RegistrationCustomerType.UK,
-    RegistrationIdType.Nino,
-    nino
+    Some(RegistrationIdType.Nino),
+    Some(nino)
   )
 
   private val individual = TolerantIndividual(
@@ -74,12 +74,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     Some("ZZ1 1ZZ")
   )
 
-  private object FakeRegistrationConnector extends RegistrationConnector {
-    //noinspection NotImplementedCode
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
-
+  private object FakeRegistrationConnector extends FakeRegistrationConnector {
     override def registerWithIdIndividual
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
@@ -88,12 +83,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     }
   }
 
-  private object ExceptionThrowingRegistrationConnector extends RegistrationConnector {
-    //noinspection NotImplementedCode
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
-
+  private object ExceptionThrowingRegistrationConnector extends FakeRegistrationConnector {
     override def registerWithIdIndividual
     (nino: String)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
