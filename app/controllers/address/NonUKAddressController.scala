@@ -21,8 +21,8 @@ import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
+import models._
 import models.requests.DataRequest
-import models.{Address, Mode, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AnyContent, Request, Result}
@@ -67,15 +67,19 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
         Future.successful(BadRequest(view()))
       },
       address => {
-        for {
-          registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
-          cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
-          _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
-        } yield {
-          Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
+        dataCacheConnector.save(request.externalId, id, address.toTolerantAddress).flatMap { cacheMap =>
+          val nextPageCall = navigator.nextPage(id, NormalMode, UserAnswers(cacheMap))
+          val areYouInUKCallURL = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode).url
+          if (nextPageCall.url == areYouInUKCallURL) {
+            Future.successful(Redirect(nextPageCall))
+          } else {
+            registrationConnector.registerWithNoIdOrganisation(name, address).map { registrationInfo =>
+              dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
+              Redirect(nextPageCall)
+            }
+          }
         }
       }
     )
   }
-
 }
