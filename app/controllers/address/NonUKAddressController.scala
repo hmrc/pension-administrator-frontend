@@ -70,14 +70,13 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
         dataCacheConnector.save(request.externalId, id, address.toTolerantAddress).flatMap { cacheMap =>
           val nextPageCall = navigator.nextPage(id, NormalMode, UserAnswers(cacheMap))
           val areYouInUKCallURL = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode).url
-          if (nextPageCall.url == areYouInUKCallURL) {
-            Future.successful(Redirect(nextPageCall))
+          (if (nextPageCall.url == areYouInUKCallURL) {
+            Future.successful(())
           } else {
-            registrationConnector.registerWithNoIdOrganisation(name, address).map { registrationInfo =>
+            registrationConnector.registerWithNoIdOrganisation(name, address).flatMap { registrationInfo =>
               dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
-              Redirect(nextPageCall)
             }
-          }
+          }).map(_=>Redirect(nextPageCall))
         }
       }
     )
