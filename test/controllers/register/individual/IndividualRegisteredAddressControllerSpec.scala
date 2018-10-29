@@ -49,7 +49,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   val individualName = "TestFirstName TestLastName"
   val sapNumber = "test-sap-number"
   val registrationInfo = RegistrationInfo(
-    RegistrationLegalStatus.LimitedCompany,
+    RegistrationLegalStatus.Individual,
     sapNumber,
     false,
     RegistrationCustomerType.NonUK,
@@ -59,7 +59,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
 
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithNoIdOrganisation
-    (name: String, address: Address)
+    (name: String, address: Address, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
   }
 

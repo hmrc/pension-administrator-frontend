@@ -25,6 +25,7 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import javax.inject.Inject
 import models.{Address, Mode}
+import models.RegistrationLegalStatus
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
@@ -74,7 +75,7 @@ class CompanyRegisteredAddressController @Inject()(
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right.map { details =>
-        post(details.companyName, CompanyAddressId, addressViewModel(details.companyName))
+        post(details.companyName, CompanyAddressId, addressViewModel(details.companyName), RegistrationLegalStatus.LimitedCompany)
       }
   }
 }

@@ -45,7 +45,7 @@ trait RegistrationConnector {
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
 
   def registerWithNoIdOrganisation
-  (name: String, address: Address)
+  (name: String, address: Address, legalStatus : RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
 
   def registerWithNoIdIndividual
@@ -132,7 +132,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   }
 
   override def registerWithNoIdOrganisation
-  (name: String, address: Address)
+  (name: String, address: Address, legalStatus : RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
 
     val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
@@ -143,7 +143,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
       registrationInfo(
         jsValue,
-        RegistrationLegalStatus.LimitedCompany,
+        legalStatus,
         RegistrationCustomerType.NonUK,
         None,
         None

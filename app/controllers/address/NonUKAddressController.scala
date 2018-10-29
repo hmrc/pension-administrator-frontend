@@ -17,18 +17,26 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.{RegistrationConnector, UserAnswersCacheConnector}
+import connectors.RegistrationConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
+import models.Address
+import models.NormalMode
+import models.TolerantAddress
 import models.requests.DataRequest
-import models.{Address, Mode, NormalMode, TolerantAddress}
+import models.RegistrationLegalStatus
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.i18n.I18nSupport
+import play.api.i18n.Messages
+import play.api.mvc.AnyContent
+import play.api.mvc.Request
+import play.api.mvc.Result
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
+import utils.Navigator
+import utils.UserAnswers
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
@@ -59,7 +67,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
     Future.successful(Ok(view()))
   }
 
-  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel)(
+  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus:RegistrationLegalStatus)(
     implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => {
@@ -68,7 +76,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
       },
       address => {
         for {
-          registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
+          registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address, legalStatus)
           cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
           _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
         } yield {

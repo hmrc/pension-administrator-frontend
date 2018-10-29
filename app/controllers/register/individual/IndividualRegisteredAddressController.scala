@@ -25,6 +25,7 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import javax.inject.Inject
 import models.{Address, Mode}
+import models.RegistrationLegalStatus
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
@@ -74,7 +75,7 @@ class IndividualRegisteredAddressController @Inject()(
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       IndividualDetailsId.retrieve.right.map { individual =>
-        post(individual.fullName, IndividualAddressId, addressViewModel(individual.fullName))
+        post(individual.fullName, IndividualAddressId, addressViewModel(individual.fullName), RegistrationLegalStatus.Individual)
       }
   }
 

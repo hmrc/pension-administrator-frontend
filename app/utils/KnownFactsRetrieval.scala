@@ -36,6 +36,7 @@ class KnownFactsRetrieval {
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
     request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
 
+      println("'################################## registrationInfo: "+ registrationInfo)
       (registrationInfo.legalStatus, registrationInfo.idNumber, registrationInfo.customerType) match {
         case (Individual, Some(idNumber), UK) =>
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))

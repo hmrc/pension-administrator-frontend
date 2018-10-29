@@ -55,7 +55,7 @@ trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
 
   def fakeRegistrationConnector :RegistrationConnector = new FakeRegistrationConnector {
 
-    override def registerWithNoIdOrganisation(name: String, address: Address)(
+    override def registerWithNoIdOrganisation(name: String, address: Address, legalStatus: RegistrationLegalStatus)(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
   }
 }

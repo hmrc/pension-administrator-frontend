@@ -25,10 +25,14 @@ import identifiers.register._
 import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
 import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipPayeId
+import identifiers.register.partnership.PartnershipVatId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{ExistingPSA, NormalMode, UserType}
+import models.Paye
+import models.Vat
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -92,13 +96,22 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
               request.user.isExistingPSA,
               request.user.existingPSAId
             )).asOpt.getOrElse(UserAnswers(cacheMap))
+                .set(PartnershipVatId)(Vat.No).asOpt.getOrElse(UserAnswers(cacheMap))
+                .set(PartnershipPayeId)(Paye.No).asOpt.getOrElse(UserAnswers(cacheMap))
+
+
+            println("'################################## : "+ answers.json)
+
 
             (for {
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
-              _ <- savePSANameAndEmail(answers, psaResponse.psaId)
-              _ <- enrol(psaResponse.psaId)
-              _ <- sendEmail(answers, psaResponse.psaId)
+              result1 <- savePSANameAndEmail(answers, psaResponse.psaId)
+              _ <- Future.successful(println("'################################## savePSANameAndEmail: "+ result1))
+              result2 <- enrol(psaResponse.psaId)
+              _ <- Future.successful(println("'################################## enrol: "+ result2))
+              result3 <- sendEmail(answers, psaResponse.psaId)
+              _ <- Future.successful(println("'################################## sendEmail: "+ result3))
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
@@ -107,6 +120,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
               case _: InvalidBusinessPartnerException =>
                 Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
               case _ =>
+
                 Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
             }
           }
@@ -164,8 +178,13 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+    println("'################################## inside enrol: ")
+    println("'################################## knownFactsRetrieval: " + knownFactsRetrieval.retrieve(psaId))
     knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
-      enrolments.enrol(psaId, knownFacts)
+      enrolments.enrol(psaId, knownFacts). map { result =>
+        println("'################################## inside enrol: " +result)
+        result
+      }
     } getOrElse Future.failed(KnownFactsRetrievalException())
   }
 
