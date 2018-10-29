@@ -96,22 +96,16 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
               request.user.isExistingPSA,
               request.user.existingPSAId
             )).asOpt.getOrElse(UserAnswers(cacheMap))
-                .set(PartnershipVatId)(Vat.No).asOpt.getOrElse(UserAnswers(cacheMap))
-                .set(PartnershipPayeId)(Paye.No).asOpt.getOrElse(UserAnswers(cacheMap))
-
-
-            println("'################################## : "+ answers.json)
+            .set(PartnershipVatId)(Vat.No).asOpt.getOrElse(UserAnswers(cacheMap))
+                     .set(PartnershipPayeId)(Paye.No).asOpt.getOrElse(UserAnswers(cacheMap))
 
 
             (for {
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
               result1 <- savePSANameAndEmail(answers, psaResponse.psaId)
-              _ <- Future.successful(println("'################################## savePSANameAndEmail: "+ result1))
               result2 <- enrol(psaResponse.psaId)
-              _ <- Future.successful(println("'################################## enrol: "+ result2))
               result3 <- sendEmail(answers, psaResponse.psaId)
-              _ <- Future.successful(println("'################################## sendEmail: "+ result3))
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
@@ -178,11 +172,8 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
-    println("'################################## inside enrol: ")
-    println("'################################## knownFactsRetrieval: " + knownFactsRetrieval.retrieve(psaId))
     knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
       enrolments.enrol(psaId, knownFacts). map { result =>
-        println("'################################## inside enrol: " +result)
         result
       }
     } getOrElse Future.failed(KnownFactsRetrievalException())

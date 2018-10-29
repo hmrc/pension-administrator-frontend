@@ -18,9 +18,14 @@ package utils
 
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyAddressId
-import models.RegistrationCustomerType.{NonUK, UK}
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.register.{KnownFact, KnownFacts}
+import identifiers.register.partnership.PartnershipRegisteredAddressId
+import models.RegistrationCustomerType.NonUK
+import models.RegistrationCustomerType.UK
+import models.RegistrationLegalStatus.Individual
+import models.RegistrationLegalStatus.LimitedCompany
+import models.RegistrationLegalStatus.Partnership
+import models.register.KnownFact
+import models.register.KnownFacts
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 
@@ -36,7 +41,6 @@ class KnownFactsRetrieval {
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
     request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
 
-      println("'################################## registrationInfo: "+ registrationInfo)
       (registrationInfo.legalStatus, registrationInfo.idNumber, registrationInfo.customerType) match {
         case (Individual, Some(idNumber), UK) =>
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))
@@ -44,9 +48,16 @@ class KnownFactsRetrieval {
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, idNumber))))
         case (Partnership, Some(idNumber), UK) =>
           Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
-        case (LimitedCompany | Partnership, _, NonUK) =>
+        case (LimitedCompany, _, NonUK) =>
           for {
             address <- request.userAnswers.get(CompanyAddressId)
+            country <- address.country
+          } yield {
+            KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
+          }
+        case (Partnership, _, NonUK) =>
+          for {
+            address <- request.userAnswers.get(PartnershipRegisteredAddressId)
             country <- address.country
           } yield {
             KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
