@@ -32,7 +32,8 @@ import utils.UserAnswers
 import utils.countryOptions.CountryOptions
 
 @Singleton
-class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
+class PartnershipNavigator @Inject()(
+    val dataCacheConnector: UserAnswersCacheConnector,
     countryOptions: CountryOptions,
     appConfig: FrontendAppConfig) extends Navigator {
 
@@ -113,9 +114,9 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheCon
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
     } else {
-      (answers.get(PartnershipAddressYearsId)) match {
-        case (Some(AddressYears.UnderAYear)) => NavigateTo.save(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-        case (Some(AddressYears.OverAYear)) => NavigateTo.save(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
+      answers.get(PartnershipAddressYearsId) match {
+        case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+        case Some(AddressYears.OverAYear) => NavigateTo.save(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
     }
@@ -130,7 +131,7 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheCon
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
     } else {
-      (answers.get(PartnershipAddressYearsId)) match {
+      answers.get(PartnershipAddressYearsId) match {
         case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
         case Some(AddressYears.OverAYear) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
@@ -147,7 +148,7 @@ class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheCon
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
     } else {
-      (answers.get(PartnershipSameContactAddressId)) match {
+      answers.get(PartnershipSameContactAddressId) match {
         case Some(true) => NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(mode))
         case Some(false) => NavigateTo.save(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode))
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
