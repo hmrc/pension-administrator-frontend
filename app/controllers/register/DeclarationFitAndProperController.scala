@@ -25,14 +25,10 @@ import identifiers.register._
 import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
 import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
 import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
-import identifiers.register.partnership.PartnershipPayeId
-import identifiers.register.partnership.PartnershipVatId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{ExistingPSA, NormalMode, UserType}
-import models.Paye
-import models.Vat
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -96,16 +92,13 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
               request.user.isExistingPSA,
               request.user.existingPSAId
             )).asOpt.getOrElse(UserAnswers(cacheMap))
-            .set(PartnershipVatId)(Vat.No).asOpt.getOrElse(UserAnswers(cacheMap))
-                     .set(PartnershipPayeId)(Paye.No).asOpt.getOrElse(UserAnswers(cacheMap))
-
 
             (for {
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
-              result1 <- savePSANameAndEmail(answers, psaResponse.psaId)
-              result2 <- enrol(psaResponse.psaId)
-              result3 <- sendEmail(answers, psaResponse.psaId)
+              _ <- savePSANameAndEmail(answers, psaResponse.psaId)
+              _ <- enrol(psaResponse.psaId)
+              _ <- sendEmail(answers, psaResponse.psaId)
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
@@ -114,7 +107,6 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
               case _: InvalidBusinessPartnerException =>
                 Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
               case _ =>
-
                 Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
             }
           }
@@ -173,9 +165,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
     knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
-      enrolments.enrol(psaId, knownFacts). map { result =>
-        result
-      }
+      enrolments.enrol(psaId, knownFacts)
     } getOrElse Future.failed(KnownFactsRetrievalException())
   }
 
