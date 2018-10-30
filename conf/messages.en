@@ -754,7 +754,7 @@ areYouInUKIndividual.check.selectedUkAddress = You selected that you are not bas
 areYouInUKIndividual.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 areYouInUKIndividual.hint = This is where you usually work. If the business you work for is registered in the UK but you work abroad, you are not based in the UK.
 
-companyRegisteredNonUKAddress.title = Enter the address
+companyRegisteredNonUKAddress.title = What is the company’s address?
 companyRegisteredNonUKAddress.heading = What is {0}’s address?
 companyRegisteredNonUKAddress.hintText = This is the company’s address outside of the UK.
 
@@ -775,7 +775,7 @@ individualName.error.lastName.required = Enter the last name
 individualName.error.lastName.length = The last name cannot be more than 35 characters
 individualName.error.lastName.invalid = The last name must start with an alphabetic character
 
-individualRegisteredNonUKAddress.title = Your address
+individualRegisteredNonUKAddress.title = What is your address?
 individualRegisteredNonUKAddress.heading = What is your address?
 individualRegisteredNonUKAddress.hintText = This is your address outside of the UK.
 
@@ -790,6 +790,6 @@ partnershipName.error.required = Enter the registered partnership’s name
 partnershipName.error.length = The name cannot be more than 105 characters
 partnershipName.error.invalid = Enter a valid registered partnership’s name
 
-partnershipRegisteredNonUKAddress.title = Enter the address
+partnershipRegisteredNonUKAddress.title = What is the partnership’s address?
 partnershipRegisteredNonUKAddress.heading = What is {0}’s address?
 partnershipRegisteredNonUKAddress.hintText = This is the partnership’s address outside of the UK.
