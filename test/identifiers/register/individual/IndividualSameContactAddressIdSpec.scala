@@ -58,28 +58,24 @@ class IndividualSameContactAddressIdSpec extends WordSpec with MustMatchers with
       }
     }
 
-    "`IndividualSameContactAddress` is set to `false`" must {
+    "`IndividualSameContactAddress` is set to `false` (when it is already false)" must {
 
       val result: UserAnswers = answersWithContactAddress.set(IndividualSameContactAddressId)(false).asOpt.value
 
-      "remove the data for `IndividualContactAddress`" in {
-        result.get(IndividualContactAddressId) mustNot be(defined)
+      "not remove the data for `IndividualContactAddress`" in {
+        result.get(IndividualContactAddressId) must be(defined)
       }
 
-      "remove the data for `IndividualContactAddressPostCodeLookup`" in {
-        result.get(IndividualContactAddressPostCodeLookupId) mustNot be(defined)
+      "not remove the data for `IndividualContactAddressPostCodeLookup`" in {
+        result.get(IndividualContactAddressPostCodeLookupId) must be(defined)
       }
 
-      "remove the data for `PreviousPostCodeLookup`" in {
-        result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
+      "not remove the data for `PreviousPostCodeLookup`" in {
+        result.get(IndividualPreviousAddressPostCodeLookupId) must be(defined)
       }
 
-      "remove the data for `PreviousAddress`" in {
-        result.get(IndividualPreviousAddressId) mustNot be(defined)
-      }
-
-      "remove the data for `AddressYears`" in {
-        result.get(IndividualAddressYearsId) mustNot be(defined)
+      "not remove the data for `PreviousAddress`" in {
+        result.get(IndividualPreviousAddressId) must be(defined)
       }
     }
 

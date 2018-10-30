@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -32,14 +32,15 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
+class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
+  private val partnershipName = "Test Partnership Name"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new CompanyRegisteredAddressController(
+  def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
+    new PartnershipRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -53,22 +54,22 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
     )
 
   private def viewModel = ManualAddressViewModel(
-    routes.CompanyRegisteredAddressController.onSubmit(),
+    controllers.register.partnership.routes.PartnershipRegisteredAddressController.onSubmit(),
     countryOptions.options,
-    Message("companyRegisteredNonUKAddress.title"),
-    Message("companyRegisteredNonUKAddress.heading", companyName),
+    Message("partnershipRegisteredNonUKAddress.title"),
+    Message("partnershipRegisteredNonUKAddress.heading", partnershipName),
     None,
-    Some(Message("companyRegisteredNonUKAddress.hintText"))
+    Some(Message("partnershipRegisteredNonUKAddress.hintText"))
   )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[_] = form) : String =
     nonukAddress(
       frontendAppConfig,
       form,
       viewModel
     )(fakeRequest, messages).toString()
 
-  "CompanyRegisteredAddress Controller" must {
+  "Partnership Registered Address Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
@@ -79,8 +80,8 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None),
-        CompanyAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
+        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", None),
+        PartnershipRegisteredAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -112,6 +113,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
     }
 
     "redirect to Session Expired" when {
+
       "no existing data is found" when {
         "GET" in {
           val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)

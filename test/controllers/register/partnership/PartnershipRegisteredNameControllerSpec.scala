@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
 import models.BusinessDetails
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -30,15 +30,15 @@ import utils.FakeNavigator
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
 
-class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
+class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val businessDetailsFormModel = BusinessDetailsFormModel(
     companyNameMaxLength = 105,
-    companyNameRequiredMsg = "companyName.error.required",
-    companyNameLengthMsg = "companyName.error.length",
-    companyNameInvalidMsg = "companyName.error.invalid",
+    companyNameRequiredMsg = "partnershipName.error.required",
+    companyNameLengthMsg = "partnershipName.error.length",
+    companyNameInvalidMsg = "partnershipName.error.invalid",
     utrMaxLength = 10,
     utrRequiredMsg = None,
     utrLengthMsg = "businessDetails.error.utr.length",
@@ -51,13 +51,13 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
   val testBusinessDetails = BusinessDetails(testCompanyName, None)
 
   def viewmodel = OrganisationNameViewModel(
-    postCall = controllers.register.company.routes.CompanyRegisteredNameController.onSubmit(),
-    title = "companyName.title",
-    heading = "companyName.heading"
+    postCall = controllers.register.partnership.routes.PartnershipRegisteredNameController.onSubmit(),
+    title = "partnershipName.title",
+    heading = "partnershipName.heading"
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new controllers.register.company.CompanyRegisteredNameController(
+    new controllers.register.partnership.PartnershipRegisteredNameController(
       frontendAppConfig,
       messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -80,7 +80,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = Json.obj(BusinessDetailsId.toString -> testBusinessDetails)
+        val validData = Json.obj(PartnershipDetailsId.toString -> testBusinessDetails)
         val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
         val result = controller(getRelevantData).onPageLoad()(fakeRequest)
