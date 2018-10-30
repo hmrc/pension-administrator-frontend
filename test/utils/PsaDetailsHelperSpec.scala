@@ -23,7 +23,7 @@ import utils.PsaDetailsHelper._
 import utils.PsaDetailsHelperSpec.actualSeqAnswerRow
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder
-import utils.testhelpers.PsaSubscriptionBuilder._
+import utils.testhelpers.PsaSubscriptionBuilder.{psaSubscriptionPartnership, _}
 import viewmodels.{AnswerRow, Message, SuperSection}
 
 class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
@@ -75,6 +75,10 @@ class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
     behave like validSection(testName = "pension advisor details", headingKey = pensionAdvisorSuperSectionKey,
       result = partnershipResult, expectedAnswerRows = pensionAdvisorExpectedAnswerRows)
+
+    behave like validSection(testName = "pension advisor details sub-section where there are none", headingKey = pensionAdvisorSuperSectionKey,
+      result = psaDetailsHelper(psaSubscriptionPartnership copy(pensionAdvisor=None)).organisationSections,
+      expectedAnswerRows = Seq.empty)
   }
 }
 
