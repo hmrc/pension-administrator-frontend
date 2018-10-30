@@ -18,6 +18,7 @@ package utils
 
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyAddressId
+import identifiers.register.individual.IndividualAddressId
 import models.RegistrationCustomerType.{NonUK, UK}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.register.{KnownFact, KnownFacts}
@@ -46,6 +47,13 @@ class KnownFactsRetrieval {
         case (LimitedCompany | Partnership, _, NonUK) =>
           for {
             address <- request.userAnswers.get(CompanyAddressId)
+            country <- address.country
+          } yield {
+            KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
+          }
+        case (Individual, _, NonUK) =>
+          for {
+            address <- request.userAnswers.get(IndividualAddressId)
             country <- address.country
           } yield {
             KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
