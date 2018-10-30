@@ -17,7 +17,7 @@
 package identifiers.register
 
 import identifiers._
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
 import models.register.DeclarationWorkingKnowledge
 import play.api.libs.json.JsResult
 import utils.UserAnswers
@@ -31,6 +31,7 @@ case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWor
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
         userAnswers.remove(AdviserDetailsId)
           .flatMap(_.remove(AdviserAddressPostCodeLookupId))
+          .flatMap(_.remove(AdviserAddressListId))
           .flatMap(_.remove(AdviserAddressId))
       case _ => super.cleanup(value, userAnswers)
     }

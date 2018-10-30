@@ -16,7 +16,7 @@
 
 package identifiers.register.company.directors
 
-import models.{Address, AddressYears}
+import models.{Address, AddressYears, TolerantAddress}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
@@ -29,6 +29,12 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
       .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear)
       .flatMap(_.set(DirectorPreviousAddressPostCodeLookupId(0))(Seq.empty))
       .flatMap(_.set(DirectorPreviousAddressId(0))(Address("foo", "bar", None, None, None, "GB")))
+      .flatMap(_.set(DirectorPreviousAddressListId(0))(TolerantAddress(Some("100"),
+        Some("SuttonStreet"),
+        Some("Wokingham"),
+        Some("Surrey"),
+        Some("NE39 1HX"),
+        Some("GB"))))
       .asOpt.value
 
     "`AddressYears` is set to `OverAYear`" must {
@@ -37,6 +43,10 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
 
       "remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustNot be(defined)
+      }
+
+      "remove the data for `PreviousAddressList`" in {
+        result.get(DirectorPreviousAddressListId(0)) mustNot be(defined)
       }
 
       "remove the data for `PreviousAddress`" in {
@@ -52,6 +62,10 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustBe defined
       }
 
+      "not remove the data for `PreviousAddressList`" in {
+        result.get(DirectorPreviousAddressListId(0)) mustBe defined
+      }
+
       "not remove the data for `PreviousAddress`" in {
         result.get(DirectorPreviousAddressId(0)) mustBe defined
       }
@@ -63,6 +77,10 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustBe defined
+      }
+
+      "not remove the data for `PreviousAddressList`" in {
+        result.get(DirectorPreviousAddressListId(0)) mustBe defined
       }
 
       "not remove the data for `PreviousAddress`" in {
