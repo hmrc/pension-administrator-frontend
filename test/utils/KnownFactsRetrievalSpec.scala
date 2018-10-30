@@ -19,6 +19,7 @@ package utils
 import base.SpecBase
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.{CompanyAddressId, ConfirmCompanyAddressId}
+import identifiers.register.partnership.PartnershipRegisteredAddressId
 import models._
 import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
@@ -137,7 +138,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
               externalId,
               PSAUser(UserType.Organisation, None, false, None),
               UserAnswers(Json.obj(
-                CompanyAddressId.toString -> TolerantAddress(
+                PartnershipRegisteredAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
                   Some("Somewhere"),
                   None, None, None,
