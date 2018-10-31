@@ -47,7 +47,7 @@ trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
   val registrationInfo = RegistrationInfo(
     RegistrationLegalStatus.LimitedCompany,
     sapNumber,
-    false,
+    noIdentifier = false,
     RegistrationCustomerType.NonUK,
     None,
     None

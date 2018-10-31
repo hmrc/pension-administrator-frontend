@@ -17,18 +17,25 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.{RegistrationConnector, UserAnswersCacheConnector}
+import connectors.RegistrationConnector
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.AuthAction
+import controllers.actions.DataRequiredAction
+import controllers.actions.DataRetrievalAction
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.company.BusinessDetailsId
+import identifiers.register.company.CompanyAddressId
 import javax.inject.Inject
-import models.{Address, Mode}
+import models.Address
 import models.RegistrationLegalStatus
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.i18n.Messages
+import play.api.i18n.MessagesApi
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.Request
 import play.twirl.api.HtmlFormat
 import utils.Navigator
 import utils.annotations.RegisterCompany

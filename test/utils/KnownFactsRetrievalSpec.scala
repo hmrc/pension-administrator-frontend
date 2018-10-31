@@ -18,10 +18,12 @@ package utils
 
 import base.SpecBase
 import identifiers.register.RegistrationInfoId
-import identifiers.register.company.{CompanyAddressId, ConfirmCompanyAddressId}
+import identifiers.register.company.CompanyAddressId
+import identifiers.register.company.ConfirmCompanyAddressId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import models._
-import models.register.{KnownFact, KnownFacts}
+import models.register.KnownFact
+import models.register.KnownFacts
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
@@ -35,7 +37,6 @@ class KnownFactsRetrievalSpec extends SpecBase {
   private val sapNumber = "test-sap-number"
   private val externalId = "test-externalId"
   private val nonUk = "test-non-uk"
-  private val postalCode = "test pcode"
 
   private lazy val generator = app.injector.instanceOf[KnownFactsRetrieval]
 
@@ -50,7 +51,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
           val registration = RegistrationInfo(
             RegistrationLegalStatus.Individual,
             sapNumber,
-            false,
+            noIdentifier = false,
             RegistrationCustomerType.UK,
             Some(RegistrationIdType.Nino),
             Some(nino)
@@ -59,7 +60,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
           implicit val request: DataRequest[AnyContent] = DataRequest(
             FakeRequest(),
             externalId,
-            PSAUser(UserType.Individual, Some(nino), false, None),
+            PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None),
             UserAnswers(Json.obj(
               ConfirmCompanyAddressId.toString -> TolerantAddress(
                 Some("1 Street"),
@@ -90,7 +91,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val registration = RegistrationInfo(
               RegistrationLegalStatus.Partnership,
               sapNumber,
-              false,
+              noIdentifier = false,
               RegistrationCustomerType.UK,
               Some(RegistrationIdType.UTR),
               Some(utr)
@@ -99,7 +100,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
               UserAnswers(Json.obj(
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
@@ -127,7 +128,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val registration = RegistrationInfo(
               RegistrationLegalStatus.Partnership,
               sapNumber,
-              false,
+              noIdentifier = false,
               RegistrationCustomerType.NonUK,
               None,
               None
@@ -136,7 +137,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
               UserAnswers(Json.obj(
                 PartnershipRegisteredAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
@@ -165,7 +166,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val registration = RegistrationInfo(
               RegistrationLegalStatus.LimitedCompany,
               sapNumber,
-              false,
+              noIdentifier = false,
               RegistrationCustomerType.UK,
               Some(RegistrationIdType.UTR),
               Some(utr)
@@ -174,7 +175,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
               UserAnswers(Json.obj(
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
@@ -202,7 +203,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             val registration = RegistrationInfo(
               RegistrationLegalStatus.LimitedCompany,
               sapNumber,
-              false,
+              noIdentifier = false,
               RegistrationCustomerType.NonUK,
               None,
               None
@@ -211,7 +212,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
               UserAnswers(Json.obj(
                 CompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
