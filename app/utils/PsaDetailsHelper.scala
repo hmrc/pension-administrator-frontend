@@ -68,27 +68,35 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
   }
 
 
-
   private val directorsOrPartnersSection =
     psaDetails.directorsOrPartners map { list =>
       for (person <- list) yield directorOrPartnerSection(person, countryOptions)
     }
 
-  private val pensionAdvisorSection =
-    SuperSection(
-      Some("pensionAdvisor.section.header"),
-      Seq(
-        AnswerSection(
-          None,
-          Seq(
-            pensionAdvisor,
-            pensionAdvisorEmail,
-            pensionAdvisorAddress
-          ).flatten
+
+  private def toOptionSeq[A](seq: Seq[A]): Option[Seq[A]] =
+    if (seq.nonEmpty) {
+      Some(seq)
+    } else {
+      None
+    }
+
+  private val pensionAdvisorSection: Option[SuperSection] =
+    toOptionSeq(Seq(
+      pensionAdvisor,
+      pensionAdvisorEmail,
+      pensionAdvisorAddress
+    ).flatten).map { seqAnswerRow =>
+      SuperSection(
+        Some("pensionAdvisor.section.header"),
+        Seq(
+          AnswerSection(
+            None,
+            seqAnswerRow
+          )
         )
       )
-    )
-
+    }
 
 
   //Individual PSA
@@ -200,8 +208,9 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
     }
   }
 
-  val individualSections = Seq(individualDetailsSection, pensionAdvisorSection)
-  val organisationSections = Seq(organisationDetailsSection, directorsOrPartnersSuperSection, pensionAdvisorSection)
+
+  val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdvisorSection.toSeq
+  val organisationSections: Seq[SuperSection] = Seq(organisationDetailsSection, directorsOrPartnersSuperSection) ++ pensionAdvisorSection.toSeq
 
 }
 
