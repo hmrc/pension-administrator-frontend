@@ -36,6 +36,7 @@ class KnownFactsRetrieval {
   private val ninoKey = "NINO"
   private val ctUtrKey = "CTUTR"
   private val saUtrKey = "SAUTR"
+  private val postalKey = "NonUKPostalCode"
   private val countryKey = "CountryCode"
 
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
