@@ -144,7 +144,7 @@ class PartnershipNavigator @Inject()(
       (answers.get(PartnershipSameContactAddressId), answers.get(AreYouInUKId)) match {
         case (Some(true), _) => NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(mode))
         case (Some(false), Some(false)) => NavigateTo.save(routes.PartnershipContactAddressController.onPageLoad(mode))
-        case (Some(false), _) => NavigateTo.save(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode))
+        case (Some(false), Some(true)) => NavigateTo.save(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode))
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
     } else {
