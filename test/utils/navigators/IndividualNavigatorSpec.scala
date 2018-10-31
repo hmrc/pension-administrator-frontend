@@ -77,7 +77,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualSameContactAddressId, nonUkDifferentContactAddress, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualSameContactAddressId, sameContactAddressIncompleteUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (IndividualAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (IndividualAddressYearsId, ukAddressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (IndividualAddressYearsId, nonUkAddressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
     (IndividualAddressYearsId, nonUkAddressYearsUnderAYear, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
@@ -169,6 +170,8 @@ object IndividualNavigatorSpec extends OptionValues {
     IndividualSameContactAddressId)(false).asOpt.value.areYouInUk(false)
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(IndividualAddressYearsId)(AddressYears.OverAYear).asOpt.value
+  private val nonUkAddressYearsOverAYear = addressYearsOverAYear.areYouInUk(false)
+  private val ukAddressYearsOverAYear = addressYearsOverAYear.areYouInUk(true)
   private val addressYearsUnderAYear = UserAnswers(Json.obj())
     .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value
   private val ukAddressYearsUnderAYear = UserAnswers(Json.obj())
