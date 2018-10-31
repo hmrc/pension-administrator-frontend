@@ -21,18 +21,21 @@ import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
+import identifiers.register.individual.IndividualAddressId
 import models.requests.DataRequest
-import models.{Address, Mode, NormalMode, TolerantAddress}
+import models._
+import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait NonUKAddressController extends FrontendController with Retrievals with I18nSupport {
 
@@ -67,15 +70,29 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
         Future.successful(BadRequest(view()))
       },
       address => {
-        for {
-          registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
-          cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
-          _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
-        } yield {
-          Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
+        if (address.country.equals("GB")) {
+          redirectUkAddress(request.externalId, address, id)
+        } else {
+            for {
+              registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
+              cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
+              _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
+            } yield {
+              Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
+            }
         }
       }
     )
   }
+
+   def redirectUkAddress(extId: String,
+                         address: Address,
+                         id: TypedIdentifier[TolerantAddress]
+                        )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+    for {
+      cacheMap <- dataCacheConnector.save(extId, id, address.toTolerantAddress)
+    } yield {
+      Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
+    }
 
 }
