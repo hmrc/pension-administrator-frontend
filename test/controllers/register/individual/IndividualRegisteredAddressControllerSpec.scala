@@ -16,14 +16,22 @@
 
 package controllers.register.individual
 
+import java.time.LocalDate
+
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
+import identifiers.register.RegistrationInfoId
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
+import org.mockito.Mockito._
+import org.mockito.Matchers._
+import org.scalactic.source.Position
+import org.scalatest.BeforeAndAfter
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -37,7 +45,9 @@ import views.html.address.nonukAddress
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
+class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with MockitoSugar with BeforeAndAfter{
+
+  before(reset(mockRegistrationConnector))
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -57,14 +67,17 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     None
   )
 
-  private def fakeRegistrationConnector = new FakeRegistrationConnector {
-    override def registerWithNoIdOrganisation
-    (name: String, address: Address, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
-  }
+  val mockRegistrationConnector = mock[RegistrationConnector]
+
+  val validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(
+      IndividualDetailsId.toString ->
+        TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName")),
+      IndividualDateOfBirthId.toString -> LocalDate.now()
+    )))
 
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
+  def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new IndividualRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
@@ -75,7 +88,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeRegistrationConnector
+      mockRegistrationConnector
     )
 
   private def viewModel = ManualAddressViewModel(
@@ -114,17 +127,38 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "IN")))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data with non uk country is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
         ("addressLine2", "value 2"),
         "country" -> "IN"
       )
 
+      when(mockRegistrationConnector.registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(registrationInfo))
+
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+
+      FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
+      verify(mockRegistrationConnector, atLeastOnce()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
+    }
+
+    "redirect to the next page when valid data with uk as country is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        "country" -> "GB"
+      )
+
+      when(mockRegistrationConnector.registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(registrationInfo))
+
+      val result = controller().onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      verify(mockRegistrationConnector, never()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

@@ -18,6 +18,7 @@ package utils
 
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyAddressId
+import identifiers.register.individual.IndividualAddressId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import models.RegistrationCustomerType.NonUK
 import models.RegistrationCustomerType.UK
@@ -35,38 +36,32 @@ class KnownFactsRetrieval {
   private val ninoKey = "NINO"
   private val ctUtrKey = "CTUTR"
   private val saUtrKey = "SAUTR"
-  private val postalKey = "NonUKPostalCode"
   private val countryKey = "CountryCode"
 
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
     request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
 
-      (registrationInfo.legalStatus, registrationInfo.idNumber, registrationInfo.customerType) match {
-        case (Individual, Some(idNumber), UK) =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))
-        case (LimitedCompany, Some(idNumber), UK) =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, idNumber))))
-        case (Partnership, Some(idNumber), UK) =>
-          Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
-        case (LimitedCompany, _, NonUK) =>
-          for {
-            address <- request.userAnswers.get(CompanyAddressId)
-            country <- address.country
-          } yield {
-            KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
+    (registrationInfo.legalStatus, registrationInfo.idNumber, registrationInfo.customerType) match {
+      case (Individual, Some(idNumber), UK) =>
+        Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))
+      case (LimitedCompany, Some(idNumber), UK) =>
+        Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, idNumber))))
+      case (Partnership, Some(idNumber), UK) =>
+        Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
+      case (legalStatus, _, NonUK) =>
+        for {
+          address <- legalStatus match {
+            case LimitedCompany => request.userAnswers.get(CompanyAddressId)
+            case Partnership => request.userAnswers.get(PartnershipRegisteredAddressId)
+            case Individual => request.userAnswers.get(IndividualAddressId)
           }
-        case (Partnership, _, NonUK) =>
-          for {
-            address <- request.userAnswers.get(PartnershipRegisteredAddressId)
-            country <- address.country
-          } yield {
-            KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
-          }
-        case _ => None
-      }
-
+          country <- address.country
+        } yield {
+          KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
+        }
+      case _ => None
     }
 
-  private val transformNonUKPostalCode: String => String = _.replaceAll(" ", "").toUpperCase
+  }
 
 }

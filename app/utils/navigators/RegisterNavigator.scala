@@ -27,6 +27,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
+    case RegisterAsBusinessId => individualOrOganisationRoutes(from.userAnswers)
     case BusinessTypeId => businessTypeRoutes(from.userAnswers)
     case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
@@ -64,7 +65,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def countryOfRegistrationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(AreYouInUKId) match {
       case Some(false) =>
-        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
     }
@@ -76,6 +77,16 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+    }
+  }
+
+  private def individualOrOganisationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+    userAnswers.get(RegisterAsBusinessId) match {
+      case Some(false) =>
+        NavigateTo.dontSave(controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode))
+      case Some(true) =>
+        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
+      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 

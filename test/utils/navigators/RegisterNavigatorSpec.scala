@@ -50,7 +50,9 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
     (DeclarationFitAndProperId, emptyAnswers, confirmationPage, false, None, false),
     (AreYouInUKId, inUk,   ukBusinessTypePage, false, None, false),
-    (AreYouInUKId, notInUk,   nonUkBusinessTypePage, false, None, false),
+    (AreYouInUKId, notInUk,   nonUkBusinessOrIndividualPage, false, None, false),
+    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessTypePage, false, None, false),
+    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualNamePage, false, None, false),
     (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false),
     (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipName, false, None, false)
   )
@@ -78,6 +80,8 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val ukBusinessTypePage: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
   lazy val nonUkBusinessTypePage: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
   lazy val nonUkCompanyName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad()
+  lazy val nonUkBusinessOrIndividualPage: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+  lazy val nonUkIndividualNamePage: Call = controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode)
   lazy val nonUkPartnershipName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
@@ -98,6 +102,10 @@ object RegisterNavigatorSpec extends OptionValues {
     .set(AreYouInUKId)(true).asOpt.value
   val notInUk: UserAnswers = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
+  val nonUkBusiness: UserAnswers = UserAnswers(Json.obj())
+    .set(RegisterAsBusinessId)(true).asOpt.value
+  val nonUkIndividual: UserAnswers = UserAnswers(Json.obj())
+    .set(RegisterAsBusinessId)(false).asOpt.value
   val nonUkCompany: UserAnswers = UserAnswers(Json.obj())
     .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
   val nonUkPartnership: UserAnswers = UserAnswers(Json.obj())
