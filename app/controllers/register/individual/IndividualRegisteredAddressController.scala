@@ -22,38 +22,47 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
+import identifiers.register.RegistrationInfoId
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import javax.inject.Inject
-import models.{Address, Mode}
+import models._
+import models.requests.DataRequest
+import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
-import utils.Navigator
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
+import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import scala.concurrent.Future
+
 class IndividualRegisteredAddressController @Inject()(
-                                               override val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               override val dataCacheConnector: UserAnswersCacheConnector,
-                                               @Individual override val navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: NonUKAddressFormProvider,
-                                               val countryOptions: CountryOptions,
-                                               override val registrationConnector: RegistrationConnector
-                                             ) extends NonUKAddressController with Retrievals{
+                                                       override val appConfig: FrontendAppConfig,
+                                                       override val messagesApi: MessagesApi,
+                                                       override val dataCacheConnector: UserAnswersCacheConnector,
+                                                       @Individual override val navigator: Navigator,
+                                                       authenticate: AuthAction,
+                                                       getData: DataRetrievalAction,
+                                                       requireData: DataRequiredAction,
+                                                       formProvider: NonUKAddressFormProvider,
+                                                       val countryOptions: CountryOptions,
+                                                       override val registrationConnector: RegistrationConnector
+                                                     ) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
-    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+      IndividualDetailsId.retrieve.right.map { individual =>
+        get(IndividualAddressId, addressViewModel(individual.fullName))
+      }
+  }
 
   private def addressViewModel(companyName: String) = ManualAddressViewModel(
     routes.IndividualRegisteredAddressController.onSubmit(),
@@ -64,18 +73,49 @@ class IndividualRegisteredAddressController @Inject()(
     Some(Message("individualRegisteredNonUKAddress.hintText"))
   )
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      IndividualDetailsId.retrieve.right.map { individual =>
-        get(IndividualAddressId, addressViewModel(individual.fullName))
+      (IndividualDetailsId and IndividualDateOfBirthId).retrieve.right.map {
+        case individual ~ dob =>
+          form.bindFromRequest().fold(
+            (formWithError: Form[_]) => {
+              val view = createView(appConfig, formWithError, addressViewModel(individual.fullName))
+              Future.successful(BadRequest(view()))
+            },
+            address => {
+              if (address.country.equals("GB")) {
+                redirectUkAddress(request.externalId, address, IndividualAddressId)
+              } else {
+                redirectNonUkAddress(request.externalId, individual, address,
+                  new LocalDate(dob.getYear, dob.getMonthValue, dob.getDayOfMonth))
+              }
+            }
+          )
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      IndividualDetailsId.retrieve.right.map { individual =>
-        post(individual.fullName, IndividualAddressId, addressViewModel(individual.fullName))
-      }
+  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
+    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
+    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+
+
+  private def redirectNonUkAddress(extId: String, individual: TolerantIndividual,
+                                   address: Address, dob: LocalDate
+                                  )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] = for {
+    registrationInfo <- registrationConnector.registerWithNoIdIndividual(
+      individual.firstName.getOrElse(error("First name missing")),
+      individual.lastName.getOrElse(error("Last name missing")),
+      address,
+      dob)
+    cacheMap <- dataCacheConnector.save(extId, IndividualAddressId, address.toTolerantAddress)
+    _ <- dataCacheConnector.save(extId, RegistrationInfoId, registrationInfo)
+  } yield {
+    Redirect(navigator.nextPage(IndividualAddressId, NormalMode, UserAnswers(cacheMap)))
   }
+
+  private def error(msg: String) = throw new MandatoryIndividualDetailsMissing(msg)
+
+  case class MandatoryIndividualDetailsMissing(msg: String) extends Exception
+
 
 }
