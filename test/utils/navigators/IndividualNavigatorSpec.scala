@@ -71,10 +71,12 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
     (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
     (IndividualAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false),
-    (IndividualSameContactAddressId, sameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (IndividualSameContactAddressId, sameContactAddressNonUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
     (IndividualSameContactAddressId, ukDifferentContactAddress, contactPostCodeLookupPage(NormalMode), true, Some(contactPostCodeLookupPage(CheckMode)), true),
     (IndividualSameContactAddressId, nonUkDifferentContactAddress, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (IndividualSameContactAddressId, sameContactAddressIncomplete, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (IndividualSameContactAddressId, sameContactAddressIncompleteUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
     (IndividualAddressYearsId, nonUkAddressYearsUnderAYear, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
@@ -142,14 +144,22 @@ object IndividualNavigatorSpec extends OptionValues {
     IndividualDetailsCorrectId)(false).asOpt.value
   private lazy val lastPage =
     detailsCorrect.lastPage(LastPage(lastPageCall.method, lastPageCall.url))
+
   private val sameContactAddress = UserAnswers(Json.obj()).set(
     IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
     .asOpt.value
+
+  private val sameContactAddressUk = sameContactAddress.areYouInUk(true)
+  private val sameContactAddressNonUk = sameContactAddress.areYouInUk(false)
+
   private val sameContactAddressIncomplete = UserAnswers(Json.obj()).set(
     IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressListId)(TolerantAddress(Some("foo"), None, None, None, None, Some("GB"))))
     .asOpt.value
+
+  private val sameContactAddressIncompleteUk = sameContactAddressIncomplete.areYouInUk(true)
+  private val sameContactAddressIncompleteNonUk = sameContactAddressIncomplete.areYouInUk(false)
 
   private val differentContactAddress = UserAnswers(Json.obj()).set(
     IndividualSameContactAddressId)(false).asOpt.value

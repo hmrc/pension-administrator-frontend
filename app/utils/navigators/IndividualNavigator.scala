@@ -109,43 +109,58 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     }
   }
 
-  def contactAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
-    (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
-      case (Some(false), Some(false)) => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
-      case (Some(false), _) =>
-        NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
-      case (Some(true), _) =>
-        answers.get(IndividualContactAddressId) match {
-          case None =>
-            NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
-          case Some(_) =>
-            NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(mode))
-        }
-      case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  def contactAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
+    if(config.nonUkJourneys) {
+      (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
+        case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        case (Some(false), Some(false)) => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
+        case (Some(false), Some(true)) => NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
+        case (Some(true), _) =>  contactAddressCompletionBasedNav(answers, mode)
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+    } else {
+      answers.get(IndividualSameContactAddressId) match {
+        case Some(false) => NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
+        case Some(true) => contactAddressCompletionBasedNav(answers, mode)
+        case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
     }
+
+  private def contactAddressCompletionBasedNav(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
+    answers.get(IndividualContactAddressId) match {
+    case None =>
+      NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
+    case Some(_) =>
+      NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(mode))
   }
+
 
   def countryOfRegistrationRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.IndividualNameController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+      case Some(true) => NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
   def countryOfRegistrationEditRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
-      case _ => NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+      case Some(true) => NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  def countryBasedDobNavigation(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(AreYouInUKId) match {
-      case Some(false) => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
-      case _ => checkYourAnswers()
+  def countryBasedDobNavigation(answers: UserAnswers): Option[NavigateTo] =
+    if(config.nonUkJourneys) {
+      answers.get(AreYouInUKId) match {
+        case Some(false) => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
+        case Some(true) => checkYourAnswers()
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+    } else {
+      checkYourAnswers()
     }
-  }
 
   private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualAddressId) flatMap { address =>
@@ -158,11 +173,15 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     }
   }
 
-  def countryBasedContactDetailsNavigation(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(AreYouInUKId) match {
+  def countryBasedContactDetailsNavigation(answers: UserAnswers): Option[NavigateTo] =
+    if(config.nonUkJourneys) {
+      answers.get(AreYouInUKId) match {
       case Some(false) => checkYourAnswers()
-      case _ => NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
+      case Some(true) => NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+  } else {
+      NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
   }
 
 
