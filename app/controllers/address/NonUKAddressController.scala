@@ -17,27 +17,19 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.RegistrationConnector
-import connectors.UserAnswersCacheConnector
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
-import models.Address
-import models.NormalMode
-import models.TolerantAddress
+import models._
 import models.requests.DataRequest
-import models.RegistrationLegalStatus
 import play.api.data.Form
-import play.api.i18n.I18nSupport
-import play.api.i18n.Messages
-import play.api.mvc.AnyContent
-import play.api.mvc.Request
-import play.api.mvc.Result
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
-import utils.UserAnswers
+import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 

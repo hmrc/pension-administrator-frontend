@@ -22,16 +22,13 @@ import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register._
 import models.NormalMode
-import models.register.BusinessType
-import models.register.DeclarationWorkingKnowledge
-import models.register.NonUKBusinessType
+import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.NavigatorBehaviour
-import utils.UserAnswers
+import utils.{NavigatorBehaviour, UserAnswers}
 
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 

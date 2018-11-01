@@ -20,13 +20,9 @@ import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyAddressId
 import identifiers.register.individual.IndividualAddressId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
-import models.RegistrationCustomerType.NonUK
-import models.RegistrationCustomerType.UK
-import models.RegistrationLegalStatus.Individual
-import models.RegistrationLegalStatus.LimitedCompany
-import models.RegistrationLegalStatus.Partnership
-import models.register.KnownFact
-import models.register.KnownFacts
+import models.RegistrationCustomerType.{NonUK, UK}
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 

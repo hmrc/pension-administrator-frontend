@@ -18,12 +18,10 @@ package utils
 
 import base.SpecBase
 import identifiers.register.RegistrationInfoId
-import identifiers.register.company.CompanyAddressId
-import identifiers.register.company.ConfirmCompanyAddressId
+import identifiers.register.company.{CompanyAddressId, ConfirmCompanyAddressId}
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import models._
-import models.register.KnownFact
-import models.register.KnownFacts
+import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
