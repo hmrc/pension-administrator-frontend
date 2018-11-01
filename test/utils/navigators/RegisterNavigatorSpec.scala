@@ -54,6 +54,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AreYouInUKId, inUk,   ukBusinessTypePage, false, Some(ukBusinessTypePage), false),
     (AreYouInUKId, notInUk,   nonUkBusinessOrIndividualPage, false, Some(nonUkBusinessOrIndividualPage), false),
     (AreYouInUKId, notInUkCompanyCheckMode,   nonUkBusinessOrIndividualPage, false, Some(nonUkCompanyAddress), false),
+    (AreYouInUKId, notInUkCompanyCheckMode2,   nonUkBusinessOrIndividualPage, false, Some(nonUkBusinessOrIndividualPage), false),
     (AreYouInUKId, notInUkPartnershipCheckMode,   nonUkBusinessOrIndividualPage, false, Some(nonUkPartnershipAddress), false),
     (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessTypePage, false, None, false),
     (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualNamePage, false, None, false),
@@ -114,7 +115,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val notInUkCompanyCheckMode2: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
+    .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
 
 
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
