@@ -16,8 +16,8 @@
 
 package identifiers.register.company.individual
 
-import identifiers.register.individual.{IndividualAddressYearsId, IndividualPreviousAddressId, IndividualPreviousAddressPostCodeLookupId}
-import models.{Address, AddressYears}
+import identifiers.register.individual.{IndividualAddressYearsId, IndividualPreviousAddressId, IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId}
+import models.{Address, AddressYears, TolerantAddress}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
@@ -29,6 +29,7 @@ class IndividualAddressYearsIdSpec extends WordSpec with MustMatchers with Optio
     val answersWithPreviousAddress = UserAnswers(Json.obj())
       .set(IndividualAddressYearsId)(AddressYears.UnderAYear)
       .flatMap(_.set(IndividualPreviousAddressPostCodeLookupId)(Seq.empty))
+      .flatMap(_.set(IndividualPreviousAddressListId)(TolerantAddress(Some("foo"), Some("bar"), None, None, None, Some("GB"))))
       .flatMap(_.set(IndividualPreviousAddressId)(Address("foo", "bar", None, None, None, "GB")))
       .asOpt.value
 
@@ -38,6 +39,10 @@ class IndividualAddressYearsIdSpec extends WordSpec with MustMatchers with Optio
 
       "remove the data for `PreviousPostCodeLookup`" in {
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
+      }
+
+      "remove the data for `PreviousAddressList`" in {
+        result.get(IndividualPreviousAddressListId) mustNot be(defined)
       }
 
       "remove the data for `PreviousAddress`" in {
@@ -51,6 +56,10 @@ class IndividualAddressYearsIdSpec extends WordSpec with MustMatchers with Optio
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(IndividualPreviousAddressPostCodeLookupId) mustBe defined
+      }
+
+      "not remove the data for `PreviousAddressList`" in {
+        result.get(IndividualPreviousAddressListId) mustBe defined
       }
 
       "not remove the data for `PreviousAddress`" in {
