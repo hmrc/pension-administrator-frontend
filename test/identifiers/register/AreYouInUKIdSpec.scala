@@ -18,17 +18,25 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
-import models.{BusinessDetails, TolerantAddress, TolerantIndividual}
-import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
-import models.{BusinessDetails, TolerantAddress, TolerantIndividual}
-import models.register.{BusinessType, NonUKBusinessType}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import identifiers.register.company.BusinessDetailsId
+import identifiers.register.company.CompanyAddressId
+import identifiers.register.individual.IndividualAddressId
+import identifiers.register.individual.IndividualDateOfBirthId
+import identifiers.register.individual.IndividualDetailsCorrectId
+import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
+import identifiers.register.partnership.PartnershipRegisteredAddressId
+import models.BusinessDetails
+import models.TolerantAddress
+import models.TolerantIndividual
+import models.register.BusinessType
+import models.register.NonUKBusinessType
+import org.scalatest.MustMatchers
+import org.scalatest.OptionValues
+import org.scalatest.WordSpec
 import play.api.libs.json.Json
-import utils.{Enumerable, UserAnswers}
+import utils.Enumerable
+import utils.UserAnswers
 
 class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 
@@ -39,7 +47,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     "where are you in uk has already answered as Yes and we change to No" must {
       val result: UserAnswers =
         answersForYes.set(AreYouInUKId)(false)
-          .asOpt.value
+            .asOpt.value
 
       "remove the data for Business details " in {
         result.get(BusinessDetailsId) mustNot be(defined)
@@ -53,7 +61,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     "where are you in uk has already answered as No and we change to Yes " must {
       val result: UserAnswers =
         answersForNo.set(AreYouInUKId)(true)
-          .asOpt.value
+            .asOpt.value
 
       "remove the data for Business details " in {
         result.get(BusinessDetailsId) mustNot be(defined)
@@ -71,7 +79,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
       val result: UserAnswers =
         answersForNo.set(AreYouInUKId)(false)
-          .asOpt.value
+            .asOpt.value
 
       "not remove the data for Business details " in {
         result.get(BusinessDetailsId) must be(defined)
@@ -149,7 +157,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     "where are you in uk has already answered as Yes and we change to No" must {
       val result: UserAnswers =
         partnershipAnswersForYes.set(AreYouInUKId)(false)
-          .asOpt.value
+            .asOpt.value
 
       "remove the data for Business details " in {
         result.get(PartnershipDetailsId) mustNot be(defined)
@@ -163,7 +171,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     "where are you in uk has already answered as No and we change to Yes " must {
       val result: UserAnswers =
         partnershipAnswersForNo.set(AreYouInUKId)(true)
-          .asOpt.value
+            .asOpt.value
 
       "remove the data for Business details " in {
         result.get(PartnershipDetailsId) mustNot be(defined)
@@ -181,7 +189,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
       val result: UserAnswers =
         partnershipAnswersForNo.set(AreYouInUKId)(false)
-          .asOpt.value
+            .asOpt.value
 
       "not remove the data for Business details " in {
         result.get(PartnershipDetailsId) must be(defined)
@@ -225,22 +233,22 @@ object AreYouInUKIdSpec extends OptionValues {
       .asOpt.value
 
   val individualAnswersForNo: UserAnswers = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(false)
-    .flatMap(_.set(IndividualDetailsId)(tolerantIndividual)
-      .flatMap(_.set(IndividualDateOfBirthId)(LocalDate.of(2000, 12, 12)))
-      .flatMap(_.set(IndividualAddressId)(tolerantAddress)))
-    .asOpt.value
+      .set(AreYouInUKId)(false)
+      .flatMap(_.set(IndividualDetailsId)(tolerantIndividual)
+          .flatMap(_.set(IndividualDateOfBirthId)(LocalDate.of(2000, 12, 12)))
+          .flatMap(_.set(IndividualAddressId)(tolerantAddress)))
+      .asOpt.value
 
   val partnershipAnswersForYes = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(true)
-    .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test partnership", Some("utr")))
-      .flatMap(_.set(BusinessTypeId)(BusinessType.LimitedPartnership)))
-    .asOpt.value
+      .set(AreYouInUKId)(true)
+      .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test partnership", Some("utr")))
+          .flatMap(_.set(BusinessTypeId)(BusinessType.LimitedPartnership)))
+      .asOpt.value
 
   val partnershipAnswersForNo = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(false)
-    .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test partnership", None))
-      .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
-      .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)))
-    .asOpt.value
+      .set(AreYouInUKId)(false)
+      .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test partnership", None))
+          .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
+          .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)))
+      .asOpt.value
 }
