@@ -22,6 +22,7 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.routes
+import identifiers.register.AreYouInUKId
 import identifiers.{PsaId => UserPsaId}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
@@ -33,6 +34,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,26 +51,54 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        val alreadyEnrolled = alreadyEnrolledInPODS(enrolments)
-        if (alreadyEnrolled && notNewRegPages(request)) {
-          Future.successful(Redirect(routes.InterceptPSAController.onPageLoad()))
-        } else if (isPSP(enrolments) && !isPSA(enrolments)) {
-          Future.successful(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
-        } else if (affinityGroup == Individual && !allowedIndividual(cl)) {
-          Future.successful(Redirect(ivUpliftUrl))
-        } else {
-          if(alreadyEnrolled) {
-            userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
-              _ => block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
+
+        redirectToInterceptPages(enrolments, request).fold(
+          result => Future.successful(result),
+          _ => {
+            val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
+
+            if (affinityGroup == Individual) {
+              areYouInUK(id).flatMap {
+                case Some(true) if !allowedIndividual(cl) =>
+                  Future.successful(Redirect(ivUpliftUrl))
+                case _ =>
+                  block(authRequest)
+              }
+            } else {
+              if (alreadyEnrolledInPODS(enrolments)) {
+                userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
+                  _ => block(authRequest)
+                }
+              } else {
+                block(authRequest)
+              }
             }
-          } else {
-            block(AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments)))
           }
-        }
+        )
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
 
     } recover handleFailure
+  }
+
+  private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A]) = {
+    if (alreadyEnrolledInPODS(enrolments) && notNewRegPages(request)) {
+      Left(Redirect(routes.InterceptPSAController.onPageLoad()))
+    } else if (isPSP(enrolments) && !isPSA(enrolments)) {
+      Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
+    } else {
+      Right(())
+    }
+  }
+
+  private def areYouInUK(id: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+    userAnswersCacheConnector.fetch(id).map {
+      case Some(json) =>
+        val userAnswers = UserAnswers(json)
+        userAnswers.get(AreYouInUKId)
+      case None =>
+        None
+    }
   }
 
   private def handleFailure: PartialFunction[Throwable, Result] = {
@@ -118,7 +148,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
   private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
-      case Individual if allowedIndividual(cl) =>
+      case Individual =>
         UserType.Individual
       case Organisation if allowedOrganisation(cl) =>
         UserType.Organisation
