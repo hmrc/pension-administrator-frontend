@@ -18,6 +18,8 @@ package identifiers.register
 
 import identifiers._
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
 import play.api.libs.json.JsResult
 import utils.UserAnswers
 
@@ -27,9 +29,13 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
       case Some(false) =>
-        userAnswers.removeAllOf(List(BusinessDetailsId, BusinessTypeId))
+        userAnswers.removeAllOf(List(BusinessDetailsId, BusinessTypeId,
+          PartnershipDetailsId,
+          IndividualDetailsId, IndividualAddressId, IndividualDetailsCorrectId))
       case Some(true) =>
-        userAnswers.removeAllOf(List(BusinessDetailsId, NonUKBusinessTypeId, CompanyAddressId))
+        userAnswers.removeAllOf(List(BusinessDetailsId, NonUKBusinessTypeId, CompanyAddressId,
+          PartnershipDetailsId, PartnershipRegisteredAddressId,
+          IndividualDetailsId, IndividualDateOfBirthId, IndividualAddressId))
       case _ =>
         super.cleanup(value, userAnswers)
     }

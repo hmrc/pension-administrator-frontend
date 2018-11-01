@@ -44,6 +44,12 @@ class PartnershipAddressYearsIdSpec extends WordSpec with OptionValues with Must
 
       }
 
+      "remove the data from address list" in {
+
+        result.get(PartnershipPreviousAddressListId) must not be defined
+
+      }
+
       "remove the data from address" in {
 
         result.get(PartnershipPreviousAddressId) must not be defined
