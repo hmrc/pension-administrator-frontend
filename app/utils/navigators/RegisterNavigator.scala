@@ -16,12 +16,12 @@
 
 package utils.navigators
 
+import javax.inject.Inject
+
 import connectors.UserAnswersCacheConnector
 import identifiers.register._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
-import identifiers.register.partnership.partners.PartnerDetailsId
-import javax.inject.Inject
 import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import utils.{Navigator, UserAnswers}
@@ -75,15 +75,17 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   }
 
   private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Option[NavigateTo] =
-    (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessDetailsId),  userAnswers.get(PartnershipDetailsId))  match {
-      case (Some(false), None, _, _)  => NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
-      case (Some(false), Some(NonUKBusinessType.Company), Some(_), _)  =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad())
-      case (Some(false), Some(NonUKBusinessType.BusinessPartnership), _, Some(_))  =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad())
-      case (Some(true), _, _, _) => NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
+    NavigateTo.dontSave(
+      (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessDetailsId), userAnswers.get(PartnershipDetailsId)) match {
+        case (Some(false), None, _, _) => controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+        case (Some(false), Some(NonUKBusinessType.Company), Some(_), _) =>
+          controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
+        case (Some(false), Some(NonUKBusinessType.BusinessPartnership), _, Some(_)) =>
+          controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
+        case (Some(true), _, _, _) => controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+        case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    )
 
 
   private def individualOrOganisationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {

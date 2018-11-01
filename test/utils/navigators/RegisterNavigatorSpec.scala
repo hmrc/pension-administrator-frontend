@@ -112,6 +112,10 @@ object RegisterNavigatorSpec extends OptionValues {
     .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
     .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
 
+  val notInUkCompanyCheckMode2: UserAnswers = UserAnswers(Json.obj())
+    .areYouInUk(false)
+    .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
+
 
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
