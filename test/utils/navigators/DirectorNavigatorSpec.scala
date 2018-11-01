@@ -119,8 +119,5 @@ object DirectorNavigatorSpec extends OptionValues {
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
   }
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }

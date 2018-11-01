@@ -72,9 +72,11 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   }
 
   private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
-    userAnswers.get(AreYouInUKId) match {
-      case Some(false) =>
+    (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId)) match {
+      case (Some(false), Some(NonUKBusinessType.Company)) =>
         NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad())
+      case (Some(false), Some(NonUKBusinessType.BusinessPartnership)) =>
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
     }
@@ -99,6 +101,8 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     userAnswers.get(NonUKBusinessTypeId) match {
       case Some(NonUKBusinessType.Company) =>
         NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad())
+      case Some(NonUKBusinessType.BusinessPartnership) =>
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
