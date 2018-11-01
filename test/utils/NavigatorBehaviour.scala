@@ -39,8 +39,6 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
   this: WordSpec with MustMatchers =>
 
   protected val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
-  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
-  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
 
   protected def dataDescriber(answers: UserAnswers): String = answers.toString
 
