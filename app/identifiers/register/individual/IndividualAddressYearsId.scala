@@ -29,6 +29,7 @@ case object IndividualAddressYearsId extends TypedIdentifier[AddressYears] {
       case Some(AddressYears.OverAYear) =>
         answers
           .remove(IndividualPreviousAddressPostCodeLookupId)
+          .flatMap(_.remove(IndividualPreviousAddressListId))
           .flatMap(_.remove(IndividualPreviousAddressId))
       case _ => super.cleanup(value, answers)
     }
