@@ -19,6 +19,7 @@ package identifiers.register
 import identifiers._
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
 import play.api.libs.json.JsResult
 import utils.UserAnswers
 
@@ -29,10 +30,12 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     value match {
       case Some(false) =>
         userAnswers.removeAllOf(List(BusinessDetailsId, BusinessTypeId,
-          PartnershipDetailsId))
+          PartnershipDetailsId,
+          IndividualDetailsId, IndividualAddressId, IndividualDetailsCorrectId))
       case Some(true) =>
         userAnswers.removeAllOf(List(BusinessDetailsId, NonUKBusinessTypeId, CompanyAddressId,
-          PartnershipDetailsId, PartnershipRegisteredAddressId))
+          PartnershipDetailsId, PartnershipRegisteredAddressId,
+          IndividualDetailsId, IndividualDateOfBirthId, IndividualAddressId))
       case _ =>
         super.cleanup(value, userAnswers)
     }

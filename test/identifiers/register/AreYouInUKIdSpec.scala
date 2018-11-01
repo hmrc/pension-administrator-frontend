@@ -22,6 +22,8 @@ import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import models.{BusinessDetails, TolerantAddress, TolerantIndividual}
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
+import models.{BusinessDetails, TolerantAddress, TolerantIndividual}
 import models.register.{BusinessType, NonUKBusinessType}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
@@ -84,6 +86,63 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     }
   }
 
+  "Cleanup for an individual" when {
+
+    "where are you in uk has already answered as Yes and we change to No" must {
+      val result: UserAnswers =
+        individualAnswersForYes.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "remove the data for Individual Details Correct " in {
+        result.get(IndividualDetailsCorrectId) mustNot be(defined)
+      }
+
+      "remove the data for Individual Details " in {
+        result.get(IndividualDetailsId) mustNot be(defined)
+      }
+
+      "remove the data for Individual Address" in {
+        result.get(IndividualAddressId) mustNot be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to Yes " must {
+      val result: UserAnswers =
+        individualAnswersForNo.set(AreYouInUKId)(true)
+          .asOpt.value
+
+      "remove the data for non uk Individual Details" in {
+        result.get(IndividualDetailsId) mustNot be(defined)
+      }
+
+      "remove the data for Individual date of birth" in {
+        result.get(IndividualDateOfBirthId) mustNot be(defined)
+      }
+
+      "remove the data for Individual Address" in {
+        result.get(IndividualAddressId) mustNot be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
+      val result: UserAnswers =
+        individualAnswersForNo.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "not remove the data for non uk Individual Details" in {
+        result.get(IndividualDetailsId) must be(defined)
+      }
+
+      "not remove the data for Individual date of birth" in {
+        result.get(IndividualDateOfBirthId) must be(defined)
+      }
+
+      "not remove the data for Individual Address" in {
+        result.get(IndividualAddressId) must be(defined)
+      }
+    }
+  }
+
   "Cleanup for a partnership" when {
 
     "where are you in uk has already answered as Yes and we change to No" must {
@@ -135,6 +194,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(PartnershipRegisteredAddressId) must be(defined)
       }
     }
+
   }
 }
 
@@ -143,17 +203,31 @@ object AreYouInUKIdSpec extends OptionValues {
   val tolerantAddress = TolerantAddress(Some("line 1"),Some("line 2"), Some("line 3"), Some("line 4"), None, Some("DE"))
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
 
-  val answersForYes = UserAnswers(Json.obj())
+  val answersForYes: UserAnswers = UserAnswers(Json.obj())
     .set(AreYouInUKId)(true)
     .flatMap(_.set(BusinessDetailsId)(BusinessDetails("test company", Some("utr")))
       .flatMap(_.set(BusinessTypeId)(BusinessType.LimitedCompany)))
     .asOpt.value
 
-  val answersForNo = UserAnswers(Json.obj())
+  val answersForNo: UserAnswers = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false)
     .flatMap(_.set(BusinessDetailsId)(BusinessDetails("test company", None))
       .flatMap(_.set(CompanyAddressId)(tolerantAddress))
       .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company)))
+    .asOpt.value
+
+  val individualAnswersForYes: UserAnswers = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(true)
+    .flatMap(_.set(IndividualDetailsCorrectId)(true)
+      .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))
+      .flatMap(_.set(IndividualAddressId)(tolerantAddress)))
+    .asOpt.value
+
+  val individualAnswersForNo: UserAnswers = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(false)
+    .flatMap(_.set(IndividualDetailsId)(tolerantIndividual)
+      .flatMap(_.set(IndividualDateOfBirthId)(LocalDate.of(2000, 12, 12)))
+      .flatMap(_.set(IndividualAddressId)(tolerantAddress)))
     .asOpt.value
 
   val partnershipAnswersForYes = UserAnswers(Json.obj())
