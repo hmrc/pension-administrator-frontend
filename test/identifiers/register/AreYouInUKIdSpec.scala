@@ -20,6 +20,9 @@ import java.time.LocalDate
 
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
+import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
+import models.{BusinessDetails, TolerantAddress, TolerantIndividual}
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsCorrectId, IndividualDetailsId}
 import models.{BusinessDetails, TolerantAddress, TolerantIndividual}
 import models.register.{BusinessType, NonUKBusinessType}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -139,6 +142,60 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
       }
     }
   }
+
+  "Cleanup for a partnership" when {
+
+    "where are you in uk has already answered as Yes and we change to No" must {
+      val result: UserAnswers =
+        partnershipAnswersForYes.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "remove the data for Business details " in {
+        result.get(PartnershipDetailsId) mustNot be(defined)
+      }
+
+      "remove the data for Business type " in {
+        result.get(BusinessTypeId) mustNot be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to Yes " must {
+      val result: UserAnswers =
+        partnershipAnswersForNo.set(AreYouInUKId)(true)
+          .asOpt.value
+
+      "remove the data for Business details " in {
+        result.get(PartnershipDetailsId) mustNot be(defined)
+      }
+
+      "remove the data for non uk Business type " in {
+        result.get(NonUKBusinessTypeId) mustNot be(defined)
+      }
+
+      "remove the data for non uk company address " in {
+        result.get(PartnershipRegisteredAddressId) mustNot be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
+      val result: UserAnswers =
+        partnershipAnswersForNo.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "not remove the data for Business details " in {
+        result.get(PartnershipDetailsId) must be(defined)
+      }
+
+      "not remove the data for non uk Business type " in {
+        result.get(NonUKBusinessTypeId) must be(defined)
+      }
+
+      "not remove the data for non uk company address " in {
+        result.get(PartnershipRegisteredAddressId) must be(defined)
+      }
+    }
+
+  }
 }
 
 object AreYouInUKIdSpec extends OptionValues {
@@ -171,5 +228,18 @@ object AreYouInUKIdSpec extends OptionValues {
     .flatMap(_.set(IndividualDetailsId)(tolerantIndividual)
       .flatMap(_.set(IndividualDateOfBirthId)(LocalDate.of(2000, 12, 12)))
       .flatMap(_.set(IndividualAddressId)(tolerantAddress)))
+    .asOpt.value
+
+  val partnershipAnswersForYes = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(true)
+    .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test partnership", Some("utr")))
+      .flatMap(_.set(BusinessTypeId)(BusinessType.LimitedPartnership)))
+    .asOpt.value
+
+  val partnershipAnswersForNo = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(false)
+    .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test partnership", None))
+      .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
+      .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)))
     .asOpt.value
 }
