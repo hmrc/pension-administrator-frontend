@@ -16,6 +16,8 @@
 
 package utils.navigators
 
+import java.time.LocalDate
+
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
@@ -183,6 +185,7 @@ object IndividualNavigatorSpec extends OptionValues {
     .set(AreYouInUKId)(true).asOpt.value
   private val nonUk = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
+    .set(IndividualDetailsId)(TolerantIndividual(Some("first"), None, Some("last"))).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().nonUkIndividualAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkIndividualAddress(address("GB"))
