@@ -55,7 +55,7 @@ class AuthActionSpec extends SpecBase {
       "redirect to IV if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
-          s"completionURL=${URLEncoder.encode(appConfig().ukJourneyContinueUrl, "UTF-8")}&" +
+          s"completionURL=${URLEncoder.encode(frontendAppConfig.ukJourneyContinueUrl, "UTF-8")}&" +
           s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector())
@@ -116,7 +116,7 @@ class AuthActionSpec extends SpecBase {
       "redirect to IV if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
-          s"completionURL=${URLEncoder.encode(appConfig().loginContinueUrl, "UTF-8")}&" +
+          s"completionURL=${URLEncoder.encode(frontendAppConfig.loginContinueUrl, "UTF-8")}&" +
           s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new AuthActionImpl(fakeAuthConnector(retrievalResult), appConfig(false), fakeUserAnswersCacheConnector())
