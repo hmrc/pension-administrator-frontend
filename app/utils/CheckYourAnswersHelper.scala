@@ -74,7 +74,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
 
   def individualAddress: Option[AnswerRow] = {
     userAnswers.get(IndividualAddressId) map { x =>
-      AnswerRow("individualDetailsCorrect.address", x.lines, false, None)
+      AnswerRow("individualDetailsCorrect.address", x.lines(countryOptions), false, None)
     }
   }
 

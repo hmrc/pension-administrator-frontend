@@ -56,7 +56,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           Some("post-code"),
           Some("country")
         )
-        val sections = answerSections("individualDetailsCorrect.address", address.lines)
+        val sections = answerSections("individualDetailsCorrect.address", address.lines(countryOptions))
         val retrievalAction = dataRetrievalAction(
           IndividualAddressId.toString -> address
         )

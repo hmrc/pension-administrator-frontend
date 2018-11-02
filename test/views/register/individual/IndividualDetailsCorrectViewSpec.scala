@@ -20,6 +20,7 @@ import controllers.register.individual.routes
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import models.{NormalMode, TolerantAddress, TolerantIndividual}
 import play.api.data.Form
+import utils.countryOptions.CountryOptions
 import views.behaviours.YesNoViewBehaviours
 import views.html.register.individual.individualDetailsCorrect
 
@@ -40,13 +41,15 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
     Some("1 Main Street"),
     Some("Some Village"),
     Some("Some Town"),
-    Some("GB"),
-    Some("ZZ1 1ZZ")
+    Some("ZZ1 1ZZ"),
+    Some("GB")
   )
 
-  private def createView = () => individualDetailsCorrect(frontendAppConfig, form, NormalMode, individual, address)(fakeRequest, messages)
+  private val countryName = "United Kingdom"
 
-  private def createViewUsingForm = (form: Form[_]) => individualDetailsCorrect(frontendAppConfig, form, NormalMode, individual, address)(fakeRequest, messages)
+  private def createView = () => individualDetailsCorrect(frontendAppConfig, form, NormalMode, individual, address, new CountryOptions(environment, frontendAppConfig))(fakeRequest, messages)
+
+  private def createViewUsingForm = (form: Form[_]) => individualDetailsCorrect(frontendAppConfig, form, NormalMode, individual, address, new CountryOptions(environment, frontendAppConfig))(fakeRequest, messages)
 
   "IndividualDetailsCorrect view" must {
 
@@ -73,7 +76,7 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
       assertRenderedByIdWithText(doc, "address-value-1", address.addressLine2.value)
       assertRenderedByIdWithText(doc, "address-value-2", address.addressLine3.value)
       assertRenderedByIdWithText(doc, "address-value-3", address.addressLine4.value)
-      assertRenderedByIdWithText(doc, "address-value-4", address.country.value)
+      assertRenderedByIdWithText(doc, "address-value-4", countryName)
       assertRenderedByIdWithText(doc, "address-value-5", address.postcode.value)
     }
 

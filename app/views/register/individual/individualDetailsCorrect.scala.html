@@ -19,8 +19,9 @@
 @import controllers.register.individual.routes._
 @import models.{Mode, TolerantAddress, TolerantIndividual}
 @import utils.FormHelpers
+@import utils.countryOptions.CountryOptions
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("individualDetailsCorrect.title"),
@@ -52,7 +53,7 @@
                 </div>
                 <div class="tabular-data__data tabular-data__data--3-12">
                     <p>
-                        @for((line, i) <- address.lines.zipWithIndex) {
+                        @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
                             <span id="address-value-@i" class="address-multi-line">@line</span>
                         }
                     </p>
