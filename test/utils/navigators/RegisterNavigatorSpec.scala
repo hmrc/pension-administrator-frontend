@@ -58,7 +58,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AreYouInUKId, notInUkPartnershipCheckMode,   nonUkBusinessOrIndividualPage, false, Some(nonUkPartnershipAddress), false),
     (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessTypePage, false, None, false),
     (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualNamePage, false, None, false),
-    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false)
+    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false),
+    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipName, false, None, false)
   )
 
   //scalastyle:on line.size.limit
@@ -88,6 +89,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val nonUkIndividualNamePage: Call = controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode)
   lazy val nonUkCompanyAddress: Call = controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
   lazy val nonUkPartnershipAddress: Call = controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
+  lazy val nonUkPartnershipName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
@@ -128,10 +130,8 @@ object RegisterNavigatorSpec extends OptionValues {
     .set(RegisterAsBusinessId)(true).asOpt.value
   val nonUkIndividual: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(false).asOpt.value
-  val nonUkCompany: UserAnswers = UserAnswers(Json.obj())
-    .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
-  val nonUkPartnership: UserAnswers = UserAnswers(Json.obj())
-    .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
+  val nonUkCompany: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
+  val nonUkPartnership: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"

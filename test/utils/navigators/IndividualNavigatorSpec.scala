@@ -194,6 +194,4 @@ object IndividualNavigatorSpec extends OptionValues {
   private def address(countryCode: String) =Address("addressLine1","addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
 
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
-
 }

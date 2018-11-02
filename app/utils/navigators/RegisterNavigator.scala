@@ -107,6 +107,8 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     userAnswers.get(NonUKBusinessTypeId) match {
       case Some(NonUKBusinessType.Company) =>
         NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad())
+      case Some(NonUKBusinessType.BusinessPartnership) =>
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
