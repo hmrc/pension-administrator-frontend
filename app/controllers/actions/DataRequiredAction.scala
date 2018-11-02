@@ -32,7 +32,9 @@ class DataRequiredActionImpl @Inject() extends DataRequiredAction {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     request.userAnswers match {
-      case None => Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
+      case None => {
+        println("\n\n\n\n coming in data required")
+        Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))}
       case Some(data) => Future.successful(Right(DataRequest(request.request, request.externalId, request.user, data)))
     }
   }

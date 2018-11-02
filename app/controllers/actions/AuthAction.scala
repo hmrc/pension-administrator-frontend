@@ -41,6 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
+  //scalastyle:off cyclomatic.complexity
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -58,11 +59,19 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
             val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
 
             if (affinityGroup == Individual) {
-              areYouInUK(id).flatMap {
-                case Some(true) if !allowedIndividual(cl) =>
-                  Future.successful(Redirect(ivUpliftUrl))
-                case _ =>
-                  block(authRequest)
+              /* This If else-if else all conditions should be removed, only the code under if clause will stay which
+              will take care of all other conditions when non-uk toggle is gone */
+              if (config.nonUkJourneys) {
+                areYouInUK(id).flatMap {
+                  case Some(true) if !allowedIndividual(cl) =>
+                    Future.successful(Redirect(ivUpliftUrl))
+                  case _ =>
+                    block(authRequest)
+                }
+              } else if (!config.nonUkJourneys && !allowedIndividual(cl)) {
+                Future.successful(Redirect(ivUpliftUrl))
+              } else {
+                block(authRequest)
               }
             } else {
               if (alreadyEnrolledInPODS(enrolments)) {
@@ -118,16 +127,16 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
 
-  private def ivUpliftUrl: String = s"${config.ivUpliftUrl}?origin=PODS&" +
-    s"completionURL=${URLEncoder.encode(config.loginContinueUrl, "UTF-8")}&" +
-    s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
-    s"&confidenceLevel=${ConfidenceLevel.L200.level}"
+  private def ivUpliftUrl: String = {
+    val continueUrl = if (config.nonUkJourneys) config.ukJourneyContinueUrl else config.loginContinueUrl
+    s"${config.ivUpliftUrl}?origin=PODS&" +
+      s"completionURL=${URLEncoder.encode(continueUrl, "UTF-8")}&" +
+      s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
+      s"&confidenceLevel=${ConfidenceLevel.L200.level}"
+  }
 
   private def allowedIndividual(confidenceLevel: ConfidenceLevel): Boolean =
     confidenceLevel.compare(ConfidenceLevel.L200) >= 0
-
-  private def allowedOrganisation(confidenceLevel: ConfidenceLevel): Boolean =
-    confidenceLevel.compare(ConfidenceLevel.L50) >= 0
 
   private def existingPSA(enrolments: Enrolments): Option[String] =
     enrolments.getEnrolment("HMRC-PSA-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
@@ -150,7 +159,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     affinityGroup match {
       case Individual =>
         UserType.Individual
-      case Organisation if allowedOrganisation(cl) =>
+      case Organisation =>
         UserType.Organisation
       case _ =>
         throw new UnauthorizedException("Unable to authorise the user")
