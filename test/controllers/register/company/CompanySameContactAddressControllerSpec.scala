@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
@@ -31,6 +31,7 @@ import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
+import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -60,12 +61,14 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
     address
   )
 
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
   "render the view correctly on a GET request" in {
     requestResult(
       implicit app => addToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe sameContactAddress(frontendAppConfig, formProvider(), viewModel)(request, messages).toString()
+        contentAsString(result) mustBe sameContactAddress(frontendAppConfig, formProvider(), viewModel, countryOptions)(request, messages).toString()
       }
     )
   }
@@ -95,4 +98,5 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
         test(req, result)
     }
   }
+
 }

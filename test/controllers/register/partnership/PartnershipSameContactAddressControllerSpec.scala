@@ -24,6 +24,7 @@ import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -59,6 +60,8 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     address = testAddress
   )
 
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
   def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnershipSameContactAddressController(
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -68,13 +71,15 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      countryOptions
     )
 
   def viewAsString(form: Form[_] = formProvider()): String = sameContactAddress(
     frontendAppConfig,
     form,
-    viewmodel
+    viewmodel,
+    countryOptions
   )(fakeRequest, messages).toString
 
   "PartnershipSameContactAddress Controller" must {

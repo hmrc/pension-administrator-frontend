@@ -29,6 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 
@@ -41,7 +42,8 @@ class PartnershipSameContactAddressController @Inject()(
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
-                                                         formProvider: SameContactAddressFormProvider
+                                                         formProvider: SameContactAddressFormProvider,
+                                                         val countryOptions: CountryOptions
                                                        ) extends SameContactAddressController {
 
   val form: Form[Boolean] = formProvider()
