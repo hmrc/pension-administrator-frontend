@@ -27,10 +27,13 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
@@ -68,6 +71,22 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
       form,
       viewModel
     )(fakeRequest, messages).toString()
+
+  override val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.Partnership,
+    sapNumber,
+    false,
+    RegistrationCustomerType.NonUK,
+    None,
+    None
+  )
+
+  override def fakeRegistrationConnector = new FakeRegistrationConnector {
+    override def registerWithNoIdOrganisation
+    (name: String, address: Address, legalStatus: RegistrationLegalStatus)
+        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
+  }
+
 
   "Partnership Registered Address Controller" must {
 

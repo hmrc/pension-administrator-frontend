@@ -25,6 +25,7 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import javax.inject.Inject
+import models.RegistrationLegalStatus
 import models._
 import models.requests.DataRequest
 import org.joda.time.LocalDate
