@@ -41,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
-  //scalastyle:off cyclomatic.complexity
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -52,35 +51,19 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-
-        redirectToInterceptPages(enrolments, request).fold(
+        redirectToInterceptPages(enrolments, request, cl, affinityGroup).fold(
           result => Future.successful(result),
           _ => {
             val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
-
-            if (affinityGroup == Individual) {
-              /* This If else-if else all conditions should be removed, only the code under if clause will stay which
-              will take care of all other conditions when non-uk toggle is gone */
-              if (config.nonUkJourneys) {
-                areYouInUK(id).flatMap {
-                  case Some(true) if !allowedIndividual(cl) =>
-                    Future.successful(Redirect(ivUpliftUrl))
-                  case _ =>
-                    block(authRequest)
-                }
-              } else if (!config.nonUkJourneys && !allowedIndividual(cl)) {
-                Future.successful(Redirect(ivUpliftUrl))
-              } else {
-                block(authRequest)
+            if (affinityGroup == Individual && config.nonUkJourneys) {
+              areYouInUK(id).flatMap {
+                case Some(true) if !allowedIndividual(cl) =>
+                  Future.successful(Redirect(ivUpliftUrl))
+                case _ =>
+                  savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
               }
             } else {
-              if (alreadyEnrolledInPODS(enrolments)) {
-                userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
-                  _ => block(authRequest)
-                }
-              } else {
-                block(authRequest)
-              }
+              savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
             }
           }
         )
@@ -90,11 +73,27 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     } recover handleFailure
   }
 
-  private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A]) = {
+
+  private def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, id: String, authRequest: AuthenticatedRequest[A],
+                                               block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier) = {
+    if (alreadyEnrolledInPODS(enrolments)) {
+      userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
+        _ => block(authRequest)
+      }
+    } else {
+      block(authRequest)
+    }
+  }
+
+
+  private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A],
+                                          cl: ConfidenceLevel, affinityGroup: AffinityGroup) = {
     if (alreadyEnrolledInPODS(enrolments) && notNewRegPages(request)) {
       Left(Redirect(routes.InterceptPSAController.onPageLoad()))
     } else if (isPSP(enrolments) && !isPSA(enrolments)) {
       Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
+    } else if (!config.nonUkJourneys && affinityGroup == Individual && !allowedIndividual(cl)) {
+      Left(Redirect(ivUpliftUrl))
     } else {
       Right(())
     }
@@ -103,8 +102,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   private def areYouInUK(id: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
     userAnswersCacheConnector.fetch(id).map {
       case Some(json) =>
-        val userAnswers = UserAnswers(json)
-        userAnswers.get(AreYouInUKId)
+        UserAnswers(json).get(AreYouInUKId)
       case None =>
         None
     }
