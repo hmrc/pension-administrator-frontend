@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, RegistrationConnector}
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
@@ -30,6 +30,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
@@ -44,7 +45,8 @@ class IndividualDetailsCorrectController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: IndividualDetailsCorrectFormProvider,
-                                                    registrationConnector: RegistrationConnector
+                                                    registrationConnector: RegistrationConnector,
+                                                    countryOptions: CountryOptions
                                                   ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -59,7 +61,7 @@ class IndividualDetailsCorrectController @Inject()(
 
       (IndividualDetailsId and IndividualAddressId).retrieve match {
         case Right(individual ~ address) =>
-          Future.successful(Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address)))
+          Future.successful(Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address, countryOptions)))
         case _ =>
           request.user.nino match {
             case Some(nino) =>
@@ -69,7 +71,7 @@ class IndividualDetailsCorrectController @Inject()(
                 _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
               } yield {
-                Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address))
+                Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
               }
             case _ =>
               Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
@@ -84,7 +86,7 @@ class IndividualDetailsCorrectController @Inject()(
         (formWithErrors: Form[_]) => {
           (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
             case individual ~ address =>
-              Future.successful(BadRequest(individualDetailsCorrect(appConfig, formWithErrors, mode, individual, address)))
+              Future.successful(BadRequest(individualDetailsCorrect(appConfig, formWithErrors, mode, individual, address, countryOptions)))
           }
         },
         value =>

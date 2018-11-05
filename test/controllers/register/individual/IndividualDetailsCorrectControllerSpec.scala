@@ -31,6 +31,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator
+import utils.countryOptions.CountryOptions
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -101,7 +102,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      registrationConnector
+      registrationConnector,
+      new CountryOptions(environment, frontendAppConfig)
     )
 
   private def viewAsString(form: Form[_] = form) =
@@ -110,7 +112,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       form,
       NormalMode,
       individual,
-      address
+      address,
+      new CountryOptions(environment, frontendAppConfig)
     )(fakeRequest, messages).toString
 
   "IndividualDetailsCorrect Controller" must {
