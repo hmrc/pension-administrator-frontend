@@ -25,6 +25,7 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import javax.inject.Inject
 import models.Address
+import models.RegistrationLegalStatus
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
@@ -74,7 +75,7 @@ class PartnershipRegisteredAddressController @Inject()(
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
-        post(details.companyName, PartnershipRegisteredAddressId, addressViewModel(details.companyName))
+        post(details.companyName, PartnershipRegisteredAddressId, addressViewModel(details.companyName), RegistrationLegalStatus.Partnership)
       }
   }
 }

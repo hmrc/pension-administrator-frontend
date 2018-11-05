@@ -26,12 +26,13 @@ import identifiers.register.partnership.PartnershipDetailsId
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
+import utils.annotations.Partnership
 import utils.annotations.RegisterCompany
-import viewmodels.{OrganisationNameViewModel, Message}
+import viewmodels.{Message, OrganisationNameViewModel}
 
 class PartnershipRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
-                                                    @RegisterCompany override val navigator: Navigator,
+                                                    @Partnership override val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,

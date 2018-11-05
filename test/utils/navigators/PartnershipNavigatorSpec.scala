@@ -17,6 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
@@ -24,30 +25,38 @@ import identifiers.register.partnership._
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, UserAnswers}
+import utils.FakeCountryOptions
+import utils.NavigatorBehaviour
+import utils.UserAnswers
+import utils.countryOptions.CountryOptions
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import PartnershipNavigatorSpec._
 
-  val navigator = new PartnershipNavigator(FakeUserAnswersCacheConnector)
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
+  val navigatorUK = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, appConfig(false))
+  val navigatorNonUK = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, appConfig(true))
 
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+
     (PartnershipDetailsId, emptyAnswers, confirmPartnershipDetailsPage, false, None, false),
     (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
     (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true),
-    (PartnershipSameContactAddressId, sameContactAddressTrue, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (PartnershipSameContactAddressId, sameContactAddressFalse, contactPostcodePage(NormalMode), true, Some(contactPostcodePage(CheckMode)), true),
+    (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), true, Some(contactPostcodePage(CheckMode)), true),
     (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), true, Some(contactAddressListPage(CheckMode)), true),
     (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (PartnershipAddressYearsId, addressYearsUnder, contactPreviousPostcodePage(NormalMode), true, Some(contactPreviousPostcodePage(CheckMode)), true),
-    (PartnershipAddressYearsId, addressYearsOver, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(NormalMode), true, Some(contactPreviousPostcodePage(CheckMode)), true),
+    (PartnershipAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
     (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
@@ -58,32 +67,67 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
     (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false)
   )
+  //scalastyle:off line.size.limit
+  private def nonUKRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
 
-  navigator.getClass.getSimpleName must {
+    (PartnershipDetailsId, uk, confirmPartnershipDetailsPage, false, None, false),
+    (PartnershipDetailsId, nonUk, nonUkAddress, false, None, false),
+
+    (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), true, Some(contactPostcodePage(CheckMode)), true),
+    (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+
+    (PartnershipAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(NormalMode), true, Some(contactPreviousPostcodePage(CheckMode)), true),
+    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
+    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+
+    (PartnershipContactDetailsId, uk, vatPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipContactDetailsId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
+
+    (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
+    (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, false, None, false),
+    (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
+  )
+
+  navigatorUK.getClass.getSimpleName must {
     appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like nonMatchingNavigator(navigatorUK)
+    behave like navigatorWithRoutes(navigatorUK, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+  }
+
+  s"NonUK ${navigatorNonUK.getClass.getSimpleName}" must {
+    appRunning()
+    behave like navigatorWithRoutes(navigatorNonUK, FakeUserAnswersCacheConnector, nonUKRoutes(), dataDescriber)
   }
 }
 
 object PartnershipNavigatorSpec extends OptionValues {
-  private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
 
-  private def confirmPartnershipDetailsPage = routes.ConfirmPartnershipDetailsController.onPageLoad()
+  private def appConfig(nonUk: Boolean = false) : FrontendAppConfig = new GuiceApplicationBuilder().configure(
+    conf = "features.non-uk-journeys" -> nonUk
+  ).build().injector.instanceOf[FrontendAppConfig]
 
-  private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+  private def sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
-  private def sameContactAddressPage = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
+  private def confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 
-  private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  private def whatYouWillNeedPage: Call = routes.WhatYouWillNeedController.onPageLoad()
 
-  private def vatPage = routes.PartnershipVatController.onPageLoad(NormalMode)
+  private def sameContactAddressPage: Call = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
 
-  private def payeNumberPage = routes.PartnershipPayeController.onPageLoad(NormalMode)
+  private def checkYourAnswersPage: Call = routes.CheckYourAnswersController.onPageLoad()
 
-  private def contactDetailsPage = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
+  private def vatPage: Call = routes.PartnershipVatController.onPageLoad(NormalMode)
 
-  private def addPartnersPage = routes.AddPartnerController.onPageLoad()
+  private def payeNumberPage: Call = routes.PartnershipPayeController.onPageLoad(NormalMode)
+
+  private def contactDetailsPage: Call = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
+
+  private def addPartnersPage: Call = routes.AddPartnerController.onPageLoad()
 
   private def addressYearsPage(mode: Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
 
@@ -101,20 +145,28 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
 
-  val emptyAnswers = UserAnswers(Json.obj())
+  private def nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
 
-  private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj())
-    .set(ConfirmPartnershipDetailsId)(true).asOpt.value
-  private val confirmPartnershipDetailsFalse = UserAnswers(Json.obj())
-    .set(ConfirmPartnershipDetailsId)(false).asOpt.value
-  private val sameContactAddressTrue = UserAnswers(Json.obj())
-    .set(PartnershipSameContactAddressId)(true).asOpt.value
-  private val sameContactAddressFalse = UserAnswers(Json.obj())
-    .set(PartnershipSameContactAddressId)(false).asOpt.value
-  private val addressYearsUnder = UserAnswers(Json.obj())
-    .set(PartnershipAddressYearsId)(AddressYears.UnderAYear).asOpt.value
-  private val addressYearsOver = UserAnswers(Json.obj())
-    .set(PartnershipAddressYearsId)(AddressYears.OverAYear).asOpt.value
+  private def reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
+  private def outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
+
+  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
+  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
+  private val nonUkEuAddress = UserAnswers().nonUkPartnershipAddress(address("AT"))
+  private val uKAddress = UserAnswers().nonUkPartnershipAddress(address("GB"))
+  private val nonUkNonEuAddress = UserAnswers().nonUkPartnershipAddress(address("AF"))
+
+  private val notSameContactAddressUk = UserAnswers().partnershipSameContactAddress(false).areYouInUk(true)
+  private val notSameContactAddressNonUk = UserAnswers().partnershipSameContactAddress(false).areYouInUk(false)
+  private val isSameContactAddress = UserAnswers().partnershipSameContactAddress(true)
+
+  private val addressYearsUnderAYearUk = UserAnswers().partnershipAddressYears(AddressYears.UnderAYear).areYouInUk(true)
+  private val addressYearsUnderAYearNonUk = UserAnswers().partnershipAddressYears(AddressYears.UnderAYear).areYouInUk(false)
+  private val addressYearsOverAYear = UserAnswers().partnershipAddressYears(AddressYears.OverAYear)
+
+  private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
+
+  private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value
 }

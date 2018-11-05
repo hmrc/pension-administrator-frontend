@@ -21,10 +21,8 @@ import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
-import identifiers.register.individual.IndividualAddressId
-import models.requests.DataRequest
 import models._
-import org.joda.time.LocalDate
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AnyContent, Request, Result}
@@ -35,7 +33,7 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait NonUKAddressController extends FrontendController with Retrievals with I18nSupport {
 
@@ -62,7 +60,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
     Future.successful(Ok(view()))
   }
 
-  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel)(
+  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus:RegistrationLegalStatus)(
     implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => {
@@ -74,7 +72,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
           redirectUkAddress(request.externalId, address, id)
         } else {
             for {
-              registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address)
+              registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address, legalStatus)
               cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
               _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
             } yield {

@@ -377,7 +377,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress).map { registration =>
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus).map { registration =>
       registration.sapNumber shouldBe sapNumber
     }
   }
@@ -396,7 +396,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[IllegalArgumentException] {
-      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress)
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus)
     }
 
   }
@@ -413,7 +413,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[NotFoundException] {
-      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress)
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus)
     }
 
   }
@@ -473,7 +473,7 @@ class RegistrationConnectorSpec()
       }
 
     }
-  
+
 }
 
 object RegistrationConnectorSpec extends OptionValues {

@@ -33,7 +33,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
           PartnershipDetailsId,
           IndividualDetailsId, IndividualAddressId, IndividualDetailsCorrectId))
       case Some(true) =>
-        userAnswers.removeAllOf(List(BusinessDetailsId, NonUKBusinessTypeId, CompanyAddressId,
+        userAnswers.removeAllOf(List(BusinessDetailsId, NonUKBusinessTypeId, CompanyAddressId,RegisterAsBusinessId,
           PartnershipDetailsId, PartnershipRegisteredAddressId,
           IndividualDetailsId, IndividualDateOfBirthId, IndividualAddressId))
       case _ =>

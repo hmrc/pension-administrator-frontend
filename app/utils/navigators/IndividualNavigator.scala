@@ -164,7 +164,10 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   def countryOfRegistrationEditRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
-      case Some(false) => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
+      case Some(false) => answers.get(IndividualDetailsId) match {
+        case None => NavigateTo.dontSave(routes.IndividualNameController.onPageLoad(NormalMode))
+        case _ => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
+      }
       case Some(true) => NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }

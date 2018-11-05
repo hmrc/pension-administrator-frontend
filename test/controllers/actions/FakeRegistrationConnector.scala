@@ -18,6 +18,7 @@ package controllers.actions
 
 import connectors.RegistrationConnector
 import models._
+import models.RegistrationLegalStatus
 import org.joda.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,7 +31,7 @@ abstract class FakeRegistrationConnector extends RegistrationConnector {
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
 
   override def registerWithNoIdOrganisation
-  (name: String, address: Address)
+  (name: String, address: Address, legalStatus: RegistrationLegalStatus)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =  ???
 
   override def registerWithIdIndividual
