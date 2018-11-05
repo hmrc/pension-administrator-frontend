@@ -78,10 +78,9 @@ object TolerantAddress {
     val linesWithNoAmpersand = lines.map(line => line.replace("&", "and"))
     val addressLines: (Option[String], Option[String], Option[String], Option[String]) = {
       lines.size match {
-        case 0 =>  {
-          Logger.error(s"[NoAddressLinesFoundException]-$postCode,$countryCode")
-          throw new NoAddressLinesFoundException()
-        }
+        case 0 =>
+          Logger.warn(s"[NoAddressLinesFoundException]-$postCode,$countryCode")
+          (None, None, None, None)
         case 1 => {
           val townOrCounty = getTownOrCounty(town, county, lines)
           (Some(lines(0)), townOrCounty._1, townOrCounty._2, None)
@@ -187,6 +186,4 @@ object TolerantAddress {
     )
 
 }
-
-final case class NoAddressLinesFoundException() extends Exception("Address with no address lines received")
 
