@@ -30,6 +30,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
+import utils.countryOptions.CountryOptions
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyAddressYears
 
@@ -43,7 +44,8 @@ class CompanyAddressYearsController @Inject()(
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: AddressYearsFormProvider
+                                               formProvider: AddressYearsFormProvider,
+                                               countryOptions: CountryOptions
                                              ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form = formProvider("companyAddressYears.error.required")
@@ -55,7 +57,7 @@ class CompanyAddressYearsController @Inject()(
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(companyAddressYears(appConfig, address.toTolerantAddress, preparedForm, mode)))
+        Future.successful(Ok(companyAddressYears(appConfig, address.toTolerantAddress, preparedForm, mode, countryOptions)))
       }
   }
 
@@ -64,11 +66,12 @@ class CompanyAddressYearsController @Inject()(
       CompanyContactAddressId.retrieve.right.map { address =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyAddressYears(appConfig, address.toTolerantAddress, formWithErrors, mode))),
+            Future.successful(BadRequest(companyAddressYears(appConfig, address.toTolerantAddress, formWithErrors, mode, countryOptions))),
           value =>
             dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
               Redirect(navigator.nextPage(CompanyAddressYearsId, mode, UserAnswers(cacheMap))))
         )
       }
   }
+
 }

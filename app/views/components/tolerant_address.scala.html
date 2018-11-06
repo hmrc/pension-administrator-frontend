@@ -15,24 +15,25 @@
  *@
 
 @import models.TolerantAddress
+@import utils.countryOptions.CountryOptions
 
-@(fieldName: String, address: TolerantAddress)
+@(fieldName: String, address: TolerantAddress, countryOptions: CountryOptions)
 
 @if(address.addressLine1.isDefined) {
-    <div id="@fieldName-addressLine1">@address.addressLine1,</div>
+    <div id="@fieldName-addressLine1">@address.addressLine1</div>
 }
 @if(address.addressLine2.isDefined) {
-    <div id="@fieldName-addressLine2">@address.addressLine2,</div>
+    <div id="@fieldName-addressLine2">@address.addressLine2</div>
 }
 @if(address.addressLine3.isDefined) {
-    <div id="@fieldName-addressLine3">@address.addressLine3,</div>
+    <div id="@fieldName-addressLine3">@address.addressLine3</div>
 }
 @if(address.addressLine4.isDefined) {
-    <div id="@fieldName-addressLine4">@address.addressLine4,</div>
+    <div id="@fieldName-addressLine4">@address.addressLine4</div>
 }
 @if(address.postcode.isDefined) {
-    <div id="@fieldName-postcode">@address.postcode,</div>
+    <div id="@fieldName-postcode">@address.postcode</div>
 }
 @if(address.country.isDefined) {
-    <div id="@fieldName-country">@address.country</div>
+    <div id="@fieldName-country">@countryOptions.getCountryNameFromCode(address)</div>
 }
