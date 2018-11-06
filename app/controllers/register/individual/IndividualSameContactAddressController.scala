@@ -30,6 +30,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 
@@ -40,7 +41,8 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
-                                                       formProvider: SameContactAddressFormProvider
+                                                       formProvider: SameContactAddressFormProvider,
+                                                       val countryOptions: CountryOptions
                                                       ) extends SameContactAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualSameContactAddressController.onSubmit _

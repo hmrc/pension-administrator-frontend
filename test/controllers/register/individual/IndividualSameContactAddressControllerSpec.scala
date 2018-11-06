@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json.JsResult
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -54,6 +55,8 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     address = testAddress
   )
 
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualSameContactAddressController(
       frontendAppConfig,
@@ -63,10 +66,17 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      countryOptions
     )
 
-  def viewAsString(form: Form[_] = formProvider()): String = sameContactAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = formProvider()): String =
+    sameContactAddress(
+      frontendAppConfig,
+      form,
+      viewmodel,
+      countryOptions
+    )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
     .set(IndividualAddressId)(testAddress)

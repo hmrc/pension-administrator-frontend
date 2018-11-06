@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
@@ -42,6 +43,8 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
 
   protected val form: Form[Boolean]
 
+  protected def countryOptions: CountryOptions
+
   protected def get(
                      id: TypedIdentifier[Boolean],
                      viewModel: SameContactAddressViewModel
@@ -51,7 +54,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
       case None => form
       case Some(value) => form.fill(value)
     }
-    Future.successful(Ok(sameContactAddress(appConfig, preparedForm, viewModel)))
+    Future.successful(Ok(sameContactAddress(appConfig, preparedForm, viewModel, countryOptions)))
   }
 
   protected def post(
@@ -64,7 +67,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
 
     val existingValue = request.userAnswers.get(id)
     form.bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel))),
+      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
       value => {
         val hasAnswerChanged = existingValue match {
           case None => true

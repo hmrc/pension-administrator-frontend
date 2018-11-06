@@ -21,6 +21,7 @@ import models.TolerantAddress
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.behaviours.YesNoViewBehaviours
@@ -38,8 +39,11 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     Some("address line 2"),
     Some("test town"),
     Some("test county"),
-    Some("test post code"), Some("GB")
+    Some("test post code"),
+    Some("GB")
   )
+
+  val testCountry = "United Kingdom"
 
   def viewmodel = SameContactAddressViewModel(
     postCall = Call("GET", "www.example.com"),
@@ -50,10 +54,12 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     address = testAddress
   )
 
-  def createView: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
+  def createView: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel, countryOptions)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    sameContactAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+    sameContactAddress(frontendAppConfig, form, viewmodel, countryOptions)(fakeRequest, messages)
 
   "Same Contact Address View" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -72,9 +78,9 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
       assertRenderedByIdWithText(doc, "address-value-1", testAddress.addressLine2.value)
       assertRenderedByIdWithText(doc, "address-value-2", testAddress.addressLine3.value)
       assertRenderedByIdWithText(doc, "address-value-3", testAddress.addressLine4.value)
-      assertRenderedByIdWithText(doc, "address-value-4", testAddress.country.value)
+      assertRenderedByIdWithText(doc, "address-value-4", testCountry)
       assertRenderedByIdWithText(doc, "address-value-5", testAddress.postcode.value)
     }
   }
-}
 
+}

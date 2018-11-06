@@ -18,9 +18,10 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 @import utils.FormHelpers
+@import utils.countryOptions.CountryOptions
 @import viewmodels.address.SameContactAddressViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: SameContactAddressViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages(viewmodel.title),
@@ -44,7 +45,7 @@
 
         <div class="tabular-data__data tabular-data__data--3-12">
             <p>
-                @for((line, i) <- viewmodel.address.lines.zipWithIndex) {
+                @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
                 <span id="address-value-@i" class="address-multi-line">@line</span>
                 }
             </p>
