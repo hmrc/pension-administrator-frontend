@@ -81,7 +81,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
             json,
             legalStatus,
             RegistrationCustomerType.fromAddress(value.address),
-            Some(RegistrationIdType.UTR), Some(utr))
+            Some(RegistrationIdType.UTR), Some(utr),
+            noIdentifier = false)
             OrganizationRegistration(value, info
           )
         case JsError(errors) => throw JsResultException(errors)
@@ -115,7 +116,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
             RegistrationLegalStatus.Individual,
             RegistrationCustomerType.fromAddress(value.address),
             Some(RegistrationIdType.Nino),
-            Some(nino)
+            Some(nino),
+            noIdentifier = false
           )
           IndividualRegistration(value, info)
         case JsError(errors) => throw JsResultException(errors)
@@ -146,7 +148,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         legalStatus,
         RegistrationCustomerType.NonUK,
         None,
-        None
+        None,
+        noIdentifier = true
       )
     } andThen {
       case Failure(ex) =>
@@ -170,7 +173,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         RegistrationLegalStatus.Individual,
         RegistrationCustomerType.NonUK,
         None,
-        None
+        None,
+        noIdentifier = true
       )
     } andThen {
       case Failure(ex) =>
@@ -184,11 +188,12 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                                 legalStatus: RegistrationLegalStatus,
                                 customerType: RegistrationCustomerType,
                                 idType: Option[RegistrationIdType],
-                                idNumber: Option[String]): RegistrationInfo = {
+                                idNumber: Option[String],
+                                noIdentifier: Boolean): RegistrationInfo = {
 
     json.validate[String](readsSapNumber) match {
       case JsSuccess(sapNumber, _) =>
-        RegistrationInfo(legalStatus, sapNumber, false, customerType, idType, idNumber)
+        RegistrationInfo(legalStatus, sapNumber, noIdentifier = noIdentifier, customerType, idType, idNumber)
       case JsError(errors) => throw JsResultException(errors)
     }
   }

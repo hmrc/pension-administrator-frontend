@@ -382,6 +382,24 @@ class RegistrationConnectorSpec()
     }
   }
 
+  it should "return successfully with noIdentifier set to true" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdOrganisationPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validNonUkResponse))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus).map { registration =>
+      registration.noIdentifier shouldBe true
+    }
+  }
+
 
   it should "only accept responses with status 200 OK" in {
 
@@ -434,6 +452,25 @@ class RegistrationConnectorSpec()
     val connector = injector.instanceOf[RegistrationConnector]
     connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth).map { registration =>
       registration.sapNumber shouldBe sapNumber
+    }
+  }
+
+  it should "return successfully with noIdentifier equal to true" in {
+
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .withRequestBody(equalToJson(Json.stringify(registerWithoutIdIndividualRequest)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validNonUkResponse))
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth).map { registration =>
+      registration.noIdentifier shouldBe true
     }
   }
 
