@@ -21,7 +21,7 @@ import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import models.register.adviser.AdviserDetails
 import models.{Address, CheckMode}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import utils._
 import utils.countryOptions.CountryOptions
@@ -30,13 +30,14 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit()
+  private def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit()
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val advDetails = AdviserDetails("test adviser name", "test@test.com", "01234567890")
+
   val address = Address(
     "address-line-1",
     "address-line-2",
@@ -46,7 +47,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "country"
   )
 
-  val validData = Json.obj(
+  val validData: JsObject = Json.obj(
     AdviserDetailsId.toString -> advDetails,
     AdviserAddressId.toString -> address
   )
@@ -54,9 +55,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   def adviserAddress = Seq(AnswerRow(
     "cya.label.address",
     Seq(
-      s"${address.addressLine1},",
-      s"${address.addressLine2},",
-      s"${address.postcode.value},",
+      address.addressLine1,
+      address.addressLine2,
+      address.postcode.value,
       address.country
     ),
     false,
@@ -64,9 +65,25 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   ))
 
   def adviserDetails = Seq(
-    AnswerRow("cya.label.name", Seq(advDetails.name), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(advDetails.email), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
-    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(advDetails.phone), false, controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))
+    AnswerRow(
+      "cya.label.name",
+      Seq(advDetails.name),
+      false,
+      controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url
+    ),
+    AnswerRow(
+      "contactDetails.email.checkYourAnswersLabel",
+      Seq(advDetails.email),
+      false,
+      controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url
+    ),
+    AnswerRow(
+      "contactDetails.phone.checkYourAnswersLabel",
+      Seq(advDetails.phone),
+      false,
+      controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url
+    )
+  )
 
   def sections = Seq(AnswerSection(None, adviserDetails ++ adviserAddress))
 
@@ -81,7 +98,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       countryOptions
     )
 
-  def viewAsString() = check_your_answers(frontendAppConfig, sections, Some("common.adviser.secondary.heading"), postCall)(fakeRequest, messages).toString
+  def viewAsString(): String =
+    check_your_answers(
+      frontendAppConfig,
+      sections,
+      Some("common.adviser.secondary.heading"),
+      postCall
+    )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
 

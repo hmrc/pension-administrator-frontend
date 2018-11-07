@@ -53,8 +53,8 @@ case class TolerantAddress(addressLine1: Option[String],
       this.addressLine2,
       this.addressLine3,
       this.addressLine4,
-      countryOptions.getCountryNameFromCode(this),
-      this.postcode
+      this.postcode,
+      countryOptions.getCountryNameFromCode(this)
     ).flatten(s => s)
   }
 

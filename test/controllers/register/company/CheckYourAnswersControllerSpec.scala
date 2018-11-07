@@ -24,7 +24,7 @@ import models.register.company.CompanyDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{CheckYourAnswersFactory, FakeCountryOptions, FakeNavigator}
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.{AnswerRow, AnswerSection}
 import views.html.check_your_answers
 
@@ -88,9 +88,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         )
         val rows = Seq(answerRow("companyAddress.checkYourAnswersLabel",
           Seq(
-            s"${address.addressLine1.value},",
-            s"${address.addressLine2.value},",
-            s"${address.postcode.value},",
+            address.addressLine1.value,
+            address.addressLine2.value,
+            address.postcode.value,
             address.country.value
           )))
 
@@ -117,9 +117,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "render the view correctly for the company contact address" in {
         val rows = Seq(answerRow("cya.label.company.contact.address",
           Seq(
-            s"${address.addressLine1},",
-            s"${address.addressLine2},",
-            s"${address.postcode.value},",
+            address.addressLine1,
+            address.addressLine2,
+            address.postcode.value,
             address.country
           )))
 
@@ -156,9 +156,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         )
         val rows = Seq(answerRow("companyPreviousAddress.checkYourAnswersLabel",
           Seq(
-            s"${address.addressLine1},",
-            s"${address.addressLine2},",
-            s"${address.postcode.value},",
+            address.addressLine1,
+            address.addressLine2,
+            address.postcode.value,
             address.country
           ), false, Some(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)))
 
@@ -221,7 +221,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
 
   val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
 

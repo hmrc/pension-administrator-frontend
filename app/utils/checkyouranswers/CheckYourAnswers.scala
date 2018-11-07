@@ -21,7 +21,6 @@ import models._
 import models.register.adviser.AdviserDetails
 import models.register.company.CompanyDetails
 import play.api.libs.json.Reads
-import utils.checkyouranswers.CheckYourAnswers.addressAnswer
 import utils.countryOptions.CountryOptions
 import utils.{DateHelper, UserAnswers}
 import viewmodels.AnswerRow
@@ -114,18 +113,6 @@ object CheckYourAnswers {
     }
   }
 
-  def addressAnswer(address: Address)(implicit countryOptions: CountryOptions): Seq[String] = {
-    val country = countryOptions.options.find(_.value == address.country).map(_.label).getOrElse(address.country)
-    Seq(
-      Some(s"${address.addressLine1},"),
-      Some(s"${address.addressLine2},"),
-      address.addressLine3.map(line3 => s"$line3,"),
-      address.addressLine4.map(line4 => s"$line4,"),
-      address.postcode.map(postCode => s"$postCode,"),
-      Some(country)
-    ).flatten
-  }
-
   implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers): Seq[AnswerRow] = {
@@ -154,23 +141,10 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[String], userAnswers: UserAnswers) = {
-
-        def addressAnswer(address: Address): Seq[String] = {
-          val country = countryOptions.options.find(_.value == address.country).map(_.label).getOrElse(address.country)
-          Seq(
-            Some(s"${address.addressLine1},"),
-            Some(s"${address.addressLine2},"),
-            address.addressLine3.map(line3 => s"$line3,"),
-            address.addressLine4.map(line4 => s"$line4,"),
-            address.postcode.map(postCode => s"$postCode,"),
-            Some(country)
-          ).flatten
-        }
-
         userAnswers.get(id).map { address =>
           Seq(AnswerRow(
             label,
-            addressAnswer(address),
+            address.lines(countryOptions),
             false,
             changeUrl
           ))
@@ -212,7 +186,7 @@ case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: Stri
         userAnswers.get(id).map { address =>
           Seq(AnswerRow(
             label,
-            addressAnswer(address.toAddress),
+            address.lines(countryOptions),
             false,
             None
           ))
