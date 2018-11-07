@@ -61,10 +61,10 @@ class CompanyAddressYearsController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      CompanyAddressId.retrieve.right.map { address =>
+      CompanyContactAddressId.retrieve.right.map { address =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyAddressYears(appConfig, address, formWithErrors, mode))),
+            Future.successful(BadRequest(companyAddressYears(appConfig, address.toTolerantAddress, formWithErrors, mode))),
           value =>
             dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
               Redirect(navigator.nextPage(CompanyAddressYearsId, mode, UserAnswers(cacheMap))))
