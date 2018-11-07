@@ -21,8 +21,9 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
+import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId, CompanyContactAddressId}
 import javax.inject.Inject
+
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,12 +50,12 @@ class CompanyAddressYearsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      CompanyAddressId.retrieve.right.map { address =>
+      CompanyContactAddressId.retrieve.right.map { address =>
         val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(companyAddressYears(appConfig, address, preparedForm, mode)))
+        Future.successful(Ok(companyAddressYears(appConfig, address.toTolerantAddress, preparedForm, mode)))
       }
   }
 
