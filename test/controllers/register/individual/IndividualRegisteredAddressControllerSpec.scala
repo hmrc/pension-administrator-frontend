@@ -19,7 +19,7 @@ package controllers.register.individual
 import java.time.LocalDate
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
@@ -27,27 +27,18 @@ import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
-import org.mockito.Mockito._
-import org.mockito.Matchers._
-import org.scalactic.source.Position
 import org.scalatest.BeforeAndAfter
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
+import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.{ExecutionContext, Future}
-
-class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with MockitoSugar with BeforeAndAfter{
-
-  before(reset(mockRegistrationConnector))
+class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with BeforeAndAfter{
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -67,8 +58,6 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     None
   )
 
-  val mockRegistrationConnector = mock[RegistrationConnector]
-
   val validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       IndividualDetailsId.toString ->
@@ -87,8 +76,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions,
-      mockRegistrationConnector
+      countryOptions
     )
 
   private def viewModel = ManualAddressViewModel(
@@ -134,15 +122,12 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
         "country" -> "IN"
       )
 
-      when(mockRegistrationConnector.registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(registrationInfo))
-
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
 
-      FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
-      verify(mockRegistrationConnector, atLeastOnce()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
+      FakeUserAnswersCacheConnector.verify(IndividualAddressId, Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
     }
 
     "redirect to the next page when valid data with uk as country is submitted" in {
@@ -152,13 +137,12 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
         "country" -> "GB"
       )
 
-      when(mockRegistrationConnector.registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(registrationInfo))
-
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-      verify(mockRegistrationConnector, never()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
+
+      FakeUserAnswersCacheConnector.verify(IndividualAddressId, Address("value 1", "value 2", None, None, None, "GB").toTolerantAddress)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

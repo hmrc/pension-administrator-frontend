@@ -124,8 +124,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualDetailsId) mustNot be(defined)
       }
 
-      "remove the data for Individual date of birth" in {
-        result.get(IndividualDateOfBirthId) mustNot be(defined)
+      "not remove the data for Individual date of birth" in {
+        result.get(IndividualDateOfBirthId) must be(defined)
       }
 
       "remove the data for Individual Address" in {

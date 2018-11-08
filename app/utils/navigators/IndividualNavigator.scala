@@ -39,7 +39,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
     case IndividualDetailsCorrectId => detailsCorrect(from.userAnswers)
-    case IndividualDetailsId => NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
+    case IndividualDetailsId => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
     case IndividualAddressId => regionBasedNavigation(from.userAnswers)
     case WhatYouWillNeedId => NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
     case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, NormalMode)
@@ -176,7 +176,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   def countryBasedDobNavigation(answers: UserAnswers): Option[NavigateTo] =
     if(config.nonUkJourneys) {
       answers.get(AreYouInUKId) match {
-        case Some(false) => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
+        case Some(false) => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
         case Some(true) => checkYourAnswers()
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
@@ -188,7 +188,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     answers.get(IndividualAddressId) flatMap { address =>
       countryOptions.regions(address.country.getOrElse("")) match {
         case UK => NavigateTo.dontSave(routes.IndividualAreYouInUKController.onPageLoad(CheckMode))
-        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+        case EuEea => NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
         case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
@@ -199,7 +199,9 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     if(config.nonUkJourneys) {
       answers.get(AreYouInUKId) match {
       case Some(false) => checkYourAnswers()
-      case Some(true) => NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
+      case Some(true) => answers.get(IndividualDateOfBirthId).fold(
+        NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode)))(_=>
+        checkYourAnswers())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   } else {
