@@ -16,15 +16,12 @@
 
 package controllers.register.individual
 
-import java.time.LocalDate
-
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.RegistrationInfoId
-import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.BeforeAndAfter
@@ -58,15 +55,8 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     None
   )
 
-  val validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
-    Json.obj(
-      IndividualDetailsId.toString ->
-        TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName")),
-      IndividualDateOfBirthId.toString -> LocalDate.now()
-    )))
 
-
-  def controller(dataRetrievalAction: DataRetrievalAction = validData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualRegisteredAddressController(
       frontendAppConfig,
       messagesApi,

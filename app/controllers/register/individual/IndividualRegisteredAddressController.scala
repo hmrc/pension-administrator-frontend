@@ -21,18 +21,17 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import javax.inject.Inject
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
-import play.api.mvc.Results._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{Navigator, UserAnswers}
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
@@ -75,20 +74,18 @@ class IndividualRegisteredAddressController @Inject()(
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (IndividualDetailsId and IndividualDateOfBirthId).retrieve.right.map {
-        case individual ~ dob =>
+      IndividualDetailsId.retrieve.right.map {
+        case individual =>
           form.bindFromRequest().fold(
             (formWithError: Form[_]) => {
               val view = createView(appConfig, formWithError, addressViewModel(individual.fullName))
               Future.successful(BadRequest(view()))
             },
-            address => {
-              for {
-                cacheMap <- dataCacheConnector.save(request.externalId, IndividualAddressId, address.toTolerantAddress)
-              } yield {
-                Redirect(navigator.nextPage(IndividualAddressId, NormalMode, UserAnswers(cacheMap)))
+            address =>
+              dataCacheConnector.save(request.externalId, IndividualAddressId, address.toTolerantAddress).map {
+                cacheMap =>
+                  Redirect(navigator.nextPage(IndividualAddressId, NormalMode, UserAnswers(cacheMap)))
               }
-            }
           )
       }
   }
