@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId}
+import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId, CompanyContactAddressId}
 import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
@@ -42,7 +42,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     Some("NE11NE"), Some("GB")
   )
 
-  val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyAddressId.toString -> address)))
+  val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyContactAddressId.toString -> address.toAddress)))
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new CompanyAddressYearsController(
@@ -69,7 +69,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        CompanyAddressId.toString -> address,
+        CompanyContactAddressId.toString -> address.toAddress,
         CompanyAddressYearsId.toString -> JsString(AddressYears.values.head.toString)
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
