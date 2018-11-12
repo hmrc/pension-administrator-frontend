@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector, RegistrationConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
@@ -234,6 +235,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
 
   val form: Form[Boolean] = formProvider()
 
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
@@ -259,7 +262,10 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
       }
     }
   }
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
+  private def controller(
+    dataRetrievalAction: DataRetrievalAction = getEmptyData,
+    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+  ) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
       messagesApi,
@@ -269,10 +275,11 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
-      formProvider
+      formProvider,
+      countryOptions
     )
 
   private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
-    confirmCompanyDetails(frontendAppConfig, form, address, companyName)(fakeRequest, messages).toString
+    confirmCompanyDetails(frontendAppConfig, form, address, companyName, countryOptions)(fakeRequest, messages).toString
 
 }

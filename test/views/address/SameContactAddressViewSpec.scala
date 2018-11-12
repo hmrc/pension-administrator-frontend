@@ -78,8 +78,8 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
       assertRenderedByIdWithText(doc, "address-value-1", testAddress.addressLine2.value)
       assertRenderedByIdWithText(doc, "address-value-2", testAddress.addressLine3.value)
       assertRenderedByIdWithText(doc, "address-value-3", testAddress.addressLine4.value)
-      assertRenderedByIdWithText(doc, "address-value-4", testCountry)
-      assertRenderedByIdWithText(doc, "address-value-5", testAddress.postcode.value)
+      assertRenderedByIdWithText(doc, "address-value-4", testAddress.postcode.value)
+      assertRenderedByIdWithText(doc, "address-value-5", testCountry)
     }
   }
 

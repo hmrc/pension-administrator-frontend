@@ -20,6 +20,8 @@ import controllers.register.partnership.routes
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import models.TolerantAddress
 import play.api.data.Form
+import play.twirl.api.HtmlFormat
+import utils.countryOptions.CountryOptions
 import views.behaviours.{AddressBehaviours, ViewBehaviours, YesNoViewBehaviours}
 import views.html.register.partnership.confirmPartnershipDetails
 
@@ -40,19 +42,29 @@ class ConfirmPartnershipDetailsViewSpec extends ViewBehaviours with AddressBehav
 
   val form: Form[Boolean] = formProvider()
 
-  def createView(address: TolerantAddress = testAddress) =
-    () => confirmPartnershipDetails(frontendAppConfig, form, "Partnership", address)(fakeRequest, messages)
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  def createViewUsingForm = (form: Form[_]) => confirmPartnershipDetails(frontendAppConfig, form, "", testAddress)(fakeRequest, messages)
+  def createView(address: TolerantAddress = testAddress): () => HtmlFormat.Appendable =
+    () => confirmPartnershipDetails(frontendAppConfig, form, "Partnership", address, countryOptions)(fakeRequest, messages)
+
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    confirmPartnershipDetails(
+      frontendAppConfig,
+      form,
+      "",
+      testAddress,
+      countryOptions
+    )(fakeRequest, messages)
 
   "ConfirmPartnershipDetails view" must {
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithAddress((address) => createView(address)(), "partnershipAddress")
+    behave like pageWithAddress(address => createView(address)(), "partnershipAddress")
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.ConfirmPartnershipDetailsController.onSubmit.url, s"$messageKeyPrefix.title")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.ConfirmPartnershipDetailsController.onSubmit().url, s"$messageKeyPrefix.title")
   }
+
 }

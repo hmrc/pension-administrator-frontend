@@ -77,9 +77,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(
           "cya.label.individual.contact.address",
           Seq(
-            s"${address.addressLine1},",
-            s"${address.addressLine2},",
-            s"${address.postcode.value},",
+            address.addressLine1,
+            address.addressLine2,
+            address.postcode.value,
             address.country
           ))
         val retrievalAction = dataRetrievalAction(
@@ -115,9 +115,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(
           "individualPreviousAddress.checkYourAnswersLabel",
           Seq(
-            s"${address.addressLine1},",
-            s"${address.addressLine2},",
-            s"${address.postcode.value},",
+            address.addressLine1,
+            address.addressLine2,
+            address.postcode.value,
             address.country
           ),
           changeUrl = Some(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)

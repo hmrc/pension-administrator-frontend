@@ -76,8 +76,8 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
       assertRenderedByIdWithText(doc, "address-value-1", address.addressLine2.value)
       assertRenderedByIdWithText(doc, "address-value-2", address.addressLine3.value)
       assertRenderedByIdWithText(doc, "address-value-3", address.addressLine4.value)
-      assertRenderedByIdWithText(doc, "address-value-4", countryName)
-      assertRenderedByIdWithText(doc, "address-value-5", address.postcode.value)
+      assertRenderedByIdWithText(doc, "address-value-4", address.postcode.value)
+      assertRenderedByIdWithText(doc, "address-value-5", countryName)
     }
 
   }

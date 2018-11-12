@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, RegistrationConnector}
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
@@ -35,6 +35,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Partnership
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
 
@@ -49,7 +50,8 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      registrationConnector: RegistrationConnector,
-                                                     formProvider: ConfirmPartnershipDetailsFormProvider
+                                                     formProvider: ConfirmPartnershipDetailsFormProvider,
+                                                     countryOptions: CountryOptions
                                                    ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -59,7 +61,7 @@ class ConfirmPartnershipDetailsController @Inject()(
       getPartnershipDetails { case (_, registration) =>
         dataCacheConnector.remove(request.externalId, ConfirmPartnershipDetailsId).flatMap(_ =>
           dataCacheConnector.remove(request.externalId, PartnershipRegisteredAddressId).map(_ =>
-            Ok(confirmPartnershipDetails(appConfig, form, registration.response.organisation.organisationName, registration.response.address))))
+            Ok(confirmPartnershipDetails(appConfig, form, registration.response.organisation.organisationName, registration.response.address, countryOptions))))
       }
   }
 
@@ -72,7 +74,8 @@ class ConfirmPartnershipDetailsController @Inject()(
               appConfig,
               formWithErrors,
               registration.response.organisation.organisationName,
-              registration.response.address
+              registration.response.address,
+              countryOptions
             ))),
           {
             case true =>

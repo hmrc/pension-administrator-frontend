@@ -27,6 +27,7 @@ import play.api.libs.json.{JsString, _}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
+import utils.countryOptions.CountryOptions
 import views.html.register.company.companyAddressYears
 
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
@@ -35,6 +36,8 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
   val formProvider = new AddressYearsFormProvider()
   val form = formProvider("companyAddressYears.error.required")
+
+  lazy val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
   val address = TolerantAddress(
     Some("add1"), Some("add2"),
@@ -53,10 +56,18 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      countryOptions
     )
 
-  def viewAsString(form: Form[_] = form): String = companyAddressYears(frontendAppConfig, address, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String =
+    companyAddressYears(
+      frontendAppConfig,
+      address,
+      form,
+      NormalMode,
+      countryOptions
+    )(fakeRequest, messages).toString
 
   "CompanyAddressYears Controller" must {
 
