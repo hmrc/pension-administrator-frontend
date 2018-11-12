@@ -51,8 +51,6 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
   "check_your_answers view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithSecondaryHeader(createView, secondaryHeader)
-
     behave like pageWithSubmitButton(createView)
 
     behave like checkYourAnswersPage(createViewWithData)
