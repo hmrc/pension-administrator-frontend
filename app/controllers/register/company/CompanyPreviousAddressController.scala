@@ -52,7 +52,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
     countryOptions.options,
     Message("companyPreviousAddress.title"),
     Message("companyPreviousAddress.heading"),
-    Some(Message("site.secondaryHeader"))
+    None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

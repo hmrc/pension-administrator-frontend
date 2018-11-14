@@ -75,7 +75,7 @@ object PartnershipPayeControllerSpec extends ControllerSpecBase {
     title = Message("partnershipPaye.title"),
     heading = Message("partnershipPaye.heading"),
     hint = Some("common.paye.hint"),
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   val formProvider = new PayeFormProvider()

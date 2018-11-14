@@ -42,7 +42,7 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
     title = Message("contactDetails.company.title"),
     heading = Message("contactDetails.company.heading"),
     body = Some(Message("contactDetails.body")),
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

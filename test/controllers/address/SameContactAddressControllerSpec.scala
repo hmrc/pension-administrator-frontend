@@ -92,7 +92,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
-    secondaryHeader = Some("secondaryHeader"),
+    secondaryHeader = None,
     hint = Some("hint"),
     address = testAddress(line2)
   )

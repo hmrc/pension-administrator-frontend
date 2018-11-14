@@ -51,7 +51,6 @@ class IndividualContactAddressController @Inject()(
   private[controllers] val title: Message = "common.contactAddress.title"
   private[controllers] val heading: Message = "common.contactAddress.heading"
   private[controllers] val hint: Message = "common.contactAddress.lede"
-  private[controllers] val secondaryHeader: Message = "common.individual.secondary.heading"
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
@@ -61,7 +60,7 @@ class IndividualContactAddressController @Inject()(
     title = Message(title),
     heading = Message(heading),
     hint = Some(Message(hint)),
-    secondaryHeader = Some(secondaryHeader)
+    secondaryHeader = None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

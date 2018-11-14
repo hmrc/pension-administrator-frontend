@@ -46,7 +46,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     entities = entities,
     maxLimit = maxPartners,
     entityType = entityType,
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   private def createView(entities: Seq[Person] = Nil)

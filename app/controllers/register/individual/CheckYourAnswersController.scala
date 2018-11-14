@@ -66,7 +66,7 @@ class CheckYourAnswersController @Inject()(
         ).flatten
       )
       val sections = Seq(section)
-      Ok(check_your_answers(appConfig, sections, Some("site.secondaryHeader"), postUrl))
+      Ok(check_your_answers(appConfig, sections, None, postUrl))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

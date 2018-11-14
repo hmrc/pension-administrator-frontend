@@ -49,7 +49,6 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "individual.same.contact.address.heading"
   private[controllers] val hint: Message = "individual.same.contact.address.hint"
-  private[controllers] val secondaryHeader: Message = "site.secondaryHeader"
 
   protected val form: Form[Boolean] = formProvider()
 
@@ -63,7 +62,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
               title = Message(title),
               heading = Message(heading),
               hint = Some(Message(hint)),
-              secondaryHeader = Some(secondaryHeader),
+              secondaryHeader = None,
               address = address
             )
         }
