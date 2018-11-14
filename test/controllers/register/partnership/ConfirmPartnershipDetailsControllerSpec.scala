@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector, RegistrationConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
 
@@ -234,6 +235,8 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   val form: Form[Boolean] = formProvider()
 
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
@@ -260,7 +263,10 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     }
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
+  private def controller(
+    dataRetrievalAction: DataRetrievalAction = getEmptyData,
+    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+  ) =
     new ConfirmPartnershipDetailsController(
       frontendAppConfig,
       messagesApi,
@@ -270,10 +276,11 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
-      formProvider
+      formProvider,
+      countryOptions
     )
 
   private def viewAsString(partnershipName: String = partnershipDetails.companyName, address: TolerantAddress = testBusinessPartnershipAddress): String =
-    confirmPartnershipDetails(frontendAppConfig, form, partnershipName, address)(fakeRequest, messages).toString
+    confirmPartnershipDetails(frontendAppConfig, form, partnershipName, address, countryOptions)(fakeRequest, messages).toString
 
 }

@@ -99,9 +99,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           )
           val rows = Seq(answerRow("companyAddress.checkYourAnswersLabel",
             Seq(
-              s"${address.addressLine1.value},",
-              s"${address.addressLine2.value},",
-              s"${address.postcode.value},",
+              address.addressLine1.value,
+              address.addressLine2.value,
+              address.postcode.value,
               address.country.value
             )))
 
@@ -133,9 +133,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           val rows = Seq(answerRow(
             "cya.label.address",
             Seq(
-              s"${address.addressLine1},",
-              s"${address.addressLine2},",
-              s"${address.postcode.value},",
+              address.addressLine1,
+              address.addressLine2,
+              address.postcode.value,
               address.country
             ),
             false,
@@ -179,9 +179,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           val rows = Seq(answerRow(
             "common.previousAddress.checkyouranswers",
             Seq(
-              s"${address.addressLine1},",
-              s"${address.addressLine2},",
-              s"${address.postcode.value},",
+              address.addressLine1,
+              address.addressLine2,
+              address.postcode.value,
               address.country
             ),
             false,

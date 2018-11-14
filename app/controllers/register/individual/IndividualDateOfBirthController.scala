@@ -19,30 +19,35 @@ package controllers.register.individual
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
+import controllers.Retrievals
 import forms.register.individual.IndividualDateOfBirthFormProvider
-import identifiers.register.individual.IndividualDateOfBirthId
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
+import identifiers.register.AreYouInUKId
 import javax.inject.Inject
 import models.Mode
+import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import services.RegistrationService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
+import utils.annotations.Individual
 import views.html.register.individual.individualDateOfBirth
 
 import scala.concurrent.Future
 
 class IndividualDateOfBirthController @Inject()(
-                                                 appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
-                                                 dataCacheConnector: UserAnswersCacheConnector,
-                                                 @Individual navigator: Navigator,
-                                                 authenticate: AuthAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 formProvider: IndividualDateOfBirthFormProvider
-                                               ) extends FrontendController with I18nSupport {
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: UserAnswersCacheConnector,
+    @Individual navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: IndividualDateOfBirthFormProvider,
+    registrationService: RegistrationService
+) extends FrontendController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
@@ -60,9 +65,28 @@ class IndividualDateOfBirthController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(individualDateOfBirth(appConfig, formWithErrors, mode))),
-        value =>
-          dataCacheConnector.save(request.externalId, IndividualDateOfBirthId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(IndividualDateOfBirthId, mode, UserAnswers(cacheMap))))
+        value => {
+          val registrationUnit = if(appConfig.nonUkJourneys) {
+            (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+              case false ~ individual ~ address =>
+                registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress,
+                  new LocalDate(value.getYear, value.getMonthValue, value.getDayOfMonth)).map(_ => ())
+              case _ =>
+                Future.successful(())
+            }
+          } else {
+            Right(Future.successful(()))
+          }
+
+          registrationUnit.right.map { _ =>
+            dataCacheConnector.save(request.externalId, IndividualDateOfBirthId, value).map {
+              cacheMap =>
+                Redirect(navigator.nextPage(IndividualDateOfBirthId, mode, UserAnswers(cacheMap)))
+            }
+          }
+        }
+
+
       )
   }
 }

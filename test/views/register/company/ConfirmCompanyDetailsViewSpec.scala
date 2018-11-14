@@ -19,6 +19,7 @@ package views.register.company
 import forms.register.company.CompanyAddressFormProvider
 import models.TolerantAddress
 import play.api.data.Form
+import utils.countryOptions.CountryOptions
 import views.behaviours.{AddressBehaviours, ViewBehaviours, YesNoViewBehaviours}
 import views.html.register.company.confirmCompanyDetails
 
@@ -39,12 +40,15 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
   val form: Form[Boolean] = formProvider()
 
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
   private def createView(address: TolerantAddress = testAddress) =
     () => confirmCompanyDetails(
       frontendAppConfig,
       form,
       address,
-      "MyCo"
+      "MyCo",
+      countryOptions
     )(fakeRequest, messages)
 
   private def createViewUsingForm =
@@ -52,7 +56,8 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
       frontendAppConfig,
       form,
       testAddress,
-      "MyCo"
+      "MyCo",
+      countryOptions
     )(fakeRequest, messages)
 
   "CompanyAddress view" must {
@@ -60,7 +65,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
     behave like pageWithBackLink(createView())
 
-    behave like pageWithAddress((address) => createView(address)(), "companyAddress")
+    behave like pageWithAddress(address => createView(address)(), "companyAddress")
 
     behave like pageWithSubmitButton(createView())
 

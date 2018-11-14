@@ -25,6 +25,8 @@ trait AddressBehaviours {
 
   def pageWithAddress(createView: TolerantAddress => HtmlFormat.Appendable, fieldName: String): Unit = {
 
+    val countryName = "United Kingdom"
+
     "display an address correctly" when {
       "rendering a full address" in {
         val address = TolerantAddress(
@@ -33,16 +35,16 @@ trait AddressBehaviours {
           Some("Some Village"),
           Some("Some Town"),
           Some("ZZ1 1ZZ"),
-          Some("UK")
+          Some("GB")
         )
 
         val doc = asDocument(createView(address))
-        assertRenderedByIdWithText(doc, s"$fieldName-addressLine1", address.addressLine1.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-addressLine2", address.addressLine2.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-addressLine3", address.addressLine3.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-addressLine4", address.addressLine4.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-postcode", address.postcode.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-country", address.country.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-addressLine1", address.addressLine1.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-addressLine2", address.addressLine2.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-addressLine3", address.addressLine3.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-addressLine4", address.addressLine4.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-postcode", address.postcode.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-country", countryName)
       }
 
       "rendering a minimal address" in {
@@ -52,13 +54,13 @@ trait AddressBehaviours {
           None,
           None,
           None,
-          Some("UK")
+          Some("GB")
         )
 
         val doc = asDocument(createView(address))
-        assertRenderedByIdWithText(doc, s"$fieldName-addressLine1", address.addressLine1.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-addressLine2", address.addressLine2.value + ",")
-        assertRenderedByIdWithText(doc, s"$fieldName-country", address.country.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-addressLine1", address.addressLine1.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-addressLine2", address.addressLine2.value)
+        assertRenderedByIdWithText(doc, s"$fieldName-country", countryName)
 
         assertNotRenderedById(doc, s"$fieldName-addressLine3")
         assertNotRenderedById(doc, s"$fieldName-addressLine4")

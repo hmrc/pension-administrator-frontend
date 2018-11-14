@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, RegistrationConnector}
+import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
@@ -35,6 +35,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
+import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
@@ -48,7 +49,8 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 registrationConnector: RegistrationConnector,
-                                                formProvider: CompanyAddressFormProvider
+                                                formProvider: CompanyAddressFormProvider,
+                                                countryOptions: CountryOptions
                                                ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -57,7 +59,17 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       getCompanyDetails(mode) { case (_, registration) =>
         dataCacheConnector.remove(request.externalId, ConfirmCompanyAddressId)
-        Future.successful(Ok(confirmCompanyDetails(appConfig, form, registration.response.address, registration.response.organisation.organisationName)))
+        Future.successful(
+          Ok(
+            confirmCompanyDetails(
+              appConfig,
+              form,
+              registration.response.address,
+              registration.response.organisation.organisationName,
+              countryOptions
+            )
+          )
+        )
       }
   }
 
@@ -72,7 +84,8 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                   appConfig,
                   formWithErrors,
                   registration.response.address,
-                  registration.response.organisation.organisationName
+                  registration.response.organisation.organisationName,
+                  countryOptions
                 )
               )
             ),

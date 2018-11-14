@@ -18,20 +18,29 @@ package controllers.register.individual
 
 import java.time.LocalDate
 
+import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
-import identifiers.register.individual.IndividualDateOfBirthId
-import models.NormalMode
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
+import identifiers.register.AreYouInUKId
+import models.{Address, NormalMode, RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, TolerantIndividual}
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import services.RegistrationService
 import utils.{DateHelper, FakeNavigator}
 import views.html.register.individual.individualDateOfBirth
 
-class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
+
+class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   import IndividualDateOfBirthControllerSpec._
 
@@ -53,16 +62,44 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted for UK and nonUK journeys are enabled" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("dateOfBirth.day", "9"),
         ("dateOfBirth.month", "6"),
         ("dateOfBirth.year", "1862"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(
+        dataRetrievalAction = getRequiredDataForRegistration(isUk = true), nonUk = true).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to the next page when valid data is submitted for UK and nonUK journeys are not enabled" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("dateOfBirth.day", "9"),
+        ("dateOfBirth.month", "6"),
+        ("dateOfBirth.year", "1862"))
+
+      val result = controller(dataRetrievalAction = getEmptyData, nonUk = false).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "call the registration and redirect to the next page when valid data is submitted for nonUK" in {
+      when(registrationService.registerWithNoIdIndividual(
+        any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(registrationInfo))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("dateOfBirth.day", "9"),
+        ("dateOfBirth.month", "6"),
+        ("dateOfBirth.year", "1862"))
+
+      val result = controller(dataRetrievalAction = getRequiredDataForRegistration(), nonUk = true).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      verify(registrationService, atLeastOnce()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -92,25 +129,53 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
   }
 }
 
-object IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
+object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new IndividualDateOfBirthFormProvider()
   private val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualDateOfBirthController(frontendAppConfig,
+  val registrationService = mock[RegistrationService]
+
+  def getRequiredDataForRegistration(isUk : Boolean = false): FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(
+      AreYouInUKId.toString -> isUk,
+      IndividualDetailsId.toString ->
+          TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName")),
+      IndividualAddressId.toString ->
+          Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress
+    )))
+
+  private def appConfig(nonUk: Boolean = false) : FrontendAppConfig = new GuiceApplicationBuilder().configure(
+    "features.non-uk-journeys" -> nonUk
+  ).build().injector.instanceOf[FrontendAppConfig]
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
+      nonUk: Boolean = false) =
+    new IndividualDateOfBirthController(appConfig(nonUk),
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      registrationService
     )
 
   def viewAsString(form: Form[_] = form): String = individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   private val testAnswer = LocalDate.now()
+
+  val sapNumber = "test-sap-number"
+
+  val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.Individual,
+    sapNumber,
+    noIdentifier = false,
+    RegistrationCustomerType.NonUK,
+    None,
+    None
+  )
 }

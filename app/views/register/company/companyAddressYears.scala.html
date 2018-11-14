@@ -19,8 +19,9 @@
 @import controllers.register.company.routes._
 @import models.Mode
 @import models.AddressYears
+@import utils.countryOptions.CountryOptions
 
-@(appConfig: FrontendAppConfig, address: TolerantAddress, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, address: TolerantAddress, form: Form[_], mode: Mode, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("companyAddressYears.title"),
@@ -35,7 +36,7 @@
 
         @components.heading(messages("companyAddressYears.heading"), secondaryHeaderKey = Some(messages("site.secondaryHeader")))
 
-        @components.tolerant_address("companyAddress", address)
+        @components.tolerant_address("companyAddress", address, countryOptions)
 
         @components.input_radio(
             field = form("value"),
