@@ -443,7 +443,6 @@ declaration.invalid = You need to agree to all the declarations before you can c
 
 adviserDetails.title = Provide details of your pension adviser
 adviserDetails.heading = Provide details of your pension adviser
-adviserDetails.secondary.heading = Pension adviser
 adviserDetails.name = Name
 adviserDetails.email = Email address
 adviserDetails.phone = Phone Number
