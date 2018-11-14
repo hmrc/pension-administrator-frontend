@@ -26,7 +26,7 @@ import views.html.register.duplicateRegistration
 
 class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
 
-  private val companyName = "Bla ltd"
+  private val companyName = "test company name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction,
