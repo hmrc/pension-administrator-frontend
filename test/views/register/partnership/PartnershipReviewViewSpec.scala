@@ -34,7 +34,6 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
 
   "PartnershipReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithSecondaryHeader(createView, messages("common.individual.secondary.heading"))
     behave like pageWithBackLink(createView)
   }
 

@@ -39,7 +39,6 @@ class PartnerNinoViewSpec extends ViewBehaviours {
 
   "PartnerNino view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithSecondaryHeader(createView, partnerName)
     behave like pageWithBackLink(createView)
   }
 
