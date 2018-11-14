@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(companyName: String, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("duplicateRegistration.title"),
@@ -25,5 +25,5 @@
 
     @components.heading(messages("duplicateRegistration.heading"))
 
-    <p>@messages("duplicateRegistration.body")</p>
+    <p>@messages("duplicateRegistration.body", companyName)</p>
 }

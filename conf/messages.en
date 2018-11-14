@@ -481,9 +481,9 @@ confirmation.whatYouNeedToKnow.newPSA.detail = You can now {0}. As a Pension Sch
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
 confirmation.email = You have been sent a confirmation email.
 
-duplicateRegistration.title = You cannot register as a Pension Scheme Administrator using these details.
-duplicateRegistration.heading = You cannot register as a Pension Scheme Administrator using these details.
-duplicateRegistration.body = Someone from your organisation has already registered as a Pension Scheme Administrator.
+duplicateRegistration.title =  You cannot register as a scheme administrator using these details.
+duplicateRegistration.heading =  You cannot register as a scheme administrator using these details.
+duplicateRegistration.body = {0} has already been registered as a scheme administrator.
 
 individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = Your date of birth
