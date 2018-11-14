@@ -58,6 +58,6 @@ class ContactDetailsController @Inject()(
     title = Message("contactDetails.company.title"),
     heading = Message("contactDetails.company.heading"),
     body = Some(Message("contactDetails.body")),
-    subHeading = Some("site.secondaryHeader")
+    subHeading = None
   )
 }

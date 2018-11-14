@@ -110,7 +110,6 @@ common.previousAddress.lede = This can be a residential or company address.
 common.previousAddress.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 common.previousAddress.enterPostcode.link = enter the address manually
 common.address.enterPostcode.formLabel = Postcode
-common.individual.secondary.heading = Register as a new pension scheme administrator
 common.manual.address.title = Address
 common.manual.address.heading = Address
 common.manual.address.checkyouranswers = Address
