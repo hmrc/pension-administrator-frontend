@@ -19,20 +19,22 @@
 
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
-    @openLink = { <a href="@appConfig.reportAProblemNonJSUrl"> }
-
-    @closeLink = { </a> }
-
 @main_template(
     title = messages("submissionInvalid.title"),
     appConfig = appConfig,
     bodyClasses = None
 ) {
 
-    <h1 class="heading-xlarge">@messages("submissionInvalid.heading")</h1>
+    @components.heading(messages("submissionInvalid.heading"))
 
     <p>@messages("submissionInvalid.body1")</p>
 
-    <p>@Html(messages("submissionInvalid.body2", openLink, closeLink))</p>
+    <p>@Html(messages("submissionInvalid.body2"))</p>
+
+    @components.button_link(
+    "submissionInvalid.exit",
+     appConfig.govUkUrl,
+    "go-to-gov-uk"
+    )
 
 }

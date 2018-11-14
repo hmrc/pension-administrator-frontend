@@ -489,9 +489,10 @@ individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = Your date of birth
 
 submissionInvalid.title = There has been a problem sending your details
-submissionInvalid.heading = There has been a problem sending your details
-submissionInvalid.body1 = Your details could not be submitted. None of your data has been lost.
-submissionInvalid.body2 = You should {0} get help with this page {1} to let us know that you are experiencing this problem. We will contact you using the contact details we have for you.
+submissionInvalid.heading = Sorry, the service is unavailable
+submissionInvalid.body1 = We saved your answers. They will be available for 28 days.
+submissionInvalid.body2 = We will use your contact details to contact you when the service is available again.
+submissionInvalid.exit = Exit to Gov.UK
 
 individual.same.contact.address.title = Is this your contact address?
 individual.same.contact.address.heading = Is this your contact address?
