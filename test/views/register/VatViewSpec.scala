@@ -50,8 +50,6 @@ class VatViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
   }
 
 

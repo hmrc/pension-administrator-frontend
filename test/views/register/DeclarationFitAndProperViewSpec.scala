@@ -38,8 +38,6 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     "show an error summary when rendered with an error" in {
       val doc = asDocument(createViewUsingForm(form.withError(error)))
       assertRenderedById(doc, "error-summary-heading")

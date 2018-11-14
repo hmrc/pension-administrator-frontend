@@ -41,8 +41,6 @@ class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     "contain radio buttons for the value" in {
       val doc = asDocument(createViewUsingForm(form))
       for (option <- DeclarationWorkingKnowledge.options) {
