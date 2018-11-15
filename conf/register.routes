@@ -27,7 +27,7 @@ POST       /confirmation                            controllers.register.Confirm
 
 GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad()
 
-GET        /submission-invalid                      controllers.register.SubmissionInvalidController.onPageLoad()
+GET        /unable-to-send-details                  controllers.register.SubmissionInvalidController.onPageLoad()
 
 GET        /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
 POST       /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)

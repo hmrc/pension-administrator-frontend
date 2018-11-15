@@ -26,6 +26,9 @@ class SubmissionInvalidViewSpec extends ViewBehaviours {
   def createView = () => submissionInvalid(frontendAppConfig)(fakeRequest, messages)
 
   "SubmissionInvalid view" must {
-    behave like normalPage(createView, messageKeyPrefix, "body1")
+    behave like normalPage(createView, messageKeyPrefix, "body1", "body2")
+
+    behave like pageWithContinueButton(createView, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }
+
 }
