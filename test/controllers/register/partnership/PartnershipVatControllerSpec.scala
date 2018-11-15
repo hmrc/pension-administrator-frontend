@@ -76,7 +76,7 @@ object PartnershipVatControllerSpec extends PartnershipVatControllerSpec {
     Message("partnershipVat.title"),
     Message("partnershipVat.heading"),
     Message("common.vat.hint"),
-    Some(Message("site.secondaryHeader"))
+    None
   )
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)

@@ -34,7 +34,7 @@ class PayeViewSpec extends ViewBehaviours {
     title = Message("partnershipPaye.title"),
     heading = Message("partnershipPaye.heading"),
     hint = Some("common.paye.hint"),
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   private def createView = () => paye(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
@@ -45,7 +45,6 @@ class PayeViewSpec extends ViewBehaviours {
 
   "Paye view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithSecondaryHeader(createView, Message("site.secondaryHeader"))
     behave like pageWithBackLink(createView)
   }
 

@@ -39,8 +39,6 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     behave like pageWithDateField(
       createViewUsingForm,
       "dateOfBirth",

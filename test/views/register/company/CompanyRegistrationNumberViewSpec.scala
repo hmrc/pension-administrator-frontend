@@ -37,8 +37,6 @@ class CompanyRegistrationNumberViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     behave like stringPage(
       createViewUsingForm,
       messageKeyPrefix,

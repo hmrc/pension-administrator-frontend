@@ -80,8 +80,6 @@ class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,

@@ -68,7 +68,7 @@ object PartnershipPreviousAddressPostCodeLookupController {
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
     Message("common.previousAddress.title"),
     Message("common.previousAddress.heading"),
-    Some(Message("site.secondaryHeader")),
+    None,
     Message("common.previousAddress.lede"),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),

@@ -35,7 +35,7 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
     postCall = Call("GET", "/"),
     title = Message("contactDetails.title"),
     heading = Message("contactDetails.heading"),
-    subHeading = Some(Message("site.secondaryHeader")),
+    subHeading = None,
     body = Some(Message("contactDetails.lede"))
   )
 

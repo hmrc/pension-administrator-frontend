@@ -40,7 +40,7 @@
 
             @components.error_summary(form.errors)
 
-            @components.heading(viewmodel.heading, secondaryHeaderKey = viewmodel.subHeading.map{components.hyphen(_).toString})
+            @components.heading(viewmodel.heading)
 
             @if(viewmodel.entities.isEmpty) {
                 @components.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))

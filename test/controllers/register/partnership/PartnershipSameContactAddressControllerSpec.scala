@@ -56,7 +56,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     title = Message("partnership.sameContactAddress.title"),
     heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipDetails.companyName),
     hint = None,
-    secondaryHeader = Some(Message("site.secondaryHeader")),
+    secondaryHeader = None,
     address = testAddress
   )
 

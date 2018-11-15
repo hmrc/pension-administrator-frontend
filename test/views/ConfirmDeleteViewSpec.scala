@@ -34,7 +34,7 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
     s"$messageKeyPrefix.title",
     s"$messageKeyPrefix.heading",
     Some("Name"),
-    Some("site.secondaryHeader")
+    None
   )
 
   def createView = () => confirmDelete(frontendAppConfig, viewModel)(fakeRequest, messages)
@@ -43,7 +43,5 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
     behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)
-
-    behave like pageWithSecondaryHeader(createView, messages(viewModel.secondaryHeader.get))
   }
 }

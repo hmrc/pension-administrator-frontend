@@ -64,7 +64,7 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     countryOptions.options,
     Message("companyPreviousAddress.title"),
     Message("companyPreviousAddress.heading"),
-    Some(Message("site.secondaryHeader"))
+    None
   )
 
   private def viewAsString(form: Form[_] = form) =

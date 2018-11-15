@@ -59,8 +59,6 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.IndividualDetailsCorrectController.onSubmit(NormalMode).url, s"$messageKeyPrefix.heading")
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     behave like pageWithSubmitButton(createView)
 
     "display the individual's name" in {

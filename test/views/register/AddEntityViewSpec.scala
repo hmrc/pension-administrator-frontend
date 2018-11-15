@@ -46,7 +46,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     entities = entities,
     maxLimit = maxPartners,
     entityType = entityType,
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   private def createView(entities: Seq[Person] = Nil)
@@ -62,8 +62,6 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     behave like normalPage(createView(), messageKeyPrefix)
 
     behave like pageWithBackLink(createView())
-
-    behave like pageWithSecondaryHeader(createView(), messages("site.secondaryHeader"))
 
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),

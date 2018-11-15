@@ -50,7 +50,7 @@ class PartnershipPayeController @Inject()(
       title = Message("partnershipPaye.title"),
       heading = Message("partnershipPaye.heading"),
       hint = Some("common.paye.hint"),
-      subHeading = Some(Message("site.secondaryHeader"))
+      subHeading = None
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
