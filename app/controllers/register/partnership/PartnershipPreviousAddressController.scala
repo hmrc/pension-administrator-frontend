@@ -57,7 +57,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
     title = Message("common.previousAddress.title"),
     heading = Message("common.previousAddress.heading"),
     hint = Some(Message("common.previousAddress.lede")),
-    secondaryHeader = Some("site.secondaryHeader")
+    secondaryHeader = None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

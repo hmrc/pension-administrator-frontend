@@ -53,7 +53,6 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
   }
 
   "CompanyAddressYears view" when {

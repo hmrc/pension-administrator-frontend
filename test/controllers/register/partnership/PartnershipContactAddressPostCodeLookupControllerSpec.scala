@@ -91,7 +91,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     Message("partnershipContactAddressPostCodeLookup.title"),
     Message("partnershipContactAddressPostCodeLookup.heading").withArgs(partnershipName),
-    Some(Message("site.secondaryHeader")),
+    None,
     Message("partnershipContactAddressPostCodeLookup.lede").withArgs(partnershipName),
     Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
     Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),

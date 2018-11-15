@@ -33,8 +33,7 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            headingKey=components.hyphen(messages(viewModel.heading)).toString,
-            secondaryHeaderKey = viewModel.subHeading.map{components.hyphen(_).toString}
+            headingKey=components.hyphen(messages(viewModel.heading)).toString
         )
 
         <p>

@@ -47,7 +47,7 @@ class PartnershipVatController @Inject()(
     title = Message("partnershipVat.title"),
     heading = Message("partnershipVat.heading"),
     hint = Message("common.vat.hint"),
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   private val form = formProvider()

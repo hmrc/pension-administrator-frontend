@@ -186,7 +186,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     entities = partners,
     maxLimit = maxPartners,
     entityType = Message("addPartners.entityType"),
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",

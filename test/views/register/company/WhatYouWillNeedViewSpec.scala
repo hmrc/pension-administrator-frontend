@@ -28,8 +28,6 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
   "WhatYouWillNeed view" must {
     behave like normalPage(createView, messageKeyPrefix, "body.text", "company.body.item1", "company.body.item2", "company.body.item3")
 
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
-
     behave like pageWithSubmitButton(createView)
   }
 

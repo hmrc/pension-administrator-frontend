@@ -49,7 +49,7 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     postCall = Call("GET", "www.example.com"),
     title = Message("individual.same.contact.address.title"),
     heading = Message("individual.same.contact.address.heading"),
-    secondaryHeader = Some(Message("site.secondaryHeader")),
+    secondaryHeader = None,
     hint = Some(Message("individual.same.contact.address.hint")),
     address = testAddress
   )
@@ -67,8 +67,6 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     behave like pageWithBackLink(createView)
 
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "www.example.com", s"$messageKeyPrefix.heading")
-
-    behave like pageWithSecondaryHeader(createView, messages("site.secondaryHeader"))
 
     behave like pageWithSubmitButton(createView)
 

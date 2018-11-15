@@ -166,7 +166,7 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading"),
-    secondaryHeader = Some("site.secondaryHeader"),
+    secondaryHeader = None,
     hint = Some(Message(s"$messagePrefix.lede"))
   )
 

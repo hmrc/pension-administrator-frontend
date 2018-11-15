@@ -73,7 +73,7 @@ class CheckYourAnswersController @Inject()(
       Ok(check_your_answers(
         appConfig,
         Seq(companyDetails, companyContactDetails, contactDetails),
-        Some(messagesApi("site.secondaryHeader")),
+        None,
         controllers.register.company.routes.CheckYourAnswersController.onSubmit()
       ))
   }

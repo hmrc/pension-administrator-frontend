@@ -51,7 +51,7 @@ class AddPartnerController @Inject()(
     entities = partners,
     maxLimit = appConfig.maxPartners,
     entityType = Message("addPartners.entityType"),
-    subHeading = Some(Message("site.secondaryHeader"))
+    subHeading = None
   )
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

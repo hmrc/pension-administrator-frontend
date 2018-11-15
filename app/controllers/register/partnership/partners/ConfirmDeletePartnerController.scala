@@ -46,7 +46,7 @@ class ConfirmDeletePartnerController @Inject()(
           Message("confirmDelete.partner.title"),
           "confirmDelete.partner.heading",
           Some(details.fullName),
-          Some("site.secondaryHeader")
+          None
         )
 
         get(viewModel, details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))

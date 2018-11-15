@@ -51,7 +51,6 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
   private[controllers] val title: Message = "common.previousAddress.title"
   private[controllers] val heading: Message = "common.previousAddress.heading"
   private[controllers] val hint: Message = "common.previousAddress.lede"
-  private[controllers] val secondaryHeader: Message = "common.individual.secondary.heading"
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
@@ -61,7 +60,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     title = Message(title),
     heading = Message(heading),
     hint = Some(Message(hint)),
-    secondaryHeader = Some(secondaryHeader)
+    secondaryHeader = None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

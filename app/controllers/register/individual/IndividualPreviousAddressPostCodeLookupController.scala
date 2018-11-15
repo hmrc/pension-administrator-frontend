@@ -67,7 +67,7 @@ object IndividualPreviousAddressPostCodeLookupController {
     routes.IndividualPreviousAddressController.onPageLoad(mode),
     Message("individualPreviousAddressPostCodeLookup.title"),
     Message("individualPreviousAddressPostCodeLookup.heading"),
-    Some(Message("site.secondaryHeader")),
+    None,
     Message("individualPreviousAddressPostCodeLookup.hint"),
     Message("individualPreviousAddressPostCodeLookup.enterPostcode"),
     Some(Message("individualPreviousAddressPostCodeLookup.enterPostcode.link")),

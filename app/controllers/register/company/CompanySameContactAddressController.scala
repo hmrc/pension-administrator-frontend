@@ -53,7 +53,6 @@ class CompanySameContactAddressController @Inject()(
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
   private[controllers] val hint: Message = "company.same.contact.address.hint"
-  private[controllers] val secondaryHeader: Message = "site.secondaryHeader"
 
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
@@ -65,7 +64,7 @@ class CompanySameContactAddressController @Inject()(
               title = Message(title),
               heading = Message(heading).withArgs(details.companyName),
               hint = Some(Message(hint).withArgs(details.companyName)),
-              secondaryHeader = Some(secondaryHeader),
+              secondaryHeader = None,
               address = address
             )
         }

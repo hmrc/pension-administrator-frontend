@@ -53,7 +53,7 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading"),
-    secondaryHeader = Some("common.individual.secondary.heading"),
+    secondaryHeader = None,
     hint = Some(Message(s"$messagePrefix.lede"))
   )
 

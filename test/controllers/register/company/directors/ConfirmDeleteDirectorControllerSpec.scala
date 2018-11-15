@@ -91,6 +91,6 @@ object ConfirmDeleteDirectorControllerSpec {
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
     Some(person.fullName),
-    Some("site.secondaryHeader")
+    None
   )
 }

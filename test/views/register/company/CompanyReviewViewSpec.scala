@@ -35,7 +35,6 @@ class CompanyReviewViewSpec extends ViewBehaviours {
 
   "CompanyReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithSecondaryHeader(createView, messages("common.individual.secondary.heading"))
     behave like pageWithBackLink(createView)
   }
 

@@ -92,7 +92,7 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
     routes.CompanyContactAddressController.onPageLoad(NormalMode),
     Message("companyContactAddressPostCodeLookup.title"),
     Message("companyContactAddressPostCodeLookup.heading").withArgs(companyName),
-    Some(Message("site.secondaryHeader")),
+    None,
     Message("companyContactAddressPostCodeLookup.lede").withArgs(companyName),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link")),

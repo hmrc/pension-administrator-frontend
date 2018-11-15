@@ -47,7 +47,7 @@ class ConfirmDeleteDirectorController @Inject()(
           Message("confirmDeleteDirector.title"),
           "confirmDeleteDirector.heading",
           Some(details.fullName),
-          Some("site.secondaryHeader")
+          None
         )
         get(vm, details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
       }

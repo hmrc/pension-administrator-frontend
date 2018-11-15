@@ -308,7 +308,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       check_your_answers(
         frontendAppConfig,
         sections,
-        Some(messages("site.secondaryHeader")),
+        None,
         call
       )(fakeRequest, messages).toString()
   }

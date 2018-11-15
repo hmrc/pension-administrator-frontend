@@ -76,7 +76,7 @@ class CheckYourAnswersController @Inject()(
       Ok(check_your_answers(
         appConfig,
         Seq(partnershipDetails, partnershipContactDetails, contactDetails),
-        Some(messagesApi("site.secondaryHeader")),
+        None,
         controllers.register.partnership.routes.CheckYourAnswersController.onSubmit()
       ))
   }
