@@ -18,22 +18,34 @@ package controllers.register
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.company.BusinessDetailsId
+import models.BusinessDetails
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import views.html.register.duplicateRegistration
 
 class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
 
+  private val companyName = "test company name"
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl)
 
-  def viewAsString() = duplicateRegistration(frontendAppConfig)(fakeRequest, messages).toString
+  private def viewAsString() = duplicateRegistration(companyName, frontendAppConfig)(fakeRequest, messages).toString
+
+  private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {
+    val data = Json.obj(fields: _*)
+    new FakeDataRetrievalAction(Some(data))
+  }
+
+  private val retrievalAction = dataRetrievalAction(
+    BusinessDetailsId.toString -> BusinessDetails(companyName, None)
+  )
 
   "DuplicateRegistration Controller" must {
-
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(fakeRequest)
-
+    "return OK and the correct view for a GET with the correct company name displayed" in {
+      val result = controller(retrievalAction).onPageLoad(fakeRequest)
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
