@@ -18,7 +18,7 @@ package controllers.actions
 
 import java.net.URLEncoder
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.routes
@@ -38,8 +38,8 @@ import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
-                              (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class FullAuthentication @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
+                                  (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -55,16 +55,7 @@ class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: F
           result => Future.successful(result),
           _ => {
             val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
-            if (affinityGroup == Individual && config.nonUkJourneys) {
-              areYouInUK(id).flatMap {
-                case Some(true) if !allowedIndividual(cl) =>
-                  Future.successful(Redirect(ivUpliftUrl))
-                case _ =>
-                  savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
-              }
-            } else {
-              savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
-            }
+            successRedirect(affinityGroup, id, cl, enrolments, authRequest, block)
           }
         )
       case _ =>
@@ -73,8 +64,22 @@ class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: F
     } recover handleFailure
   }
 
+  def successRedirect[A](affinityGroup: AffinityGroup, id: String, cl: ConfidenceLevel,
+                              enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
+                                (implicit hc: HeaderCarrier) =
+    if (affinityGroup == Individual && config.nonUkJourneys) {
+      areYouInUK(id).flatMap {
+        case Some(true) if !allowedIndividual(cl) =>
+          Future.successful(Redirect(ivUpliftUrl))
+        case _ =>
+          savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
+      }
+    } else {
+      savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
+    }
 
-  private def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, id: String, authRequest: AuthenticatedRequest[A],
+
+  protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, id: String, authRequest: AuthenticatedRequest[A],
                                                block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier) = {
     if (alreadyEnrolledInPODS(enrolments)) {
       userAnswersCacheConnector.save(id, UserPsaId, getPSAId(enrolments)).flatMap {
@@ -175,3 +180,16 @@ class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: F
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
 
+class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig,
+                                               userAnswersCacheConnector: UserAnswersCacheConnector)
+                                              (implicit ec: ExecutionContext) extends FullAuthentication(authConnector, config, userAnswersCacheConnector) with AuthorisedFunctions {
+
+
+  override def successRedirect[A](affinityGroup: AffinityGroup, id: String, cl: ConfidenceLevel,
+                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
+                                 (implicit hc: HeaderCarrier) =
+
+    savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
+}
+
+trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
