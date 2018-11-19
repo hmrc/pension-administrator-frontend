@@ -175,6 +175,3 @@ class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: F
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
 
-
-
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

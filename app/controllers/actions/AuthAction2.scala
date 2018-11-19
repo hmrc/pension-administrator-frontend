@@ -18,20 +18,20 @@ package controllers.actions
 
 import java.net.URLEncoder
 
-import com.google.inject.Inject
+import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.routes
 import identifiers.register.AreYouInUKId
-import models.{PSAUser, UserType}
+import identifiers.{PsaId => UserPsaId}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import identifiers.{PsaId => UserPsaId}
-import play.api.mvc.{Request, Result}
-import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import models.{PSAUser, UserType}
+import play.api.mvc.Results._
+import play.api.mvc._
+import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{Retrievals, ~}
+import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.UserAnswers
@@ -166,3 +166,5 @@ class AuthAction2 @Inject()(override val authConnector: AuthConnector, config: F
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
+
+trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

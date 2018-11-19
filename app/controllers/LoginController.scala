@@ -18,19 +18,19 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, AuthAction2}
+import controllers.actions.AuthAction
 import identifiers.IndexId
 import javax.inject.Inject
 import models.{NormalMode, UserType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations
+import utils.annotations.AuthActionPrimary
 
 class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
                                 dataCacheConnector: UserAnswersCacheConnector,
-                                @annotations.AuthAction2 authenticate: AuthAction) extends FrontendController with I18nSupport {
+                                @AuthActionPrimary authenticate: AuthAction) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>

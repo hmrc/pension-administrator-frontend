@@ -23,15 +23,15 @@ import forms.register.AreYouInUKFormProvider
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.MessagesApi
-import utils.{Navigator, annotations}
-import utils.annotations.Register
+import utils.Navigator
+import utils.annotations.{AuthActionPrimary, Register}
 import viewmodels.{AreYouInUKViewModel, Message}
 
 class BusinessTypeAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
                                                  val messagesApi: MessagesApi,
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
-                                                 @annotations.AuthAction2 override val authenticate: AuthAction,
+                                                 @AuthActionPrimary override val authenticate: AuthAction,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
                                                  override val formProvider: AreYouInUKFormProvider
