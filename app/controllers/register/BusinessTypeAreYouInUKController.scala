@@ -23,7 +23,7 @@ import forms.register.AreYouInUKFormProvider
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.MessagesApi
-import utils.Navigator
+import utils.{Navigator, annotations}
 import utils.annotations.Register
 import viewmodels.{AreYouInUKViewModel, Message}
 
@@ -31,7 +31,7 @@ class BusinessTypeAreYouInUKController @Inject()(override val appConfig: Fronten
                                                  val messagesApi: MessagesApi,
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
-                                                 override val authenticate: AuthAction,
+                                                 @annotations.AuthAction2 override val authenticate: AuthAction,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
                                                  override val formProvider: AreYouInUKFormProvider

@@ -15,6 +15,7 @@
  */
 
 import com.google.inject.AbstractModule
+import controllers.actions.{AuthAction, AuthAction1}
 import utils.Navigator
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
@@ -23,6 +24,13 @@ import utils.navigators._
 class PODSModule extends AbstractModule {
 
   override def configure(): Unit = {
+
+    bind(classOf[AuthAction])
+      .annotatedWith(classOf[AuthAction2])
+      .to(classOf[AuthAction2])
+
+    bind(classOf[AuthAction])
+      .to(classOf[AuthAction1])
 
     bind(classOf[Navigator])
       .annotatedWith(classOf[Register])

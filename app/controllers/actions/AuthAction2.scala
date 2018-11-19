@@ -18,28 +18,28 @@ package controllers.actions
 
 import java.net.URLEncoder
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.routes
 import identifiers.register.AreYouInUKId
-import identifiers.{PsaId => UserPsaId}
+import models.{PSAUser, UserType}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
-import play.api.mvc.Results._
-import play.api.mvc._
-import uk.gov.hmrc.auth.core.AffinityGroup._
+import identifiers.{PsaId => UserPsaId}
+import play.api.mvc.{Request, Result}
+import play.api.mvc.Results.Redirect
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.retrieve.{Retrievals, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
-                              (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class AuthAction2 @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)
+                           (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -55,16 +55,8 @@ class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: F
           result => Future.successful(result),
           _ => {
             val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
-            if (affinityGroup == Individual && config.nonUkJourneys) {
-              areYouInUK(id).flatMap {
-                case Some(true) if !allowedIndividual(cl) =>
-                  Future.successful(Redirect(ivUpliftUrl))
-                case _ =>
-                  savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
-              }
-            } else {
-              savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
-            }
+            savePsaIdAndReturnAuthRequest(enrolments, id, authRequest, block)
+
           }
         )
       case _ =>
@@ -174,7 +166,3 @@ class AuthAction1 @Inject()(override val authConnector: AuthConnector, config: F
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
-
-
-
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
