@@ -25,7 +25,7 @@ import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.{RetryHelper, RetryHelperImpl}
+import utils.RetryHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
@@ -45,7 +45,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: Fronten
 
   override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
                     (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts))
+    retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts), config)
   }
 
   private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)

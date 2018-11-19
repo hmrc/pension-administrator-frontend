@@ -32,13 +32,13 @@ trait RetryHelper  {
 
   val as: ActorSystem = ActorSystem()
 
-  def retryOnFailure[T](f: () => Future[T])(implicit ec: ExecutionContext, config: FrontendAppConfig): Future[T] = {
-    retryWithBackOff(1, config.retryWaitMs, f)
+  def retryOnFailure[T](f: () => Future[T], config: FrontendAppConfig)(implicit ec: ExecutionContext): Future[T] = {
+    retryWithBackOff(1, config.retryWaitMs, f, config)
   }
 
   private def retryWithBackOff[T] (currentAttempt: Int,
                                    currentWait: Int,
-                                   f: () => Future[T])(implicit ec: ExecutionContext, config: FrontendAppConfig): Future[T] = {
+                                   f: () => Future[T], config: FrontendAppConfig)(implicit ec: ExecutionContext): Future[T] = {
 
     f.apply().recoverWith {
       case e: HttpException =>
@@ -46,7 +46,7 @@ trait RetryHelper  {
           val wait = Math.ceil(currentWait * config.retryWaitFactor).toInt
           Logger.warn(s"Failure, retrying after $wait ms")
           after(wait.milliseconds, as.scheduler, ec, Future.successful(1)).flatMap { _ =>
-            retryWithBackOff(currentAttempt + 1, wait.toInt, f)
+            retryWithBackOff(currentAttempt + 1, wait.toInt, f, config)
           }
         } else {
           Future.failed(e)
