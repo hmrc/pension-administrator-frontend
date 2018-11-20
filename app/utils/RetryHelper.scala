@@ -22,7 +22,7 @@ import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import javax.inject._
 import play.api.Logger
-import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.http.Upstream5xxResponse
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,12 +39,11 @@ trait RetryHelper  {
   private def retryWithBackOff[T] (currentAttempt: Int,
                                    currentWait: Int,
                                    f: () => Future[T], config: FrontendAppConfig)(implicit ec: ExecutionContext): Future[T] = {
-
     f.apply().recoverWith {
-      case e: HttpException =>
-        if ( e.responseCode >= 500 && e.responseCode < 600 && currentAttempt < config.retryAttempts) {
+      case e: Upstream5xxResponse =>
+        if ( currentAttempt < config.retryAttempts) {
           val wait = Math.ceil(currentWait * config.retryWaitFactor).toInt
-          Logger.warn(s"Failure, retrying after $wait ms")
+          Logger.warn(s"Failure, retrying after $wait ms, attempt $currentAttempt")
           after(wait.milliseconds, as.scheduler, ec, Future.successful(1)).flatMap { _ =>
             retryWithBackOff(currentAttempt + 1, wait.toInt, f, config)
           }
