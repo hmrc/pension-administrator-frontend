@@ -25,7 +25,9 @@ import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.RetryHelper
 
+import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
@@ -38,19 +40,28 @@ trait TaxEnrolmentsConnector {
 }
 
 @Singleton
-class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends TaxEnrolmentsConnector {
+class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends TaxEnrolmentsConnector with RetryHelper{
 
   def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
-  def enrol(enrolmentKey: String, knownFacts: KnownFacts)
+  override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
+                    (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts), config)
+  } andThen {
+    logExceptions(knownFacts)
+  }
+
+  private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+
     http.PUT(url, knownFacts) flatMap {
-      case response if response.status equals NO_CONTENT => Future.successful(response)
-      case response => Future.failed(new HttpException(response.body, response.status))
-    } andThen {
-      logExceptions(knownFacts)
+      case response if response.status equals NO_CONTENT =>
+        Future.successful(response)
+      case response =>
+        Future.failed(new HttpException(response.body, response.status))
     }
   }
+
 
   private def logExceptions(knownFacts: KnownFacts): PartialFunction[Try[HttpResponse], Unit] = {
     case Failure(t: Throwable) =>
