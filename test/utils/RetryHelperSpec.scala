@@ -24,8 +24,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HttpException, Upstream5xxResponse}
 
@@ -38,19 +36,12 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
   private val INITIAL_WAIT:Int = 10
   private val WAIT_FACTOR:Float = 1.5F
 
-  override lazy val app = new GuiceApplicationBuilder()
-    .configure(Map(
-      "microservice.services.exponential-backoff.max-attempts" -> MAX_ATTEMPTS,
-      "microservice.services.exponential-backoff.initial-wait-ms" -> INITIAL_WAIT,
-      "microservice.services.exponential-backoff.wait-factor" -> WAIT_FACTOR ))
-    .bindings(bind[RetryHelper].to[RetryHelperObject])
-    .build()
-  val retryHelper = app.injector.instanceOf(classOf[RetryHelper])
+  val retryHelper = new RetryHelperClass()
   val TIMEOUT = 5
 
 
 
-  "BackOffHelper" must {
+  "RetryHelper" must {
 
     "return a successful Future" in {
       val successfulFunction = () => Future.successful("A successful future")
@@ -114,4 +105,4 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
   }
 }
 
-class RetryHelperObject extends RetryHelper
+class RetryHelperClass extends RetryHelper
