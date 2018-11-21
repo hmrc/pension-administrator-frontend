@@ -25,11 +25,12 @@ import models.{NormalMode, UserType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.AuthenticationWithLowConfidence
 
 class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
                                 dataCacheConnector: UserAnswersCacheConnector,
-                                authenticate: AuthAction) extends FrontendController with I18nSupport {
+                                @AuthenticationWithLowConfidence authenticate: AuthAction) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
