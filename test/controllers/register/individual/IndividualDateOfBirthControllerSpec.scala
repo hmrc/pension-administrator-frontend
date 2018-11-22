@@ -73,6 +73,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+      verify(registrationService, never()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
     }
 
     "redirect to the next page when valid data is submitted for UK and nonUK journeys are not enabled" in {

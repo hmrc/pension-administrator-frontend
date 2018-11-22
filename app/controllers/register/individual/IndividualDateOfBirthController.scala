@@ -25,10 +25,11 @@ import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBir
 import identifiers.register.AreYouInUKId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import services.RegistrationService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -65,28 +66,25 @@ class IndividualDateOfBirthController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(individualDateOfBirth(appConfig, formWithErrors, mode))),
-        value => {
-          val registrationUnit = if(appConfig.nonUkJourneys) {
+        value =>
+          if(appConfig.nonUkJourneys) {
             (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
               case false ~ individual ~ address =>
                 registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress,
-                  new LocalDate(value.getYear, value.getMonthValue, value.getDayOfMonth)).map(_ => ())
-              case _ =>
-                Future.successful(())
+                  new LocalDate(value.getYear, value.getMonthValue, value.getDayOfMonth)).flatMap{_ =>
+                  saveAndRedirect(mode, value)
+                }
+              case true ~ _ ~ _ =>
+                saveAndRedirect(mode, value)
             }
           } else {
-            Right(Future.successful(()))
+            saveAndRedirect(mode, value)
           }
-
-          registrationUnit.right.map { _ =>
-            dataCacheConnector.save(request.externalId, IndividualDateOfBirthId, value).map {
-              cacheMap =>
-                Redirect(navigator.nextPage(IndividualDateOfBirthId, mode, UserAnswers(cacheMap)))
-            }
-          }
-        }
-
-
       )
+  }
+
+  private def saveAndRedirect(mode: Mode, value: java.time.LocalDate)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    dataCacheConnector.save(request.externalId, IndividualDateOfBirthId, value).map(cacheMap =>
+      Redirect(navigator.nextPage(IndividualDateOfBirthId, mode, UserAnswers(cacheMap))))
   }
 }
