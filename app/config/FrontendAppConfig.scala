@@ -109,7 +109,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
 
   lazy val nonUkJourneys: Boolean = runModeConfiguration.getBoolean("features.non-uk-journeys").getOrElse(false)
-  lazy val isWorkPackageOneEnabled: Boolean = runModeConfiguration.getBoolean("features.work-package-one-enabled").getOrElse(false)
   lazy val retryAttempts: Int = runModeConfiguration.getInt("retry.max.attempts").getOrElse(1)
   lazy val retryWaitMs: Int = runModeConfiguration.getInt("retry.initial.wait.ms").getOrElse(1)
   lazy val retryWaitFactor: Double = runModeConfiguration.getDouble("retry.wait.factor").getOrElse(1)

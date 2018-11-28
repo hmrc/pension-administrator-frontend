@@ -118,51 +118,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
       }
 
-      "save the PSA Name and Email against the PSA Id" when {
-        "on a valid request for an Organisation" in {
-          val validData = Json.obj(
-            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = LimitedCompany),
-            BusinessDetailsId.toString -> businessDetails,
-            ContactDetailsId.toString -> contactDetails
-          )
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector, isWp1Enabled = false).onSubmit(validRequest)
-          status(result) mustBe SEE_OTHER
-          psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
-          psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
-        }
-
-        "on a valid request for an Individual" in {
-          val individualDetails = TolerantIndividual(Some("first"), None, Some("last"))
-          val validData = Json.obj(
-            RegistrationInfoId.toString -> registrationInfo.copy(legalStatus = Individual),
-            IndividualDetailsId.toString -> individualDetails,
-            IndividualContactDetailsId.toString -> contactDetails
-          )
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,  isWp1Enabled = false).onSubmit(validRequest)
-          status(result) mustBe SEE_OTHER
-          psaNameCacheConnector.verify(PsaNameId, individualDetails.fullName)
-          psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
-        }
-
-        "on a valid request for Partnership" in {
-          val validData = Json.obj(
-            RegistrationInfoId.toString -> registrationInfo,
-            PartnershipDetailsId.toString -> businessDetails,
-            PartnershipContactDetailsId.toString -> contactDetails
-          )
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector, isWp1Enabled = false).onSubmit(validRequest)
-          status(result) mustBe SEE_OTHER
-          psaNameCacheConnector.verify(PsaNameId, businessDetails.companyName)
-          psaNameCacheConnector.verify(PsaEmailId, contactDetails.email)
-        }
-      }
-
       "reject an invalid request and display errors" in {
         val formWithErrors = form.withError("agree", messages("declaration.invalid"))
         val result = controller().onSubmit(fakeRequest)
@@ -199,14 +154,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
-
-        "no PSA Name is found" in {
-          val data = Json.obj(RegistrationInfoId.toString -> registrationInfo)
-          val result = controller(new FakeDataRetrievalAction(Some(data)), isWp1Enabled = false).onSubmit(validRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
       }
 
       "set cancel link to What You Will Need page" when {
@@ -227,8 +174,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
 
       "save the answer and PSA Subscription response on a valid request" in {
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
-        val result = controller(fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
+        val result = controller().onSubmit(validRequest)
 
         status(result) mustBe SEE_OTHER
         FakeUserAnswersCacheConnector.verify(DeclarationFitAndProperId, true)
@@ -333,21 +279,17 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   val mockEmailConnector = mock[EmailConnector]
   val psaNameCacheConnector = PSANameCacheConnector
-  def appConfig(isWp1Enabled: Boolean) = new GuiceApplicationBuilder().configure(
-    "features.work-package-one-enabled" -> isWp1Enabled
-  ).build().injector.instanceOf[FrontendAppConfig]
-
+  val appConfig = app.injector.instanceOf[FrontendAppConfig]
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
                           pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector(),
-                          isWp1Enabled: Boolean = true
+                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
                         ) =
     new DeclarationFitAndProperController(
-      appConfig(isWp1Enabled),
+      appConfig,
       messagesApi,
       fakeAuthAction(userType),
       dataRetrievalAction,
