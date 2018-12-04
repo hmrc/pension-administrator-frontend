@@ -29,6 +29,8 @@ class ErrorHandler @Inject()(
                               val messagesApi: MessagesApi
                             ) extends FrontendErrorHandler with I18nSupport {
 
+  override def notFoundTemplate(implicit request: Request[_]): Html = views.html.error_template_page_not_found(appConfig)
+
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
     views.html.error_template(pageTitle, heading, message, appConfig)
 }

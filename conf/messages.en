@@ -790,3 +790,9 @@ partnershipName.error.invalid = Enter a valid registered partnership’s name
 partnershipRegisteredNonUKAddress.title = What is the partnership’s address?
 partnershipRegisteredNonUKAddress.heading = What is {0}’s address?
 partnershipRegisteredNonUKAddress.hintText = This is the partnership’s address outside of the UK.
+
+messages__pageNotFound404__title = Page not found
+messages__pageNotFound404__heading = Page not found
+messages__pageNotFound404__p1 = If you typed the web address, check it is correct.
+messages__pageNotFound404__p2 = If you pasted the web address, check you copied the entire address.
+messages__pageNotFound404__view_pension_schemes_link = View your pension schemes
