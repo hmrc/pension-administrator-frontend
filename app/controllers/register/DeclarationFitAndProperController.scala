@@ -96,7 +96,6 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
             (for {
               psaResponse <- pensionsSchemeConnector.registerPsa(answers)
               cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
-              _ <- savePSANameAndEmail(answers, psaResponse.psaId)
               _ <- enrol(psaResponse.psaId)
               _ <- sendEmail(answers, psaResponse.psaId)
             } yield {
@@ -111,37 +110,6 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
             }
           }
       )
-  }
-
-  private def savePSANameAndEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Unit] = {
-    if (!appConfig.isWorkPackageOneEnabled) {
-
-      Logger.debug("Saving PSA Name to collection")
-
-      getName(answers).map { name =>
-        for {
-          _ <- psaNameCacheConnector.save(psaId, PsaNameId, name)
-          _ <- psaNameCacheConnector.save(psaId, PsaEmailId, getEmail(answers).getOrElse(""))
-        } yield {
-          ()
-        }
-      }.getOrElse {
-        Logger.error("Could not retrieve PSA Name")
-        Future.failed(PSANameNotFoundException())
-      }
-    } else {
-      Future.successful(())
-    }
-  }
-
-  private def getName(answers: UserAnswers): Option[String] = {
-    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
-      registrationInfo.legalStatus match {
-        case Individual => answers.get(IndividualDetailsId).map(_.fullName)
-        case LimitedCompany => answers.get(BusinessDetailsId).map(_.companyName)
-        case Partnership => answers.get(PartnershipDetailsId).map(_.companyName)
-      }
-    }
   }
 
   private def getEmail(answers: UserAnswers): Option[String] = {
@@ -174,5 +142,4 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
   }
 
   case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")
-
 }
