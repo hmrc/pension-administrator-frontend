@@ -19,6 +19,7 @@ package views
 import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import org.scalatest.matchers.{MatchResult, Matcher}
 import play.twirl.api.{Html, HtmlFormat}
@@ -132,6 +133,16 @@ trait ViewSpecBase extends SpecBase {
         element.text().equals(text),
         s"element $id with text $text is not rendered on the page",
         s"element $id with text $text is rendered on the page"
+      )
+  }
+
+  def haveLink(url: String): Matcher[Elements] = Matcher[Elements] {
+    elements =>
+      val href = elements.attr("href")
+      MatchResult(
+        href == url,
+        s"href $href is not equal to the url $url",
+        s"href $href is equal to the url $url"
       )
   }
 
