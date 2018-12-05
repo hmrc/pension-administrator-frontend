@@ -84,7 +84,6 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   def addressYearsRoutes(answers: UserAnswers): Option[NavigateTo] =
-    if(config.nonUkJourneys) {
     (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
       case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       case (Some(AddressYears.UnderAYear), Some(false)) =>
@@ -95,18 +94,9 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
         NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
-  } else {
-      answers.get(IndividualAddressYearsId) match {
-        case Some(AddressYears.UnderAYear) =>
-          NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-        case Some(AddressYears.OverAYear) =>
-          NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-    }
+
 
   def addressYearsRouteCheckMode(answers: UserAnswers): Option[NavigateTo] =
-  if(config.nonUkJourneys) {
     (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
       case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       case (Some(AddressYears.UnderAYear), Some(false)) =>
@@ -117,41 +107,25 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
-  } else {
-    answers.get(IndividualAddressYearsId) match {
-      case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
-      case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-  }
 
 
   def contactAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
-    if(config.nonUkJourneys) {
-      (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
-        case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-        case (Some(false), Some(false)) => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
-        case (Some(false), Some(true)) => NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
-        case (Some(true), _) =>  contactAddressCompletionBasedNav(answers, mode)
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-    } else {
-      answers.get(IndividualSameContactAddressId) match {
-        case Some(false) => NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
-        case Some(true) => contactAddressCompletionBasedNav(answers, mode)
-        case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
+    (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
+      case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case (Some(false), Some(false)) => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
+      case (Some(false), Some(true)) => NavigateTo.save(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))
+      case (Some(true), _) => contactAddressCompletionBasedNav(answers, mode)
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+
 
   private def contactAddressCompletionBasedNav(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
     answers.get(IndividualContactAddressId) match {
-    case None =>
-      NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
-    case Some(_) =>
-      NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(mode))
-  }
+      case None =>
+        NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(mode))
+      case Some(_) =>
+        NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(mode))
+    }
 
 
   def countryOfRegistrationRoutes(answers: UserAnswers): Option[NavigateTo] = {
@@ -174,15 +148,12 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   def countryBasedDobNavigation(answers: UserAnswers): Option[NavigateTo] =
-    if(config.nonUkJourneys) {
-      answers.get(AreYouInUKId) match {
-        case Some(false) => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-        case Some(true) => checkYourAnswers()
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-    } else {
-      checkYourAnswers()
+    answers.get(AreYouInUKId) match {
+      case Some(false) => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+      case Some(true) => checkYourAnswers()
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+
 
   private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualAddressId) flatMap { address =>
@@ -196,17 +167,12 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   def countryBasedContactDetailsNavigation(answers: UserAnswers): Option[NavigateTo] =
-    if(config.nonUkJourneys) {
-      answers.get(AreYouInUKId) match {
+    answers.get(AreYouInUKId) match {
       case Some(false) => checkYourAnswers()
       case Some(true) => answers.get(IndividualDateOfBirthId).fold(
-        NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode)))(_=>
+        NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode)))(_ =>
         checkYourAnswers())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
-  } else {
-      NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
-  }
-
 
 }

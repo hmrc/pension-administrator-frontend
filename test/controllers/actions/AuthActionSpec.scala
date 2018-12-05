@@ -46,7 +46,7 @@ class AuthActionSpec extends SpecBase {
       "already enrolled in PODS, not coming from confirmation" in {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -73,7 +73,7 @@ class AuthActionSpec extends SpecBase {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersConnector)
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersConnector)
         val controller = new Harness(authAction)
 
         "coming from confirmation" in {
@@ -96,40 +96,12 @@ class AuthActionSpec extends SpecBase {
       }
     }
 
-
-    "called for Individual NON UK user " must {
-
-      "return OK if they have Confidence level 200 or higher and not enrolled" in {
-        val retrievalResult = authRetrievals(ConfidenceLevel.L200, AffinityGroup.Individual)
-        val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(false), fakeUserAnswersConnector)
-        val controller = new Harness(authAction)
-
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe OK
-      }
-
-      "redirect to IV if they have confidence level less than 200" in {
-        val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
-        val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
-          s"completionURL=${URLEncoder.encode(frontendAppConfig.loginContinueUrl, "UTF-8")}&" +
-          s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
-          s"&confidenceLevel=${ConfidenceLevel.L200.level}"
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(false), fakeUserAnswersCacheConnector())
-        val controller = new Harness(authAction)
-
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(redirectUrl)
-      }
-    }
-
     "called for Individual UK user " must {
 
       "return OK if they have Confidence level 200 or higher and not enrolled" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L200, AffinityGroup.Individual)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersConnector)
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -142,7 +114,7 @@ class AuthActionSpec extends SpecBase {
           s"completionURL=${URLEncoder.encode(frontendAppConfig.ukJourneyContinueUrl, "UTF-8")}&" +
           s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -155,7 +127,7 @@ class AuthActionSpec extends SpecBase {
 
       "return OK if they have confidence level less than 200 and they have not answered if they are UK/NON-UK" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L100, AffinityGroup.Individual)
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(None))
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector(None))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -168,7 +140,7 @@ class AuthActionSpec extends SpecBase {
       "return OK if affinity Group is Organisation" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
 
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe OK
@@ -177,7 +149,7 @@ class AuthActionSpec extends SpecBase {
       "redirect the user to Unauthorised page if the affinity group is not Individual/Company " in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Agent)
 
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -278,7 +250,7 @@ class AuthActionSpec extends SpecBase {
       "return OK if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new AuthenticationWithNoConfidence(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersConnector)
+        val authAction = new AuthenticationWithNoConfidence(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -310,13 +282,6 @@ object AuthActionSpec {
     def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = {
       stubbedRetrievalResult.map(_.asInstanceOf[A])
     }
-  }
-
-  private def appConfig(isNonUkEnabled: Boolean = true) = {
-    val application = new GuiceApplicationBuilder()
-    application.configure(
-      "features.non-uk-journeys" -> isNonUkEnabled
-    ).injector().instanceOf[FrontendAppConfig]
   }
 
   private def authRetrievals(confidenceLevel: ConfidenceLevel = ConfidenceLevel.L50,
