@@ -39,14 +39,13 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val navigatorUK = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, appConfig(false))
-  val navigatorNonUK = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, appConfig(true))
+  val navigatorUK = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
+  val navigatorNonUK = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
 
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
 
-    (PartnershipDetailsId, emptyAnswers, confirmPartnershipDetailsPage, false, None, false),
     (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
     (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true),
     (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
@@ -61,7 +60,6 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
     (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
     (PartnershipPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipContactDetailsId, emptyAnswers, vatPage, true, Some(checkYourAnswersPage), true),
     (PartnershipVatId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
     (PartnershipPayeId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
@@ -106,10 +104,6 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object PartnershipNavigatorSpec extends OptionValues {
-
-  private def appConfig(nonUk: Boolean = false) : FrontendAppConfig = new GuiceApplicationBuilder().configure(
-    conf = "features.non-uk-journeys" -> nonUk
-  ).build().injector.instanceOf[FrontendAppConfig]
 
   private def sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 

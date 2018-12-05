@@ -39,13 +39,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterCompanyNavigatorSpec._
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val navigatorUK = new RegisterCompanyNavigator(FakeUserAnswersCacheConnector, countryOptions, appConfig(false))
-  val navigatorNonUK = new RegisterCompanyNavigator(FakeUserAnswersCacheConnector, countryOptions, appConfig(true))
+  val navigatorUK = new RegisterCompanyNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
+  val navigatorNonUK = new RegisterCompanyNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
 
   //scalastyle:off line.size.limit
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save (NM)", "Next Page (Check Mode)", "Save (CM)"),
-    (BusinessDetailsId, emptyAnswers, confirmCompanyDetailsPage, false, None, false),
     (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
     (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
     (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
@@ -108,11 +107,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
-
-  private def appConfig(nonUk: Boolean = false) : FrontendAppConfig = new GuiceApplicationBuilder().configure(
-    conf = "features.non-uk-journeys" -> nonUk
-  ).build().injector.instanceOf[FrontendAppConfig]
-
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
 
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
