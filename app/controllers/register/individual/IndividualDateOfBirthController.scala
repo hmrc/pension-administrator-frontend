@@ -39,16 +39,16 @@ import views.html.register.individual.individualDateOfBirth
 import scala.concurrent.Future
 
 class IndividualDateOfBirthController @Inject()(
-    appConfig: FrontendAppConfig,
-    override val messagesApi: MessagesApi,
-    dataCacheConnector: UserAnswersCacheConnector,
-    @Individual navigator: Navigator,
-    authenticate: AuthAction,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    formProvider: IndividualDateOfBirthFormProvider,
-    registrationService: RegistrationService
-) extends FrontendController with I18nSupport with Retrievals {
+                                                 appConfig: FrontendAppConfig,
+                                                 override val messagesApi: MessagesApi,
+                                                 dataCacheConnector: UserAnswersCacheConnector,
+                                                 @Individual navigator: Navigator,
+                                                 authenticate: AuthAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: IndividualDateOfBirthFormProvider,
+                                                 registrationService: RegistrationService
+                                               ) extends FrontendController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
@@ -67,19 +67,16 @@ class IndividualDateOfBirthController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(individualDateOfBirth(appConfig, formWithErrors, mode))),
         value =>
-          if(appConfig.nonUkJourneys) {
-            (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
-              case false ~ individual ~ address =>
-                registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress,
-                  new LocalDate(value.getYear, value.getMonthValue, value.getDayOfMonth)).flatMap{_ =>
-                  saveAndRedirect(mode, value)
-                }
-              case true ~ _ ~ _ =>
+          (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+            case false ~ individual ~ address =>
+              registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress,
+                new LocalDate(value.getYear, value.getMonthValue, value.getDayOfMonth)).flatMap { _ =>
                 saveAndRedirect(mode, value)
-            }
-          } else {
-            saveAndRedirect(mode, value)
+              }
+            case true ~ _ ~ _ =>
+              saveAndRedirect(mode, value)
           }
+
       )
   }
 

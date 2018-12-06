@@ -43,19 +43,7 @@ class LoginControllerSpec extends ControllerSpecBase {
 
   "Login Controller" must {
 
-    "redirect to Individual details correct page for an Individual when non-uk journeys are toggled off" in {
-
-      val appConfig = new GuiceApplicationBuilder().configure(
-        "features.non-uk-journeys" -> false
-      ).build().injector.instanceOf[FrontendAppConfig]
-
-      val result = loginController(appConfig, userType = UserType.Individual).onPageLoad(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode).url)
-    }
-
-    "redirect to are you in the UK page for Individual when non-uk journeys are toggled on" in {
+    "redirect to are you in the UK page for Individual" in {
 
       val appConfig = new GuiceApplicationBuilder().configure(
         "features.non-uk-journeys" -> true
@@ -67,19 +55,7 @@ class LoginControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode).url)
     }
 
-    "redirect to business type page for an Organisation when non-uk journeys are toggled off" in {
-
-      val appConfig = new GuiceApplicationBuilder().configure(
-        "features.non-uk-journeys" -> false
-      ).build().injector.instanceOf[FrontendAppConfig]
-
-      val result = loginController(appConfig).onPageLoad(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(register.routes.BusinessTypeController.onPageLoad(NormalMode).url)
-    }
-
-    "redirect to are you in the UK page for organisation when non-uk journeys are toggled on" in {
+    "redirect to are you in the UK page for organisation" in {
 
       val appConfig = new GuiceApplicationBuilder().configure(
         "features.non-uk-journeys" -> true

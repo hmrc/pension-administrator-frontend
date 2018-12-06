@@ -62,30 +62,18 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
     }
 
-    "redirect to the next page when valid data is submitted for UK and nonUK journeys are enabled" in {
+    "redirect to the next page when valid data is submitted for UK" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("dateOfBirth.day", "9"),
         ("dateOfBirth.month", "6"),
         ("dateOfBirth.year", "1862"))
 
       val result = controller(
-        dataRetrievalAction = getRequiredDataForRegistration(isUk = true), nonUk = true).onSubmit(NormalMode)(postRequest)
+        dataRetrievalAction = getRequiredDataForRegistration(isUk = true)).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       verify(registrationService, never()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
-    }
-
-    "redirect to the next page when valid data is submitted for UK and nonUK journeys are not enabled" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("dateOfBirth.day", "9"),
-        ("dateOfBirth.month", "6"),
-        ("dateOfBirth.year", "1862"))
-
-      val result = controller(dataRetrievalAction = getEmptyData, nonUk = false).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
     "call the registration and redirect to the next page when valid data is submitted for nonUK" in {
@@ -96,7 +84,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
         ("dateOfBirth.month", "6"),
         ("dateOfBirth.year", "1862"))
 
-      val result = controller(dataRetrievalAction = getRequiredDataForRegistration(), nonUk = true).onSubmit(NormalMode)(postRequest)
+      val result = controller(dataRetrievalAction = getRequiredDataForRegistration()).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -148,13 +136,8 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mocki
           Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress
     )))
 
-  private def appConfig(nonUk: Boolean = false) : FrontendAppConfig = new GuiceApplicationBuilder().configure(
-    "features.non-uk-journeys" -> nonUk
-  ).build().injector.instanceOf[FrontendAppConfig]
-
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
-      nonUk: Boolean = false) =
-    new IndividualDateOfBirthController(appConfig(nonUk),
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new IndividualDateOfBirthController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

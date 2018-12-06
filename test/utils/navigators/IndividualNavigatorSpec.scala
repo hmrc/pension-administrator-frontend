@@ -46,20 +46,13 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualDetailsCorrectId, lastPage, whatYouWillNeedPage, false, None, false),
     (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage, false, None, false),
     (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
-    (IndividualSameContactAddressId, sameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (IndividualSameContactAddressId, differentContactAddress, contactPostCodeLookupPage(NormalMode), true, Some(contactPostCodeLookupPage(CheckMode)), true),
-    (IndividualSameContactAddressId, sameContactAddressIncomplete, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), false, Some(contactAddressListPage(CheckMode)), false),
     (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (IndividualAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (IndividualAddressYearsId, addressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), false, Some(previousAddressListPage(CheckMode)), false),
     (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (IndividualContactDetailsId, emptyAnswers, individualDateOfBirthPage, false, Some(checkYourAnswersPage), true),
-    (IndividualDateOfBirthId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
@@ -88,9 +81,9 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig())
-  val navigatorUk = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig(false), countryOptions)
-  val navigatorNonUk = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig(true), countryOptions)
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig)
+  val navigatorUk = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig, countryOptions)
+  val navigatorNonUk = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig, countryOptions)
 
   navigatorUk.getClass.getSimpleName must {
     appRunning()
@@ -105,9 +98,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object IndividualNavigatorSpec extends OptionValues {
-  private def appConfig(nonUk: Boolean = false) = new GuiceApplicationBuilder().configure(
-    "features.non-uk-journeys" -> nonUk
-  ).build().injector.instanceOf[FrontendAppConfig]
+  private val appConfig = new GuiceApplicationBuilder().build().injector.instanceOf[FrontendAppConfig]
 
   lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
 

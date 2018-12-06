@@ -67,7 +67,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector, co
   def successRedirect[A](affinityGroup: AffinityGroup, id: String, cl: ConfidenceLevel,
                               enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
                                 (implicit hc: HeaderCarrier) =
-    if (affinityGroup == Individual && config.nonUkJourneys) {
+    if (affinityGroup == Individual) {
       areYouInUK(id).flatMap {
         case Some(true) if !allowedIndividual(cl) =>
           Future.successful(Redirect(ivUpliftUrl))
@@ -97,8 +97,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector, co
       Left(Redirect(routes.InterceptPSAController.onPageLoad()))
     } else if (isPSP(enrolments) && !isPSA(enrolments)) {
       Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
-    } else if (!config.nonUkJourneys && affinityGroup == Individual && !allowedIndividual(cl)) {
-      Left(Redirect(ivUpliftUrl))
     } else {
       Right(())
     }
@@ -131,9 +129,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector, co
   }
 
   private def ivUpliftUrl: String = {
-    val continueUrl = if (config.nonUkJourneys) config.ukJourneyContinueUrl else config.loginContinueUrl
     s"${config.ivUpliftUrl}?origin=PODS&" +
-      s"completionURL=${URLEncoder.encode(continueUrl, "UTF-8")}&" +
+      s"completionURL=${URLEncoder.encode(config.ukJourneyContinueUrl, "UTF-8")}&" +
       s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
       s"&confidenceLevel=${ConfidenceLevel.L200.level}"
   }
