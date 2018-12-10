@@ -17,6 +17,7 @@
 package identifiers.register
 
 import identifiers._
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorId
 import identifiers.register.individual._
@@ -32,19 +33,21 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
       case Some(false) =>
-        removePartnershipData(userAnswers).flatMap( answers =>
-          removeCompanyData(answers)).flatMap(answers =>
-          removeIndividualData(answers)).flatMap(
-            _.removeAllOf(List(BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId,
-              CompanyDetailsId, ConfirmPartnershipDetailsId, PartnershipVatId, PartnershipPayeId, IndividualDetailsCorrectId,
-              IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId
-            ))
-          )
-      case Some(true) =>
-        removePartnershipData(userAnswers).flatMap(
+        removeIndividualData(userAnswers).flatMap(
           removeCompanyData).flatMap(
-          removeIndividualData).flatMap(
-          _.removeAllOf(List(NonUKBusinessTypeId, CompanyAddressId, PartnershipRegisteredAddressId, IndividualDetailsId, IndividualAddressId))
+          removePartnershipData).flatMap(
+          removeDeclarationData).flatMap(
+          _.removeAllOf(List(IndividualDetailsCorrectId, IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId,
+            BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId, CompanyDetailsId,
+            ConfirmPartnershipDetailsId, PartnershipVatId, PartnershipPayeId
+          ))
+        )
+      case Some(true) =>
+        removeIndividualData(userAnswers).flatMap(
+          removeCompanyData).flatMap(
+          removePartnershipData).flatMap(
+          removeDeclarationData).flatMap(
+          _.removeAllOf(List(NonUKBusinessTypeId, RegisterAsBusinessId, CompanyAddressId, PartnershipRegisteredAddressId))
         )
       case _ =>
         super.cleanup(value, userAnswers)
@@ -60,11 +63,18 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     }
   }
 
-  private def removeIndividualData(userAnswers: UserAnswers) = {
+  private def removeDeclarationData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    userAnswers.removeAllOf(List(
+      DeclarationWorkingKnowledgeId, AdviserDetailsId, AdviserAddressPostCodeLookupId, AdviserAddressListId, AdviserAddressId
+    ))
+  }
+
+  private def removeIndividualData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
       IndividualAddressYearsId,
       IndividualPreviousAddressListId, IndividualPreviousAddressId, IndividualContactDetailsId, IndividualDateOfBirthId,
-      IndividualSameContactAddressId
+      IndividualSameContactAddressId,
+      IndividualDetailsId, IndividualAddressId, RegistrationInfoId
     ))
   }
 
@@ -73,7 +83,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
-      .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
+      .flatMap(answers => answers.remove(PartnerId)/*removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId)*/)
   }
 
   private def removeCompanyData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
