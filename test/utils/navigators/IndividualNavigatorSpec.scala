@@ -16,8 +16,6 @@
 
 package utils.navigators
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
@@ -41,59 +39,57 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //noinspection ScalaStyle
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+
+    (AreYouInUKId, uk, ukIndividualDetailsPage, false, None, false),
+    (AreYouInUKId, nonUk, nonUkIndividualNamePage, false, Some(nonUkIndividualAddressPage), false),
+
     (IndividualDetailsCorrectId, detailsCorrect, whatYouWillNeedPage, false, None, false),
     (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, false, None, false),
     (IndividualDetailsCorrectId, lastPage, whatYouWillNeedPage, false, None, false),
     (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage, false, None, false),
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
-    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), false, Some(contactAddressListPage(CheckMode)), false),
-    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
-    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), false, Some(previousAddressListPage(CheckMode)), false),
-    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
-  )
 
-  def nonUkroutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-
-    (AreYouInUKId, uk, ukIndividualDetailsPage, false, None, false),
-    (AreYouInUKId, nonUk, nonUkIndividualNamePage, false, Some(nonUkIndividualAddressPage), false),
     (IndividualDetailsId, emptyAnswers, nonUkIndividualAddressPage, false, None, false),
+
     (IndividualAddressId, nonUkEuAddress, individualDateOfBirthPage, false, None, false),
     (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
     (IndividualAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false),
+
+    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
+
     (IndividualDateOfBirthId, nonUk, whatYouWillNeedPage, false, Some(checkYourAnswersPage), true),
     (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+
     (IndividualSameContactAddressId, sameContactAddressNonUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
     (IndividualSameContactAddressId, ukDifferentContactAddress, contactPostCodeLookupPage(NormalMode), true, Some(contactPostCodeLookupPage(CheckMode)), true),
     (IndividualSameContactAddressId, nonUkDifferentContactAddress, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualSameContactAddressId, sameContactAddressIncompleteUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+
+    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), false, Some(contactAddressListPage(CheckMode)), false),
+    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+
     (IndividualAddressYearsId, ukAddressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
     (IndividualAddressYearsId, nonUkAddressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
     (IndividualAddressYearsId, nonUkAddressYearsUnderAYear, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+
+    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), false, Some(previousAddressListPage(CheckMode)), false),
+    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
+    (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+
     (IndividualContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig)
-  val navigatorUk = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig, countryOptions)
-  val navigatorNonUk = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig, countryOptions)
+  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig, countryOptions)
 
-  navigatorUk.getClass.getSimpleName must {
+  navigator.getClass.getSimpleName must {
     appRunning()
-    behave like nonMatchingNavigator(navigatorUk)
-    behave like navigatorWithRoutes(navigatorUk, FakeUserAnswersCacheConnector, routes(), dataDescriber)
-  }
-
-  s"NonUK ${navigatorNonUk.getClass.getSimpleName}" must {
-    appRunning()
-    behave like navigatorWithRoutes(navigatorNonUk, FakeUserAnswersCacheConnector, nonUkroutes(), dataDescriber)
+    behave like nonMatchingNavigator(navigator)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 }
 
@@ -139,38 +135,37 @@ object IndividualNavigatorSpec extends OptionValues {
   private lazy val lastPage =
     detailsCorrect.lastPage(LastPage(lastPageCall.method, lastPageCall.url))
 
-  private val sameContactAddress = UserAnswers(Json.obj()).set(
+  private def sameContactAddress(areYouInUk: Boolean) = UserAnswers(Json.obj()).areYouInUk(areYouInUk).set(
     IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
     .asOpt.value
 
-  private val sameContactAddressUk = sameContactAddress.areYouInUk(true)
-  private val sameContactAddressNonUk = sameContactAddress.areYouInUk(false)
+  private val sameContactAddressUk = sameContactAddress(areYouInUk = true)
+  private val sameContactAddressNonUk = sameContactAddress(areYouInUk = false)
 
-  private val sameContactAddressIncomplete = UserAnswers(Json.obj()).set(
+  private def sameContactAddressIncomplete(areYouInUk: Boolean) = UserAnswers(Json.obj()).areYouInUk(areYouInUk).
+    set(
     IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressListId)(TolerantAddress(Some("foo"), None, None, None, None, Some("GB"))))
     .asOpt.value
 
-  private val sameContactAddressIncompleteUk = sameContactAddressIncomplete.areYouInUk(true)
-  private val sameContactAddressIncompleteNonUk = sameContactAddressIncomplete.areYouInUk(false)
+  private val sameContactAddressIncompleteUk = sameContactAddressIncomplete(areYouInUk = true)
+  private val sameContactAddressIncompleteNonUk = sameContactAddressIncomplete(areYouInUk = false)
 
-  private val differentContactAddress = UserAnswers(Json.obj()).set(
+  private val ukDifferentContactAddress = UserAnswers(Json.obj()).areYouInUk(true).set(
     IndividualSameContactAddressId)(false).asOpt.value
-  private val ukDifferentContactAddress = UserAnswers(Json.obj()).set(
-    IndividualSameContactAddressId)(false).asOpt.value.areYouInUk(true)
-  private val nonUkDifferentContactAddress = UserAnswers(Json.obj()).set(
-    IndividualSameContactAddressId)(false).asOpt.value.areYouInUk(false)
-  private val addressYearsOverAYear = UserAnswers(Json.obj())
+  private val nonUkDifferentContactAddress = UserAnswers(Json.obj()).areYouInUk(false).set(
+    IndividualSameContactAddressId)(false).asOpt.value
+
+  private val nonUkAddressYearsOverAYear = UserAnswers(Json.obj()).areYouInUk(false)
     .set(IndividualAddressYearsId)(AddressYears.OverAYear).asOpt.value
-  private val nonUkAddressYearsOverAYear = addressYearsOverAYear.areYouInUk(false)
-  private val ukAddressYearsOverAYear = addressYearsOverAYear.areYouInUk(true)
-  private val addressYearsUnderAYear = UserAnswers(Json.obj())
+  private val ukAddressYearsOverAYear = UserAnswers(Json.obj()).areYouInUk(true)
+    .set(IndividualAddressYearsId)(AddressYears.OverAYear).asOpt.value
+
+  private val ukAddressYearsUnderAYear = UserAnswers(Json.obj()).areYouInUk(true)
     .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value
-  private val ukAddressYearsUnderAYear = UserAnswers(Json.obj())
-    .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value.areYouInUk(true)
-  private val nonUkAddressYearsUnderAYear = UserAnswers(Json.obj())
-    .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value.areYouInUk(false)
+  private val nonUkAddressYearsUnderAYear = UserAnswers(Json.obj()).areYouInUk(false)
+    .set(IndividualAddressYearsId)(AddressYears.UnderAYear).asOpt.value
 
   private val uk = UserAnswers(Json.obj())
     .set(AreYouInUKId)(true).asOpt.value

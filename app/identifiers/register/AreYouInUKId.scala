@@ -23,8 +23,7 @@ import identifiers.register.company.directors.DirectorId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerId
-import models.PersonDetails
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.JsResult
 import utils.UserAnswers
 
 case object AreYouInUKId extends TypedIdentifier[Boolean] {
@@ -54,15 +53,6 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     }
   }
 
-  private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],
-                                           userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
-    if (personDetailsSeq.nonEmpty) {
-      userAnswers.remove(id)
-    } else {
-      JsSuccess(userAnswers)
-    }
-  }
-
   private def removeDeclarationData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
       DeclarationWorkingKnowledgeId, AdviserDetailsId, AdviserAddressPostCodeLookupId, AdviserAddressListId, AdviserAddressId
@@ -83,13 +73,13 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
-      .flatMap(answers => answers.remove(PartnerId)/*removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId)*/)
+      .flatMap(_.remove(PartnerId))
   }
 
   private def removeCompanyData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(BusinessDetailsId, CompanySameContactAddressId,
       CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
       CompanyPreviousAddressPostCodeLookupId, ContactDetailsId, MoreThanTenDirectorsId))
-      .flatMap(answers => removeAllDirectorsOrPartners(answers.allDirectors, answers, DirectorId))
+      .flatMap(_.remove(DirectorId))
   }
 }
