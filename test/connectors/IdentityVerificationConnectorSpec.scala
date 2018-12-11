@@ -53,7 +53,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
     )
   )
 
-  private val url = "/journey"
+  private val url = "/identity-verification/journey"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
