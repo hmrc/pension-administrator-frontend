@@ -105,6 +105,8 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
     s"service/$serviceName/enrolment"
 
   def emailUrl = s"${baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"
+  def ivRegisterOrganisationAsIndividualUrl =
+    s"${baseUrl("identity-verification")}/${runModeConfiguration.underlying.getString("urls.ivRegisterOrganisationAsIndividual")}"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
