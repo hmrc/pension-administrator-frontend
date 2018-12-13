@@ -16,21 +16,27 @@
 
 package utils.navigators
 
-import javax.inject.Inject
-
+import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.register.individual.routes
 import identifiers.register._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
+import javax.inject.Inject
 import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import utils.{Navigator, UserAnswers}
 
-class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
+class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, appConfig: FrontendAppConfig) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
-    case RegisterAsBusinessId => individualOrOganisationRoutes(from.userAnswers)
+    case RegisterAsBusinessId =>
+      if (appConfig.isManualIVEnabled) {
+        individualOrOganisationRoutes(from.userAnswers)
+      } else {
+        individualOrOganisationRoutesToggleOff(from.userAnswers)
+      }
     case BusinessTypeId => businessTypeRoutes(from.userAnswers)
     case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
@@ -69,8 +75,14 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     userAnswers.get(AreYouInUKId) match {
       case Some(false) =>
         NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+      case Some(true) =>
+        if (appConfig.isManualIVEnabled) {
+          NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+        } else {
+          NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+        }
       case _ =>
-        NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
@@ -82,19 +94,38 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
           controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
         case (Some(false), Some(NonUKBusinessType.BusinessPartnership), _, Some(_)) =>
           controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
-        case (Some(true), _, _, _) => controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+        case (Some(true), _, _, _) =>
+          if (appConfig.isManualIVEnabled) {
+            controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+          } else {
+            controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+          }
         case _ => controllers.routes.SessionExpiredController.onPageLoad()
       }
     )
 
-
-  private def individualOrOganisationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+  private def individualOrOganisationRoutesToggleOff(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(RegisterAsBusinessId) match {
       case Some(false) =>
         NavigateTo.dontSave(controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode))
       case Some(true) =>
         NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
       case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def individualOrOganisationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+    (userAnswers.get(AreYouInUKId), userAnswers.get(RegisterAsBusinessId)) match {
+      case (Some(true), Some(false)) =>
+        NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+      case (Some(false), Some(false)) =>
+        NavigateTo.dontSave(controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode))
+      case (Some(true), Some(true)) =>
+        NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+      case (Some(false), Some(true)) =>
+        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
+      case _ =>
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
