@@ -17,6 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
+import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
@@ -28,6 +29,7 @@ import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusiness
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
@@ -35,8 +37,6 @@ import utils.{NavigatorBehaviour, UserAnswers}
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterNavigatorSpec._
-
-  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector)
 
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -46,50 +46,83 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessTypeId, businessPartnership, partnershipBusinessDetails, false, None, false),
     (BusinessTypeId, limitedPartnership, partnershipBusinessDetails, false, None, false),
     (BusinessTypeId, limitedLiabilityPartnership, partnershipBusinessDetails, false, None, false),
+
     (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, true, None, false),
+
     (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, true, None, false),
-    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserDetailsPage, true, None, false),
+    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserDetails, true, None, false),
     (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
-    (DeclarationFitAndProperId, emptyAnswers, confirmationPage, false, None, false),
-    (AreYouInUKId, inUk,   ukBusinessTypePage, false, Some(ukBusinessTypePage), false),
-    (AreYouInUKId, notInUk,   nonUkBusinessOrIndividualPage, false, Some(nonUkBusinessOrIndividualPage), false),
-    (AreYouInUKId, notInUkCompanyCheckMode,   nonUkBusinessOrIndividualPage, false, Some(nonUkCompanyAddress), false),
-    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, nonUkBusinessOrIndividualPage, false, Some(nonUkBusinessOrIndividualPage), false),
-    (AreYouInUKId, notInUkPartnershipCheckMode,   nonUkBusinessOrIndividualPage, false, Some(nonUkPartnershipAddress), false),
-    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessTypePage, false, None, false),
-    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualNamePage, false, None, false),
-    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyName, false, None, false),
-    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipName, false, None, false)
+
+    (DeclarationFitAndProperId, emptyAnswers, confirmation, false, None, false),
+
+    (AreYouInUKId, inUk, registerAsBusiness, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, notInUk, registerAsBusiness, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, notInUkCompanyCheckMode, registerAsBusiness, false, Some(nonUkCompanyAddress), false),
+    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, registerAsBusiness, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, notInUkPartnershipCheckMode, registerAsBusiness, false, Some(nonUkPartnershipAddress), false),
+
+    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessType, false, None, false),
+    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualName, false, None, false),
+    (RegisterAsBusinessId, ukBusiness, ukBusinessType, false, None, false),
+    (RegisterAsBusinessId, ukIndividual, ukIndividualDetailsCorrect, false, None, false),
+
+    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, false, None, false),
+    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, false, None, false)
+  )
+
+  def routesWithIVDisabled(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    (AreYouInUKId, inUk, ukBusinessType, false, Some(ukBusinessType), false),
+    (AreYouInUKId, notInUk, registerAsBusiness, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, notInUkCompanyCheckMode, registerAsBusiness, false, Some(nonUkCompanyAddress), false),
+    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, registerAsBusiness, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, notInUkPartnershipCheckMode, registerAsBusiness, false, Some(nonUkPartnershipAddress), false),
+
+    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessType, false, None, false),
+    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualName, false, None, false)
   )
 
   //scalastyle:on line.size.limit
-
-  navigator.getClass.getSimpleName must {
+  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, appConfig(isIvEnabled = true))
+  s"${navigator.getClass.getSimpleName} when toggle is on" must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 
+  val navigatorDisabled = new RegisterNavigator(FakeUserAnswersCacheConnector, appConfig(isIvEnabled = false))
+  s"${navigatorDisabled.getClass.getSimpleName} when toggle is off" must {
+    appRunning()
+    behave like nonMatchingNavigator(navigatorDisabled)
+    behave like navigatorWithRoutes(navigatorDisabled, FakeUserAnswersCacheConnector, routesWithIVDisabled(), dataDescriber)
+  }
+
 }
 
 object RegisterNavigatorSpec extends OptionValues {
+
+  def appConfig(isIvEnabled: Boolean): FrontendAppConfig = new GuiceApplicationBuilder().configure(
+    conf = "features.is-iv-enabled" -> isIvEnabled
+  ).build().injector.instanceOf[FrontendAppConfig]
+
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val businessDetailsPage: Call = controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad()
   lazy val partnershipBusinessDetails: Call = controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
-  lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
-  lazy val confirmationPage: Call = routes.ConfirmationController.onPageLoad()
-  lazy val surveyPage: Call = controllers.routes.LogoutController.onPageLoad()
-  lazy val ukBusinessTypePage: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
-  lazy val nonUkBusinessTypePage: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
-  lazy val nonUkCompanyName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad()
-  lazy val nonUkBusinessOrIndividualPage: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
-  lazy val nonUkIndividualNamePage: Call = controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode)
+  lazy val adviserDetails: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
+  lazy val confirmation: Call = routes.ConfirmationController.onPageLoad()
+  lazy val survey: Call = controllers.routes.LogoutController.onPageLoad()
+  lazy val ukBusinessType: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+  lazy val nonUkBusinessType: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
+  lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad()
+  lazy val registerAsBusiness: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+  lazy val nonUkIndividualName: Call = controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode)
   lazy val nonUkCompanyAddress: Call = controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
   lazy val nonUkPartnershipAddress: Call = controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
-  lazy val nonUkPartnershipName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
+  lazy val nonUkPartnershipRegisteredName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
+  lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
@@ -119,17 +152,21 @@ object RegisterNavigatorSpec extends OptionValues {
     .areYouInUk(false)
     .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
 
-
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
     .set(PartnershipDetailsId)(BusinessDetails("test partnership name", Some("1234567890"))).asOpt.value
     .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
-
-  val nonUkBusiness: UserAnswers = UserAnswers(Json.obj())
+  val nonUkBusiness: UserAnswers = UserAnswers(Json.obj()).areYouInUk(false)
     .set(RegisterAsBusinessId)(true).asOpt.value
-  val nonUkIndividual: UserAnswers = UserAnswers(Json.obj())
+  val nonUkIndividual: UserAnswers = UserAnswers(Json.obj()).areYouInUk(false)
     .set(RegisterAsBusinessId)(false).asOpt.value
+
+  val ukBusiness: UserAnswers = UserAnswers(Json.obj()).areYouInUk(true)
+    .set(RegisterAsBusinessId)(true).asOpt.value
+  val ukIndividual: UserAnswers = UserAnswers(Json.obj()).areYouInUk(true)
+    .set(RegisterAsBusinessId)(false).asOpt.value
+
   val nonUkCompany: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
   val nonUkPartnership: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
