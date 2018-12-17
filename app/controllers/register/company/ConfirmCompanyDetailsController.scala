@@ -39,7 +39,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
@@ -51,7 +51,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 registrationConnector: RegistrationConnector,
                                                 formProvider: CompanyAddressFormProvider,
                                                 countryOptions: CountryOptions
-                                               ) extends FrontendController with I18nSupport with Retrievals {
+                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

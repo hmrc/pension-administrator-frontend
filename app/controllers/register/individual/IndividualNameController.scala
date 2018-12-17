@@ -32,7 +32,7 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.{Message, PersonDetailsViewModel}
 import views.html.register.individual.individualName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualNameController @Inject()(
                                           val appConfig: FrontendAppConfig,
@@ -43,7 +43,7 @@ class IndividualNameController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider : IndividualNameFormProvider
-                                        ) extends FrontendController with I18nSupport {
+                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
 
   val form : Form[TolerantIndividual] =  formProvider()

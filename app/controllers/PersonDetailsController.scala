@@ -34,6 +34,8 @@ import scala.concurrent.Future
 
 trait PersonDetailsController extends FrontendController with I18nSupport {
 
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+
   def appConfig: FrontendAppConfig
 
   def dataCacheConnector: UserAnswersCacheConnector

@@ -35,7 +35,7 @@ import views.html.register.addEntity
 import scala.concurrent.Future
 
 trait AddEntityController extends FrontendController with Retrievals with I18nSupport {
-
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector

@@ -31,6 +31,8 @@ import utils.UserAnswers
 
 trait ControllerSpecBase extends SpecBase {
 
+  implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
+
   val cacheMapId = "id"
 
   val firstIndex = Index(0)

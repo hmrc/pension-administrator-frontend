@@ -36,7 +36,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualRegisteredAddressController @Inject()(
                                                        val appConfig: FrontendAppConfig,
@@ -48,7 +48,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        formProvider: NonUKAddressFormProvider,
                                                        val countryOptions: CountryOptions
-                                                     ) extends FrontendController with Retrievals with I18nSupport{
+                                                     )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport{
 
   protected val form: Form[Address] = formProvider()
 

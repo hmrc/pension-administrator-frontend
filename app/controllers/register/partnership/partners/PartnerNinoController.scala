@@ -32,7 +32,7 @@ import utils.annotations.PartnershipPartner
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.partnership.partners.partnerNino
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnerNinoController @Inject()(
                                        appConfig: FrontendAppConfig,
@@ -43,7 +43,7 @@ class PartnerNinoController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PartnerNinoFormProvider
-                                     ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                     )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form: Form[Nino] = formProvider()
 

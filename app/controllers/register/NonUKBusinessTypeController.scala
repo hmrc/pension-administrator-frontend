@@ -17,7 +17,6 @@
 package controllers.register
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
@@ -32,7 +31,7 @@ import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.nonUKBusinessType
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class NonUKBusinessTypeController @Inject()(
                                         appConfig: FrontendAppConfig,
@@ -43,7 +42,7 @@ class NonUKBusinessTypeController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: NonUKBusinessTypeFormProvider
-                                      ) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                      )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 

@@ -25,12 +25,15 @@ import utils.CheckYourAnswersFactory
 import viewmodels.AnswerSection
 import views.html.check_your_answers
 
+import scala.concurrent.ExecutionContext
+
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           checkYourAnswersFactory: CheckYourAnswersFactory) extends FrontendController with I18nSupport {
+                                           checkYourAnswersFactory: CheckYourAnswersFactory
+                                          )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad() = (authenticate andThen getData andThen requireData) {
     implicit request =>

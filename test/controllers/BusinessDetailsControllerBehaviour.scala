@@ -29,8 +29,6 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.BusinessDetailsViewModel
 import views.html.businessDetails
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait BusinessDetailsControllerBehaviour {

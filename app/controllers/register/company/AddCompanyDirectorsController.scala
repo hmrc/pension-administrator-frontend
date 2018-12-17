@@ -34,6 +34,8 @@ import utils.annotations.CompanyDirector
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
+import scala.concurrent.ExecutionContext
+
 class AddCompanyDirectorsController @Inject()(
                                                appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
@@ -43,7 +45,7 @@ class AddCompanyDirectorsController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddCompanyDirectorsFormProvider
-                                             ) extends FrontendController with I18nSupport {
+                                             )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 

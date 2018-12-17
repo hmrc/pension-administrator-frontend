@@ -30,8 +30,6 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.PersonDetailsViewModel
 import views.html.personDetails
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait PersonDetailsControllerBehaviour {

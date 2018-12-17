@@ -21,21 +21,19 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.AreYouInUKFormProvider
 import identifiers.register.AreYouInUKId
-import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Register
 import utils.{Navigator, UserAnswers}
-import viewmodels.{AreYouInUKViewModel, Message}
+import viewmodels.AreYouInUKViewModel
 import views.html.register.areYouInUK
 
 import scala.concurrent.Future
 
 trait AreYouInUKController extends FrontendController with I18nSupport {
-
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
   protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator

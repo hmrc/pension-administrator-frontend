@@ -32,6 +32,8 @@ import scala.concurrent.Future
 
 trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals {
 
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector

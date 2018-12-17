@@ -30,6 +30,8 @@ import utils.{CheckYourAnswersFactory, Navigator}
 import viewmodels.{AnswerSection, Message}
 import views.html.check_your_answers
 
+import scala.concurrent.ExecutionContext
+
 @Singleton
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
@@ -39,7 +41,7 @@ class CheckYourAnswersController @Inject()(
                                             @Individual navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory
-                                          ) extends FrontendController with Retrievals with I18nSupport {
+                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   import CheckYourAnswersController._
 

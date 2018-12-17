@@ -29,14 +29,15 @@ import utils.Navigator
 import utils.annotations.Partnership
 import views.html.register.partnership.partnershipReview
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
                                             override val messagesApi: MessagesApi,
                                             @Partnership navigator: Navigator,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction) extends FrontendController with Retrievals with I18nSupport {
+                                            requireData: DataRequiredAction
+                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

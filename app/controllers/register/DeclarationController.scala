@@ -32,7 +32,7 @@ import utils.annotations.Register
 import utils.{Navigator, UserAnswers}
 import views.html.register.declaration
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationController @Inject()(appConfig: FrontendAppConfig,
@@ -42,7 +42,8 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       requireData: DataRequiredAction,
                                       @Register navigator: Navigator,
                                       formProvider: DeclarationFormProvider,
-                                      dataCacheConnector: UserAnswersCacheConnector) extends FrontendController with I18nSupport {
+                                      dataCacheConnector: UserAnswersCacheConnector
+                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 

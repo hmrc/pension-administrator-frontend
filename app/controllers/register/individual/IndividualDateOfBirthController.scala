@@ -36,7 +36,7 @@ import utils.{Navigator, UserAnswers}
 import utils.annotations.Individual
 import views.html.register.individual.individualDateOfBirth
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDateOfBirthController @Inject()(
                                                  appConfig: FrontendAppConfig,
@@ -48,7 +48,7 @@ class IndividualDateOfBirthController @Inject()(
                                                  requireData: DataRequiredAction,
                                                  formProvider: IndividualDateOfBirthFormProvider,
                                                  registrationService: RegistrationService
-                                               ) extends FrontendController with I18nSupport with Retrievals {
+                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
