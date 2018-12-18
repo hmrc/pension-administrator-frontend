@@ -30,7 +30,7 @@ private object AppDependencies {
   private val bootstrapVersion = "4.4.0"
   private val scalacheckVersion = "1.14.0"
   private val scalacheckGenRegexp = "0.1.1"
-  private val domainVersion = "5.2.0"
+  private val domainVersion = "5.3.0"
   private val wireMockVersion = "2.18.0"
   private val whitelistVersion = "2.0.0"
 
