@@ -70,7 +70,8 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       addressViewModel(mode).retrieve.right.map(vm =>
-        post(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, "Company Contact Address"))
+        post(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, "Company Contact Address",
+          CompanyContactAddressPostCodeLookupId))
   }
 
 }

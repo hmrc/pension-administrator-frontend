@@ -23,7 +23,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
+import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -62,7 +62,8 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode), mode, "Company Previous Address")
+      post(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode), mode, "Company Previous Address",
+        CompanyPreviousAddressPostCodeLookupId)
   }
 
 }

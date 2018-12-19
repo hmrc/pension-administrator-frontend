@@ -24,7 +24,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId}
+import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId, PartnerAddressPostCodeLookupId}
 import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -69,7 +69,8 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
       retrievePartnerName(index) {
         partnerName =>
           val vm = addressViewModel(mode, index, partnerName)
-          post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, context(vm))
+          post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, context(vm),
+            PartnerAddressPostCodeLookupId(index))
       }
   }
 
