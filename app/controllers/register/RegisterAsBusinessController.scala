@@ -27,11 +27,11 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.Register
+import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class RegisterAsBusinessController @Inject()(
   appConfig: FrontendAppConfig,
@@ -41,7 +41,7 @@ class RegisterAsBusinessController @Inject()(
   requireData: DataRequiredAction,
   cache: UserAnswersCacheConnector,
   @Register navigator: Navigator
-) extends FrontendController with I18nSupport {
+)(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 

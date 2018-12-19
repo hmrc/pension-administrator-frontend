@@ -29,13 +29,16 @@ import utils.Navigator
 import utils.annotations.Individual
 import views.html.register.individual.whatYouWillNeed
 
+import scala.concurrent.ExecutionContext
+
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           @Individual val navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          auditService: AuditService) extends FrontendController with I18nSupport {
+                                          auditService: AuditService
+                                         )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>

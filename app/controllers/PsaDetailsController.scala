@@ -28,13 +28,16 @@ import utils.PsaDetailsHelper
 import utils.countryOptions.CountryOptions
 import views.html.psa_details
 
+import scala.concurrent.ExecutionContext
+
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
                                      subscriptionConnector: SubscriptionConnector,
-                                     countryOptions: CountryOptions) extends FrontendController with I18nSupport {
+                                     countryOptions: CountryOptions
+                                    )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

@@ -26,10 +26,13 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.index
 
+import scala.concurrent.ExecutionContext
+
 class IndexController @Inject()(val appConfig: FrontendAppConfig,
                                 val messagesApi: MessagesApi,
                                 authenticate: AuthAction,
-                                dataCacheConnector: UserAnswersCacheConnector) extends FrontendController with I18nSupport {
+                                dataCacheConnector: UserAnswersCacheConnector
+                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
     dataCacheConnector.save(request.externalId, IndexId, "").map(_ =>

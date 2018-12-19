@@ -32,6 +32,7 @@ import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserDetails
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 class AdviserDetailsController @Inject()(
                                           appConfig: FrontendAppConfig,
@@ -42,7 +43,7 @@ class AdviserDetailsController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: AdviserDetailsFormProvider
-                                        ) extends FrontendController with I18nSupport {
+                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 

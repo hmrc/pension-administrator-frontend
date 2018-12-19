@@ -31,7 +31,7 @@ import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.companyRegistrationNumber
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyRegistrationNumberController @Inject()(
                                                      appConfig: FrontendAppConfig,
@@ -42,7 +42,7 @@ class CompanyRegistrationNumberController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: CompanyRegistrationNumberFormProvider
-                                                   ) extends FrontendController with I18nSupport {
+                                                   )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form = formProvider()
 

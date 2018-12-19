@@ -23,7 +23,6 @@ import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId, CompanyContactAddressId}
 import javax.inject.Inject
-
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +33,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.companyAddressYears
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyAddressYearsController @Inject()(
                                                appConfig: FrontendAppConfig,
@@ -46,7 +45,7 @@ class CompanyAddressYearsController @Inject()(
                                                requireData: DataRequiredAction,
                                                formProvider: AddressYearsFormProvider,
                                                countryOptions: CountryOptions
-                                             ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                             )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form = formProvider("companyAddressYears.error.required")
 

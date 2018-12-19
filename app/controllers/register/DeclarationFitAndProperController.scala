@@ -40,7 +40,7 @@ import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
@@ -55,7 +55,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   enrolments: TaxEnrolmentsConnector,
                                                   emailConnector: EmailConnector,
                                                   psaNameCacheConnector: PSANameCacheConnector
-                                                 ) extends FrontendController with I18nSupport with Retrievals {
+                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

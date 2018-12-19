@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
 

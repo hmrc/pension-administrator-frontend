@@ -32,7 +32,7 @@ import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorNino
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DirectorNinoController @Inject()(
                                         appConfig: FrontendAppConfig,
@@ -43,7 +43,7 @@ class DirectorNinoController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorNinoFormProvider
-                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                      )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   private val form: Form[Nino] = formProvider()
 

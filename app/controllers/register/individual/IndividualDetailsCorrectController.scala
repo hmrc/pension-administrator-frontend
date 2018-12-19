@@ -34,7 +34,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectController @Inject()(
                                                     @Individual navigator: Navigator,
@@ -47,7 +47,7 @@ class IndividualDetailsCorrectController @Inject()(
                                                     formProvider: IndividualDetailsCorrectFormProvider,
                                                     registrationConnector: RegistrationConnector,
                                                     countryOptions: CountryOptions
-                                                  ) extends FrontendController with I18nSupport with Retrievals {
+                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

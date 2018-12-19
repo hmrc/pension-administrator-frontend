@@ -33,6 +33,8 @@ import scala.concurrent.Future
 
 trait MoreThanTenController extends FrontendController with I18nSupport {
 
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+
   protected def appConfig: FrontendAppConfig
 
   protected def dataCacheConnector: UserAnswersCacheConnector

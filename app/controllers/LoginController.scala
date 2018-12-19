@@ -27,10 +27,13 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.AuthenticationWithLowConfidence
 
+import scala.concurrent.ExecutionContext
+
 class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
                                 dataCacheConnector: UserAnswersCacheConnector,
-                                @AuthenticationWithLowConfidence authenticate: AuthAction) extends FrontendController with I18nSupport {
+                                @AuthenticationWithLowConfidence authenticate: AuthAction
+                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async {
     implicit request =>
