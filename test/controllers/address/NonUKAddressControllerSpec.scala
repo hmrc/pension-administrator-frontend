@@ -201,6 +201,7 @@ object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val registrationConnector: RegistrationConnector,
                                   override val navigator: Navigator,
+                                  override val countryOptions: CountryOptions,
                                   formProvider: NonUKAddressFormProvider
                                 ) extends NonUKAddressController {
 
