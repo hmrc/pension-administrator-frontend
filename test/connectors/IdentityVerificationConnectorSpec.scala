@@ -16,101 +16,128 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import connectors.PensionsSchemeConnectorSpec.userAnswers
-import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
-import play.api.http.Status
-import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
+import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
+import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues {
 
-class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
-
-  private val successResponse = Json.stringify(
-    Json.obj(
-      "token" -> "a token",
-      "start" -> "a url"
-    )
-  )
-
-  private val invalidResponse = Json.stringify(
-    Json.obj(
-      "tken" -> "a token",
-      "start" -> "a url"
-    )
-  )
-
-  private def postBody(completionURL: String, failureURL: String) = Json.stringify(
-    Json.obj (
-      "origin" -> "PODS",
-      "journeyType" -> "UpliftNoNino",
-      "completionURL" -> completionURL,
-      "failureURL" -> failureURL,
-      "confidenceLevel" -> 200
-    )
-  )
-
-  private val url = "/identity-verification/journey"
-
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private val completionURL = "completion url"
-  private val failureURL = "failure url"
+  import IdentityVerificationConnectorSpec._
 
   override protected def portConfigKey: String = "microservice.services.identity-verification.port"
 
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector = injector.instanceOf[IdentityVerificationConnector]
 
-  "IdentityVerificationConnector" must {
-    "return correct responses successfully with status 201 (Created)" in {
-      val expectedResult = IVRegisterOrganisationAsIndividualResponse("a token", "a url")
-      server.stubFor(
-        post(urlEqualTo(url))
-          .withRequestBody(equalTo(postBody(completionURL, failureURL)))
-          .willReturn(
-          aResponse()
-            .withStatus(Status.CREATED)
-            .withHeader("Content-Type", "application/json")
-            .withBody(successResponse)
+  private val url: String = s"/identity-verification/journey/$journeyId"
+
+  ".retrieveNinoFromIV" must {
+
+    "return a Nino" when {
+      "IV returned successfully with a nino" in {
+        server.stubFor(
+          get(urlEqualTo(url)
+          ).willReturn(
+            ok(expectedResponse))
         )
-      )
-      connector.startRegisterOrganisationAsIndividual(completionURL = completionURL, failureURL = failureURL).map {
-        result =>
-          result mustBe expectedResult
+
+        connector.retrieveNinoFromIV(journeyId).map {
+          result =>
+            result.value mustBe "AB000003D"
+        }
       }
-    }
 
-    "throw a Upstream5xxResponse if bad gateway status returned" in {
-      server.stubFor(
-        post(urlEqualTo(url))
-          .willReturn(
-            aResponse()
-              .withStatus(Status.BAD_GATEWAY)
+      "return None (no nino)" when {
+        "no nino returned from IV" in {
+          server.stubFor(
+            get(urlEqualTo(url)
+            ).willReturn(
+              ok(responseWithoutNino)
+            )
           )
-      )
 
-      recoverToSucceededIf[Upstream5xxResponse] {
-        connector.startRegisterOrganisationAsIndividual(completionURL = completionURL, failureURL = failureURL)
+          connector.retrieveNinoFromIV(journeyId).map {
+            result =>
+              result mustBe None
+          }
+        }
       }
-    }
 
-    "throw a JsResultException if an invalid response body is returned" in {
-      server.stubFor(
-        post(urlEqualTo(url))
-          .withRequestBody(equalTo(postBody(completionURL, failureURL)))
-          .willReturn(
-            aResponse()
-              .withStatus(Status.CREATED)
-              .withHeader("Content-Type", "application/json")
-              .withBody(invalidResponse)
+      "return None" when {
+        "no results are found for the requested journey Id" in {
+          server.stubFor(
+            get(urlEqualTo(
+              url
+            )).willReturn(
+              notFound()
+            )
           )
-      )
-      recoverToSucceededIf[JsResultException] {
-        connector.startRegisterOrganisationAsIndividual(completionURL = completionURL, failureURL = failureURL)
+          connector.retrieveNinoFromIV(journeyId).map {
+            result =>
+              result mustBe None
+          }
+        }
       }
     }
   }
+}
+
+object IdentityVerificationConnectorSpec {
+
+  private val journeyId = "1234"
+  private val expectedResponse =
+    """{
+      |  "journeyId" : "502f90f7-13ab-44c4-a4fa-474da0f0fe03",
+      |  "journeyType" : "OneTimeLogin",
+      |  "progress" : {
+      |    "questions" : [ {
+      |      "questionKey" : "fia-bankaccount",
+      |      "answers" : [ "7890", "4567", "2134", "4564", "8345" ],
+      |      "respondTo" : "http://localhost:38376/identity-verification/journey/502f90f7-13ab-44c4-a4fa-474da0f0fe03/answer",
+      |      "source" : "financial-accounts"
+      |    } ],
+      |    "numAnswered" : 0,
+      |    "result" : "Incomplete"
+      |  },
+      |  "serviceContract": {
+      |    "origin": "tama",
+      |    "completionURL": "/completionURL",
+      |    "failureURL": "/failureURL",
+      |    "confidenceLevel": 100
+      |  },
+      |  "availableEvidenceOptions" : [ {
+      |    "evidenceOption" : "financial-accounts"
+      |  } ],
+      |  "nino": "AB000003D",
+      |  "self": "http://identity-verification.service:80/identity-verification/journey/1234",
+      |  "start": "http://identity-verification.service:80/identity-verification/journey/1234/start"
+      |}""".stripMargin
+
+  private val responseWithoutNino =
+    """{
+      |  "journeyId" : "502f90f7-13ab-44c4-a4fa-474da0f0fe03",
+      |  "journeyType" : "OneTimeLogin",
+      |  "progress" : {
+      |    "questions" : [ {
+      |      "questionKey" : "fia-bankaccount",
+      |      "answers" : [ "7890", "4567", "2134", "4564", "8345" ],
+      |      "respondTo" : "http://localhost:38376/identity-verification/journey/502f90f7-13ab-44c4-a4fa-474da0f0fe03/answer",
+      |      "source" : "financial-accounts"
+      |    } ],
+      |    "numAnswered" : 0,
+      |    "result" : "Incomplete"
+      |  },
+      |  "serviceContract": {
+      |    "origin": "tama",
+      |    "completionURL": "/completionURL",
+      |    "failureURL": "/failureURL",
+      |    "confidenceLevel": 100
+      |  },
+      |  "availableEvidenceOptions" : [ {
+      |    "evidenceOption" : "financial-accounts"
+      |  } ],
+      |  "self": "http://identity-verification.service:80/identity-verification/journey/1234",
+      |  "start": "http://identity-verification.service:80/identity-verification/journey/1234/start"
+      |}""".stripMargin
 }
