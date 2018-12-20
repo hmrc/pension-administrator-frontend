@@ -81,7 +81,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
           val resultAfterRegisterWithoutID = cacheMap.flatMap { _ =>
             countryOptions.regions(address.country) match {
               case RestOfTheWorld =>
-                Future.successful(())
+                dataCacheConnector.remove(request.externalId, RegistrationInfoId).map(_=>())
               case _ =>
                 registrationConnector.registerWithNoIdOrganisation(name, address, legalStatus).flatMap { registrationInfo =>
                   dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
