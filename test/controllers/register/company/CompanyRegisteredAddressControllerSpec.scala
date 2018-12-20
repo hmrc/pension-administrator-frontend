@@ -152,10 +152,12 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
         when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
         when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
 
+        val result = controller(registrationConnector = mockRegistrationConnector,userAnswersCacheConnector = userAnswersCacheConnector)
+          .onSubmit()(postRequest)
 
-        Await.result(controller(registrationConnector = mockRegistrationConnector,userAnswersCacheConnector = userAnswersCacheConnector)
-          .onSubmit()(postRequest), Duration.Inf)
-        verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+        whenReady(result) { _ =>
+          verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+        }
       }
     }
 

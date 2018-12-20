@@ -157,8 +157,10 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
       when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
 
-      Await.result(controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit()(postRequest), Duration.Inf)
-      verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+      val result = controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit()(postRequest)
+      whenReady(result) {_=>
+        verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
