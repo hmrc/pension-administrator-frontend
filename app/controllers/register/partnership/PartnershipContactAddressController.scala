@@ -23,7 +23,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipDetailsId}
+import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -80,7 +80,8 @@ class PartnershipContactAddressController @Inject()(
             PartnershipContactAddressListId,
             viewmodel(mode, details.companyName),
             mode,
-            context = "Partnership contact address"
+            context = "Partnership contact address",
+            PartnershipContactAddressPostCodeLookupId
           )
       }
   }

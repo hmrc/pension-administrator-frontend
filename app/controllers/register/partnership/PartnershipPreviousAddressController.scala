@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.partnership.routes._
 import forms.AddressFormProvider
-import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
+import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
@@ -67,7 +67,8 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode), mode, "Partnership Previous Address")
+      post(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode), mode, "Partnership Previous Address",
+        PartnershipPreviousAddressPostCodeLookupId)
   }
 
 }

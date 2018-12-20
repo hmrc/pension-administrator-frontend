@@ -22,7 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
@@ -64,7 +64,7 @@ class AdviserAddressController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserAddressId, AdviserAddressListId, addressViewModel(mode), mode, "Adviser Address")
+      post(AdviserAddressId, AdviserAddressListId, addressViewModel(mode), mode, "Adviser Address", AdviserAddressPostCodeLookupId)
   }
 
 }

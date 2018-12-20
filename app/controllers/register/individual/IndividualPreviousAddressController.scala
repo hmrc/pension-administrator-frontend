@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
-import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
+import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.data.Form
@@ -70,7 +70,8 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode, "Individual Previous Address")
+      post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode, "Individual Previous Address",
+        IndividualPreviousAddressPostCodeLookupId)
   }
 
 }

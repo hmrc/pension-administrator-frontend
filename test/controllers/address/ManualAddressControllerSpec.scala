@@ -54,6 +54,10 @@ object ManualAddressControllerSpec {
 
   val externalId: String = "test-external-id"
 
+  val fakeSeqTolerantAddressId: TypedIdentifier[Seq[TolerantAddress]] = new TypedIdentifier[Seq[TolerantAddress]] {
+    override def toString = "abc"
+  }
+
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
   private val testContext = "test-context"
 
@@ -70,7 +74,8 @@ object ManualAddressControllerSpec {
       get(fakeAddressId, fakeAddressListId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
 
     def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(fakeAddressId, fakeAddressListId, viewModel, NormalMode, testContext)(DataRequest(request, externalId, psaUser, answers))
+      post(fakeAddressId, fakeAddressListId, viewModel, NormalMode, testContext, fakeSeqTolerantAddressId)(
+        DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
   }
@@ -201,7 +206,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
   "post" must {
 
     "redirect to the postCall on valid data request" which {
-      "will save address to answers" in {
+      "will save address to answers and remove the address postcode lookup list" in {
 
         val onwardRoute = Call("GET", "/")
 
@@ -230,6 +235,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             val address = Address("value 1", "value 2", None, None, Some("AB1 1AB"), "GB")
 
             FakeUserAnswersCacheConnector.verify(fakeAddressId, address)
+            FakeUserAnswersCacheConnector.verifyRemoved(fakeSeqTolerantAddressId)
         }
 
       }
