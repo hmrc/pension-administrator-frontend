@@ -144,18 +144,17 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
           "country" -> "IN"
         )
 
+        val validConnectorCallResult = Json.obj("test" -> "test")
         val mockRegistrationConnector = mock[RegistrationConnector]
 
         when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
           .thenReturn(Future.successful(registrationInfo))
-        when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(Json.obj("test" -> "test")))
-
-        when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(Json.obj("test" -> "test")))
+        when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
+        when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
 
 
         Await.result(controller(registrationConnector = mockRegistrationConnector,userAnswersCacheConnector = userAnswersCacheConnector)
           .onSubmit()(postRequest), Duration.Inf)
-
         verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
       }
     }

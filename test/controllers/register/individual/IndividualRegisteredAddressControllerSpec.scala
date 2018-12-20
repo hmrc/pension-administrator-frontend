@@ -17,23 +17,31 @@
 package controllers.register.individual
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.FakeUserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import models._
-import org.scalatest.concurrent.ScalaFutures
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.BeforeAndAfter
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.{FakeCountryOptions, FakeNavigator}
 import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration.Duration
 
 class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with BeforeAndAfter{
 
@@ -56,11 +64,12 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   )
 
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual,
+                 userAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new IndividualRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeUserAnswersCacheConnector,
+      userAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
@@ -133,6 +142,23 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       redirectLocation(result) mustBe Some(onwardRoute.url)
 
       FakeUserAnswersCacheConnector.verify(IndividualAddressId, Address("value 1", "value 2", None, None, None, "GB").toTolerantAddress)
+    }
+
+
+    "remove registration info when non eea country is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        "country" -> "IN"
+      )
+
+      val validConnectorCallResult = Json.obj("test" -> "test")
+      val userAnswersCacheConnector = mock[UserAnswersCacheConnector]
+      when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
+      when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
+
+      Await.result(controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit()(postRequest), Duration.Inf)
+      verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
