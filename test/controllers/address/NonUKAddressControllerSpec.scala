@@ -148,13 +148,13 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val result = controller.onSubmit(viewModel, UserAnswers(), FakeRequest().withFormUrlEncodedBody(
               ("addressLine1", "value 1"),
               ("addressLine2", "value 2"),
-              "country" -> "IN")
+              "country" -> "ES")
             )
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).get mustEqual onwardRoute.url
 
-            val address = Address("value 1", "value 2", None, None, None, "IN")
+            val address = Address("value 1", "value 2", None, None, None, "ES")
 
             FakeUserAnswersCacheConnector.verify(fakeAddressId, address.toTolerantAddress)
             FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
@@ -201,6 +201,7 @@ object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val registrationConnector: RegistrationConnector,
                                   override val navigator: Navigator,
+                                  override val countryOptions: CountryOptions,
                                   formProvider: NonUKAddressFormProvider
                                 ) extends NonUKAddressController {
 

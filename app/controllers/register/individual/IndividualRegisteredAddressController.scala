@@ -21,8 +21,10 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.address.NonUKAddressFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import javax.inject.Inject
+import models.InternationalRegion.RestOfTheWorld
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -48,7 +50,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        formProvider: NonUKAddressFormProvider,
                                                        val countryOptions: CountryOptions
-                                                     )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport{
+                                                     )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   protected val form: Form[Address] = formProvider()
 
@@ -75,16 +77,22 @@ class IndividualRegisteredAddressController @Inject()(
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       IndividualDetailsId.retrieve.right.map {
-        case individual =>
+        individual =>
           form.bindFromRequest().fold(
             (formWithError: Form[_]) => {
               val view = createView(appConfig, formWithError, addressViewModel(individual.fullName))
               Future.successful(BadRequest(view()))
             },
             address =>
-              dataCacheConnector.save(request.externalId, IndividualAddressId, address.toTolerantAddress).map {
+              dataCacheConnector.save(request.externalId, IndividualAddressId, address.toTolerantAddress).flatMap {
                 cacheMap =>
-                  Redirect(navigator.nextPage(IndividualAddressId, NormalMode, UserAnswers(cacheMap)))
+                  val registrationInfoRemoval = countryOptions.regions(address.country) match {
+                    case RestOfTheWorld =>
+                      dataCacheConnector.remove(request.externalId, RegistrationInfoId).map(_ => ())
+                    case _ =>
+                      Future.successful(())
+                  }
+                  registrationInfoRemoval.map(_ => Redirect(navigator.nextPage(IndividualAddressId, NormalMode, UserAnswers(cacheMap))))
               }
           )
       }

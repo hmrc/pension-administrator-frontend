@@ -17,20 +17,32 @@
 package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.FakeUserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
+import controllers.register.DeclarationFitAndProperControllerSpec.{contactDetails, mockEmailConnector}
 import forms.address.NonUKAddressFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.partnership.PartnershipContactAddressId
 import models._
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{atLeastOnce, never, verify}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.domain.PsaId
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
+import org.mockito.Matchers
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar._
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
@@ -38,12 +50,13 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany, registrationConnector: RegistrationConnector = fakeRegistrationConnector,
+                 userAnswersCacheConnector : UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new CompanyRegisteredAddressController(
       frontendAppConfig,
       messagesApi,
-      FakeUserAnswersCacheConnector,
-      fakeRegistrationConnector,
+      userAnswersCacheConnector,
+      registrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
@@ -99,6 +112,71 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "for non EEA country not call the register without id method" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        "country" -> "IN"
+      )
+
+      val mockRegistrationConnector = mock[RegistrationConnector]
+
+      when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
+        .thenReturn(Future.successful(registrationInfo))
+
+      val result = controller(registrationConnector = mockRegistrationConnector).onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      verify(mockRegistrationConnector, never()).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
+    }
+
+
+    "delete the registrationInfo data" when {
+      "we have changed the contact address to NON EEA" in {
+
+        val userAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+        val postRequest = fakeRequest.withFormUrlEncodedBody(
+          ("addressLine1", "value 1"),
+          ("addressLine2", "value 2"),
+          "country" -> "IN"
+        )
+
+        val validConnectorCallResult = Json.obj("test" -> "test")
+        val mockRegistrationConnector = mock[RegistrationConnector]
+
+        when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
+          .thenReturn(Future.successful(registrationInfo))
+        when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
+        when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
+
+        val result = controller(registrationConnector = mockRegistrationConnector,userAnswersCacheConnector = userAnswersCacheConnector)
+          .onSubmit()(postRequest)
+
+        whenReady(result) { _ =>
+          verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+        }
+      }
+    }
+
+    "for EEA country call the register without id method" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        "country" -> "ES"
+      )
+
+      val mockRegistrationConnector = mock[RegistrationConnector]
+
+      when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
+        .thenReturn(Future.successful(registrationInfo))
+
+      val result = controller(registrationConnector = mockRegistrationConnector).onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      verify(mockRegistrationConnector, atLeastOnce()).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
