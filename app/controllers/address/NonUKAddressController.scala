@@ -19,10 +19,9 @@ package controllers.address
 import config.FrontendAppConfig
 import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
-import controllers.register.company.routes
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId
-import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
+import models.InternationalRegion.RestOfTheWorld
 import models._
 import models.requests.DataRequest
 import play.api.data.Form
@@ -67,7 +66,7 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
     Future.successful(Ok(view()))
   }
 
-  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus:RegistrationLegalStatus)(
+  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus: RegistrationLegalStatus)(
     implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => {
@@ -78,30 +77,32 @@ trait NonUKAddressController extends FrontendController with Retrievals with I18
         if (address.country.equals("GB")) {
           redirectUkAddress(request.externalId, address, id)
         } else {
+          val cacheMap = dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
+          val resultAfterRegisterWithoutID = cacheMap.flatMap { _ =>
             countryOptions.regions(address.country) match {
-              case RestOfTheWorld => {
-                dataCacheConnector.save(request.externalId, id, address.toTolerantAddress).map(data =>
-                  Redirect(navigator.nextPage(id, NormalMode, UserAnswers(data))))
-              }
-              case _ => {
-                for {
-                  registrationInfo <- registrationConnector.registerWithNoIdOrganisation(name, address, legalStatus)
-                  cacheMap <- dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
-                  _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
-                } yield {
-                  Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
-                }
-              }
+              case RestOfTheWorld =>
+                Future.successful(())
+              case _ =>
+                registrationConnector.registerWithNoIdOrganisation(name, address, legalStatus).flatMap { registrationInfo =>
+                  dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
+                }.map(_ => ())
             }
+          }
+
+          cacheMap.flatMap { cm =>
+            resultAfterRegisterWithoutID.map { _ =>
+              Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cm)))
+            }
+          }
         }
       }
     )
   }
 
-   def redirectUkAddress(extId: String,
-                         address: Address,
-                         id: TypedIdentifier[TolerantAddress]
-                        )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+  def redirectUkAddress(extId: String,
+                        address: Address,
+                        id: TypedIdentifier[TolerantAddress]
+                       )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
     for {
       cacheMap <- dataCacheConnector.save(extId, id, address.toTolerantAddress)
     } yield {
