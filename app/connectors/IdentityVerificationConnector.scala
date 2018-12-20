@@ -18,31 +18,23 @@ package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import models.register.PsaSubscriptionResponse
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-case class IVRegisterOrganisationAsIndividualResponse(token: String, start: String)
-
-object IVRegisterOrganisationAsIndividualResponse {
-  implicit val format: OFormat[IVRegisterOrganisationAsIndividualResponse] = Json.format[IVRegisterOrganisationAsIndividualResponse]
-}
-
 class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig) extends IdentityVerificationConnector {
   def startRegisterOrganisationAsIndividual(completionURL: String,
                                             failureURL: String)(implicit
                                                                 hc: HeaderCarrier,
-                                                                ec: ExecutionContext): Future[IVRegisterOrganisationAsIndividualResponse] = {
+                                                                ec: ExecutionContext): Future[String] = {
 
     val jsonData = Json.obj(
       "origin" -> "PODS",
-      "journeyType" -> "UpliftNoNino",
       "completionURL" -> completionURL,
       "failureURL" -> failureURL,
       "confidenceLevel" -> 200
@@ -50,17 +42,35 @@ class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: F
 
     http.POST(appConfig.ivRegisterOrganisationAsIndividualUrl, jsonData).map { response =>
       require(response.status == Status.CREATED)
-      Json.parse(response.body).validate[IVRegisterOrganisationAsIndividualResponse] match {
+      (response.json \ "link").validate[String] match {
         case JsSuccess(value, _) => value
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
-      logExceptions()
+      logExceptions("Unable to start registration of organisation as individual via IV")
     }
   }
 
-  private def logExceptions(): PartialFunction[Try[IVRegisterOrganisationAsIndividualResponse], Unit] = {
-    case Failure(t: Throwable) => Logger.error("Unable to start registration of organisation as individual via IV", t)
+  override def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+    val url = s"${appConfig.identityVerification}/identity-verification/journey/$journeyId"
+
+    implicit val rds: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
+      override def read(method: String, url: String, response: HttpResponse): HttpResponse = response
+    }
+
+    http.GET(url).flatMap {
+      case response if response.status equals Status.OK =>
+        Future.successful((response.json \ "nino").asOpt[String])
+      case response =>
+        Logger.debug(s"Call to retrieve Nino from IV failed with status ${response.status} and response body ${response.body}")
+        Future.successful(None)
+    }
+  } andThen {
+    logExceptions("Unable to retrieve Nino from IV")
+  }
+
+  private def logExceptions[T](msg: String): PartialFunction[Try[T], Unit] = {
+    case Failure(t: Throwable) => Logger.error(msg, t)
   }
 }
 
@@ -69,5 +79,7 @@ trait IdentityVerificationConnector {
   def startRegisterOrganisationAsIndividual(completionURL: String,
                                             failureURL: String)(implicit
                                                                 hc: HeaderCarrier,
-                                                                ec: ExecutionContext): Future[IVRegisterOrganisationAsIndividualResponse]
+                                                                ec: ExecutionContext): Future[String]
+
+  def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]]
 }
