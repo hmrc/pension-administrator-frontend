@@ -40,7 +40,8 @@ class RegistrationConnectorSpec()
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
-        "metrics.enabled" -> false
+        "metrics.enabled" -> false,
+        "features.is-iv-enabled" -> true
       )
       .build()
 
@@ -206,8 +207,37 @@ class RegistrationConnectorSpec()
 
   }
 
-  "registerWithIdIndividual" should "return the individual and address given a valid NINO" in {
+  "registerWithIdIndividual" should "return the individual and address given a valid NINO when manual Iv is enabled" in {
+    val postRequestBody = Json.obj("nino" -> "test-nino")
+    server.stubFor(
+      post(urlEqualTo(individualPath))
+        .withRequestBody(equalToJson(Json.stringify(postRequestBody)))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(Json.stringify(validIndividualResponse(true)))
+        )
+    )
 
+    val connector = injector.instanceOf[RegistrationConnector]
+    connector.registerWithIdIndividual(nino).map { registration =>
+      registration.response.individual shouldBe expectedIndividual
+      registration.response.address shouldBe expectedAddress(true)
+    }
+
+  }
+
+  it should "return the individual and address given a valid NINO when manual Iv is disabled" in {
+    lazy val appWithIvDisabled: Application = new GuiceApplicationBuilder()
+      .configure(
+        portConfigKey -> server.port().toString,
+        "auditing.enabled" -> false,
+        "metrics.enabled" -> false,
+        "features.is-iv-enabled" -> false
+      ).build()
+
+    val injector = appWithIvDisabled.injector
     server.stubFor(
       post(urlEqualTo(individualPath))
         .willReturn(
@@ -223,7 +253,6 @@ class RegistrationConnectorSpec()
       registration.response.individual shouldBe expectedIndividual
       registration.response.address shouldBe expectedAddress(true)
     }
-
   }
 
   it should "return the registration info for an individual with a UK address" in {
@@ -377,7 +406,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus).map { registration =>
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus).map { registration =>
       registration.sapNumber shouldBe sapNumber
     }
   }
@@ -395,7 +424,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus).map { registration =>
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus).map { registration =>
       registration.noIdentifier shouldBe true
     }
   }
@@ -414,7 +443,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[IllegalArgumentException] {
-      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus)
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus)
     }
 
   }
@@ -431,7 +460,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[NotFoundException] {
-      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk=false).toAddress, legalStatus)
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus)
     }
 
   }
@@ -450,7 +479,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth).map { registration =>
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map { registration =>
       registration.sapNumber shouldBe sapNumber
     }
   }
@@ -469,7 +498,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth).map { registration =>
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map { registration =>
       registration.noIdentifier shouldBe true
     }
   }
@@ -488,28 +517,28 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[IllegalArgumentException] {
-      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth)
+      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth)
     }
 
   }
 
 
-    it should "propagate exceptions from HttpClient" in {
+  it should "propagate exceptions from HttpClient" in {
 
-      server.stubFor(
-        post(urlEqualTo(noIdIndividualPath))
-          .willReturn(
-            aResponse()
-              .withStatus(Status.NOT_FOUND)
-          )
-      )
+    server.stubFor(
+      post(urlEqualTo(noIdIndividualPath))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.NOT_FOUND)
+        )
+    )
 
-      val connector = injector.instanceOf[RegistrationConnector]
-      recoverToSucceededIf[NotFoundException] {
-        connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk=false).toAddress, individualDateOfBirth)
-      }
-
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[NotFoundException] {
+      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth)
     }
+
+  }
 
 }
 
@@ -529,7 +558,7 @@ object RegistrationConnectorSpec extends OptionValues {
   private val individualDateOfBirth = LocalDate.parse("20150808")
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
   private val registerWithoutIdIndividualRequest = Json.toJson(
-    RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk=false).toAddress))
+    RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk = false).toAddress))
 
   private val expectedIndividual = TolerantIndividual(
     Some("John"),

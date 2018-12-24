@@ -82,6 +82,8 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   lazy val identityVerification: String = baseUrl("identity-verification")
 
+  lazy val identityVerificationFrontend: String = baseUrl("identity-verification-frontend")
+
   lazy val registerWithIdOrganisationUrl: String = baseUrl ("pension-administrator") +
         runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithIdOrganisation")
 

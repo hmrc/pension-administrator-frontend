@@ -20,9 +20,9 @@ import java.net.URLEncoder
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector}
 import controllers.routes
-import identifiers.PsaId
+import identifiers.{JourneyId, NinoId, PsaId}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Controller
@@ -46,7 +46,7 @@ class AuthActionSpec extends SpecBase {
       "already enrolled in PODS, not coming from confirmation" in {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -59,7 +59,7 @@ class AuthActionSpec extends SpecBase {
       "redirect the user to the PSP cant use this service page" in {
         val enrolmentPP = Enrolments(Set(Enrolment("HMRC-PP-ORG", Seq(EnrolmentIdentifier("PPID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPP)
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -73,23 +73,23 @@ class AuthActionSpec extends SpecBase {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersConnector)
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersConnector, fakeIVConnector)
         val controller = new Harness(authAction)
 
         "coming from confirmation" in {
-          val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.confirmationUri))
+          val result = controller.onPageLoad()(FakeRequest("GET", appConfig().confirmationUri))
           status(result) mustBe OK
           fakeUserAnswersConnector.verify(PsaId, psaId)
         }
 
         "coming from duplicate registration" in {
-          val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.duplicateRegUri))
+          val result = controller.onPageLoad()(FakeRequest("GET", appConfig().duplicateRegUri))
           status(result) mustBe OK
           fakeUserAnswersConnector.verify(PsaId, psaId)
         }
 
         "coming from registered psa details" in {
-          val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.registeredPsaDetailsUri))
+          val result = controller.onPageLoad()(FakeRequest("GET", appConfig().registeredPsaDetailsUri))
           status(result) mustBe OK
           fakeUserAnswersConnector.verify(PsaId, psaId)
         }
@@ -101,7 +101,7 @@ class AuthActionSpec extends SpecBase {
       "return OK if they have Confidence level 200 or higher and not enrolled" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L200, AffinityGroup.Individual)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersConnector)
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersConnector, fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -110,11 +110,11 @@ class AuthActionSpec extends SpecBase {
 
       "redirect to IV if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
-        val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
-          s"completionURL=${URLEncoder.encode(frontendAppConfig.ukJourneyContinueUrl, "UTF-8")}&" +
-          s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
+        val redirectUrl = s"${appConfig().ivUpliftUrl}?origin=PODS&" +
+          s"completionURL=${URLEncoder.encode(appConfig().ukJourneyContinueUrl, "UTF-8")}&" +
+          s"failureURL=${URLEncoder.encode(s"${appConfig().loginContinueUrl}/unauthorised", "UTF-8")}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -127,7 +127,7 @@ class AuthActionSpec extends SpecBase {
 
       "return OK if they have confidence level less than 200 and they have not answered if they are UK/NON-UK" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L100, AffinityGroup.Individual)
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector(None))
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(Json.obj()), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -135,12 +135,108 @@ class AuthActionSpec extends SpecBase {
       }
     }
 
-    "called for Company user" must {
+    "called for Company user when Manual IV Disabled" must {
+
+      "return OK" when {
+        "user is in UK and wants to register as Individual" in {
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(false),
+            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+        }
+      }
+    }
+
+    "called for Company user when Manual IV Enabled" must {
+
+      "redirect to Manual IV " when {
+        "they want to register as Individual" in {
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(),
+            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(fakeRequest)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(appConfig().identityVerificationFrontend + startIVLink)
+        }
+      }
+
+      "return OK, retrieve the nino from iv and save it" when {
+
+        "journey Id is saved in user answers" in {
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false, "journeyId" -> "test-journey")
+          val fakeUserAnswers = fakeUserAnswersCacheConnector(userAnswersData)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(),
+            fakeUserAnswers, fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+          fakeUserAnswers.verify(NinoId, nino)
+        }
+
+        "journey Id is not in user answers but present in url" in {
+          val journeyId = "test-journey-id"
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
+          val fakeUserAnswers = fakeUserAnswersCacheConnector(userAnswersData)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(),
+            fakeUserAnswers, fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(FakeRequest("", s"/url?journeyId=$journeyId"))
+          status(result) mustBe OK
+          fakeUserAnswers.verify(NinoId, nino)
+          fakeUserAnswers.verify(JourneyId, journeyId)
+        }
+      }
+
+      "return OK" when {
+        "nino is already saved in user answers" in {
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false, "journeyId" -> "test-journey", "nino" -> nino)
+          val fakeUserAnswers = fakeUserAnswersCacheConnector(userAnswersData)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(),
+            fakeUserAnswers, fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+        }
+
+        "the user is non uk user" in {
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(),
+            fakeUserAnswersCacheConnector(Json.obj("areYouInUK" -> false)), fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+        }
+
+        "user is in UK and wants to register as Organisation" in {
+          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
+          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> true)
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(),
+            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+        }
+      }
 
       "return OK if affinity Group is Organisation" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
 
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe OK
@@ -149,7 +245,7 @@ class AuthActionSpec extends SpecBase {
       "redirect the user to Unauthorised page if the affinity group is not Individual/Company " in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Agent)
 
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -159,27 +255,30 @@ class AuthActionSpec extends SpecBase {
 
     "the user hasn't logged in" must {
       "redirect the user to log in " in {
-        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new MissingBearerToken)), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new MissingBearerToken)),
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get must startWith(appConfig().loginUrl)
       }
     }
 
     "the user's session has expired" must {
       "redirect the user to log in " in {
-        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new BearerTokenExpired)), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new BearerTokenExpired)),
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get must startWith(appConfig().loginUrl)
       }
     }
 
     "the user doesn't have sufficient enrolments" must {
       "redirect the user to the unauthorised page" in {
-        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new InsufficientEnrolments)), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new InsufficientEnrolments)),
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -196,7 +295,7 @@ class AuthActionSpec extends SpecBase {
           )
         )
         val retrievalResult = authRetrievals(enrolments = enrolmentsPSA)
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -207,7 +306,7 @@ class AuthActionSpec extends SpecBase {
     "the user doesn't have sufficient confidence level" must {
       "redirect the user to the unauthorised page" in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new InsufficientConfidenceLevel)),
-          frontendAppConfig, fakeUserAnswersCacheConnector())
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -217,7 +316,8 @@ class AuthActionSpec extends SpecBase {
 
     "the user used an unaccepted auth provider" must {
       "redirect the user to the unauthorised page" in {
-        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedAuthProvider)), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedAuthProvider)),
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -227,7 +327,8 @@ class AuthActionSpec extends SpecBase {
 
     "the user has an unsupported affinity group" must {
       "redirect the user to the unauthorised page" in {
-        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedAffinityGroup)), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedAffinityGroup)),
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -237,7 +338,8 @@ class AuthActionSpec extends SpecBase {
 
     "the user has an unsupported credential role" must {
       "redirect the user to the Unauthorised Assistant page" in {
-        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedCredentialRole)), frontendAppConfig, fakeUserAnswersCacheConnector())
+        val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedCredentialRole)),
+          appConfig(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -250,7 +352,7 @@ class AuthActionSpec extends SpecBase {
       "return OK if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
-        val authAction = new AuthenticationWithNoConfidence(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeUserAnswersConnector)
+        val authAction = new AuthenticationWithNoConfidence(fakeAuthConnector(retrievalResult), appConfig(), fakeUserAnswersConnector, fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -263,17 +365,27 @@ class AuthActionSpec extends SpecBase {
 
 object AuthActionSpec {
   private val psaId = "A0000000"
+  private val startIVLink = "/start-iv-link"
+  private val nino = "test-nino"
 
-  def fakeUserAnswersCacheConnector(isInUk: Option[Boolean] = Some(true)): FakeUserAnswersCacheConnector = new FakeUserAnswersCacheConnector {
+  def fakeUserAnswersCacheConnector(dataToBeReturned: JsValue = Json.obj("areYouInUK" -> true)):
+  FakeUserAnswersCacheConnector = new FakeUserAnswersCacheConnector {
     override def fetch(cacheId: String)(implicit
                                         ec: ExecutionContext,
                                         hc: HeaderCarrier
     ): Future[Option[JsValue]] = {
+      Future.successful(Some(dataToBeReturned))
+    }
+  }
 
-      isInUk match {
-        case Some(flag) => Future.successful(Some(Json.obj("areYouInUK" -> flag)))
-        case _ => Future.successful(Some(Json.obj()))
-      }
+  def fakeIVConnector: IdentityVerificationConnector = new IdentityVerificationConnector {
+    override def startRegisterOrganisationAsIndividual(completionURL: String,
+                                                       failureURL: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+      Future.successful(startIVLink)
+    }
+
+    override def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+      Future.successful(Some(nino))
     }
   }
 
@@ -295,6 +407,14 @@ object AuthActionSpec {
 
   class Harness(authAction: AuthAction) extends Controller {
     def onPageLoad() = authAction { _ => Ok }
+  }
+
+  private def appConfig(isManualIVEnabled: Boolean = true): FrontendAppConfig = {
+    new GuiceApplicationBuilder().configure(
+      Map(
+        "features.is-iv-enabled" -> isManualIVEnabled
+      )
+    ).build().injector.instanceOf[FrontendAppConfig]
   }
 
 }
