@@ -113,9 +113,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       case Some(journey) =>
         getNinoAndUpdateAuthRequest(journey, enrolments, block, authRequest)
       case _ if journeyId.nonEmpty =>
-        userAnswersCacheConnector.save(authRequest.externalId, JourneyId, journeyId.getOrElse("")).flatMap { _ =>
+        userAnswersCacheConnector.save(authRequest.externalId, JourneyId, journeyId.getOrElse("")).flatMap(_ =>
           getNinoAndUpdateAuthRequest(journeyId.getOrElse(""), enrolments, block, authRequest)
-        }
+        )
       case _ =>
         orgManualIV(authRequest.externalId, enrolments, authRequest, block)
     }
