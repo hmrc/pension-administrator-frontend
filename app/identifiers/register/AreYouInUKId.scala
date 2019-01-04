@@ -46,7 +46,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
           removeCompanyData).flatMap(
           removePartnershipData).flatMap(
           removeDeclarationData).flatMap(
-          _.removeAllOf(List(NonUKBusinessTypeId, RegisterAsBusinessId, CompanyAddressId, PartnershipRegisteredAddressId))
+          _.removeAllOf(List(NonUKBusinessTypeId, CompanyAddressId, PartnershipRegisteredAddressId))
         )
       case _ =>
         super.cleanup(value, userAnswers)

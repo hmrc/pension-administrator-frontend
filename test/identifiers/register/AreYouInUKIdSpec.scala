@@ -84,7 +84,6 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
       "remove all the non uk company data" in {
         result.get(NonUKBusinessTypeId) mustNot be(defined)
-        result.get(RegisterAsBusinessId) mustNot be(defined)
         result.get(CompanyAddressId) mustNot be(defined)
         result.get(CompanySameContactAddressId) mustNot be(defined)
         result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
@@ -255,9 +254,6 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(MoreThanTenPartnersId) mustNot be(defined)
       }
 
-      "not remove the data for confirm partnership details" in {
-        result.get(RegisterAsBusinessId) mustNot be(defined)
-      }
     }
 
     "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
