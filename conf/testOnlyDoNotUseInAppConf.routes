@@ -11,3 +11,8 @@
 
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
+
+GET        /register-as-pension-scheme-administrator/test-only/toggle-on/:featureSwitch     controllers.testOnlyDoNotUseInAppConf.TestFeatureSwitchManagerController.toggleOn(featureSwitch: String)
+GET        /register-as-pension-scheme-administrator/test-only/toggle-off/:featureSwitch    controllers.testOnlyDoNotUseInAppConf.TestFeatureSwitchManagerController.toggleOff(featureSwitch: String)
+GET        /register-as-pension-scheme-administrator/test-only/reset/:featureSwitch         controllers.testOnlyDoNotUseInAppConf.TestFeatureSwitchManagerController.reset(featureSwitch: String)
+
