@@ -19,7 +19,7 @@ package controllers.actions
 import java.net.URLEncoder
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
+import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
@@ -35,12 +35,14 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import utils.Toggles.IsManualIVEnabled
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
+                                   fs: FeatureSwitchManagementService,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
                                    ivConnector: IdentityVerificationConnector
                                   )
@@ -71,7 +73,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel, enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
                          block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    if(config.isManualIVEnabled) {
+    if(fs.get(IsManualIVEnabled)) {
       successRedirectIVEnable(affinityGroup, cl, enrolments, authRequest, block)
     } else {
       successRedirectIVDisable(affinityGroup, cl, enrolments, authRequest, block)
@@ -255,11 +257,13 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
 
-class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig,
+class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthConnector,
+                                               config: FrontendAppConfig,
+                                               fs: FeatureSwitchManagementService,
                                                userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               identityVerificationConnector: IdentityVerificationConnector)
-                                              (implicit ec: ExecutionContext)
-  extends FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector) with AuthorisedFunctions {
+                                               identityVerificationConnector: IdentityVerificationConnector
+                                              )(implicit ec: ExecutionContext)
+  extends FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector) with AuthorisedFunctions {
 
 
   override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
