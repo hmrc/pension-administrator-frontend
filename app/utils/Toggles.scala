@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package identifiers
+package utils
 
-object JourneyId extends TypedIdentifier[String] {
-  override def toString: String = "journeyId"
+object Toggles {
+
+  val IsManualIVEnabled: String = "is-iv-enabled"
 }

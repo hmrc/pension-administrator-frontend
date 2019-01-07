@@ -19,9 +19,8 @@ package connectors
 import java.util.UUID.randomUUID
 
 import com.google.inject.{ImplementedBy, Inject}
-import config.FrontendAppConfig
+import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import javax.inject.Singleton
-
 import models._
 import models.registrationnoid.RegistrationNoIdIndividualRequest
 import org.joda.time.LocalDate
@@ -30,7 +29,7 @@ import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
+import utils.Toggles.IsManualIVEnabled
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -54,7 +53,10 @@ trait RegistrationConnector {
 }
 
 @Singleton
-class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends RegistrationConnector {
+class RegistrationConnectorImpl @Inject()(http: HttpClient,
+                                          config: FrontendAppConfig,
+                                          fs: FeatureSwitchManagementService
+                                         ) extends RegistrationConnector {
 
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
@@ -103,7 +105,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
-    val postCall = if (config.isManualIVEnabled) {
+    val postCall = if (fs.get(IsManualIVEnabled)) {
       val body = Json.obj(
         "nino" -> nino
       )

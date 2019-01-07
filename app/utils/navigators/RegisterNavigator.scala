@@ -16,7 +16,7 @@
 
 package utils.navigators
 
-import config.FrontendAppConfig
+import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.UserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.register._
@@ -26,13 +26,17 @@ import javax.inject.Inject
 import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import utils.{Navigator, UserAnswers}
+import utils.Toggles.IsManualIVEnabled
 
-class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, appConfig: FrontendAppConfig) extends Navigator {
+class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
+                                  appConfig: FrontendAppConfig,
+                                  fs: FeatureSwitchManagementService
+                                 ) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
     case RegisterAsBusinessId =>
-      if (appConfig.isManualIVEnabled) {
+      if (fs.get(IsManualIVEnabled)) {
         individualOrOganisationRoutes(from.userAnswers)
       } else {
         individualOrOganisationRoutesToggleOff(from.userAnswers)
@@ -76,7 +80,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
       case Some(false) =>
         NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
       case Some(true) =>
-        if (appConfig.isManualIVEnabled) {
+        if (fs.get(IsManualIVEnabled)) {
           NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
         } else {
           NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
@@ -95,7 +99,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         case (Some(false), Some(NonUKBusinessType.BusinessPartnership), _, Some(_)) =>
           controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
         case (Some(true), _, _, _) =>
-          if (appConfig.isManualIVEnabled) {
+          if (fs.get(IsManualIVEnabled)) {
             controllers.register.routes.RegisterAsBusinessController.onPageLoad()
           } else {
             controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)

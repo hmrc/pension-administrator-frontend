@@ -17,19 +17,18 @@
 package utils.navigators
 
 import base.SpecBase
-import config.FrontendAppConfig
+import config.FeatureSwitchManagementService
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
-import models.{BusinessDetails, NormalMode}
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
+import models.{BusinessDetails, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
@@ -83,14 +82,14 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   )
 
   //scalastyle:on line.size.limit
-  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, appConfig(isIvEnabled = true))
+  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, fakeFeatureSwitchManagerService())
   s"${navigator.getClass.getSimpleName} when toggle is on" must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
 
-  val navigatorDisabled = new RegisterNavigator(FakeUserAnswersCacheConnector, appConfig(isIvEnabled = false))
+  val navigatorDisabled = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, fakeFeatureSwitchManagerService(false))
   s"${navigatorDisabled.getClass.getSimpleName} when toggle is off" must {
     appRunning()
     behave like nonMatchingNavigator(navigatorDisabled)
@@ -100,10 +99,13 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object RegisterNavigatorSpec extends OptionValues {
+  def fakeFeatureSwitchManagerService(isIvEnabled: Boolean = true): FeatureSwitchManagementService = new FeatureSwitchManagementService {
+    override def change(name: String, newValue: Boolean): Boolean = ???
 
-  def appConfig(isIvEnabled: Boolean): FrontendAppConfig = new GuiceApplicationBuilder().configure(
-    conf = "features.is-iv-enabled" -> isIvEnabled
-  ).build().injector.instanceOf[FrontendAppConfig]
+    override def get(name: String): Boolean = isIvEnabled
+
+    override def reset(name: String): Unit = ???
+  }
 
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
