@@ -126,8 +126,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   private def getNinoAndUpdateAuthRequest[A](journeyId: String, enrolments: Enrolments, block: AuthenticatedRequest[A] => Future[Result],
                                              authRequest: AuthenticatedRequest[A])(implicit hc: HeaderCarrier): Future[Result] = {
     getData(NinoId, authRequest.externalId).flatMap {
-      case Some(_) =>
-        savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+      case Some(nino) =>
+        val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
+        savePsaIdAndReturnAuthRequest(enrolments, updatedAuth, block)
       case _ =>
         ivConnector.retrieveNinoFromIV(journeyId).flatMap {
           case Some(nino) =>
