@@ -19,4 +19,5 @@ package utils
 object Toggles {
 
   val IsManualIVEnabled: String = "is-iv-enabled"
+  val IsPsaDataShiftEnabled: String = "is-psa-data-shift-enabled"
 }

@@ -115,6 +115,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
 
   lazy val isManualIVEnabled: Boolean = runModeConfiguration.getBoolean("features.is-iv-enabled").getOrElse(false)
+  lazy val isPsaDataShiftEnabled: Boolean = runModeConfiguration.getBoolean("features.is-psa-data-shift-enabled").getOrElse(false)
 
   lazy val retryAttempts: Int = runModeConfiguration.getInt("retry.max.attempts").getOrElse(1)
   lazy val retryWaitMs: Int = runModeConfiguration.getInt("retry.initial.wait.ms").getOrElse(1)
