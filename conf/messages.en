@@ -791,5 +791,6 @@ partnershipRegisteredNonUKAddress.title = What is the partnership’s address?
 partnershipRegisteredNonUKAddress.heading = What is {0}’s address?
 partnershipRegisteredNonUKAddress.hintText = This is the partnership’s address outside of the UK.
 
+deregister.success.title = You have stopped being a pension scheme administrator
 deregister.success.heading = You have stopped being a pension scheme administrator
 deregister.success.p1 = Your administrator ID has been deleted.

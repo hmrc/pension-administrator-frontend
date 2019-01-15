@@ -17,7 +17,6 @@
 package controllers.deregister
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import javax.inject.Inject
@@ -30,10 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SuccessfulDeregistrationController @Inject()(appConfig: FrontendAppConfig,
                                                    override val messagesApi: MessagesApi,
-                                                   authenticate: AuthAction,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   dataCacheConnector: UserAnswersCacheConnector
+                                                   authenticate: AuthAction
                                       )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = authenticate.async {
