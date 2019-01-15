@@ -36,4 +36,3 @@ POST       /change-registered-in-uk                 controllers.register.Busines
 
 GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad()
 POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit()
-
