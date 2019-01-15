@@ -71,7 +71,7 @@ class AuthActionSpec extends SpecBase {
     }
 
     "called for already enrolled User" must {
-      "return OK and save the PsaId" when {
+      "return OK" when {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
@@ -82,19 +82,16 @@ class AuthActionSpec extends SpecBase {
         "coming from confirmation" in {
           val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.confirmationUri))
           status(result) mustBe OK
-          fakeUserAnswersConnector.verify(PsaId, psaId)
         }
 
         "coming from duplicate registration" in {
           val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.duplicateRegUri))
           status(result) mustBe OK
-          fakeUserAnswersConnector.verify(PsaId, psaId)
         }
 
         "coming from registered psa details" in {
           val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.registeredPsaDetailsUri))
           status(result) mustBe OK
-          fakeUserAnswersConnector.verify(PsaId, psaId)
         }
       }
     }

@@ -33,15 +33,13 @@ import scala.concurrent.ExecutionContext
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
                                      subscriptionConnector: SubscriptionConnector,
                                      countryOptions: CountryOptions
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
-      val psaId = request.userAnswers.get(PsaId).getOrElse(throw new RuntimeException("PSA ID not found"))
+      val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
         response.organisationOrPartner match {
           case None =>

@@ -18,7 +18,11 @@ package models
 
 import models.UserType.UserType
 
-case class PSAUser(userType: UserType, nino: Option[String], isExistingPSA: Boolean, existingPSAId: Option[String])
+case class PSAUser(userType: UserType,
+                   nino: Option[String],
+                   isExistingPSA: Boolean,
+                   existingPSAId: Option[String],
+                   alreadyEnrolledPsaId: Option[String] = None)
 
 object UserType extends Enumeration {
   type UserType = Value

@@ -24,7 +24,7 @@ import scala.concurrent.Future
 
 object FakeAuthAction extends AuthAction {
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, false, None)))
+    block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, false, Some("test Psa id"))))
 
   val externalId: String = "id"
 }
