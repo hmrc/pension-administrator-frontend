@@ -16,25 +16,25 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
+@import viewmodels.Message
+@import models.requests._
 
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
+@registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
+@printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
+
 @main_template(
-    title = messages("submissionInvalid.title"),
+   title= messages("deregister.success.title"),
     appConfig = appConfig,
-    bodyClasses = None
-) {
+    bodyClasses = None) {
 
-    @components.heading(messages("submissionInvalid.heading"))
+    <div class="govuk-box-highlight">
+          @components.heading(messages("deregister.success.heading"))
+    </div>
 
-    <p>@messages("submissionInvalid.body1")</p>
+    <p>@messages("deregister.success.p1")</p>
 
-    <p>@Html(messages("submissionInvalid.body2"))</p>
-
-    @components.button_link(
-    "exitToGovUK",
-     appConfig.govUkUrl,
-    "go-to-gov-uk"
-    )
+    <a id="gov-uk-link" href="@appConfig.govUkUrl" role="button">@messages("exitToGovUK")</a>
 
 }

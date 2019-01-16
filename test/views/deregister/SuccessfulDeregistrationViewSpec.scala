@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 
-package utils
+package views.deregister
 
-object Toggles {
+import views.behaviours.ViewBehaviours
+import views.html.register.deregister.successful_deregistration
 
-  val IsManualIVEnabled: String = "is-iv-enabled"
-  val IsPsaDataShiftEnabled: String = "is-psa-data-shift-enabled"
-  val isDeregistrationEnabled: String = "enable-deregistration"
+class SuccessfulDeregistrationViewSpec extends ViewBehaviours {
+
+  "SuccessfulDeregistration view" must {
+    val messageKeyPrefix = "deregister.success"
+
+    def createView() = () => successful_deregistration(frontendAppConfig)(fakeRequest, messages)
+
+    behave like normalPage(createView(), messageKeyPrefix, "p1")
+
+    "have a link to 'exit to gov uk'" in {
+      createView must haveLink(url = frontendAppConfig.govUkUrl, linkId = "gov-uk-link")
+    }
+
+  }
+
 }

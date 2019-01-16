@@ -1,6 +1,7 @@
 # microservice specific routes
 ->         /company                                     company.Routes
 ->         /register                                    register.Routes
+
 GET        /                                            controllers.LoginController.onPageLoad
 
 GET        /index                                       controllers.IndexController.onPageLoad
