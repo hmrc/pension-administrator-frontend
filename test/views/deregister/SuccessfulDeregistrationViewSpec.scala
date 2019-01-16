@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+package views.deregister
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import views.behaviours.ViewBehaviours
+import views.html.register.deregister.successful_deregistration
 
-@main_template(
-    title = messages("submissionInvalid.title"),
-    appConfig = appConfig,
-    bodyClasses = None
-) {
+class SuccessfulDeregistrationViewSpec extends ViewBehaviours {
 
-    @components.heading(messages("submissionInvalid.heading"))
+  "SuccessfulDeregistration view" must {
+    val messageKeyPrefix = "deregister.success"
 
-    <p>@messages("submissionInvalid.body1")</p>
+    def createView() = () => successful_deregistration(frontendAppConfig)(fakeRequest, messages)
 
-    <p>@Html(messages("submissionInvalid.body2"))</p>
+    behave like normalPage(createView(), messageKeyPrefix, "p1")
 
-    @components.button_link(
-    "exitToGovUK",
-     appConfig.govUkUrl,
-    "go-to-gov-uk"
-    )
+    "have a link to 'exit to gov uk'" in {
+      createView must haveLink(url = frontendAppConfig.govUkUrl, linkId = "gov-uk-link")
+    }
+
+  }
 
 }
