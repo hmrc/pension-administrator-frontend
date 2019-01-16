@@ -32,8 +32,11 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val testPsaId = "test-psa-id"
+  private val testUserId = "test"
+  private val testEnrolmentKey = s"HMRC-PODS-ORG~PSA-ID~$testPsaId"
 
   private def url: String = s"/tax-enrolments/service/HMRC-PODS-ORG/enrolment"
+  private def deEnrolUrl: String = s"/enrolment-store/users/$testUserId/enrolments/$testEnrolmentKey"
 
   private lazy val connector = injector.instanceOf[TaxEnrolmentsConnector]
 
@@ -93,6 +96,62 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
           recoverToSucceededIf[Upstream4xxResponse] {
             connector.enrol(testPsaId, knownFacts)
+          }
+
+        }
+      }
+    }
+
+  }
+
+  ".deEnrol" must {
+
+    "return a successful response" when {
+      "enrolments returns code NO_CONTENT" which {
+        "means the de-enrolment was successful" in {
+
+          server.stubFor(
+            delete(urlEqualTo(deEnrolUrl))
+              .willReturn(
+                noContent
+              )
+          )
+
+          connector.deEnrol(testUserId, testEnrolmentKey) map {
+            result =>
+              result.status mustEqual NO_CONTENT
+          }
+
+        }
+      }
+    }
+    "return a failure" when {
+      "de-enrolment returns BAD_REQUEST" in {
+
+          server.stubFor(
+            delete(urlEqualTo(deEnrolUrl))
+              .willReturn(
+                badRequest
+              )
+          )
+
+          recoverToSucceededIf[BadRequestException] {
+            connector.deEnrol(testUserId, testEnrolmentKey)
+          }
+
+      }
+      "enrolments returns UNAUTHORISED" which {
+        "means missing or incorrect MDTP bearer token" in {
+
+          server.stubFor(
+            delete(urlEqualTo(deEnrolUrl))
+              .willReturn(
+                unauthorized
+              )
+          )
+
+          recoverToSucceededIf[Upstream4xxResponse] {
+            connector.deEnrol(testUserId, testEnrolmentKey)
           }
 
         }

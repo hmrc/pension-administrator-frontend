@@ -106,6 +106,9 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
     s"service/$serviceName/enrolment"
 
+  def taxDeEnrolmentUrl: String = baseUrl("tax-enrolments") +
+    runModeConfiguration.underlying.getString("urls.tax-de-enrolment")
+
   def emailUrl = s"${baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"
   def ivRegisterOrganisationAsIndividualUrl =
     s"${baseUrl("identity-verification-proxy")}/${runModeConfiguration.underlying.getString("urls.ivRegisterOrganisationAsIndividual")}"
