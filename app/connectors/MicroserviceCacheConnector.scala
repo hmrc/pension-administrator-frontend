@@ -19,24 +19,20 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import identifiers.TypedIdentifier
-import play.api.http.Status._
 import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc.Result
-import play.api.mvc.Results.Ok
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import play.mvc.Http.Status
 import uk.gov.hmrc.http._
-import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class MicroserviceCacheConnector @Inject()(
                                             config: FrontendAppConfig,
                                             http: WSClient,
-                                            crypto: ApplicationCrypto
+                                            ps: PensionsSchemeCacheConnector,
+                                            pa: PensionAdminCacheConnector
                                           ) extends UserAnswersCacheConnector {
-
-  protected def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/journey-cache/psa/$id"
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
@@ -44,71 +40,84 @@ class MicroserviceCacheConnector @Inject()(
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
-    modify(cacheId, _.set(id)(value))
-  }
-
-  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
-                                     (implicit
-                                      ec: ExecutionContext,
-                                      hc: HeaderCarrier
-                                     ): Future[JsValue] = {
-    modify(cacheId, _.remove(id))
-  }
-
-  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
-    modify(cacheId, _ => JsSuccess(UserAnswers(value)))
-
-  private[connectors] def modify(cacheId: String, modification: (UserAnswers) => JsResult[UserAnswers])
-                    (implicit
-                     ec: ExecutionContext,
-                     hc: HeaderCarrier
-                    ): Future[JsValue] = {
-
-    fetch(cacheId).flatMap {
-      json =>
-        modification(UserAnswers(json.getOrElse(Json.obj()))) match {
-          case JsSuccess(UserAnswers(updatedJson), _) =>
-            http.url(url(cacheId))
-              .withHeaders(hc.withExtraHeaders(("content-type", "application/json")).headers: _*)
-              .post(PlainText(Json.stringify(updatedJson)).value).flatMap {
-              response =>
-                response.status match {
-                  case OK =>
-                    Future.successful(updatedJson)
-                  case _ =>
-                    Future.failed(new HttpException(response.body, response.status))
-                }
-            }
-          case JsError(errors) =>
-            Future.failed(JsResultException(errors))
+    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
+      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
+        (dataExistInAdmin, dataExistInScheme) match {
+          case (true, false) =>
+            pa.save(cacheId, id, value)
+          case (false, true) =>
+            ps.save(cacheId, id, value)
+          case (false, false) =>
+            pa.save(cacheId, id, value)
+          case _ =>
+            Future.failed(
+              new HttpException("Mongo Data cannot exist in both pensions scheme and pension administrator", Status.BAD_REQUEST))
         }
+      }
     }
   }
 
-  override def fetch(id: String)(implicit
-                                 ec: ExecutionContext,
-                                 hc: HeaderCarrier
-  ): Future[Option[JsValue]] = {
-
-    http.url(url(id))
-      .withHeaders(hc.headers: _*)
-      .get()
-      .flatMap {
-        response =>
-          response.status match {
-            case NOT_FOUND =>
-              Future.successful(None)
-            case OK =>
-              Future.successful(Some(Json.parse(response.body)))
-            case _ =>
-              Future.failed(new HttpException(response.body, response.status))
-          }
+  private def doLogicAndReturnResult[T](cacheId: String, blockForScheme: () => Future[T],
+                                        blockForAdmin: () => Future[T])(implicit
+                                                                        ec: ExecutionContext,
+                                                                        hc: HeaderCarrier
+                                       ): Future[T] = {
+    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
+      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
+        (dataExistInAdmin, dataExistInScheme) match {
+          case (true, false) =>
+            blockForAdmin()
+          case (false, true) =>
+            blockForScheme()
+          case _ =>
+            Future.failed(
+              new HttpException("Issue dealing with mongo collection", Status.BAD_REQUEST))
+        }
       }
+    }
   }
 
-  override def removeAll(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    http.url(url(id))
-      .withHeaders(hc.headers: _*)
-      .delete().map(_ => Ok)
+  override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+                                              (implicit
+                                               ec: ExecutionContext,
+                                               hc: HeaderCarrier
+                                              ): Future[JsValue] = {
+    doLogicAndReturnResult[JsValue](cacheId, () => ps.remove(cacheId, id), () => pa.remove(cacheId, id))
+  }
+
+  override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+    doLogicAndReturnResult[Result](cacheId, () => ps.removeAll(cacheId), () => pa.removeAll(cacheId))
+  }
+
+  override def fetch(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
+    doLogicAndReturnResult[Option[JsValue]](cacheId, () => ps.fetch(cacheId), () => pa.fetch(cacheId))
+  }
+
+  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
+    doLogicAndReturnResult[JsValue](cacheId, () => ps.upsert(cacheId, value), () => pa.upsert(cacheId, value))
+  }
+
+  private def isDataExistInScheme(cacheId: String)(implicit
+                                                   ec: ExecutionContext,
+                                                   hc: HeaderCarrier
+  ): Future[Boolean] = {
+    ps.fetch(cacheId).map {
+      case None =>
+        false
+      case Some(_) =>
+        true
+    }
+  }
+
+  private def isDataExistInAdmin(cacheId: String)(implicit
+                                                  ec: ExecutionContext,
+                                                  hc: HeaderCarrier
+  ): Future[Boolean] = {
+    pa.fetch(cacheId).map {
+      case None =>
+        false
+      case Some(_) =>
+        true
+    }
   }
 }

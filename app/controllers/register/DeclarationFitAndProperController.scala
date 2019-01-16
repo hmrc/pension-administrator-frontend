@@ -53,8 +53,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
                                                   enrolments: TaxEnrolmentsConnector,
-                                                  emailConnector: EmailConnector,
-                                                  psaNameCacheConnector: PSANameCacheConnector
+                                                  emailConnector: EmailConnector
                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
