@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package views.deregister
+package forms.deregister
 
-import views.behaviours.ViewBehaviours
-import views.html.deregister.successful_deregistration
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class SuccessfulDeregistrationViewSpec extends ViewBehaviours {
+class ConfirmStopBeingPsaFormProvider @Inject()() extends Mappings {
 
-  "SuccessfulDeregistration view" must {
-    val messageKeyPrefix = "deregister.success"
-
-    def createView() = () => successful_deregistration(frontendAppConfig)(fakeRequest, messages)
-
-    behave like normalPage(createView(), messageKeyPrefix, "p1")
-
-    "have a link to 'exit to gov uk'" in {
-      createView must haveLink(url = frontendAppConfig.govUkUrl, linkId = "gov-uk-link")
-    }
-
-  }
-
+  def apply(): Form[Boolean] = Form(
+    "value" -> boolean("common.radio.error.required")
+  )
 }

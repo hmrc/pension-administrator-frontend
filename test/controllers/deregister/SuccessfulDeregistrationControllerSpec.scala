@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
-import views.html.register.deregister.successful_deregistration
+import views.html.deregister.successful_deregistration
 
 class SuccessfulDeregistrationControllerSpec extends ControllerSpecBase {
 

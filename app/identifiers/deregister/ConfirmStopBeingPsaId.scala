@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package views.deregister
+package identifiers.deregister
 
-import views.behaviours.ViewBehaviours
-import views.html.deregister.successful_deregistration
+import identifiers.TypedIdentifier
 
-class SuccessfulDeregistrationViewSpec extends ViewBehaviours {
-
-  "SuccessfulDeregistration view" must {
-    val messageKeyPrefix = "deregister.success"
-
-    def createView() = () => successful_deregistration(frontendAppConfig)(fakeRequest, messages)
-
-    behave like normalPage(createView(), messageKeyPrefix, "p1")
-
-    "have a link to 'exit to gov uk'" in {
-      createView must haveLink(url = frontendAppConfig.govUkUrl, linkId = "gov-uk-link")
-    }
-
-  }
-
+object ConfirmStopBeingPsaId extends TypedIdentifier[Boolean] {
+  override def toString: String = "confirmStopBeingPsa"
 }

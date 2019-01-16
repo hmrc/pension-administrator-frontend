@@ -794,3 +794,8 @@ partnershipRegisteredNonUKAddress.hintText = This is the partnership’s address
 deregister.success.title = You have stopped being a pension scheme administrator
 deregister.success.heading = You have stopped being a pension scheme administrator
 deregister.success.p1 = Your administrator ID has been deleted.
+
+confirmStopBeingPsa.title = Are you sure you want to stop being a pension scheme administrator?
+confirmStopBeingPsa.heading = Are you sure you want to stop being a pension scheme administrator?
+confirmStopBeingPsa.p1 = Your administrator ID will be deleted when you stop being a pension scheme administrator.
+confirmStopBeingPsa.p2 = You will have to register as a pension scheme administrator again if you need an administrator ID in the future.
