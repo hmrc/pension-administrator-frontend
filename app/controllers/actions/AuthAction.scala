@@ -23,7 +23,7 @@ import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
-import identifiers.{JourneyId, NinoId, TypedIdentifier, PsaId => UserPsaId}
+import identifiers.{JourneyId, NinoId, TypedIdentifier}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -163,9 +163,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
                                                  block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier) = {
     if (alreadyEnrolledInPODS(enrolments)) {
-      userAnswersCacheConnector.save(authRequest.externalId, UserPsaId, getPSAId(enrolments)).flatMap {
-        _ => block(authRequest)
-      }
+      block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
+        alreadyEnrolledPsaId = Some(getPSAId(enrolments)))))
     } else {
       block(authRequest)
     }
