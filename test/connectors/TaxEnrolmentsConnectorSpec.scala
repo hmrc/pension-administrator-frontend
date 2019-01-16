@@ -36,7 +36,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
   private val testEnrolmentKey = s"HMRC-PODS-ORG~PSA-ID~$testPsaId"
 
   private def url: String = s"/tax-enrolments/service/HMRC-PODS-ORG/enrolment"
-  private def deEnrolUrl: String = s"/enrolment-store/users/$testUserId/enrolments/$testEnrolmentKey"
+  private def deEnrolUrl: String = s"/tax-enrolments/users/$testUserId/enrolments/$testEnrolmentKey"
 
   private lazy val connector = injector.instanceOf[TaxEnrolmentsConnector]
 
