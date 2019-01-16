@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -413,11 +413,12 @@ object AuthActionSpec {
 
   private def authRetrievals(confidenceLevel: ConfidenceLevel = ConfidenceLevel.L50,
                              affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                             enrolments: Enrolments = Enrolments(Set())) = Future.successful(new ~(new ~(new ~(new ~(
+                             enrolments: Enrolments = Enrolments(Set())) = Future.successful(new ~(new ~(new ~(new ~(new ~(
     Some("id"), confidenceLevel),
     Some(affinityGroup)),
     Some("nino")),
-    enrolments)
+    enrolments),
+    Credentials("providerId", "providerType"))
   )
 
   class Harness(authAction: AuthAction) extends Controller {

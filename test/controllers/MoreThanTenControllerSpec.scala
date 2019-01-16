@@ -109,7 +109,7 @@ object MoreThanTenControllerSpec {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Organisation, None, false, None),
+      user = PSAUser(UserType.Organisation, "userId", None, false, None),
       userAnswers = answers
     )
   }

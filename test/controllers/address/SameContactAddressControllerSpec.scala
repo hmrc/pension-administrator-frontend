@@ -63,12 +63,12 @@ object SameContactAddressControllerSpec {
 
     def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers))
     }
 
     def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, RegAddressIdentifier, ContactAddressIdentifier, viewmodel, NormalMode)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers))
     }
 
     override protected val form: Form[Boolean] = formProvider()

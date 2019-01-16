@@ -17,10 +17,10 @@
 package controllers.deregister
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.{DeregistrationConnector, TaxEnrolmentsConnector, UserAnswersCacheConnector}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.deregister.ConfirmStopBeingPsaFormProvider
-import identifiers.deregister.ConfirmStopBeingPsaId
+import identifiers.register.PsaNameId
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,32 +35,48 @@ class ConfirmStopBeingPsaController  @Inject()(
                                          val auth: AuthAction,
                                          val messagesApi: MessagesApi,
                                          val formProvider: ConfirmStopBeingPsaFormProvider,
-                                         val userAnswersCacheConnector: UserAnswersCacheConnector,
                                          val getData: DataRetrievalAction,
-                                         val requireData: DataRequiredAction
+                                         val requireData: DataRequiredAction,
+                                         val deregistration: DeregistrationConnector,
+                                         val enrolments: TaxEnrolmentsConnector
                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
   def onPageLoad: Action[AnyContent] = (auth andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ConfirmStopBeingPsaId).fold(form)(form.fill(_))
-      Future.successful(Ok(confirmStopBeingPsa(appConfig, preparedForm, "")))
+      request.userAnswers.get(PsaNameId) match {
+        case Some(psaName) =>
+          Future.successful(Ok(confirmStopBeingPsa(appConfig, form, psaName)))
+        case _ =>
+          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def onSubmit: Action[AnyContent] = (auth andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-
-        (formWithErrors: Form[Boolean]) =>
-          Future.successful(BadRequest(confirmStopBeingPsa(appConfig, formWithErrors, ""))),
-
-        value => {
-          userAnswersCacheConnector.save(request.externalId, ConfirmStopBeingPsaId, value).map(
-            cacheMap =>
-              Redirect(controllers.routes.PsaDetailsController.onPageLoad())
+      val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+      request.userAnswers.get(PsaNameId) match {
+        case Some(psaName) =>
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[Boolean]) =>
+              Future.successful(BadRequest(confirmStopBeingPsa(appConfig, formWithErrors, psaName))),
+            value => {
+              if (value) {
+                for {
+                  _ <- deregistration.stopBeingPSA(psaId)
+                  _ <- enrolments.deEnrol(request.user.userId, psaId)
+                } yield {
+                  Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
+                }
+              } else {
+                Future.successful(Redirect(controllers.routes.PsaDetailsController.onPageLoad()))
+              }
+            }
           )
-        }
-      )
+        case _ =>
+          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+    }
   }
+
 }

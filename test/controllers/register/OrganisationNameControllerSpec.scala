@@ -182,12 +182,12 @@ object OrganisationNameControllerSpec extends OptionValues {
 
     def onPageLoad(viewmodel: OrganisationNameViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers))
     }
 
     def onSubmit(viewmodel: OrganisationNameViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers))
     }
 
     override protected val formModel: BusinessDetailsFormModel = businessDetailsFormModel

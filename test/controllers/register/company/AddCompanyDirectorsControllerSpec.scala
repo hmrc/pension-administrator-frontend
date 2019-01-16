@@ -179,7 +179,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
+    PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
     addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages).toString

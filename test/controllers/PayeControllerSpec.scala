@@ -173,12 +173,12 @@ object PayeControllerSpec extends OptionValues {
 
     def onPageLoad(viewmodel: PayeViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers))
     }
 
     def onSubmit(viewmodel: PayeViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers))
     }
   }
 

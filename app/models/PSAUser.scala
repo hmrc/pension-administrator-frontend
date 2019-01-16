@@ -19,6 +19,7 @@ package models
 import models.UserType.UserType
 
 case class PSAUser(userType: UserType,
+                   userId: String,
                    nino: Option[String],
                    isExistingPSA: Boolean,
                    existingPSAId: Option[String],

@@ -165,7 +165,7 @@ object AddressListControllerSpec {
 
       get(
         viewModel
-      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
+      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), UserAnswers()))
 
     }
 
@@ -178,7 +178,7 @@ object AddressListControllerSpec {
         fakeAddressListId,
         fakeAddressId,
         NormalMode
-      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
+      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), UserAnswers()))
 
     }
 

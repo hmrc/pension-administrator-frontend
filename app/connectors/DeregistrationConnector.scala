@@ -16,54 +16,49 @@
 
 package connectors
 
-import java.util.UUID.randomUUID
-
 import com.google.inject.{ImplementedBy, Inject}
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import javax.inject.Singleton
-import models._
-import models.registrationnoid.RegistrationNoIdIndividualRequest
-import org.joda.time.LocalDate
-import play.Logger
-import play.api.http.Status
-import play.api.libs.json._
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import play.api.Logger
+import play.api.http.Status._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.Toggles.IsManualIVEnabled
+import utils.RetryHelper
+
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Failure
+import scala.util.{Failure, Try}
 
 @ImplementedBy(classOf[DeregistrationConnectorImpl])
 trait DeregistrationConnector {
-  def stopBeingPSA(utr: String)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
+
+  def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 }
 
 @Singleton
 class DeregistrationConnectorImpl @Inject()(http: HttpClient,
                                           config: FrontendAppConfig,
                                           fs: FeatureSwitchManagementService
-                                         ) extends DeregistrationConnector {
+                                         ) extends DeregistrationConnector with RetryHelper {
 
-  private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
-  override def stopBeingPSA(utr: String)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
+  override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
 
-    val url = config.registerWithIdOrganisationUrl
+    retryOnFailure(() => deregisterRequest(psaId), config) andThen logDeregistrationExceptions
 
-    http.POST(url, "") map { response =>
-      require(response.status == Status.OK, "The only valid response to registerWithIdOrganisation is 200 OK")
 
-      Json.parse(response.body)
-
-    } andThen {
-      case Failure(ex: NotFoundException) =>
-        Logger.warn("Organisation not found with registerWithIdOrganisation", ex)
-        ex
-      case Failure(ex) =>
-        Logger.error("Unable to connect to registerWithIdOrganisation", ex)
-        ex
+  def deregisterRequest(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val deregisterUrl = config.deregisterPsaUrl.format(psaId)
+    http.DELETE(deregisterUrl) flatMap {
+      case response if response.status equals NO_CONTENT =>
+        Future.successful(response)
+      case response =>
+        Future.failed(new HttpException(response.body, response.status))
     }
   }
+
+  private def logDeregistrationExceptions: PartialFunction[Try[HttpResponse], Unit] = {
+    case Failure(t: Throwable) =>
+      Logger.error("Unable to connect to deregister the PSA", t)
+  }
+
 }

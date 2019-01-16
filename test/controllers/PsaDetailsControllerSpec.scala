@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.SubscriptionConnector
+import connectors.{FakeUserAnswersCacheConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
@@ -67,7 +67,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   class FakeAuthAction(userType: UserType) extends AuthAction {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, false, None, Some("test Psa id"))))
+      block(AuthenticatedRequest(request, externalId, PSAUser(userType, "userId", None, false, None, Some("test Psa id"))))
   }
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
@@ -91,6 +91,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       messagesApi,
       new FakeAuthAction(userType),
       subscriptionConnector,
+      FakeUserAnswersCacheConnector,
       countryOptions
     )
 

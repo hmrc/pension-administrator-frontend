@@ -34,7 +34,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
     DataRequest(
       request = FakeRequest("", ""),
       externalId = externalId,
-      user = PSAUser(userType, None, isExistingPsa, None),
+      user = PSAUser(userType, "userId", None, isExistingPsa, None),
       userAnswers = UserAnswers()
     )
   }

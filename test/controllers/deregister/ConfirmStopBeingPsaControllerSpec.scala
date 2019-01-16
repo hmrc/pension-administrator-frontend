@@ -17,23 +17,19 @@
 package controllers.deregister
 
 
-import connectors.{DeregistrationConnector, FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.{DeregistrationConnector, FakeUserAnswersCacheConnector, TaxEnrolmentsConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import identifiers.deregister.ConfirmStopBeingPsaId
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.UserAnswers
 import utils.countryOptions.CountryOptions
 import views.html.deregister.confirmStopBeingPsa
-
-import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
 
@@ -72,16 +68,10 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with Mockito
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  private def testData() = Json.obj(ConfirmStopBeingPsaId.toString -> true)
+  private def testData():JsObject = Json.obj(ConfirmStopBeingPsaId.toString -> true)
 
-  private def fakeRegistrationConnector = new DeregistrationConnector {
-    override def stopBeingPSA(utr: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
-
-
-      Future.successful(Json.obj())
-    }
-  }
+  private def fakeRegistrationConnector: DeregistrationConnector = mock[DeregistrationConnector]
+  private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -92,9 +82,10 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with Mockito
       FakeAuthAction,
       messagesApi,
       formProvider,
-      dataCacheConnector,
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      fakeRegistrationConnector,
+      fakeTaxEnrolmentsConnector
     )
 
   private def viewAsString(): String =

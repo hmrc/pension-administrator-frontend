@@ -18,9 +18,9 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.SubscriptionConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.PsaId
+import connectors.{SubscriptionConnector, UserAnswersCacheConnector}
+import controllers.actions.AuthAction
+import identifiers.register.PsaNameId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -34,24 +34,26 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      subscriptionConnector: SubscriptionConnector,
+                                     userAnswersCacheConnector: UserAnswersCacheConnector,
                                      countryOptions: CountryOptions
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
+
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
-        response.organisationOrPartner match {
-          case None =>
-            Ok(psa_details(
-              appConfig,
-              new PsaDetailsHelper(response, countryOptions).individualSections,
-              response.individual.map(_.fullName).getOrElse("")))
-          case _ =>
-            Ok(psa_details(
-              appConfig,
-              new PsaDetailsHelper(response, countryOptions).organisationSections,
-              response.organisationOrPartner.map(_.name).getOrElse("")))
+
+      subscriptionConnector.getSubscriptionDetails(psaId).flatMap { response =>
+
+        val psaDetails =  new PsaDetailsHelper(response, countryOptions)
+
+        val (psaName, superSections) = response.organisationOrPartner match {
+          case None => (response.individual.map(_.fullName).getOrElse(""), psaDetails.individualSections)
+          case _ => (response.organisationOrPartner.map(_.name).getOrElse(""), psaDetails.organisationSections)
+        }
+
+        userAnswersCacheConnector.save(request.externalId, PsaNameId, psaName).map { _ =>
+          Ok(psa_details(appConfig, superSections, psaName))
         }
       }
   }

@@ -58,7 +58,7 @@ object ManualAddressControllerSpec {
     override def toString = "abc"
   }
 
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, "userId", None, isExistingPSA = false, None)
   private val testContext = "test-context"
 
   class TestController @Inject()(

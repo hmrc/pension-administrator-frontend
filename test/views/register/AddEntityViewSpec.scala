@@ -118,7 +118,7 @@ object AddEntityViewSpec {
   val request: DataRequest[AnyContent] = DataRequest(
     FakeRequest(),
     "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+    PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None),
     UserAnswers(Json.obj())
   )
 

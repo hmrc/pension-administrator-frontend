@@ -45,7 +45,7 @@ class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues w
   implicit val request: DataRequest[AnyContent] = DataRequest(
     request = FakeRequest("", ""),
     externalId = "cacheId",
-    user = PSAUser(UserType.Individual, None, false, None),
+    user = PSAUser(UserType.Individual, "userId", None, false, None),
     userAnswers = UserAnswers()
   )
 

@@ -75,7 +75,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val psaId: String = "A1234567"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, "userId", None, false, None)
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(

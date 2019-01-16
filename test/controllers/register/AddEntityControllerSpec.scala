@@ -65,7 +65,7 @@ object AddEntityControllerSpec {
   }
 
   def request(answers: UserAnswers = UserAnswers(), fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
-    DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+    DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, "userId", None, isExistingPSA = false, None), answers)
 
 }
 

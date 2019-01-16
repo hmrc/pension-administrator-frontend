@@ -158,7 +158,7 @@ object PersonDetailsControllerBehaviour {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Individual, None, false, None),
+      user = PSAUser(UserType.Individual, "userId", None, false, None),
       userAnswers = answers
     )
 

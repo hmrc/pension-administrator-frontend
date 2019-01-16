@@ -102,6 +102,9 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   def psaSubmissionEmailCallback(encryptedPsaId: String) = baseUrl("pension-administrator") +
     runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(encryptedPsaId)
 
+  lazy val deregisterPsaUrl: String = baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.deregisterPsa")
+
   def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
     s"service/$serviceName/enrolment"

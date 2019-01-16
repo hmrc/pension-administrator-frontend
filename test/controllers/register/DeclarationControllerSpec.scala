@@ -121,7 +121,7 @@ object DeclarationControllerSpec extends ControllerSpecBase {
 
   private def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
+      block(AuthenticatedRequest(request, "id", PSAUser(userType, "userId", None, false, None)))
   }
 
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()

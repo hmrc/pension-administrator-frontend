@@ -41,7 +41,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
   val person = PersonDetails("First", None, "Last", LocalDate.now())
 
   implicit val request: DataRequest[AnyContent] = DataRequest(
-    fakeRequest, "cacheId", PSAUser(UserType.Individual, None, false, None), UserAnswers(Json.obj(testIdentifier.toString -> person))
+    fakeRequest, "cacheId", PSAUser(UserType.Individual, "userId", None, false, None), UserAnswers(Json.obj(testIdentifier.toString -> person))
   )
 
   val viewModel = ConfirmDeleteViewModel(
