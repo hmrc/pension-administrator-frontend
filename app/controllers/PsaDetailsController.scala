@@ -19,8 +19,7 @@ package controllers
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.SubscriptionConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.PsaId
+import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
