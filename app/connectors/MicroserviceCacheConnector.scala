@@ -17,10 +17,9 @@
 package connectors
 
 import com.google.inject.Inject
-import config.{FeatureSwitchManagementService, FrontendAppConfig}
+import config.FeatureSwitchManagementService
 import identifiers.TypedIdentifier
 import play.api.libs.json._
-import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.mvc.Http.Status
 import uk.gov.hmrc.http._
@@ -29,8 +28,6 @@ import utils.Toggles.IsPsaDataShiftEnabled
 import scala.concurrent.{ExecutionContext, Future}
 
 class MicroserviceCacheConnector @Inject()(
-                                            config: FrontendAppConfig,
-                                            http: WSClient,
                                             ps: PensionsSchemeCacheConnector,
                                             pa: PensionAdminCacheConnector,
                                             fs: FeatureSwitchManagementService
@@ -42,7 +39,7 @@ class MicroserviceCacheConnector @Inject()(
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
-    if(fs.get(IsPsaDataShiftEnabled)) {
+    if (fs.get(IsPsaDataShiftEnabled)) {
       isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
         isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
           (dataExistInAdmin, dataExistInScheme) match {
@@ -58,7 +55,7 @@ class MicroserviceCacheConnector @Inject()(
           }
         }
       }
-    }else {
+    } else {
       ps.save(cacheId, id, value)
     }
   }
@@ -68,8 +65,7 @@ class MicroserviceCacheConnector @Inject()(
                                                                         ec: ExecutionContext,
                                                                         hc: HeaderCarrier
                                        ): Future[T] = {
-    if(fs.get(IsPsaDataShiftEnabled)) {
-      println("\n\n\n comin 1..")
+    if (fs.get(IsPsaDataShiftEnabled)) {
       isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
         isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
           (dataExistInAdmin, dataExistInScheme) match {
@@ -83,7 +79,7 @@ class MicroserviceCacheConnector @Inject()(
           }
         }
       }
-    }else {
+    } else {
       blockForScheme()
     }
   }
