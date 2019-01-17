@@ -35,7 +35,8 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
-        "metrics.enabled" -> false
+        "metrics.enabled" -> false,
+        "is-psa-data-shift-enabled" -> false
       )
       .build()
 

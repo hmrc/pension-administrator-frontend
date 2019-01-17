@@ -17,13 +17,14 @@
 package connectors
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
+import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import identifiers.TypedIdentifier
 import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.mvc.Http.Status
 import uk.gov.hmrc.http._
+import utils.Toggles.IsPsaDataShiftEnabled
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +32,8 @@ class MicroserviceCacheConnector @Inject()(
                                             config: FrontendAppConfig,
                                             http: WSClient,
                                             ps: PensionsSchemeCacheConnector,
-                                            pa: PensionAdminCacheConnector
+                                            pa: PensionAdminCacheConnector,
+                                            fs: FeatureSwitchManagementService
                                           ) extends UserAnswersCacheConnector {
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
@@ -40,20 +42,24 @@ class MicroserviceCacheConnector @Inject()(
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
-    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
-      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
-        (dataExistInAdmin, dataExistInScheme) match {
-          case (true, false) =>
-            pa.save(cacheId, id, value)
-          case (false, true) =>
-            ps.save(cacheId, id, value)
-          case (false, false) =>
-            pa.save(cacheId, id, value)
-          case _ =>
-            Future.failed(
-              new HttpException("Mongo Data cannot exist in both pensions scheme and pension administrator", Status.BAD_REQUEST))
+    if(fs.get(IsPsaDataShiftEnabled)) {
+      isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
+        isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
+          (dataExistInAdmin, dataExistInScheme) match {
+            case (true, false) =>
+              pa.save(cacheId, id, value)
+            case (false, true) =>
+              ps.save(cacheId, id, value)
+            case (false, false) =>
+              pa.save(cacheId, id, value)
+            case _ =>
+              Future.failed(
+                new HttpException("Mongo Data cannot exist in both pensions scheme and pension administrator", Status.BAD_REQUEST))
+          }
         }
       }
+    }else {
+      ps.save(cacheId, id, value)
     }
   }
 
@@ -62,18 +68,23 @@ class MicroserviceCacheConnector @Inject()(
                                                                         ec: ExecutionContext,
                                                                         hc: HeaderCarrier
                                        ): Future[T] = {
-    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
-      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
-        (dataExistInAdmin, dataExistInScheme) match {
-          case (true, false) =>
-            blockForAdmin()
-          case (false, true) =>
-            blockForScheme()
-          case _ =>
-            Future.failed(
-              new HttpException("Issue dealing with mongo collection", Status.BAD_REQUEST))
+    if(fs.get(IsPsaDataShiftEnabled)) {
+      println("\n\n\n comin 1..")
+      isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
+        isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
+          (dataExistInAdmin, dataExistInScheme) match {
+            case (true, false) =>
+              blockForAdmin()
+            case (false, true) =>
+              blockForScheme()
+            case _ =>
+              Future.failed(
+                new HttpException("Issue dealing with mongo collection", Status.BAD_REQUEST))
+          }
         }
       }
+    }else {
+      blockForScheme()
     }
   }
 

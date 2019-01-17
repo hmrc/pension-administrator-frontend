@@ -21,14 +21,11 @@ import connectors._
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
-import identifiers.TypedIdentifier
 import identifiers.register._
-import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
-import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
 import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
 import models._
 import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
@@ -37,13 +34,10 @@ import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{Writes, _}
-import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
@@ -268,21 +262,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
 
   }
 
-  object PSANameCacheConnector extends PSANameCacheConnector(
-    frontendAppConfig,
-    mock[WSClient],
-    injector.instanceOf[ApplicationCrypto]
-  ) with FakeUserAnswersCacheConnector {
-    override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
-                                                (implicit
-                                                 ec: ExecutionContext,
-                                                 hc: HeaderCarrier
-                                                ): Future[JsValue] = ???
-  }
-
   val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   val mockEmailConnector = mock[EmailConnector]
-  val psaNameCacheConnector = PSANameCacheConnector
   val appConfig = app.injector.instanceOf[FrontendAppConfig]
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -304,8 +285,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       pensionsSchemeConnector,
       knownFactsRetrieval,
       enrolments,
-      mockEmailConnector,
-      psaNameCacheConnector
+      mockEmailConnector
     )
 
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =

@@ -20,7 +20,9 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.github.tomakehurst.wiremock.client.WireMock._
 import identifiers.TypedIdentifier
 import org.scalatest._
+import play.api.Application
 import play.api.http.Status
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
@@ -45,6 +47,16 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
   ".fetch" must {
 
     "return `None` when the server returns a 404" in {
+      lazy val appWithIvEnabled: Application = new GuiceApplicationBuilder()
+        .configure(
+          portConfigKey -> server.port().toString,
+          "auditing.enabled" -> false,
+          "metrics.enabled" -> false,
+          "features.is-iv-enabled" -> true
+        ).build()
+
+      val injector = appWithIvEnabled.injector
+      val connector = injector.instanceOf[MicroserviceCacheConnector]
 
       server.stubFor(
         get(urlEqualTo(url("foo")))
