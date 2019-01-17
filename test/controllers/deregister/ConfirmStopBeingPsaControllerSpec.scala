@@ -21,57 +21,109 @@ import connectors.{DeregistrationConnector, FakeUserAnswersCacheConnector, TaxEn
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
-import identifiers.deregister.ConfirmStopBeingPsaId
-import org.scalatest.mockito.MockitoSugar
+import identifiers.register.PsaNameId
+import models.register.KnownFacts
+import models.requests.AuthenticatedRequest
+import models.{PSAUser, UserType}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.AnyContentAsFormUrlEncoded
+import play.api.libs.json.{Json, Writes}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.countryOptions.CountryOptions
 import views.html.deregister.confirmStopBeingPsa
 
-class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
+import scala.concurrent.{ExecutionContext, Future}
+
+class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase{
 
   import ConfirmStopBeingPsaControllerSpec._
 
   "ConfirmStopBeingPsaController" must {
 
-    "return OK and the correct view for a GET" in {
+    "return to session expired if psaName is not present" in {
       val result = controller().onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "return OK and the correct view for a GET" in {
+      val result = controller(testData).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
-    "redirect to the next page on a successful POST" in {
+    "return to session expired if psaName is not present for Post" in {
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "should display the errors if no selection made" in {
+
+      val result = controller(testData).onSubmit()(fakeRequest)
+
+      status(result) mustBe BAD_REQUEST
+    }
+
+    "redirect to the next page on a successful POST when selected true" in {
+
+      val result = controller(testData).onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad().url)
+    }
+
+    "redirect to the next page on a successful POST when selected false" in {
+
+      val result = controller(testData).onSubmit()(postRequestCancle)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.PsaDetailsController.onPageLoad().url)
     }
   }
 
 }
 
-object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with MockitoSugar {
+object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.PsaDetailsController.onPageLoad()
 
-  val dataRetrievalAction = new FakeDataRetrievalAction(None)
-
-  val formProvider = new ConfirmStopBeingPsaFormProvider
-  val form: Form[Boolean] = formProvider()
+  private val formProvider = new ConfirmStopBeingPsaFormProvider
+  private val form: Form[Boolean] = formProvider()
 
   private val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest().withFormUrlEncodedBody(("value", "true"))
 
-  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+  private val postRequestCancle: FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest().withFormUrlEncodedBody(("value", "false"))
 
-  private def testData():JsObject = Json.obj(ConfirmStopBeingPsaId.toString -> true)
+  private val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  private def fakeRegistrationConnector: DeregistrationConnector = mock[DeregistrationConnector]
-  private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
+  private class FakeAuthAction() extends AuthAction {
+    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, "test-external-id", PSAUser(UserType.Individual, "userId", None, false, None, Some("psaId"))))
+  }
+
+  private def testData = new FakeDataRetrievalAction(Some(Json.obj(PsaNameId.toString -> "psaName")))
+
+
+  private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = new TaxEnrolmentsConnector{
+    override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(
+      implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = ???
+
+    override def deEnrol(groupId: String, enrolmentKey: String)(
+      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT))
+  }
+
+  private def fakeDeregistrationConnector: DeregistrationConnector = new DeregistrationConnector{
+    override def stopBeingPSA(psaId: String)(
+      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT))
+  }
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -79,12 +131,12 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with Mockito
                         ) =
     new ConfirmStopBeingPsaController(
       frontendAppConfig,
-      FakeAuthAction,
+      new FakeAuthAction,
       messagesApi,
       formProvider,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeRegistrationConnector,
+      fakeDeregistrationConnector,
       fakeTaxEnrolmentsConnector
     )
 

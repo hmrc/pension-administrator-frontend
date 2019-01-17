@@ -17,7 +17,7 @@
 package controllers.deregister
 
 import config.FrontendAppConfig
-import connectors.{DeregistrationConnector, TaxEnrolmentsConnector, UserAnswersCacheConnector}
+import connectors.{DeregistrationConnector, TaxEnrolmentsConnector}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import identifiers.register.PsaNameId
@@ -31,14 +31,14 @@ import views.html.deregister.confirmStopBeingPsa
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmStopBeingPsaController  @Inject()(
-                                         val appConfig: FrontendAppConfig,
-                                         val auth: AuthAction,
+                                         appConfig: FrontendAppConfig,
+                                         auth: AuthAction,
                                          val messagesApi: MessagesApi,
-                                         val formProvider: ConfirmStopBeingPsaFormProvider,
-                                         val getData: DataRetrievalAction,
-                                         val requireData: DataRequiredAction,
-                                         val deregistration: DeregistrationConnector,
-                                         val enrolments: TaxEnrolmentsConnector
+                                         formProvider: ConfirmStopBeingPsaFormProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         deregistration: DeregistrationConnector,
+                                         enrolments: TaxEnrolmentsConnector
                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
@@ -56,6 +56,7 @@ class ConfirmStopBeingPsaController  @Inject()(
   def onSubmit: Action[AnyContent] = (auth andThen getData andThen requireData).async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+      val userId = request.user.userId
       request.userAnswers.get(PsaNameId) match {
         case Some(psaName) =>
           form.bindFromRequest().fold(
@@ -65,7 +66,7 @@ class ConfirmStopBeingPsaController  @Inject()(
               if (value) {
                 for {
                   _ <- deregistration.stopBeingPSA(psaId)
-                  _ <- enrolments.deEnrol(request.user.userId, psaId)
+                  _ <- enrolments.deEnrol(userId, psaId)
                 } yield {
                   Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
                 }

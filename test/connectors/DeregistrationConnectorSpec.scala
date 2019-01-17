@@ -27,13 +27,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class DeregistrationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
-  override protected def portConfigKey: String = "microservice.services.tax-enrolments.port"
+  override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val testPsaId = "test-psa-id"
 
-  private def deEnrolUrl: String = s"/pension-scheme//pensions-scheme/deregister-psa/$testPsaId"
+  private def deEnrolUrl: String = s"/pension-administrator/deregister-psa/$testPsaId"
 
   private lazy val connector = injector.instanceOf[DeregistrationConnector]
 
