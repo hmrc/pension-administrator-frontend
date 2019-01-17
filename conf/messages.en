@@ -799,3 +799,4 @@ confirmStopBeingPsa.title = Are you sure you want to stop being a pension scheme
 confirmStopBeingPsa.heading = Are you sure you want to stop being a pension scheme administrator?
 confirmStopBeingPsa.p1 = Your administrator ID will be deleted when you stop being a pension scheme administrator.
 confirmStopBeingPsa.p2 = You will have to register as a pension scheme administrator again if you need an administrator ID in the future.
+returnToPsaDetails.link = Return to {0}

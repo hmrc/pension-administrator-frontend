@@ -232,7 +232,11 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
   private def notNewRegPages[A](request: Request[A]): Boolean = {
-    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri, config.registeredPsaDetailsUri)
+    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri, config.registeredPsaDetailsUri,
+      config.stopBeingUri, config.stoppedBeingUri,
+      controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad().url,
+      controllers.deregister.routes.ConfirmStopBeingPsaController.onPageLoad().url,
+      controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit().url)
     !confirmationSeq.contains(request.uri)
   }
 
