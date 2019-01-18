@@ -36,7 +36,7 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase with BusinessDeta
   "BusinessDetailsController" must {
     behave like businessDetailsController(testFormModel, testViewModel, testId, createController(this))
 
-    "strip out disallowed characters from companyName on submit" in {
+    "strip out disallowed characters from companyName and allow submit" in {
       val invalidBusinessDetails = BusinessDetails(companyNameWithInvalidCharacters, Some("1234567890"))
       val fixture = testFixture(createController(this), testFormModel, testViewModel)
       val request = testRequest(businessDetails = Some(invalidBusinessDetails))
@@ -52,8 +52,8 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase with BusinessDeta
 // scalastyle:off magic.number
 
 object BusinessDetailsControllerSpec {
-
-  val companyNameWithInvalidCharacters = "Nik's Pensions Company (UK)"
+  private val companyNameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
+  private val companyNameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&\/"""
 
   val testId: TypedIdentifier[BusinessDetails] = new TypedIdentifier[BusinessDetails] {}
 
