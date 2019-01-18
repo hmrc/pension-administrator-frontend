@@ -17,15 +17,19 @@
 package controllers.register
 
 import controllers.ControllerSpecBase
+import forms.mappings.PayeMapping
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
+import javax.inject.Inject
+import models.Paye
+import play.api.data.Form
 import play.api.mvc.Results.Redirect
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class NameCleansingSpec extends ControllerSpecBase {
-  private val nameWithInvalidCharacters = "Nik's Pensions Company (UK)"
-  private val nameWithInvalidCharactersStrippedOut = "Nik's Pensions Company UK"
+  private val nameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
+  private val nameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&\/"""
 
   private val controller = new NameCleansing{}
 
@@ -41,6 +45,18 @@ class NameCleansingSpec extends ControllerSpecBase {
     utrLengthMsg = "businessDetails.error.utr.length",
     utrInvalidMsg = "businessDetails.error.utr.invalid"
   )
+
+//
+//  class PayeFormProvider @Inject() extends PayeMapping {
+//
+//    def apply(): Form[Paye] =
+//      Form(
+//        "paye" -> payeMapping()
+//      )
+//  }
+
+
+
 
   private val formProvider = new BusinessDetailsFormProvider(isUK = false)
   private val form = formProvider(businessDetailsFormModel)
