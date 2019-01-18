@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.SubscriptionConnector
+import connectors.{DeRegistrationConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
@@ -28,7 +28,7 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
-import utils.FakeCountryOptions
+import utils.{FakeCountryOptions, FakeFeatureSwitchManagementService}
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
@@ -40,24 +40,56 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   import PsaDetailsControllerSpec._
 
-  "Psa details Controller" must {
-    "return 200 and  correct view for a GET for PSA individual" in {
-      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-        .thenReturn(Future.successful(psaSubscriptionIndividual))
-      val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+  "Psa details Controller" when {
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl")
+    "toggle on" must {
+      "return 200 and  correct view for a GET for PSA individual who can be stopped being a psa" in {
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(psaSubscriptionIndividual))
+        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+          Future.successful(true)
+        )
+        val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl", true)
+      }
+
+      "return 200 and  correct view for a GET for PSA company who cannot be stopped being a psa" in {
+
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(psaSubscriptionCompany))
+        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+          Future.successful(false)
+        )
+        val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
+      }
     }
 
-    "return 200 and  correct view for a GET for PSA company" in {
+    "toggle off" must {
+      "return 200 and  correct view for a GET for PSA individual" in {
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(psaSubscriptionIndividual))
 
-      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-        .thenReturn(Future.successful(psaSubscriptionCompany))
-      val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+        val result = controller(userType = UserType.Individual, enableDeregistration = false).onPageLoad()(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name")
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl", false)
+      }
+
+      "return 200 and  correct view for a GET for PSA company who cannot be stopped being a psa" in {
+
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(psaSubscriptionCompany))
+
+        val result = controller(userType = UserType.Organisation, enableDeregistration = false).onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
+      }
     }
   }
 }
@@ -76,6 +108,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   def call: Call = controllers.routes.CheckYourAnswersController.onSubmit()
 
   private val subscriptionConnector = mock[SubscriptionConnector]
+  private val deregistrationConnector = mock[DeRegistrationConnector]
 
   val validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
@@ -85,17 +118,19 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   )
   )
 
-  def controller(dataRetrievalAction: DataRetrievalAction = validData, userType: UserType) =
+  def controller(dataRetrievalAction: DataRetrievalAction = validData, userType: UserType, enableDeregistration: Boolean = true) =
     new PsaDetailsController(
       frontendAppConfig,
       messagesApi,
       new FakeAuthAction(userType),
       subscriptionConnector,
-      countryOptions
+      deregistrationConnector,
+      countryOptions,
+      new FakeFeatureSwitchManagementService(enableDeregistration)
     )
 
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "") =
-    psa_details(frontendAppConfig, superSections, name)(fakeRequest, messages).toString
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", canDeregister: Boolean) =
+    psa_details(frontendAppConfig, superSections, name, canDeregister)(fakeRequest, messages).toString
 
   val individualSuperSections: Seq[SuperSection] = Seq(
     SuperSection(

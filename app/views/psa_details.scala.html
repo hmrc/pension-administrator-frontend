@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.SuperSection
 
-@(appConfig: FrontendAppConfig, superSections: Seq[SuperSection], header: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, superSections: Seq[SuperSection], header: String, canDeregister: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("psaDetails.title"),
@@ -31,10 +31,19 @@
             headingKey=header
         )
 
+        @if(canDeregister) {
+            <p>
+                <a id="deregister-link" href="@appConfig.deregisterPsaUrl">@messages("psaDetails.deregister.link.text")</a>
+                @messages("psaDetails.deregister.text")
+            </p>
+        }
+
         @for((section, i) <- superSections.zipWithIndex){
+            @if(canDeregister){
+                <h2 class="heading-large">@messages("psaDetails.header")</h2>
+            }
             @{
                 components.super_section(section, i.toString)
-
             }
         }
 
