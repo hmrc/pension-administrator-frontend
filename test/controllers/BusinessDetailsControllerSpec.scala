@@ -53,7 +53,6 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase with BusinessDeta
 
 object BusinessDetailsControllerSpec {
   private val companyNameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
-  private val companyNameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&\/"""
 
   val testId: TypedIdentifier[BusinessDetails] = new TypedIdentifier[BusinessDetails] {}
 

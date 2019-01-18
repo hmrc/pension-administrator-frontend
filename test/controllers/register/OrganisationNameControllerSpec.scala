@@ -47,7 +47,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
   val testCompanyName = "test company name"
 
   private val testCompanyNameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
-  private val testCompanyNameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&\/"""
 
   val viewmodel = OrganisationNameViewModel(
     postCall = Call("GET", "www.example.com"),
