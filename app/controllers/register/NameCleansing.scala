@@ -23,13 +23,9 @@ import scala.concurrent.Future
 import play.api.mvc.Results._
 
 trait NameCleansing {
-  //protected val nameCleanseRegex = "[()]+"
+  protected val nameCleanseRegex = """[^a-zA-Z0-9 '&\\/]+"""
 
-  //Strip out if not one of: [a-zA-Z0-9 '&\\/] {1,105}
-
-    protected val nameCleanseRegex = """[^a-zA-Z0-9 '&\\/]+"""
-
-  private[controllers] def cleanse(data: Map[String, Seq[String]], fieldName:String): Map[String, String] =
+  private[controllers] def cleanse(data: Map[String, Seq[String]], fieldName: String): Map[String, String] =
     data.map(dataItem =>
       if (dataItem._1 == fieldName) {
         (dataItem._1, dataItem._2.head.replaceAll(nameCleanseRegex, ""))
@@ -39,7 +35,7 @@ trait NameCleansing {
     )
 
   private[controllers] def cleanseAndBindOrRedirect[A](data: Option[Map[String, Seq[String]]],
-                                                       fieldName:String, form: Form[A]): Either[Future[Result], Form[A]] = {
+                                                       fieldName: String, form: Form[A]): Either[Future[Result], Form[A]] = {
     data match {
       case None => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
       case Some(requestData) => Right(form.bind(cleanse(requestData, fieldName)))

@@ -17,11 +17,8 @@
 package controllers.register
 
 import controllers.ControllerSpecBase
-import forms.mappings.PayeMapping
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
-import javax.inject.Inject
-import models.Paye
 import play.api.data.Form
+import play.api.data.Forms._
 import play.api.mvc.Results.Redirect
 
 import scala.concurrent.Await
@@ -35,31 +32,13 @@ class NameCleansingSpec extends ControllerSpecBase {
 
   private val fieldName = "companyName"
 
-  private val businessDetailsFormModel = BusinessDetailsFormModel(
-    companyNameMaxLength = 105,
-    companyNameRequiredMsg = "partnershipName.error.required",
-    companyNameLengthMsg = "partnershipName.error.length",
-    companyNameInvalidMsg = "partnershipName.error.invalid",
-    utrMaxLength = 10,
-    utrRequiredMsg = None,
-    utrLengthMsg = "businessDetails.error.utr.length",
-    utrInvalidMsg = "businessDetails.error.utr.invalid"
+  private case class Data(name: String)
+
+  private val form = Form(
+    mapping(
+      "name" -> text
+    )(Data.apply)(Data.unapply)
   )
-
-//
-//  class PayeFormProvider @Inject() extends PayeMapping {
-//
-//    def apply(): Form[Paye] =
-//      Form(
-//        "paye" -> payeMapping()
-//      )
-//  }
-
-
-
-
-  private val formProvider = new BusinessDetailsFormProvider(isUK = false)
-  private val form = formProvider(businessDetailsFormModel)
 
   private val dataBeforeBind = Map(
     "one" -> Seq(nameWithInvalidCharacters),
@@ -81,15 +60,16 @@ class NameCleansingSpec extends ControllerSpecBase {
     "redirect when there are no fields in body" in {
       val result = controller.cleanseAndBindOrRedirect(None, fieldName, form)
       result.isLeft mustBe true
-      val actualRedirect = Await.result(result.left.toOption.get, Duration.Inf)
-      actualRedirect mustBe Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+
+      result.left.toOption.map {
+        Await.result(_, Duration.Inf) mustBe Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+      }
     }
 
     "cleanse and bind when there are fields in body" in {
       val result = controller.cleanseAndBindOrRedirect(Some(dataBeforeBind), fieldName, form)
       result.isRight mustBe true
-      val boundData = result.right.toOption.get.data
-      boundData mustBe boundData
+      result.right.toOption.map( _.data mustBe dataAfterBind )
     }
 
   }
