@@ -20,8 +20,8 @@ import controllers.ControllerSpecBase
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import play.api.mvc.Results.Redirect
 
+import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
 
 class NameCleansingSpec extends ControllerSpecBase {
   private val nameWithInvalidCharacters = "Nik's Pensions Company (UK)"

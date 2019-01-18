@@ -25,6 +25,8 @@ import play.api.mvc.Results._
 trait NameCleansing {
   protected val nameCleanseRegex = "[()]+"
 
+  //Strip out if not one of: [a-zA-Z0-9 '&\\/] {1,105}
+
   private[controllers] def cleanse(data: Map[String, Seq[String]], fieldName:String): Map[String, String] =
     data.map(dataItem =>
       if (dataItem._1 == fieldName) {
