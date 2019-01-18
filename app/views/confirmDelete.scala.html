@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.ConfirmDeleteViewModel
 
-@(appConfig: FrontendAppConfig, viewModel: ConfirmDeleteViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: ConfirmDeleteViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = viewModel.title,
@@ -30,15 +30,19 @@
 
         @components.back_link()
 
+        @components.error_summary(form.errors)
+
         @components.heading(
             headingKey=components.hyphen(messages(viewModel.heading,viewModel.token.getOrElse(""))).toString
         )
 
-        @components.submit_button("site.confirm")
+        @components.input_yes_no(
+            field = form("value"),
+            label = messages("messages__confirmDeleteDirector__title"),
+            labelClass = Some("visually-hidden")
+        )
 
-        <a id="cancel" href=@viewModel.cancelUrl.url>
-            @messages("site.cancel")
-        </a>
+        @components.submit_button("site.confirm")
 
     }
 }

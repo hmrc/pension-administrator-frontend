@@ -19,9 +19,10 @@ package controllers.register.company.directors
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorDetailsId
 import models.{Index, NormalMode, PersonDetails}
 import play.api.Application
@@ -45,14 +46,16 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
       implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(firstIndex))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, viewModel)(request, messages).toString()
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel)(request, messages).toString()
       }
     )
   }
 
   "redirect to the next page on a POST request" in {
     requestResult(dataRetrieval)(
-      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onSubmit(firstIndex))),
+      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onSubmit(firstIndex)).withFormUrlEncodedBody(
+        "value" -> "true"
+      )),
       (_, result) => {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
@@ -79,6 +82,9 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
 object ConfirmDeleteDirectorControllerSpec {
   val firstIndex = Index(0)
   val person = PersonDetails("First", None, "Last", LocalDate.now())
+
+  private val formProvider = new ConfirmDeleteFormProvider()
+  private val form = formProvider()
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "directors" -> Json.arr(
