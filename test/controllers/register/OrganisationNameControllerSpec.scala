@@ -19,11 +19,13 @@ package controllers.register
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, CompanyNameFormProvider}
 import identifiers.TypedIdentifier
+import identifiers.register.partnership.partners.PartnerAddressPostCodeLookupId
 import models._
 import models.requests.DataRequest
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -34,6 +36,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
@@ -45,6 +48,8 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
   import OrganisationNameControllerSpec._
 
   val testCompanyName = "test company name"
+  val testCompanyNameWithInvalidCharacters = "Nik's Pensions Company (UK)"
+  val testCompanyNameWithInvalidCharactersStrippedOut = "Nik's Pensions Company UK"
 
   val viewmodel = OrganisationNameViewModel(
     postCall = Call("GET", "www.example.com"),
@@ -142,7 +147,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = new BusinessDetailsFormProvider(isUK = false)
-          val request = FakeRequest()
+          val request = FakeRequest().withFormUrlEncodedBody(("companyName", ""))
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
@@ -153,6 +158,34 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
             formProvider(businessDetailsFormModel).bind(Map.empty[String, String]),
             viewmodel
           )(request, messages).toString
+      }
+    }
+
+    "redirect when the submitted data is valid once invalid characters stripped out of name" in {
+
+      import play.api.inject._
+      import org.mockito.Mockito.{verify, when}
+
+      val cacheConnector = mock[UserAnswersCacheConnector]
+
+      running(_.overrides(
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+
+          implicit val materializer: Materializer = app.materializer
+
+          when(
+            cacheConnector.save[BusinessDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ).thenReturn(Future.successful(Json.obj()))
+
+          val request = FakeRequest().withFormUrlEncodedBody(("companyName", testCompanyNameWithInvalidCharacters))
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
       }
     }
   }
