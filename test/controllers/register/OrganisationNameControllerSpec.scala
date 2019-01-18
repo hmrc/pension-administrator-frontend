@@ -19,13 +19,11 @@ package controllers.register
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, CompanyNameFormProvider}
 import identifiers.TypedIdentifier
-import identifiers.register.partnership.partners.PartnerAddressPostCodeLookupId
 import models._
 import models.requests.DataRequest
-import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -36,7 +34,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
@@ -48,8 +45,9 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
   import OrganisationNameControllerSpec._
 
   val testCompanyName = "test company name"
-  val testCompanyNameWithInvalidCharacters = "Nik's Pensions Company (UK)"
-  val testCompanyNameWithInvalidCharactersStrippedOut = "Nik's Pensions Company UK"
+
+  private val testCompanyNameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
+  private val testCompanyNameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&\/"""
 
   val viewmodel = OrganisationNameViewModel(
     postCall = Call("GET", "www.example.com"),
@@ -163,8 +161,8 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
     "redirect when the submitted data is valid once invalid characters stripped out of name" in {
 
+      import org.mockito.Mockito.when
       import play.api.inject._
-      import org.mockito.Mockito.{verify, when}
 
       val cacheConnector = mock[UserAnswersCacheConnector]
 
