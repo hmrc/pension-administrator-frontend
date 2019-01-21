@@ -21,6 +21,8 @@ import config.FrontendAppConfig
 import connectors.{SubscriptionConnector, UserAnswersCacheConnector}
 import controllers.actions.AuthAction
 import identifiers.register.PsaNameId
+import connectors.SubscriptionConnector
+import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
