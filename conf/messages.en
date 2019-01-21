@@ -712,6 +712,9 @@ partnershipReview.partners.editLink = Add, delete or edit partners
 partnershipReview.partners.changeLink = Change partners
 
 psaDetails.title = Registered PSA details
+psaDetails.header = Pension scheme administrator details
+psaDetails.deregister.link.text = Stop being a pension scheme administrator
+psaDetails.deregister.text =  - this will also delete the administrator ID.
 
 company.address.label = Company‘s contact address
 company.email.label = Company’s email address

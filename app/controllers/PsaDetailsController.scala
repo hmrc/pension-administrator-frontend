@@ -17,41 +17,57 @@
 package controllers
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
-import connectors.SubscriptionConnector
+import config.{FeatureSwitchManagementService, FrontendAppConfig}
+import connectors.{DeRegistrationConnector, SubscriptionConnector}
 import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.PsaDetailsHelper
+import utils.Toggles.isDeregistrationEnabled
 import utils.countryOptions.CountryOptions
 import views.html.psa_details
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      subscriptionConnector: SubscriptionConnector,
-                                     countryOptions: CountryOptions
+                                     deRegistrationConnector: DeRegistrationConnector,
+                                     countryOptions: CountryOptions,
+                                     fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
-        response.organisationOrPartner match {
-          case None =>
-            Ok(psa_details(
-              appConfig,
-              new PsaDetailsHelper(response, countryOptions).individualSections,
-              response.individual.map(_.fullName).getOrElse("")))
-          case _ =>
-            Ok(psa_details(
-              appConfig,
-              new PsaDetailsHelper(response, countryOptions).organisationSections,
-              response.organisationOrPartner.map(_.name).getOrElse("")))
+
+      subscriptionConnector.getSubscriptionDetails(psaId).flatMap { response =>
+        canStopBeingAPsa(psaId).map { canDeregister =>
+          val psaDetailsHelper = new PsaDetailsHelper(response, countryOptions)
+
+          val (superSections, fullName) = response.organisationOrPartner.fold((
+            psaDetailsHelper.individualSections, response.individual.map(_.fullName).getOrElse(""))
+          )(orgOrPartnerName =>
+            (psaDetailsHelper.organisationSections, orgOrPartnerName.name)
+          )
+
+          Ok(psa_details(
+            appConfig,
+            superSections,
+            fullName,
+            canDeregister))
         }
       }
+  }
+
+  private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    if (fs.get(isDeregistrationEnabled)) {
+      deRegistrationConnector.canDeRegister(psaId)
+    } else {
+      Future.successful(false)
+    }
   }
 }

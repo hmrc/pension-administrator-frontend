@@ -146,6 +146,19 @@ trait ViewSpecBase extends SpecBase {
       )
   }
 
+  def haveLinkWithUrlAndContent(linkId: String, url: String, expectedContent: String): Matcher[Document] = Matcher[Document]{
+    document =>
+      val link = document.select(s"a[id=$linkId]")
+      val actualContent = link.text()
+
+      val href = link.attr("href")
+      MatchResult(
+        href == url && expectedContent == actualContent,
+        s"link id $linkId with link text $actualContent and href $href is not rendered on the page",
+        s"link id $linkId with link text $actualContent and href $href is rendered on the page"
+      )
+  }
+
   def haveLinkOnClick(action: String, linkId: String): Matcher[View] = Matcher[View] {
     view =>
       val link = Jsoup.parse(view().toString()).select(s"a[id=$linkId]")
