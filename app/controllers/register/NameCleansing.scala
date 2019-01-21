@@ -23,7 +23,7 @@ import scala.concurrent.Future
 import play.api.mvc.Results._
 
 trait NameCleansing {
-  private val nameCleanseRegex = """[^a-zA-Z0-9 '&\\/]+"""
+  private val nameCleanseRegex = """[^a-zA-Z0-9 '&\/]+"""
 
   private[controllers] def cleanse(data: Map[String, Seq[String]], fieldName: String): Map[String, String] =
     data.map(dataItem =>

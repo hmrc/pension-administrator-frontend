@@ -26,7 +26,7 @@ import scala.concurrent.duration.Duration
 
 class NameCleansingSpec extends ControllerSpecBase {
   private val nameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
-  private val nameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&\/"""
+  private val nameWithInvalidCharactersStrippedOut = """abcdefghijklmnopqrstuvwxyz0123456789 '&/"""
 
   private val controller = new NameCleansing{}
 
