@@ -1,0 +1,123 @@
+{
+  "index": "",
+  "areYouInUK": true,
+  "businessType": "limitedPartnership",
+  "partnershipDetails": {
+    "companyName": "Test Ltd",
+    "uniqueTaxReferenceNumber": "1234567890"
+  },
+  "partnershipRegisteredAddress": {
+    "addressLine1": "100 SuttonStreet",
+    "addressLine2": "Wokingham",
+    "addressLine3": "Surrey",
+    "addressLine4": "London",
+    "postalCode": "DH14EJ",
+    "countryCode": "GB"
+  },
+  "registrationInfo": {
+    "legalStatus": "Partnership",
+    "sapNumber": "1234567890",
+    "noIdentifier": false,
+    "customerType": "UK",
+    "idType": "UTR",
+    "idNumber": "1234567890"
+  },
+  "lastPage": {
+    "method": "GET",
+    "url": "/register-as-pension-scheme-administrator/register/declaration"
+  },
+  "partnershipSameContactAddress": true,
+  "partnershipContactAddress": {
+    "addressLine1": "100 SuttonStreet",
+    "addressLine2": "Wokingham",
+    "addressLine3": "Surrey",
+    "addressLine4": "London",
+    "postcode": "DH14EJ",
+    "country": "GB"
+  },
+  "partnershipAddressYears": "under_a_year",
+  "partnershipPreviousAddressList": {
+    "addressLine1": "2 Other Place",
+    "addressLine2": "Some District",
+    "addressLine3": "Anytown",
+    "addressLine4": "Somerset",
+    "postalCode": "ZZ1 1ZZ",
+    "countryCode": "GB"
+  },
+  "partnershipPreviousAddress": {
+    "addressLine1": "2 Other Place",
+    "addressLine2": "Some District",
+    "addressLine3": "Anytown",
+    "addressLine4": "Somerset",
+    "postcode": "ZZ1 1ZZ",
+    "country": "GB"
+  },
+  "partnershipContactDetails": {
+    "email": "e@e.e",
+    "phone": "66"
+  },
+  "partnershipVat": {
+    "hasVat": true,
+    "vat": "123456789"
+  },
+  "partnershipPaye": {
+    "hasPaye": true,
+    "paye": "0987654321"
+  },
+  "partners": [
+    {
+      "partnerDetails": {
+        "firstName": "g",
+        "lastName": "rg",
+        "dateOfBirth": "2005-05-05",
+        "isDeleted": false
+      },
+      "partnerNino": {
+        "hasNino": true,
+        "nino": "AB123456C"
+      },
+      "partnerUtr": {
+        "hasUtr": true,
+        "utr": "1234567890"
+      },
+      "partnerAddressList": {
+        "addressLine1": "5 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postalCode": "ZZ1 1ZZ",
+        "countryCode": "GB"
+      },
+      "partnerAddress": {
+        "addressLine1": "5 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postcode": "ZZ1 1ZZ",
+        "country": "GB"
+      },
+      "partnerAddressYears": "under_a_year",
+      "partnerPreviousAddressList": {
+        "addressLine1": "4 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postalCode": "ZZ1 1ZZ",
+        "countryCode": "GB"
+      },
+      "partnerPreviousAddress": {
+        "addressLine1": "4 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postcode": "ZZ1 1ZZ",
+        "country": "GB"
+      },
+      "partnerContactDetails": {
+        "email": "t@t.t",
+        "phone": "35"
+      },
+      "isPartnerComplete": true
+    }
+  ]
+}

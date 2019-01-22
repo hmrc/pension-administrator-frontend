@@ -1,0 +1,121 @@
+{
+  "index": "",
+  "areYouInUK": true,
+  "businessType": "limitedCompany",
+  "businessDetails": {
+    "companyName": "Test Ltd",
+    "uniqueTaxReferenceNumber": "1234567890"
+  },
+  "companyAddressId": {
+    "addressLine1": "100 SuttonStreet",
+    "addressLine2": "Wokingham",
+    "addressLine3": "Surrey",
+    "addressLine4": "London",
+    "postalCode": "DH14EJ",
+    "countryCode": "GB"
+  },
+  "registrationInfo": {
+    "legalStatus": "Limited Company",
+    "sapNumber": "1234567890",
+    "noIdentifier": false,
+    "customerType": "UK",
+    "idType": "UTR",
+    "idNumber": "1234567890"
+  },
+  "lastPage": {
+    "method": "GET",
+    "url": "/register-as-pension-scheme-administrator/register/declaration"
+  },
+  "companySameContactAddressId": true,
+  "companyContactAddress": {
+    "addressLine1": "100 SuttonStreet",
+    "addressLine2": "Wokingham",
+    "addressLine3": "Surrey",
+    "addressLine4": "London",
+    "postcode": "DH14EJ",
+    "country": "GB"
+  },
+  "companyAddressYears": "under_a_year",
+  "companyAddressList": {
+    "addressLine1": "Flat 3",
+    "addressLine2": "7 Other Place",
+    "addressLine3": "Some District",
+    "addressLine4": "Somerset",
+    "postalCode": "ZZ1 1ZZ",
+    "countryCode": "GB"
+  },
+  "companyPreviousAddress": {
+    "addressLine1": "Flat 3",
+    "addressLine2": "7 Other Place",
+    "addressLine3": "Some District",
+    "addressLine4": "Somerset",
+    "postcode": "ZZ1 1ZZ",
+    "country": "GB"
+  },
+  "contactDetails": {
+    "email": "a@a.x",
+    "phone": "11111"
+  },
+  "companyDetails": {
+    "vatRegistrationNumber": "486534455",
+    "payeEmployerReferenceNumber": "35364564"
+  },
+  "companyRegistrationNumber": "09876543",
+  "directors": [
+    {
+      "directorDetails": {
+        "firstName": "na",
+        "middleName": "a",
+        "lastName": "da",
+        "dateOfBirth": "2009-03-03",
+        "isDeleted": false
+      },
+      "directorNino": {
+        "hasNino": true,
+        "nino": "AB123456C"
+      },
+      "directorUtr": {
+        "hasUtr": true,
+        "utr": "0987654321"
+      },
+      "companyDirectorAddressList": {
+        "addressLine1": "Flat 2",
+        "addressLine2": "7 Other Place",
+        "addressLine3": "Some District",
+        "addressLine4": "Somerset",
+        "postalCode": "ZZ1 1ZZ",
+        "countryCode": "GB"
+      },
+      "directorAddress": {
+        "addressLine1": "Flat 2",
+        "addressLine2": "7 Other Place",
+        "addressLine3": "Some District",
+        "addressLine4": "Somerset",
+        "postcode": "ZZ1 1ZZ",
+        "country": "GB"
+      },
+      "directorAddressYears": "under_a_year",
+      "directorPreviousAddressList": {
+        "addressLine1": "Flat 1",
+        "addressLine2": "7 Other Place",
+        "addressLine3": "Some District",
+        "addressLine4": "Somerset",
+        "postalCode": "ZZ1 1ZZ",
+        "countryCode": "GB"
+      },
+      "directorPreviousAddress": {
+        "addressLine1": "Flat 1",
+        "addressLine2": "7 Other Place",
+        "addressLine3": "Some District",
+        "addressLine4": "Somerset",
+        "postcode": "ZZ1 1ZZ",
+        "country": "GB"
+      },
+      "directorContactDetails": {
+        "email": "q@q.q",
+        "phone": "999"
+      },
+      "isDirectorComplete": true
+    }
+  ]
+}

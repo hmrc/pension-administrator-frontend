@@ -16,8 +16,9 @@
 
 package controllers
 
+import config.FeatureSwitchManagementServiceTestImpl
 import connectors.SubscriptionConnector
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
@@ -25,6 +26,7 @@ import models.{PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
+import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
@@ -33,6 +35,7 @@ import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 import views.html.psa_details
+import utils.Toggles.isVariationsEnabled
 
 import scala.concurrent.Future
 
@@ -42,6 +45,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA individual" in {
+      featureSwitchManagementService.change(isVariationsEnabled, false)
       when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
         .thenReturn(Future.successful(psaSubscriptionIndividual))
       val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
@@ -85,13 +89,19 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   )
   )
 
+  private val config = app.injector.instanceOf[Configuration]
+  val featureSwitchManagementService = new FeatureSwitchManagementServiceTestImpl(config, environment)
+
   def controller(dataRetrievalAction: DataRetrievalAction = validData, userType: UserType) =
     new PsaDetailsController(
       frontendAppConfig,
       messagesApi,
       new FakeAuthAction(userType),
       subscriptionConnector,
-      countryOptions
+      countryOptions,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      featureSwitchManagementService
     )
 
   private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "") =
