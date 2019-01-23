@@ -29,6 +29,7 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There was a problem with the page
+error.boolean.required = You must make a selection
 
 error.address_line_1.required = Enter the first line of address
 error.address_line_2.required = Enter the second line of address
@@ -712,6 +713,9 @@ partnershipReview.partners.editLink = Add, delete or edit partners
 partnershipReview.partners.changeLink = Change partners
 
 psaDetails.title = Registered PSA details
+psaDetails.header = Pension scheme administrator details
+psaDetails.deregister.link.text = Stop being a pension scheme administrator
+psaDetails.deregister.text =  - this will also delete the administrator ID.
 
 company.address.label = Company’s contact address
 company.email.label = Company’s email address

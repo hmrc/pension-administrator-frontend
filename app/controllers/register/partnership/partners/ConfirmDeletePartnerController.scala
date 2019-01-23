@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{ConfirmDeleteController, Retrievals}
+import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
 import models.Index
@@ -33,30 +34,35 @@ class ConfirmDeletePartnerController @Inject()(
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                val cacheConnector: UserAnswersCacheConnector
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                formProvider: ConfirmDeleteFormProvider
                                               ) extends ConfirmDeleteController with Retrievals {
+
+  val form = formProvider()
+
+  private def viewModel(index: Index, name: String) = ConfirmDeleteViewModel(
+    routes.ConfirmDeletePartnerController.onSubmit(index),
+    controllers.register.partnership.routes.AddPartnerController.onPageLoad(),
+    Message("confirmDelete.partner.title"),
+    "confirmDelete.partner.heading",
+    Some(name),
+    None
+  )
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
       PartnerDetailsId(index).retrieve.right.map { details =>
-        val viewModel = ConfirmDeleteViewModel(
-          routes.ConfirmDeletePartnerController.onSubmit(index),
-          controllers.register.partnership.routes.AddPartnerController.onPageLoad(),
-          Message("confirmDelete.partner.title"),
-          "confirmDelete.partner.heading",
-          Some(details.fullName),
-          None
-        )
-
-        get(viewModel, details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
+        get(viewModel(index, details.fullName), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
 
       }
   }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad())
+      PartnerDetailsId(index).retrieve.right.map { details =>
+        post(viewModel(index, details.fullName), PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad())
+      }
   }
 
 }

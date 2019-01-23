@@ -21,6 +21,7 @@ import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.PersonDetails
 import models.requests.DataRequest
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Format
 import play.api.mvc.{AnyContent, Call, Result}
@@ -38,19 +39,29 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   protected def cacheConnector: UserAnswersCacheConnector
 
+  protected val form: Form[Boolean]
+
   def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call)(implicit request: DataRequest[AnyContent]): Future[Result] =
     if (!isDeleted) {
-      Future.successful(Ok(confirmDelete(appConfig, vm)))
+      Future.successful(Ok(confirmDelete(appConfig, form, vm)))
     } else {
       Future.successful(Redirect(redirectTo))
     }
 
-  def post(id: TypedIdentifier[PersonDetails], postUrl: Call)
-          (implicit request: DataRequest[AnyContent], f: Format[PersonDetails]): Future[Result] =
-    id.retrieve.right.map { details =>
-      cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
-        Redirect(postUrl)
-      }
-    }
+  def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonDetails], postUrl: Call)
+          (implicit request: DataRequest[AnyContent]): Future[Result] = {
+
+    form.bindFromRequest().fold(
+      (formWithError: Form[_]) => Future.successful(BadRequest(confirmDelete(appConfig, formWithError, vm))),
+     {
+       case true => id.retrieve.right.map { details =>
+         cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
+           Redirect(postUrl)
+         }
+       }
+       case false =>  Future.successful(Redirect(postUrl))
+     }
+    )
+  }
 
 }

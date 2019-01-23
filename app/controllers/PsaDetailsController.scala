@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
-import connectors.SubscriptionConnector
+import connectors.{DeRegistrationConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
@@ -31,9 +31,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Toggles.isVariationsEnabled
 import utils.countryOptions.CountryOptions
-import utils.{PsaDetailsHelper, ViewPsaDetailsHelper, UserAnswers}
+import utils.{PsaDetailsHelper, UserAnswers, ViewPsaDetailsHelper}
 import viewmodels.SuperSection
 import views.html.psa_details
+import utils.Toggles.isDeregistrationEnabled
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,6 +42,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      subscriptionConnector: SubscriptionConnector,
+                                     deRegistrationConnector: DeRegistrationConnector,
                                      countryOptions: CountryOptions,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
@@ -51,8 +53,9 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(request.userAnswers) else retrievePsaDataFromModel(psaId)
-
-      retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2)) }
+      canStopBeingAPsa(psaId) flatMap { canDeregister =>
+        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister)) }
+      }
   }
 
   private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
@@ -78,5 +81,13 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
           (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections, userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse (""))
         case _ => (Nil, "")
       })
+  }
+
+  private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    if (fs.get(isDeregistrationEnabled)) {
+      deRegistrationConnector.canDeRegister(psaId)
+    } else {
+      Future.successful(false)
+    }
   }
 }

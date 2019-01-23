@@ -102,14 +102,14 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       case Some(true) if affinityGroup == Individual && !allowedIndividual(cl) =>
         Future.successful(Redirect(ivUpliftUrl))
       case Some(true) if affinityGroup == Organisation =>
-        doManualIVAndStoreNino(authRequest, enrolments, block)
+        doManualIVAndRetrieveNino(authRequest, enrolments, block)
       case _ =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
     }
   }
 
-  private def doManualIVAndStoreNino[A](authRequest: AuthenticatedRequest[A], enrolments: Enrolments,
-                                        block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+  private def doManualIVAndRetrieveNino[A](authRequest: AuthenticatedRequest[A], enrolments: Enrolments,
+                                           block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
     val journeyId = authRequest.request.getQueryString("journeyId")
     getData(JourneyId, authRequest.externalId).flatMap {
       case Some(journey) =>
@@ -125,20 +125,12 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   private def getNinoAndUpdateAuthRequest[A](journeyId: String, enrolments: Enrolments, block: AuthenticatedRequest[A] => Future[Result],
                                              authRequest: AuthenticatedRequest[A])(implicit hc: HeaderCarrier): Future[Result] = {
-    getData(NinoId, authRequest.externalId).flatMap {
+    ivConnector.retrieveNinoFromIV(journeyId).flatMap {
       case Some(nino) =>
-        val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
-        savePsaIdAndReturnAuthRequest(enrolments, updatedAuth, block)
+          val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
+          savePsaIdAndReturnAuthRequest(enrolments, updatedAuth, block)
       case _ =>
-        ivConnector.retrieveNinoFromIV(journeyId).flatMap {
-          case Some(nino) =>
-            userAnswersCacheConnector.save(authRequest.externalId, NinoId, nino).flatMap { _ =>
-              val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
-              savePsaIdAndReturnAuthRequest(enrolments, updatedAuth, block)
-            }
-          case _ =>
-            orgManualIV(authRequest.externalId, enrolments, authRequest, block)
-        }
+        orgManualIV(authRequest.externalId, enrolments, authRequest, block)
     }
   }
 

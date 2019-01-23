@@ -16,6 +16,7 @@
 
 package views
 
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -34,28 +35,49 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
 
   val fakeCall = Call("method", "url")
 
-  def createView: () => HtmlFormat.Appendable = () =>
+  def createView(canBeDeregistered: Boolean = true): () => HtmlFormat.Appendable = () =>
     psa_details(
       frontendAppConfig,
       emptyAnswerSections,
-      secondaryHeader
+      secondaryHeader,
+      canBeDeregistered
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
       sections,
-      secondaryHeader
+      secondaryHeader,
+      true
     )(fakeRequest, messages)
 
   "supersection page" must {
 
-    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
+    behave like normalPageWithoutPageTitleCheck(createView(), messageKeyPrefix)
 
     "display the correct page title" in {
-      val doc = asDocument(createView())
+      val doc = asDocument(createView()())
       assertPageTitleEqualsMessage(doc, secondaryHeader)
     }
+
+    "display the stop being a psa link when can be de-registered" in {
+      val doc = Jsoup.parse(createView().apply().toString())
+      doc must haveLinkWithUrlAndContent(
+        "deregister-link",
+        frontendAppConfig.deregisterPsaUrl,
+        messages("psaDetails.deregister.link.text")
+      )
+    }
+
+    "do not display the stop being a psa link when cannot be de-registered" in {
+      val doc = Jsoup.parse(createView(false).apply().toString())
+      doc mustNot haveLinkWithUrlAndContent(
+        "deregister-link",
+        frontendAppConfig.deregisterPsaUrl,
+        messages("psaDetails.deregister.link.text")
+      )
+    }
+
     "display heading" in {
       val doc: Document = asDocument(createViewWithData(seqSuperSection))
       assertRenderedByIdWithText(doc, "supersection-0-heading", superSectionHeading)
@@ -78,7 +100,7 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
     }
 
     "display link to take the user back to manage pensions overview page" in {
-      createView must haveLink(
+      createView() must haveLink(
         frontendAppConfig.schemesOverviewUrl,
         "return-to-overview"
       )

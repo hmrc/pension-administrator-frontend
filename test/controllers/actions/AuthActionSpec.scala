@@ -170,7 +170,7 @@ class AuthActionSpec extends SpecBase {
         }
       }
 
-      "return OK, retrieve the nino from iv and save it" when {
+      "return OK, retrieve the nino from iv" when {
 
         "journey Id is saved in user answers" in {
           val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
@@ -182,7 +182,6 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(fakeRequest)
           status(result) mustBe OK
-          fakeUserAnswers.verify(NinoId, nino)
         }
 
         "journey Id is not in user answers but present in url" in {
@@ -196,24 +195,11 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest("", s"/url?journeyId=$journeyId"))
           status(result) mustBe OK
-          fakeUserAnswers.verify(NinoId, nino)
           fakeUserAnswers.verify(JourneyId, journeyId)
         }
       }
 
       "return OK" when {
-        "nino is already saved in user answers" in {
-          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
-          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false, "journeyId" -> "test-journey", "nino" -> nino)
-          val fakeUserAnswers = fakeUserAnswersCacheConnector(userAnswersData)
-
-          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswers, fakeIVConnector)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(fakeRequest)
-          status(result) mustBe OK
-        }
-
         "the user is non uk user" in {
           val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
 
