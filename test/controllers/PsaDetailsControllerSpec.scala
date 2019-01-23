@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAct
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
+import models.{CheckMode, PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -36,6 +36,8 @@ import utils.testhelpers.PsaSubscriptionBuilder._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 import views.html.psa_details
 import utils.Toggles.isVariationsEnabled
+import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
+import utils.testhelpers.ViewPsaDetailsBuilder._
 
 import scala.concurrent.Future
 
@@ -44,30 +46,60 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
   import PsaDetailsControllerSpec._
 
   "Psa details Controller" must {
-    "return 200 and  correct view for a GET for PSA individual" in {
-      featureSwitchManagementService.change(isVariationsEnabled, false)
-      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-        .thenReturn(Future.successful(psaSubscriptionIndividual))
-      val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+    "when variations are disabled" when {
+      "return 200 and  correct view for a GET for PSA individual" in {
+        featureSwitchManagementService.change(isVariationsEnabled, false)
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(psaSubscriptionIndividual))
+        val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl")
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood")
+      }
+
+      "return 200 and  correct view for a GET for PSA company" in {
+
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(psaSubscriptionCompany))
+        val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name")
+      }
     }
+    "when variations are enabled" when {
+      "return 200 and  correct view for a GET for PSA individual" in {
+        featureSwitchManagementService.change(isVariationsEnabled, true)
+        val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad()(fakeRequest)
 
-    "return 200 and  correct view for a GET for PSA company" in {
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood")
+      }
+      "return 200 and  correct view for a GET for PSA company" in {
 
-      when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-        .thenReturn(Future.successful(psaSubscriptionCompany))
-      val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+        val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad()(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name")
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name")
+      }
+
+      "return 200 and  correct view for a GET for PSA partnership" in {
+
+        val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name")
+      }
     }
   }
 }
 
 object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val externalId = "test-external-id"
+
+  private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
+  private val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
+  private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
 
   class FakeAuthAction(userType: UserType) extends AuthAction {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
@@ -88,6 +120,10 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     )
   )
   )
+
+  val validDataIndividual: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(individualUserAnswers))
+  val validDataCompany: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(companyUserAnswers))
+  val validDataPartnership: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(partnershipUserAnswers))
 
   private val config = app.injector.instanceOf[Configuration]
   val featureSwitchManagementService = new FeatureSwitchManagementServiceTestImpl(config, environment)
@@ -116,8 +152,8 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
           Seq(
             AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
             AnswerRow("common.nino", Seq("AA999999A"), false, None),
-            AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford3,", "TF3 4ER,", "Country of GB"), false, None),
-            AnswerRow("Has abcdefghijkl abcdefghijkl abcdefjkl been at their address for more than 12 months?", Seq("No"), false, None),
+            AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false, None),
+            AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false, None),
             AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false, None),
             AnswerRow("email.label", Seq("aaa@aa.com"), false, None),
             AnswerRow("phone.label", Seq("0044-09876542312"), false, None))))),
@@ -128,7 +164,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
         AnswerSection(
           None,
           Seq(
-            AnswerRow("pensions.advisor.label", Seq("sgfdgssd"), false, None),
+            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
 
@@ -145,7 +181,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
               AnswerRow("paye.label", Seq("9876543210"), false, None),
               AnswerRow("crn.label", Seq("1234567890"), false, None),
               AnswerRow("utr.label", Seq("121414151"), false, None),
-              AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford3,", "TF3 4ER,", "Country of GB"), false, None),
+              AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false, None),
               AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false, None),
               AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false, None),
               AnswerRow("company.email.label", Seq("aaa@aa.com"), false, None),
@@ -179,8 +215,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
           AnswerSection(
             None,
             Seq(
-              AnswerRow("pensions.advisor.label", Seq("sgfdgssd"), false, None),
+              AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
               AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
               AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
-
 }

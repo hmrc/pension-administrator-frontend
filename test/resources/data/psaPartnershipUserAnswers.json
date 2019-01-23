@@ -3,8 +3,8 @@
   "areYouInUK": true,
   "businessType": "limitedPartnership",
   "partnershipDetails": {
-    "companyName": "Test Ltd",
-    "uniqueTaxReferenceNumber": "1234567890"
+    "companyName": "Test partnership name",
+    "uniqueTaxReferenceNumber": "121414151"
   },
   "partnershipRegisteredAddress": {
     "addressLine1": "100 SuttonStreet",
@@ -20,7 +20,7 @@
     "noIdentifier": false,
     "customerType": "UK",
     "idType": "UTR",
-    "idNumber": "1234567890"
+    "idNumber": "121414151"
   },
   "lastPage": {
     "method": "GET",
@@ -28,12 +28,12 @@
   },
   "partnershipSameContactAddress": true,
   "partnershipContactAddress": {
-    "addressLine1": "100 SuttonStreet",
-    "addressLine2": "Wokingham",
-    "addressLine3": "Surrey",
-    "addressLine4": "London",
-    "postcode": "DH14EJ",
-    "country": "GB"
+    "addressLine1": "Telford1",
+    "addressLine2": "Telford2",
+    "addressLine3": "Telford3",
+    "addressLine4": "Telford4",
+    "postcode": "TF3 4ER",
+    "country": "Country of GB"
   },
   "partnershipAddressYears": "under_a_year",
   "partnershipPreviousAddressList": {
@@ -45,24 +45,24 @@
     "countryCode": "GB"
   },
   "partnershipPreviousAddress": {
-    "addressLine1": "2 Other Place",
-    "addressLine2": "Some District",
-    "addressLine3": "Anytown",
-    "addressLine4": "Somerset",
-    "postcode": "ZZ1 1ZZ",
-    "country": "GB"
+    "addressLine1": "London1",
+    "addressLine2": "London2",
+    "addressLine3": "London3",
+    "addressLine4": "London4",
+    "postcode": "LN12 4DC",
+    "country": "Country of GB"
   },
   "partnershipContactDetails": {
-    "email": "e@e.e",
-    "phone": "66"
+    "email": "aaa@aa.com",
+    "phone": "0044-09876542312"
   },
   "partnershipVat": {
     "hasVat": true,
-    "vat": "123456789"
+    "vat": "12345678"
   },
   "partnershipPaye": {
     "hasPaye": true,
-    "paye": "0987654321"
+    "paye": "9876543210"
   },
   "partners": [
     {
@@ -119,5 +119,19 @@
       },
       "isPartnerComplete": true
     }
-  ]
+  ],
+  "declarationWorkingKnowledge" : "adviser",
+  "adviserDetails" : {
+    "name" : "Pension Adviser",
+    "email" : "aaa@yahoo.com",
+    "phone" : "0044-0987654232"
+  },
+  "adviserAddress" : {
+    "addressLine1" : "addline1",
+    "addressLine2" : "addline2",
+    "addressLine3" : "addline3",
+    "addressLine4" : "addline4",
+    "postcode" : "56765",
+    "country" : "AD"
+  }
 }

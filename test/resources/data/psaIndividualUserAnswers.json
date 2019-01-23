@@ -5,7 +5,7 @@
     "firstName": "Stephen",
     "lastName": "Wood"
   },
-  "individualNino": "AB123456C",
+  "individualNino": "AA999999A",
   "individualAddress": {
     "addressLine1": "100 SuttonStreet",
     "addressLine2": "Wokingham",
@@ -29,12 +29,12 @@
   },
   "individualSameContactAddress": true,
   "individualContactAddress": {
-    "addressLine1": "100 SuttonStreet",
-    "addressLine2": "Wokingham",
-    "addressLine3": "Surrey",
-    "addressLine4": "London",
-    "postcode": "DH14EJ",
-    "country": "GB"
+    "addressLine1": "Telford1",
+    "addressLine2": "Telford2",
+    "addressLine3": "Telford3",
+    "addressLine4": "Telford4",
+    "postcode": "TF3 4ER",
+    "country": "Country of GB"
   },
   "individualAddressYears": "under_a_year",
   "individualPreviousAddressList": {
@@ -46,16 +46,30 @@
     "countryCode": "GB"
   },
   "individualPreviousAddress": {
-    "addressLine1": "2 Other Place",
-    "addressLine2": "Some District",
-    "addressLine3": "Anytown",
-    "addressLine4": "Somerset",
-    "postcode": "ZZ1 1ZZ",
-    "country": "GB"
+    "addressLine1": "London1",
+    "addressLine2": "London2",
+    "addressLine3": "London3",
+    "addressLine4": "London4",
+    "postcode": "LN12 4DC",
+    "country": "Country of GB"
   },
   "individualContactDetails": {
-    "email": "m@m.m",
-    "phone": "342"
+    "email": "aaa@aa.com",
+    "phone": "0044-09876542312"
   },
-  "individualDateOfBirth": "2002-02-02"
+  "individualDateOfBirth": "1947-03-29",
+  "declarationWorkingKnowledge" : "adviser",
+  "adviserDetails" : {
+    "name" : "Pension Adviser",
+    "email" : "aaa@yahoo.com",
+    "phone" : "0044-0987654232"
+  },
+  "adviserAddress" : {
+    "addressLine1" : "addline1",
+    "addressLine2" : "addline2",
+    "addressLine3" : "addline3",
+    "addressLine4" : "addline4",
+    "postcode" : "56765",
+    "country" : "AD"
+  }
 }

@@ -25,9 +25,9 @@ object PsaSubscriptionBuilder {
 
   val customerId = CustomerIdentification("Individual", Some("NINO"), Some("AA999999A"), true)
   val orgCustomerId = CustomerIdentification("Company", Some("UTR"), Some("121414151"), true)
-  val individual = IndividualDetailType(Some("Mr"), "abcdefghijkl", Some("abcdefghijkl"), "abcdefjkl", LocalDate.parse("1947-03-29"))
+  val individual = IndividualDetailType(Some("Mr"), "Stephen", None, "Wood", LocalDate.parse("1947-03-29"))
 
-  val address = CorrespondenceAddress("Telford1", "Telford2",Some("Telford3"), Some("Telford3"), "GB", Some("TF3 4ER"))
+  val address = CorrespondenceAddress("Telford1", "Telford2",Some("Telford3"), Some("Telford4"), "GB", Some("TF3 4ER"))
   val director1Address = CorrespondenceAddress("addressline1", "addressline2",Some("addressline3"), Some("addressline4"), "GB", Some("B5 9EX"))
   val director1PrevAddress = CorrespondenceAddress("line1", "line2",Some("line3"), Some("line4"), "AD", Some("567253"))
   val director1Contact = PsaContactDetails("0044-09876542312", Some("abc@hmrc.gsi.gov.uk"))
@@ -41,7 +41,7 @@ object PsaSubscriptionBuilder {
 
   val psaAddress = CorrespondenceAddress("addline1", "addline2", Some("addline3"), Some("addline4 "), "AD", Some("56765"))
   val psaContactDetails = PsaContactDetails("0044-0987654232", Some("aaa@yahoo.com"))
-  val pensionsAdvisor = PensionAdvisor("sgfdgssd", psaAddress, Some(psaContactDetails))
+  val pensionsAdvisor = PensionAdvisor("Pension Advisor", psaAddress, Some(psaContactDetails))
 
   val company = OrganisationOrPartner(name = "Test company name", crn = Some("1234567890"), vatRegistration = Some("12345678"), paye = Some("9876543210"))
   val partnership = OrganisationOrPartner(name = "Test partnership name", crn = None, vatRegistration = Some("12345678"),

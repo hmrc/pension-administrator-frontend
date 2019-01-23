@@ -21,7 +21,6 @@ import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import identifiers.register.company._
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import models.PsaSubscription.DirectorOrPartner
 import models._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -107,7 +106,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       pensionAdviserAddress
     ).flatten).map { seqAnswerRow =>
       SuperSection(
-        Some("pensionAdviser.section.header"),
+        Some("pensionAdvisor.section.header"),
         Seq(
           AnswerSection(
             None,
@@ -187,8 +186,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def companyAddress: Option[AnswerRow]
 
-  = userAnswers.get(CompanyAddressId) map { address =>
-    AnswerRow("company.address.label", addressAnswer(address.toAddress, countryOptions), false,
+  = userAnswers.get(CompanyContactAddressId) map { address =>
+    AnswerRow("company.address.label", addressAnswer(address, countryOptions), false,
       Some(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)) }
 
   private def companyPreviousAddressExists: Option[AnswerRow]
@@ -309,81 +308,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       Some(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url))
   }
 
-
-/*  def directorsSuperSection: SuperSection = SuperSection(
-    Some("director.supersection.header"),
-    for (person <- userAnswers.allDirectorsAfterDelete) yield directorOrPartnerSection(person, countryOptions))
-
-  def PartnersSuperSection: SuperSection = SuperSection(Some("partner.supersection.header"),
-    for (person <- userAnswers.allPartnersAfterDelete) yield directorOrPartnerSection(person, countryOptions))*/
-
-
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection) ++ pensionAdviserSection.toSeq
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection) ++ pensionAdviserSection.toSeq
 
-
-  //Director
-  private def directorOrPartnerDob(person: DirectorOrPartner): Option[AnswerRow]
-
-  =
-    Some(AnswerRow("cya.label.dob", Seq(person.dateOfBirth.toString), false, None))
-
-  private def directorOrPartnerNino(person: DirectorOrPartner): Option[AnswerRow]
-
-  =
-    person.nino map { nino =>
-      AnswerRow("common.nino", Seq(nino), false, None)
-    }
-
-  private def directorOrPartnerUtr(person: DirectorOrPartner): Option[AnswerRow]
-
-  =
-    person.utr map { utr =>
-      AnswerRow("utr.label", Seq(utr), false, None)
-    }
-
-/*  private def directorOrPartnerAddress(person: DirectorOrPartner, countryOptions: CountryOptions): Option[AnswerRow]
-
-  =
-    person.correspondenceDetails map { details =>
-      AnswerRow("cya.label.address", addressAnswer(details.address, countryOptions), false, None)
-    }
-
-  private def directorOrPartnerPrevAddress(person: DirectorOrPartner, countryOptions: CountryOptions): Option[AnswerRow]
-
-  =
-    person.previousAddress map { address =>
-      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false, None)
-    }*/
-
-  private def directorOrPartnerPhone(person: DirectorOrPartner): Option[AnswerRow]
-
-  =
-    person.correspondenceDetails flatMap (_.contactDetails map { details =>
-      AnswerRow("phone.label", Seq(details.telephone), false, None)
-    })
-
-  private def directorOrPartnerEmail(person: DirectorOrPartner): Option[AnswerRow]
-
-  =
-    person.correspondenceDetails flatMap (_.contactDetails flatMap (_.email map { email =>
-      AnswerRow("email.label", Seq(email), false, None)
-    }))
-
-  private def directorOrPartnerSection(person: DirectorOrPartner, countryOptions: CountryOptions)
-
-  = AnswerSection(
-    Some(person.fullName),
-    Seq(directorOrPartnerDob(person),
-      directorOrPartnerNino(person),
-      directorOrPartnerUtr(person),
-/*      directorOrPartnerAddress(person, countryOptions),
-      directorOrPartnerPrevAddress(person, countryOptions),*/
-      directorOrPartnerEmail(person),
-      directorOrPartnerPhone(person)
-    ).flatten
-  )
 }
 
 object ViewPsaDetailsHelper {
