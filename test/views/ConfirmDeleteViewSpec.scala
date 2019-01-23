@@ -17,6 +17,7 @@
 package views
 
 import controllers.register.partnership.partners.routes
+import forms.ConfirmDeleteFormProvider
 import models.Index
 import viewmodels.ConfirmDeleteViewModel
 import views.behaviours.ViewBehaviours
@@ -37,7 +38,10 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
     None
   )
 
-  def createView = () => confirmDelete(frontendAppConfig, viewModel)(fakeRequest, messages)
+  val formProvider = new ConfirmDeleteFormProvider()
+  val form = formProvider()
+
+  def createView = () => confirmDelete(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
   "ConfirmDeletePartner view" must {
     behave like normalPage(createView, messageKeyPrefix)
