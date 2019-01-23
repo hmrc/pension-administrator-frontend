@@ -141,7 +141,7 @@ object PsaDetailsHelperSpec extends SpecBase {
     individualDateOfBirth,
     individualNino,
     psaAddress("cya.label.address"),
-    previousAddressExists("abcdefghijkl abcdefghijkl abcdefjkl"),
+    previousAddressExists("Stephen Wood"),
     psaPreviousAddress,
     emailAddress("email.label"),
     phoneNumber("phone.label")

@@ -16,23 +16,28 @@
 
 package controllers
 
+import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, SubscriptionConnector}
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
+import models.{CheckMode, PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
+import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
-import utils.{FakeCountryOptions, FakeFeatureSwitchManagementService}
+import utils.FakeCountryOptions
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 import views.html.psa_details
+import utils.Toggles._
+import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
+import utils.testhelpers.ViewPsaDetailsBuilder._
 
 import scala.concurrent.Future
 
@@ -40,55 +45,65 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   import PsaDetailsControllerSpec._
 
-  "Psa details Controller" when {
-
-    "toggle on" must {
-      "return 200 and  correct view for a GET for PSA individual who can be stopped being a psa" in {
+  "Psa details Controller" must {
+    "when variations and dergistration are disabled" when {
+      "return 200 and  correct view for a GET for PSA individual" in {
+        featureSwitchManagementService.change(isVariationsEnabled, false)
+        featureSwitchManagementService.change(isDeregistrationEnabled, false)
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionIndividual))
-        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
-          Future.successful(true)
-        )
         val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
 
         status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl", true)
+        contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood", false)
       }
 
-      "return 200 and  correct view for a GET for PSA company who cannot be stopped being a psa" in {
+      "return 200 and  correct view for a GET for PSA company" in {
 
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionCompany))
-        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
-          Future.successful(false)
-        )
         val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
       }
     }
-
-    "toggle off" must {
+    "when variations and deregistration are enabled" when {
       "return 200 and  correct view for a GET for PSA individual" in {
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(psaSubscriptionIndividual))
+        featureSwitchManagementService.change(isVariationsEnabled, true)
+        featureSwitchManagementService.change(isDeregistrationEnabled, true)
 
-        val result = controller(userType = UserType.Individual, enableDeregistration = false).onPageLoad()(fakeRequest)
+        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+          Future.successful(true)
+        )
+
+        val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad()(fakeRequest)
 
         status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(individualSuperSections, "abcdefghijkl abcdefghijkl abcdefjkl", false)
+        contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", true)
+      }
+      "return 200 and  correct view for a GET for PSA company" in {
+
+        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+          Future.successful(true)
+        )
+
+        val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", true)
       }
 
-      "return 200 and  correct view for a GET for PSA company who cannot be stopped being a psa" in {
+      "return 200 and  correct view for a GET for PSA partnership" in {
 
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(psaSubscriptionCompany))
+        when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+          Future.successful(true)
+        )
 
-        val result = controller(userType = UserType.Organisation, enableDeregistration = false).onPageLoad()(fakeRequest)
+        val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad()(fakeRequest)
 
         status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
+        contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", true)
       }
     }
   }
@@ -96,6 +111,10 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
 object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val externalId = "test-external-id"
+
+  private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
+  private val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
+  private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
 
   class FakeAuthAction(userType: UserType) extends AuthAction {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
@@ -118,7 +137,14 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   )
   )
 
-  def controller(dataRetrievalAction: DataRetrievalAction = validData, userType: UserType, enableDeregistration: Boolean = true) =
+  val validDataIndividual: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(individualUserAnswers))
+  val validDataCompany: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(companyUserAnswers))
+  val validDataPartnership: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(partnershipUserAnswers))
+
+  private val config = app.injector.instanceOf[Configuration]
+  val featureSwitchManagementService = new FeatureSwitchManagementServiceTestImpl(config, environment)
+
+  def controller(dataRetrievalAction: DataRetrievalAction = validData, userType: UserType) =
     new PsaDetailsController(
       frontendAppConfig,
       messagesApi,
@@ -126,10 +152,12 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       subscriptionConnector,
       deregistrationConnector,
       countryOptions,
-      new FakeFeatureSwitchManagementService(enableDeregistration)
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      featureSwitchManagementService
     )
 
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", canDeregister: Boolean) =
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", canDeregister: Boolean = true) =
     psa_details(frontendAppConfig, superSections, name, canDeregister)(fakeRequest, messages).toString
 
   val individualSuperSections: Seq[SuperSection] = Seq(
@@ -141,8 +169,8 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
           Seq(
             AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
             AnswerRow("common.nino", Seq("AA999999A"), false, None),
-            AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford3,", "TF3 4ER,", "Country of GB"), false, None),
-            AnswerRow("Has abcdefghijkl abcdefghijkl abcdefjkl been at their address for more than 12 months?", Seq("No"), false, None),
+            AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false, None),
+            AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false, None),
             AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false, None),
             AnswerRow("email.label", Seq("aaa@aa.com"), false, None),
             AnswerRow("phone.label", Seq("0044-09876542312"), false, None))))),
@@ -153,7 +181,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
         AnswerSection(
           None,
           Seq(
-            AnswerRow("pensions.advisor.label", Seq("sgfdgssd"), false, None),
+            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
 
@@ -170,7 +198,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
               AnswerRow("paye.label", Seq("9876543210"), false, None),
               AnswerRow("crn.label", Seq("1234567890"), false, None),
               AnswerRow("utr.label", Seq("121414151"), false, None),
-              AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford3,", "TF3 4ER,", "Country of GB"), false, None),
+              AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false, None),
               AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false, None),
               AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false, None),
               AnswerRow("company.email.label", Seq("aaa@aa.com"), false, None),
@@ -204,8 +232,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
           AnswerSection(
             None,
             Seq(
-              AnswerRow("pensions.advisor.label", Seq("sgfdgssd"), false, None),
+              AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
               AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
               AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
-
 }

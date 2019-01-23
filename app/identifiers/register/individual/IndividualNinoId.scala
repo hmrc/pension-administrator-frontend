@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers.register.individual
 
-object Toggles {
+import identifiers._
 
-  val IsManualIVEnabled: String = "is-iv-enabled"
-  val IsPsaDataShiftEnabled: String = "is-psa-data-shift-enabled"
-  val isDeregistrationEnabled: String = "enable-deregistration"
-  val isVariationsEnabled: String = "is-variations-enabled"
+case object IndividualNinoId extends TypedIdentifier[String] {
+  override def toString: String = "individualNino"
 }
+
+

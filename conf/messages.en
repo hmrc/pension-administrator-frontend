@@ -717,9 +717,9 @@ psaDetails.header = Pension scheme administrator details
 psaDetails.deregister.link.text = Stop being a pension scheme administrator
 psaDetails.deregister.text =  - this will also delete the administrator ID.
 
-company.address.label = Company‘s contact address
+company.address.label = Company’s contact address
 company.email.label = Company’s email address
-company.phone.label = Company‘s phone number
+company.phone.label = Company’s phone number
 partnership.address.label = Contact address
 partnership.email.label = Partnership’s email address
 partnership.phone.label = Partnership’s phone number

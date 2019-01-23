@@ -19,15 +19,22 @@ package controllers
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{DeRegistrationConnector, SubscriptionConnector}
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.RegistrationInfoId
+import identifiers.register.company.BusinessDetailsId
+import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.PsaDetailsHelper
-import utils.Toggles.isDeregistrationEnabled
+import utils.Toggles.isVariationsEnabled
 import utils.countryOptions.CountryOptions
+import utils.{PsaDetailsHelper, UserAnswers, ViewPsaDetailsHelper}
+import viewmodels.SuperSection
 import views.html.psa_details
+import utils.Toggles.isDeregistrationEnabled
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,30 +44,43 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      subscriptionConnector: SubscriptionConnector,
                                      deRegistrationConnector: DeRegistrationConnector,
                                      countryOptions: CountryOptions,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = authenticate.async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-
-      subscriptionConnector.getSubscriptionDetails(psaId).flatMap { response =>
-        canStopBeingAPsa(psaId).map { canDeregister =>
-          val psaDetailsHelper = new PsaDetailsHelper(response, countryOptions)
-
-          val (superSections, fullName) = response.organisationOrPartner.fold((
-            psaDetailsHelper.individualSections, response.individual.map(_.fullName).getOrElse(""))
-          )(orgOrPartnerName =>
-            (psaDetailsHelper.organisationSections, orgOrPartnerName.name)
-          )
-
-          Ok(psa_details(
-            appConfig,
-            superSections,
-            fullName,
-            canDeregister))
-        }
+      val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(request.userAnswers) else retrievePsaDataFromModel(psaId)
+      canStopBeingAPsa(psaId) flatMap { canDeregister =>
+        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister)) }
       }
+  }
+
+  private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
+      subscriptionConnector.getSubscriptionDetails(psaId).map { response =>
+      response.organisationOrPartner match {
+        case None =>
+          (new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse(""))
+        case _ =>
+          (new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse(""))
+      }
+    }
+  }
+
+  private def retrievePsaDataFromUserAnswers(userAnswers: UserAnswers): Future[(Seq[SuperSection], String)] = {
+    val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+    Future.successful(
+      legalStatus match {
+        case Some(Individual) =>
+          (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse (""))
+        case Some(LimitedCompany) =>
+          (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse (""))
+        case Some(Partnership) =>
+          (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections, userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse (""))
+        case _ => (Nil, "")
+      })
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {

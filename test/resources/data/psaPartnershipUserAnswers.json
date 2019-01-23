@@ -1,0 +1,137 @@
+{
+  "index": "",
+  "areYouInUK": true,
+  "businessType": "limitedPartnership",
+  "partnershipDetails": {
+    "companyName": "Test partnership name",
+    "uniqueTaxReferenceNumber": "121414151"
+  },
+  "partnershipRegisteredAddress": {
+    "addressLine1": "100 SuttonStreet",
+    "addressLine2": "Wokingham",
+    "addressLine3": "Surrey",
+    "addressLine4": "London",
+    "postalCode": "DH14EJ",
+    "countryCode": "GB"
+  },
+  "registrationInfo": {
+    "legalStatus": "Partnership",
+    "sapNumber": "1234567890",
+    "noIdentifier": false,
+    "customerType": "UK",
+    "idType": "UTR",
+    "idNumber": "121414151"
+  },
+  "lastPage": {
+    "method": "GET",
+    "url": "/register-as-pension-scheme-administrator/register/declaration"
+  },
+  "partnershipSameContactAddress": true,
+  "partnershipContactAddress": {
+    "addressLine1": "Telford1",
+    "addressLine2": "Telford2",
+    "addressLine3": "Telford3",
+    "addressLine4": "Telford4",
+    "postcode": "TF3 4ER",
+    "country": "Country of GB"
+  },
+  "partnershipAddressYears": "under_a_year",
+  "partnershipPreviousAddressList": {
+    "addressLine1": "2 Other Place",
+    "addressLine2": "Some District",
+    "addressLine3": "Anytown",
+    "addressLine4": "Somerset",
+    "postalCode": "ZZ1 1ZZ",
+    "countryCode": "GB"
+  },
+  "partnershipPreviousAddress": {
+    "addressLine1": "London1",
+    "addressLine2": "London2",
+    "addressLine3": "London3",
+    "addressLine4": "London4",
+    "postcode": "LN12 4DC",
+    "country": "Country of GB"
+  },
+  "partnershipContactDetails": {
+    "email": "aaa@aa.com",
+    "phone": "0044-09876542312"
+  },
+  "partnershipVat": {
+    "hasVat": true,
+    "vat": "12345678"
+  },
+  "partnershipPaye": {
+    "hasPaye": true,
+    "paye": "9876543210"
+  },
+  "partners": [
+    {
+      "partnerDetails": {
+        "firstName": "g",
+        "lastName": "rg",
+        "dateOfBirth": "2005-05-05",
+        "isDeleted": false
+      },
+      "partnerNino": {
+        "hasNino": true,
+        "nino": "AB123456C"
+      },
+      "partnerUtr": {
+        "hasUtr": true,
+        "utr": "1234567890"
+      },
+      "partnerAddressList": {
+        "addressLine1": "5 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postalCode": "ZZ1 1ZZ",
+        "countryCode": "GB"
+      },
+      "partnerAddress": {
+        "addressLine1": "5 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postcode": "ZZ1 1ZZ",
+        "country": "GB"
+      },
+      "partnerAddressYears": "under_a_year",
+      "partnerPreviousAddressList": {
+        "addressLine1": "4 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postalCode": "ZZ1 1ZZ",
+        "countryCode": "GB"
+      },
+      "partnerPreviousAddress": {
+        "addressLine1": "4 Other Place",
+        "addressLine2": "Some District",
+        "addressLine3": "Anytown",
+        "addressLine4": "Somerset",
+        "postcode": "ZZ1 1ZZ",
+        "country": "GB"
+      },
+      "partnerContactDetails": {
+        "email": "t@t.t",
+        "phone": "35"
+      },
+      "isPartnerComplete": true
+    }
+  ],
+  "declarationWorkingKnowledge" : "adviser",
+  "adviserDetails" : {
+    "name" : "Pension Adviser",
+    "email" : "aaa@yahoo.com",
+    "phone" : "0044-0987654232"
+  },
+  "adviserAddress" : {
+    "addressLine1" : "addline1",
+    "addressLine2" : "addline2",
+    "addressLine3" : "addline3",
+    "addressLine4" : "addline4",
+    "postcode" : "56765",
+    "country" : "AD"
+  }
+}
