@@ -32,7 +32,7 @@ import views.html.organisationName
 
 import scala.concurrent.Future
 
-trait OrganisationNameController extends FrontendController with Retrievals with I18nSupport {
+trait OrganisationNameController extends FrontendController with Retrievals with I18nSupport with NameCleansing {
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
@@ -59,15 +59,19 @@ trait OrganisationNameController extends FrontendController with Retrievals with
                       id: TypedIdentifier[BusinessDetails],
                       viewmodel: OrganisationNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    form.bindFromRequest().fold(
-      formWithErrors =>
-        Future.successful(BadRequest(organisationName(appConfig, formWithErrors, viewmodel))),
-      companyName =>
-        cacheConnector.save(request.externalId, id, companyName).map {
-          answers =>
-            Redirect(navigator.nextPage(id, NormalMode, UserAnswers(answers)))
-        }
-    )
+
+    cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "companyName", form) match {
+      case Left(futureResult) => futureResult
+      case Right(f) => f.fold(
+        formWithErrors =>
+          Future.successful(BadRequest(organisationName(appConfig, formWithErrors, viewmodel))),
+        companyName =>
+          cacheConnector.save(request.externalId, id, companyName).map {
+            answers =>
+              Redirect(navigator.nextPage(id, NormalMode, UserAnswers(answers)))
+          }
+      )
+    }
   }
 
 }

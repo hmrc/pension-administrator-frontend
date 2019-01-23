@@ -19,11 +19,13 @@ package controllers
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.BusinessDetailsControllerBehaviour.{testFixture, testRequest}
 import forms.BusinessDetailsFormModel
 import identifiers.TypedIdentifier
 import models.BusinessDetails
 import play.api.i18n.MessagesApi
 import play.api.mvc.Call
+import play.api.test.Helpers.{status, _}
 import utils.Navigator
 import viewmodels.{BusinessDetailsViewModel, Message}
 
@@ -33,6 +35,16 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase with BusinessDeta
 
   "BusinessDetailsController" must {
     behave like businessDetailsController(testFormModel, testViewModel, testId, createController(this))
+
+    "strip out disallowed characters from companyName and allow submit" in {
+      val invalidBusinessDetails = BusinessDetails(companyNameWithInvalidCharacters, Some("1234567890"))
+      val fixture = testFixture(createController(this), testFormModel, testViewModel)
+      val request = testRequest(businessDetails = Some(invalidBusinessDetails))
+
+      val result = fixture.controller.post(testId)(request)
+
+      status(result) mustBe SEE_OTHER
+    }
   }
 
 }
@@ -40,6 +52,7 @@ class BusinessDetailsControllerSpec extends ControllerSpecBase with BusinessDeta
 // scalastyle:off magic.number
 
 object BusinessDetailsControllerSpec {
+  private val companyNameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
 
   val testId: TypedIdentifier[BusinessDetails] = new TypedIdentifier[BusinessDetails] {}
 
