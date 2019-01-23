@@ -17,12 +17,12 @@
 package controllers
 
 import config.FeatureSwitchManagementServiceTestImpl
-import connectors.SubscriptionConnector
+import connectors.{DeRegistrationConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{CheckMode, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -31,13 +31,13 @@ import play.api.libs.json.Json
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import utils.FakeCountryOptions
+import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
+import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder._
+import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 import views.html.psa_details
-import utils.Toggles.isVariationsEnabled
-import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
-import utils.testhelpers.ViewPsaDetailsBuilder._
 
 import scala.concurrent.Future
 
@@ -47,50 +47,145 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   "Psa details Controller" must {
     "when variations are disabled" when {
-      "return 200 and  correct view for a GET for PSA individual" in {
-        featureSwitchManagementService.change(isVariationsEnabled, false)
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(psaSubscriptionIndividual))
-        val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+      "deregistration toggle off" must {
+        "return 200 and  correct view for a GET for PSA individual" in {
+          featureSwitchManagementService.change(isVariationsEnabled, false)
+          featureSwitchManagementService.change(isDeregistrationEnabled, false)
+          when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+            .thenReturn(Future.successful(psaSubscriptionIndividual))
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(false)
+          )
+          val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood")
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood", canDeregister = false)
+        }
+
+        "return 200 and  correct view for a GET for PSA company" in {
+          featureSwitchManagementService.change(isVariationsEnabled, false)
+          featureSwitchManagementService.change(isDeregistrationEnabled, false)
+          when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+            .thenReturn(Future.successful(psaSubscriptionCompany))
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(false)
+          )
+          val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", canDeregister = false)
+        }
       }
 
-      "return 200 and  correct view for a GET for PSA company" in {
+      "deregistration toggle on" must {
+        "return 200 and  correct view for a GET for PSA individual who can be stopped being a psa" in {
+          featureSwitchManagementService.change(isVariationsEnabled, false)
+          featureSwitchManagementService.change(isDeregistrationEnabled, true)
+          when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+            .thenReturn(Future.successful(psaSubscriptionIndividual))
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(true)
+          )
+          val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
 
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(psaSubscriptionCompany))
-        val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood", canDeregister = true)
+        }
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name")
+        "return 200 and  correct view for a GET for PSA individual who cannot be stopped being a psa" in {
+          featureSwitchManagementService.change(isVariationsEnabled, false)
+          featureSwitchManagementService.change(isDeregistrationEnabled, true)
+          when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+            .thenReturn(Future.successful(psaSubscriptionIndividual))
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(false)
+          )
+          val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood", canDeregister = false)
+        }
       }
+
     }
     "when variations are enabled" when {
-      "return 200 and  correct view for a GET for PSA individual" in {
-        featureSwitchManagementService.change(isVariationsEnabled, true)
-        val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad()(fakeRequest)
+      "deregistration toggle off" must {
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood")
+        "return 200 and  correct view for a GET for PSA individual" in {
+          featureSwitchManagementService.change(isVariationsEnabled, true)
+          featureSwitchManagementService.change(isDeregistrationEnabled, false)
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(false)
+          )
+          val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad()(fakeRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", canDeregister = false)
+        }
+        "return 200 and  correct view for a GET for PSA company" in {
+          featureSwitchManagementService.change(isVariationsEnabled, true)
+          featureSwitchManagementService.change(isDeregistrationEnabled, false)
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(false)
+          )
+          val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", canDeregister = false)
+        }
+
+        "return 200 and  correct view for a GET for PSA partnership" in {
+          featureSwitchManagementService.change(isVariationsEnabled, true)
+          featureSwitchManagementService.change(isDeregistrationEnabled, false)
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(false)
+          )
+          val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", canDeregister = false)
+        }
       }
-      "return 200 and  correct view for a GET for PSA company" in {
 
-        val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+      "deregistration toggle on" must {
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name")
-      }
+        "return 200 and  correct view for a GET for PSA individual" in {
+          featureSwitchManagementService.change(isVariationsEnabled, true)
+          featureSwitchManagementService.change(isDeregistrationEnabled, true)
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(true)
+          )
+          val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad()(fakeRequest)
 
-      "return 200 and  correct view for a GET for PSA partnership" in {
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", canDeregister = true)
+        }
+        "return 200 and  correct view for a GET for PSA company" in {
+          featureSwitchManagementService.change(isVariationsEnabled, true)
+          featureSwitchManagementService.change(isDeregistrationEnabled, true)
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(true)
+          )
+          val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad()(fakeRequest)
 
-        val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", canDeregister = true)
+        }
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name")
+        "return 200 and  correct view for a GET for PSA partnership" in {
+          featureSwitchManagementService.change(isVariationsEnabled, true)
+          featureSwitchManagementService.change(isDeregistrationEnabled, true)
+          when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
+            Future.successful(true)
+          )
+          val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", canDeregister = true)
+        }
       }
     }
+
   }
 }
 
@@ -112,6 +207,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   def call: Call = controllers.routes.CheckYourAnswersController.onSubmit()
 
   private val subscriptionConnector = mock[SubscriptionConnector]
+  private val deregistrationConnector = mock[DeRegistrationConnector]
 
   val validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
@@ -134,14 +230,15 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       messagesApi,
       new FakeAuthAction(userType),
       subscriptionConnector,
+      deregistrationConnector,
       countryOptions,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       featureSwitchManagementService
     )
 
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "") =
-    psa_details(frontendAppConfig, superSections, name)(fakeRequest, messages).toString
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", canDeregister: Boolean) =
+    psa_details(frontendAppConfig, superSections, name, canDeregister)(fakeRequest, messages).toString
 
   val individualSuperSections: Seq[SuperSection] = Seq(
     SuperSection(

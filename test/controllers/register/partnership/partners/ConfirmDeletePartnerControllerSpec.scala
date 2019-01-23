@@ -19,9 +19,10 @@ package controllers.register.partnership.partners
 import java.time.LocalDate
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
+import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models.{Index, PersonDetails}
 import play.api.Application
@@ -47,14 +48,16 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
       implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, viewModel)(request, messages).toString()
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel)(request, messages).toString()
       }
     )
   }
 
   "redirect to the next page on a POST request" in {
     requestResult(dataRetrieval)(
-      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onSubmit(firstIndex))),
+      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onSubmit(firstIndex)).withFormUrlEncodedBody(
+        "value" -> "true"
+      )),
       (_, result) => {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(postUrl.url)
@@ -86,6 +89,8 @@ object ConfirmDeletePartnerControllerSpec {
 
   val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
   val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex)
+  private val formProvider = new ConfirmDeleteFormProvider()
+  private val form = formProvider()
 
   val person = PersonDetails("First", None, "Last", LocalDate.now())
 

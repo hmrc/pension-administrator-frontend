@@ -21,6 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
 import controllers.{ConfirmDeleteController, Retrievals}
+import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
 import models.{Index, NormalMode}
@@ -34,28 +35,34 @@ class ConfirmDeleteDirectorController @Inject()(
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 val cacheConnector: UserAnswersCacheConnector
+                                                 val cacheConnector: UserAnswersCacheConnector,
+                                                 formProvider: ConfirmDeleteFormProvider
                                                ) extends ConfirmDeleteController with Retrievals {
 
+  val form = formProvider()
+
+  private def vm(index: Index, name: String) = ConfirmDeleteViewModel(
+    routes.ConfirmDeleteDirectorController.onSubmit(index),
+    controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
+    Message("confirmDeleteDirector.title"),
+    "confirmDeleteDirector.heading",
+    Some(name),
+    None
+  )
 
   def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
-        val vm = ConfirmDeleteViewModel(
-          routes.ConfirmDeleteDirectorController.onSubmit(index),
-          controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
-          Message("confirmDeleteDirector.title"),
-          "confirmDeleteDirector.heading",
-          Some(details.fullName),
-          None
-        )
-        get(vm, details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
+
+        get(vm(index, details.fullName), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
       }
   }
 
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode))
+      DirectorDetailsId(index).retrieve.right.map { details =>
+        post(vm(index, details.fullName), DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode))
+      }
   }
 
 }

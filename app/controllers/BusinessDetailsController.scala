@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.register.NameCleansing
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
 import models.{BusinessDetails, NormalMode}
@@ -32,7 +33,7 @@ import views.html.businessDetails
 
 import scala.concurrent.Future
 
-trait BusinessDetailsController extends FrontendController with I18nSupport {
+trait BusinessDetailsController extends FrontendController with I18nSupport with NameCleansing {
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
@@ -46,7 +47,9 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
 
   protected def viewModel: BusinessDetailsViewModel
 
-  private lazy val form = new BusinessDetailsFormProvider(isUK=true)(formModel)
+  private lazy val form = new BusinessDetailsFormProvider(isUK = true)(formModel)
+
+
 
   def get[I <: TypedIdentifier[BusinessDetails]](id: I)(implicit request: DataRequest[AnyContent]): Result = {
 
@@ -61,14 +64,15 @@ trait BusinessDetailsController extends FrontendController with I18nSupport {
 
   def post[I <: TypedIdentifier[BusinessDetails]](id: I)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(businessDetails(appConfig, formWithErrors, viewModel))),
-      value =>
-        dataCacheConnector.save(request.externalId, id, value).map(cacheMap =>
-          Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap))))
-    )
-
+    cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "companyName", form) match {
+      case Left(futureResult) => futureResult
+      case Right(f) => f.fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(businessDetails(appConfig, formWithErrors, viewModel))),
+        value =>
+          dataCacheConnector.save(request.externalId, id, value).map(cacheMap =>
+            Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap))))
+      )
+    }
   }
-
 }

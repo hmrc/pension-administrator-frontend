@@ -108,8 +108,8 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", "[invalid value]"))
-        val boundForm = form.bind(Map("companyName" -> "[invalid value]"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", ""))
+        val boundForm = form.bind(Map("companyName" -> ""))
 
         val result = controller().onSubmit()(postRequest)
 

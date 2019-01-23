@@ -46,6 +46,8 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
   val testCompanyName = "test company name"
 
+  private val testCompanyNameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""
+
   val viewmodel = OrganisationNameViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
@@ -142,7 +144,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = new BusinessDetailsFormProvider(isUK = false)
-          val request = FakeRequest()
+          val request = FakeRequest().withFormUrlEncodedBody(("companyName", ""))
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
@@ -153,6 +155,34 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
             formProvider(businessDetailsFormModel).bind(Map.empty[String, String]),
             viewmodel
           )(request, messages).toString
+      }
+    }
+
+    "redirect when the submitted data is valid once invalid characters stripped out of name" in {
+
+      import org.mockito.Mockito.when
+      import play.api.inject._
+
+      val cacheConnector = mock[UserAnswersCacheConnector]
+
+      running(_.overrides(
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+
+          implicit val materializer: Materializer = app.materializer
+
+          when(
+            cacheConnector.save[BusinessDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ).thenReturn(Future.successful(Json.obj()))
+
+          val request = FakeRequest().withFormUrlEncodedBody(("companyName", testCompanyNameWithInvalidCharacters))
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
       }
     }
   }
