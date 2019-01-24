@@ -19,12 +19,16 @@ package utils
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import identifiers.register.company._
+import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
+import identifiers.register.partnership.partners._
+import models.PsaSubscription.DirectorOrPartner
 import models._
 import play.api.i18n.Messages
+import utils.PsaDetailsHelper._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection, Message, SuperSection}
+import viewmodels._
 
 //scalastyle:off number.of.methods
 class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOptions)(implicit messages: Messages) {
@@ -226,6 +230,74 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
           Some(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad.url))
       })
 
+  //Directors
+  private def directorDob(index: Int): Option[AnswerRow] = userAnswers.get(DirectorDetailsId(index)) map { details =>
+    AnswerRow("cya.label.dob", Seq(details.dateOfBirth.toString), false,
+      Some(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(CheckMode, index).url))
+  }
+
+  private def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(DirectorNinoId(index)) match {
+    case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), false,
+        controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url))
+
+    case Some(Nino.No(_)) => Some(AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${Nino.No}"), true,
+        controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url))
+
+    case _ => None
+  }
+
+  private def directorUtr(index: Int): Option[AnswerRow] = userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
+    case Some(UniqueTaxReference.Yes(utr)) => Some(AnswerRow("utr.label", Seq(utr), false,
+        controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
+
+    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.No}"), true,
+        controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
+
+    case _ => None
+  }
+
+  private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map { address =>
+      AnswerRow("cya.label.address", addressAnswer(address, countryOptions), false,
+        Some(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(CheckMode, index).url))
+    }
+
+  private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorPreviousAddressId(index)) map
+    { address =>
+      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false,
+        Some(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url))
+    }
+
+  private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
+      AnswerRow("phone.label", Seq(details.phone), false,
+        Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url))
+    }
+
+  private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
+    AnswerRow("email.label", Seq(details.email), false,
+      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url))
+  }
+
+
+  private def directorSection(person: Person, countryOptions: CountryOptions): AnswerSection = {
+    val i = person.index
+    AnswerSection(
+      Some(person.name),
+      Seq(directorDob(i),
+        directorNino(i),
+        directorUtr(i),
+        directorAddress(i, countryOptions),
+        directorPrevAddress(i, countryOptions),
+        directorEmail(i),
+        directorPhone(i)
+      ).flatten
+    )
+  }
+
+  val directorsSuperSection = SuperSection(
+    Some("director.supersection.header"),
+    for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions)
+  )
+
   //Partnership PSA
 
   def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(PartnershipVatId) match {
@@ -285,6 +357,74 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   })
 
 
+  //Partners
+  private def partnerDob(index: Int): Option[AnswerRow] = userAnswers.get(PartnerDetailsId(index)) map { details =>
+    AnswerRow("cya.label.dob", Seq(details.dateOfBirth.toString), false,
+      Some(controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(CheckMode, index).url))
+  }
+
+  private def partnerNino(index: Int): Option[AnswerRow] = userAnswers.get(PartnerNinoId(index)) match {
+    case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), false,
+      controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url))
+
+    case Some(Nino.No(_)) => Some(AnswerRow("partnerNino.checkYourAnswersLabel", Seq(s"${Nino.No}"), true,
+      controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url))
+
+    case _ => None
+  }
+
+  private def partnerUtr(index: Int): Option[AnswerRow] = userAnswers.get(PartnerUniqueTaxReferenceId(index)) match {
+    case Some(UniqueTaxReference.Yes(utr)) => Some(AnswerRow("utr.label", Seq(utr), false,
+      controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
+
+    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.No}"), true,
+      controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
+
+    case _ => None
+  }
+
+  private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerAddressId(index)) map { address =>
+    AnswerRow("cya.label.address", addressAnswer(address, countryOptions), false,
+      Some(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(CheckMode, index).url))
+  }
+
+  private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerPreviousAddressId(index)) map
+    { address =>
+      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), false,
+        Some(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, index).url))
+    }
+
+  private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
+    AnswerRow("phone.label", Seq(details.phone), false,
+      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url))
+  }
+
+  private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
+    AnswerRow("email.label", Seq(details.email), false,
+      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url))
+  }
+
+
+  private def partnerSection(person: Person, countryOptions: CountryOptions): AnswerSection = {
+    val i = person.index
+    AnswerSection(
+      Some(person.name),
+      Seq(partnerDob(i),
+        partnerNino(i),
+        partnerUtr(i),
+        partnerAddress(i, countryOptions),
+        partnerPrevAddress(i, countryOptions),
+        partnerEmail(i),
+        partnerPhone(i)
+      ).flatten
+    )
+  }
+
+  val partnersSuperSection = SuperSection(
+    Some("partner.supersection.header"),
+    for (person <- userAnswers.allPartnersAfterDelete) yield partnerSection(person, countryOptions)
+  )
+
 
   //Pension Adviser
   private def pensionAdviser: Option[AnswerRow]
@@ -309,8 +449,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
-  val companySections: Seq[SuperSection] = Seq(companyDetailsSection) ++ pensionAdviserSection.toSeq
-  val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection) ++ pensionAdviserSection.toSeq
+  val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
+  val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
 
 }
 

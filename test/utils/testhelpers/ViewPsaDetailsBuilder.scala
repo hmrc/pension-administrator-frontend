@@ -65,6 +65,23 @@ object ViewPsaDetailsBuilder {
     AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
       Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)))
 
+  val directorsSeqAnswers = Seq(
+    AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
+      Some(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("common.nino", Seq("AA999999A"), false,
+      Some(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("utr.label", Seq("1234567892"), false,
+      Some(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+      Some(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      Some(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
+      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("phone.label", Seq("0044-09876542312"), false,
+      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, 0).url))
+  )
+
 
   val partnershipSeqAnswers = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
@@ -84,12 +101,41 @@ object ViewPsaDetailsBuilder {
     AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
       Some(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
 
+  val partnersSeqAnswers = Seq(
+    AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("common.nino", Seq("AA999999A"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("utr.label", Seq("1234567892"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, 0).url)),
+    AnswerRow("phone.label", Seq("0044-09876542312"), false,
+      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, 0).url))
+  )
+
   val pensionAdviserSuperSection = SuperSection(
     Some("pensionAdvisor.section.header"),
     Seq(
       AnswerSection(
         None, pensionAdviserSeqAnswers
         )))
+
+  val directorsSuperSection =SuperSection(Some("director.supersection.header"),
+    Seq(AnswerSection(
+      Some("Director number one"),
+      directorsSeqAnswers
+    )))
+
+  val partnersSuperSection =SuperSection(Some("partner.supersection.header"),
+    Seq(AnswerSection(
+      Some("Partner One"),
+      partnersSeqAnswers
+    )))
 
   val individualWithChangeLinks: Seq[SuperSection] = Seq(
     SuperSection(
@@ -109,6 +155,7 @@ object ViewPsaDetailsBuilder {
           AnswerSection(
             None,
             companySeqAnswers))),
+      directorsSuperSection,
       pensionAdviserSuperSection)
 
   val partnershipWithChangeLinks =
@@ -119,5 +166,6 @@ object ViewPsaDetailsBuilder {
           AnswerSection(
             None,
             partnershipSeqAnswers))),
+      partnersSuperSection,
       pensionAdviserSuperSection)
 }

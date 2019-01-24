@@ -58,6 +58,20 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
     behave like validSection(testName = "partnership details", headingKey = None,
       result = partnershipResult, expectedAnswerRows = partnershipSeqAnswers)
 
+    "have a supersection heading for directors" in {
+      companyResult.exists(_.headingKey == directorDetailsSuperSectionKey) mustBe true
+    }
+
+    behave like validSection(testName = "director details", headingKey = directorDetailsSuperSectionKey,
+      result = companyResult, expectedAnswerRows = directorsSeqAnswers)
+
+    "have a supersection heading for partners" in {
+      partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
+    }
+
+    behave like validSection(testName = "partner details", headingKey = partnerDetailsSuperSectionKey,
+      result = partnershipResult, expectedAnswerRows = partnersSeqAnswers)
+
     "have a supersection heading for pension advisor" in {
       partnershipResult.exists(_.headingKey == pensionAdvisorSuperSectionKey) mustBe true
     }
@@ -84,6 +98,8 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val companyResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswers)).companySections
   private val partnershipResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipSections
 
+  private val partnerDetailsSuperSectionKey = Some("partner.supersection.header")
+  private val directorDetailsSuperSectionKey = Some("director.supersection.header")
   private val pensionAdvisorSuperSectionKey = Some("pensionAdvisor.section.header")
 
   private def actualSeqAnswerRow(result: Seq[SuperSection], headingKey: Option[String]): Seq[AnswerRow] =

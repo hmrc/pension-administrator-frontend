@@ -67,18 +67,18 @@
   "partners": [
     {
       "partnerDetails": {
-        "firstName": "g",
-        "lastName": "rg",
-        "dateOfBirth": "2005-05-05",
+        "firstName": "Partner",
+        "lastName": "One",
+        "dateOfBirth": "1950-03-29",
         "isDeleted": false
       },
       "partnerNino": {
         "hasNino": true,
-        "nino": "AB123456C"
+        "nino": "AA999999A"
       },
       "partnerUtr": {
         "hasUtr": true,
-        "utr": "1234567890"
+        "utr": "1234567892"
       },
       "partnerAddressList": {
         "addressLine1": "5 Other Place",
@@ -89,12 +89,12 @@
         "countryCode": "GB"
       },
       "partnerAddress": {
-        "addressLine1": "5 Other Place",
-        "addressLine2": "Some District",
-        "addressLine3": "Anytown",
-        "addressLine4": "Somerset",
-        "postcode": "ZZ1 1ZZ",
-        "country": "GB"
+        "addressLine1": "Telford1",
+        "addressLine2": "Telford2",
+        "addressLine3": "Telford3",
+        "addressLine4": "Telford4",
+        "postcode": "TF3 4ER",
+        "country": "Country of GB"
       },
       "partnerAddressYears": "under_a_year",
       "partnerPreviousAddressList": {
@@ -106,16 +106,16 @@
         "countryCode": "GB"
       },
       "partnerPreviousAddress": {
-        "addressLine1": "4 Other Place",
-        "addressLine2": "Some District",
-        "addressLine3": "Anytown",
-        "addressLine4": "Somerset",
-        "postcode": "ZZ1 1ZZ",
-        "country": "GB"
+        "addressLine1": "London1",
+        "addressLine2": "London2",
+        "addressLine3": "London3",
+        "addressLine4": "London4",
+        "postcode": "LN12 4DC",
+        "country": "Country of GB"
       },
       "partnerContactDetails": {
-        "email": "t@t.t",
-        "phone": "35"
+        "email": "abc@hmrc.gsi.gov.uk",
+        "phone": "0044-09876542312"
       },
       "isPartnerComplete": true
     }
