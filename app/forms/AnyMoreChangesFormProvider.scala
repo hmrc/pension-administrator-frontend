@@ -24,6 +24,6 @@ class AnyMoreChangesFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("messages__anyMoreChanges__error__required")
+      "value" -> boolean("anyMoreChanges.error.required")
     )
 }
