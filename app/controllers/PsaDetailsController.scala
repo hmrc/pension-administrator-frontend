@@ -45,14 +45,13 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      deRegistrationConnector: DeRegistrationConnector,
                                      countryOptions: CountryOptions,
                                      getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(request.userAnswers) else retrievePsaDataFromModel(psaId)
+      val retrieval = retrievePsaDataFromModel(psaId)
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
         retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister)) }
       }
