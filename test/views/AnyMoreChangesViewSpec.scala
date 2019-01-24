@@ -25,7 +25,7 @@ import views.html.vary.anyMoreChanges
 
 class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
   val schemeName = Some("Scheme x")
-  val messageKeyPrefix = "any_more_changes"
+  val messageKeyPrefix = "anyMoreChanges"
 
   val form = new AnyMoreChangesFormProvider()()
 

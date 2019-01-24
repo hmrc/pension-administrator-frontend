@@ -799,10 +799,10 @@ deregister.success.title = You have stopped being a pension scheme administrator
 deregister.success.heading = You have stopped being a pension scheme administrator
 deregister.success.p1 = Your administrator ID has been deleted.
 
-any_more_changes.title = Do you want to make any more changes?
-any_more_changes.heading = Do you want to make any more changes?
-any_more_changes.p1 = The pension scheme has not been updated yet.
-any_more_changes.p2 = You will need to complete a declaration to update the scheme when you have made all of your changes.
+anyMoreChanges.title = Do you want to make any more changes?
+anyMoreChanges.heading = Do you want to make any more changes?
+anyMoreChanges.p1 = The pension scheme has not been updated yet.
+anyMoreChanges.p2 = You will need to complete a declaration to update the scheme when you have made all of your changes.
 
-any_more_changes.error.required = Select yes if you want to make more changes
+anyMoreChanges.error.required = Select yes if you want to make more changes
 

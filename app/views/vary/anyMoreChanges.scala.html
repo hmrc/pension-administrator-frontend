@@ -26,7 +26,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("any_more_changes.title"),
+    title = messages("anyMoreChanges.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -35,15 +35,15 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            headingKey=messages("any_more_changes.heading")
+            headingKey=messages("anyMoreChanges.heading")
         )
 
-        <p>@messages("any_more_changes.p1")</p>
-        <p>@messages("any_more_changes.p2")</p>
+        <p>@messages("anyMoreChanges.p1")</p>
+        <p>@messages("anyMoreChanges.p2")</p>
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("any_more_changes.title"),
+            label = messages("anyMoreChanges.title"),
             labelClass = Some("visually-hidden")
         )
 
