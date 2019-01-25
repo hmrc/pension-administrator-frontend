@@ -49,6 +49,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val governmentGatewayUrl: String = loadConfig("urls.government-gateway")
   lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
   lazy val pensionAdministratorUrl: String = baseUrl ("pension-administrator")
+  lazy val managePensionsUrl: String = baseUrl ("manage-pensions-frontend")
   lazy val authUrl: String = baseUrl("auth")
   lazy val loginUrl: String = loadConfig("urls.login")
   lazy val serviceSignOut: String = loadConfig("urls.logout")

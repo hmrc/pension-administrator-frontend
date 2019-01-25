@@ -68,7 +68,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
       }
     }
-    "when variations and deregistration are enabled" when {
+ /*   "when variations and deregistration are enabled" when {
       "return 200 and  correct view for a GET for PSA individual" in {
         featureSwitchManagementService.change(isVariationsEnabled, true)
         featureSwitchManagementService.change(isDeregistrationEnabled, true)
@@ -105,7 +105,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", true)
       }
-    }
+    }*/
   }
 }
 
@@ -153,7 +153,6 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       deregistrationConnector,
       countryOptions,
       dataRetrievalAction,
-      new DataRequiredActionImpl,
       featureSwitchManagementService
     )
 
