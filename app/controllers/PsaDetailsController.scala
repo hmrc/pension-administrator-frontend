@@ -19,7 +19,7 @@ package controllers
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{DeRegistrationConnector, SubscriptionConnector}
-import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.actions.AuthAction
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.individual.IndividualDetailsId
@@ -43,11 +43,10 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      subscriptionConnector: SubscriptionConnector,
                                      deRegistrationConnector: DeRegistrationConnector,
                                      countryOptions: CountryOptions,
-                                     getData: DataRetrievalAction,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData).async {
+  def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)

@@ -162,7 +162,6 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       subscriptionConnector,
       deregistrationConnector,
       countryOptions,
-      dataRetrievalAction,
       featureSwitchManagementService
     )
 
