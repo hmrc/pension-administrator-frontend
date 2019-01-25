@@ -50,7 +50,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       "return 200 and  correct view for a GET for PSA individual" in {
         featureSwitchManagementService.change(isVariationsEnabled, false)
         featureSwitchManagementService.change(isDeregistrationEnabled, false)
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        when(subscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionIndividual))
         val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
 
@@ -60,7 +60,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
       "return 200 and  correct view for a GET for PSA company" in {
 
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        when(subscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionCompany))
         val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
 
@@ -68,10 +68,14 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
       }
     }
- /*   "when variations and deregistration are enabled" when {
+
+    "when variations and deregistration are enabled" when {
       "return 200 and  correct view for a GET for PSA individual" in {
         featureSwitchManagementService.change(isVariationsEnabled, true)
         featureSwitchManagementService.change(isDeregistrationEnabled, true)
+
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(individualUserAnswers))
 
         when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
           Future.successful(true)
@@ -83,6 +87,9 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", true)
       }
       "return 200 and  correct view for a GET for PSA company" in {
+
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(companyUserAnswers))
 
         when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
           Future.successful(true)
@@ -96,6 +103,9 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
       "return 200 and  correct view for a GET for PSA partnership" in {
 
+        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+          .thenReturn(Future.successful(partnershipUserAnswers))
+
         when(deregistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
           Future.successful(true)
         )
@@ -105,7 +115,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", true)
       }
-    }*/
+    }
   }
 }
 
