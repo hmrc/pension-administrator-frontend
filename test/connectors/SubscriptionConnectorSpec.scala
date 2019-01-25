@@ -44,7 +44,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
         )
     )
 
-    connector.getSubscriptionDetails(psaId).map {
+    connector.getSubscriptionModel(psaId).map {
       result =>
         result shouldBe psaSubscriptionIndividual
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
@@ -64,7 +64,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     )
 
     recoverToExceptionIf[JsResultException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionModel(psaId)
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
@@ -83,7 +83,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     )
 
     recoverToExceptionIf[PsaIdInvalidSubscriptionException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionModel(psaId)
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
@@ -101,7 +101,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     )
 
     recoverToExceptionIf[CorrelationIdInvalidSubscriptionException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionModel(psaId)
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
@@ -118,7 +118,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     )
 
     recoverToExceptionIf[PsaIdNotFoundSubscriptionException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionModel(psaId)
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
@@ -135,7 +135,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     )
 
     recoverToExceptionIf[Upstream5xxResponse] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionModel(psaId)
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
@@ -152,7 +152,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     )
 
     recoverToExceptionIf[Exception] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionModel(psaId)
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
