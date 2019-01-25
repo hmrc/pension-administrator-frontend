@@ -74,12 +74,12 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       Future.successful(
         legalStatus match {
           case Some(Individual) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse (""))
+            (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "")
           case Some(LimitedCompany) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse (""))
+            (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "")
           case Some(Partnership) =>
             (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
-              userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse (""))
+              userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "")
           case _ => (Nil, "")
         })
     }

@@ -66,8 +66,6 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   }
 
   override def getSubscriptionModel(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
-    getSubscriptionDetails(psaId).map(_.as[PsaSubscription])
-
     getSubscriptionDetails(psaId).map(_.validate[PsaSubscription] match {
       case JsSuccess(value, _) => value
       case JsError(errors) => throw JsResultException(errors)
