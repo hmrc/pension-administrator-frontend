@@ -50,7 +50,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       "return 200 and  correct view for a GET for PSA individual" in {
         featureSwitchManagementService.change(isVariationsEnabled, false)
         featureSwitchManagementService.change(isDeregistrationEnabled, false)
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        when(subscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionIndividual))
         val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
 
@@ -60,7 +60,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
       "return 200 and  correct view for a GET for PSA company" in {
 
-        when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        when(subscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionCompany))
         val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
 

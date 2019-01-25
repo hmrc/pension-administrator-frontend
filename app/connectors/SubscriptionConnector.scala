@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import models.PsaSubscription.PsaSubscription
 import play.api.Logger
 import play.api.http.Status._
+import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
@@ -36,12 +37,14 @@ class PsaIdNotFoundSubscriptionException extends SubscriptionException
 @ImplementedBy(classOf[SubscriptionConnectorImpl])
 trait SubscriptionConnector {
 
-  def getSubscriptionDetails(psaId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
+  def getSubscriptionDetails(psaId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
+
+  def getSubscriptionModel(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
 }
 
 class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends SubscriptionConnector with HttpResponseHelper{
 
-  override def getSubscriptionDetails(psaId:String) (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
+  override def getSubscriptionDetails(psaId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
 
     val psaIdHC = hc.withExtraHeaders("psaId"-> psaId)
 
@@ -50,7 +53,7 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     http.GET[HttpResponse](url)(implicitly, psaIdHC, implicitly) map { response =>
 
       response.status match {
-        case OK => response.json.as[PsaSubscription]
+        case OK => response.json
         case BAD_REQUEST if response.body.contains("INVALID_PSAID") => throw new PsaIdInvalidSubscriptionException
         case BAD_REQUEST if response.body.contains("INVALID_CORRELATIONID") => throw new CorrelationIdInvalidSubscriptionException
         case NOT_FOUND => throw new PsaIdNotFoundSubscriptionException
@@ -60,6 +63,15 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
       case Failure(t: Throwable) => Logger.warn("Unable to get PSA subscription details", t)
     }
 
+  }
+
+  override def getSubscriptionModel(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
+    getSubscriptionDetails(psaId).map(_.as[PsaSubscription])
+
+    getSubscriptionDetails(psaId).map(_.validate[PsaSubscription] match {
+      case JsSuccess(value, _) => value
+      case JsError(errors) => throw JsResultException(errors)
+    })
   }
 
 }
