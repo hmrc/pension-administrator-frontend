@@ -255,9 +255,6 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
           case NO_CONTENT => Future.successful(enrolResponse)
           case ex => Future.failed(new HttpException("Fail", ex))
         }
-
-      override def deEnrol(groupId: String, enrolmentKey: String)
-                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = ???
     }
 
   }
