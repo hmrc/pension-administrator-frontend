@@ -27,7 +27,6 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.RetryHelper
 
-import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
@@ -37,8 +36,6 @@ trait TaxEnrolmentsConnector {
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
-  def deEnrol(groupId: String, enrolmentKey: String)
-           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 }
 
 @Singleton
@@ -54,28 +51,9 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: Fronten
   }
 
   private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)
-           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+                              (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     http.PUT(url, knownFacts) flatMap {
-      case response if response.status equals NO_CONTENT =>
-        Future.successful(response)
-      case response =>
-        Future.failed(new HttpException(response.body, response.status))
-    }
-  }
-
-  def deEnrol(groupId: String, enrolmentKey: String)
-                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    retryOnFailure(() => deEnrolmentRequest(groupId, enrolmentKey), config)
-  } andThen {
-    logDeEnrolmentExceptions
-  }
-
-  def deEnrolmentRequest(groupId: String, enrolmentKey: String)
-             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-
-    val deEnrolmentUrl = config.taxDeEnrolmentUrl.format(groupId, enrolmentKey)
-    http.DELETE(deEnrolmentUrl) flatMap {
       case response if response.status equals NO_CONTENT =>
         Future.successful(response)
       case response =>
@@ -88,11 +66,6 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: Fronten
     case Failure(t: Throwable) =>
       Logger.error("Unable to connect to Tax Enrolments", t)
       Logger.debug(s"Known Facts: ${Json.toJson(knownFacts)}")
-  }
-
-  private def logDeEnrolmentExceptions: PartialFunction[Try[HttpResponse], Unit] = {
-    case Failure(t: Throwable) =>
-      Logger.error("Unable to connect to Tax Enrolments to de enrol the PSA", t)
   }
 
 }
