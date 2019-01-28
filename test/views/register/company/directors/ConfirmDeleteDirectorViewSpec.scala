@@ -41,7 +41,7 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
     "display the correct browser title" in {
       val doc = asDocument(view())
-      assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title") + " - " + messagesApi("pension.scheme.administrator.title"))
     }
 
     "display the correct page title" in {
