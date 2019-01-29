@@ -21,6 +21,7 @@ import config.FeatureSwitchManagementService
 import identifiers.TypedIdentifier
 import play.api.libs.json._
 import play.api.mvc.Result
+import play.api.mvc.Results.Ok
 import play.mvc.Http.Status
 import uk.gov.hmrc.http._
 import utils.Toggles.IsPsaDataShiftEnabled
@@ -61,9 +62,9 @@ class MicroserviceCacheConnector @Inject()(
   }
 
   private def doLogicAndReturnResult[T](cacheId: String, blockForScheme: () => Future[T],
-                                        blockForAdmin: () => Future[T])(implicit
-                                                                        ec: ExecutionContext,
-                                                                        hc: HeaderCarrier
+                                        blockForAdmin: () => Future[T], returnDefault: T)(implicit
+                                                                                          ec: ExecutionContext,
+                                                                                          hc: HeaderCarrier
                                        ): Future[T] = {
     if (fs.get(IsPsaDataShiftEnabled)) {
       isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
@@ -74,8 +75,7 @@ class MicroserviceCacheConnector @Inject()(
             case (false, true) =>
               blockForScheme()
             case _ =>
-              Future.failed(
-                new HttpException("Issue dealing with mongo collection", Status.BAD_REQUEST))
+              Future.successful(returnDefault)
           }
         }
       }
@@ -89,19 +89,19 @@ class MicroserviceCacheConnector @Inject()(
                                                ec: ExecutionContext,
                                                hc: HeaderCarrier
                                               ): Future[JsValue] = {
-    doLogicAndReturnResult[JsValue](cacheId, () => ps.remove(cacheId, id), () => pa.remove(cacheId, id))
+    doLogicAndReturnResult[JsValue](cacheId, () => ps.remove(cacheId, id), () => pa.remove(cacheId, id), Json.obj())
   }
 
   override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    doLogicAndReturnResult[Result](cacheId, () => ps.removeAll(cacheId), () => pa.removeAll(cacheId))
+    doLogicAndReturnResult[Result](cacheId, () => ps.removeAll(cacheId), () => pa.removeAll(cacheId), Ok)
   }
 
   override def fetch(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
-    doLogicAndReturnResult[Option[JsValue]](cacheId, () => ps.fetch(cacheId), () => pa.fetch(cacheId))
+    doLogicAndReturnResult[Option[JsValue]](cacheId, () => ps.fetch(cacheId), () => pa.fetch(cacheId), None)
   }
 
   override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
-    doLogicAndReturnResult[JsValue](cacheId, () => ps.upsert(cacheId, value), () => pa.upsert(cacheId, value))
+    doLogicAndReturnResult[JsValue](cacheId, () => ps.upsert(cacheId, value), () => pa.upsert(cacheId, value), Json.obj())
   }
 
   private def isDataExistInScheme(cacheId: String)(implicit

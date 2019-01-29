@@ -121,8 +121,9 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           fakePensionAdminCacheConnector(true),
           fakeFeatureSwitchManager()
         )
-        recoverToSucceededIf[HttpException] {
-          connector.fetch("foo")
+        connector.fetch("foo") map {
+          result =>
+            result mustBe None
         }
       }
     }
@@ -158,8 +159,9 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           fakePensionAdminCacheConnector(true),
           fakeFeatureSwitchManager()
         )
-        recoverToSucceededIf[HttpException] {
-          connector.remove("foo", FakeIdentifier)
+        connector.remove("foo", FakeIdentifier) map {
+          result =>
+            result mustBe Json.obj()
         }
       }
     }
@@ -192,9 +194,8 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           fakePensionAdminCacheConnector(true),
           fakeFeatureSwitchManager()
         )
-        recoverToSucceededIf[HttpException] {
-          connector.removeAll("foo")
-        }
+        val result = connector.removeAll("foo")
+        status(result) mustBe OK
       }
     }
     ".upsert is called" must {
@@ -229,8 +230,9 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           fakePensionAdminCacheConnector(true),
           fakeFeatureSwitchManager()
         )
-        recoverToSucceededIf[HttpException] {
-          connector.upsert("foo", Json.obj())
+        connector.upsert("foo", Json.obj()) map {
+          result =>
+            result mustBe Json.obj()
         }
       }
     }
