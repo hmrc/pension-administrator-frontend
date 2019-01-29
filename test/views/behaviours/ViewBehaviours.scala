@@ -17,6 +17,7 @@
 package views.behaviours
 
 import org.jsoup.Jsoup
+import play.api.i18n.MessagesApi
 import play.twirl.api.HtmlFormat
 import views.ViewSpecBase
 
@@ -37,7 +38,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
         "display the correct browser title" in {
           val doc = asDocument(view())
-          assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+          assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title")  + " - " + messagesApi("pension.scheme.administrator.title"))
         }
 
         "display the correct guidance" in {

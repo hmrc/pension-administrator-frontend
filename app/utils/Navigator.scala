@@ -19,7 +19,7 @@ package utils
 import connectors.UserAnswersCacheConnector
 import identifiers.{Identifier, LastPageId}
 import models.requests.IdentifiedRequest
-import models.{CheckMode, LastPage, Mode, NormalMode}
+import models._
 import play.api.Logger
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,6 +40,7 @@ abstract class Navigator {
       mode match {
         case NormalMode => routeMap(NavigateFrom(id, userAnswers))
         case CheckMode => editRouteMap(NavigateFrom(id, userAnswers))
+        case UpdateMode => editRouteMap(NavigateFrom(id, userAnswers))
       }
     }
 

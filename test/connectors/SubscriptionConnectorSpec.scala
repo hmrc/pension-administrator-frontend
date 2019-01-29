@@ -25,6 +25,7 @@ import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
 import utils.WireMockHelper
 import utils.testhelpers.PsaSubscriptionBuilder._
+import base.JsonFileReader
 
 class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper with Checkers {
 
@@ -36,42 +37,22 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
 
   "calling getSubscriptionDetails" should "return 200" in {
 
-    server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
-        .willReturn(
-          aResponse()
-            .withStatus(OK).withBody(Json.toJson(psaSubscriptionIndividual).toString())
-        )
-    )
+      server.stubFor(
+        get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+          .willReturn(
+            aResponse()
+              .withStatus(OK).withBody(Json.toJson(individualJsonResponse).toString())
+          )
+      )
 
-    connector.getSubscriptionDetails(psaId).map {
-      result =>
-        result shouldBe psaSubscriptionIndividual
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+      connector.getSubscriptionDetails(psaId).map {
+        result =>
+          result shouldBe individualJsonResponse
+          server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
+            .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+      }
+
     }
-
-  }
-
-  it should "throw exception if failed to parse the json" in {
-
-    server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
-        .willReturn(
-          aResponse()
-            .withStatus(OK).withBody(invalidResponse)
-        )
-    )
-
-    recoverToExceptionIf[JsResultException] {
-      connector.getSubscriptionDetails(psaId)
-    } map {
-      _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
-    }
-
-  }
 
   it should "throw badrequest if INVALID_PSAID" in {
     server.stubFor(
@@ -160,6 +141,45 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     }
   }
 
+  "getSubscriptionModel" should "return 200" in {
+
+    server.stubFor(
+      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+        .willReturn(
+          aResponse()
+            .withStatus(OK).withBody(Json.toJson(psaSubscriptionIndividual).toString())
+        )
+    )
+
+    connector.getSubscriptionModel(psaId).map {
+      result =>
+        result shouldBe psaSubscriptionIndividual
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
+          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+    }
+
+  }
+
+  it should "throw exception if failed to parse the json" in {
+
+    server.stubFor(
+      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+        .willReturn(
+          aResponse()
+            .withStatus(OK).withBody(invalidResponse)
+        )
+    )
+
+    recoverToExceptionIf[JsResultException] {
+      connector.getSubscriptionModel(psaId)
+    } map {
+      _ =>
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
+          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+    }
+
+  }
+
 }
 
 object SubscriptionConnectorSpec extends JsonFileReader {
@@ -175,5 +195,6 @@ object SubscriptionConnectorSpec extends JsonFileReader {
   )
   
   val invalidResponse = """{"invalid" : "response"}"""
+  val individualJsonResponse = readJsonFromFile("/data/psaIndividualUserAnswers.json")
 
 }
