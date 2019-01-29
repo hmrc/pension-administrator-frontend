@@ -24,7 +24,7 @@ import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.HttpResponseHelper
+import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
@@ -33,13 +33,16 @@ abstract class SubscriptionException extends Exception
 class PsaIdInvalidSubscriptionException extends SubscriptionException
 class CorrelationIdInvalidSubscriptionException extends SubscriptionException
 class PsaIdNotFoundSubscriptionException extends SubscriptionException
+case class InvalidSubscriptionPayloadException() extends SubscriptionException
 
 @ImplementedBy(classOf[SubscriptionConnectorImpl])
 trait SubscriptionConnector {
 
-  def getSubscriptionDetails(psaId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
+  def getSubscriptionDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
 
   def getSubscriptionModel(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
+
+  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 }
 
 class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends SubscriptionConnector with HttpResponseHelper{
@@ -72,4 +75,17 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     })
   }
 
+  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+    val url = config.updateSubscriptionDetailsUrl
+
+    http.POST(url, answers.json) map { response =>
+      response.status match {
+        case OK => ()
+        case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") => throw InvalidSubscriptionPayloadException()
+        case _ => handleErrorResponse("POST", config.updateSubscriptionDetailsUrl)(response)
+      }
+    } andThen {
+      case Failure(t: Throwable) => Logger.warn("Unable to update PSA subscription details", t)
+    }
+  }
 }

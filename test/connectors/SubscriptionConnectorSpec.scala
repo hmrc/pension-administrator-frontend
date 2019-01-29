@@ -22,8 +22,8 @@ import org.scalatest.prop.Checkers
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import play.api.http.Status._
 import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
-import utils.WireMockHelper
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import utils.{UserAnswers, WireMockHelper}
 import utils.testhelpers.PsaSubscriptionBuilder._
 import base.JsonFileReader
 
@@ -37,22 +37,22 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
 
   "calling getSubscriptionDetails" should "return 200" in {
 
-      server.stubFor(
-        get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
-          .willReturn(
-            aResponse()
-              .withStatus(OK).withBody(Json.toJson(individualJsonResponse).toString())
-          )
-      )
+    server.stubFor(
+      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+        .willReturn(
+          aResponse()
+            .withStatus(OK).withBody(Json.toJson(individualJsonResponse).toString())
+        )
+    )
 
-      connector.getSubscriptionDetails(psaId).map {
-        result =>
-          result shouldBe individualJsonResponse
-          server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-            .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
-      }
-
+    connector.getSubscriptionDetails(psaId).map {
+      result =>
+        result shouldBe individualJsonResponse
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
+          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
     }
+
+  }
 
   it should "throw badrequest if INVALID_PSAID" in {
     server.stubFor(
@@ -180,6 +180,81 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
 
   }
 
+  "updateSubscriptionDetails" should "return successfully when received success response from DES" in {
+    server.stubFor(
+      post(urlEqualTo(updateSubscriptionDetailsUrl))
+        .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
+        .willReturn(
+          ok()
+            .withHeader("Content-Type", "application/json")
+            .withBody("SUCCESSFUL RESPONSE")
+        )
+    )
+
+    val connector = injector.instanceOf[SubscriptionConnector]
+
+    connector.updateSubscriptionDetails(userAnswers).map(
+      _ =>
+        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+    )
+  }
+
+  it should "throw InvalidSubscriptionPayloadException when bad request - INVALID_PAYLOAD response returned from DES" in {
+    server.stubFor(
+      post(urlEqualTo(updateSubscriptionDetailsUrl))
+        .willReturn(
+          badRequest
+            .withHeader("Content-Type", "application/json")
+            .withBody(invalidPayloadResponse)
+        )
+    )
+
+    val connector = injector.instanceOf[SubscriptionConnector]
+
+    recoverToSucceededIf[InvalidSubscriptionPayloadException] {
+      connector.updateSubscriptionDetails(userAnswers)
+    } map {
+      _ =>
+        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+    }
+  }
+
+  it should "throw Upstream5xxResponse when internal server error response returned from DES" in {
+    server.stubFor(
+      post(urlEqualTo(updateSubscriptionDetailsUrl))
+        .willReturn(
+          serverError()
+            .withHeader("Content-Type", "application/json")
+            .withBody("INTERNAL SERVER ERROR")
+        )
+    )
+
+    recoverToExceptionIf[Upstream5xxResponse] {
+      connector.updateSubscriptionDetails(userAnswers)
+    } map {
+      _ =>
+        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+    }
+  }
+
+  it should "throw BadRequestException when bad request response returned from DES" in {
+    server.stubFor(
+      post(urlEqualTo(updateSubscriptionDetailsUrl))
+        .willReturn(
+          badRequest
+            .withHeader("Content-Type", "application/json")
+            .withBody("BAD REQUEST")
+        )
+    )
+
+    recoverToExceptionIf[BadRequestException] {
+      connector.updateSubscriptionDetails(userAnswers)
+    } map {
+      _ =>
+        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+    }
+  }
+
 }
 
 object SubscriptionConnectorSpec extends JsonFileReader {
@@ -187,14 +262,23 @@ object SubscriptionConnectorSpec extends JsonFileReader {
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
   val psaId = "A1234567"
   val subscriptionDetailsUrl = s"/pension-administrator/psa-subscription-details"
+  private val updateSubscriptionDetailsUrl = "/pension-administrator/update-psa-subscription-details"
 
   val psaIdJson = Json.stringify(
     Json.obj(
       "psaId" -> s"$psaId"
     )
   )
-  
+
+  private val userAnswers = UserAnswers(Json.obj())
+
   val invalidResponse = """{"invalid" : "response"}"""
   val individualJsonResponse = readJsonFromFile("/data/psaIndividualUserAnswers.json")
-
+  private val invalidPayloadResponse =
+    Json.stringify(
+      Json.obj(
+        "code" -> "INVALID_PAYLOAD",
+        "reason" -> "test-reason"
+      )
+    )
 }

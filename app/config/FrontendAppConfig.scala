@@ -74,6 +74,9 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val subscriptionDetailsUrl: String = s"${baseUrl("pension-administrator")}${runModeConfiguration
     .underlying.getString("urls.pension-administrator.subscriptionDetails")}"
 
+  lazy val updateSubscriptionDetailsUrl: String = s"${baseUrl("pension-administrator")}${runModeConfiguration
+    .underlying.getString("urls.pension-administrator.updateSubscriptionDetails")}"
+
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
