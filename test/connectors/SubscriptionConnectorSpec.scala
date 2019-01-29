@@ -182,7 +182,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
 
   "updateSubscriptionDetails" should "return successfully when received success response from DES" in {
     server.stubFor(
-      post(urlEqualTo(updateSubscriptionDetailsUrl))
+      put(urlEqualTo(updateSubscriptionDetailsUrl))
         .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
         .willReturn(
           ok()
@@ -193,15 +193,16 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
 
     val connector = injector.instanceOf[SubscriptionConnector]
 
-    connector.updateSubscriptionDetails(userAnswers).map(
+    connector.updateSubscriptionDetails(userAnswers) map(
       _ =>
-        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+        server.findAll(putRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
     )
   }
 
   it should "throw InvalidSubscriptionPayloadException when bad request - INVALID_PAYLOAD response returned from DES" in {
     server.stubFor(
-      post(urlEqualTo(updateSubscriptionDetailsUrl))
+      put(urlEqualTo(updateSubscriptionDetailsUrl))
+        .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
         .willReturn(
           badRequest
             .withHeader("Content-Type", "application/json")
@@ -211,17 +212,18 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
 
     val connector = injector.instanceOf[SubscriptionConnector]
 
-    recoverToSucceededIf[InvalidSubscriptionPayloadException] {
+    recoverToExceptionIf[InvalidSubscriptionPayloadException] {
       connector.updateSubscriptionDetails(userAnswers)
     } map {
       _ =>
-        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+        server.findAll(putRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
     }
   }
 
   it should "throw Upstream5xxResponse when internal server error response returned from DES" in {
     server.stubFor(
-      post(urlEqualTo(updateSubscriptionDetailsUrl))
+      put(urlEqualTo(updateSubscriptionDetailsUrl))
+        .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
         .willReturn(
           serverError()
             .withHeader("Content-Type", "application/json")
@@ -233,13 +235,14 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
       connector.updateSubscriptionDetails(userAnswers)
     } map {
       _ =>
-        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+        server.findAll(putRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
     }
   }
 
   it should "throw BadRequestException when bad request response returned from DES" in {
     server.stubFor(
-      post(urlEqualTo(updateSubscriptionDetailsUrl))
+      put(urlEqualTo(updateSubscriptionDetailsUrl))
+        .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
         .willReturn(
           badRequest
             .withHeader("Content-Type", "application/json")
@@ -251,7 +254,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
       connector.updateSubscriptionDetails(userAnswers)
     } map {
       _ =>
-        server.findAll(postRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
+        server.findAll(putRequestedFor(urlEqualTo(updateSubscriptionDetailsUrl))).size() shouldBe 1
     }
   }
 

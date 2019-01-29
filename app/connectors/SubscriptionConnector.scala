@@ -78,11 +78,11 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     val url = config.updateSubscriptionDetailsUrl
 
-    http.POST(url, answers.json) map { response =>
+    http.PUT(url, answers.json) map { response =>
       response.status match {
         case OK => ()
         case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") => throw InvalidSubscriptionPayloadException()
-        case _ => handleErrorResponse("POST", config.updateSubscriptionDetailsUrl)(response)
+        case _ => handleErrorResponse("PUT", config.updateSubscriptionDetailsUrl)(response)
       }
     } andThen {
       case Failure(t: Throwable) => Logger.warn("Unable to update PSA subscription details", t)
