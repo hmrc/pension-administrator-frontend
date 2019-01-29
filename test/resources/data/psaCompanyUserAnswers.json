@@ -64,19 +64,19 @@
   "directors": [
     {
       "directorDetails": {
-        "firstName": "na",
-        "middleName": "a",
-        "lastName": "da",
-        "dateOfBirth": "2009-03-03",
+        "firstName": "Director",
+        "middleName": "number",
+        "lastName": "one",
+        "dateOfBirth": "1950-03-29",
         "isDeleted": false
       },
       "directorNino": {
         "hasNino": true,
-        "nino": "AB123456C"
+        "nino": "AA999999A"
       },
       "directorUtr": {
         "hasUtr": true,
-        "utr": "0987654321"
+        "utr": "1234567892"
       },
       "companyDirectorAddressList": {
         "addressLine1": "Flat 2",
@@ -87,33 +87,33 @@
         "countryCode": "GB"
       },
       "directorAddress": {
-        "addressLine1": "Flat 2",
-        "addressLine2": "7 Other Place",
-        "addressLine3": "Some District",
-        "addressLine4": "Somerset",
-        "postcode": "ZZ1 1ZZ",
-        "country": "GB"
+        "addressLine1": "Telford1",
+        "addressLine2": "Telford2",
+        "addressLine3": "Telford3",
+        "addressLine4": "Telford4",
+        "postcode": "TF3 4ER",
+        "country": "Country of GB"
       },
       "directorAddressYears": "under_a_year",
       "directorPreviousAddressList": {
-        "addressLine1": "Flat 1",
-        "addressLine2": "7 Other Place",
-        "addressLine3": "Some District",
-        "addressLine4": "Somerset",
-        "postalCode": "ZZ1 1ZZ",
-        "countryCode": "GB"
+        "addressLine1": "London1",
+        "addressLine2": "London2",
+        "addressLine3": "London3",
+        "addressLine4": "London4",
+        "postcode": "LN12 4DC",
+        "country": "Country of GB"
       },
       "directorPreviousAddress": {
-        "addressLine1": "Flat 1",
-        "addressLine2": "7 Other Place",
-        "addressLine3": "Some District",
-        "addressLine4": "Somerset",
-        "postcode": "ZZ1 1ZZ",
-        "country": "GB"
+        "addressLine1": "London1",
+        "addressLine2": "London2",
+        "addressLine3": "London3",
+        "addressLine4": "London4",
+        "postcode": "LN12 4DC",
+        "country": "Country of GB"
       },
       "directorContactDetails": {
-        "email": "q@q.q",
-        "phone": "999"
+        "email": "abc@hmrc.gsi.gov.uk",
+        "phone": "0044-09876542312"
       },
       "isDirectorComplete": true
     }
