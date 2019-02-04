@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.individual.IndividualAddressChangedId
 import models.{Index, NormalMode, PersonDetails}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
@@ -37,6 +38,15 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
       )
     )
   )
+
+  "updateElement" should {
+    "mark the requested element as updated" in {
+      val userAnswers = UserAnswers(Json.obj())
+      val result = userAnswers.updateElement(IndividualAddressChangedId).get
+
+      result.get(IndividualAddressChangedId) mustBe Some (true)
+    }
+  }
 
   "getAll" should {
     "get all matching recursive results" in {
