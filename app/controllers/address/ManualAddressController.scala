@@ -19,12 +19,13 @@ package controllers.address
 import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.{JsNull, JsValue}
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -33,9 +34,7 @@ import views.html.address.manualAddress
 
 import scala.concurrent.Future
 
-trait ManualAddressController extends FrontendController with Retrievals with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ManualAddressController extends FrontendController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 
@@ -84,11 +83,15 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
               request.externalId,
               id,
               address
-            ).map {
-              cacheMap =>
-                auditEvent.foreach(auditService.sendEvent(_))
-                Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
-            }
+            )
+              .flatMap { yyy =>
+                saveChangeFlag(mode, id).fold[Future[JsValue]](Future.successful(JsNull))(identity)
+                  .map {
+                    cacheMap =>
+                      auditEvent.foreach(auditService.sendEvent(_))
+                      Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+                  }
+              }
           }
       }
     )

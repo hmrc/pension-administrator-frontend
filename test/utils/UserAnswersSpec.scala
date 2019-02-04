@@ -38,15 +38,15 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
       )
     )
   )
-
-  "updateElement" should {
-    "mark the requested element as updated" in {
-      val userAnswers = UserAnswers(Json.obj())
-      val result = userAnswers.updateElement(IndividualAddressChangedId).get
-
-      result.get(IndividualAddressChangedId) mustBe Some (true)
-    }
-  }
+//
+//  "updateElement" should {
+//    "mark the requested element as updated" in {
+//      val userAnswers = UserAnswers(Json.obj())
+//      val result = userAnswers.updateElement(IndividualAddressChangedId).get
+//
+//      result.get(IndividualAddressChangedId) mustBe Some (true)
+//    }
+//  }
 
   "getAll" should {
     "get all matching recursive results" in {
