@@ -83,9 +83,8 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
               request.externalId,
               id,
               address
-            )
-              .flatMap { yyy =>
-                saveChangeFlag(mode, id).fold[Future[JsValue]](Future.successful(JsNull))(identity)
+            ).flatMap { _ =>
+                updateElement(mode, id)
                   .map {
                     cacheMap =>
                       auditEvent.foreach(auditService.sendEvent(_))
