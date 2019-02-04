@@ -804,6 +804,7 @@ anyMoreChanges.title = Do you want to make any more changes?
 anyMoreChanges.heading = Do you want to make any more changes?
 anyMoreChanges.p1 = The pension scheme has not been updated yet.
 anyMoreChanges.p2 = You will need to complete a declaration to update the scheme when you have made all of your changes.
+anyMoreChanges.p3 = You have until 27 February 2019 to complete the declaration. If you do not complete the declaration by this date, your changes will be deleted.
 
 anyMoreChanges.error.required = Select yes if you want to make more changes
 

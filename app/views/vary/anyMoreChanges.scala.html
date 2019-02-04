@@ -40,6 +40,7 @@
 
         <p>@messages("anyMoreChanges.p1")</p>
         <p>@messages("anyMoreChanges.p2")</p>
+        <p>@messages("anyMoreChanges.p3")</p>
 
         @components.input_yes_no(
             field = form("value"),
@@ -48,13 +49,5 @@
         )
 
         @components.submit_button("site.save_and_continue")
-
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <p class="govuk-margin-top-5">
-                    <a id="return-link" href="">Return to ???</a>
-                </p>
-            </div>
-        </div>
     }
 }

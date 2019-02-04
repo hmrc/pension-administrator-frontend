@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.vary
 
 import controllers.vary.routes
 import forms.AnyMoreChangesFormProvider
@@ -41,7 +41,7 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
   "Any More Changes view" must {
 
     behave like normalPage(createView, messageKeyPrefix,
-      expectedGuidanceKeys = "p1", "p2")
+      expectedGuidanceKeys = "p1", "p2", "p3")
 
     behave like yesNoPage(
       createView = createViewUsingForm,
@@ -51,8 +51,5 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
     )
 
     behave like pageWithSubmitButton(createView)
-
-    //behave like pageWithReturnLink(createView, getReturnLink)
-
   }
 }
