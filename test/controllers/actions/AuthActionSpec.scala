@@ -19,11 +19,11 @@ package controllers.actions
 import java.net.URLEncoder
 
 import base.SpecBase
-import config.{FeatureSwitchManagementService, FrontendAppConfig}
+import config.FeatureSwitchManagementService
 import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector}
 import controllers.routes
-import identifiers.{JourneyId, NinoId, PsaId}
-import play.api.inject.guice.GuiceApplicationBuilder
+import identifiers.JourneyId
+import models.CheckMode
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Controller
 import play.api.test.FakeRequest
@@ -92,6 +92,26 @@ class AuthActionSpec extends SpecBase {
         "coming from registered psa details" in {
           val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.registeredPsaDetailsUri))
           status(result) mustBe OK
+        }
+
+        "coming from psa details view with update Mode" in {
+          val fakeUserAnswersConnector = fakeUserAnswersCacheConnector(
+            dataToBeReturned = Json.obj("areYouInUK" -> true, "updateMode" -> true))
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
+            fakeUserAnswersConnector, fakeIVConnector)
+          val controller = new Harness(authAction)
+          val result = controller.onPageLoad()(FakeRequest("GET",
+            controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url))
+          status(result) mustBe OK
+
+        }
+
+        "coming from psa details view withiout update Mode" in {
+          val result = controller.onPageLoad()(FakeRequest("GET",
+            controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url))
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.InterceptPSAController.onPageLoad().url)
+
         }
       }
     }

@@ -23,7 +23,7 @@ import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
-import identifiers.{JourneyId, NinoId, TypedIdentifier}
+import identifiers.{JourneyId, TypedIdentifier, UpdateModeId}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -58,15 +58,15 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        redirectToInterceptPages(enrolments, request, cl, affinityGroup).fold(
+        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).flatMap(_.fold(
           result => Future.successful(result),
           _ => {
             val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
             successRedirect(affinityGroup, cl, enrolments, authRequest, block)
           }
-        )
+        ))
       case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+        Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
 
     } recover handleFailure
   }
@@ -164,13 +164,16 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
 
   private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A],
-                                          cl: ConfidenceLevel, affinityGroup: AffinityGroup) = {
+                                          cl: ConfidenceLevel, affinityGroup: AffinityGroup, id: String)(implicit hc: HeaderCarrier) = {
     if (alreadyEnrolledInPODS(enrolments) && notNewRegPages(request)) {
-      Left(Redirect(routes.InterceptPSAController.onPageLoad()))
+      getData(UpdateModeId, id).map {
+        case Some(true) => Right(())
+        case _ => Left(Redirect(routes.InterceptPSAController.onPageLoad()))
+      }
     } else if (isPSP(enrolments) && !isPSA(enrolments)) {
-      Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
+      Future.successful(Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad())))
     } else {
-      Right(())
+      Future.successful(Right(()))
     }
   }
 
