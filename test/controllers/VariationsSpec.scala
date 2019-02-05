@@ -39,9 +39,18 @@ class VariationsSpec extends ControllerSpecBase {
     override def toString = "testChangeId"
   }
 
-  private val testVariations = new Variations {
-    override val changeIds: Map[TypedIdentifier[_ >: ContactDetails with Address <: Product with Serializable], TypedIdentifier[Boolean]] =
-      Map(testId -> testChangeId)
+  private val testVariationsNonIndexed = new Variations {
+
+    override def changeIdsNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
+
+    override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+  }
+
+  private val testVariationsIndexed = new Variations {
+
+    override def changeIdsNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = None
+    override def changeIdsIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
+
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   }
 
@@ -50,15 +59,26 @@ class VariationsSpec extends ControllerSpecBase {
   "Variations" must {
     "update the changed flag when save is called in Update Mode" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariations.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsNonIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
       FakeUserAnswersCacheConnector.verify(testChangeId, true)
     }
 
     "not update the changed flag when save is called in NormalMode" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariations.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsNonIndexed.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
 
+    "update the changed flag when save is called in Update Mode with indexed identifier" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
+      FakeUserAnswersCacheConnector.verify(testChangeId, true)
+    }
+
+    "not update the changed flag when save is called in NormalMode  with indexed identifier" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsIndexed.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
+      FakeUserAnswersCacheConnector.verifyNot(testChangeId)
+    }
   }
 }

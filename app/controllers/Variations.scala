@@ -18,7 +18,9 @@ package controllers
 
 import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company._
+import identifiers.register.company.directors.DirectorAddressId
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerPreviousAddressId}
 import identifiers.register.partnership._
@@ -36,10 +38,10 @@ trait Variations extends FrontendController {
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
-  private def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
+  def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
     cacheConnector.save(request.externalId, id, true)
 
-  protected val changeIds: Map[TypedIdentifier[_ >: ContactDetails with Address <: Product with Serializable], TypedIdentifier[Boolean]] = Map(
+  private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,
     IndividualPreviousAddressId -> IndividualPreviousAddressChangedId,
     IndividualContactDetailsId -> IndividualContactDetailsChangedId,
@@ -51,15 +53,26 @@ trait Variations extends FrontendController {
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId
   )
 
+  protected def changeIdsNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+    changeIds.find(_._1 == id) match {
+      case Some(item) => Some(item._2)
+      case None => None
+    }
+  }
+
+  protected def changeIdsIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+    id match {
+      case DirectorAddressId(_) => Some(DirectorsOrPartnersChangedId)
+      case _ => None
+    }
+  }
+
   def saveChangeFlag[A](mode: Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     if (mode == UpdateMode) {
-      changeIds.find(_._1 == id) match {
-        case Some(item) => doSave(item._2)
-        case None => Future.successful(request.userAnswers.json)
-      }
+      changeIdsNonIndexed(id).fold(changeIdsIndexed(id))(Some(_))
+        .fold(Future.successful(request.userAnswers.json))(doSave(_))
     } else {
       Future.successful(request.userAnswers.json)
     }
   }
-
 }
