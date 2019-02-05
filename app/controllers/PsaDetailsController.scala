@@ -51,7 +51,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
-        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister, false)) }
+        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister, tuple._3)) }
       }
   }
 
