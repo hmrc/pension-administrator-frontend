@@ -70,16 +70,13 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
       val userAnswers = UserAnswers(response)
       val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-      println("\n\n\n legalStatus : "+legalStatus)
       Future.successful(
         legalStatus match {
           case Some(Individual) =>
             (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "")
           case Some(LimitedCompany) =>
-            println("\n\n\n in company")
             (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "")
           case Some(Partnership) =>
-            println("\n\n partnership"+new ViewPsaDetailsHelper(userAnswers, countryOptions))
             (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
               userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "")
           case _ => (Nil, "")

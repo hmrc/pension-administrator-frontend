@@ -22,8 +22,14 @@
 
 @if(superSection.headingKey.isDefined){
 <header class="page-heading">
-<h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
+    <h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
 </header>
+}
+
+@superSection.addLink.map{ link =>
+   <a id="add-link" href='@{link.url}'>
+     <span aria-hidden="true">@messages(link.text)</span>
+   </a>
 }
 
 <ul>

@@ -65,6 +65,7 @@ site.back = Back
 site.delete = Remove
 site.edit = Edit
 site.change = Change
+site.add = Add
 site.confirm = Confirm
 site.agree = Agree and continue
 site.cancel = Cancel
@@ -735,6 +736,8 @@ paye.label = Employer PAYE reference number
 crn.label = Company registration number
 utr.label = Unique Taxpayer Reference
 pensionAdvisor.section.header = Pension adviser details
+director-add-link = Add/Delete Directors
+partner-add-link = Add/Delete Partners
 
 director.supersection.header = Director details
 partner.supersection.header = Partner details

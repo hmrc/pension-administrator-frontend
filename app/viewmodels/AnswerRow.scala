@@ -20,6 +20,6 @@ case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boo
 
 object AnswerRow {
   def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, changeUrl)
+    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
   }
 }
