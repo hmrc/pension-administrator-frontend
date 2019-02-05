@@ -46,43 +46,64 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
+  case class PsaViewDetails(superSections: Seq[SuperSection], header: String, isUserAnswerUpdated: Boolean)
+
   def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
-        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister, tuple._3)) }
+        retrieval.map { psaDetails =>
+            Ok(psa_details(appConfig, psaDetails.superSections, psaDetails.header, canDeregister, psaDetails.isUserAnswerUpdated))
+        }
       }
   }
 
-  private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String, Boolean)] = {
+  private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[PsaViewDetails] = {
       subscriptionConnector.getSubscriptionModel(psaId).map { response =>
       response.organisationOrPartner match {
         case None =>
-          (new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse(""), false)
+          PsaViewDetails(
+            new PsaDetailsHelper(response, countryOptions).individualSections,
+            response.individual.map(_.fullName).getOrElse(""),
+            false)
         case _ =>
-          (new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse(""), false)
+          PsaViewDetails(
+            new PsaDetailsHelper(response, countryOptions).organisationSections,
+            response.organisationOrPartner.map(_.name).getOrElse(""),
+            false)
       }
     }
   }
 
-  private def retrievePsaDataFromUserAnswers(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String, Boolean)] = {
+  private def retrievePsaDataFromUserAnswers(psaId: String)(implicit hc: HeaderCarrier): Future[PsaViewDetails] = {
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
       val userAnswers = UserAnswers(response)
       val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
       val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
       Future.successful(
         legalStatus match {
+
           case Some(Individual) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
-              userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""), isUserAnswerUpdated)
+            PsaViewDetails(
+              new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
+              userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
+              isUserAnswerUpdated)
+
           case Some(LimitedCompany) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
-              userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""), isUserAnswerUpdated)
+            PsaViewDetails(
+              new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
+              userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""),
+              isUserAnswerUpdated)
+
           case Some(Partnership) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
-              userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""), isUserAnswerUpdated)
-          case _ => (Nil, "", isUserAnswerUpdated)
+            PsaViewDetails(
+              new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
+              userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""),
+              isUserAnswerUpdated)
+
+          case _ =>
+            PsaViewDetails(Nil, "", isUserAnswerUpdated)
         })
     }
   }
