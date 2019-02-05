@@ -51,35 +51,38 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
-        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister)) }
+        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister, false)) }
       }
   }
 
-  private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
+  private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String, Boolean)] = {
       subscriptionConnector.getSubscriptionModel(psaId).map { response =>
       response.organisationOrPartner match {
         case None =>
-          (new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse(""))
+          (new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse(""), false)
         case _ =>
-          (new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse(""))
+          (new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse(""), false)
       }
     }
   }
 
-  private def retrievePsaDataFromUserAnswers(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
+  private def retrievePsaDataFromUserAnswers(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String, Boolean)] = {
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
       val userAnswers = UserAnswers(response)
       val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+      val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
       Future.successful(
         legalStatus match {
           case Some(Individual) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "")
+            (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
+              userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""), isUserAnswerUpdated)
           case Some(LimitedCompany) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "")
+            (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
+              userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""), isUserAnswerUpdated)
           case Some(Partnership) =>
             (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
-              userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "")
-          case _ => (Nil, "")
+              userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""), isUserAnswerUpdated)
+          case _ => (Nil, "", isUserAnswerUpdated)
         })
     }
   }
