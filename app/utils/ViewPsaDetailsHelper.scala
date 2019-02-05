@@ -267,8 +267,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     )
   }
 
-  val directorsSuperSection = {
-    val addLink = if (userAnswers.allDirectorsAfterDelete.size < 10) {
+  private def directorsSuperSection: SuperSection = {
+    val addLink = if (userAnswers.allDirectorsAfterDelete.length < 10) {
       Some(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link"))
     } else {
       None
@@ -281,7 +281,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   //Partnership PSA
-  def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(PartnershipVatId) match {
+  private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(PartnershipVatId) match {
     case Some(Vat.Yes(vat)) => Some(AnswerRow("vat.label", Seq(vat), false,
       None))
 
@@ -388,7 +388,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     )
   }
 
-  val partnersSuperSection = {
+  private def partnersSuperSection = {
     val addLink = if (userAnswers.allPartnersAfterDelete.size < 10) {
       Some(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad.url, "partner-add-link"))
     } else {

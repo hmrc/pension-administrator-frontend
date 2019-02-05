@@ -16,13 +16,17 @@
 
 package utils
 
+import java.time.LocalDate
+
 import base.{JsonFileReader, SpecBase}
-import models.Address
+import identifiers.register.company.directors.{DirectorDetailsId, DirectorNinoId, DirectorUniqueTaxReferenceId}
+import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId, PartnerUniqueTaxReferenceId}
+import models._
 import org.scalatest.{MustMatchers, WordSpec}
-import utils.ViewPsaDetailsHelper.addressAnswer
+import play.api.libs.json.{JsObject, Json}
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, Message, SuperSection}
 import utils.testhelpers.ViewPsaDetailsBuilder._
+import viewmodels.{AnswerRow, Link, SuperSection}
 
 class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
@@ -42,37 +46,57 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
       actualValues mustBe expectedValues
     }
+
+    s"display details section with correct links for $testName" in {
+      val actualValues = actualSeqAnswerRow(result, headingKey).map(_.changeUrl).toSet
+      val expectedValues = expectedAnswerRows.map(_.changeUrl).toSet
+
+      actualValues mustBe expectedValues
+    }
   }
 
-
-
   "ViewPsaDetailsHelper" must {
-
-
 
     behave like validSection(testName = "individual details", headingKey = None, result = individualResult, expectedAnswerRows = individualSeqAnswers)
 
     behave like validSection(testName = "company details", headingKey = None, result = companyResult, expectedAnswerRows = companySeqAnswers)
 
-
     behave like validSection(testName = "partnership details", headingKey = None,
       result = partnershipResult, expectedAnswerRows = partnershipSeqAnswers)
 
-    "have a supersection heading for directors" in {
+    "have a super section heading for directors" in {
       companyResult.exists(_.headingKey == directorDetailsSuperSectionKey) mustBe true
+    }
+
+    "have add link for directors if less than 10 directors" in {
+      companyResult.exists(_.addLink == Link(
+        controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link"
+      ))
     }
 
     behave like validSection(testName = "director details", headingKey = directorDetailsSuperSectionKey,
       result = companyResult, expectedAnswerRows = directorsSeqAnswers)
 
-    "have a supersection heading for partners" in {
+    behave like validSection(testName = "director details with add links", headingKey = directorDetailsSuperSectionKey,
+      result = companyResultWithAddLinks, expectedAnswerRows = directorsSeqAnswersWithAddLinks)
+
+    "have a super section heading for partners" in {
       partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
+    }
+
+    "have add link for partners if less than 10 partners" in {
+      companyResult.exists(_.addLink == Link(
+        controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link"
+      ))
     }
 
     behave like validSection(testName = "partner details", headingKey = partnerDetailsSuperSectionKey,
       result = partnershipResult, expectedAnswerRows = partnersSeqAnswers)
 
-    "have a supersection heading for pension advisor" in {
+    behave like validSection(testName = "partner details with add links", headingKey = partnerDetailsSuperSectionKey,
+      result = partnershipResultWithAddLinks, expectedAnswerRows = partnersSeqAnswersWithAddLinks)
+
+    "have a super section heading for pension advisor" in {
       partnershipResult.exists(_.headingKey == pensionAdvisorSuperSectionKey) mustBe true
     }
 
@@ -82,10 +106,25 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 }
 
 object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
-
   private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
   private val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
+
+  private val companyUserAnswersWithAddLinks = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] - "directors" + ("directors" -> Json.arr(
+    Json.obj(
+      DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
+      DirectorNinoId.toString -> Nino.No("reason"),
+      DirectorUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")
+    )
+  ))
   private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
+  private val partnershipUserAnswersWithAddLinks = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partners" + (
+    "partners" -> Json.arr(
+      Json.obj(
+        PartnerDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
+        PartnerNinoId.toString -> Nino.No("reason"),
+        PartnerUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")
+      )
+    ))
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
@@ -96,7 +135,9 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
 
   private val individualResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(individualUserAnswers)).individualSections
   private val companyResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswers)).companySections
+  private val companyResultWithAddLinks: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersWithAddLinks)).companySections
   private val partnershipResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipSections
+  private val partnershipResultWithAddLinks: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersWithAddLinks)).partnershipSections
 
   private val partnerDetailsSuperSectionKey = Some("partner.supersection.header")
   private val directorDetailsSuperSectionKey = Some("director.supersection.header")

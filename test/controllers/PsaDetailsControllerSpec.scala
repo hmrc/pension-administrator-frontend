@@ -18,11 +18,11 @@ package controllers
 
 import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, SubscriptionConnector}
-import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{CheckMode, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -31,13 +31,13 @@ import play.api.libs.json.Json
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import utils.FakeCountryOptions
-import utils.countryOptions.CountryOptions
-import utils.testhelpers.PsaSubscriptionBuilder._
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
-import views.html.psa_details
 import utils.Toggles._
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
+import utils.countryOptions.CountryOptions
+import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.testhelpers.ViewPsaDetailsBuilder._
+import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import views.html.psa_details
 
 import scala.concurrent.Future
 
@@ -87,7 +87,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", true)
       }
       "return 200 and  correct view for a GET for PSA company" in {
-
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(companyUserAnswers))
 
@@ -102,7 +101,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       }
 
       "return 200 and  correct view for a GET for PSA partnership" in {
-
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(partnershipUserAnswers))
 
