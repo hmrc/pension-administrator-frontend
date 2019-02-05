@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.AnswerSection
-@import viewmodels.SuperSection
-@import views.html._
+package viewmodels
 
-@(superSection: SuperSection, idPath: String)(implicit messages: Messages)
+import play.api.libs.json.{Json, OFormat}
 
-@if(superSection.headingKey.isDefined){
-<header class="page-heading">
-<h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
-</header>
+case class Link(url: String, text: Option[String] = Some(""))
+
+object Link {
+  implicit val formats: OFormat[Link] = Json.format[Link]
 }
-
-<ul>
-    @for((section, i) <- superSection.sections.zipWithIndex){
-        @components.answer_section(section, idPath + "-" + i.toString)
-    }
-</ul>

@@ -35,8 +35,8 @@
     </div>
     <div class="cya-change">
         @row.changeUrl.map { changeUrl =>
-            <a id="cya-@idPath-change" href='@changeUrl'>
-                <span aria-hidden="true">@messages("site.change")</span>
+            <a id="cya-@idPath-change" href='@{changeUrl.url}'>
+                <span aria-hidden="true">@messages(changeUrl.url)</span>
                 <span class="visually-hidden">@messages("site.hidden-edit", messages(row.label))</span>
             </a>
         }
