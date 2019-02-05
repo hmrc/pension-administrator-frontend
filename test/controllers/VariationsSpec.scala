@@ -39,13 +39,15 @@ class VariationsSpec extends ControllerSpecBase {
 
   "Variations" must {
     "update the changed flag when save is called in Update Mode" in {
+      FakeUserAnswersCacheConnector.reset()
       testVariations.saveChangeFlag(UpdateMode, IndividualContactAddressId)(dataRequest)
-      .map(_ => FakeUserAnswersCacheConnector.verify(IndividualAddressChangedId, true))
+      FakeUserAnswersCacheConnector.verify(IndividualAddressChangedId, true)
     }
 
-    "update the changed flag when save is called in NormalMode" in {
+    "not update the changed flag when save is called in NormalMode" in {
+      FakeUserAnswersCacheConnector.reset()
       testVariations.saveChangeFlag(NormalMode, IndividualContactAddressId)(dataRequest)
-        .map(_ => FakeUserAnswersCacheConnector.verifyNot(IndividualAddressChangedId))
+        FakeUserAnswersCacheConnector.verifyNot(IndividualAddressChangedId)
     }
 
   }

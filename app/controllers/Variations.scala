@@ -39,8 +39,10 @@ trait Variations extends FrontendController {
   private def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
     cacheConnector.save(request.externalId, id, true)
 
+  //scalastyle:off method.length
+  //scalastyle:off cyclomatic.complexity
   def saveChangeFlag[A](mode:Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    if (mode == NormalMode) {
+    if (mode == UpdateMode) {
       id match {
         case IndividualContactAddressId => doSave(IndividualAddressChangedId)
         case IndividualPreviousAddressId => doSave(IndividualPreviousAddressChangedId)
