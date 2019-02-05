@@ -32,7 +32,7 @@ trait MicroService {
     .enablePlugins(Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory) ++ plugins: _*)
     .settings(playSettings: _*)
     .settings(majorVersion := 0)
-    .settings(RoutesKeys.routesImport ++= Seq("models.Mode", "models.CheckMode", "models.NormalMode", "models.Index"))
+    .settings(RoutesKeys.routesImport ++= Seq("models.Mode", "models.CheckMode", "models.NormalMode", "models.UpdateMode", "models.Index"))
     .settings(
       ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
         ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
