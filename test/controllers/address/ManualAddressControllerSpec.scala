@@ -65,7 +65,7 @@ object ManualAddressControllerSpec {
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
-                                  override val dataCacheConnector: UserAnswersCacheConnector,
+                                  override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: AddressFormProvider,
                                   override val auditService: AuditService

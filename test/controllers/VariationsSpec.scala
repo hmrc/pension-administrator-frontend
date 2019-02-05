@@ -32,7 +32,7 @@ class VariationsSpec extends ControllerSpecBase {
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
   private val testVariations = new Variations {
-    override protected def dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+    override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   }
 
   def dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), externalId, psaUser, UserAnswers())

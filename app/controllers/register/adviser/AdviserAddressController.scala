@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 class AdviserAddressController @Inject()(
                                           override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          override val dataCacheConnector: UserAnswersCacheConnector,
+                                          override val cacheConnector: UserAnswersCacheConnector,
                                           @Adviser override val navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,

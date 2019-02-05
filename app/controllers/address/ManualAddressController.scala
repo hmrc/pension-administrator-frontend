@@ -38,7 +38,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
 
   protected def appConfig: FrontendAppConfig
 
-  protected def dataCacheConnector: UserAnswersCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
@@ -77,9 +77,9 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
 
         val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress, context)
 
-        dataCacheConnector.remove(request.externalId, postCodeLookupIdForCleanup)
+        cacheConnector.remove(request.externalId, postCodeLookupIdForCleanup)
           .flatMap { _ =>
-            dataCacheConnector.save(
+            cacheConnector.save(
               request.externalId,
               id,
               address
