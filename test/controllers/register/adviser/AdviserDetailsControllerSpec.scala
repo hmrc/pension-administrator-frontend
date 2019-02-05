@@ -20,8 +20,9 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.adviser.AdviserDetailsFormProvider
+import identifiers.register.DeclarationChangedId
 import identifiers.register.adviser.AdviserDetailsId
-import models.NormalMode
+import models.{NormalMode, UpdateMode}
 import models.register.adviser.AdviserDetails
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -68,6 +69,16 @@ class AdviserDetailsControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "set the update flag when data is updated" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("name", "test adviser name"), ("email", "test@test.com"), ("phone", "01234567890"))
+
+      val result = controller().onSubmit(UpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

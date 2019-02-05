@@ -18,7 +18,8 @@ package controllers
 
 import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import identifiers.register.DirectorsOrPartnersChangedId
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
+import identifiers.register.{DeclarationChangedId, DeclarationWorkingKnowledgeId, DirectorsOrPartnersChangedId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
@@ -51,7 +52,10 @@ trait Variations extends FrontendController {
     ContactDetailsId -> CompanyContactDetailsChangedId,
     PartnershipContactAddressId -> PartnershipContactAddressChangedId,
     PartnershipPreviousAddressId -> PartnershipPreviousAddressChangedId,
-    PartnershipContactDetailsId -> PartnershipContactDetailsChangedId
+    PartnershipContactDetailsId -> PartnershipContactDetailsChangedId,
+    DeclarationWorkingKnowledgeId -> DeclarationChangedId,
+    AdviserAddressId -> DeclarationChangedId,
+    AdviserDetailsId -> DeclarationChangedId
   )
 
   protected def changeIdsNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
