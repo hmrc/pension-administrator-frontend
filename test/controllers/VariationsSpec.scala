@@ -16,22 +16,32 @@
 
 package controllers
 
-import base.SpecBase
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.FakeDataRetrievalAction
 import controllers.address.ManualAddressControllerSpec.externalId
-import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId, IndividualDetailsCorrectId}
+import identifiers.TypedIdentifier
+import models._
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UpdateMode, UserType}
-import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.UserAnswers
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 class VariationsSpec extends ControllerSpecBase {
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
+  val testId: TypedIdentifier[Address] = new TypedIdentifier[Address] {
+    override def toString = "testId"
+  }
+
+  val testChangeId: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {
+    override def toString = "testChangeId"
+  }
+
   private val testVariations = new Variations {
+    override val changeIds: Map[TypedIdentifier[_ >: ContactDetails with Address <: Product with Serializable], TypedIdentifier[Boolean]] =
+      Map(testId -> testChangeId)
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   }
 
@@ -40,14 +50,14 @@ class VariationsSpec extends ControllerSpecBase {
   "Variations" must {
     "update the changed flag when save is called in Update Mode" in {
       FakeUserAnswersCacheConnector.reset()
-      testVariations.saveChangeFlag(UpdateMode, IndividualContactAddressId)(dataRequest)
-      FakeUserAnswersCacheConnector.verify(IndividualAddressChangedId, true)
+      Await.result(testVariations.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
+      FakeUserAnswersCacheConnector.verify(testChangeId, true)
     }
 
     "not update the changed flag when save is called in NormalMode" in {
       FakeUserAnswersCacheConnector.reset()
-      testVariations.saveChangeFlag(NormalMode, IndividualContactAddressId)(dataRequest)
-        FakeUserAnswersCacheConnector.verifyNot(IndividualAddressChangedId)
+      Await.result(testVariations.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
+      FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
 
   }

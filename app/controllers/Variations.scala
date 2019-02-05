@@ -22,7 +22,7 @@ import identifiers.register.company._
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerPreviousAddressId}
 import identifiers.register.partnership._
-import models.{Mode, NormalMode, UpdateMode}
+import models._
 import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
@@ -39,21 +39,23 @@ trait Variations extends FrontendController {
   private def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
     cacheConnector.save(request.externalId, id, true)
 
-  //scalastyle:off method.length
-  //scalastyle:off cyclomatic.complexity
-  def saveChangeFlag[A](mode:Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+  protected val changeIds: Map[TypedIdentifier[_ >: ContactDetails with Address <: Product with Serializable], TypedIdentifier[Boolean]] = Map(
+    IndividualContactAddressId -> IndividualAddressChangedId,
+    IndividualPreviousAddressId -> IndividualPreviousAddressChangedId,
+    IndividualContactDetailsId -> IndividualContactDetailsChangedId,
+    CompanyContactAddressId -> CompanyContactAddressChangedId,
+    CompanyPreviousAddressId -> CompanyPreviousAddressChangedId,
+    ContactDetailsId -> CompanyContactDetailsChangedId,
+    PartnershipContactAddressId -> PartnershipContactAddressChangedId,
+    PartnershipPreviousAddressId -> PartnershipPreviousAddressChangedId,
+    PartnershipContactDetailsId -> PartnershipContactDetailsChangedId
+  )
+
+  def saveChangeFlag[A](mode: Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     if (mode == UpdateMode) {
-      id match {
-        case IndividualContactAddressId => doSave(IndividualAddressChangedId)
-        case IndividualPreviousAddressId => doSave(IndividualPreviousAddressChangedId)
-        case IndividualContactDetailsId => doSave(IndividualContactDetailsChangedId)
-        case CompanyContactAddressId=> doSave(CompanyContactAddressChangedId)
-        case CompanyPreviousAddressId => doSave(CompanyPreviousAddressChangedId)
-        case ContactDetailsId => doSave(CompanyContactDetailsChangedId)
-        case PartnershipContactAddressId => doSave(PartnershipContactAddressChangedId)
-        case PartnershipPreviousAddressId => doSave(PartnershipPreviousAddressChangedId)
-        case PartnershipContactDetailsId => doSave(PartnershipContactDetailsChangedId)
-        case _ => Future.successful(request.userAnswers.json)
+      changeIds.find(_._1 == id) match {
+        case Some(item) => doSave(item._2)
+        case None => Future.successful(request.userAnswers.json)
       }
     } else {
       Future.successful(request.userAnswers.json)
