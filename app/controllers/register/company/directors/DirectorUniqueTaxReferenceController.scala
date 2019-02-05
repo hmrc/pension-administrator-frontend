@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.company.directors.DirectorUniqueTaxReferenceId
@@ -37,13 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class DirectorUniqueTaxReferenceController @Inject()(
                                                       appConfig: FrontendAppConfig,
                                                       override val messagesApi: MessagesApi,
-                                                      dataCacheConnector: UserAnswersCacheConnector,
+                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                       @CompanyDirector navigator: Navigator,
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: UniqueTaxReferenceFormProvider
-                                                    )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals with Variations {
 
   private val form: Form[UniqueTaxReference] = formProvider.apply(
     requiredKey = "directorUniqueTaxReference.error.required",
@@ -69,9 +69,16 @@ class DirectorUniqueTaxReferenceController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
-          value =>
-            dataCacheConnector.save(request.externalId, DirectorUniqueTaxReferenceId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json))))
+          value => {
+            val id = DirectorUniqueTaxReferenceId(index)
+            cacheConnector.save(request.externalId, id, value).flatMap { _ =>
+
+              saveChangeFlag(mode, id).map { json =>
+
+                Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json)))
+              }
+            }
+          }
         )
       }
   }

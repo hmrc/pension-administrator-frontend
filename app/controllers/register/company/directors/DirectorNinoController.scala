@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.directors.DirectorNinoId
@@ -37,13 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class DirectorNinoController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
-                                        dataCacheConnector: UserAnswersCacheConnector,
+                                        override val cacheConnector: UserAnswersCacheConnector,
                                         @CompanyDirector navigator: Navigator,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorNinoFormProvider
-                                      )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits with Variations{
 
   private val form: Form[Nino] = formProvider()
 
@@ -67,9 +67,11 @@ class DirectorNinoController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
           value =>
-            dataCacheConnector.save(request.externalId, DirectorNinoId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(json))))
-        )
+            cacheConnector.save(request.externalId, DirectorNinoId(index), value).flatMap(_ =>
+              saveChangeFlag(mode, DirectorNinoId(index)).map (json =>
+                Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(json))))
+              )
+          )
       }
   }
 }

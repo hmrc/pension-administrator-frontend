@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company._
-import identifiers.register.company.directors.DirectorAddressId
+import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerPreviousAddressId}
 import identifiers.register.partnership._
@@ -53,16 +53,18 @@ trait Variations extends FrontendController {
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId
   )
 
-  protected def changeIdsNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+  protected def changeIdsNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     changeIds.find(_._1 == id) match {
       case Some(item) => Some(item._2)
       case None => None
     }
   }
 
-  protected def changeIdsIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+  protected def changeIdsIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     id match {
-      case DirectorAddressId(_) => Some(DirectorsOrPartnersChangedId)
+      case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorContactDetailsId(_) |
+           DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_)
+              => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }
   }
