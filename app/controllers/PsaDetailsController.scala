@@ -80,7 +80,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
       val userAnswers = UserAnswers(response)
       val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-      val isUserAnswerUpdated = true//userAnswers.isUserAnswerUpdated()
+      val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
       Future.successful(
         legalStatus match {
 
