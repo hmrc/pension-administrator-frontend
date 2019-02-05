@@ -84,7 +84,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
               id,
               address
             ).flatMap { _ =>
-                updateElement(mode, id)
+                saveChangeFlag(mode, id)
                   .map {
                     cacheMap =>
                       auditEvent.foreach(auditService.sendEvent(_))

@@ -21,13 +21,9 @@ import identifiers.TypedIdentifier
 import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId}
 import models.{Mode, UpdateMode}
 import models.requests.DataRequest
-import play.api.http.Status.OK
 import play.api.libs.json._
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.http.HttpException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.UserAnswers
 
 import scala.concurrent.Future
 
@@ -37,17 +33,13 @@ trait Variations extends FrontendController {
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
-  private def setChangeFlag(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    request.userAnswers.set(id)(true) match {
-      case JsSuccess(UserAnswers(updatedJson), _) => Future.successful(updatedJson)
-      case JsError(errors) => Future.failed(JsResultException(errors))
-    }
-  }
+  private def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
+    dataCacheConnector.save(request.externalId, id, true)
 
-  def updateElement[A](mode:Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+  def saveChangeFlag[A](mode:Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     if (mode == UpdateMode) {
       id match {
-        case IndividualContactAddressId => setChangeFlag(IndividualAddressChangedId)
+        case IndividualContactAddressId => doSave(IndividualAddressChangedId)
         case _ => Future.successful(request.userAnswers.json)
       }
     } else {
@@ -55,23 +47,4 @@ trait Variations extends FrontendController {
     }
   }
 
-  /*private val changeFlagsDirectors = Map(
-    IndividualContactAddressId -> IndividualAddressChangedId
-  )
-
-  def saveChangeFlag[A](mode:Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Option[Future[JsValue]] = {
-
-    val optionChangeFlagId = (mode, id) match {
-      case (_, IndividualContactAddressId) => Some(IndividualAddressChangedId)
-      case _ => None
-    }
-
-    optionChangeFlagId.map { changeFlagId =>
-      dataCacheConnector.save(
-        request.externalId,
-        changeFlagId,
-        value = true
-      )
-    }
-  }*/
 }
