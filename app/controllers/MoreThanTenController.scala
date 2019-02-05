@@ -17,12 +17,12 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
 import forms.MoreThanTenFormProvider
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsNull
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -31,13 +31,9 @@ import views.html.moreThanTen
 
 import scala.concurrent.Future
 
-trait MoreThanTenController extends FrontendController with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait MoreThanTenController extends FrontendController with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
-
-  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
@@ -52,12 +48,31 @@ trait MoreThanTenController extends FrontendController with I18nSupport {
   }
 
   def post(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+
+    val existingValue = request.userAnswers.get(viewModel.id)
+
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(moreThanTen(appConfig, formWithErrors, viewModel))),
-      value =>
-        dataCacheConnector.save(request.externalId, viewModel.id, value).map(cacheMap =>
-          Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
+      value => {
+
+
+        val hasAnswerChanged = existingValue match {
+          case None => true
+          case Some(false) => value
+          case _ => false
+        }
+
+        if (hasAnswerChanged) {
+          cacheConnector.save(request.externalId, viewModel.id, value).flatMap(_ =>
+            saveChangeFlag(mode, viewModel.id).map(cacheMap =>
+              Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
+          )
+        } else {
+          cacheConnector.save(request.externalId, viewModel.id, value).map(cacheMap =>
+            Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
+        }
+      }
     )
   }
 

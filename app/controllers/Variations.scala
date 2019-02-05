@@ -16,10 +16,11 @@
 
 package controllers
 
+import akka.actor.FSM.->
 import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
-import identifiers.register.{DeclarationChangedId, DeclarationWorkingKnowledgeId, DirectorsOrPartnersChangedId}
+import identifiers.register._
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
@@ -55,7 +56,9 @@ trait Variations extends FrontendController {
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId,
     DeclarationWorkingKnowledgeId -> DeclarationChangedId,
     AdviserAddressId -> DeclarationChangedId,
-    AdviserDetailsId -> DeclarationChangedId
+    AdviserDetailsId -> DeclarationChangedId,
+    MoreThanTenDirectorsId -> MoreThanTenDirectorsOrPartnersChangedId,
+    MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId
   )
 
   protected def changeIdsNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
