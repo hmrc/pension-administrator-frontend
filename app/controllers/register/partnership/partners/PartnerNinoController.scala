@@ -18,9 +18,10 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.register.partnership.partners.PartnerNinoFormProvider
+import identifiers.register.company.directors.DirectorNinoId
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId}
 import javax.inject.Inject
 import models.{Index, Mode, Nino}
@@ -32,18 +33,18 @@ import utils.annotations.PartnershipPartner
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.partnership.partners.partnerNino
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class PartnerNinoController @Inject()(
                                        appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
-                                       dataCacheConnector: UserAnswersCacheConnector,
+                                       override val cacheConnector: UserAnswersCacheConnector,
                                        @PartnershipPartner navigator: Navigator,
                                        authenticate: AuthAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PartnerNinoFormProvider
-                                     )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                     ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits with Variations {
 
   private val form: Form[Nino] = formProvider()
 
@@ -67,8 +68,12 @@ class PartnerNinoController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(partnerNino(appConfig, formWithErrors, mode, index, partnerName.fullName))),
           value =>
-            dataCacheConnector.save(request.externalId, PartnerNinoId(index), value).map(json =>
-              Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
+            cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(_ =>
+              saveChangeFlag(mode, DirectorNinoId(index)).map(json =>
+
+                Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
+
+            )
         )
       }
   }

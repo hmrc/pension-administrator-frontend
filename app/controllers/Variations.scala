@@ -22,7 +22,7 @@ import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerPreviousAddressId}
+import identifiers.register.partnership.partners._
 import identifiers.register.partnership._
 import models._
 import models.requests.DataRequest
@@ -40,6 +40,7 @@ trait Variations extends FrontendController {
 
   def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
     cacheConnector.save(request.externalId, id, true)
+
 
   private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,
@@ -65,6 +66,9 @@ trait Variations extends FrontendController {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorContactDetailsId(_) |
            DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_)
               => Some(DirectorsOrPartnersChangedId)
+      case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
+           PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_)
+      => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }
   }
