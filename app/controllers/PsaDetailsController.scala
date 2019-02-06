@@ -23,8 +23,11 @@ import controllers.actions.AuthAction
 import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
+import identifiers.register.company.directors.IsDirectorCompleteId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
+import identifiers.register.partnership.partners.IsPartnerCompleteId
+import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,14 +55,14 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)
+      val retrieval = if (fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
         retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister)) }
       }
   }
 
   private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
-      subscriptionConnector.getSubscriptionModel(psaId).map { response =>
+    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
       response.organisationOrPartner match {
         case None =>
           (new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse(""))
@@ -72,9 +75,10 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
   private def retrievePsaDataFromUserAnswers(psaId: String)(
     implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Seq[SuperSection], String)] = {
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
-      val userAnswers = UserAnswers(response).set(UpdateModeId)(true).asOpt.getOrElse(UserAnswers(response))
-      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
-        val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+      val answers = UserAnswers(response)
+      val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
+      val userAnswers = setAllCompleteFlags(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
+      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
         Future.successful(
           legalStatus match {
             case Some(Individual) =>
@@ -91,6 +95,23 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
           })
       }
     }
+  }
+
+  private def setAllCompleteFlags(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]) = {
+    val seqOfIds = legalStatus match {
+      case Some(LimitedCompany) =>
+        val directors = userAnswers.allDirectors
+        directors.filterNot(_.isDeleted).map { director =>
+          IsDirectorCompleteId(directors.indexOf(director))
+        }.toList
+      case Some(Partnership) =>
+        val partners = userAnswers.allPartners
+        partners.filterNot(_.isDeleted).map { partner =>
+          IsPartnerCompleteId(partners.indexOf(partner))
+        }.toList
+      case _ => Nil
+    }
+    userAnswers.setAllFlagsTrue(seqOfIds)
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
