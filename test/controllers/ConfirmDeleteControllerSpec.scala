@@ -22,6 +22,7 @@ import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
 import models._
 import models.requests.DataRequest
@@ -53,7 +54,8 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
     ), "cacheId", PSAUser(UserType.Individual, None, false, None),
-    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorDetailsId.toString -> person))))
+    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorDetailsId.toString -> person)),
+      MoreThanTenDirectorsId.toString -> true))
   )
 
 
