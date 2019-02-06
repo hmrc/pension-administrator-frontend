@@ -267,7 +267,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def directorsSuperSection: SuperSection = {
     val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete.size match {
-      case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", None)
+      case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", Some("director-add-link-onlyOne-additionalText"))
       case noOfDirectors if noOfDirectors == 10 => ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
       case _ => ("director-add-link-lessThanTen", None)
     }
@@ -388,7 +388,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def partnersSuperSection: SuperSection = {
     val (linkText, additionalText) = userAnswers.allPartnersAfterDelete.size match {
-      case noOfPartners if noOfPartners == 1 => ("partner-add-link-onlyOne", None)
+      case noOfPartners if noOfPartners == 1 => ("partner-add-link-onlyOne", Some("partner-add-link-onlyOne-additionalText"))
       case noOfPartners if noOfPartners == 10 => ("partner-add-link-Ten", Some("partner-add-link-Ten-additionalText"))
       case _ => ("partner-add-link-lessThanTen", None)
     }

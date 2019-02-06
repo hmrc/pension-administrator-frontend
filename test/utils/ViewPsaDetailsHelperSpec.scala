@@ -71,7 +71,7 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
     "have add link for directors for only one director" in {
       companyResult.exists(_.addLink == AddLink(
         Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-onlyOne"),
-        None
+        Some("director-add-link-onlyOne-additionalText")
       ))
     }
 
@@ -102,7 +102,7 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
     "have add link for partners for only one director" in {
       companyResult.exists(_.addLink == AddLink(
         Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-onlyOne"),
-        None
+        Some("partner-add-link-onlyOne-additionalText")
       ))
     }
 
