@@ -23,11 +23,11 @@ import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.partnership.MoreThanTenPartnersId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{Mode, PersonDetails, UpdateMode}
 import models.requests.DataRequest
+import models.{Mode, PersonDetails, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsNull, JsValue}
+import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import viewmodels.ConfirmDeleteViewModel

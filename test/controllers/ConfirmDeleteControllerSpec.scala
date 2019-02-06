@@ -28,15 +28,13 @@ import models._
 import models.requests.DataRequest
 import org.scalatest.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
-
-import scala.concurrent.Future
 
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 

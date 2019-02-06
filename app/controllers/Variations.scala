@@ -23,7 +23,7 @@ import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership.{PartnershipDetailsId, _}
+import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
 import models._
 import models.requests.DataRequest
