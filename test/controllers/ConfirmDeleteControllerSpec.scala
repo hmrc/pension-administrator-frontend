@@ -107,6 +107,15 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       FakeUserAnswersCacheConnector.verify(testIdentifier, person.copy(isDeleted = true))
     }
 
+    //TODO
+//    "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
+//
+//      val result = controller().post(viewModel, testIdentifier, FakeNavigator.desiredRoute)
+//
+//      status(result) mustBe SEE_OTHER
+//      FakeUserAnswersCacheConnector.verify(testIdentifier, person.copy(isDeleted = true))
+//    }
+
   }
 
 }
