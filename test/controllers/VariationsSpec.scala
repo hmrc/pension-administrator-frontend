@@ -69,6 +69,12 @@ class VariationsSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
 
+    "not update the changed flag when save is called in CheckMode" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsNonIndexed.saveChangeFlag(CheckMode, testId)(dataRequest), Duration.Inf)
+      FakeUserAnswersCacheConnector.verifyNot(testChangeId)
+    }
+
     "update the changed flag when save is called in Update Mode with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
       Await.result(testVariationsIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
@@ -78,6 +84,12 @@ class VariationsSpec extends ControllerSpecBase {
     "not update the changed flag when save is called in NormalMode  with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
       Await.result(testVariationsIndexed.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
+      FakeUserAnswersCacheConnector.verifyNot(testChangeId)
+    }
+
+    "not update the changed flag when save is called in CheckMode  with indexed identifier" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsIndexed.saveChangeFlag(CheckMode, testId)(dataRequest), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
   }

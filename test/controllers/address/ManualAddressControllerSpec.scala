@@ -206,8 +206,6 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
   }
 
   "post in update mode" must {
-
-
     "redirect to the postCall on valid data request" which {
       "will save address to answers and remove the address postcode lookup list and set the changed flag" in {
 
@@ -243,13 +241,8 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             FakeUserAnswersCacheConnector.verifyRemoved(fakeSeqTolerantAddressId)
             FakeUserAnswersCacheConnector.verify(IndividualAddressChangedId, true)
         }
-
-
-
       }
-
     }
-
   }
 
   "post" must {

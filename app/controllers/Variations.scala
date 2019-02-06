@@ -16,33 +16,28 @@
 
 package controllers
 
-import akka.actor.FSM.->
 import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import identifiers.register._
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership.partners._
 import identifiers.register.partnership._
+import identifiers.register.partnership.partners._
 import models._
 import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait Variations extends FrontendController {
 
   protected def cacheConnector: UserAnswersCacheConnector
 
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
-
-  def doSave(id: TypedIdentifier[Boolean])(implicit request: DataRequest[AnyContent]): Future[JsValue] =
-    cacheConnector.save(request.externalId, id, true)
-
+  protected implicit val ec: ExecutionContext = play.api.libs.concurrent.Execution.defaultContext
 
   private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,
@@ -83,7 +78,7 @@ trait Variations extends FrontendController {
   def saveChangeFlag[A](mode: Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     if (mode == UpdateMode) {
       changeIdsNonIndexed(id).fold(changeIdsIndexed(id))(Some(_))
-        .fold(Future.successful(request.userAnswers.json))(doSave(_))
+        .fold(Future.successful(request.userAnswers.json))(cacheConnector.save(request.externalId, _, value = true))
     } else {
       Future.successful(request.userAnswers.json)
     }
