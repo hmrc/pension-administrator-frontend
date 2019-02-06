@@ -23,7 +23,7 @@ import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.partnership.MoreThanTenPartnersId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{PersonDetails, UpdateMode}
+import models.{Mode, PersonDetails, UpdateMode}
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -63,7 +63,7 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
     }
   }
 
-  def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonDetails], postUrl: Call)
+  def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonDetails], postUrl: Call, mode:Mode)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(

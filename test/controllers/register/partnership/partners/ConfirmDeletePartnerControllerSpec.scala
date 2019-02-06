@@ -24,7 +24,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{Index, PersonDetails}
+import models.{Index, NormalMode, PersonDetails}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -45,7 +45,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
 
   "render the view correctly on a GET request" in {
     requestResult(dataRetrieval)(
-      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex))),
+      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode))),
       (request, result) => {
         status(result) mustBe OK
         contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel)(request, messages).toString()
@@ -55,7 +55,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
 
   "redirect to the next page on a POST request" in {
     requestResult(dataRetrieval)(
-      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onSubmit(firstIndex)).withFormUrlEncodedBody(
+      implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)).withFormUrlEncodedBody(
         "value" -> "true"
       )),
       (_, result) => {
@@ -88,7 +88,7 @@ object ConfirmDeletePartnerControllerSpec {
   val firstIndex = Index(0)
 
   val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
-  val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex)
+  val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()
 

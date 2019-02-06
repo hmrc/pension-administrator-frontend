@@ -43,7 +43,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
 
   "render the view correctly on a GET request" in {
     requestResult(dataRetrieval)(
-      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(firstIndex))),
+      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(firstIndex, NormalMode))),
       (request, result) => {
         status(result) mustBe OK
         contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel)(request, messages).toString()
@@ -53,7 +53,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
 
   "redirect to the next page on a POST request" in {
     requestResult(dataRetrieval)(
-      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onSubmit(firstIndex)).withFormUrlEncodedBody(
+      implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onSubmit(firstIndex, NormalMode)).withFormUrlEncodedBody(
         "value" -> "true"
       )),
       (_, result) => {
@@ -92,7 +92,7 @@ object ConfirmDeleteDirectorControllerSpec {
     ))))
 
   def viewModel = ConfirmDeleteViewModel(
-    routes.ConfirmDeleteDirectorController.onSubmit(firstIndex),
+    routes.ConfirmDeleteDirectorController.onSubmit(firstIndex, NormalMode),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",

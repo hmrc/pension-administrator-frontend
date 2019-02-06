@@ -110,7 +110,7 @@ object AddCompanyDirectorsViewSpec {
     UserAnswers(Json.obj())
   )
 
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url
 
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
 

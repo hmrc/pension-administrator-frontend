@@ -106,7 +106,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "redirect to directors list on removal of director" in {
 
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute)
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
@@ -114,7 +114,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "set the isDelete flag to true for the selected director on submission of POST request" in {
 
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute)
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
 
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verify(DirectorDetailsId(0), person.copy(isDeleted = true))
@@ -122,7 +122,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
 
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute)
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
 
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verify(testChangeFlagIdentifier, value = true)
