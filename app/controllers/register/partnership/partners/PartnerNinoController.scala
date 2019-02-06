@@ -70,9 +70,7 @@ class PartnerNinoController @Inject()(
           value =>
             cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(_ =>
               saveChangeFlag(mode, DirectorNinoId(index)).map(json =>
-
                 Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
-
             )
         )
       }

@@ -18,8 +18,8 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.company.directors.DirectorUniqueTaxReferenceId
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorUniqueTaxReference
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DirectorUniqueTaxReferenceController @Inject()(
                                                       appConfig: FrontendAppConfig,
@@ -72,9 +72,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
           value => {
             val id = DirectorUniqueTaxReferenceId(index)
             cacheConnector.save(request.externalId, id, value).flatMap { _ =>
-
               saveChangeFlag(mode, id).map { json =>
-
                 Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json)))
               }
             }

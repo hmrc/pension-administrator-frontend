@@ -83,7 +83,6 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
           case MoreThanTenDirectorsId => Some(testChange1FlagIdentifier)
           case _ => None
         }
-
       }
 
       override def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
@@ -131,14 +130,11 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
 
     "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
-
       val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, UpdateMode)
-
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
       FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
     }
-
   }
 
 }

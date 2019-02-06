@@ -48,16 +48,11 @@ trait MoreThanTenController extends FrontendController with I18nSupport with Var
   }
 
   def post(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-
-    val existingValue = request.userAnswers.get(viewModel.id)
-
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(moreThanTen(appConfig, formWithErrors, viewModel))),
       value => {
-
-
-        val hasAnswerChanged = existingValue match {
+        val hasAnswerChanged = request.userAnswers.get(viewModel.id) match {
           case None => true
           case Some(false) => value
           case _ => false

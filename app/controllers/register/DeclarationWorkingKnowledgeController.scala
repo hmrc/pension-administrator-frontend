@@ -57,12 +57,11 @@ class DeclarationWorkingKnowledgeController @Inject()(
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val existingValue = request.userAnswers.get(DeclarationWorkingKnowledgeId)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
         value => {
-          val hasAnswerChanged = existingValue match {
+          val hasAnswerChanged = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
             case None => true
             case Some(existing) => existing != value
           }
@@ -73,7 +72,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
             )
           } else {
             cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-                Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+              Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
           }
         }
       )

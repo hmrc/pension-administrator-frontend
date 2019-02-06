@@ -28,11 +28,6 @@ import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
-
-  def updateElement(id: TypedIdentifier[Boolean]): JsResult[UserAnswers] = {
-    set(id)(true)
-  }
-
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
     get[A](id.path)
   }
