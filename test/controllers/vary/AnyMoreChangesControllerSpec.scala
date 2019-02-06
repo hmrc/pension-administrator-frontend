@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.vary
 
 import connectors.FakeUserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.vary.AnyMoreChangesController
-import forms.AnyMoreChangesFormProvider
+import forms.vary.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.api.test.Helpers._
 import utils.FakeNavigator
@@ -27,7 +27,6 @@ import views.html.vary.anyMoreChanges
 
 
 class AnyMoreChangesControllerSpec extends ControllerSpecBase {
-  private val schemeName = Some("scheme x")
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
   val formProvider = new AnyMoreChangesFormProvider()
   val form = formProvider()
@@ -44,7 +43,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form) = anyMoreChanges(frontendAppConfig, form, schemeName)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = anyMoreChanges(frontendAppConfig, form)(fakeRequest, messages).toString
 
   "AnyMoreChangesController" must {
 

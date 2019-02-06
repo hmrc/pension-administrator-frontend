@@ -36,8 +36,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.AnyMoreChangesFormProvider
-import identifiers.AnyMoreChangesId
+import forms.vary.AnyMoreChangesFormProvider
+import identifiers.vary.AnyMoreChangesId
 import javax.inject.Inject
 import models.NormalMode
 import play.api.data.Form
@@ -60,20 +60,18 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
                                          formProvider: AnyMoreChangesFormProvider)(implicit val ec: ExecutionContext)
   extends FrontendController with Retrievals with I18nSupport {
 
-  val existingSchemeName = Some("waa")
-
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(anyMoreChanges(appConfig, form, existingSchemeName)))
+      Future.successful(Ok(anyMoreChanges(appConfig, form)))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors, existingSchemeName))),
+          Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnyMoreChangesId, NormalMode, UserAnswers(cacheMap))))

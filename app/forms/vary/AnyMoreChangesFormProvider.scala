@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers
+package forms.vary
 
-case object AnyMoreChangesId extends TypedIdentifier[Boolean] {
-  self =>
-  override def toString: String = "anyMoreChanges"
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
+class AnyMoreChangesFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("anyMoreChanges.error.required")
+    )
 }
