@@ -16,4 +16,6 @@
 
 package viewmodels
 
-case class SuperSection(headingKey: Option[String], sections: Seq[AnswerSection], addLink: Option[Link] = None) extends Section
+case class AddLink(link: Link, additionalText: Option[String])
+
+case class SuperSection(headingKey: Option[String], sections: Seq[AnswerSection], addLink: Option[AddLink] = None) extends Section

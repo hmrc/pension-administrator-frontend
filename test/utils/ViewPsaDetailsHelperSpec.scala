@@ -26,7 +26,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, Json}
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels.{AnswerRow, Link, SuperSection}
+import viewmodels.{AddLink, AnswerRow, Link, SuperSection}
 
 class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
@@ -68,9 +68,24 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
       companyResult.exists(_.headingKey == directorDetailsSuperSectionKey) mustBe true
     }
 
-    "have add link for directors if less than 10 directors" in {
-      companyResult.exists(_.addLink == Link(
-        controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link"
+    "have add link for directors for only one director" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-onlyOne"),
+        None
+      ))
+    }
+
+    "have add link for directors for less than 10 directors" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-lessThanTen"),
+        None
+      ))
+    }
+
+    "have add link for directors for 10 directors" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-Ten"),
+        Some("director-add-link-Ten-additionalText")
       ))
     }
 
@@ -84,9 +99,24 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
       partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
     }
 
-    "have add link for partners if less than 10 partners" in {
-      companyResult.exists(_.addLink == Link(
-        controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link"
+    "have add link for partners for only one director" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-onlyOne"),
+        None
+      ))
+    }
+
+    "have add link for partners for less than 10 directors" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-lessThanTen"),
+        None
+      ))
+    }
+
+    "have add link for partners for 10 directors" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-Ten"),
+        Some("partner-add-link-Ten-additionalText")
       ))
     }
 
@@ -96,7 +126,7 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
     behave like validSection(testName = "partner details with add links", headingKey = partnerDetailsSuperSectionKey,
       result = partnershipResultWithAddLinks, expectedAnswerRows = partnersSeqAnswersWithAddLinks)
 
-    "have a super section heading for pension advisor" in {
+    "have a super section heading for pension adviser" in {
       partnershipResult.exists(_.headingKey == pensionAdvisorSuperSectionKey) mustBe true
     }
 

@@ -26,10 +26,15 @@
 </header>
 }
 
-@superSection.addLink.map{ link =>
-   <a id="add-link" href='@{link.url}'>
-     <span aria-hidden="true">@messages(link.text)</span>
+@superSection.addLink.map{ addLink =>
+   <a id="add-link" href='@{addLink.link.url}'>
+     <span aria-hidden="true">@messages(addLink.link.text)</span>
    </a>
+    @addLink.additionalText.map{ text =>
+        <p>
+            @messages(text)
+        </p>
+    }
 }
 
 <ul>

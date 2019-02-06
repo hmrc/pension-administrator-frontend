@@ -212,7 +212,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       None))
 
-    case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq(""), answerIsMessageKey = false,
+    case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
       Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url, "site.add")))
 
     case _ => None
@@ -222,7 +222,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     case Some(UniqueTaxReference.Yes(utr)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       None))
 
-    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq(""), answerIsMessageKey = true,
+    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
       Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url, "site.add")))
 
     case _ => None
@@ -266,15 +266,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   private def directorsSuperSection: SuperSection = {
-    val addLink = if (userAnswers.allDirectorsAfterDelete.length < 10) {
-      Some(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link"))
-    } else {
-      None
+    val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete.size match {
+      case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", None)
+      case noOfDirectors if noOfDirectors == 10 => ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
+      case _ => ("director-add-link-lessThanTen", None)
     }
     SuperSection(
       Some("director.supersection.header"),
       for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions),
-      addLink
+      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, linkText), additionalText))
     )
   }
 
@@ -333,7 +333,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       None))
 
-    case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq(""), answerIsMessageKey = false,
+    case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
       Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url, "site.add")))
 
     case _ => None
@@ -343,7 +343,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     case Some(UniqueTaxReference.Yes(utr)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       None))
 
-    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq(""), answerIsMessageKey = false,
+    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
       Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url, "site.add")))
 
     case _ => None
@@ -386,16 +386,16 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     )
   }
 
-  private def partnersSuperSection = {
-    val addLink = if (userAnswers.allPartnersAfterDelete.size < 10) {
-      Some(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad().url, "partner-add-link"))
-    } else {
-      None
+  private def partnersSuperSection: SuperSection = {
+    val (linkText, additionalText) = userAnswers.allPartnersAfterDelete.size match {
+      case noOfPartners if noOfPartners == 1 => ("partner-add-link-onlyOne", None)
+      case noOfPartners if noOfPartners == 10 => ("partner-add-link-Ten", Some("partner-add-link-Ten-additionalText"))
+      case _ => ("partner-add-link-lessThanTen", None)
     }
     SuperSection(
       Some("partner.supersection.header"),
       for (person <- userAnswers.allPartnersAfterDelete) yield partnerSection(person, countryOptions),
-      addLink
+      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad().url, linkText), additionalText))
     )
   }
 

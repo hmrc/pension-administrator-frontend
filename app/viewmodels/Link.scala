@@ -16,10 +16,5 @@
 
 package viewmodels
 
-import play.api.libs.json.{Json, OFormat}
-
 case class Link(url: String, text: String = "site.change")
 
-object Link {
-  implicit val formats: OFormat[Link] = Json.format[Link]
-}

@@ -87,6 +87,7 @@ site.printThisPage = Print this page
 site.signOut=Sign out
 site.return_to_overview = Return to manage and register your pension schemes
 site.return.govuk = Return to GOV.UK
+site.not_entered = Not entered
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -736,8 +737,14 @@ paye.label = Employer PAYE reference number
 crn.label = Company registration number
 utr.label = Unique Taxpayer Reference
 pensionAdvisor.section.header = Pension adviser details
-director-add-link = Add/Delete Directors
-partner-add-link = Add/Delete Partners
+director-add-link-onlyOne = Add a director
+director-add-link-lessThanTen = Add or delete a Director
+director-add-link-Ten = Delete a director
+director-add-link-Ten-additionalText = There can only be a maximum of 10 directors.If you want to add another one, you must first delete a director.
+partner-add-link-onlyOne = Add a partner
+partner-add-link-lessThanTen = Add or delete a partner
+partner-add-link-Ten = Delete a partner
+partner-add-link-Ten-additionalText = There can only be a maximum of 10 partners.If you want to add another one, you must first delete a partner.
 
 director.supersection.header = Director details
 partner.supersection.header = Partner details

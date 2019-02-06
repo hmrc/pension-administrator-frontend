@@ -19,7 +19,7 @@ package utils.testhelpers
 import java.time.LocalDate
 
 import models.CheckMode
-import viewmodels.{AnswerRow, AnswerSection, Link, SuperSection}
+import viewmodels._
 
 object ViewPsaDetailsBuilder {
 
@@ -123,18 +123,18 @@ object ViewPsaDetailsBuilder {
   val directorsSeqAnswersWithAddLinks = Seq(
     AnswerRow("cya.label.dob", Seq(LocalDate.now().toString), false,
       None),
-    AnswerRow("common.nino", Seq(""), false,
+    AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, 0).url, "site.add"))),
-    AnswerRow("utr.label", Seq(""), false,
+    AnswerRow("utr.label", Seq("site.not_entered"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, 0).url, "site.add")))
   )
 
   val partnersSeqAnswersWithAddLinks = Seq(
     AnswerRow("cya.label.dob", Seq(LocalDate.now().toString), false,
       None),
-    AnswerRow("common.nino", Seq(""), false,
+    AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, 0).url, "site.add"))),
-    AnswerRow("utr.label", Seq(""), false,
+    AnswerRow("utr.label", Seq("site.not_entered"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, 0).url, "site.add")))
   )
 
@@ -150,7 +150,7 @@ object ViewPsaDetailsBuilder {
       Some("Director number one"),
       directorsSeqAnswers
     )),
-    Some(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link"))
+    Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-onlyOne"), None))
   )
 
   val partnersSuperSection =SuperSection(Some("partner.supersection.header"),
@@ -158,7 +158,7 @@ object ViewPsaDetailsBuilder {
       Some("Partner One"),
       partnersSeqAnswers
     )),
-    Some(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad.url, "partner-add-link"))
+    Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad.url, "partner-add-link-onlyOne"), None))
   )
 
   val individualWithChangeLinks: Seq[SuperSection] = Seq(
