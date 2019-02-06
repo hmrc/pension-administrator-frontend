@@ -18,13 +18,15 @@ package controllers
 
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
-import connectors.{DeRegistrationConnector, SubscriptionConnector}
+import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import controllers.actions.AuthAction
+import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,6 +44,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      authenticate: AuthAction,
                                      subscriptionConnector: SubscriptionConnector,
                                      deRegistrationConnector: DeRegistrationConnector,
+                                     dataCacheConnector: UserAnswersCacheConnector,
                                      countryOptions: CountryOptions,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
@@ -66,21 +69,27 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     }
   }
 
-  private def retrievePsaDataFromUserAnswers(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
+  private def retrievePsaDataFromUserAnswers(psaId: String)(
+    implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Seq[SuperSection], String)] = {
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
-      val userAnswers = UserAnswers(response)
-      val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-      Future.successful(
-        legalStatus match {
-          case Some(Individual) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "")
-          case Some(LimitedCompany) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "")
-          case Some(Partnership) =>
-            (new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
-              userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "")
-          case _ => (Nil, "")
-        })
+      val userAnswers = UserAnswers(response).set(UpdateModeId)(true).asOpt.getOrElse(UserAnswers(response))
+      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
+        val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+        Future.successful(
+          legalStatus match {
+            case Some(Individual) =>
+              (new ViewPsaDetailsHelper(
+                userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "")
+            case Some(LimitedCompany) =>
+              (new ViewPsaDetailsHelper(
+                userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "")
+            case Some(Partnership) =>
+              (new ViewPsaDetailsHelper(
+                userAnswers, countryOptions).partnershipSections,
+                userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "")
+            case _ => (Nil, "")
+          })
+      }
     }
   }
 
