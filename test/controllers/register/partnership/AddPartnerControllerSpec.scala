@@ -26,7 +26,7 @@ import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, PersonDetails, UserType}
+import models._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.AnyContent
@@ -43,7 +43,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
   "AddPartner Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -53,12 +53,12 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val partners = Seq(johnDoe)
       val getRelevantData = dataRetrievalAction(partners: _*)
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
       contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
     }
 
     "redirect to the next page when no partners exist and the user submits" in {
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -69,7 +69,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-      val result = controller(getRelevantData).onSubmit()(postRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -83,7 +83,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller(getRelevantData).onSubmit()(postRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm, partnerAsPerson)
@@ -94,7 +94,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-      controller(getRelevantData).onSubmit()(postRequest)
+      controller(getRelevantData).onSubmit(NormalMode)(postRequest)
       FakeUserAnswersCacheConnector.verifyNot(AddCompanyDirectorsId)
     }
 
@@ -103,7 +103,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
       val navigator = fakeNavigator()
 
-      val result = controller(getRelevantData, navigator).onSubmit()(postRequest)
+      val result = controller(getRelevantData, navigator).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       navigator.lastUserAnswers.value.get(AddPartnersId).value mustBe true
@@ -114,7 +114,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
       val getRelevantData = dataRetrievalAction(partnerDetails: _*)
 
-      val result = controller(getRelevantData).onSubmit()(fakeRequest)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -124,7 +124,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val partners = Seq(johnDoe, joeBloggs)
       val partnersAsPerson = Seq(johnDoePerson, joeBloggsPerson)
       val getRelevantData = dataRetrievalAction(partners: _*)
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form, partnersAsPerson)
     }
@@ -132,13 +132,13 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     "exclude the deleted partners from the list" in {
       val partners = Seq(johnDoe, joeBloggs.copy(isDeleted = true))
       val getRelevantData = dataRetrievalAction(partners: _*)
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -146,7 +146,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(dontGetAnyData).onSubmit()(postRequest)
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -180,7 +180,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     )
 
   private def viewmodel(partners: Seq[Person]) = EntityViewModel(
-    postCall = routes.AddPartnerController.onSubmit(),
+    postCall = routes.AddPartnerController.onSubmit(NormalMode),
     title = Message("addPartners.title"),
     heading = Message("addPartners.heading"),
     entities = partners,

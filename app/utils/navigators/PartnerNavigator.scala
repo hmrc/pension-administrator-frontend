@@ -46,7 +46,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case PartnerPreviousAddressListId(index) => NavigateTo.save(routes.PartnerPreviousAddressController.onPageLoad(NormalMode, index))
     case PartnerPreviousAddressId(index) => NavigateTo.save(routes.PartnerContactDetailsController.onPageLoad(NormalMode, index))
     case PartnerContactDetailsId(index) => checkYourAnswers(index)
-    case CheckYourAnswersId => NavigateTo.save(controllers.register.partnership.routes.AddPartnerController.onPageLoad())
+    case CheckYourAnswersId => NavigateTo.save(controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 

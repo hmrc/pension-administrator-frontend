@@ -67,7 +67,7 @@ class PartnershipNavigator @Inject()(
     case PartnershipPayeId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
-      NavigateTo.save(routes.AddPartnerController.onPageLoad())
+      NavigateTo.save(routes.AddPartnerController.onPageLoad(NormalMode))
     case PartnershipReviewId =>
       NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case PartnershipRegisteredAddressId =>

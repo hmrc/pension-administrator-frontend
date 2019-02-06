@@ -16,7 +16,7 @@
 
 package utils.testhelpers
 
-import models.CheckMode
+import models.{CheckMode, UpdateMode}
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
 object ViewPsaDetailsBuilder {
@@ -34,72 +34,72 @@ object ViewPsaDetailsBuilder {
       Some(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)),
     AnswerRow("common.nino", Seq("AA999999A"), false, None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(UpdateMode).url)),
     AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false,
       Some(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url)),
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
-      Some(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
 
 
   val companySeqAnswers = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
-      Some(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.company.routes.CompanyDetailsController.onPageLoad(UpdateMode).url)),
     AnswerRow("paye.label", Seq("9876543210"), false,
-      Some(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.company.routes.CompanyDetailsController.onPageLoad(UpdateMode).url)),
     AnswerRow("crn.label", Seq("121414151"), false,
       Some(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)),
     AnswerRow("utr.label", Seq("1234567890"), false,
       Some(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad.url)),
     AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(UpdateMode).url)),
     AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false,
       Some(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url)),
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
-      Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)),
     AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
-      Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)))
 
   val directorsSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
       Some(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(CheckMode, 0).url)),
     AnswerRow("common.nino", Seq("AA999999A"), false,
-      Some(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("utr.label", Seq("1234567892"), false,
-      Some(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       Some(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, 0).url)),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, 0).url))
+      Some(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url))
   )
 
 
   val partnershipSeqAnswers = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
-      Some(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(UpdateMode).url)),
     AnswerRow("paye.label", Seq("9876543210"), false,
-      Some(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(UpdateMode).url)),
     AnswerRow("utr.label", Seq("121414151"), false,
       Some(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad.url)),
     AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(UpdateMode).url)),
     AnswerRow("Has Test partnership name been at their address for more than 12 months?", Seq("No"), false,
       Some(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url)),
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
-      Some(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)),
+      Some(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)),
     AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
-      Some(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
 
   val partnersSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
@@ -107,15 +107,15 @@ object ViewPsaDetailsBuilder {
     AnswerRow("common.nino", Seq("AA999999A"), false,
       Some(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, 0).url)),
     AnswerRow("utr.label", Seq("1234567892"), false,
-      Some(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       Some(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, 0).url)),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, 0).url)),
+      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url)),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, 0).url))
+      Some(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url))
   )
 
   val pensionAdviserSuperSection = SuperSection(

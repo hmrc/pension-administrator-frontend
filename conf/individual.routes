@@ -21,6 +21,8 @@ GET         /previous-address-manual                controllers.register.individ
 POST        /previous-address-manual                controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /change-previous-address-manual         controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-previous-address-manual         controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = CheckMode)
+GET         /changing-previous-address-manual       controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /changing-previous-address-manual       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET         /you-will-need-to-update                controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()
 
@@ -28,6 +30,8 @@ GET         /contact-details                        controllers.register.individ
 POST        /contact-details                        controllers.register.individual.IndividualContactDetailsController.onSubmit(mode: Mode = NormalMode)
 GET         /change-contact-details                 controllers.register.individual.IndividualContactDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-contact-details                 controllers.register.individual.IndividualContactDetailsController.onSubmit(mode: Mode = CheckMode)
+GET         /changing-contact-details               controllers.register.individual.IndividualContactDetailsController.onPageLoad(mode: Mode = UpdateMode)
+POST        /changing-contact-details               controllers.register.individual.IndividualContactDetailsController.onSubmit(mode: Mode = UpdateMode)
 
 GET         /previous-address                       controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST        /previous-address                       controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
@@ -56,6 +60,8 @@ GET         /enter-contact-address                  controllers.register.individ
 POST        /enter-contact-address                  controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /change-enter-contact-address           controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-enter-contact-address           controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = CheckMode)
+GET         /changing-contact-address               controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /changing-contact-address               controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET         /is-this-the-contact-address            controllers.register.individual.IndividualSameContactAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /is-this-the-contact-address            controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = NormalMode)
