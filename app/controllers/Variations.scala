@@ -56,14 +56,14 @@ trait Variations extends FrontendController {
     MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId
   )
 
-  protected def changeIdsNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+  protected def findChangeIdNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     changeIds.find(_._1 == id) match {
       case Some(item) => Some(item._2)
       case None => None
     }
   }
 
-  protected def changeIdsIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+  protected def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     id match {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorContactDetailsId(_) |
            DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_)
@@ -76,11 +76,11 @@ trait Variations extends FrontendController {
   }
 
   def saveChangeFlag[A](mode: Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    if (mode == UpdateMode) {
-      changeIdsNonIndexed(id).fold(changeIdsIndexed(id))(Some(_))
-        .fold(Future.successful(request.userAnswers.json))(cacheConnector.save(request.externalId, _, value = true))
-    } else {
-      Future.successful(request.userAnswers.json)
+    val applicableMode = if(mode == UpdateMode) Some(mode) else None
+    val result = applicableMode.flatMap { _ =>
+      findChangeIdNonIndexed(id).fold(findChangeIdIndexed(id))(Some(_))
+        .map(cacheConnector.save(request.externalId, _, value = true))
     }
+    result.fold(Future.successful(request.userAnswers.json))(identity)
   }
 }

@@ -41,15 +41,15 @@ class VariationsSpec extends ControllerSpecBase {
 
   private val testVariationsNonIndexed = new Variations {
 
-    override def changeIdsNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
+    override def findChangeIdNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   }
 
   private val testVariationsIndexed = new Variations {
 
-    override def changeIdsNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = None
-    override def changeIdsIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
+    override def findChangeIdNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = None
+    override def findChangeIdIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   }
