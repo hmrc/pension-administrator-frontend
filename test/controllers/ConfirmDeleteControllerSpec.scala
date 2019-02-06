@@ -44,7 +44,11 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
     override def toString: String = "test"
   }
 
-  val testChangeFlagIdentifier = new TypedIdentifier[Boolean] {
+  val testChange1FlagIdentifier = new TypedIdentifier[Boolean] {
+    override def toString: String = "test1"
+  }
+
+  val testChange2FlagIdentifier = new TypedIdentifier[Boolean] {
     override def toString: String = "test2"
   }
 
@@ -77,7 +81,15 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       override def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
       override def findChangeIdNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
-        Some(testChangeFlagIdentifier)
+        id match {
+          case MoreThanTenDirectorsId => Some(testChange1FlagIdentifier)
+          case _ => None
+        }
+
+      }
+
+      override def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+        Some(testChange2FlagIdentifier)
       }
 
       override val form = formProvider()
@@ -85,7 +97,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel)(fakeRequest, messages).toString
 
-  "ConfirmDeleteDirector Controller" must {
+  "ConfirmDelete Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -122,11 +134,11 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
 
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, UpdateMode)
 
       status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(testChangeFlagIdentifier, value = true)
-
+      FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
+      FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
     }
 
   }

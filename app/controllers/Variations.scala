@@ -23,7 +23,7 @@ import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership._
+import identifiers.register.partnership.{PartnershipDetailsId, _}
 import identifiers.register.partnership.partners._
 import models._
 import models.requests.DataRequest
@@ -66,10 +66,10 @@ trait Variations extends FrontendController {
   protected def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     id match {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorContactDetailsId(_) |
-           DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_)
+           DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_) | DirectorDetailsId(_)
               => Some(DirectorsOrPartnersChangedId)
       case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
-           PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_)
+           PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerDetailsId(_)
       => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }
