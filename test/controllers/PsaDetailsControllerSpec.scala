@@ -19,7 +19,7 @@ package controllers
 import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.{PsaId, UpdateModeId}
+import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
@@ -88,7 +88,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
       "return 200 and  correct view for a GET for PSA company" in {
-
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(companyUserAnswers))
 
@@ -104,7 +103,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       }
 
       "return 200 and  correct view for a GET for PSA partnership" in {
-
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(partnershipUserAnswers))
 
