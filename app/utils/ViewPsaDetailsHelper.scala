@@ -105,6 +105,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     toOptionSeq(Seq(
       pensionAdviser,
       pensionAdviserEmail,
+      pensionAdviserPhone,
       pensionAdviserAddress
     ).flatten).map { seqAnswerRow =>
       SuperSection(
@@ -408,6 +409,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
+  }
+
+  private def pensionAdviserPhone: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
       Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
   }
 
