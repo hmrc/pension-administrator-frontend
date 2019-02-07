@@ -28,6 +28,8 @@ object ViewPsaDetailsBuilder {
       None),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,
       Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))),
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("0044-0987654232"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))),
     AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
       Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url))))
 
