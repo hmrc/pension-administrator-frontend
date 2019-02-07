@@ -32,6 +32,7 @@ class BusinessTypeAreYouInUKController @Inject()(override val appConfig: Fronten
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
                                                  @AuthenticationWithLowConfidence override val authenticate: AuthAction,
+                                                 override val allowAccess: AllowAccessActionProvider,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
                                                  override val formProvider: AreYouInUKFormProvider

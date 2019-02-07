@@ -28,21 +28,19 @@ class AllowAccessAction(mode:Mode) extends ActionFilter[AuthenticatedRequest]{
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
 
     (request.user.alreadyEnrolledPsaId, mode) match {
-      case (None, NormalMode| CheckMode) =>  Future.successful(Some(Ok))
-      case (Some(_), UpdateMode) =>  Future.successful(Some(Ok))
+      case (None, NormalMode | CheckMode) =>  Future.successful(None)
+      case (Some(_), UpdateMode) =>  Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>  Future.successful(Some(Redirect(controllers.routes.InterceptPSAController.onPageLoad())))
       case _ =>  Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
     }
   }
 }
 
-
 class AllowAccessActionProviderImpl extends AllowAccessActionProvider{
   def apply(mode:Mode): AllowAccessAction = {
     new AllowAccessAction(mode)
   }
 }
-
 
 trait AllowAccessActionProvider{
   def apply(mode:Mode) : AllowAccessAction
