@@ -31,6 +31,7 @@ import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsResult
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -97,7 +98,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     }
   }
 
-  private def setAllCompleteFlags(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]) = {
+  private def setAllCompleteFlags(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
     val seqOfIds = legalStatus match {
       case Some(LimitedCompany) =>
         val directors = userAnswers.allDirectors
