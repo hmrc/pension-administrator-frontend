@@ -276,7 +276,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     SuperSection(
       Some("director.supersection.header"),
       for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, linkText), additionalText))
+      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
@@ -397,7 +397,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     SuperSection(
       Some("partner.supersection.header"),
       for (person <- userAnswers.allPartnersAfterDelete) yield partnerSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode).url, linkText), additionalText))
+      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
