@@ -17,11 +17,11 @@
 package controllers.register
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.company.BusinessDetailsId
+import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -35,7 +35,7 @@ class DuplicateRegistrationController @Inject()(appConfig: FrontendAppConfig,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right
         .map( bd => Future.successful(Ok(duplicateRegistration(bd.companyName, appConfig))))

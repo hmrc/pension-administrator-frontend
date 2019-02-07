@@ -22,7 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
-import models.NormalMode
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -45,7 +45,7 @@ class RegisterAsBusinessController @Inject()(
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(RegisterAsBusinessId) match {
@@ -57,7 +57,7 @@ class RegisterAsBusinessController @Inject()(
 
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request=>
 
       form.bindFromRequest().fold(
