@@ -17,12 +17,9 @@
 package controllers
 
 import config.FeatureSwitchManagementServiceTestImpl
-import connectors.{DeRegistrationConnector, SubscriptionConnector}
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.PsaId
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.{PsaId, UpdateModeId}
+import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -39,7 +36,7 @@ import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 
 import scala.concurrent.Future
@@ -173,8 +170,11 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     )
 
   private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "",
-                           canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) =
-    psa_details(frontendAppConfig, superSections, name, canDeregister, isUserAnswerUpdated)(fakeRequest, messages).toString
+                           canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) = {
+
+    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated,  canDeregister)
+    psa_details(frontendAppConfig, model)(fakeRequest, messages).toString
+  }
 
   val individualSuperSections: Seq[SuperSection] = Seq(
     SuperSection(

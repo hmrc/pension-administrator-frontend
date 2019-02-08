@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.PsaDetailsViewSpec._
 import views.behaviours.{CheckYourAnswersBehaviours, ViewBehaviours}
 import views.html.psa_details
@@ -38,19 +38,13 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
   def createView(canBeDeregistered: Boolean = true, isUserAnswerUpdated: Boolean=false): () => HtmlFormat.Appendable = () =>
     psa_details(
       frontendAppConfig,
-      emptyAnswerSections,
-      secondaryHeader,
-      canBeDeregistered,
-      isUserAnswerUpdated
+      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, canBeDeregistered)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
-      sections,
-      secondaryHeader,
-      true,
-      false
+      PsaViewDetailsViewModel(sections, secondaryHeader, false, true)
     )(fakeRequest, messages)
 
   "supersection page" must {
