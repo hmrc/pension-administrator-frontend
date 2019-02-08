@@ -16,6 +16,7 @@
 
 import com.google.inject.AbstractModule
 import controllers.actions.{AuthAction, AuthenticationWithNoConfidence, FullAuthentication}
+import navigators.VariationsNavigator
 import utils.Navigator
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
@@ -63,5 +64,9 @@ class PODSModule extends AbstractModule {
     bind(classOf[CountryOptions])
       .annotatedWith(classOf[EUAndEEA])
       .to(classOf[CountryOptionsEUAndEEA])
+
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[Variations])
+      .to(classOf[VariationsNavigator])
   }
 }
