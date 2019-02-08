@@ -18,11 +18,11 @@ package controllers
 
 import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider, FakeDataRetrievalAction}
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -52,7 +52,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         featureSwitchManagementService.change(isDeregistrationEnabled, false)
         when(subscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionIndividual))
-        val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+        val result = controller(userType = UserType.Individual).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(individualSuperSections, "Stephen Wood", false)
@@ -62,7 +62,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
         when(subscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionCompany))
-        val result = controller(userType = UserType.Organisation).onPageLoad()(fakeRequest)
+        val result = controller(userType = UserType.Organisation).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(organisationSuperSections, "Test company name", false)
@@ -81,7 +81,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
           Future.successful(true)
         )
 
-        val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad()(fakeRequest)
+        val result = controller(validDataIndividual, userType = UserType.Individual).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", true)
@@ -96,7 +96,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
           Future.successful(true)
         )
 
-        val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+        val result = controller(validDataCompany, userType = UserType.Organisation).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", true)
@@ -112,7 +112,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
           Future.successful(true)
         )
 
-        val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad()(fakeRequest)
+        val result = controller(validDataPartnership, userType = UserType.Organisation).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", true)
@@ -160,6 +160,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       frontendAppConfig,
       messagesApi,
       new FakeAuthAction(userType),
+      FakeAllowAccessProvider(),
       subscriptionConnector,
       deregistrationConnector,
       FakeUserAnswersCacheConnector,
