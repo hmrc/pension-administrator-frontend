@@ -39,6 +39,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     val messagesApi: MessagesApi,
                                                     val dataCacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
+                                                    override val allowAccess: AllowAccessActionProvider,
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
@@ -63,7 +64,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     secondaryHeader = None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode))
   }

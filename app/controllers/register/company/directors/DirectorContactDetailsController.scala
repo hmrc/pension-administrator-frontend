@@ -35,6 +35,7 @@ class DirectorContactDetailsController @Inject()(
                                                   override val messagesApi: MessagesApi,
                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                   authenticate: AuthAction,
+                                                  override val allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: ContactDetailsFormProvider
@@ -42,7 +43,7 @@ class DirectorContactDetailsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         get(DirectorContactDetailsId(index), form, viewmodel(mode, index, directorName))

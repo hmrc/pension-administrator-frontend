@@ -20,7 +20,7 @@ import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company._
@@ -38,6 +38,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 override val messagesApi: MessagesApi,
                                                 override val dataCacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany override val navigator: Navigator,
+                                                override val allowAccess: AllowAccessActionProvider,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
@@ -61,7 +62,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
       }
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       addressViewModel(mode).retrieve.right.map(vm =>
         get(CompanyContactAddressId, CompanyContactAddressListId, vm))

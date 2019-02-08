@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId}
@@ -43,6 +43,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
                                                                 @CompanyDirector override val navigator: Navigator,
                                                                 override val messagesApi: MessagesApi,
                                                                 authenticate: AuthAction,
+                                                                override val allowAccess: AllowAccessActionProvider,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider

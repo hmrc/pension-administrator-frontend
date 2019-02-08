@@ -20,6 +20,7 @@ import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
+import controllers.actions.AllowAccessActionProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
@@ -46,6 +47,8 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
   protected def auditService: AuditService
 
   protected val form: Form[Address]
+
+  protected val allowAccess: AllowAccessActionProvider
 
   protected def get(
                      id: TypedIdentifier[Address],

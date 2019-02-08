@@ -40,6 +40,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
                                                       dataCacheConnector: UserAnswersCacheConnector,
                                                       @CompanyDirector navigator: Navigator,
                                                       authenticate: AuthAction,
+                                                      val allowAccess: AllowAccessActionProvider,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: UniqueTaxReferenceFormProvider
@@ -50,7 +51,7 @@ class DirectorUniqueTaxReferenceController @Inject()(
     requiredReasonKey = "directorUniqueTaxReference.error.reason.required"
   )
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {

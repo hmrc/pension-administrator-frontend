@@ -19,6 +19,7 @@ package controllers.address
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
+import controllers.actions.AllowAccessActionProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
@@ -41,6 +42,8 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
   protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
+
+  protected val allowAccess: AllowAccessActionProvider
 
   protected def get(id: TypedIdentifier[AddressYears], form: Form[AddressYears], viewmodel: AddressYearsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {

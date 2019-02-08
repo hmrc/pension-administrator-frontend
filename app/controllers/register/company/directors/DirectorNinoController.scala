@@ -40,6 +40,7 @@ class DirectorNinoController @Inject()(
                                         dataCacheConnector: UserAnswersCacheConnector,
                                         @CompanyDirector navigator: Navigator,
                                         authenticate: AuthAction,
+                                        val allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorNinoFormProvider
@@ -47,7 +48,7 @@ class DirectorNinoController @Inject()(
 
   private val form: Form[Nino] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorNinoId(index)) match {

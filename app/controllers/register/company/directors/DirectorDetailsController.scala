@@ -35,6 +35,7 @@ class DirectorDetailsController @Inject()(
                                            val dataCacheConnector: UserAnswersCacheConnector,
                                            @CompanyDirector val navigator: Navigator,
                                            authenticate: AuthAction,
+                                           override val allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction
                                          ) extends PersonDetailsController {
@@ -49,7 +50,7 @@ class DirectorDetailsController @Inject()(
   private[directors] def id(index: Index): DirectorDetailsId =
     DirectorDetailsId(index)
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       get(id(index), viewModel(mode, index))
   }

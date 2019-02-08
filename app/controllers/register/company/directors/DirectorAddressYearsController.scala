@@ -19,7 +19,7 @@ package controllers.register.company.directors
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
@@ -42,6 +42,7 @@ class DirectorAddressYearsController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                 authenticate: AuthAction,
+                                                override val allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressYearsFormProvider
@@ -50,7 +51,7 @@ class DirectorAddressYearsController @Inject()(
   private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         viewmodel(mode, index).right.map {
           viewModel =>

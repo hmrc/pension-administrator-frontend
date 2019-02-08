@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerDetailsId}
@@ -41,6 +41,7 @@ class PartnerAddressYearsController @Inject()(
                                                val cacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
                                                val messagesApi: MessagesApi,
+                                               override val allowAccess: AllowAccessActionProvider,
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
@@ -51,7 +52,7 @@ class PartnerAddressYearsController @Inject()(
   private val form: Form[AddressYears] = formProvider(Message("partnerAddressYears.error.required"))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         viewmodel(mode, index).right.map {
           viewModel =>

@@ -19,6 +19,7 @@ package controllers.address
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
+import controllers.actions.AllowAccessActionProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
@@ -44,6 +45,8 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
   protected def navigator: Navigator
 
   protected def form: Form[String]
+
+  protected val allowAccess: AllowAccessActionProvider
 
   private val invalidPostcode: Message = "error.postcode.failed"
   private val noResults: Message = "error.postcode.noResults"
