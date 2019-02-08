@@ -36,7 +36,7 @@ import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 
 import scala.concurrent.Future
@@ -167,8 +167,12 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       featureSwitchManagementService
     )
 
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", canDeregister: Boolean = true) =
-    psa_details(frontendAppConfig, superSections, name, canDeregister)(fakeRequest, messages).toString
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "",
+                           canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) = {
+
+    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated,  canDeregister)
+    psa_details(frontendAppConfig, model)(fakeRequest, messages).toString
+  }
 
   val individualSuperSections: Seq[SuperSection] = Seq(
     SuperSection(
