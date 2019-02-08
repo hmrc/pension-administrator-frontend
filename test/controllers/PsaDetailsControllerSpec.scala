@@ -88,7 +88,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
         (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
       "return 200 and  correct view for a GET for PSA company" in {
-
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(companyUserAnswers))
 
@@ -104,7 +103,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       }
 
       "return 200 and  correct view for a GET for PSA partnership" in {
-
         when(subscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(partnershipUserAnswers))
 
