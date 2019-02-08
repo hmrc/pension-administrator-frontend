@@ -19,7 +19,7 @@ package controllers.register
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
 import models.{Mode, NormalMode}
@@ -37,6 +37,7 @@ class RegisterAsBusinessController @Inject()(
   appConfig: FrontendAppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  allowAccess: AllowAccessActionProvider,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
   cache: UserAnswersCacheConnector,
@@ -45,7 +46,7 @@ class RegisterAsBusinessController @Inject()(
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(RegisterAsBusinessId) match {
