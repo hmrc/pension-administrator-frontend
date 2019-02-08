@@ -71,6 +71,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
       frontendAppConfig,
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -93,7 +94,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(index)(fakeRequest)
+      val result = controller().onPageLoad(NormalMode, index)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -101,13 +102,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired page" when {
       "director name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(index)(fakeRequest)
+        val result = controller(getEmptyData).onPageLoad(NormalMode, index)(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
 
       "no existing data is found" in {
-        val result = controller(dontGetAnyData).onPageLoad(index)(fakeRequest)
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode, index)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
