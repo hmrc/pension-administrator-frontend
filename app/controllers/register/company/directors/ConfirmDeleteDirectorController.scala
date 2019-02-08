@@ -55,7 +55,7 @@ class ConfirmDeleteDirectorController @Inject()(
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
 
-        get(vm(index, details.fullName), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
+        get(vm(index, details.fullName), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(mode, index))
       }
   }
 

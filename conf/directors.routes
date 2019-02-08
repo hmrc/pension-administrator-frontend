@@ -71,4 +71,6 @@ GET        /:index/change-check-your-answers                    controllers.regi
 GET        /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = UpdateMode, index: Index)
 POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
 
-GET        /:index/already-deleted                              controllers.register.company.directors.AlreadyDeletedController.onPageLoad(index: Index)
+GET        /:index/already-deleted                              controllers.register.company.directors.AlreadyDeletedController.onPageLoad(mode: Mode = NormalMode, index: Index)
+GET        /:index/change-already-deleted                       controllers.register.company.directors.AlreadyDeletedController.onPageLoad(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-already-deleted                     controllers.register.company.directors.AlreadyDeletedController.onPageLoad(mode: Mode = UpdateMode, index: Index)
