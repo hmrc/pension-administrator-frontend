@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
 import models.register.adviser.AdviserDetails
-import models.{Address, CheckMode}
+import models.{Address, CheckMode, NormalMode}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import utils._
@@ -110,28 +110,28 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view for a GET" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-      val result = controller(getRelevantData).onPageLoad(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to Session Expired on a GET request if there is no cached data" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
     "redirect to the next page on a POST request" in {
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
     "redirect to Session expired on a POST request if there is no cached data" in {
-      val result = controller(dontGetAnyData).onSubmit()(fakeRequest)
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
