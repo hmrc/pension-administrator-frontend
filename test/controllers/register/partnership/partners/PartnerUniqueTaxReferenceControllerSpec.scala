@@ -55,7 +55,7 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerUniqueTaxReferenceController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      FakeAuthAction, FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   private def viewAsString(form: Form[_] = form) = partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, firstIndex,
     personDetails.fullName)(fakeRequest, messages).toString

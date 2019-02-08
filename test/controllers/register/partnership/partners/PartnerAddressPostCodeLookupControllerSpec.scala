@@ -49,6 +49,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
     new FakeNavigator(desiredRoute = onwardRoute),
     messagesApi,
     FakeAuthAction,
+    FakeAllowAccessProvider(),
     dataRetrievalAction,
     new DataRequiredActionImpl,
     formProvider
