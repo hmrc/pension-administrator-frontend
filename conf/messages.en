@@ -84,7 +84,7 @@ site.start = Start
 site.finishAndSignOut = Finish and sign out
 site.printThisPage = Print this page
 site.signOut=Sign out
-site.return_to_overview = Return to manage and register your pension schemes
+site.return_to_overview = Return to managing pension schemes
 site.return.govuk = Return to GOV.UK
 
 common.selectAddress.heading = Select the address
@@ -717,6 +717,7 @@ psaDetails.title = Registered PSA details
 psaDetails.header = Pension scheme administrator details
 psaDetails.deregister.link.text = Stop being a pension scheme administrator
 psaDetails.deregister.text =  - this will also delete the administrator ID.
+psaDetails.declaration.link.text = Continue to declaration
 
 company.address.label = Company’s contact address
 company.email.label = Company’s email address
