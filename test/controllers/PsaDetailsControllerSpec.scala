@@ -22,13 +22,13 @@ import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAc
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UpdateMode, UserType}
+import models.{PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.{JsBoolean, Json}
-import play.api.mvc.{Call, Request, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import utils.FakeCountryOptions
 import utils.Toggles._
@@ -136,8 +136,6 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val name = "testName"
-
-  def call: Call = controllers.routes.CheckYourAnswersController.onSubmit()
 
   private val subscriptionConnector = mock[SubscriptionConnector]
   private val deregistrationConnector = mock[DeRegistrationConnector]
