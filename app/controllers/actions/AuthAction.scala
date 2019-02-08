@@ -23,7 +23,7 @@ import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
-import identifiers.{JourneyId, TypedIdentifier, UpdateModeId}
+import identifiers.{JourneyId, TypedIdentifier}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -58,13 +58,13 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).flatMap(_.fold(
+        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold(
           result => Future.successful(result),
           _ => {
             val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
             successRedirect(affinityGroup, cl, enrolments, authRequest, block)
           }
-        ))
+        )
       case _ =>
         Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
 
@@ -165,15 +165,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A],
                                           cl: ConfidenceLevel, affinityGroup: AffinityGroup, id: String)(implicit hc: HeaderCarrier) = {
-    if (alreadyEnrolledInPODS(enrolments) && notNewRegPages(request)) {
-      getData(UpdateModeId, id).map {
-        case Some(true) => Right(())
-        case _ => Left(Redirect(routes.InterceptPSAController.onPageLoad()))
-      }
-    } else if (isPSP(enrolments) && !isPSA(enrolments)) {
-      Future.successful(Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad())))
+    if (isPSP(enrolments) && !isPSA(enrolments)) {
+      Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
     } else {
-      Future.successful(Right(()))
+      Right(())
     }
   }
 
@@ -224,11 +219,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   protected def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
-
-  private def notNewRegPages[A](request: Request[A]): Boolean = {
-    val confirmationSeq = Seq(config.confirmationUri, config.duplicateRegUri, config.registeredPsaDetailsUri)
-    !confirmationSeq.contains(request.uri)
-  }
 
   private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
