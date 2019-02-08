@@ -83,8 +83,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig)
-  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig, countryOptions)
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig(isHubEnabled = false))
+  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig(isHubEnabled = false), countryOptions)
 
   navigator.getClass.getSimpleName must {
     appRunning()
@@ -94,7 +94,6 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object IndividualNavigatorSpec extends OptionValues {
-  private val appConfig = new GuiceApplicationBuilder().build().injector.instanceOf[FrontendAppConfig]
 
   lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
 

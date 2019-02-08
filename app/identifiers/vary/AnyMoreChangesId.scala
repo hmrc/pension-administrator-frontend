@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.vary
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[Link])
+import identifiers.TypedIdentifier
 
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
-  }
+case object AnyMoreChangesId extends TypedIdentifier[Boolean] {
+  self =>
+  override def toString: String = "anyMoreChanges"
+
 }

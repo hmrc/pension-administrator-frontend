@@ -16,10 +16,4 @@
 
 package viewmodels
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[Link])
-
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
-  }
-}
+case class PsaViewDetailsViewModel(superSections: Seq[SuperSection], header: String, isUserAnswerUpdated: Boolean, canDeregister: Boolean)

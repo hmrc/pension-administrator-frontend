@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package viewmodels
+package navigators
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[Link])
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
+import utils.{Enumerable, Navigator}
 
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
-  }
+class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
+                                    config: FrontendAppConfig)extends Navigator with Enumerable.Implicits {
+
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] =
+    from.id match {
+      case _ => None
+    }
+
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = None
+
 }

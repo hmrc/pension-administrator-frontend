@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms.vary
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[Link])
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
-  }
+class AnyMoreChangesFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("anyMoreChanges.error.required")
+    )
 }

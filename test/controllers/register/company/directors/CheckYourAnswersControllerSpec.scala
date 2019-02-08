@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,13 +57,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "cya.label.name",
       Seq("test first name test last name"),
       answerIsMessageKey = false,
-      routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
     ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
       answerIsMessageKey = false,
-      routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
     ))
 
   def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(0)

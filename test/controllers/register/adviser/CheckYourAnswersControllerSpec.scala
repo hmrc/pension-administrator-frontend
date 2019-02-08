@@ -25,7 +25,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -61,7 +61,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       address.country
     ),
     false,
-    controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url
+    Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)
   ))
 
   def adviserDetails = Seq(
@@ -69,19 +69,19 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "cya.label.name",
       Seq(advDetails.name),
       false,
-      controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url
+      Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)
     ),
     AnswerRow(
       "contactDetails.email.checkYourAnswersLabel",
       Seq(advDetails.email),
       false,
-      controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url
+      Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)
     ),
     AnswerRow(
       "contactDetails.phone.checkYourAnswersLabel",
       Seq(advDetails.phone),
       false,
-      controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url
+      Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)
     )
   )
 

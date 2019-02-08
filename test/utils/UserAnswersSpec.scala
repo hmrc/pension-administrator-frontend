@@ -80,4 +80,49 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
       result mustBe directorEntities
     }
   }
+
+  "isUserAnswerUpdated" must{
+
+    "return false if isChanged is not present" in {
+      val userAnswers = UserAnswers(establishers)
+      userAnswers.isUserAnswerUpdated() mustBe false
+    }
+
+    "return true if isChanged with true is present for a change" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> true)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe true
+    }
+
+    "return true if isChanged with true is present for multiple changes" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true,
+        "areDirectorsOrPartnersChanged" -> true,
+        "isMoreThanTenDirectorsOrPartnersChanged" -> true)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe true
+    }
+
+    "return true if isChanged with true is present for one of multiple changes" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> false,
+        "areDirectorsOrPartnersChanged" -> true,
+        "isMoreThanTenDirectorsOrPartnersChanged" -> false)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe true
+    }
+
+    "return false if isChanged with false is present for MoreThanTenDirectorsOrPartnersChangedId" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isMoreThanTenDirectorsOrPartnersChanged" -> false)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe false
+    }
+
+
+    "return false if isChanged with false is present for multiple changes" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> false,
+        "areDirectorsOrPartnersChanged" -> false,
+        "isMoreThanTenDirectorsOrPartnersChanged" -> false)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe false
+    }
+  }
 }

@@ -53,6 +53,8 @@ GET        /:index/directors-previous-address-manual            controllers.regi
 POST       /:index/directors-previous-address-manual            controllers.register.company.directors.DirectorPreviousAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-directors-previous-address-manual     controllers.register.company.directors.DirectorPreviousAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-directors-previous-address-manual     controllers.register.company.directors.DirectorPreviousAddressController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-directors-previous-address-manual   controllers.register.company.directors.DirectorPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-directors-previous-address-manual   controllers.register.company.directors.DirectorPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/directors-contact-details                    controllers.register.company.directors.DirectorContactDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-contact-details                    controllers.register.company.directors.DirectorContactDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
