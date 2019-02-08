@@ -28,4 +28,6 @@ object DateHelper {
   def formatDate(date: LocalDate): String = date.format(formatter)
 
   def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
+
+  def dateTimeAfterGivenDays(daysAhead: Int): String = formatDate(LocalDate.now().plusDays(daysAhead))
 }
