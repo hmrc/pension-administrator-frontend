@@ -34,8 +34,8 @@ class DirectorDetailsController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            val dataCacheConnector: UserAnswersCacheConnector,
                                            @CompanyDirector val navigator: Navigator,
-                                           authenticate: AuthAction,
                                            override val allowAccess: AllowAccessActionProvider,
+                                           authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction
                                          ) extends PersonDetailsController {

@@ -64,8 +64,8 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     new DirectorUniqueTaxReferenceController(frontendAppConfig, messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
       FakeAllowAccessProvider(),
+      FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

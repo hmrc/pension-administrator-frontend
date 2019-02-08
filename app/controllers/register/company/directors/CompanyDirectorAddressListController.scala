@@ -38,8 +38,8 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
                                                      override val messagesApi: MessagesApi,
                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                      @CompanyDirector override val navigator: Navigator,
-                                                     authenticate: AuthAction,
                                                      override val allowAccess: AllowAccessActionProvider,
+                                                     authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction) extends AddressListController with Retrievals {
 

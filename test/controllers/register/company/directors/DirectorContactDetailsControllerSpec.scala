@@ -74,8 +74,8 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
-      FakeAuthAction,
       FakeAllowAccessProvider(),
+      FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

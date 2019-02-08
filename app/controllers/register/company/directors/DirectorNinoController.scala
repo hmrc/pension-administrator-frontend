@@ -39,8 +39,8 @@ class DirectorNinoController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: UserAnswersCacheConnector,
                                         @CompanyDirector navigator: Navigator,
-                                        authenticate: AuthAction,
                                         val allowAccess: AllowAccessActionProvider,
+                                        authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorNinoFormProvider

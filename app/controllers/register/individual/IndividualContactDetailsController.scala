@@ -35,8 +35,8 @@ class IndividualContactDetailsController @Inject()(
                                                     override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     override val cacheConnector: UserAnswersCacheConnector,
-                                                    authenticate: AuthAction,
                                                     override val allowAccess: AllowAccessActionProvider,
+                                                    authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: ContactDetailsFormProvider

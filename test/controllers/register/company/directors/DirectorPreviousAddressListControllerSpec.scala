@@ -73,8 +73,8 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
       FakeAllowAccessProvider(),
+      FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl
     )

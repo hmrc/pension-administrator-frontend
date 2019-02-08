@@ -42,8 +42,8 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
                                                                  override val addressLookupConnector: AddressLookupConnector,
                                                                  @CompanyDirector override val navigator: Navigator,
                                                                  override val messagesApi: MessagesApi,
-                                                                 authenticate: AuthAction,
                                                                  override val allowAccess: AllowAccessActionProvider,
+                                                                 authenticate: AuthAction,
                                                                  getData: DataRetrievalAction,
                                                                  requireData: DataRequiredAction,
                                                                  formProvider: PostCodeLookupFormProvider
