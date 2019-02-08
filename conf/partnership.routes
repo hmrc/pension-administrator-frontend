@@ -35,7 +35,7 @@ POST       /is-this-the-contact-address                 controllers.register.par
 GET        /change-is-this-the-contact-address          controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-is-this-the-contact-address          controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET        /business-details                            controllers.register.partnership.PartnershipBusinessDetailsController.onPageLoad()
+GET        /business-details                            controllers.register.partnership.PartnershipBusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /business-details                            controllers.register.partnership.PartnershipBusinessDetailsController.onSubmit()
 
 GET        /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)

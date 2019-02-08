@@ -18,7 +18,7 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
@@ -41,6 +41,7 @@ class CompanySameContactAddressController @Inject()(
                                                      val messagesApi: MessagesApi,
                                                      val dataCacheConnector: UserAnswersCacheConnector,
                                                      authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: SameContactAddressFormProvider,
@@ -70,7 +71,7 @@ class CompanySameContactAddressController @Inject()(
         }
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
         get(CompanySameContactAddressId, vm)

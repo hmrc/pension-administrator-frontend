@@ -52,6 +52,7 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl
     )

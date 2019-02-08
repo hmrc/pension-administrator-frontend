@@ -35,6 +35,7 @@ class MoreThanTenDirectorsController @Inject()(
                                                 val dataCacheConnector: UserAnswersCacheConnector,
                                                 @CompanyDirector val navigator: Navigator,
                                                 authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction
                                               ) extends MoreThanTenController {
@@ -48,7 +49,7 @@ class MoreThanTenDirectorsController @Inject()(
       id = MoreThanTenDirectorsId
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       get(viewModel(mode))
   }

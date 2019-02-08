@@ -18,7 +18,8 @@ package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import models.NormalMode
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.company.whatYouWillNeed
@@ -35,6 +36,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       auditService
@@ -45,7 +47,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
   "WhatYouWillNeed Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
