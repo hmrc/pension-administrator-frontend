@@ -12,16 +12,22 @@ GET        /contact-details                             controllers.register.com
 POST       /contact-details                             controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-contact-details                      controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-contact-details                      controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-contact-details                    controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-contact-details                    controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /company-details                             controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /company-details                             controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-company-details                      controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-company-details                      controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-company-details                    controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-company-details                    controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /company-previous-address-manual             controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /company-previous-address-manual             controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-company-previous-address-manual      controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-company-previous-address-manual      controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-company-previous-address-manual    controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-company-previous-address-manual    controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /how-long-at-address                         controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST       /how-long-at-address                         controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
@@ -45,11 +51,15 @@ GET        /add-directors                               controllers.register.com
 POST       /add-directors                               controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-directors                            controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-directors                            controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-directors                          controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-directors                          controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /other-directors                             controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = NormalMode)
 POST       /other-directors                             controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-other-directors                      controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-other-directors                      controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-other-directors                    controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-other-directors                    controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /confirm-company-details                     controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
@@ -78,6 +88,8 @@ GET        /enter-contact-address                       controllers.register.com
 POST       /enter-contact-address                       controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-enter-contact-address                controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-enter-contact-address                controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-contact-address                    controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-contact-address                    controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /select-contact-address                      controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST       /select-contact-address                      controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)

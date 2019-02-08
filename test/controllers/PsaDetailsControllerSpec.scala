@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAc
 import identifiers.PsaId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar

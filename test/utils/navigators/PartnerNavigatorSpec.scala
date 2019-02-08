@@ -83,7 +83,7 @@ object PartnerNavigatorSpec extends OptionValues {
   private lazy val partnerUniqueTaxReferencePage = routes.PartnerUniqueTaxReferenceController.onPageLoad(NormalMode, 0)
   private lazy val partnerAddressYearsPage = routes.PartnerAddressYearsController.onPageLoad(NormalMode, 0)
   private lazy val partnerContactDetailsPage = routes.PartnerContactDetailsController.onPageLoad(NormalMode, 0)
-  private lazy val addPartnersPage = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
+  private lazy val addPartnersPage = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
 
   def paPostCodePage(mode: Mode): Call = routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
 
