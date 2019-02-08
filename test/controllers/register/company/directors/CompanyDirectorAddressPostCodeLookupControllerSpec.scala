@@ -68,6 +68,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

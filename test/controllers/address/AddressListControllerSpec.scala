@@ -18,7 +18,8 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import controllers.actions.FakeAllowAccessProvider
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models._
@@ -160,6 +161,8 @@ object AddressListControllerSpec {
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
     override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
+
+    override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewModel: AddressListViewModel): Future[Result] = {
 

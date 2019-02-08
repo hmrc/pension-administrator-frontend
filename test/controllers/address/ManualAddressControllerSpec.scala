@@ -20,7 +20,8 @@ import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent, AuditService}
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import controllers.actions.FakeAllowAccessProvider
 import forms.AddressFormProvider
 import identifiers.TypedIdentifier
 import models._
@@ -69,6 +70,8 @@ object ManualAddressControllerSpec {
                                   formProvider: AddressFormProvider,
                                   override val auditService: AuditService
                                 ) extends ManualAddressController {
+
+    override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewModel: ManualAddressViewModel, answers: UserAnswers): Future[Result] =
       get(fakeAddressId, fakeAddressListId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))

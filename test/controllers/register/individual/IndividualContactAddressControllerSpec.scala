@@ -65,6 +65,7 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

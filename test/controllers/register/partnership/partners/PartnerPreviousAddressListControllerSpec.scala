@@ -73,6 +73,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl

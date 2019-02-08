@@ -66,6 +66,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
       messagesApi,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

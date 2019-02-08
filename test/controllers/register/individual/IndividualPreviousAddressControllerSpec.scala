@@ -65,6 +65,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

@@ -172,7 +172,8 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new AdviserAddressController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+      new FakeNavigator(desiredRoute = onwardRoute), FakeAllowAccessProvider(),
+      FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
       countryOptions, fakeAuditService)
 
   def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, addressViewModel)(fakeRequest, messages).toString

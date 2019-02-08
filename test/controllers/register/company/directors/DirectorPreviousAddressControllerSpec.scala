@@ -75,6 +75,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

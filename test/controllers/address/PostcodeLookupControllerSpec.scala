@@ -20,6 +20,7 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
+import controllers.actions.FakeAllowAccessProvider
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -59,6 +60,8 @@ object PostcodeLookupControllerSpec {
                                   override val navigator: Navigator,
                                   formProvider: PostCodeLookupFormProvider
                                 ) extends PostcodeLookupController {
+
+    override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
       get(viewmodel)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))

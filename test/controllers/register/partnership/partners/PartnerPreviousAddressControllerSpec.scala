@@ -74,6 +74,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
