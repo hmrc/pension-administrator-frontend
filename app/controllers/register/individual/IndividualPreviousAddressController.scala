@@ -40,6 +40,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     val dataCacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
                                                     authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
@@ -63,12 +64,12 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     secondaryHeader = None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode, "Individual Previous Address",
         IndividualPreviousAddressPostCodeLookupId)

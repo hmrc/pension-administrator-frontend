@@ -1,6 +1,6 @@
 
-GET         /what-you-will-need                     controllers.register.individual.WhatYouWillNeedController.onPageLoad()
-POST        /what-you-will-need                     controllers.register.individual.WhatYouWillNeedController.onSubmit()
+GET         /what-you-will-need                     controllers.register.individual.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-you-will-need                     controllers.register.individual.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
 
 GET         /your-date-of-birth                     controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST        /your-date-of-birth                     controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode = NormalMode)
@@ -24,7 +24,7 @@ POST        /change-previous-address-manual         controllers.register.individ
 GET         /changing-previous-address-manual       controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /changing-previous-address-manual       controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
-GET         /you-will-need-to-update                controllers.register.individual.YouWillNeedToUpdateController.onPageLoad()
+GET         /you-will-need-to-update                controllers.register.individual.YouWillNeedToUpdateController.onPageLoad(mode: Mode = NormalMode)
 
 GET         /contact-details                        controllers.register.individual.IndividualContactDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-details                        controllers.register.individual.IndividualContactDetailsController.onSubmit(mode: Mode = NormalMode)
@@ -43,7 +43,7 @@ POST        /previous-address-results               controllers.register.individ
 GET         /change-previous-address-results        controllers.register.individual.IndividualPreviousAddressListController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-previous-address-results        controllers.register.individual.IndividualPreviousAddressListController.onSubmit(mode: Mode = CheckMode)
 
-GET         /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onPageLoad()
+GET         /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST        /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
 GET         /what-is-the-contact-address            controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
@@ -78,10 +78,10 @@ POST        /what-is-your-name                      controllers.register.individ
 GET         /change-what-is-your-name               controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-what-is-your-name               controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = CheckMode)
 
-GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
-POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
-GET         /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onPageLoad()
-POST        /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onSubmit()
+GET         /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-address-manual                  controllers.register.individual.IndividualRegisteredAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET         /outside-eu-eea                         controllers.register.individual.OutsideEuEeaController.onPageLoad()
+GET         /outside-eu-eea                         controllers.register.individual.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 

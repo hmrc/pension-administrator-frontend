@@ -39,6 +39,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
                                                        val dataCacheConnector: UserAnswersCacheConnector,
                                                        @Individual val navigator: Navigator,
                                                        authenticate: AuthAction,
+                                                       allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: SameContactAddressFormProvider,
@@ -68,14 +69,14 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
         }
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
         get(IndividualSameContactAddressId, vm)
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
         post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode)

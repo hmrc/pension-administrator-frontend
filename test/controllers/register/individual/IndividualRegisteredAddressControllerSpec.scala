@@ -72,6 +72,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       userAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
@@ -79,7 +80,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     )
 
   private def viewModel = ManualAddressViewModel(
-    routes.IndividualRegisteredAddressController.onSubmit(),
+    routes.IndividualRegisteredAddressController.onSubmit(NormalMode),
     countryOptions.options,
     Message("individualRegisteredNonUKAddress.title"),
     Message("individualRegisteredNonUKAddress.heading", individualName),
@@ -97,7 +98,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   "IndividualRegisteredAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -109,7 +110,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
         IndividualAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "IN")))
     }
@@ -121,7 +122,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
         "country" -> "IN"
       )
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -136,7 +137,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
         "country" -> "GB"
       )
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -157,7 +158,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
       when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
 
-      val result = controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit()(postRequest)
+      val result = controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit(NormalMode)(postRequest)
       whenReady(result) {_=>
         verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
       }
@@ -167,7 +168,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -176,14 +177,14 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
     "redirect to Session Expired" when {
       "no existing data is found" when {
         "GET" in {
-          val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit()(postRequest)
+          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

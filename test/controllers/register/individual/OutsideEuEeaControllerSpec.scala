@@ -17,9 +17,9 @@
 package controllers.register.individual
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import identifiers.register.individual.IndividualAddressId
-import models.Address
+import models.{Address, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
@@ -34,6 +34,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       countryOptions
@@ -56,13 +57,13 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
   "OutsideEuEea Controller" must {
     "return 200 and correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
       status(result) mustBe OK
       contentAsString(result) mustBe outsideEuEea(frontendAppConfig, country)(fakeRequest, messages).toString
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

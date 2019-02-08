@@ -19,7 +19,7 @@ package controllers.register.individual
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
@@ -46,6 +46,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                        val dataCacheConnector: UserAnswersCacheConnector,
                                                        @Individual val navigator: Navigator,
                                                        authenticate: AuthAction,
+                                                       allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: NonUKAddressFormProvider,
@@ -54,19 +55,19 @@ class IndividualRegisteredAddressController @Inject()(
 
   protected val form: Form[Address] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       IndividualDetailsId.retrieve.right.map { individual =>
 
         val preparedForm = request.userAnswers.get(IndividualAddressId).fold(form)(v => form.fill(v.toAddress))
-        val view = createView(appConfig, preparedForm, addressViewModel(individual.fullName))
+        val view = createView(appConfig, preparedForm, addressViewModel(individual.fullName, mode))
 
         Future.successful(Ok(view()))
       }
   }
 
-  private def addressViewModel(companyName: String) = ManualAddressViewModel(
-    routes.IndividualRegisteredAddressController.onSubmit(),
+  private def addressViewModel(companyName: String, mode: Mode) = ManualAddressViewModel(
+    routes.IndividualRegisteredAddressController.onSubmit(mode),
     countryOptions.options,
     Message("individualRegisteredNonUKAddress.title"),
     Message("individualRegisteredNonUKAddress.heading", companyName),
@@ -74,13 +75,13 @@ class IndividualRegisteredAddressController @Inject()(
     Some(Message("individualRegisteredNonUKAddress.hintText"))
   )
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       IndividualDetailsId.retrieve.right.map {
         individual =>
           form.bindFromRequest().fold(
             (formWithError: Form[_]) => {
-              val view = createView(appConfig, formWithError, addressViewModel(individual.fullName))
+              val view = createView(appConfig, formWithError, addressViewModel(individual.fullName, mode))
               Future.successful(BadRequest(view()))
             },
             address =>

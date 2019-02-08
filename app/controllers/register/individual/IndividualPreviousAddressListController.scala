@@ -41,15 +41,16 @@ class IndividualPreviousAddressListController @Inject()(
                                                          override val messagesApi: MessagesApi,
                                                          override val cacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
+                                                         allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction) extends AddressListController with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).right.map(get)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode))
   }
