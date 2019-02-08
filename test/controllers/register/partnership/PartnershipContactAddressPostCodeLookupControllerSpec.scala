@@ -105,6 +105,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),

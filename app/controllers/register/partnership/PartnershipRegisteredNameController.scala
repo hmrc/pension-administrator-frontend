@@ -19,21 +19,22 @@ package controllers.register.partnership
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.OrganisationNameController
 import forms.BusinessDetailsFormModel
 import identifiers.register.partnership.PartnershipDetailsId
+import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
-import utils.annotations.RegisterCompany
 import viewmodels.{Message, OrganisationNameViewModel}
 
 class PartnershipRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     @Partnership override val navigator: Navigator,
                                                     authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
@@ -45,12 +46,12 @@ class PartnershipRegisteredNameController @Inject()(override val appConfig: Fron
       Message("partnershipName.heading")
     )
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode : Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(PartnershipDetailsId, partnershipNameViewModel)
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode : Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       post(PartnershipDetailsId, partnershipNameViewModel())
   }
