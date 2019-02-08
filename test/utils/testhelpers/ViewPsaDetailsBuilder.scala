@@ -18,7 +18,7 @@ package utils.testhelpers
 
 import java.time.LocalDate
 
-import models.{UpdateMode, NormalMode}
+import models.{UpdateMode}
 import viewmodels._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
@@ -161,7 +161,7 @@ object ViewPsaDetailsBuilder {
       Some("Partner One"),
       partnersSeqAnswers
     )),
-    Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode).url, "partner-add-link-onlyOne"), Some("partner-add-link-onlyOne-additionalText")))
+    Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-onlyOne"), Some("partner-add-link-onlyOne-additionalText")))
   )
 
   val individualWithChangeLinks: Seq[SuperSection] = Seq(
