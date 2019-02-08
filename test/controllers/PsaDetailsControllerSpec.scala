@@ -20,6 +20,9 @@ import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.PsaId
+import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
+import identifiers.{PsaId, UpdateModeId}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -27,7 +30,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import utils.FakeCountryOptions
@@ -85,6 +88,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(individualWithChangeLinks, "Stephen Wood", true)
+        (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
       "return 200 and  correct view for a GET for PSA company" in {
 
@@ -99,6 +103,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", true)
+        (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
 
       "return 200 and  correct view for a GET for PSA partnership" in {
@@ -114,6 +119,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", true)
+        (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
     }
   }
@@ -161,6 +167,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
       new FakeAuthAction(userType),
       subscriptionConnector,
       deregistrationConnector,
+      FakeUserAnswersCacheConnector,
       countryOptions,
       featureSwitchManagementService
     )
