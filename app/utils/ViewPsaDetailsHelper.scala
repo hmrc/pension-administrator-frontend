@@ -238,7 +238,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
     userAnswers.get(DirectorPreviousAddressId(index)) map { address =>
       AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-        Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url)))
+        Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, index).url)))
     }
 
   private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
@@ -276,7 +276,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     SuperSection(
       Some("director.supersection.header"),
       for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, linkText), additionalText))
+      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
@@ -359,7 +359,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
     userAnswers.get(PartnerPreviousAddressId(index)) map { address =>
       AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-        Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, index).url)))
+        Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index).url)))
     }
 
   private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
@@ -397,7 +397,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     SuperSection(
       Some("partner.supersection.header"),
       for (person <- userAnswers.allPartnersAfterDelete) yield partnerSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode).url, linkText), additionalText))
+      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
@@ -409,17 +409,17 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def pensionAdviserPhone: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def pensionAdviserAddress: Option[AnswerRow] = userAnswers.get(AdviserAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url)))
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
