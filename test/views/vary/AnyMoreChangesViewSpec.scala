@@ -20,6 +20,7 @@ import controllers.vary.routes
 import forms.vary.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import utils.DateHelper
 import views.behaviours.YesNoViewBehaviours
 import views.html.vary.anyMoreChanges
 
@@ -40,7 +41,7 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
   "Any More Changes view" must {
 
     behave like normalPage(createView, messageKeyPrefix,
-      expectedGuidanceKeys = "p1", "p2", "p3")
+      expectedGuidanceKeys = "p1", "p2")
 
     behave like yesNoPage(
       createView = createViewUsingForm,
@@ -48,6 +49,11 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
       expectedFormAction = routes.AnyMoreChangesController.onSubmit().url,
       messageKey = s"$messageKeyPrefix.title"
     )
+
+    "display the paragraph with date(current date plus 28 days)" in {
+      createView must haveDynamicText("anyMoreChanges.p3",
+        DateHelper.dateAfterGivenDays(frontendAppConfig.daysDataSaved))
+    }
 
     behave like pageWithSubmitButton(createView)
   }
