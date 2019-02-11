@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -50,9 +50,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for vat registration number and paye number" in {
         val rows = Seq(answerRow("companyDetails.vatRegistrationNumber.checkYourAnswersLabel", Seq("Test Vat"), false,
-          Some(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
+          Some(Link(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
           answerRow("companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel", Seq("Test Paye"), false,
-            Some(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)))
+            Some(Link(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url))))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
@@ -64,7 +64,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for company registration number" in {
         val rows = Seq(answerRow("companyRegistrationNumber.checkYourAnswersLabel", Seq("test reg no"), false,
-          Some(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
+          Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
@@ -104,7 +104,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for company same contact address" in {
         val rows = Seq(answerRow("cya.label.company.same.contact.address", Seq("Yes"), true,
-          Some(controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)))
+          Some(Link(controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url))))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
 
@@ -135,7 +135,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val addressYears = AddressYears.OverAYear
         val rows = Seq(answerRow("companyAddressYears.checkYourAnswersLabel",
           Seq(s"common.addressYears.${addressYears.toString}"), true,
-          Some(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)))
+          Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
 
@@ -160,7 +160,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.addressLine2,
             address.postcode.value,
             address.country
-          ), false, Some(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)))
+          ), false, Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
 
@@ -177,10 +177,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val rows = Seq(
           answerRow("contactDetails.email.checkYourAnswersLabel",
             Seq("test email"), false,
-            Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)),
+            Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url))),
           answerRow("contactDetails.phone.checkYourAnswersLabel",
             Seq("test phone"), false,
-            Some(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url))
+            Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)))
         )
 
         val sections = answerSections(Some(contactDetailsHeading), rows)
@@ -265,7 +265,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Seq(section)
   }
 
-  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[String] = None): AnswerRow = {
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl)
   }
 
