@@ -47,6 +47,7 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership navigator: Navigator,
                                                      authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      registrationConnector: RegistrationConnector,
@@ -56,7 +57,7 @@ class ConfirmPartnershipDetailsController @Inject()(
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       getPartnershipDetails { case (_, registration) =>
         dataCacheConnector.remove(request.externalId, ConfirmPartnershipDetailsId).flatMap(_ =>
@@ -65,7 +66,7 @@ class ConfirmPartnershipDetailsController @Inject()(
       }
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       getPartnershipDetails { case (partnershipDetails, registration) =>
         form.bindFromRequest().fold(

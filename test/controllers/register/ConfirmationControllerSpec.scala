@@ -22,7 +22,7 @@ import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
-import models.{PSAUser, UserType}
+import models.{NormalMode, PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -47,7 +47,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
-      val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -55,14 +55,14 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
     "redirect to the next page on a successful POST" in {
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -82,6 +82,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeUserAnswersCacheConnector

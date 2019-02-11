@@ -19,12 +19,13 @@ package controllers
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
-import controllers.actions.AuthAction
+import controllers.actions.{AllowAccessActionProvider, AuthAction}
 import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
+import models.Mode
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,6 +43,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
+                                     allowAccess: AllowAccessActionProvider,
                                      subscriptionConnector: SubscriptionConnector,
                                      deRegistrationConnector: DeRegistrationConnector,
                                      dataCacheConnector: UserAnswersCacheConnector,
@@ -49,7 +51,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = authenticate.async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode)).async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       canStopBeingAPsa(psaId) flatMap { canDeregister =>

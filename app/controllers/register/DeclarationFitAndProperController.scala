@@ -22,13 +22,13 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
-import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
-import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
+import identifiers.register.company.ContactDetailsId
+import identifiers.register.individual.IndividualContactDetailsId
+import identifiers.register.partnership.PartnershipContactDetailsId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
-import models.{ExistingPSA, NormalMode, UserType}
+import models.{ExistingPSA, Mode, NormalMode, UserType}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,6 +45,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   authenticate: AuthAction,
+                                                  allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   @Register navigator: Navigator,
@@ -58,7 +59,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       request.user.userType match {
         case UserType.Individual =>
@@ -71,7 +72,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
       }
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         errors =>

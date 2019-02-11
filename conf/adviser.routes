@@ -22,6 +22,6 @@ POST       /change-adviser-details              controllers.register.adviser.Adv
 GET        /changing-adviser-details            controllers.register.adviser.AdviserDetailsController.onPageLoad(mode: Mode = UpdateMode)
 POST       /changing-adviser-details            controllers.register.adviser.AdviserDetailsController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /check-your-answers                  controllers.register.adviser.CheckYourAnswersController.onPageLoad()
-POST       /check-your-answers                  controllers.register.adviser.CheckYourAnswersController.onSubmit()
+GET        /check-your-answers                  controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode = CheckMode)
+POST       /check-your-answers                  controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode = CheckMode)
 

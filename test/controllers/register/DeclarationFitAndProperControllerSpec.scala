@@ -56,27 +56,27 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
     "calling GET" must {
 
       "return OK and the correct view" in {
-        val result = controller().onPageLoad(fakeRequest)
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString()
       }
 
       "redirect to Session Expired if no cached data is found" in {
-        val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
 
       "set cancel link correctly to Individual What You Will Need page" in {
-        val result = controller(userType = UserType.Individual).onPageLoad()(FakeRequest())
+        val result = controller(userType = UserType.Individual).onPageLoad(NormalMode)(FakeRequest())
 
         contentAsString(result) mustBe viewAsString(cancelCall = individualCancelCall)
       }
 
       "set cancel link correctly to Company What You Will Need page" in {
-        val result = controller().onPageLoad()(fakeRequest)
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
         contentAsString(result) mustBe viewAsString(cancelCall = companyCancelCall)
       }
@@ -93,7 +93,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           when(mockEmailConnector.sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -104,7 +104,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           reset(mockEmailConnector)
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -114,7 +114,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
       "reject an invalid request and display errors" in {
         val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-        val result = controller().onSubmit(fakeRequest)
+        val result = controller().onSubmit(NormalMode)(fakeRequest)
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) mustBe viewAsString(formWithErrors)
@@ -122,7 +122,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
       "redirect to Session Expired" when {
         "no cached data is found" in {
-          val result = controller(dontGetAnyData).onSubmit(fakeRequest)
+          val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -132,7 +132,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
-            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(validRequest)
+            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -143,7 +143,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           val result = controller(
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
             enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST))
-          ).onSubmit(validRequest)
+          ).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -154,21 +154,21 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
         "Individual" in {
           val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-          val result = controller(userType = UserType.Individual).onSubmit()(fakeRequest)
+          val result = controller(userType = UserType.Individual).onSubmit(NormalMode)()(fakeRequest)
 
           contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
         }
 
         "Company" in {
           val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-          val result = controller().onSubmit()(fakeRequest)
+          val result = controller().onSubmit(NormalMode)()(fakeRequest)
 
           contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
         }
       }
 
       "save the answer and PSA Subscription response on a valid request" in {
-        val result = controller().onSubmit(validRequest)
+        val result = controller().onSubmit(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
         FakeUserAnswersCacheConnector.verify(DeclarationFitAndProperId, true)
@@ -176,7 +176,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
-        val result = controller(pensionsSchemeConnector = duplicateRegistrationPensionsSchemeConnector).onSubmit(validRequest)
+        val result = controller(pensionsSchemeConnector = duplicateRegistrationPensionsSchemeConnector).onSubmit(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
@@ -184,7 +184,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
       "redirect to Submission Invalid" when {
         "response is BAD_REQUEST from downstream" in {
-          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(validRequest)
+          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
@@ -274,6 +274,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       appConfig,
       messagesApi,
       fakeAuthAction(userType),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,

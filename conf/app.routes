@@ -1,5 +1,4 @@
 # microservice specific routes
-->         /company                                     company.Routes
 ->         /register                                    register.Routes
 
 GET        /                                            controllers.LoginController.onPageLoad
@@ -15,9 +14,6 @@ GET        /language/:lang                              controllers.LanguageSwit
 
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
 
-GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
-POST       /check-your-answers                          controllers.CheckYourAnswersController.onSubmit
-
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /assistant-on-gg                             controllers.UnauthorisedAssistantController.onPageLoad()
@@ -26,4 +22,4 @@ GET        /no-reg-as-psa                               controllers.InterceptPSA
 
 GET        /psp                                         controllers.PensionSchemePractitionerController.onPageLoad()
 
-GET        /registered-psa-details                      controllers.PsaDetailsController.onPageLoad()
+GET        /registered-psa-details                      controllers.PsaDetailsController.onPageLoad(mode: Mode = UpdateMode)

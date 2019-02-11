@@ -17,9 +17,9 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
+import controllers.actions._
 import forms.register.VatFormProvider
 import models.NormalMode
 import org.scalatest.MustMatchers
@@ -84,6 +84,7 @@ object PartnershipVatControllerSpec extends PartnershipVatControllerSpec {
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)

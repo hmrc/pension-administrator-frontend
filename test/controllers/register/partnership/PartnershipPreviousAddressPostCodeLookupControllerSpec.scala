@@ -17,9 +17,9 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
+import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
@@ -97,6 +97,7 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).to(fakeNavigator),
