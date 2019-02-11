@@ -18,7 +18,11 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
+import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId}
+import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.individual.{IndividualContactAddressChangedId, IndividualContactDetailsChangedId, IndividualPreviousAddressChangedId}
+import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models.{Index, NormalMode, PersonDetails}
 import play.api.libs.json._
@@ -165,6 +169,23 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
 
     removeRec(ids, JsSuccess(this))
+  }
+
+  def isUserAnswerUpdated(): Boolean ={
+    List(
+      get[Boolean](DeclarationChangedId),
+      get[Boolean](DirectorsOrPartnersChangedId),
+      get[Boolean](MoreThanTenDirectorsOrPartnersChangedId),
+      get[Boolean](CompanyContactAddressChangedId),
+      get[Boolean](CompanyContactDetailsChangedId),
+      get[Boolean](CompanyPreviousAddressChangedId),
+      get[Boolean](IndividualContactAddressChangedId),
+      get[Boolean](IndividualContactDetailsChangedId),
+      get[Boolean](IndividualPreviousAddressChangedId),
+      get[Boolean](PartnershipContactAddressChangedId),
+      get[Boolean](PartnershipContactDetailsChangedId),
+      get[Boolean](PartnershipPreviousAddressChangedId)
+    ).flatten.contains(true)
   }
 
 }

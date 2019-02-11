@@ -18,7 +18,7 @@ package utils.testhelpers
 
 import java.time.LocalDate
 
-import models.{CheckMode, NormalMode, UpdateMode}
+import models.{UpdateMode}
 import viewmodels._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
@@ -28,11 +28,11 @@ object ViewPsaDetailsBuilder {
     AnswerRow("pensions.advisor.label", Seq("Pension Adviser"), false,
       None),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))),
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("0044-0987654232"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url))),
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url))))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url))))
 
   val individualSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
@@ -80,7 +80,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, 0).url))),
+      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
@@ -116,7 +116,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, 0).url))),
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
