@@ -20,18 +20,18 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.AnyContent
-import viewmodels.AnswerRow
+import viewmodels.{AnswerRow, Link}
 
 import scala.language.implicitConversions
 
 trait Ops[A] {
-  def row(changeUrl: Option[String])(implicit request: DataRequest[AnyContent], reads: Reads[A]): Seq[AnswerRow]
+  def row(changeUrl: Option[Link])(implicit request: DataRequest[AnyContent], reads: Reads[A]): Seq[AnswerRow]
 }
 
 object Ops {
   implicit def toOps[I <: TypedIdentifier.PathDependent](id: I)(implicit ev: CheckYourAnswers[I]): Ops[id.Data] =
     new Ops[id.Data] {
-      override def row(changeUrl: Option[String])(implicit request: DataRequest[AnyContent], reads: Reads[id.Data]): Seq[AnswerRow] =
+      override def row(changeUrl: Option[Link])(implicit request: DataRequest[AnyContent], reads: Reads[id.Data]): Seq[AnswerRow] =
         ev.row(id)(changeUrl, request.userAnswers)
     }
 }

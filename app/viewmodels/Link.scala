@@ -16,10 +16,5 @@
 
 package viewmodels
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[Link])
+case class Link(url: String, text: String = "site.change")
 
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl))
-  }
-}

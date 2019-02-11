@@ -28,7 +28,7 @@ import utils.Navigator
 import utils.annotations.Adviser
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
@@ -45,8 +45,8 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val details = AdviserDetailsId.row(Some(routes.AdviserDetailsController.onPageLoad(CheckMode).url))
-      val address = AdviserAddressId.row(Some(routes.AdviserAddressController.onPageLoad(CheckMode).url))
+      val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
+      val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(CheckMode).url)))
       val sections = Seq(AnswerSection(None, details ++ address))
       Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
   }
