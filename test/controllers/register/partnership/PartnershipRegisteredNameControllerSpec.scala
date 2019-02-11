@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.register.partnership.PartnershipDetailsId
-import models.BusinessDetails
+import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -62,6 +62,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeUserAnswersCacheConnector
@@ -74,7 +75,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
     "on a GET" must {
 
       "return OK and the correct view" in {
-        val result = controller().onPageLoad()(fakeRequest)
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString()
       }
@@ -83,13 +84,13 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
         val validData = Json.obj(PartnershipDetailsId.toString -> testBusinessDetails)
         val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
-        val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+        val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
         contentAsString(result) mustBe viewAsString(form.fill(testBusinessDetails))
       }
 
       "redirect to Session Expired for a GET if no existing data is found" in {
-        val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -101,7 +102,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       "redirect to the next page when valid data is submitted" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", testCompanyName))
 
-        val result = controller().onSubmit()(postRequest)
+        val result = controller().onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -111,7 +112,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", ""))
         val boundForm = form.bind(Map("companyName" -> ""))
 
-        val result = controller().onSubmit()(postRequest)
+        val result = controller().onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) mustBe viewAsString(boundForm)
@@ -119,7 +120,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
 
       "redirect to Session Expired for a POST if no existing data is found" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", testCompanyName))
-        val result = controller(dontGetAnyData).onSubmit()(postRequest)
+        val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

@@ -37,6 +37,7 @@ class PartnershipVatController @Inject()(
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @Partnership override val navigator: Navigator,
                                           authenticate: AuthAction,
+                                          allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: VatFormProvider
@@ -52,7 +53,7 @@ class PartnershipVatController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(PartnershipVatId, form, viewmodel(mode))
   }

@@ -19,7 +19,7 @@ package controllers.register
 import base.SpecBase
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
+import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
@@ -100,6 +100,7 @@ object RegisterAsBusinessControllerSpec {
       base.frontendAppConfig,
       base.messagesApi,
       authAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl(),
       cache,

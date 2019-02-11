@@ -40,6 +40,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      val dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressFormProvider,
@@ -60,7 +61,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
     secondaryHeader = None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode))
   }

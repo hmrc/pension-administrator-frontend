@@ -66,6 +66,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

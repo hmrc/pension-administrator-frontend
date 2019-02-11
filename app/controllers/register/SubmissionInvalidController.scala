@@ -17,7 +17,7 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,12 +28,13 @@ import views.html.register.submissionInvalid
 class SubmissionInvalidController @Inject()(appConfig: FrontendAppConfig,
                                             override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction
                                            ) extends FrontendController with I18nSupport {
 
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       Ok(submissionInvalid(appConfig))
   }

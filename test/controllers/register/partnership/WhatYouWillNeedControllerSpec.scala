@@ -19,6 +19,7 @@ package controllers.register.partnership
 import audit.testdoubles.StubSuccessfulAuditService
 import controllers.ControllerSpecBase
 import controllers.actions._
+import models.NormalMode
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.partnership.whatYouWillNeed
@@ -35,6 +36,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       auditService
@@ -45,7 +47,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
   "WhatYouWillNeed Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -53,7 +55,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
     "redirect to next page on submit" in {
 
-      val result = controller().onSubmit(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -63,7 +65,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
       auditService.reset()
 
-      val result = controller().onSubmit(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       auditService.verifyNothingSent() mustBe false
