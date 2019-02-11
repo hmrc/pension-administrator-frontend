@@ -52,7 +52,7 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
 
     "display the paragraph with date(current date plus 28 days)" in {
       createView must haveDynamicText("anyMoreChanges.p3",
-        DateHelper.dateTimeAfterGivenDays(frontendAppConfig.daysDataSaved))
+        DateHelper.dateAfterGivenDays(frontendAppConfig.daysDataSaved))
     }
 
     behave like pageWithSubmitButton(createView)
