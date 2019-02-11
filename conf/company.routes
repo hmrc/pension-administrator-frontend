@@ -74,7 +74,7 @@ POST       /review                                      controllers.register.com
 
 GET        /update-company-details                      controllers.register.company.CompanyUpdateDetailsController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /company-not-found                           controllers.register.company.CompanyNotFoundController.onPageLoad()
+GET        /company-not-found                           controllers.register.company.CompanyNotFoundController.onPageLoad(mode: Mode = NormalMode)
 
 GET        /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
 POST       /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onSubmit
@@ -105,4 +105,4 @@ POST       /change-company-name                         controllers.register.com
 GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit()
 
-GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad()
+GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
