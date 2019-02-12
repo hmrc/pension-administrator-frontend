@@ -22,10 +22,10 @@ POST       /declaration-fit-and-proper              controllers.register.Declara
 GET        /declaration                             controllers.register.DeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration                             controllers.register.DeclarationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /confirmation                            controllers.register.ConfirmationController.onPageLoad(mode: Mode = UpdateMode)
-POST       /confirmation                            controllers.register.ConfirmationController.onSubmit(mode: Mode = UpdateMode)
+GET        /confirmation                            controllers.register.ConfirmationController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirmation                            controllers.register.ConfirmationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = UpdateMode)
+GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = NormalMode)
 
 GET        /unable-to-send-details                  controllers.register.SubmissionInvalidController.onPageLoad(mode: Mode = NormalMode)
 
