@@ -77,6 +77,7 @@ trait Variations extends FrontendController {
 
   def saveChangeFlag[A](mode: Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     val applicableMode = if(mode == UpdateMode) Some(mode) else None
+
     val result = applicableMode.flatMap { _ =>
       findChangeIdNonIndexed(id).fold(findChangeIdIndexed(id))(Some(_))
         .map(cacheConnector.save(request.externalId, _, value = true))

@@ -68,6 +68,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   }
 
   private def directorAddressYearsRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
+    println("\n\n\n directorAddressYearsRoutes ")
     answers.get(DirectorAddressYearsId(index)) match {
       case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index))
       case Some(AddressYears.OverAYear) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(NormalMode, index))

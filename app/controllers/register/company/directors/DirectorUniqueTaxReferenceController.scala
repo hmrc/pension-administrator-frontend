@@ -71,8 +71,8 @@ class DirectorUniqueTaxReferenceController @Inject()(
             Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
           value => {
             val id = DirectorUniqueTaxReferenceId(index)
-            cacheConnector.save(request.externalId, id, value).flatMap { _ =>
-              saveChangeFlag(mode, id).map { json =>
+            cacheConnector.save(request.externalId, id, value).flatMap { json =>
+              saveChangeFlag(mode, id).map { _ =>
                 Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json)))
               }
             }

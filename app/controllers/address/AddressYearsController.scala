@@ -60,8 +60,8 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
         Future.successful(BadRequest(addressYears(appConfig, formWithErrors, viewmodel))),
       addressYears =>
         cacheConnector.save(request.externalId, id, addressYears).flatMap {
-          _ =>
-            saveChangeFlag(mode, id).map(answers =>
+          answers =>
+            saveChangeFlag(mode, id).map(_ =>
               Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
             )
         }

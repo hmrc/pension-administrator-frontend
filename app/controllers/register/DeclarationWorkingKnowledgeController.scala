@@ -66,8 +66,8 @@ class DeclarationWorkingKnowledgeController @Inject()(
             case Some(existing) => existing != value
           }
           if (hasAnswerChanged) {
-            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).flatMap(_ =>
-              saveChangeFlag(mode, DeclarationWorkingKnowledgeId).map(cacheMap =>
+            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).flatMap(cacheMap =>
+              saveChangeFlag(mode, DeclarationWorkingKnowledgeId).map(_ =>
                 Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
             )
           } else {

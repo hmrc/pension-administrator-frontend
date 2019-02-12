@@ -60,8 +60,8 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
         Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel))),
       contactDetails => {
         cacheConnector.save(request.externalId, id, contactDetails).flatMap {
-          _ => saveChangeFlag(mode, id). map {cacheMap =>
-              Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+          answers => saveChangeFlag(mode, id). map {_ =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
             }
         }
       }

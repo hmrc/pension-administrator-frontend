@@ -59,8 +59,8 @@ trait MoreThanTenController extends FrontendController with I18nSupport with Var
         }
 
         if (hasAnswerChanged) {
-          cacheConnector.save(request.externalId, viewModel.id, value).flatMap(_ =>
-            saveChangeFlag(mode, viewModel.id).map(cacheMap =>
+          cacheConnector.save(request.externalId, viewModel.id, value).flatMap(cacheMap =>
+            saveChangeFlag(mode, viewModel.id).map(_ =>
               Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
           )
         } else {

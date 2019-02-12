@@ -69,8 +69,8 @@ class PartnerUniqueTaxReferenceController @Inject()(
             Future.successful(BadRequest(partnerUniqueTaxReference(appConfig, formWithErrors, mode, index, partnerName))),
           value => {
             val id = PartnerUniqueTaxReferenceId(index)
-            cacheConnector.save(request.externalId, PartnerUniqueTaxReferenceId(index), value).flatMap(_ =>
-              saveChangeFlag(mode, id).map { json =>
+            cacheConnector.save(request.externalId, PartnerUniqueTaxReferenceId(index), value).flatMap(json =>
+              saveChangeFlag(mode, id).map { _ =>
                 Redirect(navigator.nextPage(PartnerUniqueTaxReferenceId(index), mode, UserAnswers(json)))
               }
             )

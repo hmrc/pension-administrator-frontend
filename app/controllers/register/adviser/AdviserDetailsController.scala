@@ -62,8 +62,8 @@ class AdviserDetailsController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
         value =>
-          cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(_ =>
-            saveChangeFlag(mode, AdviserDetailsId).map (cacheMap =>
+          cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(cacheMap =>
+            saveChangeFlag(mode, AdviserDetailsId).map (_ =>
             Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
           )
       )

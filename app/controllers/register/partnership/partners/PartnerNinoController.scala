@@ -68,8 +68,8 @@ class PartnerNinoController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(partnerNino(appConfig, formWithErrors, mode, index, partnerName.fullName))),
           value =>
-            cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(_ =>
-              saveChangeFlag(mode, DirectorNinoId(index)).map(json =>
+            cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(json =>
+              saveChangeFlag(mode, DirectorNinoId(index)).map(_ =>
                 Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
             )
         )

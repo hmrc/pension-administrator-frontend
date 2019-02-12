@@ -67,9 +67,9 @@ class DirectorNinoController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
           value =>
-            cacheConnector.save(request.externalId, DirectorNinoId(index), value).flatMap(_ =>
-              saveChangeFlag(mode, DirectorNinoId(index)).map (json =>
-                Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(json))))
+            cacheConnector.save(request.externalId, DirectorNinoId(index), value).flatMap(answers =>
+              saveChangeFlag(mode, DirectorNinoId(index)).map (_ =>
+                Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(answers))))
               )
           )
       }

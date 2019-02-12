@@ -60,6 +60,7 @@ class DirectorAddressYearsController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      println("\n\n\n mode: in DirectorAddressYearsController"+mode)
       viewmodel(mode, index).right.map {
         viewModel =>
           post(DirectorAddressYearsId(index), mode, form, viewModel)
