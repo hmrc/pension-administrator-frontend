@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package navigators
 
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
+import utils.{Enumerable, Navigator}
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
+                                    config: FrontendAppConfig)extends Navigator with Enumerable.Implicits {
 
-class DateHelper {
-  private[utils] def currentDate: LocalDate = LocalDate.now()
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] =
+    from.id match {
+      case _ => None
+    }
 
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
+  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = None
 
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
-
-  def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
 }
-
-object DateHelper extends DateHelper

@@ -23,7 +23,7 @@ import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import viewmodels.{ConfirmDeleteViewModel, Message}
@@ -42,7 +42,7 @@ class ConfirmDeletePartnerController @Inject()(
 
   private def viewModel(index: Index, name: String) = ConfirmDeleteViewModel(
     routes.ConfirmDeletePartnerController.onSubmit(index),
-    controllers.register.partnership.routes.AddPartnerController.onPageLoad(),
+    controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode),
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",
     Some(name),
@@ -61,7 +61,7 @@ class ConfirmDeletePartnerController @Inject()(
   def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerDetailsId(index).retrieve.right.map { details =>
-        post(viewModel(index, details.fullName), PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad())
+        post(viewModel(index, details.fullName), PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode))
       }
   }
 

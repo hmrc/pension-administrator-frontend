@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
+import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.PsaDetailsViewSpec._
 import views.behaviours.{CheckYourAnswersBehaviours, ViewBehaviours}
 import views.html.psa_details
@@ -35,20 +35,16 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
 
   val fakeCall = Call("method", "url")
 
-  def createView(canBeDeregistered: Boolean = true): () => HtmlFormat.Appendable = () =>
+  def createView(canBeDeregistered: Boolean = true, isUserAnswerUpdated: Boolean=false): () => HtmlFormat.Appendable = () =>
     psa_details(
       frontendAppConfig,
-      emptyAnswerSections,
-      secondaryHeader,
-      canBeDeregistered
+      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, canBeDeregistered)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
-      sections,
-      secondaryHeader,
-      true
+      PsaViewDetailsViewModel(sections, secondaryHeader, false, true)
     )(fakeRequest, messages)
 
   "supersection page" must {
@@ -66,6 +62,16 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
         "deregister-link",
         frontendAppConfig.deregisterPsaUrl,
         messages("psaDetails.deregister.link.text")
+      )
+    }
+
+
+    "display the declaration button when user answer is updated" in {
+      val doc = Jsoup.parse(createView(true, true).apply().toString())
+      doc must haveLinkWithUrlAndContent(
+        "declaration-link",
+        controllers.register.routes.DeclarationController.onPageLoad().url,
+        messages("psaDetails.declaration.link.text")
       )
     }
 

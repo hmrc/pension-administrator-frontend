@@ -70,21 +70,21 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
     "have add link for directors for only one director" in {
       companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-onlyOne"),
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "director-add-link-onlyOne"),
         Some("director-add-link-onlyOne-additionalText")
       ))
     }
 
     "have add link for directors for less than 10 directors" in {
       companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-lessThanTen"),
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "director-add-link-lessThanTen"),
         None
       ))
     }
 
     "have add link for directors for 10 directors" in {
       companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "director-add-link-Ten"),
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "director-add-link-Ten"),
         Some("director-add-link-Ten-additionalText")
       ))
     }
@@ -101,21 +101,21 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
     "have add link for partners for only one director" in {
       companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-onlyOne"),
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "partner-add-link-onlyOne"),
         Some("partner-add-link-onlyOne-additionalText")
       ))
     }
 
     "have add link for partners for less than 10 directors" in {
       companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-lessThanTen"),
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "partner-add-link-lessThanTen"),
         None
       ))
     }
 
     "have add link for partners for 10 directors" in {
       companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "partner-add-link-Ten"),
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "partner-add-link-Ten"),
         Some("partner-add-link-Ten-additionalText")
       ))
     }

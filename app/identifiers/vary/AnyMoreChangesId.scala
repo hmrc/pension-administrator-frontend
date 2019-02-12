@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers.vary
 
+import identifiers.TypedIdentifier
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+case object AnyMoreChangesId extends TypedIdentifier[Boolean] {
+  self =>
+  override def toString: String = "anyMoreChanges"
 
-class DateHelper {
-  private[utils] def currentDate: LocalDate = LocalDate.now()
-
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
-
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
-
-  def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
 }
-
-object DateHelper extends DateHelper

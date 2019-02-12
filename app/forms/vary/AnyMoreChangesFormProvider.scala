@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package utils
+package forms.vary
 
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+class AnyMoreChangesFormProvider @Inject() extends Mappings {
 
-class DateHelper {
-  private[utils] def currentDate: LocalDate = LocalDate.now()
-
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
-
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
-
-  def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("anyMoreChanges.error.required")
+    )
 }
-
-object DateHelper extends DateHelper

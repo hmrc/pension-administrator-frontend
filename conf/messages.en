@@ -85,7 +85,7 @@ site.start = Start
 site.finishAndSignOut = Finish and sign out
 site.printThisPage = Print this page
 site.signOut=Sign out
-site.return_to_overview = Return to manage and register your pension schemes
+site.return_to_overview = Return to managing pension schemes
 site.return.govuk = Return to GOV.UK
 site.not_entered = Not entered
 
@@ -719,6 +719,7 @@ psaDetails.title = Registered PSA details
 psaDetails.header = Pension scheme administrator details
 psaDetails.deregister.link.text = Stop being a pension scheme administrator
 psaDetails.deregister.text =  - this will also delete the administrator ID.
+psaDetails.declaration.link.text = Continue to declaration
 
 company.address.label = Company’s contact address
 company.email.label = Company’s email address
@@ -811,3 +812,12 @@ partnershipRegisteredNonUKAddress.hintText = This is the partnership’s address
 deregister.success.title = You have stopped being a pension scheme administrator
 deregister.success.heading = You have stopped being a pension scheme administrator
 deregister.success.p1 = Your administrator ID has been deleted.
+
+anyMoreChanges.title = Do you want to make any more changes?
+anyMoreChanges.heading = Do you want to make any more changes?
+anyMoreChanges.p1 = The pension scheme has not been updated yet.
+anyMoreChanges.p2 = You will need to complete a declaration to update the scheme when you have made all of your changes.
+anyMoreChanges.p3 = You have until {0} to complete the declaration. If you do not complete the declaration by this date, your changes will be deleted.
+
+anyMoreChanges.error.required = Select yes if you want to make more changes
+

@@ -38,7 +38,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
 import utils.countryOptions.CountryOptions
 import utils.{PsaDetailsHelper, UserAnswers, ViewPsaDetailsHelper}
-import viewmodels.SuperSection
+import viewmodels.PsaViewDetailsViewModel
 import views.html.psa_details
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,43 +56,66 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      val retrieval = if (fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId) else retrievePsaDataFromModel(psaId)
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
-        retrieval map { tuple => Ok(psa_details(appConfig, tuple._1, tuple._2, canDeregister)) }
+        val retrieval = if(fs.get(isVariationsEnabled)) -A(psaId, canDeregister) else retrievePsaDataFromModel(psaId, canDeregister)
+        retrieval.map { psaDetails =>
+            Ok(psa_details(appConfig, psaDetails))
+        }
       }
   }
 
-  private def retrievePsaDataFromModel(psaId: String)(implicit hc: HeaderCarrier): Future[(Seq[SuperSection], String)] = {
-    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
+  private def retrievePsaDataFromModel(psaId: String, canDeregister: Boolean)(implicit hc: HeaderCarrier): Future[PsaViewDetailsViewModel] = {
+      subscriptionConnector.getSubscriptionModel(psaId).map { response =>
       response.organisationOrPartner match {
         case None =>
-          (new PsaDetailsHelper(response, countryOptions).individualSections, response.individual.map(_.fullName).getOrElse(""))
+          PsaViewDetailsViewModel(
+            new PsaDetailsHelper(response, countryOptions).individualSections,
+            response.individual.map(_.fullName).getOrElse(""),
+            false,
+            canDeregister)
         case _ =>
-          (new PsaDetailsHelper(response, countryOptions).organisationSections, response.organisationOrPartner.map(_.name).getOrElse(""))
+          PsaViewDetailsViewModel(
+            new PsaDetailsHelper(response, countryOptions).organisationSections,
+            response.organisationOrPartner.map(_.name).getOrElse(""),
+            false,
+            canDeregister)
       }
     }
   }
 
-  private def retrievePsaDataFromUserAnswers(psaId: String)(
-    implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Seq[SuperSection], String)] = {
+  private def retrievePsaDataFromUserAnswers(psaId: String, canDeregister: Boolean)(
+    implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
       val answers = UserAnswers(response)
       val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
       val userAnswers = setAllCompleteFlags(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
-      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
+      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
+        val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
         Future.successful(
           legalStatus match {
             case Some(Individual) =>
-              (new ViewPsaDetailsHelper(
-                userAnswers, countryOptions).individualSections, userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "")
+              PsaViewDetailsViewModel(
+                new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
+                userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
+                isUserAnswerUpdated,
+                canDeregister)
+
             case Some(LimitedCompany) =>
-              (new ViewPsaDetailsHelper(
-                userAnswers, countryOptions).companySections, userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "")
+              PsaViewDetailsViewModel(
+                new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
+                userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""),
+                isUserAnswerUpdated,
+                canDeregister)
+
             case Some(Partnership) =>
-              (new ViewPsaDetailsHelper(
-                userAnswers, countryOptions).partnershipSections,
-                userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "")
-            case _ => (Nil, "")
+              PsaViewDetailsViewModel(
+                new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
+                userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""),
+                isUserAnswerUpdated,
+                canDeregister)
+
+            case _ =>
+              PsaViewDetailsViewModel(Nil, "", isUserAnswerUpdated, canDeregister)
           })
       }
     }

@@ -24,7 +24,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{Index, PersonDetails}
+import models.{Index, NormalMode, PersonDetails}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -87,7 +87,7 @@ object ConfirmDeletePartnerControllerSpec {
 
   val firstIndex = Index(0)
 
-  val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
+  val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
   val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex)
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()

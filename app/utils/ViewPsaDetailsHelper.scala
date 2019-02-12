@@ -105,6 +105,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     toOptionSeq(Seq(
       pensionAdviser,
       pensionAdviserEmail,
+      pensionAdviserPhone,
       pensionAdviserAddress
     ).flatten).map { seqAnswerRow =>
       SuperSection(
@@ -131,7 +132,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def individualAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -143,17 +144,17 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def individualPreviousAddress: Option[AnswerRow] = userAnswers.get(IndividualPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
     AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualPhoneNumber: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   //Company PSA
@@ -174,7 +175,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def companyAddress: Option[AnswerRow] = userAnswers.get(CompanyContactAddressId) map { address =>
     AnswerRow("company.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -186,21 +187,22 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(CompanyPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
     AnswerRow("company.email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
     AnswerRow("company.phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>
-    AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false, None)})
+    AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false, None)
+  })
 
   //Directors
   private def directorDob(index: Int): Option[AnswerRow] = userAnswers.get(DirectorDetailsId(index)) map { details =>
@@ -213,7 +215,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(CheckMode, index).url, "site.add")))
+      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, index).url, "site.add")))
 
     case _ => None
   }
@@ -223,30 +225,30 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(CheckMode, index).url, "site.add")))
+      Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")))
 
     case _ => None
   }
 
   private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(CheckMode, index).url)))
+      Some(Link(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
     userAnswers.get(DirectorPreviousAddressId(index)) map { address =>
-    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index).url)))
-  }
+      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+        Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, index).url)))
+    }
 
   private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url)))
+      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
     AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(CheckMode, index).url)))
+      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, index).url)))
   }
 
 
@@ -274,7 +276,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     SuperSection(
       Some("director.supersection.header"),
       for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, linkText), additionalText))
+      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
@@ -294,7 +296,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def partnershipAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactAddressId) map { address =>
     AnswerRow("partnership.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -305,17 +307,17 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def partnershipPreviousAddress: Option[AnswerRow] = userAnswers.get(PartnershipPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
     AnswerRow("partnership.email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipPhoneNumber: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
     AnswerRow("partnership.phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipUtr: Option[AnswerRow] = userAnswers.get(PartnershipDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>
@@ -334,7 +336,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(CheckMode, index).url, "site.add")))
+      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add")))
 
     case _ => None
   }
@@ -344,30 +346,30 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url, "site.add")))
+      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")))
 
     case _ => None
   }
 
   private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerAddressId(index)) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(CheckMode, index).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
     userAnswers.get(PartnerPreviousAddressId(index)) map { address =>
-    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(CheckMode, index).url)))
-  }
+      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+        Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index).url)))
+    }
 
   private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
     AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, index).url)))
   }
 
 
@@ -395,7 +397,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
     SuperSection(
       Some("partner.supersection.header"),
       for (person <- userAnswers.allPartnersAfterDelete) yield partnerSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad().url, linkText), additionalText))
+      Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
@@ -407,12 +409,17 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+  }
+
+  private def pensionAdviserPhone: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
   }
 
   private def pensionAdviserAddress: Option[AnswerRow] = userAnswers.get(AdviserAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url)))
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
