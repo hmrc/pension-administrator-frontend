@@ -193,7 +193,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, partners: Seq[Person] = Nil) =
-    addEntity(frontendAppConfig, form, viewmodel(partners))(request, messages).toString
+    addEntity(frontendAppConfig, form, viewmodel(partners), NormalMode)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))

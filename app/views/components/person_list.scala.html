@@ -18,8 +18,9 @@
 @import config.FrontendAppConfig
 @import models.requests.DataRequest
 @import viewmodels.Person
+@import models.Mode
 
-@(appConfig: FrontendAppConfig, people: Seq[Person])(implicit request: DataRequest[AnyContent], messages: Messages)
+@(appConfig: FrontendAppConfig, people: Seq[Person], mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 <div class="form-group">
     <ul id="people" class="govuk-check-your-answers form-group cya-questions-long">
@@ -30,17 +31,13 @@
             </div>
 
                 @if(person.isComplete){
-
-                <div class="cya-status status">
-                    <span class="complete">COMPLETE</span>
-                </div>
-
+                    <div class="cya-status status">
+                        <span class="complete">COMPLETE</span>
+                    </div>
                 } else {
-
-                <div class="cya-status status">
-                    <span class="rejected">INCOMPLETE</span>
-                </div>
-
+                    <div class="cya-status status">
+                        <span class="rejected">INCOMPLETE</span>
+                    </div>
                 }
 
             <div>
@@ -49,11 +46,14 @@
                 </a>
             </div>
 
-            <div>
-                <a id="@person.editLinkId" href="@person.editLink">
-                    @messages("site.edit")
-                </a>
-            </div>
+            @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete)) {
+                <div>
+                    <a id="@person.editLinkId" href="@person.editLink">
+                        @messages("site.edit")
+                    </a>
+                </div>
+            }
+
         </li>
         }
     </ul>
