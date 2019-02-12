@@ -19,7 +19,7 @@ package views.register
 import controllers.register.partnership.routes
 import forms.register.AddEntityFormProvider
 import models.requests.DataRequest
-import models.{CheckMode, NormalMode, PSAUser, UserType}
+import models._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
@@ -49,11 +49,11 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     subHeading = None
   )
 
-  private def createView(entities: Seq[Person] = Nil)
-  = () => addEntity(frontendAppConfig, form, viewmodel(entities))(request, messages)
+  private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
+  = () => addEntity(frontendAppConfig, form, viewmodel(entities), mode)(request, messages)
 
   private def createViewUsingForm(entities: Seq[Person] = Nil)
-  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities))(request, messages)
+  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities), NormalMode)(request, messages)
 
   val form = new AddEntityFormProvider()()
 
@@ -73,7 +73,11 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
     val partners: Seq[Person] = Seq(johnDoe, joeBloggs)
 
-    behave like peopleList(createView(), createView(partners), partners)
+    behave like peopleList(createView(),
+      createView(partners),
+      createView(Seq(johnDoe, joeBloggs.copy(isComplete = false)), UpdateMode),
+      partners
+    )
 
     "not show the yes no inputs if there are no partners" in {
       val doc = asDocument(createViewUsingForm()(form))
