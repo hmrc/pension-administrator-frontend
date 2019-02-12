@@ -17,6 +17,7 @@
 package views.register.partnership
 
 import controllers.register.partnership.routes
+import models.NormalMode
 import views.behaviours.ViewBehaviours
 import views.html.register.partnership.partnershipReview
 
@@ -49,14 +50,14 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
 
   "have link to edit partner details when there are less than 10 partners" in {
     createView must haveLink(
-      routes.AddPartnerController.onPageLoad.url, "edit-partner-details"
+      routes.AddPartnerController.onPageLoad(NormalMode).url, "edit-partner-details"
     )
     createView must haveDynamicText("partnershipReview.partners.editLink")
   }
 
   "have link to edit partners when there are 10 partners" in {
     createView must haveLink(
-      routes.AddPartnerController.onPageLoad().url, "edit-partner-details"
+      routes.AddPartnerController.onPageLoad(NormalMode).url, "edit-partner-details"
     )
     createSecView must haveDynamicText("partnershipReview.partners.changeLink")
   }

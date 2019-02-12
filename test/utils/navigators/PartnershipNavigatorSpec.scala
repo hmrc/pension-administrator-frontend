@@ -106,7 +106,7 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def contactDetailsPage: Call = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
 
-  private def addPartnersPage: Call = routes.AddPartnerController.onPageLoad()
+  private def addPartnersPage: Call = routes.AddPartnerController.onPageLoad(NormalMode)
 
   private def addressYearsPage(mode: Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
 

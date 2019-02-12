@@ -87,7 +87,7 @@ object ConfirmDeletePartnerControllerSpec {
 
   val firstIndex = Index(0)
 
-  val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad()
+  val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
   val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()

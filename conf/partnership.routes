@@ -27,6 +27,8 @@ GET        /enter-contact-address                       controllers.register.par
 POST       /enter-contact-address                       controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-contact-address                      controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-contact-address                      controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-contact-address                    controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-contact-address                    controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /is-this-the-contact-address                 controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /is-this-the-contact-address                 controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode = NormalMode)
@@ -45,6 +47,8 @@ GET        /contact-details                             controllers.register.par
 POST       /contact-details                             controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-contact-details                      controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-contact-details                      controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-contact-details                    controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-contact-details                    controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /previous-address-results                    controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST       /previous-address-results                    controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
@@ -55,19 +59,22 @@ GET        /previous-address-manual                     controllers.register.par
 POST       /previous-address-manual                     controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-previous-address-manual              controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-previous-address-manual              controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = CheckMode)
-
-GET        /add-partners                                controllers.register.partnership.AddPartnerController.onPageLoad
-POST       /add-partners                                controllers.register.partnership.AddPartnerController.onSubmit
+GET        /changing-previous-address-manual            controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-previous-address-manual            controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /vat-number                                  controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = NormalMode)
 POST       /vat-number                                  controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = NormalMode)
 GET        /change-vat-number                           controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-vat-number                           controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-vat-number                         controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-vat-number                         controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /paye-number                                 controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
 POST       /paye-number                                 controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
 GET        /change-paye-number                          controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-paye-number                          controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-paye-number                        controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-paye-number                        controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onPageLoad()
 POST       /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
@@ -76,9 +83,13 @@ GET        /other-partners                              controllers.register.par
 POST       /other-partners                              controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = NormalMode)
 GET        /change-other-partners                       controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-other-partners                       controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = CheckMode)
+GET        /changing-other-partners                     controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-other-partners                     controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /add-partners                                controllers.register.partnership.AddPartnerController.onPageLoad
-POST       /add-partners                                controllers.register.partnership.AddPartnerController.onSubmit
+GET        /add-partners                                controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = NormalMode)
+POST       /add-partners                                controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = NormalMode)
+GET        /changing-partners                           controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-partners                           controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad
 POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit

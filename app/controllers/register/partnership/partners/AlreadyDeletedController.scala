@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
-import models.Index
+import models.{Index, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -44,7 +44,7 @@ class AlreadyDeletedController @Inject()(
       def viewmodel(name: String) = AlreadyDeletedViewModel(
         Message("alreadyDeleted.partner.title"),
         name,
-        controllers.register.partnership.routes.AddPartnerController.onPageLoad()
+        controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
       )
 
       PartnerDetailsId(index).retrieve.right.map { partnerDetails =>
