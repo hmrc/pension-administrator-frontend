@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

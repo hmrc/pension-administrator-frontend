@@ -47,7 +47,7 @@
             @components.submit_button("addCompanyDirectors.addADirector")
         } else {
 
-            @components.person_list(appConfig, directors)
+            @components.person_list(appConfig, directors, mode)
 
             @if(directors.size < appConfig.maxDirectors) {
                 @components.input_yes_no(
