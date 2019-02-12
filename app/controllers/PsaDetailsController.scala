@@ -89,8 +89,8 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       val answers = UserAnswers(response)
       val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
       val userAnswers = setAllCompleteFlags(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
-      val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
-      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
+      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
+        val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
         Future.successful(
           legalStatus match {
             case Some(Individual) =>
