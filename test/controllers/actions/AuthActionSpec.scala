@@ -23,7 +23,7 @@ import config.FeatureSwitchManagementService
 import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector}
 import controllers.routes
 import identifiers.JourneyId
-import models.CheckMode
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Controller
 import play.api.test.FakeRequest
@@ -77,41 +77,21 @@ class AuthActionSpec extends SpecBase {
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
           fakeUserAnswersConnector, fakeIVConnector)
-        val controller = new Harness(authAction)
+        def controller = new Harness(authAction)
 
         "coming from confirmation" in {
-          val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.confirmationUri))
+          val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.ConfirmationController.onPageLoad().url))
           status(result) mustBe OK
         }
 
         "coming from duplicate registration" in {
-          val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.duplicateRegUri))
+          val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.DuplicateRegistrationController.onPageLoad().url))
           status(result) mustBe OK
         }
 
         "coming from registered psa details" in {
-          val result = controller.onPageLoad()(FakeRequest("GET", frontendAppConfig.registeredPsaDetailsUri))
+          val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.routes.PsaDetailsController.onPageLoad().url))
           status(result) mustBe OK
-        }
-
-        "coming from psa details view with update Mode" in {
-          val fakeUserAnswersConnector = fakeUserAnswersCacheConnector(
-            dataToBeReturned = Json.obj("areYouInUK" -> true, "updateMode" -> true))
-          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersConnector, fakeIVConnector)
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest("GET",
-            controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url))
-          status(result) mustBe OK
-
-        }
-
-        "coming from psa details view withiout update Mode" in {
-          val result = controller.onPageLoad()(FakeRequest("GET",
-            controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url))
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.InterceptPSAController.onPageLoad().url)
-
         }
       }
     }
@@ -426,7 +406,7 @@ object AuthActionSpec {
     enrolments)
   )
 
-  class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad() = authAction { _ => Ok }
+  class Harness(authAction: AuthAction, allowAccess: AllowAccessActionProvider= new AllowAccessActionProviderImpl()) extends Controller {
+    def onPageLoad(mode:Mode=NormalMode) = (authAction andThen allowAccess(mode)) { _ => Ok }
   }
 }
