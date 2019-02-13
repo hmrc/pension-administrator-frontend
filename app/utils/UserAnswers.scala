@@ -62,7 +62,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       val index = directors.indexOf(director)
       val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
       val editUrl = if (isComplete) {
-        routes.CheckYourAnswersController.onPageLoad(Index(index)).url
+        routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(index)).url
       } else {
         routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
       }
