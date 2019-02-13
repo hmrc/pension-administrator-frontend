@@ -19,7 +19,7 @@ package views.register.company
 import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
@@ -37,8 +37,8 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
   private val messageKeyPrefix = "addCompanyDirectors"
 
-  private def createView(directors: Seq[Person] = Nil)
-  = () => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages)
+  private def createView(directors: Seq[Person] = Nil, mode: Mode = NormalMode)
+  = () => addCompanyDirectors(frontendAppConfig, form, mode, directors)(request, messages)
 
   private def createViewUsingForm(directors: Seq[Person] = Nil)
   = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages)
@@ -61,7 +61,10 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
     val directors: Seq[Person] = Seq(johnDoe, joeBloggs)
 
-    behave like peopleList(createView(), createView(directors), directors)
+    behave like peopleList(createView(),
+      createView(directors),
+      createView(Seq(johnDoe, joeBloggs.copy(isComplete = false)), UpdateMode),
+      directors)
 
     "not show the yes no inputs if there are no directors" in {
       val doc = asDocument(createViewUsingForm()(form))
@@ -110,7 +113,7 @@ object AddCompanyDirectorsViewSpec {
     UserAnswers(Json.obj())
   )
 
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url
 
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
 

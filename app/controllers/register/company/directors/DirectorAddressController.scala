@@ -20,7 +20,7 @@ import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
@@ -37,14 +37,14 @@ import viewmodels.address.ManualAddressViewModel
 
 class DirectorAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          override val dataCacheConnector: UserAnswersCacheConnector,
+                                          override val cacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: AddressFormProvider,
                                           countryOptions: CountryOptions,
-                                          val auditService: AuditService) extends ManualAddressController with Retrievals {
+                                          val auditService: AuditService) extends ManualAddressController with Retrievals with Variations {
 
   override protected val form: Form[Address] = formProvider()
 

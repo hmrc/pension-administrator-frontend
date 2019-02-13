@@ -16,21 +16,21 @@
 
 package utils
 
-
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-class DateHelper {
-  private[utils] def currentDate: LocalDate = LocalDate.now()
+import uk.gov.hmrc.play.test.UnitSpec
 
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
+class DateHelperSpec extends UnitSpec {
+  def buildDateHelper: DateHelper = new DateHelper {
+    override private[utils] def currentDate: LocalDate = LocalDate.parse("2019-01-02")
+  }
+  val daysAhead = 28
 
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
-
-  def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
+  "dateAfterGivenDays" should {
+    "return the date after the given days from todays date in the correct format" in {
+      val result = buildDateHelper.dateAfterGivenDays(daysAhead).toString
+      result shouldBe "30 January 2019"
+    }
+  }
 }
 
-object DateHelper extends DateHelper

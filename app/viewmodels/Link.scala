@@ -14,23 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package viewmodels
 
+case class Link(url: String, text: String = "site.change")
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-class DateHelper {
-  private[utils] def currentDate: LocalDate = LocalDate.now()
-
-  private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-  private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
-
-  def formatDate(date: LocalDate): String = date.format(formatter)
-
-  def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
-
-  def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
-}
-
-object DateHelper extends DateHelper

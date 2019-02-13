@@ -16,14 +16,16 @@
 
 package views.behaviours
 
+import models.UpdateMode
 import viewmodels.Person
 import views.ViewSpecBase
+import views.register.company.AddCompanyDirectorsViewSpec.johnDoe
 
 trait PeopleListBehaviours {
   this: ViewSpecBase =>
 
   // scalastyle:off method.length
-  def peopleList(emptyView: View, nonEmptyView: View, people: Seq[Person]): Unit = {
+  def peopleList(emptyView: View, nonEmptyView: View, viewWithUpdateMode: View, people: Seq[Person]): Unit = {
     "behave like a list of people" must {
       "not show the list if there are no people" in {
         val doc = asDocument(emptyView())
@@ -67,6 +69,20 @@ trait PeopleListBehaviours {
           link.first.text mustBe messages("site.edit")
           link.first.attr("href") mustBe person.editLink
         }
+      }
+
+      "not display the edit link when in update mode and completed" in {
+        val doc = asDocument(viewWithUpdateMode())
+        val link = doc.select(s"#${people(0).editLinkId}")
+        link.size mustBe 0
+      }
+
+      "display the edit link when in update mode and completed" in {
+        val doc = asDocument(viewWithUpdateMode())
+        val link = doc.select(s"#${people(1).editLinkId}")
+        link.size mustBe 1
+        link.first.text mustBe messages("site.edit")
+        link.first.attr("href") mustBe people(1).editLink
       }
     }
   }

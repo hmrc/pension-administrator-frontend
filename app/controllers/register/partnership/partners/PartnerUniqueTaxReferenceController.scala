@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.partnership.partners.PartnerUniqueTaxReferenceId
@@ -37,13 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class PartnerUniqueTaxReferenceController @Inject()(
                                                      appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: UserAnswersCacheConnector,
+                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                      @PartnershipPartner navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: UniqueTaxReferenceFormProvider
-                                                   )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                                   ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals with Variations {
 
   private val form = formProvider.apply(
     requiredKey = "partnerUniqueTaxReference.error.required",
@@ -67,10 +67,16 @@ class PartnerUniqueTaxReferenceController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(partnerUniqueTaxReference(appConfig, formWithErrors, mode, index, partnerName))),
-          value =>
-            dataCacheConnector.save(request.externalId, PartnerUniqueTaxReferenceId(index), value).map(cacheMap =>
-              Redirect(navigator.nextPage(PartnerUniqueTaxReferenceId(index), mode, UserAnswers(cacheMap))))
+          value => {
+            val id = PartnerUniqueTaxReferenceId(index)
+            cacheConnector.save(request.externalId, PartnerUniqueTaxReferenceId(index), value).flatMap(json =>
+              saveChangeFlag(mode, id).map { _ =>
+                Redirect(navigator.nextPage(PartnerUniqueTaxReferenceId(index), mode, UserAnswers(json)))
+              }
+            )
+          }
         )
+
       }
   }
 }
