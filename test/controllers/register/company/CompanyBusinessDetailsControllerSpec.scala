@@ -46,7 +46,7 @@ class CompanyBusinessDetailsControllerSpec extends ControllerSpecBase
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody()
-      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onSubmit()(postRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

@@ -72,7 +72,7 @@ class CompanyRegisteredAddressController @Inject()(
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right.map { details =>
         post(details.companyName, CompanyAddressId, addressViewModel(details.companyName), RegistrationLegalStatus.LimitedCompany)
