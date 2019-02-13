@@ -62,6 +62,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeUserAnswersCacheConnector

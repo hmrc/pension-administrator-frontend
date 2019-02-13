@@ -21,8 +21,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.NameCleansing
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
 import identifiers.TypedIdentifier
-import models.{BusinessDetails, NormalMode}
 import models.requests.DataRequest
+import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}

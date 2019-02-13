@@ -1,6 +1,6 @@
 ->         /directors                                   directors.Routes
 
-GET        /business-details                            controllers.register.company.CompanyBusinessDetailsController.onPageLoad()
+GET        /business-details                            controllers.register.company.CompanyBusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /business-details                            controllers.register.company.CompanyBusinessDetailsController.onSubmit()
 
 GET        /company-registration-number                 controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
@@ -44,7 +44,7 @@ POST       /company-previous-address-results            controllers.register.com
 GET        /change-company-previous-address-results     controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-company-previous-address-results     controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-your-answers                          controllers.register.company.CheckYourAnswersController.onPageLoad()
+GET        /check-your-answers                          controllers.register.company.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST       /check-your-answers                          controllers.register.company.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
 GET        /add-directors                               controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
@@ -69,15 +69,15 @@ POST       /what-is-the-contact-address                 controllers.register.com
 GET        /change-what-is-the-contact-address          controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-what-is-the-contact-address          controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode)
 
-GET        /review                                      controllers.register.company.CompanyReviewController.onPageLoad()
+GET        /review                                      controllers.register.company.CompanyReviewController.onPageLoad(mode: Mode = NormalMode)
 POST       /review                                      controllers.register.company.CompanyReviewController.onSubmit()
 
-GET        /update-company-details                      controllers.register.company.CompanyUpdateDetailsController.onPageLoad()
+GET        /update-company-details                      controllers.register.company.CompanyUpdateDetailsController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /company-not-found                           controllers.register.company.CompanyNotFoundController.onPageLoad()
+GET        /company-not-found                           controllers.register.company.CompanyNotFoundController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onPageLoad()
-POST       /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onSubmit()
+GET        /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-you-will-need                          controllers.register.company.WhatYouWillNeedController.onSubmit
 
 GET        /is-this-the-contact-address                 controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /is-this-the-contact-address                 controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode = NormalMode)
@@ -102,9 +102,7 @@ GET        /change-company-name                         controllers.register.com
 POST       /change-company-name                         controllers.register.company.CompanyRegisteredNameController.onSubmit()
 
 
-GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad()
+GET        /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit()
-GET        /change-enter-registered-address             controllers.register.company.CompanyRegisteredAddressController.onPageLoad()
-POST       /change-enter-registered-address             controllers.register.company.CompanyRegisteredAddressController.onSubmit()
 
-GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad()
+GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)

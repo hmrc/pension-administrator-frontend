@@ -22,10 +22,11 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
 import models.register.company.CompanyDetails
-import models.{AddressYears, Index, NormalMode, PersonDetails}
+import models._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -136,6 +137,16 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "redirect to the next page when valid data is submitted and the change flag should be updated when in update mode" in {
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
+      val result = controller().onSubmit(UpdateMode, index)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
     }
   }
 }

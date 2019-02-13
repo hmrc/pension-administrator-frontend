@@ -37,10 +37,10 @@ import viewmodels.address.ManualAddressViewModel
 
 class PartnerAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
-                                         override val dataCacheConnector: UserAnswersCacheConnector,
+                                         override val cacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartner override val navigator: Navigator,
-                                         override val allowAccess: AllowAccessActionProvider,
                                          authenticate: AuthAction,
+                                         override val  allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AddressFormProvider,

@@ -67,12 +67,12 @@ class CheckYourAnswersController @Inject()(
           appConfig,
           answersSection,
           Some(directorName),
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(index)))
+          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)))
         )
       }
   }
 
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
         Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))

@@ -19,7 +19,7 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.OrganisationNameController
 import forms.BusinessDetailsFormModel
 import identifiers.register.company.BusinessDetailsId
@@ -27,12 +27,13 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
-import viewmodels.{OrganisationNameViewModel, Message}
+import viewmodels.{Message, OrganisationNameViewModel}
 
 class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {

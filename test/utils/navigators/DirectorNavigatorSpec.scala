@@ -31,7 +31,6 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
@@ -75,7 +74,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 object DirectorNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(NormalMode, 0)
+  private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(0)
   private lazy val companyReviewPage = controllers.register.company.routes.CompanyReviewController.onPageLoad()
   private lazy val moreThanTenDirectorsPage = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode)
   private lazy val directorDetailsPage = routes.DirectorDetailsController.onPageLoad(NormalMode, 0)

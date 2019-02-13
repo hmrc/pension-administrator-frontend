@@ -42,8 +42,8 @@ class ConfirmDeleteDirectorController @Inject()(
 
   val form = formProvider()
 
-  private def vm(index: Index, name: String) = ConfirmDeleteViewModel(
-    routes.ConfirmDeleteDirectorController.onSubmit(index),
+  private def vm(index: Index, name: String, mode:Mode) = ConfirmDeleteViewModel(
+    routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
@@ -55,14 +55,14 @@ class ConfirmDeleteDirectorController @Inject()(
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
 
-        get(vm(index, details.fullName), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(mode, index))
+        get(vm(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
       }
   }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
-        post(vm(index, details.fullName), DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode))
+        post(vm(index, details.fullName, mode), DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode), mode)
       }
   }
 

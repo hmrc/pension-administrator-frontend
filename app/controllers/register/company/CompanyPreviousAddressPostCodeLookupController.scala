@@ -38,8 +38,8 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
                                                                 override val addressLookupConnector: AddressLookupConnector,
                                                                 @RegisterCompany override val navigator: Navigator,
                                                                 override val messagesApi: MessagesApi,
-                                                                override val allowAccess: AllowAccessActionProvider,
                                                                 authenticate: AuthAction,
+                                                                override val allowAccess: AllowAccessActionProvider,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider

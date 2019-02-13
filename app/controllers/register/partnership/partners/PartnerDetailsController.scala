@@ -34,8 +34,8 @@ class PartnerDetailsController @Inject()(
                                           override val messagesApi: MessagesApi,
                                           val dataCacheConnector: UserAnswersCacheConnector,
                                           @PartnershipPartner val navigator: Navigator,
-                                          override val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
+                                          override val allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
                                         ) extends PersonDetailsController {

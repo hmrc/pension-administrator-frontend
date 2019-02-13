@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 
 class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                      val messagesApi: MessagesApi,
-                                                     val dataCacheConnector: UserAnswersCacheConnector,
+                                                     val cacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      override val allowAccess: AllowAccessActionProvider,
                                                      authenticate: AuthAction,

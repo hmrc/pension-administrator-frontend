@@ -66,7 +66,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
     ))
 
-  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(0)
+  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(NormalMode, 0)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
@@ -117,7 +117,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "mark director as complete on submit" in {
 
-      val result = controller().onSubmit(index, NormalMode)(fakeRequest)
+      val result = controller().onSubmit(NormalMode, index)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       FakeSectionComplete.verify(IsDirectorCompleteId(index), true)

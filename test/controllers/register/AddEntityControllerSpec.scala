@@ -55,11 +55,11 @@ object AddEntityControllerSpec {
                                 ) extends AddEntityController {
 
     def onPageLoad(viewmodel: EntityViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider(), viewmodel)(request(answers))
+      get(FakeIdentifier, formProvider(), viewmodel, NormalMode)(request(answers))
     }
 
     def onSubmit(viewmodel: EntityViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, formProvider(), viewmodel)(request(answers, fakeRequest))
+      post(FakeIdentifier, formProvider(), viewmodel, NormalMode)(request(answers, fakeRequest))
     }
 
   }
@@ -111,7 +111,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addEntity(appConfig, formProvider(), viewmodel())(request(), messages).toString
+          contentAsString(result) mustEqual addEntity(appConfig, formProvider(), viewmodel(), NormalMode)(request(), messages).toString
       }
     }
 
@@ -134,7 +134,8 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           contentAsString(result) mustEqual addEntity(
             appConfig,
             formProvider(),
-            viewmodel(entities)
+            viewmodel(entities),
+            NormalMode
           )(request(), messages).toString
       }
     }
@@ -158,7 +159,8 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           contentAsString(result) mustEqual addEntity(
             appConfig,
             formProvider(),
-            viewmodel(Seq.fill(maxPartners)(johnDoePerson))
+            viewmodel(Seq.fill(maxPartners)(johnDoePerson)),
+            NormalMode
           )(request(), messages).toString
       }
     }
@@ -212,7 +214,8 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
           contentAsString(result) mustEqual addEntity(
             appConfig,
             formProvider().bind(Map("value" -> "invalid value")),
-            viewmodel(entities)
+            viewmodel(entities),
+            NormalMode
           )(request(), messages).toString
       }
     }

@@ -68,7 +68,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
       val directorEntities = Seq(
         Person(0, "First Last", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 0).url,
-          routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(0)).url,
+          routes.CheckYourAnswersController.onPageLoad(Index(0)).url,
           isDeleted = false, isComplete = true),
         Person(1, "First1 Last1", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 1).url,
           routes.DirectorDetailsController.onPageLoad(NormalMode, Index(1)).url,

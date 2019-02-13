@@ -20,6 +20,10 @@ import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider, FakeDataRetrievalAction}
 import identifiers.PsaId
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
+import identifiers.{PsaId, UpdateModeId}
+import identifiers.register.company.directors.IsDirectorCompleteId
+import identifiers.register.partnership.partners.IsPartnerCompleteId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
@@ -30,7 +34,7 @@ import play.api.Configuration
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
-import utils.FakeCountryOptions
+import utils.{FakeCountryOptions, UserAnswers}
 import utils.Toggles._
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
@@ -99,6 +103,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", true)
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
         (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
 
@@ -114,6 +120,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(partnershipWithChangeLinks, "Test partnership name", true)
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
         (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
       }
     }

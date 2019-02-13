@@ -51,8 +51,8 @@ class ContactDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
-      FakeAllowAccessProvider(),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

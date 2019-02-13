@@ -37,6 +37,7 @@ import scala.concurrent.ExecutionContext
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @RegisterCompany navigator: Navigator,
@@ -44,7 +45,7 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions
                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val companyDetails = AnswerSection(

@@ -22,8 +22,9 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerUniqueTaxReferenceId}
-import models.{NormalMode, PersonDetails, UniqueTaxReference}
+import models.{NormalMode, PersonDetails, UniqueTaxReference, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -55,7 +56,7 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerUniqueTaxReferenceController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      FakeAuthAction, FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
   private def viewAsString(form: Form[_] = form) = partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, firstIndex,
     personDetails.fullName)(fakeRequest, messages).toString
@@ -84,6 +85,16 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to the next page and update change flag when valid data is submitted in update mode" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("utr.hasUtr", "true"), ("utr.utr", "1234567891"))
+
+      val result = controller().onSubmit(UpdateMode, firstIndex)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

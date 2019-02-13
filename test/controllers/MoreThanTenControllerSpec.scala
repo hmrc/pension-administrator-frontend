@@ -18,14 +18,17 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.MoreThanTenDirectorsOrPartnersChangedId
+import identifiers.register.company.MoreThanTenDirectorsId
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{NormalMode, PSAUser, UpdateMode, UserType}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,7 +36,8 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration.Duration
 
 class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
@@ -44,7 +48,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
     "return OK and the correct view for a GET" in {
       val fixture = testFixture(this)
 
-      val result = Future.successful(fixture.controller.get(viewModel)(testRequest()))
+      val result = Future.successful(fixture.controller.get(viewModel())(testRequest()))
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(this)
@@ -55,7 +59,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val answers = UserAnswers().set(testId)(true).asOpt.value
       val request = testRequest(answers)
 
-      val result = Future.successful(fixture.controller.get(viewModel)(request))
+      val result = Future.successful(fixture.controller.get(viewModel())(request))
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(this, form.fill(true))
@@ -65,7 +69,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val fixture = testFixture(this)
       val request = testRequest(moreThanTen = Some(true.toString))
 
-      fixture.controller.post(viewModel, NormalMode)(request)
+      fixture.controller.post(viewModel(), NormalMode)(request)
       fixture.dataCacheConnector.verify(testId, true)
     }
 
@@ -73,7 +77,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val fixture = testFixture(this)
       val request = testRequest(moreThanTen = Some(true.toString))
 
-      val result = fixture.controller.post(viewModel, NormalMode)(request)
+      val result = fixture.controller.post(viewModel(), NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -83,10 +87,22 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val fixture = testFixture(this)
       val request = testRequest(moreThanTen = Some(""))
 
-      val result = fixture.controller.post(viewModel, NormalMode)(request)
+      val result = fixture.controller.post(viewModel(), NormalMode)(request)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(this, form.bindFromRequest()(request))
+    }
+
+    "save the user answer and update the change flag if gone from no to yes" in {
+      val before = Json.obj(
+        MoreThanTenDirectorsId.toString -> "false"
+      )
+      val fixture = testFixture(this)
+      val request = testRequest(answers = UserAnswers(before), moreThanTen = Some(true.toString))
+
+      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), Duration.Inf)
+      fixture.dataCacheConnector.verify(MoreThanTenDirectorsId, true)
+      fixture.dataCacheConnector.verify(MoreThanTenDirectorsOrPartnersChangedId, true)
     }
 
   }
@@ -121,7 +137,7 @@ object MoreThanTenControllerSpec {
     val controller: MoreThanTenController = new MoreThanTenController {
       override protected def appConfig: FrontendAppConfig = base.frontendAppConfig
 
-      override protected def dataCacheConnector: UserAnswersCacheConnector = connector
+      override protected def cacheConnector: UserAnswersCacheConnector = connector
 
       override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
 
@@ -133,16 +149,16 @@ object MoreThanTenControllerSpec {
 
   private val form: Form[Boolean] = new MoreThanTenFormProvider()()
 
-  def viewModel =
+  def viewModel(id: TypedIdentifier[Boolean] = testId) =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
       heading = "moreThanTenDirectors.heading",
       hint = "moreThanTenDirectors.hint",
       postCall = Call("POST", "/"),
-      id = testId
+      id
     )
 
   def viewAsString(base: SpecBase, form: Form[_] = form): String =
-    moreThanTen(base.frontendAppConfig, form, viewModel)(base.fakeRequest, base.messages).toString
+    moreThanTen(base.frontendAppConfig, form, viewModel())(base.fakeRequest, base.messages).toString
 
 }

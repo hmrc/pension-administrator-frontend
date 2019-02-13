@@ -22,6 +22,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.{Retrievals, Variations}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId}
@@ -37,7 +39,7 @@ import viewmodels.address.ManualAddressViewModel
 
 class DirectorAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          override val dataCacheConnector: UserAnswersCacheConnector,
+                                          override val cacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
                                           override val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
@@ -45,7 +47,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                           requireData: DataRequiredAction,
                                           formProvider: AddressFormProvider,
                                           countryOptions: CountryOptions,
-                                          val auditService: AuditService) extends ManualAddressController with Retrievals {
+                                          val auditService: AuditService) extends ManualAddressController with Retrievals with Variations {
 
   override protected val form: Form[Address] = formProvider()
 

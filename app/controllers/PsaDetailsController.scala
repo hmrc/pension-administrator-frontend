@@ -23,12 +23,16 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction}
 import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
+import identifiers.register.company.directors.IsDirectorCompleteId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import models.Mode
+import identifiers.register.partnership.partners.IsPartnerCompleteId
+import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsResult
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -84,7 +88,9 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
   private def retrievePsaDataFromUserAnswers(psaId: String, canDeregister: Boolean)(
     implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
-      val userAnswers = UserAnswers(response).set(UpdateModeId)(true).asOpt.getOrElse(UserAnswers(response))
+      val answers = UserAnswers(response)
+      val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
+      val userAnswers = setAllCompleteFlags(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
       dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
         val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
         val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
@@ -116,6 +122,23 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
           })
       }
     }
+  }
+
+  private def setAllCompleteFlags(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
+    val seqOfIds = legalStatus match {
+      case Some(LimitedCompany) =>
+        val directors = userAnswers.allDirectors
+        directors.filterNot(_.isDeleted).map { director =>
+          IsDirectorCompleteId(directors.indexOf(director))
+        }.toList
+      case Some(Partnership) =>
+        val partners = userAnswers.allPartners
+        partners.filterNot(_.isDeleted).map { partner =>
+          IsPartnerCompleteId(partners.indexOf(partner))
+        }.toList
+      case _ => Nil
+    }
+    userAnswers.setAllFlagsTrue(seqOfIds)
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {

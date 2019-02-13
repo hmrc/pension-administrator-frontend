@@ -38,12 +38,12 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
                                                      override val messagesApi: MessagesApi,
                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                      @PartnershipPartner override val navigator: Navigator,
-                                                     override val allowAccess: AllowAccessActionProvider,
                                                      authenticate: AuthAction,
+                                                     override val allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction) extends AddressListController with Retrievals {
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode, index).right.map(get)
   }

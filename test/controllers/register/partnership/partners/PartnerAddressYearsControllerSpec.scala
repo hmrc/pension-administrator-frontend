@@ -64,8 +64,8 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       messagesApi,
-      FakeAllowAccessProvider(),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

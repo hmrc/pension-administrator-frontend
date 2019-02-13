@@ -37,7 +37,7 @@ import viewmodels.address.ManualAddressViewModel
 
 class DirectorPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
-                                                  override val dataCacheConnector: UserAnswersCacheConnector,
+                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                   @CompanyDirector override val navigator: Navigator,
                                                   override val allowAccess: AllowAccessActionProvider,
                                                   authenticate: AuthAction,

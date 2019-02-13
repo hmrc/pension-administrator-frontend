@@ -194,14 +194,14 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, partners: Seq[Person] = Nil) =
-    addEntity(frontendAppConfig, form, viewmodel(partners))(request, messages).toString
+    addEntity(frontendAppConfig, form, viewmodel(partners), NormalMode)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
   private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
-  private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url
+  private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url
 
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
 

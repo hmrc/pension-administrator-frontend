@@ -32,7 +32,6 @@ import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
-
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
     get[A](id.path)
   }
@@ -63,7 +62,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       val index = directors.indexOf(director)
       val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
       val editUrl = if (isComplete) {
-        routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(index)).url
+        routes.CheckYourAnswersController.onPageLoad(Index(index)).url
       } else {
         routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
       }
@@ -95,7 +94,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url,
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url,
         controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
         partner.isDeleted,
         get(IsPartnerCompleteId(index)).getOrElse(false)
@@ -129,6 +128,22 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         id.cleanup(Some(value), UserAnswers(newValue))
       }
     }
+  }
+
+  def setAllFlagsTrue[I <: TypedIdentifier[Boolean]](ids: List[I])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+
+    @tailrec
+    def setRec[II <: TypedIdentifier[Boolean]](localIds: List[II], result: JsResult[UserAnswers])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+      result match {
+        case JsSuccess(_, _) =>
+          localIds match {
+            case Nil => result
+            case id :: tail => setRec(tail, result.flatMap(_.set(id)(true)))
+          }
+        case failure => failure
+      }
+    }
+    setRec(ids, JsSuccess(this))
   }
 
   def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {

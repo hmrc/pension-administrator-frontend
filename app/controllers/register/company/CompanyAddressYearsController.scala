@@ -41,6 +41,7 @@ class CompanyAddressYearsController @Inject()(
                                                dataCacheConnector: UserAnswersCacheConnector,
                                                @RegisterCompany navigator: Navigator,
                                                authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddressYearsFormProvider,
@@ -49,7 +50,7 @@ class CompanyAddressYearsController @Inject()(
 
   private val form = formProvider("companyAddressYears.error.required")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       CompanyContactAddressId.retrieve.right.map { address =>
         val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {

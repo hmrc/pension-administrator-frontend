@@ -39,6 +39,7 @@ class CompanyDetailsController @Inject()(
                                           dataCacheConnector: UserAnswersCacheConnector,
                                           @RegisterCompany navigator: Navigator,
                                           authenticate: AuthAction,
+                                          allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: CompanyDetailsFormProvider
@@ -46,7 +47,7 @@ class CompanyDetailsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(CompanyDetailsId) match {
         case None => form
