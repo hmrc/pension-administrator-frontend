@@ -23,6 +23,8 @@ import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerDetailsId
 import javax.inject.Inject
+import models.{Index, Mode, NormalMode}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.MessagesApi
@@ -32,6 +34,7 @@ class ConfirmDeletePartnerController @Inject()(
                                                 val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector,
@@ -49,7 +52,7 @@ class ConfirmDeletePartnerController @Inject()(
     None
   )
 
-  def onPageLoad(index: Index, mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
       PartnerDetailsId(index).retrieve.right.map { details =>

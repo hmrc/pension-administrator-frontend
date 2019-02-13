@@ -40,6 +40,7 @@ class PartnerUniqueTaxReferenceController @Inject()(
                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                      @PartnershipPartner navigator: Navigator,
                                                      authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: UniqueTaxReferenceFormProvider
@@ -50,7 +51,7 @@ class PartnerUniqueTaxReferenceController @Inject()(
     requiredReasonKey = "partnerUniqueTaxReference.error.reason.required"
   )
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrievePartnerName(index) { partnerName =>
         val redirectResult = request.userAnswers.get(PartnerUniqueTaxReferenceId(index)) match {

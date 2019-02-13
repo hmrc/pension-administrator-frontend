@@ -41,6 +41,7 @@ class PartnerNinoController @Inject()(
                                        override val cacheConnector: UserAnswersCacheConnector,
                                        @PartnershipPartner navigator: Navigator,
                                        authenticate: AuthAction,
+                                       allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PartnerNinoFormProvider
@@ -48,7 +49,7 @@ class PartnerNinoController @Inject()(
 
   private val form: Form[Nino] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerDetailsId(index).retrieve.right.map { partnerName =>
         val redirectResult = request.userAnswers.get(PartnerNinoId(index)) match {
