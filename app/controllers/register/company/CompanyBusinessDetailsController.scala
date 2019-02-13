@@ -45,7 +45,7 @@ class CompanyBusinessDetailsController @Inject()(val appConfig: FrontendAppConfi
       get(BusinessDetailsId)
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       post(BusinessDetailsId)
   }
