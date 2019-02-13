@@ -131,6 +131,22 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
+  def setAllFlagsTrue[I <: TypedIdentifier[Boolean]](ids: List[I])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+
+    @tailrec
+    def setRec[II <: TypedIdentifier[Boolean]](localIds: List[II], result: JsResult[UserAnswers])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+      result match {
+        case JsSuccess(_, _) =>
+          localIds match {
+            case Nil => result
+            case id :: tail => setRec(tail, result.flatMap(_.set(id)(true)))
+          }
+        case failure => failure
+      }
+    }
+    setRec(ids, JsSuccess(this))
+  }
+
   def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {
 
     JsLens.fromPath(id.path)
