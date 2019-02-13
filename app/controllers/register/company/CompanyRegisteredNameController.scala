@@ -19,39 +19,41 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.OrganisationNameController
 import forms.BusinessDetailsFormModel
 import identifiers.register.company.BusinessDetailsId
+import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
-import viewmodels.{OrganisationNameViewModel, Message}
+import viewmodels.{Message, OrganisationNameViewModel}
 
 class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
 
-  private def companyNameViewModel() =
+  private def companyNameViewModel(mode: Mode) =
     OrganisationNameViewModel(
-      routes.CompanyRegisteredNameController.onSubmit(),
+      routes.CompanyRegisteredNameController.onSubmit(mode),
       Message("companyName.title"),
       Message("companyName.heading")
     )
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(BusinessDetailsId, companyNameViewModel)
+      get(BusinessDetailsId, companyNameViewModel(mode))
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(BusinessDetailsId, companyNameViewModel())
+      post(BusinessDetailsId, companyNameViewModel(mode))
   }
 
   override protected val formModel: BusinessDetailsFormModel =

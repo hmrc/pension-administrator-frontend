@@ -53,6 +53,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

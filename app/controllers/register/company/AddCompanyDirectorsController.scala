@@ -42,6 +42,7 @@ class AddCompanyDirectorsController @Inject()(
                                                dataCacheConnector: UserAnswersCacheConnector,
                                                @CompanyDirector navigator: Navigator,
                                                authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddCompanyDirectorsFormProvider
@@ -49,7 +50,7 @@ class AddCompanyDirectorsController @Inject()(
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
       Ok(addCompanyDirectors(appConfig, form, mode, directors))

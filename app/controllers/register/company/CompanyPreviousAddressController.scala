@@ -20,7 +20,7 @@ import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
@@ -39,6 +39,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @RegisterCompany override val navigator: Navigator,
                                                  authenticate: AuthAction,
+                                                 allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressFormProvider,
@@ -55,7 +56,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
     None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode))
   }

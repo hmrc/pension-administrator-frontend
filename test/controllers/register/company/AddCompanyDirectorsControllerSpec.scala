@@ -173,6 +173,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider

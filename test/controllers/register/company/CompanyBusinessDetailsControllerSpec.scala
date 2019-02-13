@@ -17,11 +17,12 @@
 package controllers.register.company
 
 import base.SpecBase
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{BusinessDetailsControllerBehaviour, ControllerSpecBase}
 import forms.BusinessDetailsFormModel
 import identifiers.register.company.BusinessDetailsId
+import models.NormalMode
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator}
 import viewmodels.{BusinessDetailsViewModel, Message}
@@ -37,7 +38,7 @@ class CompanyBusinessDetailsControllerSpec extends ControllerSpecBase
     behave like businessDetailsController(testFormModel, testViewModel, BusinessDetailsId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onPageLoad()(fakeRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -45,7 +46,7 @@ class CompanyBusinessDetailsControllerSpec extends ControllerSpecBase
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody()
-      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onSubmit()(postRequest)
+      val result = createController(this, dontGetAnyData)(FakeUserAnswersCacheConnector, FakeNavigator).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -88,6 +89,7 @@ object CompanyBusinessDetailsControllerSpec {
         connector,
         nav,
         FakeAuthAction,
+        FakeAllowAccessProvider(),
         dataRetrieval,
         new DataRequiredActionImpl
       )
