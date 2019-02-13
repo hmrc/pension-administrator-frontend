@@ -118,7 +118,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val survey: Call = controllers.routes.LogoutController.onPageLoad()
   lazy val ukBusinessType: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
   lazy val nonUkBusinessType: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
-  lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad()
+  lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
   lazy val registerAsBusiness: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
   lazy val nonUkIndividualName: Call = controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode)
   lazy val nonUkCompanyAddress: Call = controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()

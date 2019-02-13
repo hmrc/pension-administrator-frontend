@@ -46,7 +46,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
       Ok(whatYouWillNeed(appConfig))
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       PSAStartEvent.sendEvent(auditService)
       Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))

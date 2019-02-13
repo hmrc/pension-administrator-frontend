@@ -48,7 +48,7 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(CompanyReviewId, NormalMode, request.userAnswers))
   }
