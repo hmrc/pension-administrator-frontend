@@ -274,6 +274,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       appConfig,
       messagesApi,
       fakeAuthAction(userType),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,

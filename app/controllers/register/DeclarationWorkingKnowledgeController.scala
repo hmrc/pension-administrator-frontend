@@ -39,6 +39,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        override val cacheConnector: UserAnswersCacheConnector,
                                                        @Register navigator: Navigator,
                                                        authenticate: AuthAction,
+                                                       allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider
@@ -46,7 +47,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form

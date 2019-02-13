@@ -35,11 +35,12 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
                                             override val messagesApi: MessagesApi,
                                             @Partnership navigator: Navigator,
                                             authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction
                                            )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
         val partners = request.userAnswers.allPartnersAfterDelete.map(_.name)

@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.PayeController
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.PayeFormProvider
 import identifiers.register.partnership.PartnershipPayeId
 import models.{Mode, Paye}
@@ -37,6 +37,7 @@ class PartnershipPayeController @Inject()(
                                            override val cacheConnector: UserAnswersCacheConnector,
                                            @Partnership val navigator: Navigator,
                                            authenticate: AuthAction,
+                                           allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: PayeFormProvider
@@ -53,7 +54,7 @@ class PartnershipPayeController @Inject()(
       subHeading = None
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(
         PartnershipPayeId,

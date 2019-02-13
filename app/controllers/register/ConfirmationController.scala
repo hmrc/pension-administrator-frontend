@@ -33,12 +33,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
+                                       allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        dataCacheConnector: UserAnswersCacheConnector
                                       )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PsaSubscriptionResponseId.retrieve.right.map { response =>
         dataCacheConnector.removeAll(request.externalId)

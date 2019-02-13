@@ -20,7 +20,7 @@ import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
@@ -40,6 +40,7 @@ class PartnershipContactAddressController @Inject()(
                                                      val cacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressFormProvider,
@@ -59,7 +60,7 @@ class PartnershipContactAddressController @Inject()(
       hint = Some(Message("partnership.contactAddress.hint").withArgs(partnershipName))
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map {
         details =>

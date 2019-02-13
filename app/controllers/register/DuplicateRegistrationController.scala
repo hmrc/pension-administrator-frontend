@@ -32,10 +32,11 @@ import scala.concurrent.Future
 class DuplicateRegistrationController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right
         .map( bd => Future.successful(Ok(duplicateRegistration(bd.companyName, appConfig))))

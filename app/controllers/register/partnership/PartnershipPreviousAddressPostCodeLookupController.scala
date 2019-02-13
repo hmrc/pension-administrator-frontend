@@ -19,7 +19,7 @@ package controllers.register.partnership
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
@@ -40,6 +40,7 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
                                                                     override val addressLookupConnector: AddressLookupConnector,
                                                                     override val messagesApi: MessagesApi,
                                                                     authenticate: AuthAction,
+                                                                    allowAccess: AllowAccessActionProvider,
                                                                     getData: DataRetrievalAction,
                                                                     requireData: DataRequiredAction,
                                                                     formProvider: PostCodeLookupFormProvider
@@ -49,7 +50,7 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(viewModel(mode))
   }
