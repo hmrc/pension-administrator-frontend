@@ -19,12 +19,13 @@ package controllers.address
 import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.{JsNull, JsValue}
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -33,13 +34,11 @@ import views.html.address.manualAddress
 
 import scala.concurrent.Future
 
-trait ManualAddressController extends FrontendController with Retrievals with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ManualAddressController extends FrontendController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 
-  protected def dataCacheConnector: UserAnswersCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
@@ -78,17 +77,20 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
 
         val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress, context)
 
-        dataCacheConnector.remove(request.externalId, postCodeLookupIdForCleanup)
-          .flatMap { _ =>
-            dataCacheConnector.save(
+        cacheConnector.remove(request.externalId, postCodeLookupIdForCleanup)
+          .flatMap { cacheMap =>
+            cacheConnector.save(
               request.externalId,
               id,
               address
-            ).map {
-              cacheMap =>
-                auditEvent.foreach(auditService.sendEvent(_))
-                Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
-            }
+            ).flatMap { _ =>
+                saveChangeFlag(mode, id)
+                  .map {
+                    _ =>
+                      auditEvent.foreach(auditService.sendEvent(_))
+                      Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+                  }
+              }
           }
       }
     )

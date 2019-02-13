@@ -22,6 +22,8 @@ import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.company.MoreThanTenDirectorsId
+import identifiers.register.company.directors.DirectorDetailsId
 import models._
 import models.requests.DataRequest
 import org.scalatest.mockito.MockitoSugar
@@ -40,12 +42,22 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
     override def toString: String = "test"
   }
 
+  val testChange1FlagIdentifier = new TypedIdentifier[Boolean] {
+    override def toString: String = "test1"
+  }
+
+  val testChange2FlagIdentifier = new TypedIdentifier[Boolean] {
+    override def toString: String = "test2"
+  }
+
   val person = PersonDetails("First", None, "Last", LocalDate.now())
 
   implicit val request: DataRequest[AnyContent] = DataRequest(
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
-    ), "cacheId", PSAUser(UserType.Individual, None, false, None), UserAnswers(Json.obj(testIdentifier.toString -> person))
+    ), "cacheId", PSAUser(UserType.Individual, None, false, None),
+    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorDetailsId.toString -> person)),
+      MoreThanTenDirectorsId.toString -> true))
   )
 
 
@@ -66,13 +78,23 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       override def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
+      override def findChangeIdNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+        id match {
+          case MoreThanTenDirectorsId => Some(testChange1FlagIdentifier)
+          case _ => None
+        }
+      }
+
+      override def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
+        Some(testChange2FlagIdentifier)
+      }
 
       override val form = formProvider()
     }
 
   private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel)(fakeRequest, messages).toString
 
-  "ConfirmDeleteDirector Controller" must {
+  "ConfirmDelete Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -93,7 +115,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "redirect to directors list on removal of director" in {
 
-      val result = controller().post(viewModel, testIdentifier, FakeNavigator.desiredRoute)
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
@@ -101,12 +123,18 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "set the isDelete flag to true for the selected director on submission of POST request" in {
 
-      val result = controller().post(viewModel, testIdentifier, FakeNavigator.desiredRoute)
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
 
       status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(testIdentifier, person.copy(isDeleted = true))
+      FakeUserAnswersCacheConnector.verify(DirectorDetailsId(0), person.copy(isDeleted = true))
     }
 
+    "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
+      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, UpdateMode)
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
+      FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
+    }
   }
 
 }

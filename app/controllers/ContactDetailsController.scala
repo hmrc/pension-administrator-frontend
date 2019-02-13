@@ -31,13 +31,11 @@ import views.html.contactDetails
 
 import scala.concurrent.Future
 
-trait ContactDetailsController extends FrontendController with Retrievals with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ContactDetailsController extends FrontendController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: UserAnswersCacheConnector
+  override def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
@@ -61,9 +59,10 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
       formWithErrors =>
         Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel))),
       contactDetails => {
-        cacheConnector.save(request.externalId, id, contactDetails).map {
-          answers =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+        cacheConnector.save(request.externalId, id, contactDetails).flatMap {
+          answers => saveChangeFlag(mode, id). map {_ =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+            }
         }
       }
     )
