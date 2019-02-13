@@ -39,8 +39,8 @@ class IndividualContactAddressController @Inject()(
                                                     override val messagesApi: MessagesApi,
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
-                                                    override val allowAccess: AllowAccessActionProvider,
                                                     authenticate: AuthAction,
+                                                    override val allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
@@ -69,7 +69,7 @@ class IndividualContactAddressController @Inject()(
       get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       post(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode), mode, "Individual Previous Address",
         IndividualContactAddressPostCodeLookupId)

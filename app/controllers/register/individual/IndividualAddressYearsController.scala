@@ -36,8 +36,8 @@ class IndividualAddressYearsController @Inject()(
                                                   override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   override val cacheConnector: UserAnswersCacheConnector,
-                                                  override val allowAccess: AllowAccessActionProvider,
                                                   authenticate: AuthAction,
+                                                  override val allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: AddressYearsFormProvider
@@ -70,7 +70,7 @@ class IndividualAddressYearsController @Inject()(
         }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map {
         vm =>

@@ -39,7 +39,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
     case IndividualDetailsCorrectId => detailsCorrect(from.userAnswers)
-    case IndividualDetailsId => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
+    case IndividualDetailsId => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad(NormalMode))
     case IndividualAddressId => regionBasedNavigation(from.userAnswers)
     case WhatYouWillNeedId => NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
     case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, NormalMode)
@@ -140,7 +140,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     answers.get(AreYouInUKId) match {
       case Some(false) => answers.get(IndividualDetailsId) match {
         case None => NavigateTo.dontSave(routes.IndividualNameController.onPageLoad(NormalMode))
-        case _ => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad())
+        case _ => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad(NormalMode))
       }
       case Some(true) => NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())

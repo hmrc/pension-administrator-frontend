@@ -39,8 +39,8 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                                   override val addressLookupConnector: AddressLookupConnector,
                                                                   override val messagesApi: MessagesApi,
-                                                                  override val allowAccess: AllowAccessActionProvider,
                                                                   authenticate: AuthAction,
+                                                                  override val allowAccess: AllowAccessActionProvider,
                                                                   getData: DataRetrievalAction,
                                                                   requireData: DataRequiredAction,
                                                                   formProvider: PostCodeLookupFormProvider
@@ -55,7 +55,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
       get(viewModel(mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       post(IndividualContactAddressPostCodeLookupId, viewModel(mode), mode)
   }

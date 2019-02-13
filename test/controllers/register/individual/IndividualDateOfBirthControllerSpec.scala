@@ -142,6 +142,7 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mocki
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

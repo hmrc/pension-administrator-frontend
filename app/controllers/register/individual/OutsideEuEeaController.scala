@@ -18,10 +18,10 @@ package controllers.register.individual
 
 import config.FrontendAppConfig
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.individual.IndividualAddressId
 import javax.inject.Inject
-import models.Address
+import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -33,17 +33,18 @@ import scala.concurrent.Future
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
+                                       allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
-      (IndividualAddressId).retrieve.right.map { address =>
-          Future.successful(Ok(outsideEuEea(appConfig, countryOptions.getCountryNameFromCode(address.toAddress))))
-        }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+      IndividualAddressId.retrieve.right.map { address =>
+        Future.successful(Ok(outsideEuEea(appConfig, countryOptions.getCountryNameFromCode(address.toAddress))))
+      }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }
 

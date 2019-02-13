@@ -38,8 +38,8 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
                                                        override val appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
                                                        override val cacheConnector: UserAnswersCacheConnector,
-                                                       override val allowAccess: AllowAccessActionProvider,
                                                        authenticate: AuthAction,
+                                                       override val allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction
                                                       ) extends AddressListController with Retrievals with I18nSupport {
@@ -49,7 +49,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
       viewmodel(mode).right.map(get)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressListId, IndividualContactAddressId, mode))
   }

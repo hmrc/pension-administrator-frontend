@@ -18,10 +18,10 @@ POST        /:index/partner-details                           controllers.regist
 GET         /:index/change-partner-details                    controllers.register.partnership.partners.PartnerDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST        /:index/change-partner-details                    controllers.register.partnership.partners.PartnerDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
 
-GET         /:index/partners-confirm-delete                       controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode = NormalMode)
-GET         /:index/changing-partners-confirm-delete                       controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode = UpdateMode)
-POST        /:index/partners-confirm-delete                       controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode = NormalMode)
-POST        /:index/changing-partners-confirm-delete                       controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode = UpdateMode)
+GET         /:index/partners-confirm-delete                   controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode = NormalMode)
+GET         /:index/changing-partners-confirm-delete          controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode = UpdateMode)
+POST        /:index/partners-confirm-delete                   controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode = NormalMode)
+POST        /:index/changing-partners-confirm-delete          controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode = UpdateMode)
 
 GET        /:index/unique-taxpayer-reference                  controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/unique-taxpayer-reference                  controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode, index: Index)
@@ -63,8 +63,8 @@ GET        /:index/partners-previous-address-manual           controllers.regist
 POST       /:index/partners-previous-address-manual           controllers.register.partnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-partners-previous-address-manual    controllers.register.partnership.partners.PartnerPreviousAddressController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-partners-previous-address-manual    controllers.register.partnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = CheckMode, index: Index)
-GET        /:index/changing-partners-previous-address-manual    controllers.register.partnership.partners.PartnerPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
-POST       /:index/changing-partners-previous-address-manual    controllers.register.partnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
+GET        /:index/changing-partners-previous-address-manual  controllers.register.partnership.partners.PartnerPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-partners-previous-address-manual  controllers.register.partnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/partners-previous-address-results          controllers.register.partnership.partners.PartnerPreviousAddressListController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/partners-previous-address-results          controllers.register.partnership.partners.PartnerPreviousAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)

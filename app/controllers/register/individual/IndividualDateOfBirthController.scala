@@ -44,6 +44,7 @@ class IndividualDateOfBirthController @Inject()(
                                                  dataCacheConnector: UserAnswersCacheConnector,
                                                  @Individual navigator: Navigator,
                                                  authenticate: AuthAction,
+                                                 allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: IndividualDateOfBirthFormProvider,
@@ -52,7 +53,7 @@ class IndividualDateOfBirthController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(IndividualDateOfBirthId) match {
         case None => form
@@ -61,7 +62,7 @@ class IndividualDateOfBirthController @Inject()(
       Ok(individualDateOfBirth(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

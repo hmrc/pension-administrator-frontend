@@ -99,6 +99,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       messagesApi,
       FakeUserAnswersCacheConnector,
       fakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

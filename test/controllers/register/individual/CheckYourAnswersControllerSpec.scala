@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import controllers.register.individual.CheckYourAnswersController.postUrl
 import identifiers.register.individual._
 import models._
@@ -157,7 +157,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
 
       "redirect to Session Expired if there is no cached data" in {
-        val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -208,6 +208,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     new CheckYourAnswersController(
       appConfig = frontendAppConfig,
       authenticate = FakeAuthAction,
+      FakeAllowAccessProvider(),
       getData = getData,
       requireData = new DataRequiredActionImpl(),
       navigator = fakeNavigator,
@@ -228,7 +229,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
-    val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
+    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
     contentAsString(result) mustBe
       check_your_answers(
