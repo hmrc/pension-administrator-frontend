@@ -26,7 +26,7 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
   val firstIndex = Index(0)
 
-  def createView = () => confirmDeleteDirector(frontendAppConfig, firstIndex, "directorName")(fakeRequest, messages)
+  def createView = () => confirmDeleteDirector(frontendAppConfig, firstIndex, "directorName", NormalMode)(fakeRequest, messages)
 
   val view = createView
 

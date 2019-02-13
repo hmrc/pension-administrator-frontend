@@ -200,7 +200,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
-  private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url
+  private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url
 
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
 

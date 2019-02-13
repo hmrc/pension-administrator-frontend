@@ -18,6 +18,7 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Variations
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
@@ -30,18 +31,18 @@ import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.declarationWorkingKnowledge
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DeclarationWorkingKnowledgeController @Inject()(
                                                        appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
-                                                       dataCacheConnector: UserAnswersCacheConnector,
+                                                       override val cacheConnector: UserAnswersCacheConnector,
                                                        @Register navigator: Navigator,
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider
-                                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations {
 
   private val form = formProvider()
 
@@ -59,9 +60,21 @@ class DeclarationWorkingKnowledgeController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, new UserAnswers(cacheMap))))
+        value => {
+          val hasAnswerChanged = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
+            case None => true
+            case Some(existing) => existing != value
+          }
+          if (hasAnswerChanged) {
+            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).flatMap(cacheMap =>
+              saveChangeFlag(mode, DeclarationWorkingKnowledgeId).map(_ =>
+                Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+            )
+          } else {
+            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
+              Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+          }
+        }
       )
   }
 }

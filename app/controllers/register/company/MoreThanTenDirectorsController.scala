@@ -32,7 +32,7 @@ import viewmodels.{Message, MoreThanTenViewModel}
 class MoreThanTenDirectorsController @Inject()(
                                                 val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
-                                                val dataCacheConnector: UserAnswersCacheConnector,
+                                                val cacheConnector: UserAnswersCacheConnector,
                                                 @CompanyDirector val navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,

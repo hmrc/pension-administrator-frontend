@@ -32,7 +32,6 @@ import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
-
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
     get[A](id.path)
   }
@@ -71,7 +70,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
+        routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url,
         editUrl,
         director.isDeleted,
         get(IsDirectorCompleteId(index)).getOrElse(false)
@@ -95,7 +94,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url,
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url,
         controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
         partner.isDeleted,
         get(IsPartnerCompleteId(index)).getOrElse(false)

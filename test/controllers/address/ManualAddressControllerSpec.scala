@@ -20,9 +20,10 @@ import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent, AuditService}
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.AddressFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId}
 import models._
 import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
@@ -64,7 +65,7 @@ object ManualAddressControllerSpec {
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
-                                  override val dataCacheConnector: UserAnswersCacheConnector,
+                                  override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: AddressFormProvider,
                                   override val auditService: AuditService
@@ -73,8 +74,9 @@ object ManualAddressControllerSpec {
     def onPageLoad(viewModel: ManualAddressViewModel, answers: UserAnswers): Future[Result] =
       get(fakeAddressId, fakeAddressListId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
 
-    def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(fakeAddressId, fakeAddressListId, viewModel, NormalMode, testContext, fakeSeqTolerantAddressId)(
+    def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest(),
+                 mode:Mode = NormalMode, id: TypedIdentifier[Address] = fakeAddressId): Future[Result] =
+      post(id, fakeAddressListId, viewModel, mode, testContext, fakeSeqTolerantAddressId)(
         DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
@@ -200,6 +202,46 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
       }
 
+    }
+  }
+
+  "post in update mode" must {
+    "redirect to the postCall on valid data request" which {
+      "will save address to answers and remove the address postcode lookup list and set the changed flag" in {
+
+        val onwardRoute = Call("GET", "/")
+
+        val navigator = new FakeNavigator(onwardRoute, NormalMode)
+
+        running(_.overrides(
+          bind[CountryOptions].to[FakeCountryOptions],
+          bind[UserAnswersCacheConnector].to(FakeUserAnswersCacheConnector),
+          bind[Navigator].to(navigator),
+          bind[AuditService].to[StubSuccessfulAuditService]
+        )) {
+          app =>
+
+            val controller = app.injector.instanceOf[TestController]
+
+            val result = controller.onSubmit(viewModel, UserAnswers(), FakeRequest().withFormUrlEncodedBody(
+              ("addressLine1", "value 1"),
+              ("addressLine2", "value 2"),
+              ("postCode", "AB1 1AB"),
+              "country" -> "GB"),
+              UpdateMode,
+              IndividualContactAddressId
+            )
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).get mustEqual onwardRoute.url
+
+            val address = Address("value 1", "value 2", None, None, Some("AB1 1AB"), "GB")
+
+            FakeUserAnswersCacheConnector.verify(IndividualContactAddressId, address)
+            FakeUserAnswersCacheConnector.verifyRemoved(fakeSeqTolerantAddressId)
+            FakeUserAnswersCacheConnector.verify(IndividualAddressChangedId, true)
+        }
+      }
     }
   }
 

@@ -32,7 +32,7 @@ import viewmodels.{Message, MoreThanTenViewModel}
 class MoreThanTenPartnersController @Inject()(
                                                val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
-                                               val dataCacheConnector: UserAnswersCacheConnector,
+                                               override val cacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
                                                authenticate: AuthAction,
                                                getData: DataRetrievalAction,
