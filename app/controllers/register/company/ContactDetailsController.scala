@@ -35,7 +35,7 @@ class ContactDetailsController @Inject()(
                                           override val messagesApi: MessagesApi,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
+                                          override val allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: ContactDetailsFormProvider

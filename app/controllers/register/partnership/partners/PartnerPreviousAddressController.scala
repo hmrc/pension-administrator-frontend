@@ -40,7 +40,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @PartnershipPartner override val navigator: Navigator,
                                                  authenticate: AuthAction,
-                                                 allowAccess: AllowAccessActionProvider,
+                                                 override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressFormProvider,

@@ -42,7 +42,7 @@ class PartnerAddressYearsController @Inject()(
                                                @PartnershipPartner val navigator: Navigator,
                                                val messagesApi: MessagesApi,
                                                authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
+                                               override val allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddressYearsFormProvider
@@ -52,7 +52,7 @@ class PartnerAddressYearsController @Inject()(
   private val form: Form[AddressYears] = formProvider(Message("partnerAddressYears.error.required"))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         viewmodel(mode, index).right.map {
           viewModel =>

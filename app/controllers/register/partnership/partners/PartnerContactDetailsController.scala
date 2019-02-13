@@ -36,7 +36,7 @@ class PartnerContactDetailsController @Inject()(
                                                  @PartnershipPartner val navigator: Navigator,
                                                  val messagesApi: MessagesApi,
                                                  authenticate: AuthAction,
-                                                 allowAccess: AllowAccessActionProvider,
+                                                 override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: ContactDetailsFormProvider

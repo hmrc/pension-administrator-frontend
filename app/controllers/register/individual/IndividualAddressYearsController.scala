@@ -36,6 +36,7 @@ class IndividualAddressYearsController @Inject()(
                                                   override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   override val cacheConnector: UserAnswersCacheConnector,
+                                                  override val allowAccess: AllowAccessActionProvider,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
@@ -61,7 +62,7 @@ class IndividualAddressYearsController @Inject()(
   private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         viewmodel(mode).retrieve.right.map {
           vm =>

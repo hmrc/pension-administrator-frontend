@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
+                                            val allowAccess: AllowAccessActionProvider,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
@@ -43,7 +44,7 @@ class CheckYourAnswersController @Inject()(
                                             sectionComplete: SectionComplete
                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
-  def onPageLoad(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
@@ -66,12 +67,12 @@ class CheckYourAnswersController @Inject()(
           appConfig,
           answersSection,
           Some(directorName),
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(index)))
+          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)))
         )
       }
   }
 
-  def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
         Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))

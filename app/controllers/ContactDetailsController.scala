@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.actions.AllowAccessActionProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{ContactDetails, Mode}
@@ -38,6 +39,8 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
   override def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
+
+  protected val allowAccess: AllowAccessActionProvider
 
   protected def get(id: TypedIdentifier[ContactDetails], form: Form[ContactDetails], viewmodel: ContactDetailsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {

@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
+import identifiers.register.partnership._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.MessagesApi
@@ -36,8 +36,8 @@ class PartnershipContactAddressListController @Inject()(
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
                                                          val messagesApi: MessagesApi,
+                                                         override val allowAccess: AllowAccessActionProvider,
                                                          authenticate: AuthAction,
-                                                         allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
                                                          formProvider: AddressListFormProvider

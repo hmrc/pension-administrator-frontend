@@ -39,8 +39,8 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
                                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                                     override val addressLookupConnector: AddressLookupConnector,
                                                                     override val messagesApi: MessagesApi,
+                                                                    override val allowAccess: AllowAccessActionProvider,
                                                                     authenticate: AuthAction,
-                                                                    allowAccess: AllowAccessActionProvider,
                                                                     getData: DataRetrievalAction,
                                                                     requireData: DataRequiredAction,
                                                                     formProvider: PostCodeLookupFormProvider

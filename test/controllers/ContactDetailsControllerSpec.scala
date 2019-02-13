@@ -20,6 +20,8 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.UserAnswersCacheConnector
+import controllers.actions.AllowAccessActionProvider
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.individual.{IndividualContactDetailsChangedId, IndividualContactDetailsId}
@@ -51,7 +53,8 @@ object ContactDetailsControllerSpec {
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: ContactDetailsFormProvider
+                                  formProvider: ContactDetailsFormProvider,
+                                  override val allowAccess: AllowAccessActionProvider
                                 ) extends ContactDetailsController {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {

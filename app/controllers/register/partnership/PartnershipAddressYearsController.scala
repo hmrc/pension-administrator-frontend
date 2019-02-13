@@ -37,8 +37,8 @@ class PartnershipAddressYearsController @Inject()(
                                                    val cacheConnector: UserAnswersCacheConnector,
                                                    @Partnership val navigator: Navigator,
                                                    val messagesApi: MessagesApi,
+                                                   override val allowAccess: AllowAccessActionProvider,
                                                    authenticate: AuthAction,
-                                                   allowAccess: AllowAccessActionProvider,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: AddressYearsFormProvider

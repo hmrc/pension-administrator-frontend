@@ -70,7 +70,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url,
+        routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, index).url,
         editUrl,
         director.isDeleted,
         get(IsDirectorCompleteId(index)).getOrElse(false)

@@ -39,7 +39,7 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @PartnershipPartner override val navigator: Navigator,
                                              authenticate: AuthAction,
-                                             allowAccess: AllowAccessActionProvider,
+                                             override val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction) extends AddressListController with Retrievals {
 

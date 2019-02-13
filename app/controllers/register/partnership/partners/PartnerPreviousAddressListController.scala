@@ -39,7 +39,7 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                      @PartnershipPartner override val navigator: Navigator,
                                                      authenticate: AuthAction,
-                                                     allowAccess: AllowAccessActionProvider,
+                                                     override val allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction) extends AddressListController with Retrievals {
 
@@ -48,7 +48,7 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
       viewModel(mode, index).right.map(get)
   }
 
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode, index).right.map(vm => post(vm, PartnerPreviousAddressListId(index), PartnerPreviousAddressId(index), mode))
   }

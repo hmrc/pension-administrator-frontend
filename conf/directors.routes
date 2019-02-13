@@ -1,7 +1,7 @@
-GET        /:index/directors-confirm-delete                     controllers.register.company.directors.ConfirmDeleteDirectorController.onPageLoad(index: Index, mode:Mode = NormalMode)
-GET        /:index/changing-directors-confirm-delete            controllers.register.company.directors.ConfirmDeleteDirectorController.onPageLoad(index: Index, mode:Mode = UpdateMode)
-POST       /:index/directors-confirm-delete                     controllers.register.company.directors.ConfirmDeleteDirectorController.onSubmit(index: Index, mode:Mode = NormalMode)
-POST       /:index/changing-directors-confirm-delete            controllers.register.company.directors.ConfirmDeleteDirectorController.onSubmit(index: Index, mode:Mode = UpdateMode)
+GET        /:index/directors-confirm-delete                     controllers.register.company.directors.ConfirmDeleteDirectorController.onPageLoad(mode:Mode = NormalMode, index: Index)
+GET        /:index/changing-directors-confirm-delete            controllers.register.company.directors.ConfirmDeleteDirectorController.onPageLoad(mode:Mode = UpdateMode, index: Index)
+POST       /:index/directors-confirm-delete                     controllers.register.company.directors.ConfirmDeleteDirectorController.onSubmit(mode:Mode = NormalMode, index: Index)
+POST       /:index/changing-directors-confirm-delete            controllers.register.company.directors.ConfirmDeleteDirectorController.onSubmit(mode:Mode = UpdateMode, index: Index)
 
 POST       /:index/director-details                             controllers.register.company.directors.DirectorDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/director-details                             controllers.register.company.directors.DirectorDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
@@ -43,7 +43,8 @@ GET        /:index/how-long-at-address                          controllers.regi
 POST       /:index/how-long-at-address                          controllers.register.company.directors.DirectorAddressYearsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-how-long-at-address                   controllers.register.company.directors.DirectorAddressYearsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-how-long-at-address                   controllers.register.company.directors.DirectorAddressYearsController.onSubmit(mode: Mode = CheckMode, index: Index)
-POST       /:index/changing-how-long-at-address                   controllers.register.company.directors.DirectorAddressYearsController.onSubmit(mode: Mode = UpdateMode, index: Index)
+GET        /:index/changing-how-long-at-address                 controllers.register.company.directors.DirectorAddressYearsController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-how-long-at-address                 controllers.register.company.directors.DirectorAddressYearsController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/directors-previous-address-results           controllers.register.company.directors.DirectorPreviousAddressListController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-previous-address-results           controllers.register.company.directors.DirectorPreviousAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
@@ -69,7 +70,9 @@ POST       /:index/directors-address-results                    controllers.regi
 GET        /:index/change-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onSubmit(mode: Mode = CheckMode, index: Index)
 
-GET        /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onPageLoad(index: Index)
-POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET        /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
-GET        /:index/already-deleted                              controllers.register.company.directors.AlreadyDeletedController.onPageLoad(index: Index)
+GET        /:index/already-deleted                              controllers.register.company.directors.AlreadyDeletedController.onPageLoad(mode: Mode = NormalMode, index: Index)

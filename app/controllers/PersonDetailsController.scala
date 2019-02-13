@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.actions.AllowAccessActionProvider
 import forms.PersonDetailsFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -33,6 +34,8 @@ import views.html.personDetails
 import scala.concurrent.Future
 
 trait PersonDetailsController extends FrontendController with I18nSupport {
+
+  protected val allowAccess: AllowAccessActionProvider
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 

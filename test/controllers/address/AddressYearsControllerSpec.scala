@@ -18,6 +18,8 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
+import controllers.actions.FakeAllowAccessProvider
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
@@ -53,6 +55,8 @@ object AddressYearsControllerSpec {
                                   override val navigator: Navigator,
                                   formProvider: AddressYearsFormProvider
                                 ) extends AddressYearsController {
+
+    override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewmodel: AddressYearsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider("error"), viewmodel)(DataRequest(FakeRequest(), "cacheId",

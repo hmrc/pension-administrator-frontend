@@ -27,7 +27,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = ConfirmDeleteDirectorController.onSubmit(index, mode), 'autoComplete -> "off") {
+    @helpers.form(action = ConfirmDeleteDirectorController.onSubmit(mode, index), 'autoComplete -> "off") {
 
         @components.back_link()
 

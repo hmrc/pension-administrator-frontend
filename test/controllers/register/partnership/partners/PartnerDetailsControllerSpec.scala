@@ -71,8 +71,8 @@ object PartnerDetailsControllerSpec {
       messagesApi = base.messagesApi,
       dataCacheConnector = connector,
       navigator = nav,
-      allowAccess = FakeAllowAccessProvider(),
       authenticate = FakeAuthAction,
+      FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl()
     )

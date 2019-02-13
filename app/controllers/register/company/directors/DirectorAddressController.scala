@@ -20,6 +20,8 @@ import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Retrievals
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.{Retrievals, Variations}
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -39,6 +41,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                           override val messagesApi: MessagesApi,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
+                                          override val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
@@ -56,7 +59,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
     Some(Message(directorName))
   )
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>

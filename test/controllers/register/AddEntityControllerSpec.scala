@@ -23,7 +23,7 @@ import connectors.UserAnswersCacheConnector
 import forms.register.AddEntityFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{CheckMode, NormalMode, PSAUser, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -73,7 +73,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
 
   import AddEntityControllerSpec._
 
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, index).url
 
   private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, index).url
 

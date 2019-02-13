@@ -40,8 +40,8 @@ class PartnershipPreviousAddressListController @Inject()(
                                                           override val appConfig: FrontendAppConfig,
                                                           override val messagesApi: MessagesApi,
                                                           override val cacheConnector: UserAnswersCacheConnector,
+                                                          override val allowAccess: AllowAccessActionProvider,
                                                           authenticate: AuthAction,
-                                                          allowAccess: AllowAccessActionProvider,
                                                           getData: DataRetrievalAction,
                                                           requireData: DataRequiredAction) extends AddressListController with Retrievals {
 

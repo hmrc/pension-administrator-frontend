@@ -88,6 +88,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

@@ -39,8 +39,8 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
                                                                    override val addressLookupConnector: AddressLookupConnector,
                                                                    @Partnership override val navigator: Navigator,
                                                                    override val messagesApi: MessagesApi,
+                                                                   override val allowAccess: AllowAccessActionProvider,
                                                                    authenticate: AuthAction,
-                                                                   allowAccess: AllowAccessActionProvider,
                                                                    getData: DataRetrievalAction,
                                                                    requireData: DataRequiredAction,
                                                                    formProvider: PostCodeLookupFormProvider

@@ -39,7 +39,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
+                                                override val allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressFormProvider,

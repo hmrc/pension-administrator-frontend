@@ -32,6 +32,7 @@ import viewmodels.{ConfirmDeleteViewModel, Message}
 class ConfirmDeleteDirectorController @Inject()(
                                                  val appConfig: FrontendAppConfig,
                                                  override val messagesApi: MessagesApi,
+                                                 val allowAccess: AllowAccessActionProvider,
                                                  authenticate: AuthAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
@@ -42,7 +43,7 @@ class ConfirmDeleteDirectorController @Inject()(
   val form = formProvider()
 
   private def vm(index: Index, name: String, mode:Mode) = ConfirmDeleteViewModel(
-    routes.ConfirmDeleteDirectorController.onSubmit(index, mode),
+    routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
@@ -50,7 +51,7 @@ class ConfirmDeleteDirectorController @Inject()(
     None
   )
 
-  def onPageLoad(index: Index, mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
 
@@ -58,7 +59,7 @@ class ConfirmDeleteDirectorController @Inject()(
       }
   }
 
-  def onSubmit(index: Index, mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
         post(vm(index, details.fullName, mode), DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(NormalMode), mode)
