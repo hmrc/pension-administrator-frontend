@@ -19,13 +19,12 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import javax.inject.Inject
-import models.Address
-import models.RegistrationLegalStatus
+import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
@@ -38,16 +37,17 @@ import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
 class PartnershipRegisteredAddressController @Inject()(
-                                                    override val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
-                                                    override val dataCacheConnector: UserAnswersCacheConnector,
-                                                    override val registrationConnector: RegistrationConnector,
-                                                    @Partnership override val navigator: Navigator,
-                                                    authenticate: AuthAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: NonUKAddressFormProvider,
-                                                    val countryOptions: CountryOptions
+                                                        override val appConfig: FrontendAppConfig,
+                                                        override val messagesApi: MessagesApi,
+                                                        override val dataCacheConnector: UserAnswersCacheConnector,
+                                                        override val registrationConnector: RegistrationConnector,
+                                                        @Partnership override val navigator: Navigator,
+                                                        authenticate: AuthAction,
+                                                        allowAccess: AllowAccessActionProvider,
+                                                        getData: DataRetrievalAction,
+                                                        requireData: DataRequiredAction,
+                                                        formProvider: NonUKAddressFormProvider,
+                                                        val countryOptions: CountryOptions
                                                   ) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
@@ -65,14 +65,14 @@ class PartnershipRegisteredAddressController @Inject()(
     Some(Message("partnershipRegisteredNonUKAddress.hintText"))
   )
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode : Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
         get(PartnershipRegisteredAddressId, addressViewModel(details.companyName))
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode : Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
         post(details.companyName, PartnershipRegisteredAddressId, addressViewModel(details.companyName), RegistrationLegalStatus.Partnership)

@@ -42,7 +42,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   "ConfirmPartnershipDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -57,7 +57,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some(validBusinessPartnershipUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(partnershipName, testBusinessPartnershipAddress)
@@ -69,7 +69,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(invalidUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
@@ -78,7 +78,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     "data is removed on page load" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-      controller(dataRetrievalAction).onPageLoad(postRequest)
+      controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
 
       FakeUserAnswersCacheConnector.verifyRemoved(ConfirmPartnershipDetailsId)
       FakeUserAnswersCacheConnector.verifyRemoved(PartnershipRegisteredAddressId)
@@ -108,7 +108,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(postRequest)
+          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -118,7 +118,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       "no" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-        val result = controller(dataRetrievalAction).onSubmit(postRequest)
+        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
@@ -133,7 +133,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
+          val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -144,14 +144,14 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
+          val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
 
         "no existing data is found" in {
-          val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -164,7 +164,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit(fakeRequest)
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -175,7 +175,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit(fakeRequest)
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -183,7 +183,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
         "no existing data is found" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-          val result = controller(dontGetAnyData).onSubmit(postRequest)
+          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -273,6 +273,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,

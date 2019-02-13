@@ -23,6 +23,7 @@ import controllers.actions._
 import forms.BusinessDetailsFormModel
 import identifiers.register.partnership.PartnershipDetailsId
 import javax.inject.Inject
+import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -34,16 +35,17 @@ class PartnershipBusinessDetailsController @Inject()(val appConfig: FrontendAppC
                                                      val dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction
                                                     ) extends BusinessDetailsController {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       get(PartnershipDetailsId)
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       post(PartnershipDetailsId)
   }

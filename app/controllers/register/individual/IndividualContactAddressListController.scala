@@ -39,7 +39,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
                                                        override val messagesApi: MessagesApi,
                                                        override val cacheConnector: UserAnswersCacheConnector,
                                                        authenticate: AuthAction,
-                                                       allowAccess: AllowAccessActionProvider,
+                                                       override val allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction
                                                       ) extends AddressListController with Retrievals with I18nSupport {

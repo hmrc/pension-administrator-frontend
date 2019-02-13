@@ -22,6 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
 import models.register.company._
@@ -74,6 +75,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -135,6 +137,16 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "redirect to the next page and set change flag when valid data is submitted when in update mode" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "a@b.com"), ("phoneNumber", "1234567890"))
+
+      val result = controller().onSubmit(UpdateMode, index)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
     }
   }
 }

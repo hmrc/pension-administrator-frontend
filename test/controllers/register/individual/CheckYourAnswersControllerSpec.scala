@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection, Message}
+import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for the Is this address same as your contact address" in {
         val sections = answerSections("cya.label.individual.same.contact.address", Seq("site.yes"), answerIsMessageKey = true,
-          Some(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url
+          Some(Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)
           ))
         val retrievalAction = dataRetrievalAction(
           IndividualSameContactAddressId.toString -> true
@@ -99,7 +99,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 Message("individualAddressYears.title", "Joe Bloggs").resolve,
                 Seq(s"common.addressYears.${addressYears.toString}"),
                 answerIsMessageKey = true,
-                controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url
+                Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
               )
             )
           )
@@ -120,7 +120,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.postcode.value,
             address.country
           ),
-          changeUrl = Some(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)
+          changeUrl = Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url))
         )
         val retrievalAction = dataRetrievalAction(
           IndividualPreviousAddressId.toString -> address
@@ -139,13 +139,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 "contactDetails.email.checkYourAnswersLabel",
                 Seq(contactDetails.email),
                 answerIsMessageKey = false,
-                controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url
+                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
               ),
               AnswerRow(
                 "contactDetails.phone.checkYourAnswersLabel",
                 Seq(contactDetails.phone),
                 answerIsMessageKey = false,
-                controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url
+                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
               )
             )
           )
@@ -217,7 +217,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     )
   }
 
-  private def answerSections(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[String] = None): Seq[AnswerSection] = {
+  private def answerSections(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): Seq[AnswerSection] = {
     val answerRow = AnswerRow(label, answer, answerIsMessageKey, changeUrl)
     val section = AnswerSection(None, Seq(answerRow))
     Seq(section)

@@ -82,6 +82,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeUserAnswersCacheConnector

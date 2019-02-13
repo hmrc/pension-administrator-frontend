@@ -20,7 +20,8 @@ package utils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-object DateHelper {
+class DateHelper {
+  private[utils] def currentDate: LocalDate = LocalDate.now()
 
   private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
   private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
@@ -28,4 +29,8 @@ object DateHelper {
   def formatDate(date: LocalDate): String = date.format(formatter)
 
   def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
+
+  def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
 }
+
+object DateHelper extends DateHelper

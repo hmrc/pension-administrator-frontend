@@ -18,6 +18,7 @@ package controllers.address
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.actions.AllowAccessActionProvider
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -42,6 +43,8 @@ trait AddressListController extends FrontendController with I18nSupport {
   protected def navigator: Navigator
 
   protected def formProvider: AddressListFormProvider = new AddressListFormProvider()
+
+  protected val allowAccess: AllowAccessActionProvider
 
   protected def get(viewModel: AddressListViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {

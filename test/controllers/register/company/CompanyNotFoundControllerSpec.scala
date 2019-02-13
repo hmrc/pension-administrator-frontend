@@ -18,6 +18,7 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import models.NormalMode
 import play.api.test.Helpers._
 import views.html.register.company.companyNotFound
 
@@ -25,14 +26,14 @@ class CompanyNotFoundControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyNotFoundController(frontendAppConfig, messagesApi, FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl)
+      FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl)
 
   def viewAsString() = companyNotFound(frontendAppConfig)(fakeRequest, messages).toString
 
   "CompanyNotFound Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()

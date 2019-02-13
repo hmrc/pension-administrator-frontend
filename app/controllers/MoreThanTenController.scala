@@ -17,12 +17,12 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
 import forms.MoreThanTenFormProvider
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsNull
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -31,13 +31,9 @@ import views.html.moreThanTen
 
 import scala.concurrent.Future
 
-trait MoreThanTenController extends FrontendController with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait MoreThanTenController extends FrontendController with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
-
-  protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
@@ -55,9 +51,23 @@ trait MoreThanTenController extends FrontendController with I18nSupport {
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(moreThanTen(appConfig, formWithErrors, viewModel))),
-      value =>
-        dataCacheConnector.save(request.externalId, viewModel.id, value).map(cacheMap =>
-          Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
+      value => {
+        val hasAnswerChanged = request.userAnswers.get(viewModel.id) match {
+          case None => true
+          case Some(false) => value
+          case _ => false
+        }
+
+        if (hasAnswerChanged) {
+          cacheConnector.save(request.externalId, viewModel.id, value).flatMap(cacheMap =>
+            saveChangeFlag(mode, viewModel.id).map(_ =>
+              Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
+          )
+        } else {
+          cacheConnector.save(request.externalId, viewModel.id, value).map(cacheMap =>
+            Redirect(navigator.nextPage(viewModel.id, mode, UserAnswers(cacheMap))))
+        }
+      }
     )
   }
 

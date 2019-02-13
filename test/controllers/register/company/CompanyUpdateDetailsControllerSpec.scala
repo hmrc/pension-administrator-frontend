@@ -18,6 +18,7 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import models.NormalMode
 import play.api.test.Helpers._
 import views.html.register.company.companyUpdateDetails
 
@@ -25,6 +26,7 @@ class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyUpdateDetailsController(frontendAppConfig, messagesApi, FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction, new DataRequiredActionImpl)
 
   def viewAsString() = companyUpdateDetails(frontendAppConfig)(fakeRequest, messages).toString
@@ -32,7 +34,7 @@ class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
   "CompanyUpdateDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()

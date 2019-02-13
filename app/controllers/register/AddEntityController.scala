@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.NormalMode
+import models.{Mode, NormalMode}
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
@@ -42,16 +42,17 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
 
   protected def navigator: Navigator
 
-  protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel)
+  protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    Future.successful(Ok(addEntity(appConfig, form, viewmodel)))
+    Future.successful(Ok(addEntity(appConfig, form, viewmodel, mode)))
   }
 
   protected def post(
                       id: TypedIdentifier[Boolean],
                       form: Form[Boolean],
-                      viewmodel: EntityViewModel
+                      viewmodel: EntityViewModel,
+                      mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     if (viewmodel.entities.isEmpty || viewmodel.entities.lengthCompare(viewmodel.maxLimit) >= 0) {
@@ -60,7 +61,7 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
     else {
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(addEntity(appConfig, formWithErrors, viewmodel))),
+          Future.successful(BadRequest(addEntity(appConfig, formWithErrors, viewmodel, mode))),
         value => {
           request.userAnswers.set(id)(value).fold(
             errors => {

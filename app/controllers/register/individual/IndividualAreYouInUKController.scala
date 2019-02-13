@@ -32,8 +32,8 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                val messagesApi: MessagesApi,
                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                @Individual override val navigator: Navigator,
-                                               @AuthenticationWithLowConfidence override val authenticate: AuthAction,
                                                override val allowAccess: AllowAccessActionProvider,
+                                               @AuthenticationWithLowConfidence override val authenticate: AuthAction,
                                                override val getData: DataRetrievalAction,
                                                override val requireData: DataRequiredAction,
                                                override val formProvider: AreYouInUKFormProvider

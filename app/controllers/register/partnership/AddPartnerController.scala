@@ -19,12 +19,12 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
-import models.{CheckMode, Mode, NormalMode}
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -38,6 +38,7 @@ class AddPartnerController @Inject()(
                                       override val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartner override val navigator: Navigator,
                                       authenticate: AuthAction,
+                                      allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: AddEntityFormProvider
@@ -55,16 +56,16 @@ class AddPartnerController @Inject()(
     subHeading = None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete
-      get(AddPartnersId, form, viewmodel(partners))
+      get(AddPartnersId, form, viewmodel(partners), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete
-      post(AddPartnersId, form, viewmodel(partners))
+      post(AddPartnersId, form, viewmodel(partners), mode)
   }
 
 }

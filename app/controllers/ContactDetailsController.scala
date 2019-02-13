@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.actions.AllowAccessActionProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{ContactDetails, Mode}
@@ -31,15 +32,15 @@ import views.html.contactDetails
 
 import scala.concurrent.Future
 
-trait ContactDetailsController extends FrontendController with Retrievals with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ContactDetailsController extends FrontendController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: UserAnswersCacheConnector
+  override def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
+
+  protected val allowAccess: AllowAccessActionProvider
 
   protected def get(id: TypedIdentifier[ContactDetails], form: Form[ContactDetails], viewmodel: ContactDetailsViewModel)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -61,9 +62,10 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
       formWithErrors =>
         Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel))),
       contactDetails => {
-        cacheConnector.save(request.externalId, id, contactDetails).map {
-          answers =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+        cacheConnector.save(request.externalId, id, contactDetails).flatMap {
+          answers => saveChangeFlag(mode, id). map {_ =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+            }
         }
       }
     )

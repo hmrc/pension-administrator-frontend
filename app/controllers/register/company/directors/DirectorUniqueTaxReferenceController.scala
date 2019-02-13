@@ -18,8 +18,8 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.company.directors.DirectorUniqueTaxReferenceId
 import javax.inject.Inject
@@ -32,25 +32,26 @@ import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorUniqueTaxReference
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DirectorUniqueTaxReferenceController @Inject()(
                                                       appConfig: FrontendAppConfig,
                                                       override val messagesApi: MessagesApi,
-                                                      dataCacheConnector: UserAnswersCacheConnector,
+                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                       @CompanyDirector navigator: Navigator,
+                                                      val allowAccess: AllowAccessActionProvider,
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: UniqueTaxReferenceFormProvider
-                                                    )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                                    ) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals with Variations {
 
   private val form: Form[UniqueTaxReference] = formProvider.apply(
     requiredKey = "directorUniqueTaxReference.error.required",
     requiredReasonKey = "directorUniqueTaxReference.error.reason.required"
   )
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
@@ -69,9 +70,14 @@ class DirectorUniqueTaxReferenceController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
-          value =>
-            dataCacheConnector.save(request.externalId, DirectorUniqueTaxReferenceId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json))))
+          value => {
+            val id = DirectorUniqueTaxReferenceId(index)
+            cacheConnector.save(request.externalId, id, value).flatMap { json =>
+              saveChangeFlag(mode, id).map { _ =>
+                Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json)))
+              }
+            }
+          }
         )
       }
   }

@@ -22,12 +22,23 @@
 
 @if(superSection.headingKey.isDefined){
 <header class="page-heading">
-<h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
+    <h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
 </header>
+}
+
+@superSection.addLink.map{ addLink =>
+   <a id="add-link" href='@{addLink.link.url}'>
+     <span aria-hidden="true">@messages(addLink.link.text)</span>
+   </a>
+    @addLink.additionalText.map{ text =>
+        <p>
+            @messages(text)
+        </p>
+    }
 }
 
 <ul>
     @for((section, i) <- superSection.sections.zipWithIndex){
-    @components.answer_section(section, idPath + "-" + i.toString)
+        @components.answer_section(section, idPath + "-" + i.toString)
     }
 </ul>

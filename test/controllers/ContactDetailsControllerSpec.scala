@@ -19,11 +19,14 @@ package controllers
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import connectors.UserAnswersCacheConnector
+import controllers.actions.AllowAccessActionProvider
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.individual.{IndividualContactDetailsChangedId, IndividualContactDetailsId}
 import models.requests.DataRequest
-import models.{ContactDetails, NormalMode, PSAUser, UserType}
+import models._
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -50,7 +53,8 @@ object ContactDetailsControllerSpec {
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: ContactDetailsFormProvider
+                                  formProvider: ContactDetailsFormProvider,
+                                  override val allowAccess: AllowAccessActionProvider
                                 ) extends ContactDetailsController {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
@@ -58,8 +62,9 @@ object ContactDetailsControllerSpec {
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
+    def onSubmit(viewmodel: ContactDetailsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent],
+                 mode: Mode = NormalMode, id: TypedIdentifier[ContactDetails] = FakeIdentifier): Future[Result] = {
+      post(id, mode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }
@@ -183,6 +188,38 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
             formProvider().bind(Map.empty[String, String]),
             viewmodel
           )(request, messages).toString
+      }
+    }
+  }
+
+  "post in Update Mode" must {
+
+    "return a redirect and set the changed flag when the submitted data is valid" in {
+
+      import play.api.inject._
+
+      val cacheConnector = FakeUserAnswersCacheConnector
+
+      running(_.overrides(
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+
+          implicit val materializer: Materializer = app.materializer
+
+          val answers = UserAnswers().set(FakeIdentifier)(ContactDetails("test@test.com", "123456789")).get
+
+          val appConfig = app.injector.instanceOf[FrontendAppConfig]
+          val formProvider = app.injector.instanceOf[ContactDetailsFormProvider]
+          val request = FakeRequest().withFormUrlEncodedBody(
+            ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
+          )
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, IndividualContactDetailsId)
+
+          status(result) mustEqual SEE_OTHER
+          FakeUserAnswersCacheConnector.verify(IndividualContactDetailsChangedId, true)
       }
     }
   }

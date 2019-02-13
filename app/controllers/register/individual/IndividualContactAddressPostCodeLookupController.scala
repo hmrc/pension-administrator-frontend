@@ -40,7 +40,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                   override val addressLookupConnector: AddressLookupConnector,
                                                                   override val messagesApi: MessagesApi,
                                                                   authenticate: AuthAction,
-                                                                  allowAccess: AllowAccessActionProvider,
+                                                                  override val allowAccess: AllowAccessActionProvider,
                                                                   getData: DataRetrievalAction,
                                                                   requireData: DataRequiredAction,
                                                                   formProvider: PostCodeLookupFormProvider

@@ -23,7 +23,7 @@ import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeCountryOptions, FakeNavigator}
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -56,7 +56,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               "commom.paye.label",
               Seq("Test Paye"),
               false,
-              Some(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(CheckMode).url)
+              Some(Link(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(CheckMode).url))
             ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
@@ -73,7 +73,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               "common.vatRegistrationNumber.checkYourAnswersLabel",
               Seq("Test Vat"),
               false,
-              Some(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url)
+              Some(Link(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url))
             ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
@@ -118,7 +118,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             "cya.label.common.same.contact.address",
             Seq("Yes"),
             true,
-            Some(controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)
+            Some(Link(controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url))
           ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
@@ -139,7 +139,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               address.country
             ),
             false,
-            Some(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)
+            Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))
           ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
@@ -156,7 +156,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             "checkyouranswers.partnership.address.years",
             Seq(s"common.addressYears.${addressYears.toString}"),
             true,
-            Some(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)
+            Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))
           ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
@@ -185,7 +185,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               address.country
             ),
             false,
-            Some(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)
+            Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))
           ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
@@ -204,12 +204,12 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               "contactDetails.email.checkYourAnswersLabel",
               Seq("test email"),
               false,
-              Some(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)
+              Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
             ),
             answerRow("contactDetails.phone.checkYourAnswersLabel",
               Seq("test phone"),
               false,
-              Some(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)
+              Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
             ))
 
           val sections = answerSections(Some("common.checkYourAnswers.contact.details.heading"), rows)
@@ -223,7 +223,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "redirect to session expired page" when {
         "no existing data" in {
-          val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
@@ -257,6 +257,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     new CheckYourAnswersController(
       frontendAppConfig,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -292,7 +293,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Seq(section)
   }
 
-  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[String] = None): AnswerRow = {
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl)
   }
 
@@ -302,7 +303,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
-    val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
+    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
     contentAsString(result) mustBe
       check_your_answers(

@@ -72,6 +72,7 @@ object DirectorDetailsControllerSpec {
       dataCacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
+      allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl()
     )

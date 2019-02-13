@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,20 +57,21 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "cya.label.name",
       Seq("test first name test last name"),
       answerIsMessageKey = false,
-      routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
     ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
       answerIsMessageKey = false,
-      routes.DirectorDetailsController.onPageLoad(CheckMode, index).url
+      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
     ))
 
-  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(0)
+  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(NormalMode, 0)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
       frontendAppConfig,
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -93,7 +94,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(index)(fakeRequest)
+      val result = controller().onPageLoad(NormalMode, index)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -101,13 +102,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired page" when {
       "director name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(index)(fakeRequest)
+        val result = controller(getEmptyData).onPageLoad(NormalMode, index)(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
 
       "no existing data is found" in {
-        val result = controller(dontGetAnyData).onPageLoad(index)(fakeRequest)
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode, index)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -116,7 +117,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "mark director as complete on submit" in {
 
-      val result = controller().onSubmit(index, NormalMode)(fakeRequest)
+      val result = controller().onSubmit(NormalMode, index)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       FakeSectionComplete.verify(IsDirectorCompleteId(index), true)

@@ -16,8 +16,8 @@
 
 package controllers.register.partnership.partners
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
 import models.NormalMode
 import play.api.test.Helpers._
@@ -72,6 +72,7 @@ object PartnerDetailsControllerSpec {
       dataCacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
+      FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl()
     )

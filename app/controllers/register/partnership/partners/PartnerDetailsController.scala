@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.PersonDetailsController
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
@@ -35,6 +35,7 @@ class PartnerDetailsController @Inject()(
                                           val dataCacheConnector: UserAnswersCacheConnector,
                                           @PartnershipPartner val navigator: Navigator,
                                           authenticate: AuthAction,
+                                          override val allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
                                         ) extends PersonDetailsController {
@@ -49,7 +50,7 @@ class PartnerDetailsController @Inject()(
   private[partners] def id(index: Int) =
     PartnerDetailsId(index)
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       get(id(index), viewModel(mode, index))
   }

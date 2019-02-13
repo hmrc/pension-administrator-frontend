@@ -37,10 +37,10 @@ import viewmodels.address.ManualAddressViewModel
 class IndividualContactAddressController @Inject()(
                                                     val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
-                                                    val dataCacheConnector: UserAnswersCacheConnector,
+                                                    val cacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
                                                     authenticate: AuthAction,
-                                                    allowAccess: AllowAccessActionProvider,
+                                                    override val allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,

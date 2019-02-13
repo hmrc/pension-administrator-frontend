@@ -29,7 +29,7 @@ import utils.Navigator
 import utils.annotations.Partnership
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
@@ -38,6 +38,7 @@ import scala.concurrent.ExecutionContext
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @Partnership navigator: Navigator,
@@ -45,15 +46,15 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions
                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val partnershipDetails = AnswerSection(
         Some("checkyouranswers.partnership.details"),
         Seq(
           PartnershipDetailsId.row(None),
-          PartnershipPayeId.row(Some(routes.PartnershipPayeController.onPageLoad(CheckMode).url)),
-          PartnershipVatId.row(Some(routes.PartnershipVatController.onPageLoad(CheckMode).url))
+          PartnershipPayeId.row(Some(Link(routes.PartnershipPayeController.onPageLoad(CheckMode).url))),
+          PartnershipVatId.row(Some(Link(routes.PartnershipVatController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
@@ -61,17 +62,17 @@ class CheckYourAnswersController @Inject()(
         Some("checkyouranswers.partnership.contact.details.heading"),
         Seq(
           PartnershipRegisteredAddressId.row(None),
-          PartnershipSameContactAddressId.row(Some(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
-          PartnershipContactAddressId.row(Some(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)),
-          PartnershipAddressYearsId.row(Some(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
-          PartnershipPreviousAddressId.row(Some(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))
+          PartnershipSameContactAddressId.row(Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url))),
+          PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))),
+          PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
+          PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
         Seq(
-          PartnershipContactDetailsId.row(Some(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
+          PartnershipContactDetailsId.row(Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 

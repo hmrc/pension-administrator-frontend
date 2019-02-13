@@ -17,7 +17,7 @@
 package controllers.register.partnership
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import models.{Address, BusinessDetails, NormalMode}
 import play.api.libs.json.Json
@@ -34,6 +34,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       countryOptions

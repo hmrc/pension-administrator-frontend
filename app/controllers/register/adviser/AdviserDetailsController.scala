@@ -18,6 +18,7 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Variations
 import controllers.actions._
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
@@ -32,18 +33,17 @@ import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserDetails
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 class AdviserDetailsController @Inject()(
                                           appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          dataCacheConnector: UserAnswersCacheConnector,
+                                          override val cacheConnector: UserAnswersCacheConnector,
                                           @Adviser navigator: Navigator,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: AdviserDetailsFormProvider
-                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                        ) extends FrontendController with I18nSupport with Variations{
 
   private val form = formProvider()
 
@@ -62,8 +62,10 @@ class AdviserDetailsController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
         value =>
-          dataCacheConnector.save(request.externalId, AdviserDetailsId, value).map(cacheMap =>
+          cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(cacheMap =>
+            saveChangeFlag(mode, AdviserDetailsId).map (_ =>
             Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
+          )
       )
   }
 }

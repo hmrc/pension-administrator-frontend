@@ -19,7 +19,7 @@ package controllers.register.partnership
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.partnership._
@@ -40,6 +40,7 @@ class PartnershipSameContactAddressController @Inject()(
                                                          val messagesApi: MessagesApi,
                                                          val dataCacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
+                                                         allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
                                                          formProvider: SameContactAddressFormProvider,
@@ -59,7 +60,7 @@ class PartnershipSameContactAddressController @Inject()(
       address = address
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       (PartnershipRegisteredAddressId and PartnershipDetailsId).retrieve.right.map {
         case address ~ details =>
