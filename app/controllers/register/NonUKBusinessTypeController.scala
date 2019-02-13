@@ -16,13 +16,13 @@
 
 package controllers.register
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.NonUKBusinessTypeFormProvider
 import identifiers.register.NonUKBusinessTypeId
-import models.NormalMode
+import javax.inject.Inject
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -39,6 +39,7 @@ class NonUKBusinessTypeController @Inject()(
                                         dataCacheConnector: UserAnswersCacheConnector,
                                         @Register navigator: Navigator,
                                         authenticate: AuthAction,
+                                        allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: NonUKBusinessTypeFormProvider
@@ -46,7 +47,7 @@ class NonUKBusinessTypeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(NonUKBusinessTypeId) match {
         case None => form
@@ -55,7 +56,7 @@ class NonUKBusinessTypeController @Inject()(
       Ok(nonUKBusinessType(appConfig, preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

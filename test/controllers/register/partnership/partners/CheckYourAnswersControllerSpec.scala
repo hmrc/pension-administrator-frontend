@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,13 +56,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "cya.label.name",
       Seq("test first name test last name"),
       answerIsMessageKey = false,
-      routes.PartnerDetailsController.onPageLoad(CheckMode, index).url
+      Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)
     ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
       answerIsMessageKey = false,
-      routes.PartnerDetailsController.onPageLoad(CheckMode, index).url
+      Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)
     ))
 
   def call = controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(0)
@@ -71,6 +71,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     new CheckYourAnswersController(
       frontendAppConfig,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeNavigator,
@@ -92,7 +93,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   "CheckYourAnswers Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(index)(fakeRequest)
+      val result = controller().onPageLoad(index, NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -100,13 +101,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired page" when {
       "partner name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(index)(fakeRequest)
+        val result = controller(getEmptyData).onPageLoad(index, NormalMode)(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
 
       "no existing data is found" in {
-        val result = controller(dontGetAnyData).onPageLoad(index)(fakeRequest)
+        val result = controller(dontGetAnyData).onPageLoad(index, NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

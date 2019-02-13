@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, CheckYourAnswersId}
 import javax.inject.Inject
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -28,7 +28,7 @@ import utils.Navigator
 import utils.annotations.Adviser
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
@@ -43,15 +43,15 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions
                                           )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val details = AdviserDetailsId.row(Some(routes.AdviserDetailsController.onPageLoad(CheckMode).url))
-      val address = AdviserAddressId.row(Some(routes.AdviserAddressController.onPageLoad(CheckMode).url))
+      val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
+      val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(CheckMode).url)))
       val sections = Seq(AnswerSection(None, details ++ address))
       Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
   }

@@ -17,9 +17,9 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
 import models.{BusinessDetails, NormalMode, TolerantAddress}
@@ -111,6 +111,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(retrieval),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)

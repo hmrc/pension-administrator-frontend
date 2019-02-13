@@ -19,7 +19,7 @@ package controllers.register
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.company.BusinessDetailsId
-import models.BusinessDetails
+import models.{BusinessDetails, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import views.html.register.duplicateRegistration
@@ -29,7 +29,7 @@ class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
   private val companyName = "test company name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction,
+    new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(),
       dataRetrievalAction, new DataRequiredActionImpl)
 
   private def viewAsString() = duplicateRegistration(companyName, frontendAppConfig)(fakeRequest, messages).toString
@@ -45,7 +45,7 @@ class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
 
   "DuplicateRegistration Controller" must {
     "return OK and the correct view for a GET with the correct company name displayed" in {
-      val result = controller(retrievalAction).onPageLoad(fakeRequest)
+      val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }

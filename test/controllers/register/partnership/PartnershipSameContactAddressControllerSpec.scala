@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import forms.address.SameContactAddressFormProvider
 import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
@@ -69,6 +69,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       messagesApi,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

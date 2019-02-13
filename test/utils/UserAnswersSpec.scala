@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.individual.IndividualAddressChangedId
 import models.{Index, NormalMode, PersonDetails}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
@@ -67,10 +68,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
 
       val directorEntities = Seq(
-        Person(0, "First Last", routes.ConfirmDeleteDirectorController.onPageLoad(0).url,
+        Person(0, "First Last", routes.ConfirmDeleteDirectorController.onPageLoad(0, NormalMode).url,
           routes.CheckYourAnswersController.onPageLoad(Index(0)).url,
           isDeleted = false, isComplete = true),
-        Person(1, "First1 Last1", routes.ConfirmDeleteDirectorController.onPageLoad(1).url,
+        Person(1, "First1 Last1", routes.ConfirmDeleteDirectorController.onPageLoad(1, NormalMode).url,
           routes.DirectorDetailsController.onPageLoad(NormalMode, Index(1)).url,
           isDeleted = false, isComplete = false))
 
@@ -78,6 +79,51 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
       result.size mustEqual 2
       result mustBe directorEntities
+    }
+  }
+
+  "isUserAnswerUpdated" must{
+
+    "return false if isChanged is not present" in {
+      val userAnswers = UserAnswers(establishers)
+      userAnswers.isUserAnswerUpdated() mustBe false
+    }
+
+    "return true if isChanged with true is present for a change" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> true)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe true
+    }
+
+    "return true if isChanged with true is present for multiple changes" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true,
+        "areDirectorsOrPartnersChanged" -> true,
+        "isMoreThanTenDirectorsOrPartnersChanged" -> true)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe true
+    }
+
+    "return true if isChanged with true is present for one of multiple changes" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> false,
+        "areDirectorsOrPartnersChanged" -> true,
+        "isMoreThanTenDirectorsOrPartnersChanged" -> false)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe true
+    }
+
+    "return false if isChanged with false is present for MoreThanTenDirectorsOrPartnersChangedId" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isMoreThanTenDirectorsOrPartnersChanged" -> false)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe false
+    }
+
+
+    "return false if isChanged with false is present for multiple changes" in {
+      val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> false,
+        "areDirectorsOrPartnersChanged" -> false,
+        "isMoreThanTenDirectorsOrPartnersChanged" -> false)
+      val userAnswers = UserAnswers(userAnswersData)
+      userAnswers.isUserAnswerUpdated() mustBe false
     }
   }
 }

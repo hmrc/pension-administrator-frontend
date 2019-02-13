@@ -18,7 +18,11 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
+import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId}
+import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.individual.{IndividualContactAddressChangedId, IndividualContactDetailsChangedId, IndividualPreviousAddressChangedId}
+import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models.{Index, NormalMode, PersonDetails}
 import play.api.libs.json._
@@ -28,7 +32,6 @@ import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
-
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
     get[A](id.path)
   }
@@ -67,7 +70,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(index).url,
+        routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url,
         editUrl,
         director.isDeleted,
         get(IsDirectorCompleteId(index)).getOrElse(false)
@@ -91,7 +94,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       Person(
         index,
         partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index).url,
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url,
         controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
         partner.isDeleted,
         get(IsPartnerCompleteId(index)).getOrElse(false)
@@ -127,6 +130,22 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
+  def setAllFlagsTrue[I <: TypedIdentifier[Boolean]](ids: List[I])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+
+    @tailrec
+    def setRec[II <: TypedIdentifier[Boolean]](localIds: List[II], result: JsResult[UserAnswers])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+      result match {
+        case JsSuccess(_, _) =>
+          localIds match {
+            case Nil => result
+            case id :: tail => setRec(tail, result.flatMap(_.set(id)(true)))
+          }
+        case failure => failure
+      }
+    }
+    setRec(ids, JsSuccess(this))
+  }
+
   def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {
 
     JsLens.fromPath(id.path)
@@ -149,6 +168,23 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
 
     removeRec(ids, JsSuccess(this))
+  }
+
+  def isUserAnswerUpdated(): Boolean ={
+    List(
+      get[Boolean](DeclarationChangedId),
+      get[Boolean](DirectorsOrPartnersChangedId),
+      get[Boolean](MoreThanTenDirectorsOrPartnersChangedId),
+      get[Boolean](CompanyContactAddressChangedId),
+      get[Boolean](CompanyContactDetailsChangedId),
+      get[Boolean](CompanyPreviousAddressChangedId),
+      get[Boolean](IndividualContactAddressChangedId),
+      get[Boolean](IndividualContactDetailsChangedId),
+      get[Boolean](IndividualPreviousAddressChangedId),
+      get[Boolean](PartnershipContactAddressChangedId),
+      get[Boolean](PartnershipContactDetailsChangedId),
+      get[Boolean](PartnershipPreviousAddressChangedId)
+    ).flatten.contains(true)
   }
 
 }

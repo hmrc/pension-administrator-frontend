@@ -190,7 +190,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
   // scalastyle:on magic.number
 
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index).url
+  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(index, NormalMode).url
 
   private def editLink(index: Int) = controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(index).url
 

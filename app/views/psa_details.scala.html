@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.SuperSection
 
-@(appConfig: FrontendAppConfig, superSections: Seq[SuperSection], header: String, canDeregister: Boolean)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, psaDetails: viewmodels.PsaViewDetailsViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("psaDetails.title"),
@@ -28,23 +28,27 @@
     bodyClasses = None
     ) {
         @components.heading(
-            headingKey=header
+            headingKey=psaDetails.header
         )
 
-        @if(canDeregister) {
+        @if(psaDetails.canDeregister) {
             <p>
                 <a id="deregister-link" href="@appConfig.deregisterPsaUrl">@messages("psaDetails.deregister.link.text")</a>
                 @messages("psaDetails.deregister.text")
             </p>
         }
 
-        @for((section, i) <- superSections.zipWithIndex){
-            @if(canDeregister){
+        @for((section, i) <- psaDetails.superSections.zipWithIndex){
+            @if(psaDetails.canDeregister){
                 <h2 class="heading-large">@messages("psaDetails.header")</h2>
             }
             @{
                 components.super_section(section, i.toString)
             }
+        }
+
+        @if(psaDetails.isUserAnswerUpdated){
+            @components.button_link("psaDetails.declaration.link.text", controllers.register.routes.DeclarationController.onPageLoad().url, "declaration-link")
         }
 
         <p><a id="return-to-overview" href="@appConfig.schemesOverviewUrl">@messages("site.return_to_overview")</a></p>

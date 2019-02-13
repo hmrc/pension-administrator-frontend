@@ -29,7 +29,7 @@ import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
@@ -52,8 +52,8 @@ class CheckYourAnswersController @Inject()(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
           ++ Seq(
-          CompanyDetailsId.row(Some(routes.CompanyDetailsController.onPageLoad(CheckMode).url)),
-          CompanyRegistrationNumberId.row(Some(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
+          CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
@@ -61,16 +61,16 @@ class CheckYourAnswersController @Inject()(
         Some("company.checkYourAnswers.company.contact.details.heading"),
         Seq(
           CompanyAddressId.row(None),
-          CompanySameContactAddressId.row(Some(routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)),
+          CompanySameContactAddressId.row(Some(Link(routes.CompanySameContactAddressController.onPageLoad(CheckMode).url))),
           CompanyContactAddressId.row(None),
-          CompanyAddressYearsId.row(Some(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-          CompanyPreviousAddressId.row(Some(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))
+          CompanyAddressYearsId.row(Some(Link(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))),
+          CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
-        ContactDetailsId.row(Some(routes.ContactDetailsController.onPageLoad(CheckMode).url))
+        ContactDetailsId.row(Some(Link(routes.ContactDetailsController.onPageLoad(CheckMode).url)))
       )
 
       Ok(check_your_answers(

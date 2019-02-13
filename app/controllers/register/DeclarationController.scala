@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
 import javax.inject.Inject
-import models.{NormalMode, UserType}
+import models.{Mode, NormalMode, UserType}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -38,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
+                                      allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       @Register navigator: Navigator,
@@ -47,7 +48,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       request.user.userType match {
         case UserType.Individual =>
@@ -57,7 +58,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         errors =>
