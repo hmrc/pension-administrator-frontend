@@ -19,7 +19,7 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
@@ -37,6 +37,7 @@ class PartnershipContactAddressListController @Inject()(
                                                          val appConfig: FrontendAppConfig,
                                                          val messagesApi: MessagesApi,
                                                          authenticate: AuthAction,
+                                                         allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
                                                          formProvider: AddressListFormProvider
@@ -53,7 +54,7 @@ class PartnershipContactAddressListController @Inject()(
     }
   }
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map(get)
   }

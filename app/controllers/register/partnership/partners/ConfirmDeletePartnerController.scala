@@ -26,6 +26,8 @@ import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import models.{Index, Mode, NormalMode}
+import play.api.i18n.MessagesApi
 import viewmodels.{ConfirmDeleteViewModel, Message}
 
 class ConfirmDeletePartnerController @Inject()(
@@ -41,8 +43,8 @@ class ConfirmDeletePartnerController @Inject()(
 
   val form = formProvider()
 
-  private def viewModel(index: Index, name: String) = ConfirmDeleteViewModel(
-    routes.ConfirmDeletePartnerController.onSubmit(index),
+  private def viewModel(index: Index, name: String, mode:Mode) = ConfirmDeleteViewModel(
+    routes.ConfirmDeletePartnerController.onSubmit(index, mode),
     controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode),
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",
@@ -54,15 +56,15 @@ class ConfirmDeletePartnerController @Inject()(
     implicit request =>
 
       PartnerDetailsId(index).retrieve.right.map { details =>
-        get(viewModel(index, details.fullName), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
+        get(viewModel(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
 
       }
   }
 
-  def onSubmit(index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(index: Index, mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerDetailsId(index).retrieve.right.map { details =>
-        post(viewModel(index, details.fullName), PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode))
+        post(viewModel(index, details.fullName, mode), PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode), mode)
       }
   }
 

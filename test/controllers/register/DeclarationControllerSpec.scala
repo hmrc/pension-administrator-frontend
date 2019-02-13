@@ -132,6 +132,7 @@ object DeclarationControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       fakeAuthAction(userType),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,

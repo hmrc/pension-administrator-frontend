@@ -17,9 +17,9 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
@@ -67,6 +67,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
+        bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
@@ -87,6 +88,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
+        bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
@@ -103,6 +105,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
+        bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
@@ -119,6 +122,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
       val onwardRoute = controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(NormalMode)
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
+        bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
@@ -141,6 +145,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
+        bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
@@ -162,6 +167,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
       running(_.overrides(
         bind[AuthAction].to(FakeAuthAction),
+        bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>

@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import config.FrontendAppConfig
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -33,12 +33,13 @@ import scala.concurrent.Future
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
+                                       allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
       (PartnershipDetailsId and PartnershipRegisteredAddressId).retrieve.right.map {

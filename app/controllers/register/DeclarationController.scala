@@ -38,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
+                                      allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       @Register navigator: Navigator,
@@ -47,7 +48,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       request.user.userType match {
         case UserType.Individual =>

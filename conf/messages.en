@@ -65,6 +65,7 @@ site.back = Back
 site.delete = Remove
 site.edit = Edit
 site.change = Change
+site.add = Add
 site.confirm = Confirm
 site.agree = Agree and continue
 site.cancel = Cancel
@@ -86,6 +87,7 @@ site.printThisPage = Print this page
 site.signOut=Sign out
 site.return_to_overview = Return to managing pension schemes
 site.return.govuk = Return to GOV.UK
+site.not_entered = Not entered
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -736,6 +738,16 @@ paye.label = Employer PAYE reference number
 crn.label = Company registration number
 utr.label = Unique Taxpayer Reference
 pensionAdvisor.section.header = Pension adviser details
+director-add-link-onlyOne = Add a director
+director-add-link-onlyOne-additionalText = There must be a minimum of 1 director. If you want to remove this director, you must first add a new one.
+director-add-link-lessThanTen = Add or delete a Director
+director-add-link-Ten = Delete a director
+director-add-link-Ten-additionalText = A maximum of 10 directors can be added. If you want to add another director, you must first delete an existing one.
+partner-add-link-onlyOne = Add a partner
+partner-add-link-onlyOne-additionalText = There must be a minimum of 1 partner. If you want to remove this partner, you must first add a new one.
+partner-add-link-lessThanTen = Add or delete a partner
+partner-add-link-Ten = Delete a partner
+partner-add-link-Ten-additionalText = A maximum of 10 partners can be added. If you want to add another partners, you must first delete an existing one.
 
 director.supersection.header = Director details
 partner.supersection.header = Partner details
@@ -805,7 +817,7 @@ anyMoreChanges.title = Do you want to make any more changes?
 anyMoreChanges.heading = Do you want to make any more changes?
 anyMoreChanges.p1 = The pension scheme has not been updated yet.
 anyMoreChanges.p2 = You will need to complete a declaration to update the scheme when you have made all of your changes.
-anyMoreChanges.p3 = You have until 27 February 2019 to complete the declaration. If you do not complete the declaration by this date, your changes will be deleted.
+anyMoreChanges.p3 = You have until {0} to complete the declaration. If you do not complete the declaration by this date, your changes will be deleted.
 
 anyMoreChanges.error.required = Select yes if you want to make more changes
 

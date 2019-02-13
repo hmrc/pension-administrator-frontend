@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
 import models.{Mode, NormalMode}
 import play.api.test.Helpers._
@@ -80,6 +80,7 @@ object MoreThanTenPartnersControllerSpec {
       FakeUserAnswersCacheConnector,
       FakeNavigator,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       base.dontGetAnyData,
       new DataRequiredActionImpl
     )

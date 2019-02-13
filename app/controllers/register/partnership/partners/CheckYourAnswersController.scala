@@ -29,7 +29,7 @@ import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, SectionComplete}
-import viewmodels.AnswerSection
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,16 +52,16 @@ class CheckYourAnswersController @Inject()(
         val answersSection = Seq(
           AnswerSection(
             Some("partnerCheckYourAnswers.partnerDetails.heading"),
-            PartnerDetailsId(index).row(Some(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)) ++
-              PartnerNinoId(index).row(Some(routes.PartnerNinoController.onPageLoad(CheckMode, index).url)) ++
-              PartnerUniqueTaxReferenceId(index).row(Some(routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url))
+            PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url))) ++
+              PartnerNinoId(index).row(Some(Link(routes.PartnerNinoController.onPageLoad(CheckMode, index).url))) ++
+              PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)))
           ),
           AnswerSection(
             Some("partnerCheckYourAnswers.contactDetails.heading"),
-            PartnerAddressId(index).row(Some(routes.PartnerAddressController.onPageLoad(CheckMode, index).url)) ++
-              PartnerAddressYearsId(index).row(Some(routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url)) ++
+            PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(CheckMode, index).url))) ++
+              PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url))) ++
               PartnerPreviousAddressId(index).row(None) ++
-              PartnerContactDetailsId(index).row(Some(routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url))
+              PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)))
           ))
 
         Future.successful(Ok(check_your_answers(

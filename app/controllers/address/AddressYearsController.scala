@@ -18,7 +18,7 @@ package controllers.address
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
@@ -32,9 +32,7 @@ import views.html.address.addressYears
 
 import scala.concurrent.Future
 
-trait AddressYearsController extends FrontendController with Retrievals with I18nSupport {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait AddressYearsController extends FrontendController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 
@@ -61,9 +59,11 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
       formWithErrors =>
         Future.successful(BadRequest(addressYears(appConfig, formWithErrors, viewmodel))),
       addressYears =>
-        cacheConnector.save(request.externalId, id, addressYears).map {
+        cacheConnector.save(request.externalId, id, addressYears).flatMap {
           answers =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+            saveChangeFlag(mode, id).map(_ =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+            )
         }
     )
   }

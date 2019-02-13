@@ -22,10 +22,11 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorNinoId}
 import models.register.company.CompanyDetails
-import models.{Index, Nino, NormalMode, PersonDetails}
+import models._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -113,6 +114,18 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+    }
+
+    "redirect to the next page in Update Mode" when {
+      "valid data is submitted and yes is selected" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("nino.hasNino", "true"), ("nino.nino", "CS700100A"))
+
+        val result = controller().onSubmit(UpdateMode, index)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+        FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
       }
     }
 
