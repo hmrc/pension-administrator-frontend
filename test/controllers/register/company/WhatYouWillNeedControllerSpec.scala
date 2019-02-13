@@ -54,7 +54,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to next page on submit" in {
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -64,7 +64,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
       auditService.reset()
 
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       auditService.verifyNothingSent() mustBe false
