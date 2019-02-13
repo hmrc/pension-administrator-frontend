@@ -20,7 +20,7 @@ import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
@@ -37,8 +37,9 @@ import viewmodels.address.ManualAddressViewModel
 class PartnershipContactAddressController @Inject()(
                                                      val appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
-                                                     val dataCacheConnector: UserAnswersCacheConnector,
+                                                     val cacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
+                                                     override val allowAccess: AllowAccessActionProvider,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
@@ -59,7 +60,7 @@ class PartnershipContactAddressController @Inject()(
       hint = Some(Message("partnership.contactAddress.hint").withArgs(partnershipName))
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map {
         details =>

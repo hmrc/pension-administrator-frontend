@@ -19,10 +19,14 @@ package controllers.address
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.actions.FakeAllowAccessProvider
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
+import identifiers.register.DirectorsOrPartnersChangedId
+import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressYearsId}
 import models.requests.DataRequest
-import models.{AddressYears, NormalMode, PSAUser, UserType}
+import models._
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
@@ -52,13 +56,16 @@ object AddressYearsControllerSpec {
                                   formProvider: AddressYearsFormProvider
                                 ) extends AddressYearsController {
 
+    override val allowAccess = FakeAllowAccessProvider()
+
     def onPageLoad(viewmodel: AddressYearsViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider("error"), viewmodel)(DataRequest(FakeRequest(), "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    def onSubmit(viewmodel: AddressYearsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, formProvider("error"), viewmodel)(DataRequest(fakeRequest, "cacheId",
+    def onSubmit(viewmodel: AddressYearsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent],
+                 mode: Mode = NormalMode, id: TypedIdentifier[AddressYears] = FakeIdentifier): Future[Result] = {
+      post(id, mode, formProvider("error"), viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }
@@ -149,6 +156,28 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
       }
     }
 
+      "save the change flag in update mode" in {
+
+        import play.api.inject._
+
+        val cacheConnector = FakeUserAnswersCacheConnector
+
+        running(_.overrides(
+          bind[UserAnswersCacheConnector].toInstance(cacheConnector),
+          bind[Navigator].toInstance(FakeNavigator)
+        )) {
+          app =>
+            val request = FakeRequest().withFormUrlEncodedBody(
+              "value" -> AddressYears.OverAYear.toString
+            )
+            val controller = app.injector.instanceOf[TestController]
+            val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnerAddressYearsId(0))
+
+            status(result) mustEqual SEE_OTHER
+            FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
+        }
+      }
+
     "return a bad request when the submitted data is invalid" in {
 
       running(_.overrides(
@@ -172,3 +201,4 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
     }
   }
 }
+

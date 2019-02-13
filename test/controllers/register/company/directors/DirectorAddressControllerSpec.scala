@@ -24,6 +24,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
@@ -87,6 +88,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -216,6 +218,23 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
       }
+    }
+
+    "redirect to the next page when valid data is submitted and update the change flag when in update mode" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE"),
+        "country" -> "GB"
+      )
+
+      val result = controller(data).onSubmit(UpdateMode, firstIndex)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+
+      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
+
     }
 
   }

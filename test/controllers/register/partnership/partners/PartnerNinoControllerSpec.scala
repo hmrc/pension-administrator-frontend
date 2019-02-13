@@ -22,6 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.partners.PartnerNinoFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId}
 import models._
@@ -65,6 +66,7 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider
@@ -112,6 +114,18 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+    }
+
+    "redirect to the next page and update the flag when in update mode" when {
+      "valid data is submitted and yes is selected" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("nino.hasNino", "true"), ("nino.nino", "CS700100A"))
+
+        val result = controller().onSubmit(UpdateMode, index)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+        FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
       }
     }
 

@@ -128,5 +128,5 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val retryAttempts: Int = runModeConfiguration.getInt("retry.max.attempts").getOrElse(1)
   lazy val retryWaitMs: Int = runModeConfiguration.getInt("retry.initial.wait.ms").getOrElse(1)
   lazy val retryWaitFactor: Double = runModeConfiguration.getDouble("retry.wait.factor").getOrElse(1)
-
+  lazy val daysDataSaved: Int = loadConfig("daysDataSaved").toInt
 }

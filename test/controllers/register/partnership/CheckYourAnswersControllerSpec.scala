@@ -223,7 +223,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "redirect to session expired page" when {
         "no existing data" in {
-          val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
@@ -257,6 +257,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     new CheckYourAnswersController(
       frontendAppConfig,
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -302,7 +303,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
-    val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
+    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
     contentAsString(result) mustBe
       check_your_answers(

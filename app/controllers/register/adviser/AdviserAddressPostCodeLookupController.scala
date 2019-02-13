@@ -38,6 +38,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
                                                         override val addressLookupConnector: AddressLookupConnector,
                                                         @Adviser override val navigator: Navigator,
                                                         override val messagesApi: MessagesApi,
+                                                        override val allowAccess: AllowAccessActionProvider,
                                                         authenticate: AuthAction,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
@@ -48,7 +49,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
 
   import AdviserAddressPostCodeLookupController._
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(viewModel(mode))
   }

@@ -20,8 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
-import identifiers.register.DeclarationWorkingKnowledgeId
-import models.NormalMode
+import identifiers.register.{DeclarationChangedId, DeclarationWorkingKnowledgeId}
+import models.{NormalMode, UpdateMode}
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.libs.json._
@@ -36,6 +36,9 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
   val formProvider = new DeclarationWorkingKnowledgeFormProvider()
   val form = formProvider()
 
+  val existingData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.Adviser.toString))))
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DeclarationWorkingKnowledgeController(
       frontendAppConfig,
@@ -43,6 +46,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider
@@ -100,6 +104,26 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "redirect to the next page and update the change ID when data has changed" in {
+      FakeUserAnswersCacheConnector.reset()
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.WorkingKnowledge.toString))
+      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
+    }
+
+    "redirect to the next page but not update the change ID when data has not changed" in {
+      FakeUserAnswersCacheConnector.reset()
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.Adviser.toString))
+      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
     }
   }
 }

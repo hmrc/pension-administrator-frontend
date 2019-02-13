@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.vary.routes._
-
+@import utils.DateHelper._
 
 @(
     appConfig: FrontendAppConfig,
@@ -39,7 +39,7 @@
 
         <p>@messages("anyMoreChanges.p1")</p>
         <p>@messages("anyMoreChanges.p2")</p>
-        <p>@messages("anyMoreChanges.p3")</p>
+        <p>@messages("anyMoreChanges.p3", dateAfterGivenDays(appConfig.daysDataSaved))</p>
 
         @components.input_yes_no(
             field = form("value"),

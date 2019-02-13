@@ -37,8 +37,9 @@ import viewmodels.address.ManualAddressViewModel
 class AdviserAddressController @Inject()(
                                           override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          override val dataCacheConnector: UserAnswersCacheConnector,
+                                          override val cacheConnector: UserAnswersCacheConnector,
                                           @Adviser override val navigator: Navigator,
+                                          override val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
@@ -57,7 +58,7 @@ class AdviserAddressController @Inject()(
     Some(Message("common.adviser.secondary.heading"))
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(AdviserAddressId, AdviserAddressListId, addressViewModel(mode))
   }

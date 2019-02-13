@@ -19,7 +19,7 @@ package controllers.register.individual
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId}
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,6 +36,7 @@ import scala.concurrent.ExecutionContext
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @Individual navigator: Navigator,
@@ -45,7 +46,7 @@ class CheckYourAnswersController @Inject()(
 
   import CheckYourAnswersController._
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val helper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
 
@@ -71,7 +72,7 @@ class CheckYourAnswersController @Inject()(
       Ok(check_your_answers(appConfig, sections, None, postUrl))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
   }

@@ -19,12 +19,12 @@ package controllers.register.company
 import config.FrontendAppConfig
 import connectors.{RegistrationConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import javax.inject.Inject
-import models.{Address, RegistrationLegalStatus}
+import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
@@ -43,6 +43,7 @@ class CompanyRegisteredAddressController @Inject()(
                                                     override val registrationConnector: RegistrationConnector,
                                                     @RegisterCompany override val navigator: Navigator,
                                                     authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: NonUKAddressFormProvider,
@@ -64,7 +65,7 @@ class CompanyRegisteredAddressController @Inject()(
     Some(Message("companyRegisteredNonUKAddress.hintText"))
   )
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessDetailsId.retrieve.right.map { details =>
         get(CompanyAddressId, addressViewModel(details.companyName))

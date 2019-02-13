@@ -272,6 +272,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,

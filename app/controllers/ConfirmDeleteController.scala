@@ -19,11 +19,15 @@ package controllers
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import models.PersonDetails
+import identifiers.register.company.MoreThanTenDirectorsId
+import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.partnership.MoreThanTenPartnersId
+import identifiers.register.partnership.partners.PartnerDetailsId
 import models.requests.DataRequest
+import models.{Mode, PersonDetails, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Format
+import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import viewmodels.ConfirmDeleteViewModel
@@ -31,9 +35,7 @@ import views.html.confirmDelete
 
 import scala.concurrent.Future
 
-trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals {
-
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals with Variations {
 
   protected def appConfig: FrontendAppConfig
 
@@ -48,19 +50,41 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
       Future.successful(Redirect(redirectTo))
     }
 
-  def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonDetails], postUrl: Call)
+  private def saveChangeFlags[A](id: TypedIdentifier[A], mode: Mode)(implicit request: DataRequest[AnyContent]): Future[JsValue] =
+    if (mode == UpdateMode) {
+      saveChangeFlag(mode, id).flatMap { _ =>
+        val moreThanTenId = id match {
+          case DirectorDetailsId(_) => MoreThanTenDirectorsId
+          case PartnerDetailsId(_) => MoreThanTenPartnersId
+          case _ => throw new RuntimeException("Illegal ID passed into confirm delete controller:" + id)
+        }
+
+        request.userAnswers.get(moreThanTenId) match {
+          case Some(true) => saveChangeFlag(UpdateMode, moreThanTenId)
+          case _ => Future.successful(request.userAnswers.json)
+        }
+      }
+    } else {
+      Future.successful(request.userAnswers.json)
+    }
+
+  def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonDetails], postUrl: Call, mode: Mode)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => Future.successful(BadRequest(confirmDelete(appConfig, formWithError, vm))),
-     {
-       case true => id.retrieve.right.map { details =>
-         cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
-           Redirect(postUrl)
-         }
-       }
-       case false =>  Future.successful(Redirect(postUrl))
-     }
+      {
+        case true =>
+          id.retrieve.right.map { details =>
+            saveChangeFlags(id, mode).flatMap { _ =>
+              cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
+                Redirect(postUrl)
+              }
+            }
+          }
+        case false =>
+          Future.successful(Redirect(postUrl))
+      }
     )
   }
 

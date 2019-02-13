@@ -40,6 +40,7 @@ class IndividualNameController @Inject()(
                                           val dataCacheConnector: UserAnswersCacheConnector,
                                           @Individual val navigator: Navigator,
                                           authenticate: AuthAction,
+                                          allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider : IndividualNameFormProvider
@@ -55,7 +56,7 @@ class IndividualNameController @Inject()(
       postCall = routes.IndividualNameController.onSubmit(mode)
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IndividualDetailsId) match {
@@ -66,7 +67,7 @@ class IndividualNameController @Inject()(
       Ok(individualName(appConfig, preparedForm, viewModel(mode)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(

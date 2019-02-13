@@ -22,8 +22,9 @@
 @import models.requests.DataRequest
 @import play.api.mvc.AnyContent
 @import viewmodels.{Person, EntityViewModel, Message}
+@import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel)(implicit request: DataRequest[AnyContent], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
     viewmodel.entities.exists(!_.isComplete)
@@ -47,7 +48,7 @@
                 @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
             } else {
 
-                @components.person_list(appConfig, viewmodel.entities)
+                @components.person_list(appConfig, viewmodel.entities, mode)
 
                 @if(viewmodel.entities.size < viewmodel.maxLimit) {
                     @components.input_yes_no(

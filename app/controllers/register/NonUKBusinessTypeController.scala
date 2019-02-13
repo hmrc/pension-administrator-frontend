@@ -39,6 +39,7 @@ class NonUKBusinessTypeController @Inject()(
                                         dataCacheConnector: UserAnswersCacheConnector,
                                         @Register navigator: Navigator,
                                         authenticate: AuthAction,
+                                        allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: NonUKBusinessTypeFormProvider
@@ -46,7 +47,7 @@ class NonUKBusinessTypeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(NonUKBusinessTypeId) match {
         case None => form

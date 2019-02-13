@@ -18,7 +18,7 @@ package views
 
 import controllers.register.partnership.partners.routes
 import forms.ConfirmDeleteFormProvider
-import models.Index
+import models.{Index, NormalMode}
 import viewmodels.ConfirmDeleteViewModel
 import views.behaviours.ViewBehaviours
 import views.html.confirmDelete
@@ -30,8 +30,8 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
   val firstIndex = Index(0)
 
   val viewModel = ConfirmDeleteViewModel(
-    routes.ConfirmDeletePartnerController.onSubmit(firstIndex),
-    routes.ConfirmDeletePartnerController.onPageLoad(firstIndex),
+    routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode),
+    routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode),
     s"$messageKeyPrefix.title",
     s"$messageKeyPrefix.heading",
     Some("Name"),

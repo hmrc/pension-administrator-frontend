@@ -29,7 +29,7 @@ class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
   private val companyName = "test company name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction,
+    new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(),
       dataRetrievalAction, new DataRequiredActionImpl)
 
   private def viewAsString() = duplicateRegistration(companyName, frontendAppConfig)(fakeRequest, messages).toString

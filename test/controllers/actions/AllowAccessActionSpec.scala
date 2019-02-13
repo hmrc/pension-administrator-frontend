@@ -21,6 +21,7 @@ import models._
 import models.requests.AuthenticatedRequest
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
@@ -51,6 +52,22 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
     "allow access to pages for user with no enrolment and Check mode" in {
 
       val action = new TestAllowAccessAction(CheckMode)
+
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+
+      whenReady(futureResult) { result =>
+
+        result.map { _.header.status  } mustBe None
+      }
+
+
+    }
+
+    "allow access to pages for user with enrolment and Normal mode and trying to get pagesAfterEnrolment" in {
+
+      val action = new TestAllowAccessAction(CheckMode)
+
+      val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
 
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
 

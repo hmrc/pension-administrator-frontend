@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.actions.FakeAllowAccessProvider
 import identifiers.TypedIdentifier
 import models.PersonDetails
 import play.api.i18n.MessagesApi
@@ -55,6 +56,8 @@ object PersonDetailsControllerSpec {
       override def navigator: Navigator = nav
 
       override def messagesApi: MessagesApi = base.messagesApi
+
+      override val allowAccess = FakeAllowAccessProvider()
     }
   }
 

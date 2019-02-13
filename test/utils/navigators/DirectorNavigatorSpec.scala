@@ -31,7 +31,6 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {

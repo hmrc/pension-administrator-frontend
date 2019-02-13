@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.directors.DirectorNinoId
@@ -37,17 +37,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class DirectorNinoController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
-                                        dataCacheConnector: UserAnswersCacheConnector,
+                                        override val cacheConnector: UserAnswersCacheConnector,
                                         @CompanyDirector navigator: Navigator,
+                                        val allowAccess: AllowAccessActionProvider,
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorNinoFormProvider
-                                      )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits with Variations{
 
   private val form: Form[Nino] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
         val redirectResult = request.userAnswers.get(DirectorNinoId(index)) match {
@@ -67,9 +68,11 @@ class DirectorNinoController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
           value =>
-            dataCacheConnector.save(request.externalId, DirectorNinoId(index), value).map(json =>
-              Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(json))))
-        )
+            cacheConnector.save(request.externalId, DirectorNinoId(index), value).flatMap(answers =>
+              saveChangeFlag(mode, DirectorNinoId(index)).map (_ =>
+                Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(answers))))
+              )
+          )
       }
   }
 }

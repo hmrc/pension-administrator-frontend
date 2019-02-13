@@ -38,6 +38,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
                                              override val messagesApi: MessagesApi,
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @Adviser override val navigator: Navigator,
+                                             override val allowAccess: AllowAccessActionProvider,
                                              authenticate: AuthAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction) extends AddressListController with Retrievals {
@@ -47,7 +48,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
       viewmodel(mode).right.map(get)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).right.map(vm => post(vm, AdviserAddressListId, AdviserAddressId, mode))
   }

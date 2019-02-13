@@ -22,6 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
 import models._
@@ -64,6 +65,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     new DirectorUniqueTaxReferenceController(frontendAppConfig, messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
@@ -149,6 +151,18 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
         val result = controller(getRelevantData).onPageLoad(NormalMode, Index(2))(fakeRequest)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
+    }
+
+    "redirect to the next page and update the change flag" when {
+      "valid data is submitted with yes selected in update mode" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("utr.hasUtr", "true"), ("utr.utr", "1234567890"))
+
+        val result = controller().onSubmit(UpdateMode, index)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+        FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
       }
     }
   }

@@ -37,9 +37,10 @@ import viewmodels.address.ManualAddressViewModel
 class IndividualContactAddressController @Inject()(
                                                     val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
-                                                    val dataCacheConnector: UserAnswersCacheConnector,
+                                                    val cacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
                                                     authenticate: AuthAction,
+                                                    override val allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
@@ -63,12 +64,12 @@ class IndividualContactAddressController @Inject()(
     secondaryHeader = None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       post(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode), mode, "Individual Previous Address",
         IndividualContactAddressPostCodeLookupId)

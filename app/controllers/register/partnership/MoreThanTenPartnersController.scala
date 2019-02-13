@@ -19,7 +19,7 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.MoreThanTenController
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
 import javax.inject.Inject
 import models.Mode
@@ -32,9 +32,10 @@ import viewmodels.{Message, MoreThanTenViewModel}
 class MoreThanTenPartnersController @Inject()(
                                                val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
-                                               val dataCacheConnector: UserAnswersCacheConnector,
+                                               override val cacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
                                                authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction
                                              ) extends MoreThanTenController {
@@ -48,7 +49,7 @@ class MoreThanTenPartnersController @Inject()(
       id = MoreThanTenPartnersId
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       get(viewModel(mode))
   }
