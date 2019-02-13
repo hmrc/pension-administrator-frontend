@@ -15,7 +15,7 @@
  */
 
 import com.google.inject.AbstractModule
-import controllers.actions.{AuthAction, AuthenticationWithNoConfidence, FullAuthentication}
+import controllers.actions._
 import navigators.VariationsNavigator
 import utils.Navigator
 import utils.annotations._
@@ -28,7 +28,6 @@ class PODSModule extends AbstractModule {
 
     bind(classOf[AuthAction])
       .to(classOf[FullAuthentication])
-
     bind(classOf[AuthAction])
       .annotatedWith(classOf[AuthenticationWithLowConfidence])
       .to(classOf[AuthenticationWithNoConfidence])
@@ -68,5 +67,9 @@ class PODSModule extends AbstractModule {
     bind(classOf[Navigator])
       .annotatedWith(classOf[Variations])
       .to(classOf[VariationsNavigator])
+
+    bind(classOf[AllowAccessActionProvider])
+      .to(classOf[AllowAccessActionProviderImpl])
+
   }
 }

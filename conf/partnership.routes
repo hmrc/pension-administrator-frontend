@@ -91,10 +91,10 @@ POST       /add-partners                                controllers.register.par
 GET        /changing-partners                           controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = UpdateMode)
 POST       /changing-partners                           controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad
-POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit
+GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad(mode: Mode = NormalMode)
+POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit(mode: Mode = NormalMode)
 
-GET        /outside-eu-eea                              controllers.register.partnership.OutsideEuEeaController.onPageLoad()
+GET        /outside-eu-eea                              controllers.register.partnership.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
 GET        /partnership-name                            controllers.register.partnership.PartnershipRegisteredNameController.onPageLoad()
 POST       /partnership-name                            controllers.register.partnership.PartnershipRegisteredNameController.onSubmit()

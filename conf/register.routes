@@ -8,31 +8,31 @@ POST       /business-type                           controllers.register.Busines
 GET        /change-business-type                    controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-business-type                    controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad()
-POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit()
+GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
 
 GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
 GET        /change-declaration-working-knowledge    controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-declaration-working-knowledge    controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onPageLoad()
-POST       /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onSubmit()
+GET        /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
+POST       /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)
 
-GET        /declaration                             controllers.register.DeclarationController.onPageLoad()
-POST       /declaration                             controllers.register.DeclarationController.onSubmit()
+GET        /declaration                             controllers.register.DeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /declaration                             controllers.register.DeclarationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /confirmation                            controllers.register.ConfirmationController.onPageLoad()
-POST       /confirmation                            controllers.register.ConfirmationController.onSubmit()
+GET        /confirmation                            controllers.register.ConfirmationController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirmation                            controllers.register.ConfirmationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad()
+GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /unable-to-send-details                  controllers.register.SubmissionInvalidController.onPageLoad()
+GET        /unable-to-send-details                  controllers.register.SubmissionInvalidController.onPageLoad(mode: Mode = NormalMode)
 
 GET        /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
 POST       /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)
 GET        /change-registered-in-uk                 controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-registered-in-uk                 controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = CheckMode)
 
-GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad()
-POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit()
+GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
+POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)

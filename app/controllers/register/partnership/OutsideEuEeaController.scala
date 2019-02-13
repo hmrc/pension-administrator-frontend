@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
 import javax.inject.Inject
-import models.Address
+import models.{Address, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -38,7 +38,7 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
                                        countryOptions: CountryOptions
                                       ) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
       (PartnershipDetailsId and PartnershipRegisteredAddressId).retrieve.right.map {

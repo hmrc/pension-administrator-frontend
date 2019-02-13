@@ -23,11 +23,13 @@ import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAct
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
+import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
@@ -73,13 +75,13 @@ object RegisterAsBusinessControllerSpec {
   val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
 
   def onPageLoadAction(base: ControllerSpecBase)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
-    controller(base)(dataRetrievalAction, authAction).onPageLoad()
+    controller(base)(dataRetrievalAction, authAction).onPageLoad(NormalMode)
 
   def onSubmitAction(base: ControllerSpecBase, navigator: Navigator)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
-    controller(base)(dataRetrievalAction, authAction, navigator).onSubmit()
+    controller(base)(dataRetrievalAction, authAction, navigator).onSubmit(NormalMode)
 
   def saveAction(base: ControllerSpecBase)(cache: UserAnswersCacheConnector): Action[AnyContent] =
-    controller(base)(cache = cache).onSubmit()
+    controller(base)(cache = cache).onSubmit(NormalMode)
 
   def viewAsString(base: SpecBase)(form: Form[_]): Form[_] => String =
     form =>

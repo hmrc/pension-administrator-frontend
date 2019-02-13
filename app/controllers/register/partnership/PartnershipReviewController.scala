@@ -21,7 +21,7 @@ import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.{PartnershipDetailsId, PartnershipReviewId}
 import javax.inject.Inject
-import models.NormalMode
+import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -39,7 +39,7 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
                                             requireData: DataRequiredAction
                                            )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
         val partners = request.userAnswers.allPartnersAfterDelete.map(_.name)
@@ -47,7 +47,7 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(PartnershipReviewId, NormalMode, request.userAnswers))
   }

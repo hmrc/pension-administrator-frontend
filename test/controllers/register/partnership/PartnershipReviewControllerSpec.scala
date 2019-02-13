@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{BusinessDetails, PersonDetails}
+import models.{BusinessDetails, NormalMode, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -62,14 +62,14 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view for a GET" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-      val result = controller(getRelevantData).onPageLoad(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to the next page on submit" in {
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }

@@ -38,6 +38,7 @@ trait AreYouInUKController extends FrontendController with I18nSupport {
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator
   protected val authenticate: AuthAction
+  protected val allowAccess: AllowAccessActionProvider
   protected val getData: DataRetrievalAction
   protected val requireData: DataRequiredAction
   protected val formProvider: AreYouInUKFormProvider
@@ -46,13 +47,13 @@ trait AreYouInUKController extends FrontendController with I18nSupport {
 
   protected def viewmodel(mode: Mode) : AreYouInUKViewModel
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AreYouInUKId).fold(form)(v=>form.fill(v))
       Ok(areYouInUK(appConfig, preparedForm, viewmodel(mode)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

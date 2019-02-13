@@ -22,6 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
 import javax.inject.Inject
+import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -37,7 +38,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        dataCacheConnector: UserAnswersCacheConnector
                                       )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PsaSubscriptionResponseId.retrieve.right.map { response =>
         dataCacheConnector.removeAll(request.externalId)
@@ -45,7 +46,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate) {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate) {
     _ => Redirect(controllers.routes.LogoutController.onPageLoad())
   }
 

@@ -23,7 +23,7 @@ import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
+import models.{NormalMode, PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.Helpers._
@@ -39,14 +39,14 @@ class DeclarationControllerSpec extends ControllerSpecBase {
   "Declaration Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -54,7 +54,7 @@ class DeclarationControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page on a valid POST request" in {
       val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-      val result = controller().onSubmit(request)
+      val result = controller().onSubmit(NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -62,7 +62,7 @@ class DeclarationControllerSpec extends ControllerSpecBase {
 
     "save the answer on a valid POST request" in {
       val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-      val result = controller().onSubmit(request)
+      val result = controller().onSubmit(NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verify(DeclarationId, true)
@@ -70,41 +70,41 @@ class DeclarationControllerSpec extends ControllerSpecBase {
 
     "reject an invalid POST request and display errors" in {
       val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-      val result = controller().onSubmit(fakeRequest)
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(formWithErrors)
     }
 
     "redirect to Session Expired on a POST request if no cached data is found" in {
-      val result = controller(dontGetAnyData).onSubmit(fakeRequest)
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
     "set cancel link correctly to Individual What You Will Need page on a GET request" in {
-      val result = controller(userType = UserType.Individual).onPageLoad()(fakeRequest)
+      val result = controller(userType = UserType.Individual).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(cancelCall = individualCancelCall)
     }
 
     "set cancel link correctly to Company What You Will Need page on a GET request" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(cancelCall = companyCancelCall)
     }
 
     "set cancel link correctly to Individual What You Will Need page on a POST request" in {
       val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-      val result = controller(userType = UserType.Individual).onSubmit()(fakeRequest)
+      val result = controller(userType = UserType.Individual).onSubmit(NormalMode)()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
     }
 
     "set cancel link correctly to Company What You Will Need page on a POST request" in {
       val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-      val result = controller().onSubmit()(fakeRequest)
+      val result = controller().onSubmit(NormalMode)()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
     }

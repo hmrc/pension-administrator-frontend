@@ -54,7 +54,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
   "NonUKBusinessType Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -64,7 +64,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(NonUKBusinessTypeId.toString -> JsString(NonUKBusinessType.values.head.toString))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(NonUKBusinessType.values.head))
     }
@@ -72,7 +72,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
     "save the selected answer when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", nonUKBusinessTypeOptions.head.value))
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verify(NonUKBusinessTypeId, NonUKBusinessType.values.head)
@@ -81,7 +81,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", nonUKBusinessTypeOptions.head.value))
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -91,14 +91,14 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit()(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -106,7 +106,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", nonUKBusinessTypeOptions.head.value))
-      val result = controller(dontGetAnyData).onSubmit()(postRequest)
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

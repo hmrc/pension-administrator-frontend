@@ -19,13 +19,14 @@ package controllers
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
-import controllers.actions.AuthAction
+import controllers.actions.{AllowAccessActionProvider, AuthAction}
 import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.IsDirectorCompleteId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
+import models.Mode
 import identifiers.register.partnership.partners.IsPartnerCompleteId
 import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -46,6 +47,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
+                                     allowAccess: AllowAccessActionProvider,
                                      subscriptionConnector: SubscriptionConnector,
                                      deRegistrationConnector: DeRegistrationConnector,
                                      dataCacheConnector: UserAnswersCacheConnector,
@@ -53,7 +55,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      fs: FeatureSwitchManagementService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = authenticate.async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode)).async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
       canStopBeingAPsa(psaId) flatMap { canDeregister =>
@@ -90,6 +92,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
       val userAnswers = setAllCompleteFlags(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
       dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
+        val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
         val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
         Future.successful(
           legalStatus match {
