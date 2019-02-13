@@ -58,13 +58,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold(
-          result => Future.successful(result),
-          _ => {
-            val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
-            successRedirect(affinityGroup, cl, enrolments, authRequest, block)
-          }
-        )
+        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold{
+          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
+          successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+        }{result => Future.successful(result)}
       case _ =>
         Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
 
@@ -166,9 +163,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A],
                                           cl: ConfidenceLevel, affinityGroup: AffinityGroup, id: String)(implicit hc: HeaderCarrier) = {
     if (isPSP(enrolments) && !isPSA(enrolments)) {
-      Left(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
+      Some((Redirect(routes.PensionSchemePractitionerController.onPageLoad())))
     } else {
-      Right(())
+      None
     }
   }
 
