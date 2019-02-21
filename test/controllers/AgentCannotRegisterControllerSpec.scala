@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,28 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package controllers
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+import play.api.test.Helpers._
+import views.html.agentCannotRegister
 
-@main_template(
-    title = messages("interceptPSA.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
 
-    @components.back_link()
+  def controller() = new AgentCannotRegisterController(frontendAppConfig, messagesApi)
 
-    @components.heading(messages("interceptPSA.heading"))
+  def viewAsString() = agentCannotRegister(frontendAppConfig)(fakeRequest, messages).toString
 
-    <p class="lede">@messages("interceptPSA.body")</p>
+  "AgentCannotRegister Controller" must {
 
-    @components.button_link(
-        "interceptPSA.button",
-        appConfig.schemesOverviewUrl,
-        "go-to-scheme-reg"
-    )
+    "return OK and the correct view for a GET" in {
+      val result = controller().onPageLoad(fakeRequest)
 
-    <a href="@appConfig.govUkUrl">@messages("site.exit")</a>
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
+    }
+  }
 }

@@ -16,25 +16,17 @@
 
 package views
 
-import play.api.inject.guice.GuiceApplicationBuilder
 import views.behaviours.ViewBehaviours
-import views.html.interceptPSA
+import views.html.agentCannotRegister
 
-class InterceptPSAViewSpec extends ViewBehaviours {
+class AgentCannotRegisterViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "interceptPSA"
+  val messageKeyPrefix = "agentCannotRegister"
 
-  def createView = () => interceptPSA(frontendAppConfig)(fakeRequest, messages)
-
-  override lazy val app = new GuiceApplicationBuilder().configure(
-    "features.useManagePensionsFrontend" -> true
-  ).build()
+  def createView = () => agentCannotRegister(frontendAppConfig)(fakeRequest, messages)
 
   "InterceptPSA view" must {
-    behave like normalPage(createView, messageKeyPrefix, "body", "button")
+    behave like normalPage(createView, messageKeyPrefix, "p1", "p2")
+    }
 
-    behave like pageWithBackLink(createView)
-
-    behave like pageWithContinueButton(createView, frontendAppConfig.schemesOverviewUrl, "go-to-scheme-reg")
-  }
 }
