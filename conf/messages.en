@@ -88,6 +88,7 @@ site.signOut=Sign out
 site.return_to_overview = Return to managing pension schemes
 site.return.govuk = Return to GOV.UK
 site.not_entered = Not entered
+site.exit = Exit to GOV.UK
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -536,7 +537,6 @@ interceptPSA.title = You have already registered as a pension scheme administrat
 interceptPSA.heading = You have already registered as a pension scheme administrator
 interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.
 interceptPSA.button = Continue to your pension schemes
-interceptPSA.exit = Exit to GOV.UK
 
 alreadyDeleted.director.title = You have already deleted this director
 alreadyDeleted.heading = You have already deleted {0}
@@ -820,4 +820,9 @@ anyMoreChanges.p2 = You will need to complete a declaration to update the scheme
 anyMoreChanges.p3 = You have until {0} to complete the declaration. If you do not complete the declaration by this date, your changes will be deleted.
 
 anyMoreChanges.error.required = Select yes if you want to make more changes
+
+agentCannotRegister.title = You cannot register as a scheme administrator
+agentCannotRegister.heading = You cannot register as a scheme administrator
+agentCannotRegister.p1 = Your Government Gateway account was set up giving you access to HMRC services as an agent.
+agentCannotRegister.p2 = Managing pension schemes can only be used by scheme administrators.
 

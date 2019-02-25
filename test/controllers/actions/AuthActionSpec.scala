@@ -231,17 +231,6 @@ class AuthActionSpec extends SpecBase {
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe OK
       }
-
-      "redirect the user to Unauthorised page if the affinity group is not Individual/Company " in {
-        val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Agent)
-
-        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
-      }
     }
 
     "the user hasn't logged in" must {
@@ -350,6 +339,21 @@ class AuthActionSpec extends SpecBase {
 
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe OK
+      }
+    }
+
+    "called for user belonging to Agent affinity group" must {
+
+      "redirect to AgentCannotRegister page" in {
+        val retrievalResult = authRetrievals(affinityGroup = AffinityGroup.Agent)
+
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.AgentCannotRegisterController.onPageLoad().url)
       }
     }
   }

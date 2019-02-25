@@ -164,7 +164,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                           cl: ConfidenceLevel, affinityGroup: AffinityGroup, id: String)(implicit hc: HeaderCarrier) = {
     if (isPSP(enrolments) && !isPSA(enrolments)) {
       Some((Redirect(routes.PensionSchemePractitionerController.onPageLoad())))
-    } else {
+    } else if (affinityGroup == Agent){
+      Some((Redirect(routes.AgentCannotRegisterController.onPageLoad)))
+    }
+    else {
       None
     }
   }

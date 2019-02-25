@@ -19,21 +19,15 @@
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("interceptPSA.title"),
+    title = messages("agentCannotRegister.title"),
     appConfig = appConfig,
-    bodyClasses = None) {
+    bodyClasses = None){
 
-    @components.back_link()
+        @components.heading(messages("agentCannotRegister.heading"))
 
-    @components.heading(messages("interceptPSA.heading"))
+        <p>@messages("agentCannotRegister.p1")</p>
+        <p>@messages("agentCannotRegister.p2")</p>
 
-    <p class="lede">@messages("interceptPSA.body")</p>
+        <a href="@appConfig.govUkUrl">@messages("site.exit")</a>
 
-    @components.button_link(
-        "interceptPSA.button",
-        appConfig.schemesOverviewUrl,
-        "go-to-scheme-reg"
-    )
-
-    <a href="@appConfig.govUkUrl">@messages("site.exit")</a>
-}
+    }
