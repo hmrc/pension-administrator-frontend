@@ -23,12 +23,14 @@
         yesAssoc: Option[String] = None,
         noAssoc: Option[String] = None,
         labelClass: Option[String] = None,
-        noLabelKey: String = "site.no"
+        noLabelKey: String = "site.no",
+        yesLabelKey: String = "site.yes",
+        fieldSetClass: String = "inline"
 )(implicit messages: Messages)
 
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
-    <fieldset class="inline" id="@{field.id}">
+    <fieldset class=@fieldSetClass id="@{field.id}">
 
         <legend>
             <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
@@ -45,7 +47,7 @@
         <div class="multiple-choice">
             <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"} />
             <label class="block-label selection-button-radio" for="@{field.id}-yes" data-target="@if(yesAssoc.nonEmpty){@yesAssoc}">
-                @messages("site.yes")
+                @messages(yesLabelKey)
             </label>
         </div>
 
