@@ -34,8 +34,10 @@
         @components.input_yes_no(
             field       = form("value"),
             label       = messages("registerAsBusiness.heading"),
-            labelClass = Some("visually-hidden"),
-            noLabelKey  = "registerAsBusiness.no.label"
+            labelClass  = Some("visually-hidden"),
+            noLabelKey  = "registerAsBusiness.no.label",
+            yesLabelKey = "registerAsBusiness.yes.label",
+            fieldSetClass = "form-group"
         )
 
         @components.submit_button("site.save_and_continue")
