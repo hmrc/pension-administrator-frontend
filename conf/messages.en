@@ -778,7 +778,7 @@ outsideEuEea.heading = You cannot register {0} as a PSA
 outsideEuEea.currentCountry.text = This is because {0} was registered in {1} and outside of the European Union and European Economic Area.
 outsideEuEea.body = Only {0} registered inside the European Union and European Economic Area can register as a PSA.
 
-registerAsBusiness.title = Business type
+registerAsBusiness.title = Who do you want to register as the scheme administrator?
 registerAsBusiness.heading = Who do you want to register as the scheme administrator?
 registerAsBusiness.error.required = You must make a selection
 registerAsBusiness.no.label = Yourself as an individual
