@@ -32,11 +32,11 @@
 
                 @if(person.isComplete){
                     <div class="cya-status status">
-                        <span class="complete">COMPLETE</span>
+                        <span class="complete">@messages("status.complete")</span>
                     </div>
                 } else {
                     <div class="cya-status status">
-                        <span class="rejected">INCOMPLETE</span>
+                        <span class="rejected">@messages("status.incomplete")</span>
                     </div>
                 }
 
