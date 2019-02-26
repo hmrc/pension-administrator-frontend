@@ -826,3 +826,5 @@ agentCannotRegister.heading = You cannot register as a scheme administrator
 agentCannotRegister.p1 = Your Government Gateway account was set up giving you access to HMRC services as an agent.
 agentCannotRegister.p2 = Managing pension schemes can only be used by scheme administrators.
 
+status.complete = COMPLETE
+status.incomplete = INCOMPLETE
