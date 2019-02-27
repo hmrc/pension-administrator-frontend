@@ -141,7 +141,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
           URLEncoder.encode(config.ukJourneyContinueUrl, "UTF-8"),
           URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")
         ).map { link =>
-          Redirect(config.identityVerificationFrontend + link)
+          Redirect(s"${config.manualIvUrl}$link")
         }
       case _ =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
