@@ -20,19 +20,20 @@ import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction}
-import identifiers.UpdateModeId
+import identifiers.{TypedIdentifier, UpdateModeId}
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.IsDirectorCompleteId
-import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.PartnershipDetailsId
-import models.{Mode, RegistrationLegalStatus, UpdateMode}
+import models._
 import identifiers.register.partnership.partners.IsPartnerCompleteId
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsResult
+import play.api.libs.json.{JsResult, JsSuccess}
 import play.api.mvc.{Action, AnyContent}
+import services.PsaDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
@@ -51,22 +52,20 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      deRegistrationConnector: DeRegistrationConnector,
                                      dataCacheConnector: UserAnswersCacheConnector,
                                      countryOptions: CountryOptions,
-                                     fs: FeatureSwitchManagementService
+                                     fs: FeatureSwitchManagementService,
+                                     psaDetailsService: PsaDetailsService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode)).async {
     implicit request =>
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      canStopBeingAPsa(psaId) flatMap { canDeregister =>
-        val retrieval = if(fs.get(isVariationsEnabled)) retrievePsaDataFromUserAnswers(psaId, canDeregister) else retrievePsaDataFromModel(psaId, canDeregister)
-        retrieval.map { psaDetails =>
-            Ok(psa_details(appConfig, psaDetails))
-        }
+      psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId).map { psaDetails =>
+        Ok(psa_details(appConfig, psaDetails))
       }
   }
-
+/*
   private def retrievePsaDataFromModel(psaId: String, canDeregister: Boolean)(implicit hc: HeaderCarrier): Future[PsaViewDetailsViewModel] = {
-      subscriptionConnector.getSubscriptionModel(psaId).map { response =>
+    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
       response.organisationOrPartner match {
         case None =>
           PsaViewDetailsViewModel(
@@ -89,8 +88,8 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
       val answers = UserAnswers(response)
       val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-      val userAnswers = setAllCompleteFlags(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
-      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap{ _ =>
+      val userAnswers = setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
+      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
         val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
         val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
         Future.successful(
@@ -123,7 +122,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     }
   }
 
-  private def setAllCompleteFlags(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
+  private def setAdditionalInfoToUserAnswers(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
     val seqOfIds = legalStatus match {
       case Some(LimitedCompany) =>
         val directors = userAnswers.allDirectors
@@ -137,7 +136,13 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
         }.toList
       case _ => Nil
     }
-    userAnswers.setAllFlagsTrue(seqOfIds)
+    userAnswers.setAllFlagsTrue(seqOfIds, true).flatMap(setAllExistingAddress(_))
+  }
+
+  private def setAllExistingAddress(userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    userAnswers.get(IndividualContactAddressId).map { address =>
+      userAnswers.set(ExistingCurrentAddressId)(address.toTolerantAddress)
+    }.getOrElse(JsSuccess(userAnswers))
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
@@ -146,5 +151,5 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
     } else {
       Future.successful(false)
     }
-  }
+  }*/
 }
