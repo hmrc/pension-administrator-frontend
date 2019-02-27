@@ -829,3 +829,6 @@ agentCannotRegister.p2 = Managing pension schemes can only be used by scheme adm
 
 status.complete = COMPLETE
 status.incomplete = INCOMPLETE
+
+individual.confirmPreviousAddress.title = Is this the previous address?
+individual.confirmPreviousAddress.heading = Is this {0}'s previous address?
