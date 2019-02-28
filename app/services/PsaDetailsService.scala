@@ -56,57 +56,53 @@ class PsaDetailServiceImpl @Inject()(
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String)(
     implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
-    if (fs.get(isVariationsEnabled)) {
-      retrievePsaDataFromUserAnswers(psaId)
-    } else {
-      retrievePsaDataFromModel(psaId)
+    canStopBeingAPsa(psaId) flatMap { canDeregister =>
+      if (fs.get(isVariationsEnabled)) {
+        retrievePsaDataFromUserAnswers(psaId, canDeregister)
+      } else {
+        retrievePsaDataFromModel(psaId)
+      }
     }
   }
 
-  def retrievePsaDataFromUserAnswers(psaId: String
+  def retrievePsaDataFromUserAnswers(psaId: String, canDeregister: Boolean
                                     )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
-    for {
-      canDeregister <- canStopBeingAPsa(psaId)
-      response <- subscriptionConnector.getSubscriptionDetails(psaId)
-      userAnswers <- getAnswers(response)
-      userAnswersUpdated <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
-    } yield {
-      val answers = UserAnswers(userAnswersUpdated)
+    subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
+      val answers = UserAnswers(response)
       val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-      val isUserAnswerUpdated = answers.isUserAnswerUpdated()
-      Future.successful(
-        legalStatus match {
-          case Some(Individual) =>
-            PsaViewDetailsViewModel(
-              new ViewPsaDetailsHelper(answers, countryOptions).individualSections,
-              answers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
-              isUserAnswerUpdated,
-              canDeregister)
+      val userAnswers = setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
 
-          case Some(LimitedCompany) =>
-            PsaViewDetailsViewModel(
-              new ViewPsaDetailsHelper(answers, countryOptions).companySections,
-              answers.get(BusinessDetailsId).map(_.companyName).getOrElse(""),
-              isUserAnswerUpdated,
-              canDeregister)
+      userAnswersCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
+        val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+        val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
+        Future.successful(
+          legalStatus match {
+            case Some(Individual) =>
+              PsaViewDetailsViewModel(
+                new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
+                userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
+                isUserAnswerUpdated,
+                canDeregister)
 
-          case Some(Partnership) =>
-            PsaViewDetailsViewModel(
-              new ViewPsaDetailsHelper(answers, countryOptions).partnershipSections,
-              answers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""),
-              isUserAnswerUpdated,
-              canDeregister)
+            case Some(LimitedCompany) =>
+              PsaViewDetailsViewModel(
+                new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
+                userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""),
+                isUserAnswerUpdated,
+                canDeregister)
 
-          case _ =>
-            PsaViewDetailsViewModel(Nil, "", isUserAnswerUpdated, canDeregister)
-        })
+            case Some(Partnership) =>
+              PsaViewDetailsViewModel(
+                new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
+                userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""),
+                isUserAnswerUpdated,
+                canDeregister)
+
+            case _ =>
+              PsaViewDetailsViewModel(Nil, "", isUserAnswerUpdated, canDeregister)
+          })
+      }
     }
-  }
-
-  private def getAnswers(response: JsValue): Option[UserAnswers] = {
-    val answers = UserAnswers(response)
-    val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-    setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt
   }
 
   private def retrievePsaDataFromModel(psaId: String)(

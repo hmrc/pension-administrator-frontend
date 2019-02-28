@@ -17,42 +17,21 @@
 package controllers
 
 import com.google.inject.Inject
-import config.{FeatureSwitchManagementService, FrontendAppConfig}
-import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
+import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction}
-import identifiers.{TypedIdentifier, UpdateModeId}
-import identifiers.register.RegistrationInfoId
-import identifiers.register.company.BusinessDetailsId
-import identifiers.register.company.directors.IsDirectorCompleteId
-import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
-import identifiers.register.partnership.PartnershipDetailsId
 import models._
-import identifiers.register.partnership.partners.IsPartnerCompleteId
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsResult, JsSuccess}
 import play.api.mvc.{Action, AnyContent}
 import services.PsaDetailsService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
-import utils.countryOptions.CountryOptions
-import utils.{PsaDetailsHelper, UserAnswers, ViewPsaDetailsHelper}
-import viewmodels.PsaViewDetailsViewModel
 import views.html.psa_details
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
                                      authenticate: AuthAction,
                                      allowAccess: AllowAccessActionProvider,
-                                     subscriptionConnector: SubscriptionConnector,
-                                     deRegistrationConnector: DeRegistrationConnector,
-                                     dataCacheConnector: UserAnswersCacheConnector,
-                                     countryOptions: CountryOptions,
-                                     fs: FeatureSwitchManagementService,
                                      psaDetailsService: PsaDetailsService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
@@ -63,93 +42,4 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
         Ok(psa_details(appConfig, psaDetails))
       }
   }
-/*
-  private def retrievePsaDataFromModel(psaId: String, canDeregister: Boolean)(implicit hc: HeaderCarrier): Future[PsaViewDetailsViewModel] = {
-    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
-      response.organisationOrPartner match {
-        case None =>
-          PsaViewDetailsViewModel(
-            new PsaDetailsHelper(response, countryOptions).individualSections,
-            response.individual.map(_.fullName).getOrElse(""),
-            false,
-            canDeregister)
-        case _ =>
-          PsaViewDetailsViewModel(
-            new PsaDetailsHelper(response, countryOptions).organisationSections,
-            response.organisationOrPartner.map(_.name).getOrElse(""),
-            false,
-            canDeregister)
-      }
-    }
-  }
-
-  private def retrievePsaDataFromUserAnswers(psaId: String, canDeregister: Boolean)(
-    implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
-    subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
-      val answers = UserAnswers(response)
-      val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-      val userAnswers = setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
-      dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
-        val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-        val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
-        Future.successful(
-          legalStatus match {
-            case Some(Individual) =>
-              PsaViewDetailsViewModel(
-                new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
-                userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
-                isUserAnswerUpdated,
-                canDeregister)
-
-            case Some(LimitedCompany) =>
-              PsaViewDetailsViewModel(
-                new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
-                userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""),
-                isUserAnswerUpdated,
-                canDeregister)
-
-            case Some(Partnership) =>
-              PsaViewDetailsViewModel(
-                new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
-                userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""),
-                isUserAnswerUpdated,
-                canDeregister)
-
-            case _ =>
-              PsaViewDetailsViewModel(Nil, "", isUserAnswerUpdated, canDeregister)
-          })
-      }
-    }
-  }
-
-  private def setAdditionalInfoToUserAnswers(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
-    val seqOfIds = legalStatus match {
-      case Some(LimitedCompany) =>
-        val directors = userAnswers.allDirectors
-        directors.filterNot(_.isDeleted).map { director =>
-          IsDirectorCompleteId(directors.indexOf(director))
-        }.toList
-      case Some(Partnership) =>
-        val partners = userAnswers.allPartners
-        partners.filterNot(_.isDeleted).map { partner =>
-          IsPartnerCompleteId(partners.indexOf(partner))
-        }.toList
-      case _ => Nil
-    }
-    userAnswers.setAllFlagsTrue(seqOfIds, true).flatMap(setAllExistingAddress(_))
-  }
-
-  private def setAllExistingAddress(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.get(IndividualContactAddressId).map { address =>
-      userAnswers.set(ExistingCurrentAddressId)(address.toTolerantAddress)
-    }.getOrElse(JsSuccess(userAnswers))
-  }
-
-  private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    if (fs.get(isDeregistrationEnabled)) {
-      deRegistrationConnector.canDeRegister(psaId)
-    } else {
-      Future.successful(false)
-    }
-  }*/
 }
