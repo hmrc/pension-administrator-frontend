@@ -25,6 +25,6 @@ class DeclarationFitAndProperFormProvider @Inject() extends FormErrorHelper with
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("common.radio.error.required")
+      "value" -> boolean("declarationFitAndProper.variations.error.required")
     )
 }

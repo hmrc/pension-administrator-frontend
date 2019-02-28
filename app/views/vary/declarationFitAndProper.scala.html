@@ -15,7 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.register.routes
+@import controllers.vary.routes
 @import uk.gov.hmrc.play.views.html._
 
 @(appConfig: FrontendAppConfig,form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
@@ -65,7 +65,7 @@
 
         @components.submit_button("site.continue")
 
-        @components.return_link("messages__schemeTaskList__returnlink", schemeName)
+        @components.return_link(psaName)
     }
 
 }

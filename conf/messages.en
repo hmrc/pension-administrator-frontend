@@ -840,3 +840,4 @@ declarationFitAndProper.variations.statement3 = been the subject of adverse civi
 declarationFitAndProper.variations.statement4 = participated in, or been connected with, designing or marketing tax avoidance or pensions liberation schemes
 declarationFitAndProper.variations.statement5 = been disqualified from acting as a company director or are currently bankrupt
 declarationFitAndProper.variations.statement6 = been disqualified from acting as a pension scheme trustee
+declarationFitAndProper.variations.error.required = Select yes if the scheme administrator is still fit and proper
