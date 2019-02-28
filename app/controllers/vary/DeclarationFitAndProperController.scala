@@ -54,7 +54,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   knownFactsRetrieval: KnownFactsRetrieval,
                                                   enrolments: TaxEnrolmentsConnector,
                                                   emailConnector: EmailConnector
-                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals  {
+                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -85,28 +85,8 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                 views.html.vary.declarationFitAndProper(appConfig, errors, psaName())))
           },
         success =>
-          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
-
-            val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(
-              request.user.isExistingPSA,
-              request.user.existingPSAId
-            )).asOpt.getOrElse(UserAnswers(cacheMap))
-
-            (for {
-              psaResponse <- pensionsSchemeConnector.registerPsa(answers)
-              cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
-              _ <- enrol(psaResponse.psaId)
-              _ <- sendEmail(answers, psaResponse.psaId)
-            } yield {
-              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
-            }) recoverWith {
-              case _: InvalidPayloadException =>
-                Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
-              case _: InvalidBusinessPartnerException =>
-                Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
-              case _ =>
-                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-            }
+          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { _ =>
+            Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
           }
       )
   }
