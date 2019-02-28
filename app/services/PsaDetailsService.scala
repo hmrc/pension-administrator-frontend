@@ -29,7 +29,7 @@ import identifiers.register.partnership.partners.IsPartnerCompleteId
 import javax.inject.Inject
 import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.requests.{AuthenticatedRequest, DataRequest}
+import models.requests.AuthenticatedRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsSuccess, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,6 +37,7 @@ import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
 import utils.countryOptions.CountryOptions
 import utils.{PsaDetailsHelper, UserAnswers, ViewPsaDetailsHelper}
 import viewmodels.PsaViewDetailsViewModel
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
@@ -56,92 +57,67 @@ class PsaDetailServiceImpl @Inject()(
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String)(
     implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
-    canStopBeingAPsa(psaId) flatMap { canDeregister =>
-      if (fs.get(isVariationsEnabled)) {
-        retrievePsaDataFromUserAnswers(psaId, canDeregister)
-      } else {
-        retrievePsaDataFromModel(psaId)
-      }
+    if (fs.get(isVariationsEnabled)) {
+      retrievePsaDataFromUserAnswers(psaId)
+    } else {
+      retrievePsaDataFromModel(psaId)
     }
   }
 
-  def retrievePsaDataFromUserAnswers(psaId: String, canDeregister: Boolean
+  def retrievePsaDataFromUserAnswers(psaId: String
                                     )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
-    subscriptionConnector.getSubscriptionDetails(psaId) flatMap { response =>
-      val answers = UserAnswers(response)
-      val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-      val userAnswers = setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers)
-
-      userAnswersCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
-        val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-        val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
-        Future.successful(
-          legalStatus match {
-            case Some(Individual) =>
-              PsaViewDetailsViewModel(
-                new ViewPsaDetailsHelper(userAnswers, countryOptions).individualSections,
-                userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
-                isUserAnswerUpdated,
-                canDeregister)
-
-            case Some(LimitedCompany) =>
-              PsaViewDetailsViewModel(
-                new ViewPsaDetailsHelper(userAnswers, countryOptions).companySections,
-                userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""),
-                isUserAnswerUpdated,
-                canDeregister)
-
-            case Some(Partnership) =>
-              PsaViewDetailsViewModel(
-                new ViewPsaDetailsHelper(userAnswers, countryOptions).partnershipSections,
-                userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""),
-                isUserAnswerUpdated,
-                canDeregister)
-
-            case _ =>
-              PsaViewDetailsViewModel(Nil, "", isUserAnswerUpdated, canDeregister)
-          })
-      }
+    for {
+      response <- subscriptionConnector.getSubscriptionDetails(psaId)
+      userAnswers <- getUpdatedUserAnswers(response)
+      _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
+      canDeregister <- canStopBeingAPsa(psaId)
+    } yield {
+      getPsaDetailsViewModel(userAnswers, canDeregister)
     }
   }
 
-  private def retrievePsaDataFromModel(psaId: String)(
-    implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaViewDetailsViewModel] = {
-    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
-      response.organisationOrPartner match {
-        case None =>
-          PsaViewDetailsViewModel(
-            new PsaDetailsHelper(response, countryOptions).individualSections,
-            response.individual.map(_.fullName).getOrElse(""),
-            false,
-            false
-          )
-        case _ =>
-          PsaViewDetailsViewModel(
-            new PsaDetailsHelper(response, countryOptions).organisationSections,
-            response.organisationOrPartner.map(_.name).getOrElse(""),
-            false,
-            false
-          )
-      }
+  private def getUpdatedUserAnswers(response: JsValue)(implicit ec: ExecutionContext): Future[UserAnswers] = {
+    val answers = UserAnswers(response)
+    val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
+    Future(setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers))
+  }
+
+  private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
+    val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
+    val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
+
+    val (superSections, name) = legalStatus match {
+      case Some(Individual) =>
+        (viewPsaDetailsHelper.individualSections,
+          userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""))
+
+      case Some(LimitedCompany) => (
+        viewPsaDetailsHelper.companySections,
+        userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""))
+
+      case Some(Partnership) => (
+        viewPsaDetailsHelper.partnershipSections,
+        userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""))
+
+      case unknownStatus =>
+        throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
+
+    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeRegister)
   }
 
   private def setAdditionalInfoToUserAnswers(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
-    val seqOfIds = legalStatus match {
+    val seqOfCompleteIds = legalStatus match {
       case Some(LimitedCompany) =>
         val directors = userAnswers.allDirectors
-        directors.filterNot(_.isDeleted).map { director =>
-          IsDirectorCompleteId(directors.indexOf(director))
-        }.toList
+        directors.filterNot(_.isDeleted).map(director => IsDirectorCompleteId(directors.indexOf(director))).toList
       case Some(Partnership) =>
         val partners = userAnswers.allPartners
-        partners.filterNot(_.isDeleted).map { partner =>
-          IsPartnerCompleteId(partners.indexOf(partner))
-        }.toList
+        partners.filterNot(_.isDeleted).map(partner => IsPartnerCompleteId(partners.indexOf(partner))).toList
       case _ => Nil
     }
-    userAnswers.setAllFlagsTrue(seqOfIds, true).flatMap(setAllExistingAddress(_))
+    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(setAllExistingAddress)
   }
 
   private def setAllExistingAddress(userAnswers: UserAnswers): JsResult[UserAnswers] = {
@@ -155,6 +131,28 @@ class PsaDetailServiceImpl @Inject()(
       deRegistrationConnector.canDeRegister(psaId)
     } else {
       Future.successful(false)
+    }
+  }
+
+  private def retrievePsaDataFromModel(psaId: String)(
+    implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaViewDetailsViewModel] = {
+    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
+      response.organisationOrPartner match {
+        case None =>
+          PsaViewDetailsViewModel(
+            new PsaDetailsHelper(response, countryOptions).individualSections,
+            response.individual.map(_.fullName).getOrElse(""),
+            isUserAnswerUpdated = false,
+            canDeregister = false
+          )
+        case _ =>
+          PsaViewDetailsViewModel(
+            new PsaDetailsHelper(response, countryOptions).organisationSections,
+            response.organisationOrPartner.map(_.name).getOrElse(""),
+            isUserAnswerUpdated = false,
+            canDeregister = false
+          )
+      }
     }
   }
 }

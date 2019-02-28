@@ -130,15 +130,15 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
-  def setAllFlagsTrue[A, I <: TypedIdentifier[A]](ids: List[I], value: A)(implicit writes: Writes[A]): JsResult[UserAnswers] = {
+  def setAllFlagsTrue[I <: TypedIdentifier[Boolean]](ids: List[I])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
 
     @tailrec
-    def setRec[II <: TypedIdentifier[A]](localIds: List[II], result: JsResult[UserAnswers]): JsResult[UserAnswers] = {
+    def setRec[II <: TypedIdentifier[Boolean]](localIds: List[II], result: JsResult[UserAnswers])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
       result match {
         case JsSuccess(_, _) =>
           localIds match {
             case Nil => result
-            case id :: tail => setRec(tail, result.flatMap(_.set(id)(value)))
+            case id :: tail => setRec(tail, result.flatMap(_.set(id)(true)))
           }
         case failure => failure
       }
