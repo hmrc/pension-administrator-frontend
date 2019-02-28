@@ -63,10 +63,10 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
       request.user.userType match {
         case UserType.Individual =>
           Future.successful(Ok(
-            views.html.vary.declarationFitAndProper(appConfig, form, getPsaName())))
+            views.html.vary.declarationFitAndProper(appConfig, form, psaName())))
         case UserType.Organisation =>
           Future.successful(Ok(
-            views.html.vary.declarationFitAndProper(appConfig, form, getPsaName())))
+            views.html.vary.declarationFitAndProper(appConfig, form, psaName())))
       }
 
   }
@@ -78,11 +78,11 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
           request.user.userType match {
             case UserType.Individual =>
               Future.successful(BadRequest(
-                views.html.vary.declarationFitAndProper(appConfig, errors, getPsaName())))
+                views.html.vary.declarationFitAndProper(appConfig, errors, psaName())))
 
             case UserType.Organisation =>
               Future.successful(BadRequest(
-                views.html.vary.declarationFitAndProper(appConfig, errors, getPsaName())))
+                views.html.vary.declarationFitAndProper(appConfig, errors, psaName())))
           },
         success =>
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>

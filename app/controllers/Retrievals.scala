@@ -105,7 +105,7 @@ trait Retrievals {
   implicit def merge(f: Either[Future[Result], Future[Result]]): Future[Result] =
     f.merge
 
-  protected def getPsaName()(implicit request: DataRequest[AnyContent]): String = {
+  private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): String = {
     val userType: UserType = request.user.userType
     val optionPsaName = userType match {
       case UserType.Individual =>
