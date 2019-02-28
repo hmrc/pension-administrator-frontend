@@ -22,12 +22,11 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.vary.DeclarationFitAndProperFormProvider
 import identifiers.register._
-import identifiers.register.company.{BusinessDetailsId, ContactDetailsId}
-import identifiers.register.individual.{IndividualContactDetailsId, IndividualDetailsId}
+import identifiers.register.company.ContactDetailsId
+import identifiers.register.individual.IndividualContactDetailsId
 import identifiers.register.partnership.PartnershipContactDetailsId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.UserType.UserType
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -55,30 +54,19 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   knownFactsRetrieval: KnownFactsRetrieval,
                                                   enrolments: TaxEnrolmentsConnector,
                                                   emailConnector: EmailConnector
-                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals  {
 
   private val form: Form[Boolean] = formProvider()
-
-  private def getPsaName(userType: UserType)(implicit request: DataRequest[AnyContent]): String = {
-    val optionPsaName = userType match {
-      case UserType.Individual =>
-        request.userAnswers.get(IndividualDetailsId).map(_.fullName)
-      case UserType.Organisation =>
-        request.userAnswers.get(BusinessDetailsId).map(_.companyName)
-      case _ => None
-    }
-    optionPsaName.getOrElse("")
-  }
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       request.user.userType match {
         case UserType.Individual =>
           Future.successful(Ok(
-            views.html.vary.declarationFitAndProper(appConfig, form, getPsaName(UserType.Individual))))
+            views.html.vary.declarationFitAndProper(appConfig, form, getPsaName())))
         case UserType.Organisation =>
           Future.successful(Ok(
-            views.html.vary.declarationFitAndProper(appConfig, form, getPsaName(UserType.Organisation))))
+            views.html.vary.declarationFitAndProper(appConfig, form, getPsaName())))
       }
 
   }
@@ -90,11 +78,11 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
           request.user.userType match {
             case UserType.Individual =>
               Future.successful(BadRequest(
-                views.html.vary.declarationFitAndProper(appConfig, errors, getPsaName(UserType.Individual))))
+                views.html.vary.declarationFitAndProper(appConfig, errors, getPsaName())))
 
             case UserType.Organisation =>
               Future.successful(BadRequest(
-                views.html.vary.declarationFitAndProper(appConfig, errors, getPsaName(UserType.Organisation))))
+                views.html.vary.declarationFitAndProper(appConfig, errors, getPsaName())))
           },
         success =>
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>

@@ -17,9 +17,12 @@
 package controllers
 
 import identifiers.TypedIdentifier
+import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.PersonDetails
+import models.{PersonDetails, UserType}
+import models.UserType.UserType
 import models.requests.DataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
@@ -101,4 +104,16 @@ trait Retrievals {
 
   implicit def merge(f: Either[Future[Result], Future[Result]]): Future[Result] =
     f.merge
+
+  protected def getPsaName()(implicit request: DataRequest[AnyContent]): String = {
+    val userType: UserType = request.user.userType
+    val optionPsaName = userType match {
+      case UserType.Individual =>
+        request.userAnswers.get(IndividualDetailsId).map(_.fullName)
+      case UserType.Organisation =>
+        request.userAnswers.get(BusinessDetailsId).map(_.companyName)
+      case _ => None
+    }
+    optionPsaName.getOrElse("")
+  }
 }
