@@ -23,6 +23,8 @@ import views.html.vary.declarationFitAndProper
 
 class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
+  private val baseUrl = "/register-as-pension-scheme-administrator"
+
   private val psaName = "test name"
 
   val form: Form[Boolean] = new DeclarationFitAndProperFormProvider()()
@@ -36,6 +38,8 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
   "DeclarationFitAndProper (variations) view" must {
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
+
+    behave like pageWithReturnLink(createView, url = baseUrl + controllers.routes.PsaDetailsController.onPageLoad().url)
 
     "display the correct page title" in {
       val doc = asDocument(createView())
