@@ -49,6 +49,8 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case _ => None
   }
 
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+
   private def businessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>

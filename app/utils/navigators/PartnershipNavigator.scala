@@ -105,6 +105,8 @@ class PartnershipNavigator @Inject()(
     }
   }
 
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+
   private def addressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     (answers.get(PartnershipAddressYearsId), answers.get(AreYouInUKId)) match {
       case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.PartnershipPreviousAddressController.onPageLoad(NormalMode))

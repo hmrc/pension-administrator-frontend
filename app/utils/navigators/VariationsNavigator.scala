@@ -31,4 +31,6 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = None
 
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+
 }

@@ -22,7 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.partnership.partners.routes
 import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
-import models.{AddressYears, CheckMode, NormalMode}
+import models._
 import utils.{Navigator, UserAnswers}
 
 @Singleton
@@ -33,7 +33,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   //noinspection ScalaStyle
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AddPartnersId => addPartnerRoutes(from.userAnswers)
+    case AddPartnersId => addPartnerRoutes(from.userAnswers, NormalMode)
     case MoreThanTenPartnersId => NavigateTo.save(controllers.register.partnership.routes.PartnershipReviewController.onPageLoad())
     case PartnerDetailsId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(NormalMode, index))
     case PartnerNinoId(index) => NavigateTo.save(routes.PartnerUniqueTaxReferenceController.onPageLoad(NormalMode, index))
@@ -52,7 +52,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AddPartnersId => addPartnerRoutes(from.userAnswers)
+    case AddPartnersId => addPartnerRoutes(from.userAnswers, CheckMode)
     case PartnerDetailsId(index) => checkYourAnswers(index)
     case PartnerNinoId(index) => checkYourAnswers(index)
     case PartnerUniqueTaxReferenceId(index) => checkYourAnswers(index)
@@ -67,6 +67,11 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AddPartnersId => addPartnerRoutes(from.userAnswers, UpdateMode)
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
   private def partnerAddressYearsRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
     answers.get(PartnerAddressYearsId(index)) match {
       case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index))
@@ -75,15 +80,15 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     }
   }
 
-  private def addPartnerRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(AddPartnersId) match {
       case Some(false) => NavigateTo.save(controllers.register.partnership.routes.PartnershipReviewController.onPageLoad())
       case _ =>
-        val index = answers.allPartnersAfterDelete.length
+        val index = answers.allPartnersAfterDelete(mode).length
         if (index >= config.maxPartners) {
           NavigateTo.save(controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(NormalMode))
         } else {
-          NavigateTo.save(controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, answers.partnersCount))
+          NavigateTo.save(controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, answers.partnersCount))
         }
     }
   }

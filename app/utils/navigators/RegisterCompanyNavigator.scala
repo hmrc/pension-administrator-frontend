@@ -98,6 +98,8 @@ class RegisterCompanyNavigator @Inject()(
     case _ => None
   }
 
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+
   //scalastyle:on cyclomatic.complexity
 
   private def checkYourAnswers: Option[NavigateTo] =

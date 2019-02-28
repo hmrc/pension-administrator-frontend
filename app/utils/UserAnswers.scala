@@ -24,7 +24,7 @@ import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorComp
 import identifiers.register.individual.{IndividualContactAddressChangedId, IndividualContactDetailsChangedId, IndividualPreviousAddressChangedId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
-import models.{Index, NormalMode, PersonDetails}
+import models.{Index, Mode, NormalMode, PersonDetails}
 import play.api.libs.json._
 import viewmodels.Person
 
@@ -87,14 +87,14 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonDetails](PartnerDetailsId.collectionPath).getOrElse(Nil)
   }
 
-  def allPartnersAfterDelete: Seq[Person] = {
+  def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
     val partners = allPartners
     partners.filterNot(_.isDeleted).map { partner =>
       val index = partners.indexOf(partner)
       Person(
         index,
         partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url,
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
         controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
         partner.isDeleted,
         get(IsPartnerCompleteId(index)).getOrElse(false)

@@ -34,13 +34,14 @@ abstract class Navigator {
   protected def routeMap(from: NavigateFrom): Option[NavigateTo]
 
   protected def editRouteMap(from: NavigateFrom): Option[NavigateTo]
+  protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo]
 
   def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)(implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
     val navigateTo = {
       mode match {
         case NormalMode => routeMap(NavigateFrom(id, userAnswers))
         case CheckMode => editRouteMap(NavigateFrom(id, userAnswers))
-        case UpdateMode => editRouteMap(NavigateFrom(id, userAnswers))
+        case UpdateMode => updateRouteMap(NavigateFrom(id, userAnswers))
       }
     }
 

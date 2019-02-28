@@ -66,6 +66,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorContactDetailsId(index) => checkYourAnswers(index)
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
 
   private def directorAddressYearsRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
     answers.get(DirectorAddressYearsId(index)) match {
