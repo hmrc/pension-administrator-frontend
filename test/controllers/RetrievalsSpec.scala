@@ -112,6 +112,34 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
 
     }
 
+    "retrieve PSA name for a company" in {
+
+      val companyName = "test company"
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj(
+        "businessDetails" -> Json.obj(
+          "companyName" -> companyName
+        )
+      ))
+      val result = controller.psaName()
+      result mustBe companyName
+    }
+
+    "retrieve PSA name for an individual" in {
+      def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
+        PSAUser(UserType.Individual, None, false, None), UserAnswers(data))
+
+      val firstName = "first"
+      val lastName = "last"
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj(
+        "individualDetails" -> Json.obj(
+          "firstName" -> firstName,
+          "lastName" -> "last"
+        )
+      ))
+      val result = controller.psaName()
+      result mustBe firstName + " " + lastName
+    }
+
   }
 
 }

@@ -138,10 +138,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
         ivConnector.startRegisterOrganisationAsIndividual(
-          URLEncoder.encode(config.ukJourneyContinueUrl, "UTF-8"),
-          URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")
+          config.ukJourneyContinueUrl,
+          s"${config.loginContinueUrl}/unauthorised"
         ).map { link =>
-          Redirect(config.identityVerificationFrontend + link)
+          Redirect(s"${config.manualIvUrl}$link")
         }
       case _ =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
