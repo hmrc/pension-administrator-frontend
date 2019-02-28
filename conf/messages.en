@@ -87,6 +87,7 @@ site.printThisPage = Print this page
 site.signOut=Sign out
 site.return_to_overview = Return to managing pension schemes
 site.return.govuk = Return to GOV.UK
+site.return.psa_details = Return to {0}’s details
 site.not_entered = Not entered
 site.exit = Exit to GOV.UK
 
