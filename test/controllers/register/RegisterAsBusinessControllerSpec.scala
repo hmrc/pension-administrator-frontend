@@ -100,7 +100,6 @@ object RegisterAsBusinessControllerSpec {
       base.frontendAppConfig,
       base.messagesApi,
       authAction,
-      authAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl(),

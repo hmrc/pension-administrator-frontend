@@ -36,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegisterAsBusinessController @Inject()(
   appConfig: FrontendAppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
-  @AuthenticationWithLowConfidence authenticateLow: AuthAction,
+  @AuthenticationWithLowConfidence authenticate: AuthAction,
   allowAccess: AllowAccessActionProvider,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -47,7 +46,7 @@ class RegisterAsBusinessController @Inject()(
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticateLow andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(RegisterAsBusinessId) match {
@@ -59,7 +58,7 @@ class RegisterAsBusinessController @Inject()(
 
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticateLow andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request=>
 
       form.bindFromRequest().fold(
@@ -72,7 +71,6 @@ class RegisterAsBusinessController @Inject()(
           }
         }
       )
-
   }
 
 }
