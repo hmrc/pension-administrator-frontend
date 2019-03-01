@@ -19,7 +19,7 @@ package controllers.register.individual
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.address.SameContactAddressController
+import controllers.address.ConfirmPreviousAddressController
 import controllers.register.individual.routes._
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.individual._
@@ -34,38 +34,37 @@ import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 
-class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                       val messagesApi: MessagesApi,
-                                                       val dataCacheConnector: UserAnswersCacheConnector,
-                                                       @Individual val navigator: Navigator,
-                                                       authenticate: AuthAction,
-                                                       allowAccess: AllowAccessActionProvider,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: SameContactAddressFormProvider,
-                                                       val countryOptions: CountryOptions
-                                                      ) extends SameContactAddressController with I18nSupport {
+class IndividualConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
+                                                           val messagesApi: MessagesApi,
+                                                           val dataCacheConnector: UserAnswersCacheConnector,
+                                                           @Individual val navigator: Navigator,
+                                                           authenticate: AuthAction,
+                                                           allowAccess: AllowAccessActionProvider,
+                                                           getData: DataRetrievalAction,
+                                                           requireData: DataRequiredAction,
+                                                           formProvider: SameContactAddressFormProvider,
+                                                           val countryOptions: CountryOptions
+                                                      ) extends ConfirmPreviousAddressController with I18nSupport {
 
-  private[controllers] val postCall = IndividualSameContactAddressController.onSubmit _
-  private[controllers] val title: Message = "individual.same.contact.address.title"
-  private[controllers] val heading: Message = "individual.same.contact.address.heading"
-  private[controllers] val hint: Message = "individual.same.contact.address.hint"
+  private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit _
+  private[controllers] val title: Message = "individual.confirmPreviousAddress.title"
+  private[controllers] val heading: Message = "individual.confirmPreviousAddress.heading"
 
   protected val form: Form[Boolean] = formProvider()
 
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
-          case individual ~ address =>
+        (IndividualDetailsId and ExistingCurrentAddressId).retrieve.right.map {
+          case details ~ address =>
             SameContactAddressViewModel(
-              postCall(mode),
+              postCall(),
               title = Message(title),
-              heading = Message(heading),
-              hint = Some(Message(hint)),
+              heading = Message(heading, details.fullName),
+              hint = None,
               secondaryHeader = None,
               address = address,
-              psaName = individual.fullName,
+              psaName = details.fullName,
               mode = mode
             )
         }
@@ -74,14 +73,14 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        get(IndividualSameContactAddressId, vm)
+        get(IndividualConfirmPreviousAddressId, vm)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode)
+        post(IndividualConfirmPreviousAddressId, IndividualPreviousAddressId, vm, mode)
       }
   }
 
