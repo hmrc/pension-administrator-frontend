@@ -40,6 +40,6 @@ class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
     behave like pageWithBackLink(createView)
 
     behave like pageWithTextFields(
-      createViewUsingForm, messageKeyPrefix, controllers.register.adviser.routes.AdviserDetailsController.onSubmit(NormalMode).url, "name", "email", "phone")
+      createViewUsingForm, messageKeyPrefix, controllers.register.adviser.routes.AdviserDetailsController.onSubmit(NormalMode).url, "email", "phone")
   }
 }
