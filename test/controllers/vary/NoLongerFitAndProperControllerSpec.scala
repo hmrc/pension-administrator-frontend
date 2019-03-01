@@ -41,16 +41,13 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   "NoLongerFitAndProperController" must {
 
     "return OK and the correct view for a GET" in {
-      val data = Json.obj(
-        PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psaName)
-      )
+
       when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(individual)
       verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
     }
 
@@ -67,26 +64,26 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
 
   private val psaName: String = "Mark Wright"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
   private val psaUser = PSAUser(UserType.Individual, None, false, None)
 
   private val individual = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(false).asOpt.value
-    .set(IndividualDetailsId)(TolerantIndividual(Some("first"), None, Some("last"))).asOpt.value
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new NoLongerFitAndProperController(
       frontendAppConfig,
       messagesApi,
-      FakeAuthAction,
+      FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeUserAnswersCacheConnector
     )
 
-  private def viewAsString() =
-    noLongerFitAndProper(frontendAppConfig, psaName)(DataRequest(fakeRequest, "cacheId", psaUser, individual), messages).toString
+  private def viewAsString(userAnswers: UserAnswers) =
+    noLongerFitAndProper(frontendAppConfig, psaName)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 
 }

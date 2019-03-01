@@ -22,9 +22,11 @@ import views.behaviours.ViewBehaviours
 import views.html.vary.noLongerFitAndProper
 
 class NoLongerFirAndProperViewSpec extends ViewBehaviours {
-  val messageKeyPrefix = "noLongerFitAndProper"
+  private val messageKeyPrefix = "noLongerFitAndProper"
 
-  def createView: () => HtmlFormat.Appendable = () =>
+  private val returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
+
+  private val createView: () => HtmlFormat.Appendable = () =>
     noLongerFitAndProper(frontendAppConfig, "Mark Wright")(fakeRequest, messages)
 
 
@@ -38,6 +40,6 @@ class NoLongerFirAndProperViewSpec extends ViewBehaviours {
       createView must haveDynamicText("noLongerFitAndProper.p1", "Mark Wright")
     }
 
-    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
+    behave like pageWithReturnLink(createView, returnLink)
   }
 }

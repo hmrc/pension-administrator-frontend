@@ -2,3 +2,5 @@
 
 GET        /make-more-changes    controllers.vary.AnyMoreChangesController.onPageLoad()
 POST       /make-more-changes    controllers.vary.AnyMoreChangesController.onSubmit()
+
+GET        /cannot-make-changes  controllers.vary.NoLongerFitAndProperController.onPageLoad()
