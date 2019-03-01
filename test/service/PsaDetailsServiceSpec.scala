@@ -21,6 +21,7 @@ import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import identifiers.UpdateModeId
 import identifiers.register.company.directors.IsDirectorCompleteId
+import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId}
 import identifiers.register.partnership.partners.IsPartnerCompleteId
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
@@ -50,14 +51,12 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
   import PsaDetailsServiceSpec._
 
-
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val request = AuthenticatedRequest(fakeRequest, "", PSAUser(UserType.Organisation, None, false, Some("test Psa id")))
 
-
   "PsaDetailsService" must {
     "when variations and dergistration are disabled" when {
-      "return 200 and  correct view for a GET for PSA individual" in {
+      "return the correct PSA individual view model" in {
         fs.change(isVariationsEnabled, false)
         fs.change(isDeregistrationEnabled, false)
         when(mockSubscriptionConnector.getSubscriptionModel(any())(any(), any()))
@@ -69,7 +68,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
       }
 
-      "return 200 and  correct view for a GET for PSA company" in {
+      "return the correct PSA company view model" in {
 
         when(mockSubscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionCompany))
@@ -81,7 +80,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
     }
 
     "when variations and deregistration are enabled" when {
-      "return 200 and  correct view for a GET for PSA individual" in {
+      "return the correct PSA individual view model with correct can de register flag" in {
+        val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress
         fs.change(isVariationsEnabled, true)
         fs.change(isDeregistrationEnabled, true)
 
@@ -89,14 +89,15 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           .thenReturn(Future.successful(individualUserAnswers))
 
         when(mockDeRegistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
-          Future.successful(true)
+          Future.successful(false)
         )
         val result  = service.retrievePsaDataAndGenerateViewModel("123")
-          whenReady(result) { _  mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", false, true)}
-     //   (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
+          whenReady(result) { _  mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", false, false)}
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
 
-      "return 200 and  correct view for a GET for PSA company" in {
+      "return the correct PSA company view model and also verify the flags are set correctly" in {
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(companyUserAnswers))
 
@@ -107,12 +108,11 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result  = service.retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) { _  mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)}
 
-//        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
-//        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
-//        (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
 
-      "return 200 and  correct view for a GET for PSA partnership" in {
+      "return the correct PSA partnership view model and also verify the flags are set correctly" in {
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(partnershipUserAnswers))
 
@@ -123,9 +123,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result  = service.retrievePsaDataAndGenerateViewModel("123")
           whenReady(result) { _  mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", false, true)}
 
-//        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true
-//        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
-//        (FakeUserAnswersCacheConnector.lastUpsert.get \ "updateMode").get mustBe JsBoolean(true)
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true
+        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
     }
   }
@@ -146,11 +145,9 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
     mockDeRegistrationConnector,
     FakeUserAnswersCacheConnector
   )
-
   val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
   val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
   val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
-
 
   val individualSuperSections: Seq[SuperSection] = Seq(
     SuperSection(
@@ -176,7 +173,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
             AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
-
   val organisationSuperSections: Seq[SuperSection] = Seq(
     SuperSection(
       None,
@@ -225,7 +221,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
             AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
-
 }
 
 

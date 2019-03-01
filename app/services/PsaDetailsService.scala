@@ -57,10 +57,13 @@ class PsaDetailServiceImpl @Inject()(
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String)(
     implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
+
     if (fs.get(isVariationsEnabled)) {
       retrievePsaDataFromUserAnswers(psaId)
     } else {
-      retrievePsaDataFromModel(psaId)
+      canStopBeingAPsa(psaId).flatMap{ canDeregister =>
+        retrievePsaDataFromModel(psaId, canDeregister)
+      }
     }
   }
 
@@ -134,7 +137,7 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  private def retrievePsaDataFromModel(psaId: String)(
+  private def retrievePsaDataFromModel(psaId: String, canDeRegister: Boolean)(
     implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaViewDetailsViewModel] = {
     subscriptionConnector.getSubscriptionModel(psaId).map { response =>
       response.organisationOrPartner match {
@@ -143,14 +146,14 @@ class PsaDetailServiceImpl @Inject()(
             new PsaDetailsHelper(response, countryOptions).individualSections,
             response.individual.map(_.fullName).getOrElse(""),
             isUserAnswerUpdated = false,
-            canDeregister = false
+            canDeRegister
           )
         case _ =>
           PsaViewDetailsViewModel(
             new PsaDetailsHelper(response, countryOptions).organisationSections,
             response.organisationOrPartner.map(_.name).getOrElse(""),
             isUserAnswerUpdated = false,
-            canDeregister = false
+            canDeRegister
           )
       }
     }
