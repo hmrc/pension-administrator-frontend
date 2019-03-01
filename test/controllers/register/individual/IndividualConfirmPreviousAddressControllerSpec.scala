@@ -52,7 +52,9 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
     heading = Message("individual.confirmPreviousAddress.heading", "John Doe"),
     secondaryHeader = None,
     hint = None,
-    address = testAddress
+    address = testAddress,
+    psaName = "John Doe",
+    mode = UpdateMode
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
@@ -88,7 +90,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
   "IndividualConfirmPreviousAddressController" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -97,7 +99,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(IndividualConfirmPreviousAddressId)(false)).get.json))
 
-      val result = controller(getData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getData).onPageLoad(UpdateMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(formProvider().fill(false))
     }
@@ -105,7 +107,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -115,14 +117,14 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = formProvider().bind(Map("value" -> "invalid value"))
 
-      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -130,7 +132,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+      val result = controller(dontGetAnyData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

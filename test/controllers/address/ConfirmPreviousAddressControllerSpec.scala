@@ -63,7 +63,9 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
     heading = "heading",
     secondaryHeader = None,
     hint = Some("hint"),
-    address = testAddress(line2)
+    address = testAddress(line2),
+    psaName = "Test name",
+    mode = NormalMode
   )
 
   "get" must {

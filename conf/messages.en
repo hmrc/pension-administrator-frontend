@@ -832,4 +832,4 @@ status.complete = COMPLETE
 status.incomplete = INCOMPLETE
 
 individual.confirmPreviousAddress.title = Is this the previous address?
-individual.confirmPreviousAddress.heading = Is this {0}'s previous address?
+individual.confirmPreviousAddress.heading = Is this {0}’s previous address?

@@ -63,7 +63,9 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
               heading = Message(heading, details.fullName),
               hint = None,
               secondaryHeader = None,
-              address = address
+              address = address,
+              psaName = details.fullName,
+              mode = mode
             )
         }
     )
