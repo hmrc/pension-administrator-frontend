@@ -68,7 +68,7 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
               Logger.error("Unable to set user answer", JsResultException(errors))
               Future.successful(InternalServerError)
             },
-            userAnswers => Future.successful(Redirect(navigator.nextPage(id, NormalMode, userAnswers)))
+            userAnswers => Future.successful(Redirect(navigator.nextPage(id, mode, userAnswers)))
           )
         }
       )
