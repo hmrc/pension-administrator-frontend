@@ -17,7 +17,7 @@
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.RegisterAsBusinessId
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
@@ -119,6 +119,10 @@ package object utils {
 
     def adviserAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(AdviserAddressListId)(address).asOpt.value
+    }
+
+    def adviserName(name: String): UserAnswers = {
+      answers.set(AdviserNameId)(name).asOpt.value
     }
 
     def businessDetails: UserAnswers = {
