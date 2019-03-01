@@ -17,6 +17,7 @@
 package views.vary
 
 import play.twirl.api.HtmlFormat
+import utils.DateHelper
 import views.behaviours.ViewBehaviours
 import views.html.vary.noLongerFitAndProper
 
@@ -30,8 +31,13 @@ class NoLongerFirAndProperViewSpec extends ViewBehaviours {
   "noLongerFitAndProper view" must {
 
     behave like normalPage(createView, messageKeyPrefix,
-      expectedGuidanceKeys = "p1", "p2")
+      expectedGuidanceKeys = "p2")
 
-    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url, "return-to-psa")
+
+    "display the paragraph with psa name" in {
+      createView must haveDynamicText("noLongerFitAndProper.p1", "Mark Wright")
+    }
+
+    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 }

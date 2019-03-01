@@ -28,12 +28,12 @@
     bodyClasses = None) {
 
         @components.heading(
-            headingKey=messages("noLongerFitAndProper.h1")
+            headingKey=messages("noLongerFitAndProper.heading")
         )
 
         <p>@messages("noLongerFitAndProper.p1", psaName)</p>
         <p>@messages("noLongerFitAndProper.p2")</p>
 
-        @components.button_link(messages("site.return.psa_details", psaName), controllers.routes.PsaDetailsController.onPageLoad().url, "return-to-psa")
+        @components.return_link(psaName)
 
 }
