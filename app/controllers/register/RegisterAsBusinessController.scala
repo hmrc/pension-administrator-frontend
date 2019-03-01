@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Register
+import utils.annotations.{AuthenticationWithLowConfidence, Register}
 import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
 
@@ -37,6 +37,7 @@ class RegisterAsBusinessController @Inject()(
   appConfig: FrontendAppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  @AuthenticationWithLowConfidence authenticateLow: AuthAction,
   allowAccess: AllowAccessActionProvider,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
@@ -46,7 +47,7 @@ class RegisterAsBusinessController @Inject()(
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticateLow andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(RegisterAsBusinessId) match {
