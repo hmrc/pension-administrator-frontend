@@ -59,7 +59,7 @@ class RegisterAsBusinessController @Inject()(
 
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticateLow andThen getData andThen requireData).async {
     implicit request=>
 
       form.bindFromRequest().fold(
