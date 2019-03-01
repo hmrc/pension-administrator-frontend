@@ -28,8 +28,8 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.Register
-import utils.{KnownFactsRetrieval, Navigator}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,11 +41,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   requireData: DataRequiredAction,
                                                   @Register navigator: Navigator,
                                                   formProvider: DeclarationFitAndProperFormProvider,
-                                                  dataCacheConnector: UserAnswersCacheConnector,
-                                                  pensionsSchemeConnector: PensionsSchemeConnector,
-                                                  knownFactsRetrieval: KnownFactsRetrieval,
-                                                  enrolments: TaxEnrolmentsConnector,
-                                                  emailConnector: EmailConnector
+                                                  dataCacheConnector: UserAnswersCacheConnector
                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()

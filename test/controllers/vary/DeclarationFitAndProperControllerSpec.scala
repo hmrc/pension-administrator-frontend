@@ -24,18 +24,16 @@ import forms.vary.DeclarationFitAndProperFormProvider
 import identifiers.register._
 import models.UserType.UserType
 import models._
-import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
-import models.requests.{AuthenticatedRequest, DataRequest}
+import models.requests.AuthenticatedRequest
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.Writes
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
-import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.FakeNavigator
 import views.html.vary.declarationFitAndProper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
@@ -97,45 +95,12 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       block(AuthenticatedRequest(request, "id", PSAUser(userType, None, true, Some("test psa id"))))
   }
 
-  private val validPsaResponse = PsaSubscriptionResponse("A0123456")
-  private val knownFacts = Some(KnownFacts(
-    Set(KnownFact("PSAID", "test-psa")),
-    Set(KnownFact("NINO", "test-nino")
-    )))
-
-  private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
-    override def registerPsa
-    (answers: UserAnswers)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
-      Future.successful(validPsaResponse)
-    }
-  }
-
-  private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
-    override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
-  }
-
-  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
-    new TaxEnrolmentsConnector {
-      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext) =
-        enrolResponse.status match {
-          case NO_CONTENT => Future.successful(enrolResponse)
-          case ex => Future.failed(new HttpException("Fail", ex))
-        }
-    }
-
-  }
-
-  private val mockEmailConnector = mock[EmailConnector]
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
-                          fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
-                          pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
-                          knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
-                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
+                          fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
                         ) =
     new DeclarationFitAndProperController(
       appConfig,
@@ -146,11 +111,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       new DataRequiredActionImpl,
       fakeNavigator,
       new DeclarationFitAndProperFormProvider(),
-      fakeUserAnswersCacheConnector,
-      pensionsSchemeConnector,
-      knownFactsRetrieval,
-      enrolments,
-      mockEmailConnector
+      fakeUserAnswersCacheConnector
     )
 
   private def viewAsString(psaName: String, form: Form[_]) =
