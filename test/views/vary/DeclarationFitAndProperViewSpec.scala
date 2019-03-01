@@ -37,7 +37,10 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
   "DeclarationFitAndProper (variations) view" must {
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
 
-    behave like pageWithReturnLink(createView, url = controllers.routes.PsaDetailsController.onPageLoad().url)
+    "behave like a page with a return link" in {
+      val doc = asDocument(createView())
+      assertLinkContained(doc, "return-link", controllers.routes.PsaDetailsController.onPageLoad().url)
+    }
 
     "display the correct page title" in {
       val doc = asDocument(createView())
