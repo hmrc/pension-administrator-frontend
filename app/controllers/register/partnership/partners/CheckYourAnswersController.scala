@@ -68,7 +68,7 @@ class CheckYourAnswersController @Inject()(
           appConfig,
           answersSection,
           Some(partnerName),
-          routes.CheckYourAnswersController.onSubmit(index)))
+          routes.CheckYourAnswersController.onSubmit(index, NormalMode)))
         )
       }
   }

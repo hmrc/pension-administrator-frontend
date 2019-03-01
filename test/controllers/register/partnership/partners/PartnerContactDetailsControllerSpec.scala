@@ -71,7 +71,7 @@ object PartnerContactDetailsControllerSpec extends OptionValues {
   val partnershipName = "Test Partner"
   val firstIndex = Index(0)
 
-  val onwardRoute = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(firstIndex)
+  val onwardRoute = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(firstIndex, NormalMode)
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "partners" -> Json.arr(Json.obj(

@@ -29,7 +29,7 @@ import utils.{Navigator, UserAnswers}
 class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector, config: FrontendAppConfig) extends Navigator {
 
   private def checkYourAnswers(index: Int): Option[NavigateTo] =
-    NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index))
+    NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index, NormalMode))
 
   //noinspection ScalaStyle
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
@@ -98,7 +98,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
       case Some(AddressYears.UnderAYear) =>
         NavigateTo.save(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index))
       case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index))
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index, NormalMode))
       case None =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }

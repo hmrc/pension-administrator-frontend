@@ -31,12 +31,20 @@ class ModeSpec extends WordSpecLike with MustMatchers with OptionValues {
       binder.bind("mode", "changing") mustBe Right(UpdateMode)
     }
 
+    "bind a valid CheckUpdate" in {
+      binder.bind("mode", "update") mustBe Right(CheckUpdateMode)
+    }
+
     "fail to bind an unknown mode with negative value" in {
-      binder.bind("mode", "update") mustBe Left("Mode binding failed")
+      binder.bind("mode", "invalid") mustBe Left("Mode binding failed")
     }
 
     "unbind a UpdateMode" in {
       binder.unbind("mode", UpdateMode) mustEqual "changing"
+    }
+
+    "unbind a CheckUpdateMode" in {
+      binder.unbind("mode", CheckUpdateMode) mustEqual "update"
     }
 
     "unbind a CheckMode" in {

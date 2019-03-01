@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)
     ))
 
-  def call = controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(0)
+  def call = controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(0, NormalMode)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new CheckYourAnswersController(

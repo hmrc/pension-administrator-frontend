@@ -27,18 +27,21 @@ case object CheckMode extends WithName("change") with Mode
 
 case object UpdateMode extends WithName("changing") with Mode
 
+case object CheckUpdateMode extends WithName("update") with Mode
+
 object Mode {
 
   case class UnknownModeException() extends Exception
 
   implicit def modePathBindable(implicit stringBinder: PathBindable[String]): PathBindable[Mode] = new PathBindable[Mode] {
 
-    val modes = Seq(NormalMode, CheckMode, UpdateMode)
+    val modes = Seq(NormalMode, CheckMode, UpdateMode, CheckUpdateMode)
 
     override def bind(key: String, value: String): Either[String, Mode] = {
       stringBinder.bind(key, value) match {
         case Right(CheckMode.toString) => Right(CheckMode)
         case Right(UpdateMode.toString) => Right(UpdateMode)
+        case Right(CheckUpdateMode.toString) => Right(CheckUpdateMode)
         case _ => Left("Mode binding failed")
       }
     }
@@ -54,6 +57,7 @@ object Mode {
       case NormalMode => "NormalMode"
       case CheckMode => "CheckMode"
       case UpdateMode => "UpdateMode"
+      case CheckUpdateMode => "CheckUpdateMode"
     }
   }
 }
