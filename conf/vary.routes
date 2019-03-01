@@ -2,3 +2,5 @@
 
 GET        /make-more-changes    controllers.vary.AnyMoreChangesController.onPageLoad()
 POST       /make-more-changes    controllers.vary.AnyMoreChangesController.onSubmit()
+
+GET        /details-updated      controllers.vary.PSAVarianceSuccessController.onPageLoad()

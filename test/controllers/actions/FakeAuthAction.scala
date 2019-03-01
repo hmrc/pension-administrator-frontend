@@ -16,11 +16,18 @@
 
 package controllers.actions
 
+import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
 import play.api.mvc.{Request, Result}
 
 import scala.concurrent.Future
+
+
+case class FakeAuthAction(userType: UserType) extends AuthAction{
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+    block(AuthenticatedRequest(request, "id", PSAUser(userType, None, true, Some("test psa id"))))
+}
 
 object FakeAuthAction extends AuthAction {
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
