@@ -22,22 +22,14 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.vary.DeclarationFitAndProperFormProvider
 import identifiers.register._
-import identifiers.register.company.ContactDetailsId
-import identifiers.register.individual.IndividualContactDetailsId
-import identifiers.register.partnership.PartnershipContactDetailsId
 import javax.inject.Inject
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
-import models.requests.DataRequest
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
+import utils.{KnownFactsRetrieval, Navigator}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -90,36 +82,4 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
           }
       )
   }
-
-  private def getEmail(answers: UserAnswers): Option[String] = {
-    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
-      val id = registrationInfo.legalStatus match {
-        case Individual => IndividualContactDetailsId
-        case LimitedCompany => ContactDetailsId
-        case Partnership => PartnershipContactDetailsId
-      }
-      answers.get(id).map { contactDetails =>
-        contactDetails.email
-      }
-    }
-  }
-
-  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
-    getEmail(answers) map { email =>
-      emailConnector.sendEmail(email, appConfig.emailTemplateId, PsaId(psaId))
-    } getOrElse Future.successful(EmailNotSent)
-  }
-
-  private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
-    knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
-      enrolments.enrol(psaId, knownFacts)
-    } getOrElse Future.failed(KnownFactsRetrievalException())
-  }
-
-  case class KnownFactsRetrievalException() extends Exception {
-    def apply(): Unit = Logger.error("Could not retrieve Known Facts")
-  }
-
-  case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")
-
 }
