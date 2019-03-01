@@ -24,10 +24,12 @@ import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, UserType}
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
@@ -72,6 +74,9 @@ class IndividualDetailsCorrectController @Inject()(
                 _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
               } yield {
+                if(request.user.userType==UserType.Organisation){
+                  Logger.warn("Organisation user after successful manual IV uplift")
+                }
                 Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
               }
             case _ =>
