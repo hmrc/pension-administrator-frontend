@@ -58,7 +58,9 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
     Message("company.same.contact.address.heading").withArgs(companyName),
     None,
     Some(Message("company.same.contact.address.hint").withArgs(companyName)),
-    address
+    address,
+    "Test name",
+    NormalMode
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)

@@ -841,3 +841,7 @@ declarationFitAndProper.variations.statement4 = participated in, or been connect
 declarationFitAndProper.variations.statement5 = been disqualified from acting as a company director or are currently bankrupt
 declarationFitAndProper.variations.statement6 = been disqualified from acting as a pension scheme trustee
 declarationFitAndProper.variations.error.required = Select yes if the scheme administrator is still fit and proper
+
+
+individual.confirmPreviousAddress.title = Is this the previous address?
+individual.confirmPreviousAddress.heading = Is this {0}’s previous address?

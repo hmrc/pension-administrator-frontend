@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import controllers.vary.routes
 @import uk.gov.hmrc.play.views.html._
+@import models.Mode
 
 @(appConfig: FrontendAppConfig,form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
 
@@ -63,7 +64,7 @@
 
         @components.submit_button("site.continue")
 
-        @components.return_link(psaName)
+        @components.return_link(psaName, UpdateMode)
     }
 
 }

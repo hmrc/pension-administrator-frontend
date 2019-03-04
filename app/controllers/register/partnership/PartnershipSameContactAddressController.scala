@@ -57,7 +57,9 @@ class PartnershipSameContactAddressController @Inject()(
       heading = Message("partnership.sameContactAddress.heading").withArgs(details.companyName),
       hint = None,
       secondaryHeader = None,
-      address = address
+      address = address,
+      psaName = details.companyName,
+      mode = mode
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(
-psaName: String,
-mode: Mode
-)(implicit messages: Messages)
+package identifiers.register.individual
 
-@if(mode == UpdateMode) {
-    <div class="grid-row">
-     <div class="column-two-thirds">
-      <p class="govuk-margin-top-5">
-       <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
-      </p>
-     </div>
-    </div>
+import identifiers.TypedIdentifier
+import play.api.libs.json.JsResult
+import utils.UserAnswers
+
+case object IndividualConfirmPreviousAddressId extends TypedIdentifier[Boolean] {
+  override def toString: String = "individualConfirmPreviousAddress"
+
 }
