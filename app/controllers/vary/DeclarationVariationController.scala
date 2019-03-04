@@ -47,7 +47,7 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       (DeclarationWorkingKnowledgeId and DeclarationFitAndProperId).retrieve.right.map {
         case workingKnowledge ~ declarationFitAndProper =>
@@ -57,7 +57,7 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       (DeclarationWorkingKnowledgeId and DeclarationFitAndProperId).retrieve.right.map {
         case workingKnowledge ~ declarationFitAndProper =>
