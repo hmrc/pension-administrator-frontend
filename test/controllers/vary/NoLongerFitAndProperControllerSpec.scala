@@ -20,10 +20,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{AreYouInUKId, PsaSubscriptionResponseId}
-import models.register.PsaSubscriptionResponse
+import models._
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -83,7 +81,7 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    noLongerFitAndProper(frontendAppConfig, psaName)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    noLongerFitAndProper(frontendAppConfig, psaName, UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 
 }

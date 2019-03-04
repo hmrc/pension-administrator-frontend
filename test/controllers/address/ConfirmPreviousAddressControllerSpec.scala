@@ -44,41 +44,10 @@ import views.html.address.sameContactAddress
 
 import scala.concurrent.Future
 
-object SameContactAddressControllerSpec {
 
-  object FakeIdentifier extends TypedIdentifier[Boolean]
+class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
 
-  object RegAddressIdentifier extends TypedIdentifier[TolerantAddress]
-
-  object ContactAddressIdentifier extends TypedIdentifier[Address]
-
-  class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
-                                  override val messagesApi: MessagesApi,
-                                  override val dataCacheConnector: UserAnswersCacheConnector,
-                                  override val navigator: Navigator,
-                                  formProvider: SameContactAddressFormProvider,
-                                  override val countryOptions: CountryOptions
-                                ) extends SameContactAddressController {
-
-    def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
-    }
-
-    def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, RegAddressIdentifier, ContactAddressIdentifier, viewmodel, NormalMode)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
-    }
-
-    override protected val form: Form[Boolean] = formProvider()
-  }
-
-}
-
-class SameContactAddressControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
-
-  import SameContactAddressControllerSpec._
+  import ConfirmPreviousAddressControllerSpec._
 
   def testAddress(line2: Option[String]) = TolerantAddress(
     Some("address line 1"),
@@ -101,7 +70,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
   "get" must {
 
-    "return a successful result when there is no existing answer" in {
+    "return a successful result when user has not answered the question previously" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -120,7 +89,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
       }
     }
 
-    "return a successful result when there is an existing answer" in {
+    "return a successful result when user has answered the question previously" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -163,8 +132,8 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
-          when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+          when(cacheConnector.save[Address, PreviousAddressId.type](
+            any(), eqTo(PreviousAddressId), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -196,8 +165,8 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
-          when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+          when(cacheConnector.save[Address, PreviousAddressId.type](
+            any(), eqTo(PreviousAddressId), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -212,62 +181,6 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
       }
     }
 
-    "return a redirect and don't save the data when the data is not changed" in {
-
-      import play.api.inject._
-
-      val cacheConnector = mock[UserAnswersCacheConnector]
-      val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
-
-      running(_.overrides(
-        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
-        bind[Navigator].toInstance(FakeNavigator),
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
-      )) {
-        app =>
-
-          val request = FakeRequest().withFormUrlEncodedBody(
-            "value" -> "true"
-          )
-          val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(true).asOpt.value, request)
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, never()).save(any(), any(), any())(any(), any(), any())
-      }
-    }
-
-
-    "return a redirect when the submitted data is valid and address does not have line 2" in {
-
-      import play.api.inject._
-
-      val cacheConnector = mock[UserAnswersCacheConnector]
-
-      running(_.overrides(
-        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
-        bind[Navigator].toInstance(FakeNavigator)
-      )) {
-        app =>
-          when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
-
-          when(cacheConnector.save[TolerantAddress, RegAddressIdentifier.type](
-            any(), eqTo(RegAddressIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
-
-          val request = FakeRequest().withFormUrlEncodedBody(
-            "value" -> "true"
-          )
-          val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel(None), UserAnswers(), request)
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustEqual "www.example.com"
-      }
-    }
 
     "return a bad request when the submitted data is invalid" in {
 
@@ -293,4 +206,35 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
       }
     }
   }
+}
+
+
+object ConfirmPreviousAddressControllerSpec {
+
+  object FakeIdentifier extends TypedIdentifier[Boolean]
+
+  object PreviousAddressId extends TypedIdentifier[Address]
+
+  class TestController @Inject()(
+                                  override val appConfig: FrontendAppConfig,
+                                  override val messagesApi: MessagesApi,
+                                  override val dataCacheConnector: UserAnswersCacheConnector,
+                                  override val navigator: Navigator,
+                                  formProvider: SameContactAddressFormProvider,
+                                  override val countryOptions: CountryOptions
+                                ) extends ConfirmPreviousAddressController {
+
+    def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
+      get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+    }
+
+    def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
+      post(FakeIdentifier, PreviousAddressId, viewmodel, NormalMode)(DataRequest(fakeRequest, "cacheId",
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+    }
+
+    override protected val form: Form[Boolean] = formProvider()
+  }
+
 }

@@ -831,6 +831,9 @@ agentCannotRegister.p2 = Managing pension schemes can only be used by scheme adm
 status.complete = COMPLETE
 status.incomplete = INCOMPLETE
 
+individual.confirmPreviousAddress.title = Is this the previous address?
+individual.confirmPreviousAddress.heading = Is this {0}’s previous address?
+
 noLongerFitAndProper.title = The details cannot be changed
 noLongerFitAndProper.heading = The details cannot be changed
 noLongerFitAndProper.p1 = The details cannot be changed because you have said that {0} is not fit and proper to be a scheme administrator.

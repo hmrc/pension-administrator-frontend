@@ -42,7 +42,7 @@ class NoLongerFitAndProperController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       val PSAName = psaName()
       dataCacheConnector.removeAll(request.externalId).map { _=>
-        Ok(noLongerFitAndProper(appConfig, PSAName))
+        Ok(noLongerFitAndProper(appConfig, PSAName, mode))
       }
   }
 }

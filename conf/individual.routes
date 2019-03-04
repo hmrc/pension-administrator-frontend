@@ -85,3 +85,6 @@ POST        /change-address-manual                  controllers.register.individ
 
 GET         /outside-eu-eea                         controllers.register.individual.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
+
+GET         /is-this-previous-address            controllers.register.individual.IndividualConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address            controllers.register.individual.IndividualConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
