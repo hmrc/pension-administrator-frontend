@@ -445,6 +445,13 @@ declaration.statement4 = that where HMRC believes that a scheme administrator, o
 declaration.agree = I agree
 declaration.invalid = You need to agree to all the declarations before you can continue
 
+adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.p1 = This can be either the name of your pension practitioner or provider, or the company they work for.
+adviserName.error.required = Enter the name of your pension adviser
+adviserName.error.length = Enter a name using less than 108 characters
+adviserName.error.invalid = Enter a name using only letters
+
 adviserDetails.title = Provide details of your pension adviser
 adviserDetails.heading = Provide details of your pension adviser
 adviserDetails.name = Name
