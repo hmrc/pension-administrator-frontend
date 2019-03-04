@@ -48,30 +48,13 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      request.user.userType match {
-        case UserType.Individual =>
-          Future.successful(Ok(
-            views.html.vary.declarationFitAndProper(appConfig, form, psaName())))
-        case UserType.Organisation =>
-          Future.successful(Ok(
-            views.html.vary.declarationFitAndProper(appConfig, form, psaName())))
-      }
-
+      Future.successful(Ok(views.html.vary.declarationFitAndProper(appConfig, form, psaName())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        errors => {
-          request.user.userType match {
-            case UserType.Individual =>
-              Future.successful(BadRequest(
-                views.html.vary.declarationFitAndProper(appConfig, errors, psaName())))
-
-            case UserType.Organisation =>
-              Future.successful(BadRequest(
-                views.html.vary.declarationFitAndProper(appConfig, errors, psaName())))
-          }},
+        errors => Future.successful(BadRequest(views.html.vary.declarationFitAndProper(appConfig, errors, psaName()))),
         success =>
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { _ =>
             Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))

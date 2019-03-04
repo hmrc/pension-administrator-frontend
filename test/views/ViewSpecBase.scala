@@ -199,12 +199,4 @@ trait ViewSpecBase extends SpecBase {
     val href = link.attr("href")
     assert(href == url, s"\n\nLink $linkId has href $href not $url")
   }
-
-  def assertLinkContained(doc: Document, linkId: String, url: String): Assertion = {
-    val link = doc.select(s"a[id=$linkId]")
-    assert(link.size() == 1, s"\n\nLink $linkId is not displayed")
-    val href = link.attr("href")
-
-    assert(href.contains(url), s"\n\nLink $linkId has href $href not $url")
-  }
 }
