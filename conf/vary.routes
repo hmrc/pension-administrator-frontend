@@ -3,4 +3,7 @@
 GET        /make-more-changes    controllers.vary.AnyMoreChangesController.onPageLoad()
 POST       /make-more-changes    controllers.vary.AnyMoreChangesController.onSubmit()
 
+GET        /still-fit-and-proper-person              controllers.vary.DeclarationFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
+POST       /still-fit-and-proper-person              controllers.vary.DeclarationFitAndProperController.onSubmit(mode: Mode = UpdateMode)
+
 GET        /cannot-make-changes  controllers.vary.NoLongerFitAndProperController.onPageLoad()
