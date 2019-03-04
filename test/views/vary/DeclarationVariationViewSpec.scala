@@ -16,14 +16,14 @@
 
 package views.vary
 
-import forms.register.DeclarationFormProvider
+import forms.vary.DeclarationVariationFormProvider
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
 import views.html.vary.declarationVariation
 
 class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
 
-  val form: Form[Boolean] = new DeclarationFormProvider()()
+  val form: Form[Boolean] = new DeclarationVariationFormProvider()()
 
   override val errorKey = "agree"
 
@@ -31,21 +31,21 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
 
   private def returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
 
-  private def createView(isWorkingKnowldge : Boolean, isFitAndProper  : Boolean) = () => declarationVariation(
+  private def createView(isWorkingKnowldge: Boolean = true, isFitAndProper  : Boolean = true) = () => declarationVariation(
     frontendAppConfig, form, "Mark Wright", isWorkingKnowldge, isFitAndProper)(fakeRequest, messages)
 
   private def createViewUsingForm(form: Form[_]) = declarationVariation(frontendAppConfig, form, "Mark Wright",
     isWorkingKnowldge = true, isFitAndProper = true)(fakeRequest, messages)
 
-  "Declaration view" must {
+  "Declaration variation view" must {
 
     appRunning()
 
-    behave like normalPage(createView(isWorkingKnowldge = true, isFitAndProper = true), messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithReturnLink(createView(isWorkingKnowldge = true, isFitAndProper = true), returnLink)
+    behave like pageWithReturnLink(createView(), returnLink)
 
-    behave like pageWithSubmitButton(createView(isWorkingKnowldge = true, isFitAndProper = true))
+    behave like pageWithSubmitButton(createView())
 
     "show an error summary when rendered with an error" in {
       val doc = asDocument(createViewUsingForm(form.withError(error)))
@@ -59,15 +59,15 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
     }
 
     "display the declaration" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveDynamicText("declaration.variations.statement0")
+      createView() must haveDynamicText("declaration.variations.statement0")
     }
 
     "display the first statement" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveDynamicText("declaration.variations.statement1")
+      createView() must haveDynamicText("declaration.variations.statement1")
     }
 
     "display the second statement" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveDynamicText("declaration.variations.statement2")
+      createView() must haveDynamicText("declaration.variations.statement2")
     }
 
     "not display the second statement" in {
@@ -75,12 +75,12 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
     }
 
     "display the third statement" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveDynamicText("declaration.variations.statement3")
+      createView() must haveDynamicText("declaration.variations.statement3")
     }
 
     "display the fourth statement" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveDynamicText("declaration.variations.statement4")
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must notHaveDynamicText("declaration.variations.statement5")
+      createView() must haveDynamicText("declaration.variations.statement4")
+      createView() must notHaveDynamicText("declaration.variations.statement5")
     }
 
     "display the fifth statement" in {
@@ -89,11 +89,11 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
     }
 
     "have an Agree checkbox" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveCheckBox("agree", "agreed")
+      createView() must haveCheckBox("agree", "agreed")
     }
 
     "have a label for the I Agree checkbox" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = true) must haveLabel("agree", messages("declaration.variations.agree"))
+      createView() must haveLabel("agree", messages("declaration.variations.agree"))
     }
 
   }
