@@ -16,24 +16,32 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import viewmodels.Message
-@import models.requests._
+@import controllers.register.adviser.routes._
+@import models.Mode
 
-@(appConfig: FrontendAppConfig, psaName: String)(implicit request: Request[_], messages: Messages)
-
-@printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-   title= messages("psaVarianceSuccess.title"),
+    title = s"${messages("adviserName.title")}",
     appConfig = appConfig,
     bodyClasses = None) {
 
-    <div class="govuk-box-highlight">
-        @components.heading(messages("psaVarianceSuccess.heading"))
-    </div>
+    @helpers.form(action = AdviserNameController.onSubmit(mode), 'autoComplete -> "off") {
 
-    <div class="print-page">@printThisPageLink</div>
+        @components.back_link()
 
-    @components.return_link(psaName, UpdateMode)
+        @components.error_summary(form.errors)
 
+        @components.heading(messages("adviserName.heading"))
+
+        <p>@messages("adviserName.p1")</p>
+
+        @components.input_text(
+          field = form("adviserName"),
+          label = messages("adviserName.heading"),
+          labelClass=Some("visually-hidden")
+        )
+
+        @components.submit_button()
+    }
 }

@@ -445,6 +445,13 @@ declaration.statement4 = that where HMRC believes that a scheme administrator, o
 declaration.agree = I agree
 declaration.invalid = You need to agree to all the declarations before you can continue
 
+adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.p1 = This can be either the name of your pension practitioner or provider, or the company they work for.
+adviserName.error.required = Enter the name of your pension adviser
+adviserName.error.length = Enter a name using less than 108 characters
+adviserName.error.invalid = Enter a name using only letters
+
 adviserDetails.title = Provide details of your pension adviser
 adviserDetails.heading = Provide details of your pension adviser
 adviserDetails.name = Name
@@ -830,6 +837,18 @@ agentCannotRegister.p2 = Managing pension schemes can only be used by scheme adm
 
 status.complete = COMPLETE
 status.incomplete = INCOMPLETE
+
+declarationFitAndProper.variations.title =  Is the scheme administrator still fit and proper?
+declarationFitAndProper.variations.heading = Is {0} still fit and proper to be a scheme administrator?
+declarationFitAndProper.variations.declaration = Being fit and proper to be a scheme administrator means that {0} has never:
+declarationFitAndProper.variations.statement1 = been involved in tax fraud, abuse of tax repayment schemes or other fraudulent behaviour including misrepresentation or identity theft
+declarationFitAndProper.variations.statement2 = had a criminal conviction relating to finance, corporate bodies or dishonesty
+declarationFitAndProper.variations.statement3 = been the subject of adverse civil proceedings relating to finance, corporate bodies, dishonesty or misconduct
+declarationFitAndProper.variations.statement4 = participated in, or been connected with, designing or marketing tax avoidance or pensions liberation schemes
+declarationFitAndProper.variations.statement5 = been disqualified from acting as a company director or are currently bankrupt
+declarationFitAndProper.variations.statement6 = been disqualified from acting as a pension scheme trustee
+declarationFitAndProper.variations.error.required = Select yes if the scheme administrator is still fit and proper
+
 
 individual.confirmPreviousAddress.title = Is this the previous address?
 individual.confirmPreviousAddress.heading = Is this {0}’s previous address?
