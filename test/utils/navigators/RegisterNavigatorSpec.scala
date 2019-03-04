@@ -49,7 +49,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, true, None, false),
 
     (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, true, None, false),
-    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserDetails, true, None, false),
+    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName, true, None, false),
     (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (DeclarationFitAndProperId, emptyAnswers, confirmation, false, None, false),
@@ -113,7 +113,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val partnershipBusinessDetails: Call = controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
-  lazy val adviserDetails: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
+  lazy val adviserName: Call = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
   lazy val confirmation: Call = routes.ConfirmationController.onPageLoad()
   lazy val survey: Call = controllers.routes.LogoutController.onPageLoad()
   lazy val ukBusinessType: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
