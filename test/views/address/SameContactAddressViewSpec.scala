@@ -17,7 +17,7 @@
 package views.address
 
 import forms.address.SameContactAddressFormProvider
-import models.TolerantAddress
+import models.{Mode, NormalMode, TolerantAddress, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -45,21 +45,25 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
 
   val testCountry = "United Kingdom"
 
-  def viewmodel = SameContactAddressViewModel(
+  def viewmodel(mode: Mode = NormalMode) = SameContactAddressViewModel(
     postCall = Call("GET", "www.example.com"),
     title = Message("individual.same.contact.address.title"),
     heading = Message("individual.same.contact.address.heading"),
     secondaryHeader = None,
     hint = Some(Message("individual.same.contact.address.hint")),
-    address = testAddress
+    address = testAddress,
+    psaName = "Test name",
+    mode = mode
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  def createView: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel, countryOptions)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel(), countryOptions)(fakeRequest, messages)
+
+  def createViewUpdateMode: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel(UpdateMode), countryOptions)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    sameContactAddress(frontendAppConfig, form, viewmodel, countryOptions)(fakeRequest, messages)
+    sameContactAddress(frontendAppConfig, form, viewmodel(), countryOptions)(fakeRequest, messages)
 
   "Same Contact Address View" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -69,6 +73,8 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "www.example.com", s"$messageKeyPrefix.heading")
 
     behave like pageWithSubmitButton(createView)
+
+    behave like pageWithReturnLink(createViewUpdateMode, controllers.routes.PsaDetailsController.onPageLoad().url)
 
     "display the address" in {
       val doc = asDocument(createView())

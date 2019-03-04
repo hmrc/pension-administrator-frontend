@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.register.partnership
+package controllers.register.individual
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions._
 import forms.address.SameContactAddressFormProvider
-import models.{AddressYears, NormalMode, TolerantAddress}
+import identifiers.register.individual.{ExistingCurrentAddressId, IndividualConfirmPreviousAddressId, IndividualDetailsId}
+import models._
 import play.api.data.Form
+import play.api.libs.json.JsResult
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
@@ -30,13 +32,13 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
+class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new SameContactAddressFormProvider()
+  val formProvider = new SameContactAddressFormProvider()
 
-  private val testAddress = TolerantAddress(
+  val testAddress = TolerantAddress(
     Some("address line 1"),
     Some("address line 2"),
     Some("test town"),
@@ -44,32 +46,25 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     Some("test post code"), Some("GB")
   )
 
-  private val partnershipDetails = models.BusinessDetails("Test Partnership Name", Some("1234567890"))
-
-  private val requiredData = UserAnswers()
-    .partnershipDetails(partnershipDetails)
-    .partnershipRegisteredAddress(testAddress)
-    .dataRetrievalAction
-
   def viewmodel = SameContactAddressViewModel(
-    postCall = controllers.register.partnership.routes.PartnershipSameContactAddressController.onSubmit(NormalMode),
-    title = Message("partnership.sameContactAddress.title"),
-    heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipDetails.companyName),
-    hint = None,
+    postCall = routes.IndividualConfirmPreviousAddressController.onSubmit(),
+    title = Message("individual.confirmPreviousAddress.title"),
+    heading = Message("individual.confirmPreviousAddress.heading", "John Doe"),
     secondaryHeader = None,
+    hint = None,
     address = testAddress,
-    psaName = "Test name",
-    mode = NormalMode
+    psaName = "John Doe",
+    mode = UpdateMode
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  def controller(dataRetrievalAction: DataRetrievalAction) =
-    new PartnershipSameContactAddressController(
-      new FakeNavigator(desiredRoute = onwardRoute),
+  def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
+    new IndividualConfirmPreviousAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
@@ -78,30 +73,33 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       countryOptions
     )
 
-  def viewAsString(form: Form[_] = formProvider()): String = sameContactAddress(
-    frontendAppConfig,
-    form,
-    viewmodel,
-    countryOptions
-  )(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = formProvider()): String =
+    sameContactAddress(
+      frontendAppConfig,
+      form,
+      viewmodel,
+      countryOptions
+    )(fakeRequest, messages).toString
 
-  "PartnershipSameContactAddress Controller" must {
+  val validData: JsResult[UserAnswers] = UserAnswers()
+    .set(IndividualDetailsId)(TolerantIndividual(Some("John"), None, Some("Doe"))).flatMap(_.set(
+    ExistingCurrentAddressId)(testAddress))
+
+  val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
+
+  "IndividualConfirmPreviousAddressController" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller(requiredData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = UserAnswers()
-        .partnershipDetails(partnershipDetails)
-        .partnershipRegisteredAddress(testAddress)
-        .partnershipSameContactAddress(areSame = false)
-        .dataRetrievalAction
+      val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(IndividualConfirmPreviousAddressId)(false)).get.json))
 
-      val result = controller(validData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getData).onPageLoad(UpdateMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(formProvider().fill(false))
     }
@@ -109,7 +107,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-      val result = controller(requiredData).onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -119,14 +117,14 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = formProvider().bind(Map("value" -> "invalid value"))
 
-      val result = controller(requiredData).onSubmit(NormalMode)(postRequest)
+      val result = controller(getRelevantData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -134,10 +132,11 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+      val result = controller(dontGetAnyData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
+
 }
