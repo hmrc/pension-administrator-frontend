@@ -25,3 +25,7 @@ POST       /changing-adviser-details            controllers.register.adviser.Adv
 GET        /check-your-answers                  controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode = CheckMode)
 POST       /check-your-answers                  controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode = CheckMode)
 
+GET        /who-has-working-knowledge           controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /who-has-working-knowledge           controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-who-has-working-knowledge    controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-who-has-working-knowledge    controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode = CheckMode)
