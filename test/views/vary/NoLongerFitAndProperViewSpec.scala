@@ -21,7 +21,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.vary.noLongerFitAndProper
 
-class NoLongerFirAndProperViewSpec extends ViewBehaviours {
+class NoLongerFitAndProperViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "noLongerFitAndProper"
 
