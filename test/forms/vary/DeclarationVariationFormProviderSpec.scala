@@ -16,17 +16,18 @@
 
 package forms.vary
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.{Form, FormError}
+import forms.behaviours.CheckboxBehaviour
+import play.api.data.Form
 
-class DeclarationVariationFormProviderSpec extends BooleanFieldBehaviours {
+class DeclarationVariationFormProviderSpec extends CheckboxBehaviour {
 
   private val form: Form[Boolean] = new DeclarationVariationFormProvider()()
-  private val fieldName = "value"
-  private val invalidKey = "error.boolean"
+  private val fieldName = "agree"
+  private val trueValue = "agreed"
+  private val invalidKey = "declaration.variations.invalid"
 
   "DeclarationVariationFormProvider" should {
 
-    behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey))
+    behave like formWithCheckbox(form, fieldName, trueValue, acceptTrueOnly = true, invalidKey)
   }
 }

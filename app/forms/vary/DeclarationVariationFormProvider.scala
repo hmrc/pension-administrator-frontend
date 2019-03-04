@@ -16,15 +16,17 @@
 
 package forms.vary
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
+import forms.mappings.CheckboxMapping
 import play.api.data.Form
 
-class DeclarationVariationFormProvider @Inject() extends FormErrorHelper with Mappings {
+class DeclarationVariationFormProvider extends CheckboxMapping {
+
+  private val fieldName = "agree"
+  private val trueValue = "agreed"
+  private val invalidKey = "declaration.variations.invalid"
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("declaration.variations.error.required")
+      fieldName -> checkboxMapping(fieldName, trueValue, acceptTrueOnly = true, invalidKey)
     )
 }

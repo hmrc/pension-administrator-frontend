@@ -18,16 +18,19 @@ package controllers.vary
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider}
+import controllers.actions._
 import forms.vary.DeclarationVariationFormProvider
-import identifiers.register.DeclarationId
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.individual.IndividualDetailsId
 import models.UserType.UserType
+import models.register.DeclarationWorkingKnowledge
 import models.requests.AuthenticatedRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import views.html.vary.declarationVariation
 
 import scala.concurrent.Future
@@ -36,7 +39,7 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   import DeclarationVariationControllerSpec._
 
-  "Declaration Controller" must {
+  "DeclarationVariationController" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -69,7 +72,7 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
     }
 
     "reject an invalid POST request and display errors" in {
-      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
+      val formWithErrors = form.withError("agree", messages("declaration.variations.invalid"))
       val result = controller().onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe BAD_REQUEST
@@ -82,18 +85,6 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
-
-    "set cancel link correctly to Individual What You Will Need page on a GET request" in {
-      val result = controller(userType = UserType.Individual).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "set cancel link correctly to Company What You Will Need page on a GET request" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString()
-    }
   }
 
 }
@@ -103,14 +94,20 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationVariationFormProvider()()
-  private val returnLink = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
+
+  private val individual = UserAnswers(Json.obj())
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+    .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
+    .set(DeclarationFitAndProperId)(true).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def fakeAuthAction(userType: UserType) = new AuthAction {
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
+  private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
                          userType: UserType = UserType.Organisation) =
     new DeclarationVariationController(
       frontendAppConfig,

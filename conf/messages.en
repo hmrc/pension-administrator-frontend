@@ -862,4 +862,4 @@ declaration.variations.statement3 = you understand that where HMRC believes that
 declaration.variations.statement4 = you have a working knowledge of pension scheme administrator duties and liabilities
 declaration.variations.statement5 = you do not have a working knowledge of pension scheme administrator duties and liabilities but have appointed an adviser who does have that knowledge
 declaration.variations.agree = Agree
-declaration.variations.error.required = You need to agree to all the declarations before you can continue
+declaration.variations.invalid = You need to agree to all the declarations before you can continue
