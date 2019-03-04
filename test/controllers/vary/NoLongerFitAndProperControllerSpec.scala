@@ -42,7 +42,7 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
 
       when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
 
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(individual)
@@ -50,7 +50,7 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

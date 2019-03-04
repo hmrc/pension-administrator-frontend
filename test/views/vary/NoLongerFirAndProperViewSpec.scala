@@ -23,8 +23,6 @@ import views.html.vary.noLongerFitAndProper
 
 class NoLongerFirAndProperViewSpec extends ViewBehaviours {
 
-  appRunning()
-
   private val messageKeyPrefix = "noLongerFitAndProper"
 
   private def createView: () => HtmlFormat.Appendable = () =>
@@ -32,6 +30,8 @@ class NoLongerFirAndProperViewSpec extends ViewBehaviours {
 
 
   "noLongerFitAndProper view" must {
+
+    appRunning()
 
     behave like normalPage(createView, messageKeyPrefix, expectedGuidanceKeys = "p2")
 
