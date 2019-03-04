@@ -852,3 +852,8 @@ declarationFitAndProper.variations.error.required = Select yes if the scheme adm
 
 individual.confirmPreviousAddress.title = Is this the previous address?
 individual.confirmPreviousAddress.heading = Is this {0}’s previous address?
+
+noLongerFitAndProper.title = The details cannot be changed
+noLongerFitAndProper.heading = The details cannot be changed
+noLongerFitAndProper.p1 = The details cannot be changed because you have said that {0} is not fit and proper to be a scheme administrator.
+noLongerFitAndProper.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
