@@ -20,8 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.vary.DeclarationVariationFormProvider
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.UserType.UserType
 import models.register.DeclarationWorkingKnowledge
 import models.requests.AuthenticatedRequest
@@ -68,6 +68,7 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
       val result = controller().onSubmit(NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verify(DeclarationId, true)
     }
 

@@ -68,7 +68,7 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
 
             success =>
               dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { _ =>
-                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+                Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
               }
           )
       }
