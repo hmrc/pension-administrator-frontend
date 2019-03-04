@@ -18,10 +18,10 @@
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, form: Form[_], cancelCall: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], psaName:String, isWorkingKnowldge:Boolean, isFitAndProper:Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.title"),
+    title = messages("declaration.variations.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -29,23 +29,29 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(messages("declaration.heading"))
+    @components.heading(messages("declaration.variations.heading"))
 
     @helpers.form(action = routes.DeclarationController.onSubmit(), 'autoComplete -> "off") {
-        @components.paragraph_text(messages("declaration.declaration") + ":")
+        @components.paragraph_text(messages("declaration.variations.statement0") + ":")
 
         <ol class="list-number">
             <li>
-                @components.paragraph_text(messages("declaration.statement1"))
+                @components.paragraph_text(messages("declaration.variations.statement1"))
+            </li>
+            @if(isFitAndProper){
+            <li>
+                @components.paragraph_text(messages("declaration.variations.statement2"))
+            </li>
+            }
+            <li>
+                @components.paragraph_text(messages("declaration.variations.statement3"))
             </li>
             <li>
-                @components.paragraph_text(messages("declaration.statement2"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declaration.statement3"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declaration.statement4"))
+            @if(isWorkingKnowldge){
+                @components.paragraph_text(messages("declaration.variations.statement4"))
+            } else {
+                @components.paragraph_text(messages("declaration.variations.statement5"))
+            }
             </li>
         </ol>
 
@@ -59,17 +65,16 @@
                     </legend>
                     <div class="multiple-choice">
                         <input id="agree" name="agree" type="checkbox" value="agreed">
-                        <label for="agree">@messages("declaration.agree")</label>
+                        <label for="agree">@messages("declaration.variations.agree")</label>
                     </div>
                 </fieldset>
             </div>
         </div>
 
-        <div class="form-group">
-            @components.submit_button("site.agreeAndContinue")
+        @components.submit_button("site.agreeAndContinue")
 
-            <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
-        </div>
+        @components.return_link(psaName, UpdateMode)
+
     }
 
 }

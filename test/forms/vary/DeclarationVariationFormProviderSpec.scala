@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package vary
+package forms.vary
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.vary.DeclarationFitAndProperFormProvider
 import play.api.data.{Form, FormError}
 
-class DeclarationFitAndProperFormProviderSpec extends BooleanFieldBehaviours {
+class DeclarationVariationFormProviderSpec extends BooleanFieldBehaviours {
 
-  private val form: Form[Boolean] = new DeclarationFitAndProperFormProvider()()
+  private val form: Form[Boolean] = new DeclarationVariationFormProvider()()
   private val fieldName = "value"
   private val invalidKey = "error.boolean"
 
-  "DeclarationFitAndProperFormProvider" should {
+  "DeclarationVariationFormProvider" should {
+
     behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey))
   }
 }
