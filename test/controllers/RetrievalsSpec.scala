@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{PSAUser, UserType}
+import models._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
@@ -115,31 +115,42 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
     "retrieve PSA name for a company" in {
 
       val companyName = "test company"
-      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj(
-        "businessDetails" -> Json.obj(
-          "companyName" -> companyName
-        )
-      ))
+      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None)).businessDetails
+
+      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
+        PSAUser(UserType.Organisation, None, false, None), userAnswers)
+
       val result = controller.psaName()
       result mustBe companyName
     }
 
-    "retrieve PSA name for an individual" in {
-      def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Individual, None, false, None), UserAnswers(data))
+    "retrieve PSA name for a partnership" in {
 
+      val partnershipName = "test partnership"
+      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+        RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None)).
+        partnershipDetails(BusinessDetails("test partnership", None))
+
+      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
+        PSAUser(UserType.Organisation, None, false, None), userAnswers)
+
+      val result = controller.psaName()
+      result mustBe partnershipName
+    }
+
+    "retrieve PSA name for an individual" in {
       val firstName = "first"
       val lastName = "last"
-      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj(
-        "individualDetails" -> Json.obj(
-          "firstName" -> firstName,
-          "lastName" -> "last"
-        )
-      ))
+      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)).
+        individualDetails(TolerantIndividual(Some(firstName), None, Some(lastName)))
+
+      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
+        PSAUser(UserType.Individual, None, false, None), userAnswers)
+
       val result = controller.psaName()
       result mustBe firstName + " " + lastName
     }
-
   }
-
 }
