@@ -34,27 +34,85 @@ import views.html.vary.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
-  val psaName = "Blah Inc"
-  val personWithWorkingKnowledgeName = "Bill Bloggs"
+  import DeclarationWorkingKnowledgeControllerSpec._
 
-  def getAdviserDetails: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
-    Json.obj(
-      AdviserDetailsId.toString ->
-        AdviserDetails(personWithWorkingKnowledgeName, "", ""),
-      BusinessDetailsId.toString ->
-        BusinessDetails(companyName = psaName, uniqueTaxReferenceNumber = None)
+  "DeclarationWorkingKnowledge Controller" must {
 
-    )))
+    "return OK and the correct view for a GET" in {
+      val result = controller().onPageLoad(UpdateMode)(fakeRequest)
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
+    }
 
-  val formProvider = new DeclarationWorkingKnowledgeFormProvider()
-  val form = formProvider()
+    "populate the view correctly on a GET when the question has previously been answered" in {
+      val result = controller(dataRetrievalActionWithAdviserAndBusinessDetailsPlusWorkingKnowledge).onPageLoad(UpdateMode)(fakeRequest)
 
-  val existingData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
-    Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.Adviser.toString))))
+      contentAsString(result) mustBe viewAsString(form.fill(DeclarationWorkingKnowledge.values.head))
+    }
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getAdviserDetails) =
+    "redirect to the next page when valid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
+
+      val result = controller().onSubmit(UpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "return a Bad Request and errors when invalid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
+
+      val result = controller().onSubmit(UpdateMode)(postRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(boundForm)
+    }
+
+    "redirect to Session Expired for a GET if no existing data is found" in {
+      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "redirect to Session Expired for a POST if no existing data is found" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
+      val result = controller(dontGetAnyData).onSubmit(UpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+  }
+}
+
+object DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
+  private val psaName = "Blah Inc"
+  private val personWithWorkingKnowledgeName = "Bill Bloggs"
+
+  private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
+    AdviserDetailsId.toString ->
+      AdviserDetails(personWithWorkingKnowledgeName, "", ""),
+    BusinessDetailsId.toString ->
+      BusinessDetails(companyName = psaName, uniqueTaxReferenceNumber = None)
+  )
+
+  private val jsObjectWorkingKnowledge: JsObject = Json.obj(
+    DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
+
+  private val dataRetrievalActionWithAdviserAndBusinessDetails =
+    new FakeDataRetrievalAction(Some(jsObjectAdviserAndBusinessDetails))
+
+  private val dataRetrievalActionWithAdviserAndBusinessDetailsPlusWorkingKnowledge =
+    new FakeDataRetrievalAction(Some(jsObjectAdviserAndBusinessDetails ++ jsObjectWorkingKnowledge))
+
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  private val formProvider = new DeclarationWorkingKnowledgeFormProvider()
+  private val form = formProvider()
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalActionWithAdviserAndBusinessDetails) =
     new DeclarationWorkingKnowledgeController(
       frontendAppConfig,
       messagesApi,
@@ -67,81 +125,6 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form) = declarationWorkingKnowledge(frontendAppConfig,
+  private def viewAsString(form: Form[_] = form) = declarationWorkingKnowledge(frontendAppConfig,
     form, UpdateMode, psaName, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
-
-  "DeclarationWorkingKnowledge Controller" must {
-
-    "return OK and the correct view for a GET" in {
-
-
-      val result = controller().onPageLoad(UpdateMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-//    "populate the view correctly on a GET when the question has previously been answered" in {
-//      val validData = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
-//      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-//
-//      val result = controller(getRelevantData).onPageLoad(UpdateMode)(fakeRequest)
-//
-//      contentAsString(result) mustBe viewAsString(form.fill(DeclarationWorkingKnowledge.values.head))
-//    }
-//
-//    "redirect to the next page when valid data is submitted" in {
-//      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
-//
-//      val result = controller().onSubmit(UpdateMode)(postRequest)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(onwardRoute.url)
-//    }
-//
-//    "return a Bad Request and errors when invalid data is submitted" in {
-//      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-//      val boundForm = form.bind(Map("value" -> "invalid value"))
-//
-//      val result = controller().onSubmit(UpdateMode)(postRequest)
-//
-//      status(result) mustBe BAD_REQUEST
-//      contentAsString(result) mustBe viewAsString(boundForm)
-//    }
-//
-//    "redirect to Session Expired for a GET if no existing data is found" in {
-//      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-//    }
-//
-//    "redirect to Session Expired for a POST if no existing data is found" in {
-//      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
-//      val result = controller(dontGetAnyData).onSubmit(UpdateMode)(postRequest)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-//    }
-//
-//    "redirect to the next page and update the change ID when data has changed" in {
-//      FakeUserAnswersCacheConnector.reset()
-//      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.WorkingKnowledge.toString))
-//      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(onwardRoute.url)
-//      FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
-//    }
-//
-//    "redirect to the next page but not update the change ID when data has not changed" in {
-//      FakeUserAnswersCacheConnector.reset()
-//      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.Adviser.toString))
-//      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(onwardRoute.url)
-//      FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
-//    }
-  }
 }

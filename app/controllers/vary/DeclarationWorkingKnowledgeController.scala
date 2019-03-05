@@ -18,8 +18,8 @@ package controllers.vary
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserDetailsId
@@ -30,8 +30,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Register
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.vary.declarationWorkingKnowledge
 
 import scala.concurrent.Future
@@ -40,7 +39,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
                                                        override val cacheConnector: UserAnswersCacheConnector,
-                                                       @Register navigator: Navigator,
+                                                       @annotations.Variations navigator: Navigator,
                                                        authenticate: AuthAction,
                                                        allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
@@ -69,19 +68,8 @@ class DeclarationWorkingKnowledgeController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode, psaName(), adviserName()))),
         value => {
-          val hasAnswerChanged = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
-            case None => true
-            case Some(existing) => existing != value
-          }
-          if (hasAnswerChanged) {
-            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).flatMap(cacheMap =>
-              saveChangeFlag(mode, DeclarationWorkingKnowledgeId).map(_ =>
-                Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-            )
-          } else {
-            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-          }
+          cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
         }
       )
   }
