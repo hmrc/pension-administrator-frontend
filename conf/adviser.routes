@@ -30,5 +30,5 @@ POST       /who-has-working-knowledge           controllers.register.adviser.Adv
 GET        /change-who-has-working-knowledge    controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-who-has-working-knowledge    controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /delete-adviser                      controllers.register.adviser.ConfirmDeleteAdviserController.onPageLoad(mode: Mode = NormalMode)
-POST       /delete-adviser                      controllers.register.adviser.ConfirmDeleteAdviserController.onSubmit(mode: Mode = NormalMode)
+GET        /changing-delete-adviser             controllers.register.adviser.ConfirmDeleteAdviserController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-delete-adviser             controllers.register.adviser.ConfirmDeleteAdviserController.onSubmit(mode: Mode = UpdateMode)

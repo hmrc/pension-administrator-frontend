@@ -18,15 +18,18 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.ConfirmDeleteAdviserFormProvider
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
@@ -71,12 +74,21 @@ class ConfirmDeleteAdviserController @Inject()(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmDelete(appConfig, formWithErrors, viewModel(name)))),
           value => {
-            cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap(cacheMap =>
-              saveChangeFlag(mode, ConfirmDeleteAdviserId).map(_ =>
-                Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
-            )
+            saveDataWithChangeFlag(value, request.externalId, mode).map(cacheMap =>
+              Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
           }
         )
       }
+  }
+
+  private def saveDataWithChangeFlag(value: Boolean, id: String, mode: Mode)(implicit
+                                                                             request: DataRequest[AnyContent], hc: HeaderCarrier): Future[JsValue] = {
+    if (value) {
+      cacheConnector.save(id, ConfirmDeleteAdviserId, value).flatMap(_ =>
+        saveChangeFlag(mode, ConfirmDeleteAdviserId)
+      )
+    } else {
+      cacheConnector.save(id, ConfirmDeleteAdviserId, value)
+    }
   }
 }
