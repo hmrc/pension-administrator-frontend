@@ -17,7 +17,7 @@
 package views.register.adviser
 
 import forms.register.adviser.AdviserDetailsFormProvider
-import models.NormalMode
+import models.{Mode, NormalMode, UpdateMode}
 import models.register.adviser.AdviserDetails
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
@@ -26,16 +26,21 @@ import views.html.register.adviser.adviserDetails
 class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
 
   val messageKeyPrefix = "adviserDetails"
+  val psaName = "test psa"
 
   override val form = new AdviserDetailsFormProvider()()
 
-  def createView = () => adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode) = () => adviserDetails(frontendAppConfig, form, mode, Some(psaName))(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) =>
+    adviserDetails(frontendAppConfig, form, NormalMode, Some(psaName))(fakeRequest, messages)
 
   "AdviserDetails view" must {
+    appRunning()
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
+
+    behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like pageWithTextFields(
       createViewUsingForm, messageKeyPrefix, controllers.register.adviser.routes.AdviserDetailsController.onSubmit(NormalMode).url, "name", "email", "phone")

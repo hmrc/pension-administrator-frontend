@@ -30,9 +30,9 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
   val messageKeyPrefix = "declarationFitAndProper.variations"
 
-  private def createView = () => declarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
+  private def createView = () => declarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = declarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]) = declarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
 
   "DeclarationFitAndProper (variations) view" must {
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)

@@ -20,7 +20,7 @@
 @import viewmodels.address.ManualAddressViewModel
 @import utils.InputOption
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ManualAddressViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = messages(viewmodel.title),
@@ -42,5 +42,9 @@
     @components.address(form, viewmodel.countryOptions)
 
     @components.submit_button("site.save_and_continue")
+
+    @viewmodel.psaName.map { psaName =>
+        @components.return_link(psaName, mode)
+    }
   }
 }

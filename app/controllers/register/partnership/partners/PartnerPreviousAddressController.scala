@@ -53,7 +53,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
     implicit request =>
       retrievePartnerName(index) {
         partnerName =>
-          get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, partnerName))
+          get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, partnerName), mode)
       }
   }
 

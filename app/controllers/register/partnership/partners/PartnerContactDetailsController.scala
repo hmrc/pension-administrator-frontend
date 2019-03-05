@@ -57,7 +57,7 @@ class PartnerContactDetailsController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map(vm => get(PartnerContactDetailsId(index), formProvider(), vm))
+      viewModel(mode, index).retrieve.right.map(vm => get(PartnerContactDetailsId(index), formProvider(), vm, mode))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

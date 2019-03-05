@@ -118,7 +118,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     declarationFitAndProper(
       frontendAppConfig,
       form,
-      psaName
+      Some(psaName)
     )(fakeRequest, messages).toString
 
 }

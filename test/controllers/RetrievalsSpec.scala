@@ -122,7 +122,7 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
         PSAUser(UserType.Organisation, None, false, None), userAnswers)
 
       val result = controller.psaName()
-      result mustBe companyName
+      result.value mustBe companyName
     }
 
     "retrieve PSA name for a partnership" in {
@@ -136,7 +136,7 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
         PSAUser(UserType.Organisation, None, false, None), userAnswers)
 
       val result = controller.psaName()
-      result mustBe partnershipName
+      result.value mustBe partnershipName
     }
 
     "retrieve PSA name for an individual" in {
@@ -150,7 +150,7 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
         PSAUser(UserType.Individual, None, false, None), userAnswers)
 
       val result = controller.psaName()
-      result mustBe firstName + " " + lastName
+      result.value mustBe firstName + " " + lastName
     }
   }
 }

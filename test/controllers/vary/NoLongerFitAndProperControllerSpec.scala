@@ -82,7 +82,7 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    noLongerFitAndProper(frontendAppConfig, psaName, UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    noLongerFitAndProper(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 }
 
 

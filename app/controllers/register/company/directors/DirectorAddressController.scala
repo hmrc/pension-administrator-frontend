@@ -63,7 +63,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName))
+          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
       }
   }
 

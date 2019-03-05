@@ -96,7 +96,8 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
     manualAddress(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "DirectorPreviousAddress Controller" must {

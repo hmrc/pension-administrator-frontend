@@ -58,7 +58,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode))
+      get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

@@ -74,7 +74,8 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
     manualAddress(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString()
 
   "CompanyContactAddress Controller" must {

@@ -21,7 +21,7 @@
 @import models.Mode
 @import models.register.adviser.AdviserDetails
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("adviserDetails.title"),
@@ -50,5 +50,9 @@
         )
 
         @components.submit_button("site.save_and_continue")
+
+        @psaNameOpt.map{ psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

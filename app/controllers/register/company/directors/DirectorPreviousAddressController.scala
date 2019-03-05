@@ -53,7 +53,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName))
+          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName), mode)
       }
   }
 

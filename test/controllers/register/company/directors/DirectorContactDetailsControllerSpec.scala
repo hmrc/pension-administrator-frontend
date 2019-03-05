@@ -85,7 +85,8 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String = contactDetails(
     frontendAppConfig,
     form,
-    viewmodel(NormalMode, index, directorName)
+    viewmodel(NormalMode, index, directorName),
+    NormalMode
   )(fakeRequest, messages).toString
 
   "DirectorContactDetails Controller" must {

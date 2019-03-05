@@ -61,7 +61,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
     implicit request =>
       retrievePartnerName(index) {
         partnerName =>
-          get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, partnerName))
+          get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, partnerName), mode)
       }
   }
 

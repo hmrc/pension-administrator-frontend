@@ -18,7 +18,7 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Variations
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.AdviserDetailsId
@@ -43,7 +43,7 @@ class AdviserDetailsController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: AdviserDetailsFormProvider
-                                        ) extends FrontendController with I18nSupport with Variations{
+                                        ) extends FrontendController with I18nSupport with Variations with Retrievals {
 
   private val form = formProvider()
 
@@ -53,14 +53,14 @@ class AdviserDetailsController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(adviserDetails(appConfig, preparedForm, mode))
+      Ok(adviserDetails(appConfig, preparedForm, mode, psaName()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode, psaName()))),
         value =>
           cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(cacheMap =>
             saveChangeFlag(mode, AdviserDetailsId).map (_ =>

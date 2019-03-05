@@ -21,7 +21,7 @@
 @import models.ContactDetails
 @import viewmodels.ContactDetailsViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ContactDetailsViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ContactDetailsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = viewmodel.title,
@@ -53,5 +53,9 @@
         )
 
         @components.submit_button("site.save_and_continue")
+
+        @viewmodel.psaName.map{ psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

@@ -107,11 +107,11 @@ trait Retrievals {
   implicit def merge(f: Either[Future[Result], Future[Result]]): Future[Result] =
     f.merge
 
-  private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): String = {
+  private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): Option[String] = {
     val userAnswers = request.userAnswers
     val registrationInfo = userAnswers.get(RegistrationInfoId)
 
-    val psaName = registrationInfo match {
+    registrationInfo match {
       case Some(details) =>
         details.legalStatus match {
           case RegistrationLegalStatus.Individual =>
@@ -124,6 +124,5 @@ trait Retrievals {
       case _ =>
         None
     }
-    psaName.getOrElse("")
   }
 }

@@ -176,5 +176,5 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
       FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
       countryOptions, fakeAuditService)
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, addressViewModel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, addressViewModel, NormalMode)(fakeRequest, messages).toString
 }

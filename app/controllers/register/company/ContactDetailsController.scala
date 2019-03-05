@@ -45,7 +45,7 @@ class ContactDetailsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(ContactDetailsId, form, viewmodel(mode))
+      get(ContactDetailsId, form, viewmodel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
