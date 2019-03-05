@@ -20,7 +20,7 @@
 @import viewmodels.address.PostcodeLookupViewModel
 @import uk.gov.hmrc.urls.Link
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: PostcodeLookupViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @link = {
     @Link.toInternalPage(
@@ -52,5 +52,9 @@
         )
 
         @components.submit_button("site.find_address")
+
+        @viewmodel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }
