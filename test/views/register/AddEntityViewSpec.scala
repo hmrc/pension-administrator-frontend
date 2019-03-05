@@ -61,8 +61,6 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
-
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,

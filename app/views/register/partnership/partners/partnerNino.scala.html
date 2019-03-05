@@ -33,8 +33,6 @@
 
     @helpers.form(action = PartnerNinoController.onSubmit(mode, index), 'autoComplete -> "off") {
 
-        @components.back_link()
-
         @components.error_summary(form.errors)
 
         @components.heading(messages("partnerNino.heading"))

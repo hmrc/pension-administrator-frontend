@@ -45,8 +45,6 @@ class PersonDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,

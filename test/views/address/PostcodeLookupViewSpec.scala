@@ -58,8 +58,6 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
   "PostcodeLookup view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     "render the hint" in {
       val doc = asDocument(createView())
       assertContainsText(doc, viewModel.hint.resolve)

@@ -49,8 +49,6 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
-
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,

@@ -66,8 +66,6 @@ class AddressListSpec extends ViewBehaviours {
   "AddressListView view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     "have link for enter address manually" in {
       createView must haveLink(call.url, "manual-address-link")
     }

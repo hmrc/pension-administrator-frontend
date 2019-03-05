@@ -36,7 +36,6 @@ class DirectorNinoViewSpec extends ViewBehaviours {
 
   "DirectorNino view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
   }
 
   "DirectorNino view" when {

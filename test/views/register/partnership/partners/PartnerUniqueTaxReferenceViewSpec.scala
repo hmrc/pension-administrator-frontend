@@ -37,8 +37,6 @@ class PartnerUniqueTaxReferenceViewSpec extends ViewBehaviours {
 
   "PartnerUniqueTaxReference view" must {
     behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
   }
 
   "PartnerUniqueTaxReference view" when {

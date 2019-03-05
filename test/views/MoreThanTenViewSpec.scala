@@ -49,8 +49,6 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
       routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,

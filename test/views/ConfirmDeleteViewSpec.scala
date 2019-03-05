@@ -45,7 +45,5 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
 
   "ConfirmDeletePartner view" must {
     behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
   }
 }

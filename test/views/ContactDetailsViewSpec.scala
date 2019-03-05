@@ -49,8 +49,6 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,

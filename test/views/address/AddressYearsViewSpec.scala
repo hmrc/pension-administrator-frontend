@@ -45,8 +45,6 @@ class AddressYearsViewSpec extends ViewBehaviours {
 
   "AddressYears view" must {
     behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
   }
 
   "AddressYears view" when {

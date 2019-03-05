@@ -37,7 +37,6 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
 
   "DirectorUniqueTaxReference view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
   }
 
   "DirectorUniqueTaxReference view" when {
