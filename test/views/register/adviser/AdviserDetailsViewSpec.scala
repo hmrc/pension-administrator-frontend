@@ -20,22 +20,27 @@ import forms.register.adviser.AdviserDetailsFormProvider
 import models.NormalMode
 import models.register.adviser.AdviserDetails
 import play.api.data.Form
+import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.adviser.adviserDetails
 
 class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
 
   val messageKeyPrefix = "adviserDetails"
+  val adviserName = "test adviser"
 
   override val form = new AdviserDetailsFormProvider()()
 
-  def createView = () => adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView = () =>
+    adviserDetails(frontendAppConfig, form, NormalMode, adviserName)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) =>
+    adviserDetails(frontendAppConfig, form, NormalMode, adviserName)(fakeRequest, messages)
 
   "AdviserDetails view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPageWithDynamicTitle(
+      createView, messageKeyPrefix, Message("adviserDetails.heading", adviserName))
 
     behave like pageWithBackLink(createView)
 

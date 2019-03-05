@@ -18,10 +18,10 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Variations
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.register.adviser.AdviserDetailsFormProvider
-import identifiers.register.adviser.AdviserDetailsId
+import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -44,29 +44,33 @@ class AdviserDetailsController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: AdviserDetailsFormProvider
-                                        ) extends FrontendController with I18nSupport with Variations{
+                                        ) extends FrontendController with I18nSupport with Variations with Retrievals {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AdviserDetailsId) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      AdviserNameId.retrieve.right.map { adviserName =>
+        val preparedForm = request.userAnswers.get(AdviserDetailsId) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+        Future.successful(Ok(adviserDetails(appConfig, preparedForm, mode, adviserName)))
       }
-      Ok(adviserDetails(appConfig, preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode))),
-        value =>
-          cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(cacheMap =>
-            saveChangeFlag(mode, AdviserDetailsId).map (_ =>
-            Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
-          )
-      )
+      AdviserNameId.retrieve.right.map { adviserName =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode, adviserName))),
+          value =>
+            cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(cacheMap =>
+              saveChangeFlag(mode, AdviserDetailsId).map(_ =>
+                Redirect(navigator.nextPage(AdviserDetailsId, mode, UserAnswers(cacheMap))))
+            )
+        )
+      }
   }
 }

@@ -21,28 +21,30 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.DeclarationChangedId
-import identifiers.register.adviser.AdviserDetailsId
+import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId}
 import models.{NormalMode, UpdateMode}
 import models.register.adviser.AdviserDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.adviser.adviserDetails
 
 class AdviserDetailsControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  val adviserName = "test adviser"
 
   val formProvider = new AdviserDetailsFormProvider()
   val form = formProvider()
+  val mandatoryData = UserAnswers().adviserName(adviserName).dataRetrievalAction
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = mandatoryData) =
     new AdviserDetailsController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode, adviserName)(fakeRequest, messages).toString
 
   "AdviserDetails Controller" must {
 
@@ -54,7 +56,8 @@ class AdviserDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(AdviserDetailsId.toString -> AdviserDetails("test@test.com", "01234567890"))
+      val validData = Json.obj(AdviserNameId.toString -> adviserName,
+        AdviserDetailsId.toString -> AdviserDetails("test@test.com", "01234567890"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
