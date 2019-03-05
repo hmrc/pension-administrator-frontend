@@ -18,14 +18,17 @@ package controllers.vary
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Variations
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
+import identifiers.register.adviser.AdviserDetailsId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
@@ -43,9 +46,12 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider
-                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations {
+                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
+
+  private def adviserName()(implicit request: DataRequest[AnyContent]) =
+    request.userAnswers.get(AdviserDetailsId).map(_.name).getOrElse("")
 
   def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
@@ -54,14 +60,14 @@ class DeclarationWorkingKnowledgeController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode))
+      Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode, psaName(), adviserName()))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode, psaName(), adviserName()))),
         value => {
           val hasAnswerChanged = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
             case None => true

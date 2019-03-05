@@ -20,7 +20,11 @@
 @import models.Mode
 @import models.register.DeclarationWorkingKnowledge
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig,
+    form: Form[_],
+    mode: Mode,
+    psaName:String,
+    personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declarationWorkingKnowledge.variations.title"),
@@ -32,7 +36,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("declarationWorkingKnowledge.variations.heading"))
+        @components.heading(messages("declarationWorkingKnowledge.variations.heading", psaName, personWithWorkingKnowledgeName))
 
         @components.input_radio(
             field = form("value"),

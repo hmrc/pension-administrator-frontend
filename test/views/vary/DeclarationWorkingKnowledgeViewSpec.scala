@@ -17,7 +17,7 @@
 package views.vary
 
 import forms.register.DeclarationWorkingKnowledgeFormProvider
-import models.NormalMode
+import models.UpdateMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,18 +26,35 @@ import views.html.vary.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "declarationWorkingKnowledge.variations"
+  private val psaName = "Mr Smith"
+  private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
-  val form = new DeclarationWorkingKnowledgeFormProvider()()
+  private val messageKeyPrefix = "declarationWorkingKnowledge.variations"
 
-  def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private val form = new DeclarationWorkingKnowledgeFormProvider()()
 
-  def createViewUsingForm = (form: Form[_]) =>
-    declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(
+      frontendAppConfig,
+    form,
+    UpdateMode,
+    psaName,
+    personWithWorkingKnowledgeName)(fakeRequest, messages)
+
+  private def createViewUsingForm = (form: Form[_]) => declarationWorkingKnowledge(
+    frontendAppConfig,
+    form,
+    UpdateMode,
+    psaName,
+    personWithWorkingKnowledgeName)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view (variations)" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
+
+    "display the correct page heading" in {
+      val doc = asDocument(createView())
+      assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", psaName, personWithWorkingKnowledgeName)
+    }
 
     behave like pageWithBackLink(createView)
 
