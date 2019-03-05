@@ -56,8 +56,6 @@ class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", psaName, personWithWorkingKnowledgeName)
     }
 
-    behave like pageWithBackLink(createView)
-
     "contain radio buttons for the value" in {
       val doc = asDocument(createViewUsingForm(form))
       for (option <- DeclarationWorkingKnowledge.options) {
