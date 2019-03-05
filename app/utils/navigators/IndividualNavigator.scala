@@ -57,7 +57,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   //noinspection ScalaStyle
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationEditRoutes(from.userAnswers)
     case IndividualDateOfBirthId => checkYourAnswers()
     case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, CheckMode)

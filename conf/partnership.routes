@@ -76,8 +76,8 @@ POST       /:mode/other-partners                       controllers.register.part
 
 GET        /add-partners                                controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = NormalMode)
 POST       /add-partners                                controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = NormalMode)
-GET        /changing-partners                           controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-partners                           controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = UpdateMode)
+GET        /:mode/partners                           controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode)
+POST       /:mode/partners                           controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode)
 
 GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad(mode: Mode = NormalMode)
 POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit(mode: Mode = NormalMode)

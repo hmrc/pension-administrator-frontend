@@ -22,7 +22,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
-import models.{AddressYears, CheckMode, NormalMode}
+import models._
+import models.Mode.checkMode
 import utils.{Navigator, UserAnswers}
 
 @Singleton
@@ -31,70 +32,75 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def checkYourAnswers(index: Int): Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(NormalMode, index))
 
-  //noinspection ScalaStyle
+
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers)
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
-    case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(NormalMode, index))
-    case DirectorNinoId(index) => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(NormalMode, index))
-    case DirectorUniqueTaxReferenceId(index) => NavigateTo.save(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(NormalMode, index))
-    case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(NormalMode, index))
-    case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(NormalMode, index))
-    case DirectorAddressId(index) => NavigateTo.save(routes.DirectorAddressYearsController.onPageLoad(NormalMode, index))
-    case DirectorAddressYearsId(index) => directorAddressYearsRoutes(index, from.userAnswers)
-    case DirectorPreviousAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.DirectorPreviousAddressListController.onPageLoad(NormalMode, index))
-    case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index))
-    case DirectorPreviousAddressId(index) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(NormalMode, index))
+    case _ => commonMap(from, NormalMode)
+  }
+
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
+    case _ => commonMap(from, UpdateMode)
+  }
+
+  //noinspection ScalaStyle
+  private def commonMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+    case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers, mode)
+    case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
+    case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
+    case DirectorNinoId(index) => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index))
+    case DirectorUniqueTaxReferenceId(index) => NavigateTo.save(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))
+    case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(mode, index))
+    case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(mode, index))
+    case DirectorAddressId(index) => NavigateTo.save(routes.DirectorAddressYearsController.onPageLoad(mode, index))
+    case DirectorAddressYearsId(index) => directorAddressYearsRoutes(index, from.userAnswers, mode)
+    case DirectorPreviousAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.DirectorPreviousAddressListController.onPageLoad(mode, index))
+    case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(mode, index))
+    case DirectorPreviousAddressId(index) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(mode, index))
     case DirectorContactDetailsId(index) => checkYourAnswers(index)
-    case CheckYourAnswersId => NavigateTo.save(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
+    case CheckYourAnswersId => NavigateTo.save(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
   //noinspection ScalaStyle
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers)
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case DirectorDetailsId(index) => checkYourAnswers(index)
     case DirectorNinoId(index) => checkYourAnswers(index)
     case DirectorUniqueTaxReferenceId(index) => checkYourAnswers(index)
-    case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(CheckMode, index))
-    case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(CheckMode, index))
     case DirectorAddressId(index) => checkYourAnswers(index)
-    case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers)
-    case DirectorPreviousAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.DirectorPreviousAddressListController.onPageLoad(CheckMode, index))
-    case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(CheckMode, index))
+    case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers, mode)
     case DirectorPreviousAddressId(index) => checkYourAnswers(index)
     case DirectorContactDetailsId(index) => checkYourAnswers(index)
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    case _ => commonMap(from, mode)
   }
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
 
-  private def directorAddressYearsRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
+  private def directorAddressYearsRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(DirectorAddressYearsId(index)) match {
-      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(NormalMode, index))
-      case Some(AddressYears.OverAYear) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(NormalMode, index))
+      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, index))
+      case Some(AddressYears.OverAYear) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(mode, index))
       case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  private def addCompanyDirectorRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def addCompanyDirectorRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(AddCompanyDirectorsId) match {
       case Some(false) => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
       case _ =>
-        val index = answers.allDirectorsAfterDelete.length
+        val index = answers.allDirectorsAfterDelete(mode).length
         if (index >= appConfig.maxDirectors) {
-          NavigateTo.save(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(NormalMode))
+          NavigateTo.save(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
         } else {
-          NavigateTo.save(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, answers.directorsCount))
+          NavigateTo.save(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(mode, answers.directorsCount))
         }
     }
   }
 
-  private def directorAddressYearsCheckRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] = {
+  private def directorAddressYearsCheckRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(DirectorAddressYearsId(index)) match {
       case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(CheckMode, index))
+        NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index))
       case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(NormalMode, index))
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(mode, index))
       case None =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }

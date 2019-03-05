@@ -268,14 +268,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   private def directorsSuperSection: SuperSection = {
-    val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete.size match {
+    val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete(NormalMode).size match {
       case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", Some("director-add-link-onlyOne-additionalText"))
       case noOfDirectors if noOfDirectors == 10 => ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
       case _ => ("director-add-link-lessThanTen", None)
     }
     SuperSection(
       Some("director.supersection.header"),
-      for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions),
+      for (person <- userAnswers.allDirectorsAfterDelete(NormalMode)) yield directorSection(person, countryOptions),
       Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }

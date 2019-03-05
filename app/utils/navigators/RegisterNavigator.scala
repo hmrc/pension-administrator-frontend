@@ -23,7 +23,7 @@ import identifiers.register._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import javax.inject.Inject
-import models.NormalMode
+import models.{Mode, NormalMode}
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import utils.{Navigator, UserAnswers}
 import utils.Toggles.IsManualIVEnabled
@@ -135,7 +135,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     }
   }
 
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationEditRoutes(from.userAnswers)
     case _ => None
   }

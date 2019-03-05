@@ -60,4 +60,19 @@ object Mode {
       case CheckUpdateMode => "CheckUpdateMode"
     }
   }
+
+  def checkMode(mode: Mode): Mode = mode match  {
+    case NormalMode => CheckMode
+    case UpdateMode => CheckUpdateMode
+    case _ => throw new RuntimeException("Illegal mode passed")
+  }
+
+  def journeyMode(mode: Mode): Mode = mode match  {
+    case CheckMode => NormalMode
+    case CheckUpdateMode => UpdateMode
+    case _ => throw new RuntimeException("Illegal mode passed")
+  }
+
+
+
 }
