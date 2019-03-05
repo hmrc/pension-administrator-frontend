@@ -42,8 +42,9 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
                                                requireData: DataRequiredAction,
                                                @Register navigator: Navigator,
                                                formProvider: DeclarationVariationFormProvider,
-                                               dataCacheConnector: UserAnswersCacheConnector
-                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                               dataCacheConnector: UserAnswersCacheConnector,
+                                               pensionsSchemeConnector: PensionsSchemeConnector
+                                              )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -68,13 +69,16 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
 
             success =>
               dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { _ =>
-                Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+                val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+                pensionsSchemeConnector.updatePsa(psaId, request.userAnswers).map( _ =>
+                  Redirect(controllers.routes.IndexController.onPageLoad())
+                )
               }
           )
       }
   }
 
-  private def isWorkingKnowledge(workingKnowledge: DeclarationWorkingKnowledge): Boolean =  workingKnowledge match {
+  private def isWorkingKnowledge(workingKnowledge: DeclarationWorkingKnowledge): Boolean = workingKnowledge match {
     case DeclarationWorkingKnowledge.WorkingKnowledge => true
     case DeclarationWorkingKnowledge.Adviser => false
   }

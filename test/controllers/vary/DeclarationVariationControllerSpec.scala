@@ -16,20 +16,26 @@
 
 package controllers.vary
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, InvalidBusinessPartnerException, PensionsSchemeConnector}
 import controllers.ControllerSpecBase
+import controllers.PsaDetailsControllerSpec.externalId
 import controllers.actions._
 import forms.vary.DeclarationVariationFormProvider
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.UserType.UserType
-import models.register.DeclarationWorkingKnowledge
-import models.{NormalMode, TolerantIndividual, UserType}
+import models.register.{DeclarationWorkingKnowledge, PsaSubscriptionResponse}
+import models.requests.AuthenticatedRequest
+import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.{FakeNavigator, UserAnswers}
 import views.html.vary.declarationVariation
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationVariationControllerSpec extends ControllerSpecBase {
 
@@ -99,6 +105,13 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
+  private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
+    override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = ???
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+      Future.successful(())
+    }
+  }
+
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
                          userType: UserType = UserType.Organisation) =
     new DeclarationVariationController(
@@ -110,7 +123,8 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       fakeNavigator,
       new DeclarationVariationFormProvider(),
-      FakeUserAnswersCacheConnector
+      FakeUserAnswersCacheConnector,
+      fakePensionsSchemeConnector
     )
 
   private def viewAsString(form: Form[_] = form) =
