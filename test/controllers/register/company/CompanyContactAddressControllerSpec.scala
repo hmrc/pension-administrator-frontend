@@ -22,8 +22,9 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import identifiers.register.RegistrationInfoId
 import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId}
-import models.{Address, BusinessDetails, NormalMode, TolerantAddress}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -67,7 +68,8 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
     Message("companyContactAddress.title"),
     Message("companyContactAddress.heading", companyName),
     None,
-    Some(Message("companyContactAddress.lede", companyName))
+    Some(Message("companyContactAddress.lede", companyName)),
+    psaName = Some("Test Company Name")
   )
 
   private def viewAsString(form: Form[_] = form) =
@@ -89,6 +91,8 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
+        RegistrationInfoId.toString -> RegistrationInfo(
+          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None),
         BusinessDetailsId.toString -> BusinessDetails("Test Company Name", Some("Test UTR")),
         CompanyContactAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

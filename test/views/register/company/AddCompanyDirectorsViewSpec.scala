@@ -38,10 +38,10 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
   private val messageKeyPrefix = "addCompanyDirectors"
 
   private def createView(directors: Seq[Person] = Nil, mode: Mode = NormalMode)
-  = () => addCompanyDirectors(frontendAppConfig, form, mode, directors)(request, messages)
+  = () => addCompanyDirectors(frontendAppConfig, form, mode, directors, Some("test psa"))(request, messages)
 
   private def createViewUsingForm(directors: Seq[Person] = Nil)
-  = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages)
+  = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, None)(request, messages)
 
   val form = new AddCompanyDirectorsFormProvider()()
 
@@ -98,8 +98,8 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
       view must haveDynamicText("addCompanyDirectors.tellUsIfYouHaveMore")
     }
 
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
-
 }
 
 object AddCompanyDirectorsViewSpec {

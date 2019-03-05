@@ -24,6 +24,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company._
+import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -48,7 +49,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def addressViewModel(mode: Mode) = Retrieval(
+  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = Retrieval(
     implicit request =>
       BusinessDetailsId.retrieve.right.map { businessDetails =>
         ManualAddressViewModel(
@@ -57,7 +58,8 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
           Message("companyContactAddress.title"),
           Message("companyContactAddress.heading", businessDetails.companyName),
           None,
-          Some(Message("companyContactAddress.lede", businessDetails.companyName))
+          Some(Message("companyContactAddress.lede", businessDetails.companyName)),
+          psaName = psaName()
         )
       }
   )

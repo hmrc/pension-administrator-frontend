@@ -43,7 +43,8 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
-      id = MoreThanTenDirectorsId
+      id = MoreThanTenDirectorsId,
+      None
     )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
@@ -57,7 +58,7 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl
     )
 
-  def viewAsString(form: Form[_] = form): String = moreThanTen(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = moreThanTen(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages).toString
 
   "MoreThanTenDirectors Controller" must {
 

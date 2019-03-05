@@ -24,6 +24,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
+import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -48,12 +49,13 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def addressViewModel(mode: Mode) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyPreviousAddressController.onSubmit(mode),
     countryOptions.options,
     Message("companyPreviousAddress.title"),
     Message("companyPreviousAddress.heading"),
-    None
+    None,
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -19,8 +19,6 @@ GET        /company-details                             controllers.register.com
 POST       /company-details                             controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-company-details                      controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-company-details                      controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = CheckMode)
-GET        /changing-company-details                    controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-company-details                    controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /company-previous-address-manual             controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /company-previous-address-manual             controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
