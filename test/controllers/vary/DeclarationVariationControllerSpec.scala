@@ -24,16 +24,12 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.UserType.UserType
 import models.register.DeclarationWorkingKnowledge
-import models.requests.AuthenticatedRequest
-import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
+import models.{NormalMode, TolerantIndividual, UserType}
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import views.html.vary.declarationVariation
-
-import scala.concurrent.Future
 
 class DeclarationVariationControllerSpec extends ControllerSpecBase {
 
@@ -103,17 +99,12 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
-  private def fakeAuthAction(userType: UserType) = new AuthAction {
-    override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
-  }
-
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
                          userType: UserType = UserType.Organisation) =
     new DeclarationVariationController(
       frontendAppConfig,
       messagesApi,
-      fakeAuthAction(userType),
+      FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
