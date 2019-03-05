@@ -857,3 +857,10 @@ noLongerFitAndProper.title = The details cannot be changed
 noLongerFitAndProper.heading = The details cannot be changed
 noLongerFitAndProper.p1 = The details cannot be changed because you have said that {0} is not fit and proper to be a scheme administrator.
 noLongerFitAndProper.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
+
+variationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
+variationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
+variationWorkingKnowledge.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
+variationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who is administering pension schemes, you might not have working knowledge of pensions and pensions tax legislation.
+variationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.
+variationWorkingKnowledge.error.required = You need to tell us if you have a working knowledge of pensions

@@ -50,6 +50,7 @@ trait Variations extends FrontendController {
     PartnershipPreviousAddressId -> PartnershipPreviousAddressChangedId,
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId,
     DeclarationWorkingKnowledgeId -> DeclarationChangedId,
+    VariationWorkingKnowledgeId -> DeclarationChangedId,
     AdviserAddressId -> DeclarationChangedId,
     AdviserDetailsId -> DeclarationChangedId,
     MoreThanTenDirectorsId -> MoreThanTenDirectorsOrPartnersChangedId,
