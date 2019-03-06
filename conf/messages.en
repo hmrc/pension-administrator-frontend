@@ -452,9 +452,10 @@ adviserName.p1 = This can be either the name of your pension practitioner or pro
 adviserName.error.required = Enter the name of your pension adviser
 adviserName.error.length = Enter a name using less than 108 characters
 adviserName.error.invalid = Enter a name using only letters
+adviserName.checkYourAnswersLabel = Name
 
-adviserDetails.title = Provide details of your pension adviser
-adviserDetails.heading = Provide details of your pension adviser
+adviserDetails.title = What are the person’s contact details?
+adviserDetails.heading = What are {0}’s contact details?
 adviserDetails.name = Name
 adviserDetails.email = Email address
 adviserDetails.phone = Phone Number

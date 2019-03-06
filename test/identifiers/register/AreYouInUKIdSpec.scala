@@ -19,7 +19,7 @@ package identifiers.register
 import java.time.LocalDate
 
 import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, personDetails}
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual._
@@ -299,7 +299,8 @@ object AreYouInUKIdSpec extends OptionValues {
         .flatMap(_.set(DirectorDetailsId(1))(personDetails))
         .flatMap(_.set(MoreThanTenDirectorsId)(true))
         .flatMap(_.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser))
-        .flatMap(_.set(AdviserDetailsId)(AdviserDetails("name", "email@test.com", "678")))
+        .flatMap(_.set(AdviserNameId)("name"))
+        .flatMap(_.set(AdviserDetailsId)(AdviserDetails("email@test.com", "678")))
         .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(tolerantAddress)))
         .flatMap(_.set(AdviserAddressListId)(tolerantAddress))
         .flatMap(_.set(CompanySameContactAddressId)(false))
@@ -335,7 +336,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(PartnerDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenPartnersId)(true))
       .flatMap(_.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser))
-      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("name", "email@test.com", "678")))
+      .flatMap(_.set(AdviserNameId)("name"))
+      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("email@test.com", "678")))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(AdviserAddressListId)(tolerantAddress))
       .flatMap(_.set(AdviserAddressId)(address))
