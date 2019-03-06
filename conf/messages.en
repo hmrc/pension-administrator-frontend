@@ -146,6 +146,7 @@ common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
+common.declaration.legend = Check this box if you agree to the declaration
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
