@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
-import views.html.vary.psaVarianceSuccess
+import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.Future
 

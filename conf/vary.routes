@@ -8,4 +8,3 @@ POST       /still-fit-and-proper-person              controllers.vary.Declaratio
 
 GET        /cannot-make-changes  controllers.vary.NoLongerFitAndProperController.onPageLoad()
 
-GET        /details-updated      controllers.vary.PSAVarianceSuccessController.onPageLoad()

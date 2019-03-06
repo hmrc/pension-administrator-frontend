@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -41,7 +41,7 @@ import models.{Mode, UpdateMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.vary.psaVarianceSuccess
+import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.ExecutionContext
 
@@ -54,7 +54,7 @@ class PSAVarianceSuccessController @Inject()(appConfig: FrontendAppConfig,
                                                dataCacheConnector: UserAnswersCacheConnector
                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val PSAName = psaName()
       dataCacheConnector.removeAll(request.externalId).map { _=>

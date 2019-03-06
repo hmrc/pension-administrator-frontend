@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.vary.psaVarianceSuccess
+import views.html.register.psaVarianceSuccess
 
 class PSAVarianceSuccessViewSpec extends ViewBehaviours {
   private val messageKeyPrefix = "psaVarianceSuccess"
