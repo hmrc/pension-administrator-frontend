@@ -35,7 +35,7 @@ abstract class Navigator {
 
   protected def editRouteMap(from: NavigateFrom, mode: Mode = CheckMode): Option[NavigateTo]
 
-  protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo]
+  protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo]
 
   def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)(implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
     val navigateTo = {
@@ -43,7 +43,7 @@ abstract class Navigator {
         case NormalMode => routeMap(NavigateFrom(id, userAnswers))
         case CheckMode => editRouteMap(NavigateFrom(id, userAnswers))
         case UpdateMode => updateRouteMap(NavigateFrom(id, userAnswers))
-        case CheckUpdateMode => updateRouteMap(NavigateFrom(id, userAnswers), CheckUpdateMode)
+        case CheckUpdateMode => editRouteMap(NavigateFrom(id, userAnswers), CheckUpdateMode)
       }
     }
 

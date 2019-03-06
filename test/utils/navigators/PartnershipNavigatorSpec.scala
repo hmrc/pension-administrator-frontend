@@ -84,10 +84,10 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
   private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
 
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), true, Some(addressYearsPage(UpdateMode)), true),
+    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), true, None, true),
     (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, false, None, true),
-    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(UpdateMode), true, Some(contactPreviousPostcodePage(UpdateMode)), true),
-    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(UpdateMode), true, Some(contactPreviousAddressPage(UpdateMode)), true),
+    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(UpdateMode), true, None, true),
+    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(UpdateMode), true, None, true),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false)
   )
 

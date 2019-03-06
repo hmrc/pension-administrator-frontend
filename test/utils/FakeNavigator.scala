@@ -43,7 +43,7 @@ class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Nav
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
 
-  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = None
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = None
 }
 
 object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

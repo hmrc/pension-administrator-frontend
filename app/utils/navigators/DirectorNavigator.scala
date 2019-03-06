@@ -39,7 +39,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case _ => commonMap(from, NormalMode)
   }
 
-  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = from.id match {
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
     case _ => commonMap(from, UpdateMode)
   }

@@ -72,7 +72,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
 
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualDetailsCorrectId) match {

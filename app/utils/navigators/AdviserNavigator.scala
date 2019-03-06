@@ -47,5 +47,5 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
 }

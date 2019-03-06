@@ -109,7 +109,7 @@ object NavigatorSpec {
         case _ => None
       }
 
-    override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = None
+    override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = None
   }
 
   trait TestFixture {

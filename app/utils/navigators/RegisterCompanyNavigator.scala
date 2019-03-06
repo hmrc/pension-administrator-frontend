@@ -98,7 +98,7 @@ class RegisterCompanyNavigator @Inject()(
     case _ => None
   }
 
-  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
 
   //scalastyle:on cyclomatic.complexity
 
