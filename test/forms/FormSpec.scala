@@ -21,8 +21,10 @@ import org.scalatest.{Matchers, OptionValues, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Environment
 import play.api.data.{Form, FormError}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.FakeRequest
 
 trait FormSpec extends WordSpec with OptionValues with Matchers with GuiceOneAppPerSuite {
 
@@ -49,6 +51,12 @@ trait FormSpec extends WordSpec with OptionValues with Matchers with GuiceOneApp
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  def fakeRequest = FakeRequest("", "")
+
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   def environment: Environment = injector.instanceOf[Environment]
 }
