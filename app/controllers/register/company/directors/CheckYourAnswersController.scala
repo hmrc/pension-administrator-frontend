@@ -22,9 +22,12 @@ import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
 import javax.inject.Inject
-import models.{Index, Mode, NormalMode}
+import models.requests.DataRequest
+import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
 import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
@@ -77,12 +80,19 @@ class CheckYourAnswersController @Inject()(
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
-        userAnswersCacheConnector.save(request.externalId, DirectorDetailsId(index), details.copy(isNew = true)).flatMap { _ =>
+        setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
           sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
             Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
           }
         }
       }
+  }
+
+  private def setNewFlagInUpdateMode(index: Index, mode: Mode, directorDetails: PersonDetails)
+                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
+    if(mode == UpdateMode) {
+      userAnswersCacheConnector.save(request.externalId, DirectorDetailsId(index), directorDetails.copy(isNew = true))
+    } else { Future(request.userAnswers.json)}
   }
 
 }

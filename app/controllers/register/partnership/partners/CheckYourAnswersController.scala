@@ -23,9 +23,12 @@ import controllers.actions._
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
-import models.{Index, Mode}
+import models.requests.DataRequest
+import models.{Index, Mode, PersonDetails, UpdateMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
@@ -79,12 +82,19 @@ class CheckYourAnswersController @Inject()(
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerDetailsId(index).retrieve.right.map { details =>
-        userAnswersCacheConnector.save(request.externalId, PartnerDetailsId(index), details.copy(isNew = true)).flatMap { _ =>
+        setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
           sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) map { _ =>
             Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
           }
         }
       }
+  }
+
+  private def setNewFlagInUpdateMode(index: Index, mode: Mode, partnerDetails: PersonDetails)
+                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
+    if(mode == UpdateMode) {
+      userAnswersCacheConnector.save(request.externalId, PartnerDetailsId(index), partnerDetails.copy(isNew = true))
+    } else { Future(request.userAnswers.json)}
   }
 
 }

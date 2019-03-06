@@ -64,13 +64,13 @@ object Mode {
   def checkMode(mode: Mode): Mode = mode match  {
     case NormalMode => CheckMode
     case UpdateMode => CheckUpdateMode
-    case _ => throw new RuntimeException("Illegal mode passed")
+    case _ => throw UnknownModeException()
   }
 
   def journeyMode(mode: Mode): Mode = mode match  {
     case CheckMode => NormalMode
     case CheckUpdateMode => UpdateMode
-    case _ => throw new RuntimeException("Illegal mode passed")
+    case _ => throw UnknownModeException()
   }
 
 
