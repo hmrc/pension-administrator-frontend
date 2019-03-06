@@ -146,6 +146,7 @@ common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
+common.declaration.legend = Check this box if you agree to the declaration
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -451,9 +452,10 @@ adviserName.p1 = This can be either the name of your pension practitioner or pro
 adviserName.error.required = Enter the name of your pension adviser
 adviserName.error.length = Enter a name using less than 108 characters
 adviserName.error.invalid = Enter a name using only letters
+adviserName.checkYourAnswersLabel = Name
 
-adviserDetails.title = Provide details of your pension adviser
-adviserDetails.heading = Provide details of your pension adviser
+adviserDetails.title = What are the person’s contact details?
+adviserDetails.heading = What are {0}’s contact details?
 adviserDetails.name = Name
 adviserDetails.email = Email address
 adviserDetails.phone = Phone Number
@@ -864,3 +866,8 @@ declarationWorkingKnowledge.variations.p1 = There needs to be someone with worki
 declarationWorkingKnowledge.variations.p2 = {1} was previously the person with working knowledge of pensions and pensions tax legislation for {0}.
 declarationWorkingKnowledge.variations.error.required = You need to tell us if this person is still your adviser
 
+
+
+confirmDelete.adviser.title = Are you sure you want to delete this adviser?
+confirmDelete.adviser.heading = Are you sure you want to delete {0}?
+confirmDelete.adviser.required = Select yes to delete {0}

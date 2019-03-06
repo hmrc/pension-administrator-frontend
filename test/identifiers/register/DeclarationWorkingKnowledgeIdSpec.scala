@@ -16,8 +16,7 @@
 
 package identifiers.register
 
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
-import identifiers.register.company.directors.DirectorPreviousAddressListId
+import identifiers.register.adviser._
 import models.TolerantAddress
 import models.register.DeclarationWorkingKnowledge
 import models.register.adviser.AdviserDetails
@@ -37,7 +36,8 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
 
     val answersWithAdviser = UserAnswers(Json.obj())
       .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
-      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
+      .flatMap(_.set(AdviserNameId)("test name"))
+      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("a@a", "01234567890")))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
       .flatMap(_.set(AdviserAddressId)(address.toAddress))
       .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
@@ -50,7 +50,8 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
 
     val answersWithAdviser2 = UserAnswers(Json.obj())
       .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser)
-      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("test name", "a@a", "01234567890")))
+      .flatMap(_.set(AdviserNameId)("test name"))
+      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("a@a", "01234567890")))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
       .flatMap(_.set(AdviserAddressId)(address.toAddress))
       .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),

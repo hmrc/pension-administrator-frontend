@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.vary.DeclarationWorkingKnowledgeFormProvider
 import identifiers.vary.DeclarationWorkingKnowledgeId
-import identifiers.register.adviser.AdviserDetailsId
+import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -50,7 +50,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
   private val form = formProvider()
 
   private def adviserName()(implicit request: DataRequest[AnyContent]) =
-    request.userAnswers.get(AdviserDetailsId).map(_.name).getOrElse("")
+    request.userAnswers.get(AdviserNameId).getOrElse("")
 
   def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>

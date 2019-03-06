@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.vary.DeclarationFitAndProperControllerSpec.controller
 import forms.vary.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationFitAndProperId
-import identifiers.register.adviser.AdviserDetailsId
+import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.vary.DeclarationWorkingKnowledgeId
 import models.register.DeclarationWorkingKnowledge
@@ -92,8 +92,7 @@ object DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
   private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
   private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
-    AdviserDetailsId.toString ->
-      AdviserDetails(personWithWorkingKnowledgeName, "", ""),
+    AdviserNameId.toString -> personWithWorkingKnowledgeName,
     BusinessDetailsId.toString ->
       BusinessDetails(companyName = psaName, uniqueTaxReferenceNumber = None)
   )
