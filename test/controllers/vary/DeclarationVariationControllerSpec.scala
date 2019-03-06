@@ -113,7 +113,7 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   class FakePensionsSchemeConnector extends PensionsSchemeConnector {
     def reset():Unit = updateCalledWithData = None
-    var updateCalledWithData: Option[(String,UserAnswers] = None
+    var updateCalledWithData: Option[(String,UserAnswers)] = None
     override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = ???
     override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
       updateCalledWithData = Some((psaId, answers))
