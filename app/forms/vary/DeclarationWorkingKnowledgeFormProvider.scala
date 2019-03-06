@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package models.register.adviser
+package forms.vary
 
-import play.api.libs.json._
+import com.google.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class AdviserDetails(email: String, phone: String)
+class DeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
 
-object AdviserDetails {
-  implicit val format = Json.format[AdviserDetails]
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("declarationWorkingKnowledge.variations.error.required" )
+    )
 }

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package models.register.adviser
+package identifiers.vary
 
-import play.api.libs.json._
+import identifiers._
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import models.register.DeclarationWorkingKnowledge
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
-case class AdviserDetails(email: String, phone: String)
-
-object AdviserDetails {
-  implicit val format = Json.format[AdviserDetails]
+case object DeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
+  override def toString: String = "variationsDeclarationWorkingKnowledge"
 }
