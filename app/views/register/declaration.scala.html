@@ -49,8 +49,7 @@
             </li>
         </ol>
 
-        <div class="form-group">
-            <div class="form-field @if(form("agree").hasErrors){form-field--error}">
+             <div class="form-group @if(form("agree").hasErrors){form-field--error}">
                 <fieldset class="inline">
                     <legend>
                         @form("agree").errors.map { error =>
@@ -63,7 +62,6 @@
                     </div>
                 </fieldset>
             </div>
-        </div>
 
         <div class="form-group">
             @components.submit_button("site.agreeAndContinue")
