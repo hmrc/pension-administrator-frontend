@@ -31,11 +31,11 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
 
   private def returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
 
-  private def createView(isWorkingKnowldge: Boolean = true, isFitAndProper  : Boolean = true) = () => declarationVariation(
-    frontendAppConfig, form, "Mark Wright", isWorkingKnowldge, isFitAndProper)(fakeRequest, messages)
+  private def createView(isWorkingKnowldge: Boolean = true) = () => declarationVariation(
+    frontendAppConfig, form, "Mark Wright", isWorkingKnowldge)(fakeRequest, messages)
 
   private def createViewUsingForm(form: Form[_]) = declarationVariation(frontendAppConfig, form, "Mark Wright",
-    isWorkingKnowldge = true, isFitAndProper = true)(fakeRequest, messages)
+    isWorkingKnowldge = true)(fakeRequest, messages)
 
   "Declaration variation view" must {
 
@@ -70,10 +70,6 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
       createView() must haveDynamicText("declaration.variations.statement2")
     }
 
-    "not display the second statement" in {
-      createView(isWorkingKnowldge = true, isFitAndProper = false) must notHaveDynamicText("declaration.variations.statement2")
-    }
-
     "display the third statement" in {
       createView() must haveDynamicText("declaration.variations.statement3")
     }
@@ -84,8 +80,8 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
     }
 
     "display the fifth statement" in {
-      createView(isWorkingKnowldge = false, isFitAndProper = true) must notHaveDynamicText("declaration.variations.statement4")
-      createView(isWorkingKnowldge = false, isFitAndProper = true) must haveDynamicText("declaration.variations.statement5")
+      createView(isWorkingKnowldge = false) must notHaveDynamicText("declaration.variations.statement4")
+      createView(isWorkingKnowldge = false) must haveDynamicText("declaration.variations.statement5")
     }
 
     "have an Agree checkbox" in {

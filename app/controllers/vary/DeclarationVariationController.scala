@@ -50,21 +50,21 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       (DeclarationWorkingKnowledgeId and DeclarationFitAndProperId).retrieve.right.map {
-        case workingKnowledge ~ declarationFitAndProper =>
+        case workingKnowledge ~ _ =>
 
           Future.successful(Ok(views.html.vary.declarationVariation(
-            appConfig, form, psaName(), isWorkingKnowledge(workingKnowledge), declarationFitAndProper)))
+            appConfig, form, psaName(), isWorkingKnowledge(workingKnowledge))))
       }
   }
 
   def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       (DeclarationWorkingKnowledgeId and DeclarationFitAndProperId).retrieve.right.map {
-        case workingKnowledge ~ declarationFitAndProper =>
+        case workingKnowledge ~ _ =>
 
           form.bindFromRequest().fold(
             errors => Future.successful(BadRequest(views.html.vary.declarationVariation(
-              appConfig, errors, psaName(), isWorkingKnowledge(workingKnowledge), declarationFitAndProper))),
+              appConfig, errors, psaName(), isWorkingKnowledge(workingKnowledge)))),
 
             success =>
               dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { _ =>

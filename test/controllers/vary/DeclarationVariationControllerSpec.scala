@@ -114,7 +114,7 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form) =
-    declarationVariation(frontendAppConfig, form, "", true, true)(fakeRequest, messages).toString
+    declarationVariation(frontendAppConfig, form, "", true)(fakeRequest, messages).toString
 
 }
 

@@ -18,7 +18,7 @@
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, form: Form[_], psaName:String, isWorkingKnowldge:Boolean, isFitAndProper:Boolean)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], psaName:String, isWorkingKnowldge:Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.variations.title"),
@@ -34,15 +34,13 @@
     @helpers.form(action = routes.DeclarationController.onSubmit(), 'autoComplete -> "off") {
         @components.paragraph_text(messages("declaration.variations.statement0"))
 
-        <ol class="list-number">
+        <ol class="list-bullet">
             <li>
                 @components.paragraph_text(messages("declaration.variations.statement1"))
             </li>
-            @if(isFitAndProper){
             <li>
                 @components.paragraph_text(messages("declaration.variations.statement2"))
             </li>
-            }
             <li>
                 @components.paragraph_text(messages("declaration.variations.statement3"))
             </li>
@@ -55,20 +53,18 @@
             </li>
         </ol>
 
-        <div class="form-group">
-            <div class="form-field @if(form("agree").hasErrors){form-field--error}">
-                <fieldset class="inline">
-                    <legend>
-                        @form("agree").errors.map { error =>
-                            <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
-                        }
-                    </legend>
-                    <div class="multiple-choice">
-                        <input id="agree" name="agree" type="checkbox" value="agreed">
-                        <label for="agree">@messages("declaration.variations.agree")</label>
-                    </div>
-                </fieldset>
-            </div>
+        <div class="form-group @if(form("agree").hasErrors){form-field--error}">
+            <fieldset class="inline">
+                <legend>
+                    @form("agree").errors.map { error =>
+                    <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
+                    }
+                </legend>
+                <div class="multiple-choice">
+                    <input id="agree" name="agree" type="checkbox" value="agreed">
+                    <label for="agree">@messages("declaration.variations.agree")</label>
+                </div>
+            </fieldset>
         </div>
 
         @components.submit_button("site.agreeAndContinue")
