@@ -39,7 +39,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case MoreThanTenPartnersId => NavigateTo.save(controllers.register.partnership.routes.PartnershipReviewController.onPageLoad())
+    case MoreThanTenPartnersId => NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
     case _ => commonMap(from, UpdateMode)
   }
 
@@ -83,7 +83,8 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(AddPartnersId) match {
-      case Some(false) => NavigateTo.save(controllers.register.partnership.routes.PartnershipReviewController.onPageLoad())
+      case Some(false) if mode == NormalMode => NavigateTo.save(controllers.register.partnership.routes.PartnershipReviewController.onPageLoad())
+      case Some(false) if mode == UpdateMode => NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
       case _ =>
         val index = answers.allPartnersAfterDelete(mode).length
         if (index >= config.maxPartners) {

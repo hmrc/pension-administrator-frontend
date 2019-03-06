@@ -17,9 +17,10 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,7 +42,8 @@ class CheckYourAnswersController @Inject()(
                                             @CompanyDirector navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
-                                            sectionComplete: SectionComplete
+                                            sectionComplete: SectionComplete,
+                                            userAnswersCacheConnector: UserAnswersCacheConnector
                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -51,16 +53,16 @@ class CheckYourAnswersController @Inject()(
         val answersSection = Seq(
           AnswerSection(
             Some("directorCheckYourAnswers.directorDetails.heading"),
-            checkYourAnswerHelper.directorDetails(index.id) ++
-              checkYourAnswerHelper.directorNino(index.id) ++
-              checkYourAnswerHelper.directorUniqueTaxReference(index.id)
+            checkYourAnswerHelper.directorDetails(index.id, mode) ++
+              checkYourAnswerHelper.directorNino(index.id, mode) ++
+              checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode)
           ),
           AnswerSection(
             Some("directorCheckYourAnswers.contactDetails.heading"),
-            checkYourAnswerHelper.directorAddress(index.id) ++
-              checkYourAnswerHelper.directorAddressYears(index.id) ++
-              checkYourAnswerHelper.directorPreviousAddress(index.id) ++
-              checkYourAnswerHelper.directorContactDetails(index.id)
+            checkYourAnswerHelper.directorAddress(index.id, mode) ++
+              checkYourAnswerHelper.directorAddressYears(index.id, mode) ++
+              checkYourAnswerHelper.directorPreviousAddress(index.id, mode) ++
+              checkYourAnswerHelper.directorContactDetails(index.id, mode)
           ))
 
         Future.successful(Ok(check_your_answers(
@@ -74,8 +76,12 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
-        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      DirectorDetailsId(index).retrieve.right.map { details =>
+        userAnswersCacheConnector.save(request.externalId, DirectorDetailsId(index), details.copy(isNew = true)).flatMap { _ =>
+          sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
+            Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+          }
+        }
       }
   }
 

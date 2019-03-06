@@ -26,9 +26,11 @@ import utils.UserAnswers
 
 class DirectorDetailsIdSpec extends WordSpec with MustMatchers with OptionValues {
 
+  val personToDelete = PersonDetails("John", None, "One", LocalDate.now())
+
   val userAnswersWithTenDirectors = UserAnswers(Json.obj(
     "directors" -> Json.arr(
-      Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now())),
+      Json.obj(DirectorDetailsId.toString -> personToDelete),
       Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Two", LocalDate.now())),
       Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Three", LocalDate.now())),
       Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Four", LocalDate.now())),
@@ -48,7 +50,7 @@ class DirectorDetailsIdSpec extends WordSpec with MustMatchers with OptionValues
     "directors" -> Json.arr(
       Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()))
     )
-  ))
+  )) .set(MoreThanTenDirectorsId)(true).asOpt.value
 
   "Cleanup" must {
 
@@ -57,8 +59,7 @@ class DirectorDetailsIdSpec extends WordSpec with MustMatchers with OptionValues
       "there are fewer than 10 directors" in {
 
         val result: UserAnswers = userAnswersWithTenDirectors
-          .set(MoreThanTenDirectorsId)(true).asOpt.value
-          .remove(DirectorDetailsId(1)).asOpt.value
+          .set(DirectorDetailsId(1))(personToDelete.copy(isDeleted = true)).asOpt.value
 
         result.get(MoreThanTenDirectorsId) must not be defined
 

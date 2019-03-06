@@ -70,20 +70,14 @@ class PsaDetailServiceImpl @Inject()(
   def retrievePsaDataFromUserAnswers(psaId: String
                                     )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
     for {
-      userAnswers <- getUserAnswers(psaId)
+      response <- subscriptionConnector.getSubscriptionDetails(psaId)
+      userAnswers <- getUpdatedUserAnswers(response)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
       canDeregister <- canStopBeingAPsa(psaId)
     } yield {
       getPsaDetailsViewModel(userAnswers, canDeregister)
     }
   }
-
-  private def getUserAnswers(psaId: String
-                         )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]) =
-    userAnswersCacheConnector.fetch(request.externalId).flatMap {
-      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_)}
-      case Some(data) => Future(UserAnswers(data))
-    }
 
   private def getUpdatedUserAnswers(response: JsValue)(implicit ec: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)

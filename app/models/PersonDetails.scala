@@ -21,7 +21,7 @@ import java.time.LocalDate
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class PersonDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate, isDeleted: Boolean = false) {
+case class PersonDetails(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: LocalDate, isDeleted: Boolean = false, isNew: Boolean = false) {
   def fullName: String = middleName match {
     case Some(middle) => s"$firstName $middle $lastName"
     case _ => s"$firstName $lastName"
@@ -35,7 +35,8 @@ object PersonDetails {
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "lastName").read[String] and
       (JsPath \ "dateOfBirth").read[LocalDate] and
-      ((JsPath \ "isDeleted").read[Boolean] orElse Reads.pure(false))
+      ((JsPath \ "isDeleted").read[Boolean] orElse Reads.pure(false)) and
+      ((JsPath \ "isNew").read[Boolean] orElse Reads.pure(false))
       ) (PersonDetails.apply _)
 
   implicit val writes: Writes[PersonDetails] = Json.writes[PersonDetails]

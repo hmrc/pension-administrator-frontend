@@ -41,12 +41,9 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   val navigator = new DirectorNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
 
   //scalastyle:off line.size.limit
-  def routes(mode: Mode): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(mode), true, Some(companyReviewPage(checkMode(mode))), true),
+  def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
     (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorDetailsPage(mode), true, None, true),
-    (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(mode), true, None, false),
     (DirectorDetailsId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -63,19 +60,40 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (CheckYourAnswersId, emptyAnswers, addDirectorsPage(mode), true, None, false)
   )
 
+  def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+    (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
+    (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
+  )
+
+  def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+    (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
+    (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false)
+  )
+
+  def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    normalOnlyRoutes ++ routes(NormalMode): _*
+  )
+
+  def updateRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    updateOnlyRoutes ++ routes(UpdateMode): _*
+  )
+
   //scalastyle:on line.size.limit
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(NormalMode), dataDescriber)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(UpdateMode), dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, normalRoutes, dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes, dataDescriber, UpdateMode)
   }
 }
 
 object DirectorNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val anyMoreChangesPage = controllers.vary.routes.AnyMoreChangesController.onPageLoad()
   def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(mode, 0)
   def companyReviewPage(mode: Mode) = controllers.register.company.routes.CompanyReviewController.onPageLoad()
   def moreThanTenDirectorsPage(mode: Mode) = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode)

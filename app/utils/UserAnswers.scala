@@ -73,7 +73,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
         editUrl,
         director.isDeleted,
-        get(IsDirectorCompleteId(index)).getOrElse(false)
+        isComplete,
+        director.isNew
       )
     }
   }
@@ -91,13 +92,22 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     val partners = allPartners
     partners.filterNot(_.isDeleted).map { partner =>
       val index = partners.indexOf(partner)
+
+      val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+      val editUrl = if (isComplete) {
+        controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+      } else {
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
+      }
+
       Person(
         index,
         partner.fullName,
         controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url,
+        editUrl,
         partner.isDeleted,
-        get(IsPartnerCompleteId(index)).getOrElse(false)
+        isComplete,
+        partner.isNew
       )
     }
   }

@@ -78,7 +78,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeNavigator,
       messagesApi,
       checkYourAnswersFactory,
-      FakeSectionComplete
+      FakeSectionComplete,
+      FakeUserAnswersCacheConnector
     )
 
   def viewAsString(): String = check_your_answers(

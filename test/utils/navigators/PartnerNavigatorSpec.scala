@@ -41,12 +41,9 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   val navigator = new PartnerNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
 
   //scalastyle:off line.size.limit
-  def routes(mode: Mode): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (AddPartnersId, addPartnersFalse, partnershipReviewPage(mode), true, Some(partnershipReviewPage(checkMode(mode))), true),
+  def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), true, Some(moreThanTenPartnersPage(checkMode(mode))), true),
     (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
-    (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(mode), true, None, false),
     (PartnerDetailsId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -63,19 +60,40 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (CheckYourAnswersId, emptyAnswers, addPartnersPage(mode), true, None, false)
   )
 
+  def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] =
+    Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), true, None, true),
+    (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
+  )
+
+  def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+  (AddPartnersId, addPartnersFalse, anyMoreChangesPage, true, None, true),
+  (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, true, None, false)
+  )
+
+  def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    normalOnlyRoutes ++ routes(NormalMode): _*
+  )
+
+  def updateRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    updateOnlyRoutes ++ routes(UpdateMode): _*
+  )
+
   //scalastyle:on line.size.limit
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(NormalMode), dataDescriber)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(UpdateMode), dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, normalRoutes, dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes, dataDescriber, UpdateMode)
   }
 }
 
 object PartnerNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val anyMoreChangesPage = controllers.vary.routes.AnyMoreChangesController.onPageLoad()
   def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
   def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
   def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)

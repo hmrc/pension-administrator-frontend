@@ -46,7 +46,7 @@
                 </a>
             </div>
 
-            @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete)) {
+            @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete) || (person.isNew)) {
                 <div>
                     <a id="@person.editLinkId" href="@person.editLink">
                         @messages("site.edit")

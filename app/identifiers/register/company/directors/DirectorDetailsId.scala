@@ -27,7 +27,7 @@ case class DirectorDetailsId(index: Int) extends TypedIdentifier[PersonDetails] 
 
   override def cleanup(value: Option[PersonDetails], userAnswers: UserAnswers): JsResult[UserAnswers] =
     value match {
-      case Some(PersonDetails(_, _, _, _, true)) => userAnswers.remove(MoreThanTenDirectorsId)
+      case Some(PersonDetails(_, _, _, _, true, _)) => userAnswers.remove(MoreThanTenDirectorsId)
       case _ => super.cleanup(value, userAnswers)
     }
 }

@@ -17,12 +17,13 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
-import models.{CheckMode, Index, Mode, NormalMode}
 import models.Mode.checkMode
+import models.{Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -44,7 +45,8 @@ class CheckYourAnswersController @Inject()(
                                             @PartnershipPartner navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             sectionComplete: SectionComplete,
-                                            implicit val countryOptions: CountryOptions
+                                            implicit val countryOptions: CountryOptions,
+                                            userAnswersCacheConnector: UserAnswersCacheConnector
                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -76,8 +78,12 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) map { _ =>
-        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      PartnerDetailsId(index).retrieve.right.map { details =>
+        userAnswersCacheConnector.save(request.externalId, PartnerDetailsId(index), details.copy(isNew = true)).flatMap { _ =>
+          sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) map { _ =>
+            Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+          }
+        }
       }
   }
 
