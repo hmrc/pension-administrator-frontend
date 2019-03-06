@@ -39,7 +39,7 @@ object ViewPsaDetailsBuilder {
       None),
     AnswerRow("common.nino", Seq("AA999999A"), false, None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(Link(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false,
       None),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,

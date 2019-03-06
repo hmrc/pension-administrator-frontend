@@ -23,7 +23,7 @@ import controllers.register.individual.routes
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models.InternationalRegion._
-import models.{AddressYears, CheckMode, Mode, NormalMode}
+import models._
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
@@ -72,7 +72,12 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(UpdateMode))
+    case IndividualContactAddressListId => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(UpdateMode))
+    case IndividualContactAddressId => NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(UpdateMode))
+    case IndividualAddressYearsId => addressYearsRoutes(from.userAnswers)
+  }
 
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualDetailsCorrectId) match {
@@ -107,6 +112,18 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
         NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
       case (Some(AddressYears.OverAYear), _) =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  def addressYearsRoutesUpdateMode(answers: UserAnswers): Option[NavigateTo] =
+    (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
+      case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case (Some(AddressYears.UnderAYear), Some(false)) =>
+        NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(NormalMode))
+      case (Some(AddressYears.UnderAYear), Some(true)) =>
+        NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+      case (Some(AddressYears.OverAYear), _) =>
+        NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 

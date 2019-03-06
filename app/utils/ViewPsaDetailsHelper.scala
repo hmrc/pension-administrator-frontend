@@ -132,7 +132,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def individualAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
