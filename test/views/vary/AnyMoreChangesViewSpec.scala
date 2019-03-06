@@ -18,6 +18,7 @@ package views.vary
 
 import controllers.vary.routes
 import forms.vary.AnyMoreChangesFormProvider
+import models.UpdateMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.DateHelper
@@ -30,18 +31,17 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
   val form = new AnyMoreChangesFormProvider()()
 
   def createView: () => HtmlFormat.Appendable = () =>
-    anyMoreChanges(frontendAppConfig, form)(fakeRequest, messages)
-
-  def createViewInCheckMode: () => HtmlFormat.Appendable = () =>
-    anyMoreChanges(appConfig(isHubEnabled = true), form)(fakeRequest, messages)
+    anyMoreChanges(frontendAppConfig, form, Some("psa name"))(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    anyMoreChanges(frontendAppConfig, form)(fakeRequest, messages)
+    anyMoreChanges(frontendAppConfig, form, Some("psa name"))(fakeRequest, messages)
 
   "Any More Changes view" must {
 
     behave like normalPage(createView, messageKeyPrefix,
       expectedGuidanceKeys = "p1", "p2")
+
+    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like yesNoPage(
       createView = createViewUsingForm,

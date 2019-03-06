@@ -50,13 +50,13 @@ class ConfirmDeleteAdviserController @Inject()(
                                                 @Adviser navigator: Navigator
                                               ) extends FrontendController with I18nSupport with Retrievals with Variations {
 
-  private def viewModel(name: String) = ConfirmDeleteViewModel(
+  private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteAdviserController.onSubmit(),
     controllers.routes.PsaDetailsController.onPageLoad(),
     Message("confirmDelete.adviser.title"),
     "confirmDelete.adviser.heading",
     Some(name),
-    None
+    psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
