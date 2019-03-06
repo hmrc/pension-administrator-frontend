@@ -40,11 +40,13 @@
                     </div>
                 }
 
-            <div>
-                <a id="@person.deleteLinkId" href="@person.deleteLink">
-                    @messages("site.delete")
-                </a>
-            </div>
+            @if(mode != UpdateMode || people.size > 1) {
+                <div>
+                    <a id="@person.deleteLinkId" href="@person.deleteLink">
+                        @messages("site.delete")
+                    </a>
+                </div>
+            }
 
             @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete) || (person.isNew)) {
                 <div>
