@@ -18,8 +18,6 @@ package views.vary
 
 import forms.vary.DeclarationWorkingKnowledgeFormProvider
 import models.UpdateMode
-import models.register.DeclarationWorkingKnowledge
-import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.vary.declarationWorkingKnowledge
@@ -40,27 +38,16 @@ class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
     psaName,
     personWithWorkingKnowledgeName)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => declarationWorkingKnowledge(
-    frontendAppConfig,
-    form,
-    UpdateMode,
-    psaName,
-    personWithWorkingKnowledgeName)(fakeRequest, messages)
-
   "DeclarationWorkingKnowledge view (variations)" must {
 
-    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
+    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix, "p1")
 
     "display the correct page heading" in {
       val doc = asDocument(createView())
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", psaName, personWithWorkingKnowledgeName)
     }
 
-    "display the first statement" in {
-      createView must haveDynamicText("declarationWorkingKnowledge.variations.p1")
-    }
-
-    "display the second statement" in {
+    "display the second (dynamic) statement" in {
       createView must haveDynamicText("declarationWorkingKnowledge.variations.p2", psaName, personWithWorkingKnowledgeName)
     }
 
