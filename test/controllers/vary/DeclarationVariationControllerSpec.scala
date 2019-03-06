@@ -75,7 +75,8 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
       fakePensionsSchemeConnector.reset()
       val result = controller().onSubmit(NormalMode)(request)
       status(result) mustBe SEE_OTHER
-      fakePensionsSchemeConnector.updateCalledWithData mustBe Some((psaId, UserAnswers()))
+      fakePensionsSchemeConnector.updateCalledWithData mustBe Some((psaId, UserAnswers(Json
+        .parse("""{"declaration":true}"""))))
     }
 
     "reject an invalid POST request and display errors" in {
