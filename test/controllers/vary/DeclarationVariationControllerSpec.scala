@@ -24,11 +24,9 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
 import models.UserType.UserType
 import models.register.{DeclarationWorkingKnowledge, PsaSubscriptionResponse}
-import models.requests.{DataRequest, OptionalDataRequest}
-import models.{NormalMode, TolerantIndividual, UserType}
+import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{FakeNavigator, UserAnswers}
@@ -43,14 +41,14 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
   "DeclarationVariationController" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -58,40 +56,49 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page on a valid POST request" in {
       val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+      val result = controller().onSubmit(UpdateMode)(request)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "save the answer on a valid POST request" in {
+      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
       val result = controller().onSubmit(NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DeclarationId, true)
     }
-//
-//    "save the answer on a valid POST request" in {
-//      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-//      val result = controller().onSubmit(NormalMode)(request)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(onwardRoute.url)
-//      FakeUserAnswersCacheConnector.verify(DeclarationId, true)
-//    }
-//
-//    "reject an invalid POST request and display errors" in {
-//      val formWithErrors = form.withError("agree", messages("declaration.variations.invalid"))
-//      val result = controller().onSubmit(NormalMode)(fakeRequest)
-//
-//      status(result) mustBe BAD_REQUEST
-//      contentAsString(result) mustBe viewAsString(formWithErrors)
-//    }
-//
-//    "redirect to Session Expired on a POST request if no cached data is found" in {
-//      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
-//
-//      status(result) mustBe SEE_OTHER
-//      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-//    }
+
+    "call the update psa method on the pensions connector on a valid POST request with correct psa ID and user answers data" in {
+      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+      fakePensionsSchemeConnector.reset()
+      val result = controller().onSubmit(NormalMode)(request)
+      status(result) mustBe SEE_OTHER
+      fakePensionsSchemeConnector.updateCalledWithData mustBe Some((psaId, UserAnswers()))
+    }
+
+    "reject an invalid POST request and display errors" in {
+      val formWithErrors = form.withError("agree", messages("declaration.variations.invalid"))
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(formWithErrors)
+    }
+
+    "redirect to Session Expired on a POST request if no cached data is found" in {
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
   }
 
 }
 
 object DeclarationVariationControllerSpec extends ControllerSpecBase {
+
+  private val psaId = "test psa ID"
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
@@ -104,26 +111,24 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
-  private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
+  class FakePensionsSchemeConnector extends PensionsSchemeConnector {
+    def reset():Unit = updateCalledWithData = None
+    var updateCalledWithData: Option[(String,UserAnswers] = None
     override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = ???
     override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+      updateCalledWithData = Some((psaId, answers))
       Future.successful(())
     }
   }
 
-//  def fakeDataRequiredAction(ua: UserAnswers): DataRequiredAction = new DataRequiredAction {
-//    override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
-//      Future.successful(Right(DataRequest(request.request, request.externalId, request.user, ua)))
-//    }
-//  }
-
+  private val fakePensionsSchemeConnector: FakePensionsSchemeConnector = new FakePensionsSchemeConnector()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
                          userType: UserType = UserType.Organisation) =
     new DeclarationVariationController(
       frontendAppConfig,
       messagesApi,
-      FakeAuthAction(userType),
+      FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,

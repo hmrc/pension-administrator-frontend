@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.Register
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -68,10 +68,9 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
               appConfig, errors, psaName(), isWorkingKnowledge(workingKnowledge), declarationFitAndProper))),
 
             success =>
-              dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { _ =>
-
+              dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { ua =>
                 val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-                pensionsSchemeConnector.updatePsa(psaId, request.userAnswers).map( _ =>
+                pensionsSchemeConnector.updatePsa(psaId, UserAnswers(ua)).map( _ =>
                   Redirect(controllers.routes.IndexController.onPageLoad())
                 )
               }
