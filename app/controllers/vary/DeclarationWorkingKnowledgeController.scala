@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import forms.register.DeclarationWorkingKnowledgeFormProvider
-import identifiers.register.DeclarationWorkingKnowledgeId
+import forms.vary.DeclarationWorkingKnowledgeFormProvider
+import identifiers.vary.DeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserDetailsId
 import javax.inject.Inject
 import models.Mode
@@ -54,11 +54,8 @@ class DeclarationWorkingKnowledgeController @Inject()(
 
   def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode, psaName(), adviserName()))
+
+      Ok(declarationWorkingKnowledge(appConfig, form, mode, psaName(), adviserName()))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {

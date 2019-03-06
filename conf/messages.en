@@ -862,5 +862,5 @@ declarationWorkingKnowledge.variations.title = Does this person still have pensi
 declarationWorkingKnowledge.variations.heading = Does {1} still have working knowledge of pensions and pensions tax legislation for {0}?
 declarationWorkingKnowledge.variations.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration.
 declarationWorkingKnowledge.variations.p2 = {1} was previously the person with working knowledge of pensions and pensions tax legislation for {0}.
-
+declarationWorkingKnowledge.variations.error.required = You need to tell us if this person is still your adviser
 

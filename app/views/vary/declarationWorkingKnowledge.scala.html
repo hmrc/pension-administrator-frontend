@@ -37,11 +37,14 @@
 
         @components.heading(messages("declarationWorkingKnowledge.variations.heading", psaName, personWithWorkingKnowledgeName))
 
-        @components.input_radio(
+        <p>@messages("declarationWorkingKnowledge.variations.p1")</p>
+        <p>@messages("declarationWorkingKnowledge.variations.p2", psaName, personWithWorkingKnowledgeName)</p>
+
+        @components.input_yes_no(
             field = form("value"),
-            legend = messages("declarationWorkingKnowledge.variations.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = DeclarationWorkingKnowledge.options
+            label = messages("declarationWorkingKnowledge.variations.heading"),
+            labelClass = Some("visually-hidden"),
+            secondaryLabel = None
         )
 
         @components.submit_button("site.save_and_continue")
