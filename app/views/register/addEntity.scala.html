@@ -61,5 +61,8 @@
 
                 @components.submit_button(disabled = disableSubmission)
             }
+            @viewmodel.psaName.map { psaName =>
+                @components.return_link(psaName, mode)
+            }
         }
 }

@@ -24,6 +24,7 @@ import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -46,14 +47,15 @@ class AddPartnerController @Inject()(
 
   private val form: Form[Boolean] = formProvider()
 
-  private def viewmodel(partners: Seq[Person]) = EntityViewModel(
+  private def viewmodel(partners: Seq[Person])(implicit request: DataRequest[AnyContent]) = EntityViewModel(
     postCall = routes.AddPartnerController.onSubmit(NormalMode),
     title = Message("addPartners.title"),
     heading = Message("addPartners.heading"),
     entities = partners,
     maxLimit = appConfig.maxPartners,
     entityType = Message("addPartners.entityType"),
-    subHeading = None
+    subHeading = None,
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

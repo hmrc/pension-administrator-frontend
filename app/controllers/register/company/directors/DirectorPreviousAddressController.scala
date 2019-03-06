@@ -25,6 +25,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
+import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -61,13 +62,14 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
         DirectorPreviousAddressPostCodeLookupId(index))
   }
 
-  private def addressViewModel(mode: Mode, index: Index) =
+  private def addressViewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
       Message("directorPreviousAddress.title"),
       Message("directorPreviousAddress.heading"),
-      None
+      None,
+      psaName = psaName()
     )
 
   private def context(viewModel: ManualAddressViewModel): String = {
