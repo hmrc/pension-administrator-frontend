@@ -17,8 +17,9 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.address.AddressYearsViewModel
+@import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: AddressYearsViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: AddressYearsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = viewmodel.title,
@@ -41,5 +42,9 @@
     )
 
     @components.submit_button()
+
+    @viewmodel.psaName.map { psaName =>
+        @components.return_link(psaName, mode)
+    }
   }
 }
