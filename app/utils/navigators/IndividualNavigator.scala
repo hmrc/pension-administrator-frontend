@@ -23,7 +23,7 @@ import controllers.register.individual.routes
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models.InternationalRegion._
-import models.{AddressYears, CheckMode, Mode, NormalMode}
+import models._
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
@@ -72,7 +72,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = ???
 
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualDetailsCorrectId) match {

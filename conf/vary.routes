@@ -1,4 +1,4 @@
 # microservice specific routes
 
-GET        /make-more-changes    controllers.vary.AnyMoreChangesController.onPageLoad()
-POST       /make-more-changes    controllers.vary.AnyMoreChangesController.onSubmit()
+GET        /make-more-changes    controllers.vary.AnyMoreChangesController.onPageLoad(mode: Mode = UpdateMode)
+POST       /make-more-changes    controllers.vary.AnyMoreChangesController.onSubmit(mode: Mode = UpdateMode)

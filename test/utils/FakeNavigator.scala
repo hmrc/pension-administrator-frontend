@@ -16,10 +16,10 @@
 
 package utils
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.Identifier
 import models.requests.IdentifiedRequest
-import models.{Mode, NormalMode}
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -43,7 +43,7 @@ class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Nav
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = None
+  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode): Option[NavigateTo] = None
 }
 
 object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

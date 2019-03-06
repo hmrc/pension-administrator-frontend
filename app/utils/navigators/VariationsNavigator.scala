@@ -19,19 +19,24 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import models.Mode
+import identifiers.vary.AnyMoreChangesId
+import models.{Mode, UpdateMode}
 import utils.{Enumerable, Navigator}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
                                     config: FrontendAppConfig)extends Navigator with Enumerable.Implicits {
 
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] =
-    from.id match {
-      case _ => None
-    }
+  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom, mode: Mode = UpdateMode) = from.id match {
+    case AnyMoreChangesId => from.userAnswers.get(AnyMoreChangesId) match {
+      case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
+      case Some(false) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+    case _ => None
+  }
 
 }

@@ -59,7 +59,7 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
 
     s"behave like a navigator in ${Mode.jsLiteral.to(mode)} journey" when {
 
-      "navigating in NormalMode" must {
+      s"navigating in ${mode.getClass.getName}" must {
 
         try {
           forAll(routes) {
