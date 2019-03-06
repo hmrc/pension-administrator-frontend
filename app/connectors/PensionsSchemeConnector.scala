@@ -43,8 +43,6 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
   def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = config.registerPsaUrl
 
-    println( "\n>>>>" + url)
-
     http.POST(url, answers.json).map { response =>
       require(response.status == Status.OK)
 
