@@ -33,7 +33,11 @@ class DataRequiredActionImpl @Inject() extends DataRequiredAction {
 
     request.userAnswers match {
       case None => Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad())))
-      case Some(data) => Future.successful(Right(DataRequest(request.request, request.externalId, request.user, data)))
+      case Some(data) =>
+
+        println( "\n>>>" + request.user)
+
+        Future.successful(Right(DataRequest(request.request, request.externalId, request.user, data)))
     }
   }
 }
