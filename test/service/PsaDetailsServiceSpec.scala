@@ -31,7 +31,7 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.{JsBoolean, JsValue, Json}
 import play.api.test.Helpers.{contentAsString, status}
 import services.PsaDetailServiceImpl
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +44,7 @@ import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
 class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures {
@@ -93,8 +93,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         )
         val result  = service.retrievePsaDataAndGenerateViewModel("123")
           whenReady(result) { _  mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", false, false)}
-        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
-        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
+        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
 
       "return the correct PSA company view model and also verify the flags are set correctly" in {
@@ -108,8 +108,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result  = service.retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) { _  mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)}
 
-        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
-        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
+        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
 
       "return the correct PSA partnership view model and also verify the flags are set correctly" in {
@@ -123,8 +123,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result  = service.retrievePsaDataAndGenerateViewModel("123")
           whenReady(result) { _  mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", false, true)}
 
-        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true
-        UserAnswers(FakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true
+        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
     }
   }
@@ -137,13 +137,24 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
   val mockDeRegistrationConnector = mock[DeRegistrationConnector]
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
+
+  object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
+    override def fetch(cacheId: String)(implicit
+                                        ec: ExecutionContext,
+                                        hc: HeaderCarrier
+    ): Future[Option[JsValue]] = {
+
+      Future.successful(None)
+    }
+  }
+
   def service = new PsaDetailServiceImpl(
     fs,
     messagesApi,
     mockSubscriptionConnector,
     countryOptions,
     mockDeRegistrationConnector,
-    FakeUserAnswersCacheConnector
+    LocalFakeUserAnswersCacheConnector
   )
   val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
   val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
