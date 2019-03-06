@@ -16,10 +16,10 @@
 
 package utils
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.Identifier
 import models.requests.IdentifiedRequest
-import models.{Mode, NormalMode}
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 

@@ -23,7 +23,7 @@ import identifiers.register._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.{Mode, NormalMode, UpdateMode}
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import utils.{Navigator, UserAnswers}
 import utils.Toggles.IsManualIVEnabled

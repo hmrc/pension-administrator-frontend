@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.adviser._
 import identifiers.register.adviser._
 import javax.inject.{Inject, Singleton}
-import models.{CheckMode, Mode, NormalMode}
+import models.{CheckMode, Mode, NormalMode, UpdateMode}
 import play.api.mvc.Call
 import utils.Navigator
 
