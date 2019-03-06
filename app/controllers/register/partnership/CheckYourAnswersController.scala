@@ -79,8 +79,9 @@ class CheckYourAnswersController @Inject()(
       Ok(check_your_answers(
         appConfig,
         Seq(partnershipDetails, partnershipContactDetails, contactDetails),
+        controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
         None,
-        controllers.register.partnership.routes.CheckYourAnswersController.onSubmit()
+        mode
       ))
   }
 

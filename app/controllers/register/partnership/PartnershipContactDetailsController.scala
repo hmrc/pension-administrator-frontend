@@ -23,6 +23,7 @@ import forms.ContactDetailsFormProvider
 import identifiers.register.partnership.PartnershipContactDetailsId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -41,12 +42,13 @@ class PartnershipContactDetailsController @Inject()(
                                                      formProvider: ContactDetailsFormProvider
                                                    ) extends controllers.ContactDetailsController {
 
-  private def viewmodel(mode: Mode) = ContactDetailsViewModel(
+  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ContactDetailsViewModel(
     postCall = routes.PartnershipContactDetailsController.onSubmit(mode),
     title = Message("partnershipContactDetails.title"),
     heading = Message("partnershipContactDetails.heading"),
     body = Some(Message("contactDetails.body")),
-    None
+    None,
+    psaName = psaName()
   )
 
   private val form = formProvider()

@@ -50,7 +50,8 @@ class PartnerContactDetailsController @Inject()(
           Message("partnership.partner.contactDetails.title"),
           Message("partnership.partner.contactDetails.heading"),
           None,
-          Some(details.fullName)
+          Some(details.fullName),
+          psaName = psaName()
         )
       }
   }

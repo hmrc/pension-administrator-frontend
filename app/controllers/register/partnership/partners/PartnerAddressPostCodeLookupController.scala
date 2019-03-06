@@ -79,7 +79,7 @@ class PartnerAddressPostCodeLookupController @Inject()(
           Message("common.postcodeLookup.enterPostcode"),
           Some(Message("common.postcodeLookup.enterPostcode.link")),
           Message("common.address.enterPostcode.formLabel"),
-          psaName()
+          psaName = psaName()
         )
     }
   }

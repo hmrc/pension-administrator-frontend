@@ -17,7 +17,7 @@
 package views.address
 
 import forms.address.AddressYearsFormProvider
-import models.AddressYears
+import models.{AddressYears, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -35,16 +35,18 @@ class AddressYearsViewSpec extends ViewBehaviours {
     postCall = Call("GET", "www.example.com"),
     title = s"How long has the company been at this address?",
     heading = "How long has the company been at this address?",
-    legend = "legend"
+    legend = "legend",
+    psaName = Some("test psa")
   )
 
-  def createView: () => HtmlFormat.Appendable = () => addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => addressYears(frontendAppConfig, form, viewmodel, mode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+    addressYears(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages)
 
   "AddressYears view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
   "AddressYears view" when {

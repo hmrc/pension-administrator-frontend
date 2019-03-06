@@ -102,8 +102,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     check_your_answers(
       frontendAppConfig,
       sections,
-      Some("common.adviser.secondary.heading"),
-      postCall
+      postCall,
+      None,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {

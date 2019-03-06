@@ -17,7 +17,7 @@
 package views
 
 import forms.PersonDetailsFormProvider
-import models.{NormalMode, PersonDetails}
+import models.{Mode, NormalMode, PersonDetails, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import viewmodels.{Message, PersonDetailsViewModel}
@@ -34,16 +34,21 @@ class PersonDetailsViewSpec extends QuestionViewBehaviours[PersonDetails] {
     PersonDetailsViewModel(
       title = "directorDetails.title",
       heading = Message("directorDetails.heading"),
-      postCall = Call("POST", "http://www.test.com")
+      postCall = Call("POST", "http://www.test.com"),
+      psaName = Some("test psa")
     )
 
-  private def createView = () => personDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createView(mode: Mode = NormalMode) = () =>
+    personDetails(frontendAppConfig, form, viewModel, mode)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => personDetails(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) =>
+    personDetails(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages)
 
   "PersonDetails view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
+
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like pageWithTextFields(
       createViewUsingForm,

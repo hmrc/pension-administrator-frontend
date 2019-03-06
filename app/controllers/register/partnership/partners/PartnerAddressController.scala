@@ -25,6 +25,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId, PartnerAddressPostCodeLookupId}
+import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -40,7 +41,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartner override val navigator: Navigator,
                                          authenticate: AuthAction,
-                                         override val  allowAccess: AllowAccessActionProvider,
+                                         override val allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AddressFormProvider,
@@ -49,30 +50,25 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
 
   override protected val form: Form[Address] = formProvider()
 
-  private def addressViewModel(mode: Mode, index: Index, partnerName: String) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(mode, index),
     countryOptions.options,
     Message("partnerAddress.title"),
     Message("partnerAddress.heading"),
-    Some(Message(partnerName))
+    None,
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) {
-        partnerName =>
-          get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, partnerName), mode)
-      }
+      get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) {
-        partnerName =>
-          val vm = addressViewModel(mode, index, partnerName)
-          post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, context(vm),
-            PartnerAddressPostCodeLookupId(index))
-      }
+      val vm = addressViewModel(mode, index)
+      post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, context(vm),
+        PartnerAddressPostCodeLookupId(index))
   }
 
   private def context(viewModel: ManualAddressViewModel): String = {

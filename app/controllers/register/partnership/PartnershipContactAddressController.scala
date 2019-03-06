@@ -24,6 +24,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
+import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,14 +51,15 @@ class PartnershipContactAddressController @Inject()(
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  def viewmodel(mode: Mode, partnershipName: String) =
+  def viewmodel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =
     ManualAddressViewModel(
       postCall = routes.PartnershipContactAddressController.onSubmit(mode),
       countryOptions = countryOptions.options,
       title = Message("partnership.contactAddress.title"),
       heading = Message("partnership.contactAddress.heading").withArgs(partnershipName),
       secondaryHeader = None,
-      hint = Some(Message("partnership.contactAddress.hint").withArgs(partnershipName))
+      hint = Some(Message("partnership.contactAddress.hint").withArgs(partnershipName)),
+      psaName = psaName()
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

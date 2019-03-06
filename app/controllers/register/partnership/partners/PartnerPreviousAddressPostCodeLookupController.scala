@@ -79,7 +79,7 @@ class PartnerPreviousAddressPostCodeLookupController @Inject()(
           Message("partnerPreviousAddressPostCodeLookup.enterPostcode"),
           Some(Message("partnerPreviousAddressPostCodeLookup.enterPostcode.link")),
           Message("partnerPreviousAddressPostCodeLookup.input.text"),
-          psaName()
+          psaName = psaName()
         )
     }
   }

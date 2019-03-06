@@ -75,7 +75,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 object PartnerNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(0)
+  private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(0, NormalMode)
   private lazy val partnershipReviewPage = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
   private lazy val moreThanTenPartnersPage = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(NormalMode)
   private lazy val partnerDetailsPage = routes.PartnerDetailsController.onPageLoad(NormalMode, 0)
