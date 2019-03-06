@@ -17,7 +17,7 @@
 package identifiers.register
 
 import identifiers._
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorId
 import identifiers.register.individual._
@@ -55,7 +55,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
 
   private def removeDeclarationData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
-      DeclarationWorkingKnowledgeId, AdviserDetailsId, AdviserAddressPostCodeLookupId, AdviserAddressListId, AdviserAddressId
+      DeclarationWorkingKnowledgeId, AdviserNameId, AdviserDetailsId, AdviserAddressPostCodeLookupId, AdviserAddressListId, AdviserAddressId
     ))
   }
 

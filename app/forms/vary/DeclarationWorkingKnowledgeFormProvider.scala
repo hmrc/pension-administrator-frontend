@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(text: String)
- @text
+package forms.vary
+
+import com.google.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+
+class DeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("declarationWorkingKnowledge.variations.error.required" )
+    )
+}

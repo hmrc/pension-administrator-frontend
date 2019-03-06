@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(text: String)
- @text
+package identifiers.vary
+
+import identifiers._
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import models.register.DeclarationWorkingKnowledge
+import play.api.libs.json.JsResult
+import utils.UserAnswers
+
+case object DeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
+  override def toString: String = "variationsDeclarationWorkingKnowledge"
+}
