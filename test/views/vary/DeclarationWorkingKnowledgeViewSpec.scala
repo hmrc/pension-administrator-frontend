@@ -16,7 +16,7 @@
 
 package views.vary
 
-import forms.register.DeclarationWorkingKnowledgeFormProvider
+import forms.vary.DeclarationWorkingKnowledgeFormProvider
 import models.UpdateMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
@@ -56,24 +56,13 @@ class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", psaName, personWithWorkingKnowledgeName)
     }
 
-    "contain radio buttons for the value" in {
-      val doc = asDocument(createViewUsingForm(form))
-      for (option <- DeclarationWorkingKnowledge.options) {
-        assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, false)
-      }
+    "display the first statement" in {
+      createView must haveDynamicText("declarationWorkingKnowledge.variations.p1")
     }
 
-    for (option <- DeclarationWorkingKnowledge.options) {
-      s"rendered with a value of '${option.value}'" must {
-        s"have the '${option.value}' radio button selected" in {
-          val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
-          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, true)
-
-          for (unselectedOption <- DeclarationWorkingKnowledge.options.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, false)
-          }
-        }
-      }
+    "display the second statement" in {
+      createView must haveDynamicText("declarationWorkingKnowledge.variations.p2", psaName, personWithWorkingKnowledgeName)
     }
+
   }
 }

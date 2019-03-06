@@ -19,10 +19,12 @@ package controllers.vary
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.DeclarationWorkingKnowledgeFormProvider
-import identifiers.register.DeclarationWorkingKnowledgeId
+import controllers.vary.DeclarationFitAndProperControllerSpec.controller
+import forms.vary.DeclarationWorkingKnowledgeFormProvider
+import identifiers.register.DeclarationFitAndProperId
 import identifiers.register.adviser.AdviserDetailsId
 import identifiers.register.company.BusinessDetailsId
+import identifiers.vary.DeclarationWorkingKnowledgeId
 import models.register.DeclarationWorkingKnowledge
 import models.register.adviser.AdviserDetails
 import models.{BusinessDetails, UpdateMode}
@@ -45,19 +47,17 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val result = controller(dataRetrievalActionWithAdviserAndBusinessDetailsPlusWorkingKnowledge).onPageLoad(UpdateMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(DeclarationWorkingKnowledge.values.head))
-    }
-
-    "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
-
-      val result = controller().onSubmit(UpdateMode)(postRequest)
-
+    "save the answer yes on a valid request and redirect to Session Expired" in {
+      val result = controller().onSubmit(UpdateMode)(fakeRequest.withFormUrlEncodedBody("value" -> "true"))
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(DeclarationWorkingKnowledgeId, true)
+    }
+
+    "save the answer no on a valid request" in {
+      val result = controller().onSubmit(UpdateMode)(fakeRequest.withFormUrlEncodedBody("value" -> "false"))
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(DeclarationWorkingKnowledgeId, false)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -98,14 +98,8 @@ object DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       BusinessDetails(companyName = psaName, uniqueTaxReferenceNumber = None)
   )
 
-  private val jsObjectWorkingKnowledge: JsObject = Json.obj(
-    DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
-
   private val dataRetrievalActionWithAdviserAndBusinessDetails =
     new FakeDataRetrievalAction(Some(jsObjectAdviserAndBusinessDetails))
-
-  private val dataRetrievalActionWithAdviserAndBusinessDetailsPlusWorkingKnowledge =
-    new FakeDataRetrievalAction(Some(jsObjectAdviserAndBusinessDetails ++ jsObjectWorkingKnowledge))
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
