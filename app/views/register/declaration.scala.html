@@ -51,6 +51,9 @@
             <div class="form-field @if(form("agree").hasErrors){form-field--error}">
                 <fieldset class="inline">
                     <legend>
+
+                        <span class="visually-hidden">@messages("common.declaration.legend")</span>
+
                         @form("agree").errors.map { error =>
                             <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
                         }

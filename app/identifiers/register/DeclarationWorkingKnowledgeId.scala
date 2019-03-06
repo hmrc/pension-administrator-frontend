@@ -17,7 +17,7 @@
 package identifiers.register
 
 import identifiers._
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import identifiers.register.adviser._
 import models.register.DeclarationWorkingKnowledge
 import play.api.libs.json.JsResult
 import utils.UserAnswers
@@ -29,7 +29,8 @@ case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWor
   override def cleanup(value: Option[DeclarationWorkingKnowledge], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
-        userAnswers.remove(AdviserDetailsId)
+        userAnswers.remove(AdviserNameId)
+          .flatMap(_.remove(AdviserDetailsId))
           .flatMap(_.remove(AdviserAddressPostCodeLookupId))
           .flatMap(_.remove(AdviserAddressListId))
           .flatMap(_.remove(AdviserAddressId))

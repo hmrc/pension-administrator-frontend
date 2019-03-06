@@ -18,7 +18,7 @@ package controllers.register.adviser
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import models.register.adviser.AdviserDetails
 import models.{Address, CheckMode, NormalMode}
 import play.api.libs.json.{JsObject, Json}
@@ -36,7 +36,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
-  val advDetails = AdviserDetails("test adviser name", "test@test.com", "01234567890")
+  val adviserName = "test adviser name"
+  val advDetails = AdviserDetails("test@test.com", "01234567890")
 
   val address = Address(
     "address-line-1",
@@ -48,6 +49,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   )
 
   val validData: JsObject = Json.obj(
+    AdviserNameId.toString -> adviserName,
     AdviserDetailsId.toString -> advDetails,
     AdviserAddressId.toString -> address
   )
@@ -66,10 +68,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def adviserDetails = Seq(
     AnswerRow(
-      "cya.label.name",
-      Seq(advDetails.name),
+      "adviserName.checkYourAnswersLabel",
+      Seq(adviserName),
       false,
-      Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)
+      Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url)
     ),
     AnswerRow(
       "contactDetails.email.checkYourAnswersLabel",
