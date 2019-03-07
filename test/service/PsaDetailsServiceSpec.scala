@@ -18,21 +18,19 @@ package service
 
 import base.SpecBase
 import config.FeatureSwitchManagementServiceTestImpl
-import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector, UserAnswersCacheConnector}
+import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import identifiers.UpdateModeId
 import identifiers.register.company.directors.IsDirectorCompleteId
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId}
 import identifiers.register.partnership.partners.IsPartnerCompleteId
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UpdateMode, UserType}
+import models.{PSAUser, UserType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.JsBoolean
-import play.api.test.Helpers.{contentAsString, status}
 import services.PsaDetailServiceImpl
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}

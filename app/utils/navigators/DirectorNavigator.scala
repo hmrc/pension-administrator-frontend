@@ -40,7 +40,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case MoreThanTenDirectorsId => NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
+    case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.routes.AnyMoreChangesController.onPageLoad())
     case _ => commonMap(from, UpdateMode)
   }
 
@@ -86,7 +86,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def addCompanyDirectorRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(AddCompanyDirectorsId) match {
       case Some(false) if mode == NormalMode => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
-      case Some(false) if mode == UpdateMode => NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
+      case Some(false) if mode == UpdateMode => NavigateTo.save(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case _ =>
         val index = answers.allDirectorsAfterDelete(mode).length
         if (index >= appConfig.maxDirectors) {
