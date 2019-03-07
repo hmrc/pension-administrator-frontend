@@ -24,6 +24,6 @@ class StillUseAdviserFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("declarationWorkingKnowledge.variations.error.required" )
+      "value" -> boolean("stillUseAdviser.error.required" )
     )
 }

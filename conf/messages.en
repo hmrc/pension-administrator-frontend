@@ -860,11 +860,11 @@ noLongerFitAndProper.heading = The details cannot be changed
 noLongerFitAndProper.p1 = The details cannot be changed because you have said that {0} is not fit and proper to be a scheme administrator.
 noLongerFitAndProper.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
 
-declarationWorkingKnowledge.variations.title = Does this person still have pensions working knowledge on your behalf
-declarationWorkingKnowledge.variations.heading = Does {1} still have working knowledge of pensions and pensions tax legislation for {0}?
-declarationWorkingKnowledge.variations.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration.
-declarationWorkingKnowledge.variations.p2 = {1} was previously the person with working knowledge of pensions and pensions tax legislation for {0}.
-declarationWorkingKnowledge.variations.error.required = You need to tell us if this person is still your adviser
+stillUseAdviser.title = Does this person still have pensions working knowledge on your behalf
+stillUseAdviser.heading = Does {1} still have working knowledge of pensions and pensions tax legislation for {0}?
+stillUseAdviser.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration.
+stillUseAdviser.p2 = {1} was previously the person with working knowledge of pensions and pensions tax legislation for {0}.
+stillUseAdviser.error.required = You need to tell us if this person is still your adviser
 
 confirmDelete.adviser.title = Are you sure you want to delete this adviser?
 confirmDelete.adviser.heading = Are you sure you want to delete {0}?

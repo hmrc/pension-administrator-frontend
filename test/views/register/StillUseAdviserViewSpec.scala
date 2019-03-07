@@ -27,7 +27,7 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
   private val psaName = "Mr Smith"
   private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
-  private val messageKeyPrefix = "declarationWorkingKnowledge.variations"
+  private val messageKeyPrefix = "stillUseAdviser"
 
   private val form = new StillUseAdviserFormProvider()()
 
@@ -48,7 +48,7 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
     }
 
     "display the second (dynamic) statement" in {
-      createView must haveDynamicText("declarationWorkingKnowledge.variations.p2", psaName, personWithWorkingKnowledgeName)
+      createView must haveDynamicText("stillUseAdviser.p2", psaName, personWithWorkingKnowledgeName)
     }
 
   }
