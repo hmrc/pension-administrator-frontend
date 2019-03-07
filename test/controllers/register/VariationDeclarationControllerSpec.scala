@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.vary.DeclarationVariationFormProvider
+import forms.register.VariationDeclarationFormProvider
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId, VariationWorkingKnowledgeId}
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import models.UserType.UserType
-import models.register.DeclarationWorkingKnowledge
 import models.{NormalMode, TolerantIndividual, UserType}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
-import views.html.vary.declarationVariation
+import views.html.register.variationDeclaration
 
-class DeclarationVariationControllerSpec extends ControllerSpecBase {
+class VariationDeclarationControllerSpec extends ControllerSpecBase {
 
-  import DeclarationVariationControllerSpec._
+  import VariationDeclarationControllerSpec._
 
   "DeclarationVariationController" must {
 
@@ -86,11 +85,11 @@ class DeclarationVariationControllerSpec extends ControllerSpecBase {
 
 }
 
-object DeclarationVariationControllerSpec extends ControllerSpecBase {
+object VariationDeclarationControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val form: Form[_] = new DeclarationVariationFormProvider()()
+  private val form: Form[_] = new VariationDeclarationFormProvider()()
 
   private val individual = UserAnswers(Json.obj())
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
@@ -101,7 +100,7 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
                          userType: UserType = UserType.Organisation) =
-    new DeclarationVariationController(
+    new VariationDeclarationController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction(userType),
@@ -109,12 +108,12 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
-      new DeclarationVariationFormProvider(),
+      new VariationDeclarationFormProvider(),
       FakeUserAnswersCacheConnector
     )
 
   private def viewAsString(form: Form[_] = form) =
-    declarationVariation(frontendAppConfig, form, "", true)(fakeRequest, messages).toString
+    variationDeclaration(frontendAppConfig, form, "", true)(fakeRequest, messages).toString
 
 }
 

@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package forms.vary
+package forms.register
 
-import forms.behaviours.CheckboxBehaviour
+import com.google.inject.Inject
+import forms.mappings.Mappings
 import play.api.data.Form
 
-class DeclarationVariationFormProviderSpec extends CheckboxBehaviour {
+class VariationDeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
 
-  private val form: Form[Boolean] = new DeclarationVariationFormProvider()()
-  private val fieldName = "agree"
-  private val trueValue = "agreed"
-  private val invalidKey = "declaration.variations.invalid"
-
-  "DeclarationVariationFormProvider" should {
-
-    behave like formWithCheckbox(form, fieldName, trueValue, acceptTrueOnly = true, invalidKey)
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("declarationWorkingKnowledge.variations.error.required" )
+    )
 }

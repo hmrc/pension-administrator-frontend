@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -29,12 +29,12 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
-import views.html.vary.noLongerFitAndProper
+import views.html.register.variationNoLongerFitAndProper
 
 import scala.concurrent.Future
 
-class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
-  import NoLongerFitAndProperControllerSpec._
+class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
+  import VariationNoLongerFitAndProperControllerSpec._
 
   "NoLongerFitAndProperController" must {
 
@@ -58,7 +58,7 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   }
 }
 
-object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -70,7 +70,7 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new NoLongerFitAndProperController(
+    new VariationNoLongerFitAndProperController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction(UserType.Individual),
@@ -81,7 +81,7 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    noLongerFitAndProper(frontendAppConfig, psaName, UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    variationNoLongerFitAndProper(frontendAppConfig, psaName, UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 
 }

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
-import forms.vary.DeclarationVariationFormProvider
+import forms.register.VariationDeclarationFormProvider
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
-import views.html.vary.declarationVariation
+import views.html.register.variationDeclaration
 
-class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
+class VariationDeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
 
-  val form: Form[Boolean] = new DeclarationVariationFormProvider()()
+  val form: Form[Boolean] = new VariationDeclarationFormProvider()()
 
   override val errorKey = "agree"
 
@@ -31,10 +31,10 @@ class DeclarationVariationViewSpec extends QuestionViewBehaviours[Boolean] {
 
   private def returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
 
-  private def createView(isWorkingKnowldge: Boolean = true) = () => declarationVariation(
+  private def createView(isWorkingKnowldge: Boolean = true) = () => variationDeclaration(
     frontendAppConfig, form, "Mark Wright", isWorkingKnowldge)(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = declarationVariation(frontendAppConfig, form, "Mark Wright",
+  private def createViewUsingForm(form: Form[_]) = variationDeclaration(frontendAppConfig, form, "Mark Wright",
     isWorkingKnowldge = true)(fakeRequest, messages)
 
   "Declaration variation view" must {

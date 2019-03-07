@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.vary.routes._
+@import controllers.register.routes._
 @import models.Mode
 @import models.register.DeclarationWorkingKnowledge
 
@@ -31,7 +31,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = DeclarationWorkingKnowledgeController.onSubmit(), 'autoComplete -> "off") {
+    @helpers.form(action = VariationDeclarationWorkingKnowledgeController.onSubmit(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
