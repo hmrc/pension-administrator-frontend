@@ -43,8 +43,8 @@ POST       /check-your-answers                          controllers.register.com
 
 GET        /add-directors                               controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
 POST       /add-directors                               controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/directors                            controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode)
-POST       /:mode/directors                            controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode)
+GET        /:mode/add-directors                         controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode)
+POST       /:mode/add-directors                         controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode)
 
 GET        /other-directors                             controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = NormalMode)
 POST       /other-directors                             controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
