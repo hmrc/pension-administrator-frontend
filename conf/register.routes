@@ -39,3 +39,20 @@ POST       /change-registered-in-uk                 controllers.register.Busines
 
 GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
 POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
+
+GET        /details-updated                         controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
+
+GET        /make-more-changes                       controllers.register.AnyMoreChangesController.onPageLoad()
+POST       /make-more-changes                       controllers.register.AnyMoreChangesController.onSubmit()
+
+GET        /still-fit-and-proper-person             controllers.register.VariationDeclarationFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
+POST       /still-fit-and-proper-person             controllers.register.VariationDeclarationFitAndProperController.onSubmit(mode: Mode = UpdateMode)
+
+GET        /cannot-make-changes                     controllers.register.VariationNoLongerFitAndProperController.onPageLoad()
+
+GET        /do-you-still-use-an-adviser             controllers.register.VariationDeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
+POST       /do-you-still-use-an-adviser             controllers.register.VariationDeclarationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+
+
+GET        /declare-after-changing-details          controllers.register.VariationDeclarationController.onPageLoad()
+POST       /declare-after-changing-details          controllers.register.VariationDeclarationController.onSubmit()

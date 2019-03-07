@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
-import forms.vary.DeclarationFitAndProperFormProvider
+import forms.register.VariationDeclarationFitAndProperFormProvider
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
-import views.html.vary.declarationFitAndProper
+import views.html.register.variationDeclarationFitAndProper
 
-class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
+class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
   private val psaName = "test name"
 
-  val form: Form[Boolean] = new DeclarationFitAndProperFormProvider()()
+  val form: Form[Boolean] = new VariationDeclarationFitAndProperFormProvider()()
   override val errorKey = "agree"
 
   val messageKeyPrefix = "declarationFitAndProper.variations"
 
-  private def createView = () => declarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
+  private def createView = () => variationDeclarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = declarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]) = variationDeclarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
 
   "DeclarationFitAndProper (variations) view" must {
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)

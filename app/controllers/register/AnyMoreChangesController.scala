@@ -30,13 +30,13 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.vary.AnyMoreChangesFormProvider
+import forms.register.AnyMoreChangesFormProvider
 import identifiers.vary.AnyMoreChangesId
 import javax.inject.Inject
 import models.NormalMode
@@ -46,7 +46,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
-import views.html.vary.anyMoreChanges
+import views.html.register.anyMoreChanges
 
 import scala.concurrent.{ExecutionContext, Future}
 

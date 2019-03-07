@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
-import models._
 import models.requests.DataRequest
+import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -29,12 +29,13 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
-import views.html.vary.noLongerFitAndProper
+import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.Future
 
-class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
-  import NoLongerFitAndProperControllerSpec._
+class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
+
+  import PSAVarianceSuccessControllerSpec._
 
   "NoLongerFitAndProperController" must {
 
@@ -42,7 +43,7 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
 
       when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
 
-      val result = controller(dataRetrievalAction).onPageLoad(UpdateMode)(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(individual)
@@ -50,7 +51,7 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
-      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -58,7 +59,7 @@ class NoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   }
 }
 
-object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+object PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -70,7 +71,7 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new NoLongerFitAndProperController(
+    new PSAVarianceSuccessController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction(UserType.Individual),
@@ -81,10 +82,6 @@ object NoLongerFitAndProperControllerSpec extends ControllerSpecBase with Mockit
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    noLongerFitAndProper(frontendAppConfig, psaName, UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
-
+    psaVarianceSuccess(frontendAppConfig, psaName)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 }
-
-
-
