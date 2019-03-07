@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.vary.AnyMoreChangesFormProvider
+import forms.register.AnyMoreChangesFormProvider
 import models.UpdateMode
 import play.api.data.Form
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.vary.anyMoreChanges
+import views.html.register.anyMoreChanges
 
 
 class AnyMoreChangesControllerSpec extends ControllerSpecBase {

@@ -880,3 +880,13 @@ variationWorkingKnowledge.error.required = You need to tell us if you have a wor
 psaVarianceSuccess.title = The scheme administrator details have been updated
 psaVarianceSuccess.heading = The scheme administrator details have been updated
 
+declaration.variations.title =  Declaration
+declaration.variations.heading = Declaration
+declaration.variations.statement0 = By continuing you declare that:
+declaration.variations.statement1 = the information shown is complete and correct and that you may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
+declaration.variations.statement2 = the scheme administrator is a fit and proper person
+declaration.variations.statement3 = you understand that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme, is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme or, if the scheme is already registered, HMRC may de-register a scheme
+declaration.variations.statement4 = you have a working knowledge of pension scheme administrator duties and liabilities
+declaration.variations.statement5 = you do not have a working knowledge of pension scheme administrator duties and liabilities but have appointed an adviser who does have that knowledge
+declaration.variations.agree = Agree
+declaration.variations.invalid = You need to agree to all the declarations before you can continue

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms.vary
+package forms.register
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.{Form, FormError}
 
-class DeclarationFitAndProperFormProvider @Inject() extends FormErrorHelper with Mappings {
+class VariationDeclarationFitAndProperFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("declarationFitAndProper.variations.error.required")
-    )
+  private val form: Form[Boolean] = new VariationDeclarationFitAndProperFormProvider()()
+  private val fieldName = "value"
+  private val invalidKey = "error.boolean"
+
+  "VariationDeclarationFitAndProperFormProvider" should {
+    behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey))
+  }
 }

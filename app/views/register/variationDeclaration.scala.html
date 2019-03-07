@@ -1,0 +1,77 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import controllers.register.routes
+@import uk.gov.hmrc.play.views.html._
+
+@(appConfig: FrontendAppConfig, form: Form[_], psaName:String, isWorkingKnowldge:Boolean)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("declaration.variations.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @components.error_summary(form.errors)
+
+    @components.heading(messages("declaration.variations.heading"))
+
+    @helpers.form(action = controllers.register.routes.VariationDeclarationController.onSubmit(), 'autoComplete -> "off") {
+        @components.paragraph_text(messages("declaration.variations.statement0"))
+
+        <ol class="list-bullet">
+            <li>
+                @components.paragraph_text(messages("declaration.variations.statement1"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declaration.variations.statement2"))
+            </li>
+            <li>
+                @components.paragraph_text(messages("declaration.variations.statement3"))
+            </li>
+            <li>
+            @if(isWorkingKnowldge){
+                @components.paragraph_text(messages("declaration.variations.statement4"))
+            } else {
+                @components.paragraph_text(messages("declaration.variations.statement5"))
+            }
+            </li>
+        </ol>
+
+        <div class="form-group @if(form("agree").hasErrors){form-field--error}">
+            <fieldset class="inline">
+                <legend>
+
+                    <span class="visually-hidden">@messages("common.declaration.legend")</span>
+
+                    @form("agree").errors.map { error =>
+                    <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
+                    }
+                </legend>
+                <div class="multiple-choice">
+                    <input id="agree" name="agree" type="checkbox" value="agreed">
+                    <label for="agree">@messages("declaration.variations.agree")</label>
+                </div>
+            </fieldset>
+        </div>
+
+        @components.submit_button("site.agreeAndContinue")
+
+        @components.return_link(psaName, UpdateMode)
+
+    }
+
+}

@@ -125,7 +125,7 @@ class PartnershipNavigator @Inject()(
         mode match {
           case NormalMode => NavigateTo.save(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
           case CheckMode => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
+          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
         }
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }

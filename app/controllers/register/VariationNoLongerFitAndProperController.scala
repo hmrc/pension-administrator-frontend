@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -25,24 +25,24 @@ import models.{Mode, UpdateMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.vary.noLongerFitAndProper
+import views.html.register.variationNoLongerFitAndProper
 
 import scala.concurrent.ExecutionContext
 
-class NoLongerFitAndProperController @Inject()(appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               dataCacheConnector: UserAnswersCacheConnector
+class VariationNoLongerFitAndProperController @Inject()(appConfig: FrontendAppConfig,
+                                                        override val messagesApi: MessagesApi,
+                                                        authenticate: AuthAction,
+                                                        allowAccess: AllowAccessActionProvider,
+                                                        getData: DataRetrievalAction,
+                                                        requireData: DataRequiredAction,
+                                                        dataCacheConnector: UserAnswersCacheConnector
                                       )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   def onPageLoad(mode:Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val PSAName = psaName()
       dataCacheConnector.removeAll(request.externalId).map { _=>
-        Ok(noLongerFitAndProper(appConfig, PSAName, mode))
+        Ok(variationNoLongerFitAndProper(appConfig, PSAName, mode))
       }
   }
 }
