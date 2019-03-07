@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
-import controllers.vary.routes
-import forms.vary.AnyMoreChangesFormProvider
-import models.UpdateMode
+import controllers.register.routes
+import forms.register.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.DateHelper
 import views.behaviours.YesNoViewBehaviours
-import views.html.vary.anyMoreChanges
+import models.UpdateMode
+import views.html.register.anyMoreChanges
 
 class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
   val messageKeyPrefix = "anyMoreChanges"

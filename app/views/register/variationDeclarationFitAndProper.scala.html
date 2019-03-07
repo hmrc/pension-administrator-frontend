@@ -15,7 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.vary.routes
+@import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 
@@ -30,7 +30,7 @@
 
     @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
-    @helpers.form(action = routes.DeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
+    @helpers.form(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
 
         @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 

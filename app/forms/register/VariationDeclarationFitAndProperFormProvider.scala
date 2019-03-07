@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package forms.vary
+package forms.register
 
+import forms.FormErrorHelper
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class AnyMoreChangesFormProvider @Inject() extends Mappings {
+class VariationDeclarationFitAndProperFormProvider @Inject() extends FormErrorHelper with Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("anyMoreChanges.error.required")
+      "value" -> boolean("declarationFitAndProper.variations.error.required")
     )
 }

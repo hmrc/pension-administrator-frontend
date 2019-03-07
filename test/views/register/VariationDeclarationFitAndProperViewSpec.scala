@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
-import forms.vary.DeclarationFitAndProperFormProvider
+import forms.register.VariationDeclarationFitAndProperFormProvider
 import play.api.data.Form
 import views.behaviours.QuestionViewBehaviours
-import views.html.vary.declarationFitAndProper
+import views.html.register.variationDeclarationFitAndProper
 
-class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
+class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
   private val psaName = "test name"
 
-  val form: Form[Boolean] = new DeclarationFitAndProperFormProvider()()
+  val form: Form[Boolean] = new VariationDeclarationFitAndProperFormProvider()()
   override val errorKey = "agree"
 
   val messageKeyPrefix = "declarationFitAndProper.variations"
 
-  private def createView = () => declarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
+  private def createView = () => variationDeclarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = declarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]) = variationDeclarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
 
   "DeclarationFitAndProper (variations) view" must {
+    appRunning()
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
 
-    "behave like a page with a return link" in {
-      appRunning()
-      val doc = asDocument(createView())
-      assertLink(doc, "return-link", controllers.routes.PsaDetailsController.onPageLoad().url)
-    }
+    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
 
     "display the correct page title" in {
       val doc = asDocument(createView())

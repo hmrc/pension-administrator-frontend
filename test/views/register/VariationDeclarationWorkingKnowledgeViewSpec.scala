@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
-import forms.vary.DeclarationWorkingKnowledgeFormProvider
+import forms.register.VariationDeclarationWorkingKnowledgeFormProvider
 import models.UpdateMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.vary.declarationWorkingKnowledge
+import views.html.register.variationDeclarationWorkingKnowledge
 
-class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
+class VariationDeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
 
   private val psaName = "Mr Smith"
   private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
   private val messageKeyPrefix = "declarationWorkingKnowledge.variations"
 
-  private val form = new DeclarationWorkingKnowledgeFormProvider()()
+  private val form = new VariationDeclarationWorkingKnowledgeFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(
+  private def createView: () => HtmlFormat.Appendable = () => variationDeclarationWorkingKnowledge(
       frontendAppConfig,
     form,
     UpdateMode,

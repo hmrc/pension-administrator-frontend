@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.vary.DeclarationFitAndProperFormProvider
+import forms.register.VariationDeclarationFitAndProperFormProvider
 import identifiers.register._
 import models.UserType.UserType
 import models._
-import models.requests.AuthenticatedRequest
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator
-import views.html.vary.declarationFitAndProper
+import views.html.register.variationDeclarationFitAndProper
 
-import scala.concurrent.Future
+class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  import DeclarationFitAndProperControllerSpec._
+  import VariationDeclarationFitAndProperControllerSpec._
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -84,16 +80,11 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
   }
 }
 
-object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+object VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val form: Form[_] = new DeclarationFitAndProperFormProvider()()
-
-  private def fakeAuthAction(userType: UserType) = new AuthAction {
-    override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, true, Some("test psa id"))))
-  }
+  private val form: Form[_] = new VariationDeclarationFitAndProperFormProvider()()
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -102,20 +93,20 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
                           userType: UserType = UserType.Organisation,
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
                         ) =
-    new DeclarationFitAndProperController(
+    new VariationDeclarationFitAndProperController(
       appConfig,
       messagesApi,
-      fakeAuthAction(userType),
+      FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
-      new DeclarationFitAndProperFormProvider(),
+      new VariationDeclarationFitAndProperFormProvider(),
       fakeUserAnswersCacheConnector
     )
 
   private def viewAsString(psaName: String, form: Form[_]) =
-    declarationFitAndProper(
+    variationDeclarationFitAndProper(
       frontendAppConfig,
       form,
       Some(psaName)
