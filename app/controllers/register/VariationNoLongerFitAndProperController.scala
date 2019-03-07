@@ -38,7 +38,7 @@ class VariationNoLongerFitAndProperController @Inject()(appConfig: FrontendAppCo
                                                         dataCacheConnector: UserAnswersCacheConnector
                                       )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val PSAName = psaName()
       dataCacheConnector.removeAll(request.externalId).map { _=>

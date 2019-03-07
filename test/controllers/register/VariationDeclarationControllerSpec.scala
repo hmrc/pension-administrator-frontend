@@ -23,8 +23,7 @@ import forms.register.VariationDeclarationFormProvider
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import models.UserType.UserType
-import models.{NormalMode, TolerantIndividual, UserType}
-import models.register.{DeclarationWorkingKnowledge, PsaSubscriptionResponse}
+import models.register.PsaSubscriptionResponse
 import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.data.Form
 import play.api.libs.json.Json

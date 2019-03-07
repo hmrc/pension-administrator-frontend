@@ -47,7 +47,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge =>
@@ -57,7 +57,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge =>
@@ -70,7 +70,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
               dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { json =>
                 val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
                 pensionsSchemeConnector.updatePsa(psaId, UserAnswers(json)).map(_ =>
-                  Redirect(controllers.routes.IndexController.onPageLoad())
+                  Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(json)))
                 )
               }
           )

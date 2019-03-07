@@ -19,6 +19,7 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import identifiers.vary.AnyMoreChangesId
 import models.{Mode, UpdateMode}
 import utils.{Enumerable, Navigator}
@@ -30,13 +31,35 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
 
-  override protected def updateRouteMap(from: NavigateFrom) = from.id match {
-    case AnyMoreChangesId => from.userAnswers.get(AnyMoreChangesId) match {
-      case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
-      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+
+    case AnyMoreChangesId => anyMoreChangesRoute(from)
+
+    case VariationWorkingKnowledgeId => variationWorkingKnowledgeRoute(from)
+
+    case DeclarationFitAndProperId => declarationFitAndProperRoute(from)
+
+    case DeclarationId => NavigateTo.dontSave(controllers.register.routes.PSAVarianceSuccessController.onPageLoad())
+
     case _ => None
+  }
+
+  private def anyMoreChangesRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(AnyMoreChangesId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
+    case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def variationWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode))
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def declarationFitAndProperRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationFitAndProperId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
+    case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
 }
