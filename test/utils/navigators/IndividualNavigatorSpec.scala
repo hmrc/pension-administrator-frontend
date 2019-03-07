@@ -86,15 +86,15 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), false, None, false),
     (IndividualContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), true, None, true),
     (IndividualContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), true, None, true),
-    (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, true, None, true),
+    (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, false, None, false),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress, true, None, true),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
     (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges, false, None, false),
     (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousAddressPage(UpdateMode), false, None, false),
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), false, None, false),
     (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
-    (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, None, true),
-    (IndividualContactDetailsId, nonUk, checkYourAnswersPage, true, None, true)
+    (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
+    (IndividualContactDetailsId, nonUk, anyMoreChanges, false, None, true)
   )
 
 
@@ -106,6 +106,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
