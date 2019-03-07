@@ -46,7 +46,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge =>
@@ -56,7 +56,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge  =>
