@@ -891,3 +891,6 @@ declaration.variations.statement4 = you have a working knowledge of pension sche
 declaration.variations.statement5 = you do not have a working knowledge of pension scheme administrator duties and liabilities but have appointed an adviser who does have that knowledge
 declaration.variations.agree = Agree
 declaration.variations.invalid = You need to agree to all the declarations before you can continue
+
+partnership.partner.confirmPreviousAddress.title = Is this the previous address?
+partnership.partner.confirmPreviousAddress.heading = Is this {0}’s previous address?

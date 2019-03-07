@@ -73,3 +73,6 @@ POST       /:index/change-partners-previous-address-results   controllers.regist
 
 GET        /:index/check-your-answers                         controllers.register.partnership.partners.CheckYourAnswersController.onPageLoad(index: Index, mode: Mode = NormalMode)
 POST       /:index/check-your-answers                         controllers.register.partnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
+
+GET        /:index/is-this-previous-address                   controllers.register.partnership.partners.PartnerConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/is-this-previous-address                   controllers.register.partnership.partners.PartnerConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
