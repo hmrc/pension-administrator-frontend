@@ -35,6 +35,9 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   private def checkYourAnswers(): Option[NavigateTo] =
     NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
 
+  private def anyMoreChanges: Option[NavigateTo] =
+    NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
+
   //noinspection ScalaStyle
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
@@ -72,11 +75,18 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
+  //noinspection ScalaStyle
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(UpdateMode))
     case IndividualContactAddressListId => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(UpdateMode))
     case IndividualContactAddressId => NavigateTo.save(routes.IndividualAddressYearsController.onPageLoad(UpdateMode))
-    case IndividualAddressYearsId => addressYearsRoutes(from.userAnswers)
+    case IndividualAddressYearsId => addressYearsRoutesUpdateMode(from.userAnswers)
+    case IndividualConfirmPreviousAddressId => confirmPreviousAddressRoutes(from.userAnswers)
+    case IndividualPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualPreviousAddressListController.onPageLoad(UpdateMode))
+    case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(UpdateMode))
+    case IndividualPreviousAddressId => anyMoreChanges
+    case IndividualContactDetailsId => anyMoreChanges
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
@@ -116,17 +126,20 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     }
 
   def addressYearsRoutesUpdateMode(answers: UserAnswers): Option[NavigateTo] =
-    (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (_, None) => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      case (Some(AddressYears.UnderAYear), Some(false)) =>
-        NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(NormalMode))
-      case (Some(AddressYears.UnderAYear), Some(true)) =>
-        NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-      case (Some(AddressYears.OverAYear), _) =>
-        NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
+    answers.get(IndividualAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) =>
+        NavigateTo.save(routes.IndividualConfirmPreviousAddressController.onPageLoad())
+      case Some(AddressYears.OverAYear) =>
+        NavigateTo.save(controllers.vary.routes.AnyMoreChangesController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
+  private def confirmPreviousAddressRoutes(answers: UserAnswers):  Option[NavigateTo] =
+    answers.get(IndividualConfirmPreviousAddressId) match {
+      case Some(true) => anyMoreChanges
+      case Some(false) => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(UpdateMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   def contactAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
     (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
