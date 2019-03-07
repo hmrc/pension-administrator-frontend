@@ -56,14 +56,14 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
 
-    (CompanyAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (CompanyAddressYearsId, addressYearsOverAYear, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (CompanyAddressYearsId, addressYearsUnderAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
     (CompanyAddressYearsId, addressYearsUnderAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (ContactDetailsId, uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
     (ContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
@@ -81,15 +81,37 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
   )
 
+  private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save (NM)", "Next Page (Check Mode)", "Save (CM)"),
+
+    (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(UpdateMode), true, None, true),
+    (CompanyContactAddressListId, emptyAnswers, contactAddress(UpdateMode), true, None, true),
+    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(UpdateMode), true, None, true),
+
+    (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges, true, None, true),
+    (CompanyAddressYearsId, addressYearsUnderAYearUk, confirmPreviousAddressPage, true, None, true),
+    (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
+
+    (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode), true, None, true),
+    (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
+    (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(UpdateMode), true, None, true),
+
+    (ContactDetailsId, uk, companyDetailsPage, true, None, true),
+    (ContactDetailsId, nonUk, checkYourAnswersPage, true, None, true)
+  )
+
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
 
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
@@ -103,7 +125,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
 
-  private def contactDetailsPage = routes.ContactDetailsController.onPageLoad(NormalMode)
+  private def contactDetailsPage(mode: Mode) = routes.ContactDetailsController.onPageLoad(mode)
 
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
 

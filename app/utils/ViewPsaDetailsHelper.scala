@@ -144,7 +144,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def individualPreviousAddress: Option[AnswerRow] = userAnswers.get(IndividualPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
@@ -175,7 +175,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def companyAddress: Option[AnswerRow] = userAnswers.get(CompanyContactAddressId) map { address =>
     AnswerRow("company.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -187,7 +187,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(CompanyPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
