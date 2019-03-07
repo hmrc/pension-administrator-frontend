@@ -33,6 +33,7 @@ import scala.util.{Failure, Try}
 trait PensionsSchemeConnector {
 
   def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse]
+  def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 
 }
 
@@ -59,7 +60,19 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
 
   }
 
-  private def translateExceptions(): PartialFunction[Throwable, Future[PsaSubscriptionResponse]] = {
+  def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+    val url = config.updatePsaUrl(psaId)
+
+    http.POST(url, answers.json).map { response =>
+      require(response.status == Status.OK)
+    } andThen {
+      logExceptions()
+    } recoverWith {
+      translateExceptions()
+    }
+  }
+
+  private def translateExceptions[A](): PartialFunction[Throwable, Future[A]] = {
     case ex: BadRequestException
       if ex.message.contains("INVALID_PAYLOAD")
     => Future.failed(InvalidPayloadException())
@@ -74,7 +87,7 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
     => Future.failed(DuplicateSubmissionException())
   }
 
-  private def logExceptions(): PartialFunction[Try[PsaSubscriptionResponse], Unit] = {
+  private def logExceptions[A](): PartialFunction[Try[A], Unit] = {
     case Failure(t: Throwable) => Logger.error("Unable to register PSA", t)
   }
 
