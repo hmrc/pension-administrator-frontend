@@ -16,24 +16,24 @@
 
 package forms.register
 
-import forms.behaviours.OptionFieldBehaviours
-import models.register.DeclarationWorkingKnowledge
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class DeclarationWorkingKnowledgeFormProviderSpec extends OptionFieldBehaviours {
+class VariationWorkingKnowledgeFormProviderSpec extends BooleanFieldBehaviours {
 
-  val form = new DeclarationWorkingKnowledgeFormProvider()()
+  val requiredKey = "variationWorkingKnowledge.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new VariationWorkingKnowledgeFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "declarationWorkingKnowledge.error.required"
 
-    behave like optionsField[DeclarationWorkingKnowledge](
+    behave like booleanField(
       form,
       fieldName,
-      validValues = DeclarationWorkingKnowledge.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
@@ -42,4 +42,5 @@ class DeclarationWorkingKnowledgeFormProviderSpec extends OptionFieldBehaviours 
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

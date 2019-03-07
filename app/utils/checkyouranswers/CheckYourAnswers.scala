@@ -58,7 +58,6 @@ object CheckYourAnswers {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map { adviserDetails =>
           Seq(
-            AnswerRow("cya.label.name", Seq(adviserDetails.name), false, changeUrl),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviserDetails.email), false, changeUrl),
             AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviserDetails.phone), false, changeUrl)
           )

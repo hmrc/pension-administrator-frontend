@@ -24,42 +24,6 @@ class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
 
   val form = new AdviserDetailsFormProvider()()
 
-  ".name" must {
-
-    val fieldName = "name"
-    val requiredKey = "adviserDetails.error.name.required"
-    val lengthKey = "adviserDetails.error.name.length"
-    val invalidKey = "adviserDetails.error.name.invalid"
-    val maxLength = AdviserDetailsFormProvider.nameLength
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      RegexpGen.from(adviserNameRegex)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like fieldWithRegex(
-      form,
-      fieldName,
-      "test<name",
-      FormError(fieldName, invalidKey, Seq(adviserNameRegex))
-    )
-
-  }
-
   ".email" must {
 
     val fieldName = "email"
