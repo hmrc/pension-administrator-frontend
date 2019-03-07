@@ -17,8 +17,9 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import controllers.Retrievals
+import connectors.UserAnswersCacheConnector
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
@@ -41,8 +42,9 @@ class CheckYourAnswersController @Inject()(
                                             @CompanyDirector navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
-                                            sectionComplete: SectionComplete
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                            sectionComplete: SectionComplete,
+                                            val cacheConnector: UserAnswersCacheConnector
+                                          )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -74,8 +76,10 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
-        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { userAnswers =>
+        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+          Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, userAnswers))
+        }
       }
   }
 

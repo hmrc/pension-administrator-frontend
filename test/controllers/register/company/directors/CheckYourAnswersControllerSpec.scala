@@ -22,9 +22,10 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.TypedIdentifier
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.IsDirectorCompleteId
 import models.requests.DataRequest
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Index, NormalMode, UpdateMode}
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -78,7 +79,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeNavigator,
       messagesApi,
       checkYourAnswersFactory,
-      FakeSectionComplete
+      FakeSectionComplete,
+      FakeUserAnswersCacheConnector
     )
 
   def viewAsString(): String = check_your_answers(
@@ -116,13 +118,19 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     }
 
     "mark director as complete on submit" in {
-
+      FakeUserAnswersCacheConnector.reset()
       val result = controller().onSubmit(NormalMode, index)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       FakeSectionComplete.verify(IsDirectorCompleteId(index), true)
-
+      FakeUserAnswersCacheConnector.verifyNot(DirectorsOrPartnersChangedId)
     }
 
+    "save the change flag for UpdateMode on submit" in {
+      val result = controller().onSubmit(UpdateMode, index)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
+    }
   }
 }

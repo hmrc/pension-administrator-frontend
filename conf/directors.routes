@@ -72,7 +72,7 @@ POST       /:index/change-directors-address-results             controllers.regi
 
 GET        /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/already-deleted                              controllers.register.company.directors.AlreadyDeletedController.onPageLoad(mode: Mode = NormalMode, index: Index)

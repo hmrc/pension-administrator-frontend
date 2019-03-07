@@ -55,7 +55,9 @@ trait Variations extends FrontendController {
     AdviserDetailsId -> DeclarationChangedId,
     ConfirmDeleteAdviserId -> DeclarationChangedId,
     MoreThanTenDirectorsId -> MoreThanTenDirectorsOrPartnersChangedId,
-    MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId
+    MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId,
+    identifiers.register.company.directors.CheckYourAnswersId -> DirectorsOrPartnersChangedId,
+    identifiers.register.partnership.partners.CheckYourAnswersId -> DirectorsOrPartnersChangedId
   )
 
   protected def findChangeIdNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
