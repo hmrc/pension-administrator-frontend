@@ -39,7 +39,7 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
     appRunning()
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView, messageKeyPrefix, "p1", "p2", "p3")
 
     behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
 
