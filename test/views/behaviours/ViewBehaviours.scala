@@ -123,6 +123,7 @@ trait ViewBehaviours extends ViewSpecBase {
       assertLink(doc, "return-link", url)
     }
   }
+
   private def commonNormalPage(view: () => HtmlFormat.Appendable,
                                messageKeyPrefix: String,
                                expectedGuidanceKeys: String*): Unit = {

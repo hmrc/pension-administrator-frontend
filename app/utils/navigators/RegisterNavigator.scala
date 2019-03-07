@@ -72,7 +72,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
         NavigateTo.save(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
       case Some(DeclarationWorkingKnowledge.Adviser) =>
-        NavigateTo.save(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode))
+        NavigateTo.save(controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode))
       case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }

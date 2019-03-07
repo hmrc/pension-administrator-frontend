@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
@@ -402,8 +402,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   //Pension Adviser
-  private def pensionAdviser: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
-    AnswerRow("pensions.advisor.label", Seq(adviser.name), answerIsMessageKey = false,
+  private def pensionAdviser: Option[AnswerRow] = userAnswers.get(AdviserNameId) map { adviserName =>
+    AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
       None)
   }
 

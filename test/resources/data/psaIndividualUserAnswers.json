@@ -59,8 +59,8 @@
   },
   "individualDateOfBirth": "1947-03-29",
   "declarationWorkingKnowledge" : "adviser",
+  "adviserName" : "Pension Adviser",
   "adviserDetails" : {
-    "name" : "Pension Adviser",
     "email" : "aaa@yahoo.com",
     "phone" : "0044-0987654232"
   },

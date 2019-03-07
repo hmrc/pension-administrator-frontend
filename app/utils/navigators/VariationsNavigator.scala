@@ -33,7 +33,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   override protected def updateRouteMap(from: NavigateFrom) = from.id match {
     case AnyMoreChangesId => from.userAnswers.get(AnyMoreChangesId) match {
       case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
-      case Some(false) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
+      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
     case _ => None
