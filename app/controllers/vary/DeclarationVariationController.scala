@@ -49,22 +49,22 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      DeclarationWorkingKnowledgeId.retrieve.right.map {
+      VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge =>
 
           Future.successful(Ok(views.html.vary.declarationVariation(
-            appConfig, form, psaName(), isWorkingKnowledge(workingKnowledge))))
+            appConfig, form, psaName(), workingKnowledge)))
       }
   }
 
   def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      DeclarationWorkingKnowledgeId.retrieve.right.map {
+      VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge  =>
 
           form.bindFromRequest().fold(
             errors => Future.successful(BadRequest(views.html.vary.declarationVariation(
-              appConfig, errors, psaName(), isWorkingKnowledge(workingKnowledge)))),
+              appConfig, errors, psaName(), workingKnowledge))),
 
             success =>
               dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { _ =>
@@ -72,10 +72,5 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
               }
           )
       }
-  }
-
-  private def isWorkingKnowledge(workingKnowledge: DeclarationWorkingKnowledge): Boolean =  workingKnowledge match {
-    case DeclarationWorkingKnowledge.WorkingKnowledge => true
-    case DeclarationWorkingKnowledge.Adviser => false
   }
 }

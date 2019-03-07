@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.vary.DeclarationVariationFormProvider
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId}
+import identifiers.register.{DeclarationFitAndProperId, DeclarationId, DeclarationWorkingKnowledgeId, VariationWorkingKnowledgeId}
 import models.UserType.UserType
 import models.register.DeclarationWorkingKnowledge
 import models.{NormalMode, TolerantIndividual, UserType}
@@ -94,7 +94,7 @@ object DeclarationVariationControllerSpec extends ControllerSpecBase {
 
   private val individual = UserAnswers(Json.obj())
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
-    .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
+    .set(VariationWorkingKnowledgeId)(true).asOpt.value
     .set(DeclarationFitAndProperId)(true).asOpt.value
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
