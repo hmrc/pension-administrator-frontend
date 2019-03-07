@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
 import controllers.Retrievals
 import controllers.actions._
-import forms.vary.{DeclarationFitAndProperFormProvider, DeclarationVariationFormProvider}
+import forms.register.VariationDeclarationFormProvider
 import identifiers.register._
 import javax.inject.Inject
 import models._
-import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -34,14 +33,14 @@ import utils.annotations.Register
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
+class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
                                                authenticate: AuthAction,
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                @Register navigator: Navigator,
-                                               formProvider: DeclarationVariationFormProvider,
+                                               formProvider: VariationDeclarationFormProvider,
                                                dataCacheConnector: UserAnswersCacheConnector
                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
@@ -52,7 +51,7 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
       VariationWorkingKnowledgeId.retrieve.right.map {
         case workingKnowledge =>
 
-          Future.successful(Ok(views.html.vary.declarationVariation(
+          Future.successful(Ok(views.html.register.variationDeclaration(
             appConfig, form, psaName(), workingKnowledge)))
       }
   }
@@ -63,7 +62,7 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
         case workingKnowledge  =>
 
           form.bindFromRequest().fold(
-            errors => Future.successful(BadRequest(views.html.vary.declarationVariation(
+            errors => Future.successful(BadRequest(views.html.register.variationDeclaration(
               appConfig, errors, psaName(), workingKnowledge))),
 
             success =>

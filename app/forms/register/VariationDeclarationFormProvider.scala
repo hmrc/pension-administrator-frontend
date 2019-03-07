@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms.vary
+package forms.register
 
 import forms.mappings.CheckboxMapping
 import play.api.data.Form
 
-class DeclarationVariationFormProvider extends CheckboxMapping {
+class VariationDeclarationFormProvider extends CheckboxMapping {
 
   private val fieldName = "agree"
   private val trueValue = "agreed"
