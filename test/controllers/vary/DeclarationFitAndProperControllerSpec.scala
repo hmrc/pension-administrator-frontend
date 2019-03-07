@@ -90,11 +90,6 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFitAndProperFormProvider()()
 
-  private def fakeAuthAction(userType: UserType) = new AuthAction {
-    override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, true, Some("test psa id"))))
-  }
-
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   private def controller(
@@ -105,7 +100,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     new DeclarationFitAndProperController(
       appConfig,
       messagesApi,
-      fakeAuthAction(userType),
+      FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package vary
+package forms.vary
 
-import forms.behaviours.BooleanFieldBehaviours
-import forms.vary.DeclarationFitAndProperFormProvider
-import play.api.data.{Form, FormError}
+import forms.behaviours.CheckboxBehaviour
+import play.api.data.Form
 
-class DeclarationFitAndProperFormProviderSpec extends BooleanFieldBehaviours {
+class DeclarationVariationFormProviderSpec extends CheckboxBehaviour {
 
-  private val form: Form[Boolean] = new DeclarationFitAndProperFormProvider()()
-  private val fieldName = "value"
-  private val invalidKey = "error.boolean"
+  private val form: Form[Boolean] = new DeclarationVariationFormProvider()()
+  private val fieldName = "agree"
+  private val trueValue = "agreed"
+  private val invalidKey = "declaration.variations.invalid"
 
-  "DeclarationFitAndProperFormProvider" should {
-    behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey))
+  "DeclarationVariationFormProvider" should {
+
+    behave like formWithCheckbox(form, fieldName, trueValue, acceptTrueOnly = true, invalidKey)
   }
 }
