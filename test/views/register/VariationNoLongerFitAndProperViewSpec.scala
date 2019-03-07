@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package views.vary
+package views.register
 
 import models.UpdateMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.vary.noLongerFitAndProper
+import views.html.register.variationNoLongerFitAndProper
 
-class NoLongerFitAndProperViewSpec extends ViewBehaviours {
+class VariationNoLongerFitAndProperViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "noLongerFitAndProper"
 
   private def createView: () => HtmlFormat.Appendable = () =>
-    noLongerFitAndProper(frontendAppConfig, "Mark Wright", UpdateMode)(fakeRequest, messages)
+    variationNoLongerFitAndProper(frontendAppConfig, "Mark Wright", UpdateMode)(fakeRequest, messages)
 
 
   "noLongerFitAndProper view" must {

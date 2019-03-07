@@ -125,7 +125,7 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy private val nonUkIndividualAddressPage = routes.IndividualRegisteredAddressController.onPageLoad(NormalMode)
   lazy private val reconsiderAreYouInUk = routes.IndividualAreYouInUKController.onPageLoad(CheckMode)
   lazy private val outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
-  lazy private val anyMoreChanges = controllers.vary.routes.AnyMoreChangesController.onPageLoad()
+  lazy private val anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   lazy private val confirmPreviousAddress = routes.IndividualConfirmPreviousAddressController.onPageLoad()
 
   private def addressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)

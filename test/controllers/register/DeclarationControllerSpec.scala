@@ -22,15 +22,12 @@ import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId
 import models.UserType.UserType
-import models.requests.AuthenticatedRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{NormalMode, UserType}
 import play.api.data.Form
-import play.api.mvc.{Call, Request, Result}
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.declaration
-
-import scala.concurrent.Future
 
 class DeclarationControllerSpec extends ControllerSpecBase {
 
@@ -119,11 +116,6 @@ object DeclarationControllerSpec extends ControllerSpecBase {
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
 
-  private def fakeAuthAction(userType: UserType) = new AuthAction {
-    override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None)))
-  }
-
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -131,7 +123,7 @@ object DeclarationControllerSpec extends ControllerSpecBase {
     new DeclarationController(
       frontendAppConfig,
       messagesApi,
-      fakeAuthAction(userType),
+      FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,

@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import controllers.vary.routes._
+@import controllers.register.routes._
 @import models.Mode
 @import models.register.DeclarationWorkingKnowledge
 
@@ -27,22 +27,22 @@
     personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationWorkingKnowledge.variations.title"),
+    title = messages("stillUseAdviser.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = DeclarationWorkingKnowledgeController.onSubmit(), 'autoComplete -> "off") {
+    @helpers.form(action = StillUseAdviserController.onSubmit(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("declarationWorkingKnowledge.variations.heading", psaName, personWithWorkingKnowledgeName))
+        @components.heading(messages("stillUseAdviser.heading", psaName, personWithWorkingKnowledgeName))
 
-        <p>@messages("declarationWorkingKnowledge.variations.p1")</p>
-        <p>@messages("declarationWorkingKnowledge.variations.p2", psaName, personWithWorkingKnowledgeName)</p>
+        <p>@messages("stillUseAdviser.p1")</p>
+        <p>@messages("stillUseAdviser.p2", psaName, personWithWorkingKnowledgeName)</p>
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("declarationWorkingKnowledge.variations.heading"),
+            label = messages("stillUseAdviser.heading"),
             labelClass = Some("visually-hidden"),
             secondaryLabel = None
         )

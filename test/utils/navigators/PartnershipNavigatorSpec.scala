@@ -103,7 +103,7 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
-  private def anyMoreChangesPage: Call = controllers.vary.routes.AnyMoreChangesController.onPageLoad()
+  private def anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private def confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 

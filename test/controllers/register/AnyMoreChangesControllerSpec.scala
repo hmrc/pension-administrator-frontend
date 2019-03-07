@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.vary.AnyMoreChangesFormProvider
-import models.UpdateMode
+import forms.register.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.vary.anyMoreChanges
+import views.html.register.anyMoreChanges
 
 
 class AnyMoreChangesControllerSpec extends ControllerSpecBase {
@@ -39,7 +38,6 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider
@@ -50,7 +48,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
   "AnyMoreChangesController" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(UpdateMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -59,7 +57,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
     "redirect to the next page when valid data is submitted for true" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-      val result = controller().onSubmit(UpdateMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -69,7 +67,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(UpdateMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)

@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.vary.DeclarationFitAndProperControllerSpec.controller
-import forms.vary.DeclarationWorkingKnowledgeFormProvider
-import identifiers.register.DeclarationFitAndProperId
-import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId}
+import forms.register.StillUseAdviserFormProvider
+import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.vary.DeclarationWorkingKnowledgeId
 import models.register.DeclarationWorkingKnowledge
-import models.register.adviser.AdviserDetails
 import models.{BusinessDetails, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.vary.declarationWorkingKnowledge
+import views.html.register.stillUseAdviser
 
-class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
+class StillUseAdviserControllerSpec extends ControllerSpecBase {
 
-  import DeclarationWorkingKnowledgeControllerSpec._
+  import StillUseAdviserControllerSpec._
 
   "DeclarationWorkingKnowledge Controller" must {
 
@@ -87,7 +84,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
   }
 }
 
-object DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
+object StillUseAdviserControllerSpec extends ControllerSpecBase {
   private val psaName = "Blah Inc"
   private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
@@ -102,11 +99,11 @@ object DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new DeclarationWorkingKnowledgeFormProvider()
+  private val formProvider = new StillUseAdviserFormProvider()
   private val form = formProvider()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalActionWithAdviserAndBusinessDetails) =
-    new DeclarationWorkingKnowledgeController(
+    new StillUseAdviserController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -118,6 +115,6 @@ object DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form) = declarationWorkingKnowledge(frontendAppConfig,
+  private def viewAsString(form: Form[_] = form) = stillUseAdviser(frontendAppConfig,
     form, UpdateMode, psaName, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
 }
