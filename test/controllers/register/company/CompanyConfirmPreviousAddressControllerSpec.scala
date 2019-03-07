@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.register.individual
+package controllers.register.company
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
+import identifiers.register.company.{BusinessDetailsId, CompanyConfirmPreviousAddressId}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualConfirmPreviousAddressId, IndividualDetailsId}
 import models._
 import play.api.data.Form
@@ -32,14 +33,10 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
+class CompanyConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  val psa: String = "John Doe"
-
-  val formProvider = new ConfirmPreviousAddressFormProvider()
-  val form = formProvider(Message("confirmPreviousAddress.error", psa))
+  val psa = "Test company name"
 
   val testAddress = TolerantAddress(
     Some("address line 1"),
@@ -50,7 +47,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
   )
 
   def viewmodel = SameContactAddressViewModel(
-    postCall = routes.IndividualConfirmPreviousAddressController.onSubmit(),
+    postCall = routes.CompanyConfirmPreviousAddressController.onSubmit(),
     title = Message("confirmPreviousAddress.title"),
     heading = Message("confirmPreviousAddress.heading", psa),
     secondaryHeader = None,
@@ -61,9 +58,10 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
+  val errorMessage = Message("")
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
-    new IndividualConfirmPreviousAddressController(
+    new CompanyConfirmPreviousAddressController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -75,6 +73,10 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
       countryOptions
     )
 
+
+  val formProvider: ConfirmPreviousAddressFormProvider = new ConfirmPreviousAddressFormProvider()
+  val form = formProvider(Message("confirmPreviousAddress.error", psa))
+
   def viewAsString(form: Form[_] = form): String =
     sameContactAddress(
       frontendAppConfig,
@@ -84,12 +86,12 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(IndividualDetailsId)(TolerantIndividual(Some("John"), None, Some("Doe"))).flatMap(_.set(
+    .set(BusinessDetailsId)(BusinessDetails("Test company name", None)).flatMap(_.set(
     ExistingCurrentAddressId)(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 
-  "IndividualConfirmPreviousAddressController" must {
+  "CompanyConfirmPreviousAddressController" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller(getRelevantData).onPageLoad(UpdateMode)(fakeRequest)
@@ -99,7 +101,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(IndividualConfirmPreviousAddressId)(false)).get.json))
+      val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(CompanyConfirmPreviousAddressId)(false)).get.json))
 
       val result = controller(getData).onPageLoad(UpdateMode)(fakeRequest)
 
