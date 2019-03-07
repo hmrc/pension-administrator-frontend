@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.Register
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,8 +41,9 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                requireData: DataRequiredAction,
                                                @Register navigator: Navigator,
                                                formProvider: VariationDeclarationFormProvider,
-                                               dataCacheConnector: UserAnswersCacheConnector
-                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                               dataCacheConnector: UserAnswersCacheConnector,
+                                               pensionsSchemeConnector: PensionsSchemeConnector
+                                              )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -59,15 +60,18 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       VariationWorkingKnowledgeId.retrieve.right.map {
-        case workingKnowledge  =>
+        case workingKnowledge =>
 
           form.bindFromRequest().fold(
             errors => Future.successful(BadRequest(views.html.register.variationDeclaration(
               appConfig, errors, psaName(), workingKnowledge))),
 
             success =>
-              dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { _ =>
-                Future.successful(Redirect(controllers.routes.IndexController.onPageLoad()))
+              dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { json =>
+                val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+                pensionsSchemeConnector.updatePsa(psaId, UserAnswers(json)).map(_ =>
+                  Redirect(controllers.routes.IndexController.onPageLoad())
+                )
               }
           )
       }

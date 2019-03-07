@@ -50,8 +50,8 @@ POST       /still-fit-and-proper-person             controllers.register.Variati
 
 GET        /cannot-make-changes                     controllers.register.VariationNoLongerFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
 
-GET        /do-you-still-use-an-adviser             controllers.register.VariationDeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
-POST       /do-you-still-use-an-adviser             controllers.register.VariationDeclarationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+GET        /do-you-still-use-an-adviser             controllers.register.StillUseAdviserController.onPageLoad(mode: Mode = UpdateMode)
+POST       /do-you-still-use-an-adviser             controllers.register.StillUseAdviserController.onSubmit(mode: Mode = UpdateMode)
 
 
 GET        /declare-after-changing-details          controllers.register.VariationDeclarationController.onPageLoad(mode: Mode = UpdateMode)

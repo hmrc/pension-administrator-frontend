@@ -102,6 +102,9 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val registerPsaUrl: String = baseUrl("pension-administrator") +
         runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
 
+  def updatePsaUrl(psaId:String): String = baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)
+
   def canDeRegisterPsaUrl(psaId: String): String = baseUrl("pension-administrator") +
     runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)
 

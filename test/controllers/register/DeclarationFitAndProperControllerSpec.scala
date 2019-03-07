@@ -221,6 +221,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.successful(validPsaResponse)
     }
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private val duplicateRegistrationPensionsSchemeConnector = new PensionsSchemeConnector {
@@ -229,6 +230,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidBusinessPartnerException())
     }
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private val submissionInvalidPensionsSchemeConnector = new PensionsSchemeConnector {
@@ -237,6 +239,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidPayloadException())
     }
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
