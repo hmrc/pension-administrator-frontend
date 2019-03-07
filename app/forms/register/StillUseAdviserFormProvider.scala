@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class VariationDeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
+class StillUseAdviserFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(

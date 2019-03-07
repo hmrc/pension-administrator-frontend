@@ -16,22 +16,22 @@
 
 package views.register
 
-import forms.register.VariationDeclarationWorkingKnowledgeFormProvider
+import forms.register.StillUseAdviserFormProvider
 import models.UpdateMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.register.variationDeclarationWorkingKnowledge
+import views.html.register.stillUseAdviser
 
-class VariationDeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
+class StillUseAdviserViewSpec extends ViewBehaviours {
 
   private val psaName = "Mr Smith"
   private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
   private val messageKeyPrefix = "declarationWorkingKnowledge.variations"
 
-  private val form = new VariationDeclarationWorkingKnowledgeFormProvider()()
+  private val form = new StillUseAdviserFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => variationDeclarationWorkingKnowledge(
+  private def createView: () => HtmlFormat.Appendable = () => stillUseAdviser(
       frontendAppConfig,
     form,
     UpdateMode,
