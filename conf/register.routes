@@ -39,3 +39,5 @@ POST       /change-registered-in-uk                 controllers.register.Busines
 
 GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
 POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
+
+GET        /details-updated                         controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
