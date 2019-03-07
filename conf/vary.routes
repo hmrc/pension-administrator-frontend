@@ -11,5 +11,7 @@ GET        /cannot-make-changes             controllers.vary.NoLongerFitAndPrope
 GET        /do-you-still-use-an-adviser     controllers.vary.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
 POST       /do-you-still-use-an-adviser     controllers.vary.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
 
+GET        /cannot-make-changes  controllers.vary.NoLongerFitAndProperController.onPageLoad()
+
 GET        /declare-after-changing-details  controllers.vary.DeclarationVariationController.onPageLoad()
 POST       /declare-after-changing-details  controllers.vary.DeclarationVariationController.onSubmit()
