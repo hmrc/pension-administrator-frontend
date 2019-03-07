@@ -106,3 +106,6 @@ GET        /enter-registered-address                    controllers.register.com
 POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 
 GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
+
+GET         /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
