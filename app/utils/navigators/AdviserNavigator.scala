@@ -31,6 +31,7 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()
 
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case AdviserNameId => NavigateTo.save(routes.AdviserDetailsController.onPageLoad(NormalMode))
     case AdviserDetailsId => NavigateTo.save(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(NormalMode))
     case AdviserAddressListId => NavigateTo.save(routes.AdviserAddressController.onPageLoad(NormalMode))
@@ -40,6 +41,7 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   }
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+    case AdviserNameId => NavigateTo.dontSave(checkYourAnswers())
     case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers())
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
     case AdviserAddressListId => NavigateTo.save(routes.AdviserAddressController.onPageLoad(CheckMode))

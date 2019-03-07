@@ -146,6 +146,7 @@ common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
+common.declaration.legend = Check this box if you agree to the declaration
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -445,8 +446,16 @@ declaration.statement4 = that where HMRC believes that a scheme administrator, o
 declaration.agree = I agree
 declaration.invalid = You need to agree to all the declarations before you can continue
 
-adviserDetails.title = Provide details of your pension adviser
-adviserDetails.heading = Provide details of your pension adviser
+adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.p1 = This can be either the name of your pension practitioner or provider, or the company they work for.
+adviserName.error.required = Enter the name of your pension adviser
+adviserName.error.length = Enter a name using less than 108 characters
+adviserName.error.invalid = Enter a name using only letters
+adviserName.checkYourAnswersLabel = Name
+
+adviserDetails.title = What are the person’s contact details?
+adviserDetails.heading = What are {0}’s contact details?
 adviserDetails.name = Name
 adviserDetails.email = Email address
 adviserDetails.phone = Phone Number
@@ -831,5 +840,53 @@ agentCannotRegister.p2 = Managing pension schemes can only be used by scheme adm
 status.complete = COMPLETE
 status.incomplete = INCOMPLETE
 
+declarationFitAndProper.variations.title =  Is the scheme administrator still fit and proper?
+declarationFitAndProper.variations.heading = Is {0} still fit and proper to be a scheme administrator?
+declarationFitAndProper.variations.declaration = Being fit and proper to be a scheme administrator means that {0} has never:
+declarationFitAndProper.variations.statement1 = been involved in tax fraud, abuse of tax repayment schemes or other fraudulent behaviour including misrepresentation or identity theft
+declarationFitAndProper.variations.statement2 = had a criminal conviction relating to finance, corporate bodies or dishonesty
+declarationFitAndProper.variations.statement3 = been the subject of adverse civil proceedings relating to finance, corporate bodies, dishonesty or misconduct
+declarationFitAndProper.variations.statement4 = participated in, or been connected with, designing or marketing tax avoidance or pensions liberation schemes
+declarationFitAndProper.variations.statement5 = been disqualified from acting as a company director or are currently bankrupt
+declarationFitAndProper.variations.statement6 = been disqualified from acting as a pension scheme trustee
+declarationFitAndProper.variations.error.required = Select yes if the scheme administrator is still fit and proper
+
+
 individual.confirmPreviousAddress.title = Is this the previous address?
 individual.confirmPreviousAddress.heading = Is this {0}’s previous address?
+
+noLongerFitAndProper.title = The details cannot be changed
+noLongerFitAndProper.heading = The details cannot be changed
+noLongerFitAndProper.p1 = The details cannot be changed because you have said that {0} is not fit and proper to be a scheme administrator.
+noLongerFitAndProper.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
+
+stillUseAdviser.title = Does this person still have pensions working knowledge on your behalf
+stillUseAdviser.heading = Does {1} still have working knowledge of pensions and pensions tax legislation for {0}?
+stillUseAdviser.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration.
+stillUseAdviser.p2 = {1} was previously the person with working knowledge of pensions and pensions tax legislation for {0}.
+stillUseAdviser.error.required = You need to tell us if this person is still your adviser
+
+confirmDelete.adviser.title = Are you sure you want to delete this adviser?
+confirmDelete.adviser.heading = Are you sure you want to delete {0}?
+confirmDelete.adviser.required = Select yes to delete {0}
+
+variationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
+variationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
+variationWorkingKnowledge.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
+variationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who is administering pension schemes, you might not have working knowledge of pensions and pensions tax legislation.
+variationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.
+variationWorkingKnowledge.error.required = You need to tell us if you have a working knowledge of pensions
+
+psaVarianceSuccess.title = The scheme administrator details have been updated
+psaVarianceSuccess.heading = The scheme administrator details have been updated
+
+declaration.variations.title =  Declaration
+declaration.variations.heading = Declaration
+declaration.variations.statement0 = By continuing you declare that:
+declaration.variations.statement1 = the information shown is complete and correct and that you may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
+declaration.variations.statement2 = the scheme administrator is a fit and proper person
+declaration.variations.statement3 = you understand that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme, is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme or, if the scheme is already registered, HMRC may de-register a scheme
+declaration.variations.statement4 = you have a working knowledge of pension scheme administrator duties and liabilities
+declaration.variations.statement5 = you do not have a working knowledge of pension scheme administrator duties and liabilities but have appointed an adviser who does have that knowledge
+declaration.variations.agree = Agree
+declaration.variations.invalid = You need to agree to all the declarations before you can continue

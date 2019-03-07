@@ -18,7 +18,6 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Variations
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
@@ -31,23 +30,22 @@ import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.declarationWorkingKnowledge
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationWorkingKnowledgeController @Inject()(
                                                        appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
-                                                       override val cacheConnector: UserAnswersCacheConnector,
+                                                       dataCacheConnector: UserAnswersCacheConnector,
                                                        @Register navigator: Navigator,
                                                        authenticate: AuthAction,
-                                                       allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider
-                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations {
+                                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form
@@ -61,21 +59,9 @@ class DeclarationWorkingKnowledgeController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
-        value => {
-          val hasAnswerChanged = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
-            case None => true
-            case Some(existing) => existing != value
-          }
-          if (hasAnswerChanged) {
-            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).flatMap(cacheMap =>
-              saveChangeFlag(mode, DeclarationWorkingKnowledgeId).map(_ =>
-                Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-            )
-          } else {
-            cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-          }
-        }
+        (value) =>
+          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, new UserAnswers(cacheMap))))
       )
   }
 }

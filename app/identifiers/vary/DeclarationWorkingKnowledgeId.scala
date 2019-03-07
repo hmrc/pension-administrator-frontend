@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package forms.vary
+package identifiers.vary
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers._
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
+import models.register.DeclarationWorkingKnowledge
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
-class AnyMoreChangesFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("anyMoreChanges.error.required")
-    )
+case object DeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
+  override def toString: String = "variationsDeclarationWorkingKnowledge"
 }

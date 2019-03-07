@@ -124,6 +124,16 @@ trait ViewSpecBase extends SpecBase {
       )
   }
 
+  def notHaveDynamicText(messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
+    view =>
+      val text = Message(messageKey, args: _*).resolve
+      MatchResult(
+        !Jsoup.parse(view().toString).toString.contains(text),
+        s"text $text is rendered on the page",
+        s"text $text is not rendered on the page"
+      )
+  }
+
   def haveElementWithText(id: String, messageKey: String, args: Any*): Matcher[View] = Matcher[View] {
     view =>
       val text = messages(messageKey, args: _*)
@@ -197,7 +207,6 @@ trait ViewSpecBase extends SpecBase {
     val link = doc.select(s"a[id=$linkId]")
     assert(link.size() == 1, s"\n\nLink $linkId is not displayed")
     val href = link.attr("href")
-    assert(href == url, s"\n\nLink $linkId has href $href no $url")
+    assert(href == url, s"\n\nLink $linkId has href $href not $url")
   }
-
 }
