@@ -49,8 +49,8 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (DeclarationWorkingKnowledgeId and DeclarationFitAndProperId).retrieve.right.map {
-        case workingKnowledge ~ _ =>
+      DeclarationWorkingKnowledgeId.retrieve.right.map {
+        case workingKnowledge =>
 
           Future.successful(Ok(views.html.vary.declarationVariation(
             appConfig, form, psaName(), isWorkingKnowledge(workingKnowledge))))
@@ -59,8 +59,8 @@ class DeclarationVariationController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (DeclarationWorkingKnowledgeId and DeclarationFitAndProperId).retrieve.right.map {
-        case workingKnowledge ~ _ =>
+      DeclarationWorkingKnowledgeId.retrieve.right.map {
+        case workingKnowledge  =>
 
           form.bindFromRequest().fold(
             errors => Future.successful(BadRequest(views.html.vary.declarationVariation(
