@@ -16,6 +16,9 @@ POST       /declaration-working-knowledge           controllers.register.Declara
 GET        /:mode/declaration-working-knowledge     controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
 POST       /:mode/declaration-working-knowledge     controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
 
+GET        /changing-having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+
 GET        /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)
 
@@ -36,3 +39,5 @@ POST       /:mode/registered-in-uk                  controllers.register.Busines
 
 GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
 POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
+
+GET        /details-updated                         controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)

@@ -56,7 +56,7 @@ object VariationsNavigatorSpec extends OptionValues {
   private val noMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(false).asOpt.value
 
   private val checkYourAnswersPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
-  private val variationWorkingKnowledgePage: Call = controllers.routes.PsaDetailsController.onPageLoad()
+  private val variationWorkingKnowledgePage: Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
   private val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {

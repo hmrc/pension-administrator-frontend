@@ -2,3 +2,13 @@
 
 GET        /make-more-changes    controllers.vary.AnyMoreChangesController.onPageLoad(mode: Mode = UpdateMode)
 POST       /make-more-changes    controllers.vary.AnyMoreChangesController.onSubmit(mode: Mode = UpdateMode)
+
+GET        /still-fit-and-proper-person     controllers.vary.DeclarationFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
+POST       /still-fit-and-proper-person     controllers.vary.DeclarationFitAndProperController.onSubmit(mode: Mode = UpdateMode)
+
+GET        /cannot-make-changes             controllers.vary.NoLongerFitAndProperController.onPageLoad()
+
+GET        /do-you-still-use-an-adviser     controllers.vary.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
+POST       /do-you-still-use-an-adviser     controllers.vary.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+
+GET        /cannot-make-changes  controllers.vary.NoLongerFitAndProperController.onPageLoad()
