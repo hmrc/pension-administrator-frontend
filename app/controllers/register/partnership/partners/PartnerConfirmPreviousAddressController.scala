@@ -67,14 +67,14 @@ class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode, index).retrieve.right.map { vm =>
-        get(PartnerConfirmPreviousAddressId, vm)
+        get(PartnerConfirmPreviousAddressId(index), vm)
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode, index).retrieve.right.map { vm =>
-        post(PartnerConfirmPreviousAddressId, PartnerPreviousAddressId(index), vm, mode)
+        post(PartnerConfirmPreviousAddressId(index), PartnerPreviousAddressId(index), vm, mode)
       }
   }
 }

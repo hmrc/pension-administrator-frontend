@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership.partners
+package identifiers.register.company.directors
 
-import identifiers.TypedIdentifier
+import identifiers._
 import models.TolerantAddress
 import play.api.libs.json.JsPath
 
 case class ExistingCurrentAddressId(index: Int) extends TypedIdentifier[TolerantAddress] {
-  override def path: JsPath = JsPath \ "partners" \ index \ ExistingCurrentAddressId.toString
+  override def path: JsPath = JsPath \ "directors" \ index \ ExistingCurrentAddressId.toString
 }
 
 object ExistingCurrentAddressId {

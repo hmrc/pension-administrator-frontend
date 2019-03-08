@@ -17,8 +17,12 @@
 package identifiers.register.partnership.partners
 
 import identifiers.TypedIdentifier
+import play.api.libs.json.JsPath
 
-case object PartnerConfirmPreviousAddressId extends TypedIdentifier[Boolean] {
+case class PartnerConfirmPreviousAddressId(index: Int) extends TypedIdentifier[Boolean] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerConfirmPreviousAddressId.toString
+}
+
+object PartnerConfirmPreviousAddressId {
   override def toString: String = "partnerConfirmPreviousAddress"
-
 }
