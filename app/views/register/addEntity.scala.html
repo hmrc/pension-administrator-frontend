@@ -45,7 +45,9 @@
 
             @if(viewmodel.entities.isEmpty) {
                 @components.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
-                @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
+                <div class="section">
+                    @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
+                </div>
             } else {
 
                 @components.person_list(appConfig, viewmodel.entities, mode)
@@ -61,7 +63,9 @@
                     @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
                 }
 
-                @components.submit_button(disabled = disableSubmission)
+                <div class="section">
+                    @components.submit_button(disabled = disableSubmission)
+                </div>
             }
         }
 }

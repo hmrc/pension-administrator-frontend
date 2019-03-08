@@ -44,7 +44,9 @@
 
         @if(directors.isEmpty) {
             @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
-            @components.submit_button("addCompanyDirectors.addADirector")
+            <div class="section">
+                @components.submit_button("addCompanyDirectors.addADirector")
+            </div>
         } else {
 
             @components.person_list(appConfig, directors, mode)
@@ -60,7 +62,9 @@
                 @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
             }
 
-            @components.submit_button(disabled = disableSubmission)
+            <div class="section">
+                @components.submit_button(disabled = disableSubmission)
+            </div>
         }
     }
 }
