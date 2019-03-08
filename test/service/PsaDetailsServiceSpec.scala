@@ -18,21 +18,21 @@ package service
 
 import base.SpecBase
 import config.FeatureSwitchManagementServiceTestImpl
-import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector, UserAnswersCacheConnector}
+import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import identifiers.UpdateModeId
+import identifiers.register.DeclarationChangedId
 import identifiers.register.company.directors.IsDirectorCompleteId
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId}
 import identifiers.register.partnership.partners.IsPartnerCompleteId
-import models.requests.AuthenticatedRequest
-import models.{PSAUser, UpdateMode, UserType}
+import models.requests.OptionalDataRequest
+import models.{PSAUser, UserType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.{JsBoolean, JsValue, Json}
-import play.api.test.Helpers.{contentAsString, status}
+import play.api.libs.json.{JsValue, Json}
 import services.PsaDetailServiceImpl
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
@@ -52,7 +52,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
   import PsaDetailsServiceSpec._
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request = AuthenticatedRequest(fakeRequest, "", PSAUser(UserType.Organisation, None, false, Some("test Psa id")))
+  implicit val request = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
+    Some(UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value))//AuthenticatedRequest(fakeRequest, "", PSAUser(UserType.Organisation, None, false, Some("test Psa id")))
 
   "PsaDetailsService" must {
     "when variations and dergistration are disabled" when {

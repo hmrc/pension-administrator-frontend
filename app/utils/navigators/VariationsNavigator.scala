@@ -19,7 +19,7 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import identifiers.register.{DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
+import identifiers.register.{DeclarationChangedId, DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import identifiers.vary.AnyMoreChangesId
 import models.{Mode, UpdateMode}
 import utils.{Enumerable, Navigator}
@@ -41,6 +41,8 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
     case DeclarationId => NavigateTo.dontSave(controllers.register.routes.PSAVarianceSuccessController.onPageLoad())
 
+    case DeclarationChangedId => declarationChange(from)
+
     case _ => None
   }
 
@@ -52,7 +54,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   private def variationWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode))
+    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
@@ -60,6 +62,11 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
     case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def declarationChange(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationChangedId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
   }
 
 }

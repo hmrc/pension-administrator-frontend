@@ -29,7 +29,7 @@ import identifiers.register.partnership.partners.IsPartnerCompleteId
 import javax.inject.Inject
 import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.requests.AuthenticatedRequest
+import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsSuccess, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,7 +43,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
   def retrievePsaDataAndGenerateViewModel(psaId: String)(implicit hc: HeaderCarrier,
-                                                         ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel]
+                                                         ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel]
 }
 
 class PsaDetailServiceImpl @Inject()(
@@ -56,7 +56,7 @@ class PsaDetailServiceImpl @Inject()(
                                     ) extends PsaDetailsService with I18nSupport {
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String)(
-    implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
+    implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
 
     if (fs.get(isVariationsEnabled)) {
       retrievePsaDataFromUserAnswers(psaId)
@@ -68,7 +68,7 @@ class PsaDetailServiceImpl @Inject()(
   }
 
   def retrievePsaDataFromUserAnswers(psaId: String
-                                    )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
+                                    )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
@@ -79,7 +79,7 @@ class PsaDetailServiceImpl @Inject()(
   }
 
   private def getUserAnswers(psaId: String
-                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]) =
+                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]) =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
       case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_)}
       case Some(data) => Future(UserAnswers(data))

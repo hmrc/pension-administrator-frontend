@@ -28,26 +28,32 @@ import utils.Navigator
 class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
   private def checkYourAnswers(): Call =
-    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()
+    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(CheckMode)
 
-  override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AdviserNameId => NavigateTo.save(routes.AdviserDetailsController.onPageLoad(NormalMode))
-    case AdviserDetailsId => NavigateTo.save(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))
-    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(NormalMode))
-    case AdviserAddressListId => NavigateTo.save(routes.AdviserAddressController.onPageLoad(NormalMode))
-    case AdviserAddressId => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-    case CheckYourAnswersId => NavigateTo.save(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-  }
+  override def routeMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, NormalMode)
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AdviserNameId => NavigateTo.dontSave(checkYourAnswers())
     case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers())
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
-    case AdviserAddressListId => NavigateTo.save(routes.AdviserAddressController.onPageLoad(CheckMode))
+    case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(CheckMode))
     case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, UpdateMode)
+
+  private def commonNavigator(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+    case AdviserNameId => NavigateTo.dontSave(routes.AdviserDetailsController.onPageLoad(mode))
+    case AdviserDetailsId => NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))
+    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
+    case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
+    case AdviserAddressId => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode))
+    case CheckYourAnswersId => if(mode == UpdateMode) {
+      NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+    } else {
+      NavigateTo.dontSave(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
+    }
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 }

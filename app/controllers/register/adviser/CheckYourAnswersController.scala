@@ -20,7 +20,8 @@ import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, CheckYourAnswersId}
 import javax.inject.Inject
-import models.{CheckMode, Mode, NormalMode}
+import models.Mode
+import models.Mode._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -45,15 +46,15 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(CheckMode).url)))
-      val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
-      val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(CheckMode).url)))
+      val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
+      val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(checkMode(mode)).url)))
+      val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(checkMode(mode)).url)))
       val sections = Seq(AnswerSection(None, adviserName ++ details ++ address))
-      Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
+      Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit(mode)))
   }
 
   def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
   }
 }

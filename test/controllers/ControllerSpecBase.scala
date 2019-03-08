@@ -19,13 +19,14 @@ package controllers
 import java.time.LocalDate
 
 import base.SpecBase
+import connectors.RegistrationConnectorSpec.{nino, sapNumber}
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{BusinessDetails, Index, PersonDetails, TolerantIndividual}
+import models._
 import play.api.libs.json.Json
 import utils.UserAnswers
 

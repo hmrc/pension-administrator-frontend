@@ -26,6 +26,7 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService
+import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
@@ -63,8 +64,10 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     new PsaDetailsController(
       frontendAppConfig,
       messagesApi,
+      FakeNavigator,
       new FakeAuthAction(userType),
       FakeAllowAccessProvider(),
+      dataRetrievalAction,
       fakePsaDataService
     )
 
@@ -72,7 +75,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
                            canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) = {
 
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeregister)
-    psa_details(frontendAppConfig, model)(fakeRequest, messages).toString
+    psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())(fakeRequest, messages).toString
   }
 
   val organisationSuperSections: Seq[SuperSection] = Seq(
