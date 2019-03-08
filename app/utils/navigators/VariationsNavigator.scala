@@ -65,7 +65,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationChangedId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
   }
 

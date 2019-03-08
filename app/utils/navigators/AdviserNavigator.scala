@@ -45,15 +45,26 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   private def commonNavigator(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AdviserNameId => NavigateTo.dontSave(routes.AdviserDetailsController.onPageLoad(mode))
-    case AdviserDetailsId => NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))
+    case AdviserDetailsId => isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
     case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
-    case AdviserAddressId => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode))
+    case AdviserAddressId => isAdviserChange(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
     case CheckYourAnswersId => if(mode == UpdateMode) {
       NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
     } else {
       NavigateTo.dontSave(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
     }
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def isAdviserChange(from: NavigateFrom, call: Option[NavigateTo], mode: Mode): Option[NavigateTo] = {
+    if(mode==NormalMode){
+      call
+    } else {
+      from.userAnswers.get(IsAdviserChangeId) match {
+        case Some(true) => call
+        case _ =>  NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      }
+    }
   }
 }

@@ -49,7 +49,7 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
     (DeclarationChangedId, emptyAnswers, variationWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationNoChanges, variationWorkingKnowledgePage, false, None, false),
-    (DeclarationChangedId, declarationChanged, variationDeclarationPage, false, None, false)
+    (DeclarationChangedId, declarationChanged, variationDeclarationFitAndProperPage, false, None, false)
   )
 
   navigator.getClass.getSimpleName must {

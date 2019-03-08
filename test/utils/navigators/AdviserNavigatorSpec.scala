@@ -47,10 +47,12 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
   def updateModeRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
     (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, None, false),
-    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage(UpdateMode), false, None, false),
+    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false, None, false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
-    (AdviserAddressId, emptyAnswers, checkYourAnswersPage(UpdateMode), false, None, false),
+    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), false, None, false),
     (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false)
   )
 
@@ -64,6 +66,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object AdviserNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
+  lazy val adviserUpdated = UserAnswers(Json.obj()).set(IsAdviserChangeId)(true).asOpt.get
 
   private def adviserPostCodeLookUpPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)
   private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)
