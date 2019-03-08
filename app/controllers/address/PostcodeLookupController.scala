@@ -51,9 +51,9 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
   private val invalidPostcode: Message = "error.postcode.failed"
   private val noResults: Message = "error.postcode.noResults"
 
-  protected def get(viewmodel: PostcodeLookupViewModel)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    Future.successful(Ok(postcodeLookup(appConfig, form, viewmodel)))
+    Future.successful(Ok(postcodeLookup(appConfig, form, viewmodel, mode)))
   }
 
   protected def post(
@@ -67,7 +67,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful {
-          BadRequest(postcodeLookup(appConfig, formWithErrors, viewmodel))
+          BadRequest(postcodeLookup(appConfig, formWithErrors, viewmodel, mode))
         },
       lookupPostcode(id, viewmodel, invalidPostcode, noResults, mode)
     )
@@ -83,7 +83,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
     addressLookupConnector.addressLookupByPostCode(postcode).flatMap {
 
-      case Nil => Future.successful(Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel)))
+      case Nil => Future.successful(Ok(postcodeLookup(appConfig, formWithError(noResults), viewmodel, mode)))
 
       case addresses =>
         cacheConnector.save(
@@ -97,7 +97,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
     } recoverWith {
 
       case _ =>
-        Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel)))
+        Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel, mode)))
 
     }
   }

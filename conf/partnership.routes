@@ -66,15 +66,11 @@ GET        /vat-number                                  controllers.register.par
 POST       /vat-number                                  controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = NormalMode)
 GET        /change-vat-number                           controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-vat-number                           controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = CheckMode)
-GET        /changing-vat-number                         controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-vat-number                         controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /paye-number                                 controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
 POST       /paye-number                                 controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
 GET        /change-paye-number                          controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-paye-number                          controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = CheckMode)
-GET        /changing-paye-number                        controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-paye-number                        controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST       /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)

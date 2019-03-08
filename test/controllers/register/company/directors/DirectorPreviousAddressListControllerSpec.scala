@@ -95,7 +95,8 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
     addressList(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "DirectorPreviousAddressList Controller" must {

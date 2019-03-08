@@ -46,7 +46,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
       implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, firstIndex))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel)(request, messages).toString()
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
       }
     )
   }

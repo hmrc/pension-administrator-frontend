@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], psaName: String, mode : Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("variationWorkingKnowledge.title"),
@@ -43,6 +43,8 @@
 
         @components.submit_button("site.save_and_continue")
 
-        @components.return_link(psaName, mode)
+        @psaNameOpt.map{ psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

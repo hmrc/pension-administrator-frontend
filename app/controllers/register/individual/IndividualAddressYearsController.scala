@@ -66,7 +66,7 @@ class IndividualAddressYearsController @Inject()(
       implicit request =>
         viewmodel(mode).retrieve.right.map {
           vm =>
-            get(IndividualAddressYearsId, form, vm)
+            get(IndividualAddressYearsId, form, vm, mode)
         }
     }
 

@@ -92,13 +92,13 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       override val form = formProvider()
     }
 
-  private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel)(fakeRequest, messages).toString
+  private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
 
   "ConfirmDelete Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val result = controller().get(viewModel, false, FakeNavigator.desiredRoute)(request)
+      val result = controller().get(viewModel, false, FakeNavigator.desiredRoute, NormalMode)(request)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -106,7 +106,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     "redirect to already deleted view for a GET if the director was already deleted" in {
 
-      val result = controller().get(viewModel, true, FakeNavigator.desiredRoute)(request)
+      val result = controller().get(viewModel, true, FakeNavigator.desiredRoute, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)

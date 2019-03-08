@@ -35,7 +35,7 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
       frontendAppConfig,
     form,
     UpdateMode,
-    psaName,
+    Some(psaName),
     personWithWorkingKnowledgeName)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view (variations)" must {

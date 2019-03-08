@@ -72,7 +72,8 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     manualAddress(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString()
 
   "CompanyPreviousAddress Controller" must {

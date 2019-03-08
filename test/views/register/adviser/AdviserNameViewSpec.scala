@@ -37,8 +37,6 @@ class AdviserNameViewSpec extends QuestionViewBehaviours[String] {
 
     behave like normalPage(createView, messageKeyPrefix, "p1")
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,

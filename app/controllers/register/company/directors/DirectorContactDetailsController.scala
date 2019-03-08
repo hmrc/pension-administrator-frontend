@@ -22,6 +22,7 @@ import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.company.directors.DirectorContactDetailsId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -45,23 +46,21 @@ class DirectorContactDetailsController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        get(DirectorContactDetailsId(index), form, viewmodel(mode, index, directorName))
-      }
+      get(DirectorContactDetailsId(index), form, viewmodel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) { directorName =>
-        post(DirectorContactDetailsId(index), mode, form, viewmodel(mode, index, directorName))
+        post(DirectorContactDetailsId(index), mode, form, viewmodel(mode, index))
       }
   }
 
-  private def viewmodel(mode: Mode, index: Index, directorName: String) = ContactDetailsViewModel(
+  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) = ContactDetailsViewModel(
     postCall = routes.DirectorContactDetailsController.onSubmit(mode, index),
     title = Message("directorContactDetails.title"),
     heading = Message("directorContactDetails.heading"),
     body = Some(Message("contactDetails.body")),
-    subHeading = Some(directorName)
+    psaName = psaName()
   )
 }

@@ -49,7 +49,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
         implicit app => addToken(FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel)(request, messages).toString()
+          contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
         }
       )
     }

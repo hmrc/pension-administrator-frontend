@@ -44,7 +44,7 @@ class AdviserDetailsControllerSpec extends ControllerSpecBase {
     new AdviserDetailsController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode, adviserName)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode, adviserName, None)(fakeRequest, messages).toString
 
   "AdviserDetails Controller" must {
 
