@@ -52,7 +52,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFReque
         implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onPageLoad(NormalMode))), dataRetrievalAction,
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe addressList(frontendAppConfig, form, addressListViewModel(addresses))(request, messages).toString()
+          contentAsString(result) mustBe addressList(frontendAppConfig, form, addressListViewModel(addresses), NormalMode)(request, messages).toString()
         }
       )
     }

@@ -56,7 +56,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form) = variationWorkingKnowledge(frontendAppConfig, form, "Mark Wright", UpdateMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = variationWorkingKnowledge(frontendAppConfig, form, None, UpdateMode)(fakeRequest, messages).toString
 
   "VariationWorkingKnowledge Controller" must {
 

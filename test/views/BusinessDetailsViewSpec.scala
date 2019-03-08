@@ -78,8 +78,6 @@ class BusinessDetailsViewSpec extends QuestionViewBehaviours[BusinessDetails] {
   "CompanyUniqueTaxReference view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,

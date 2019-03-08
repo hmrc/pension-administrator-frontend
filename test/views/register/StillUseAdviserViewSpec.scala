@@ -16,26 +16,26 @@
 
 package views.register
 
-import forms.register.VariationDeclarationWorkingKnowledgeFormProvider
+import forms.register.StillUseAdviserFormProvider
 import models.UpdateMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.register.variationDeclarationWorkingKnowledge
+import views.html.register.stillUseAdviser
 
-class VariationDeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
+class StillUseAdviserViewSpec extends ViewBehaviours {
 
   private val psaName = "Mr Smith"
   private val personWithWorkingKnowledgeName = "Bill Bloggs"
 
-  private val messageKeyPrefix = "declarationWorkingKnowledge.variations"
+  private val messageKeyPrefix = "stillUseAdviser"
 
-  private val form = new VariationDeclarationWorkingKnowledgeFormProvider()()
+  private val form = new StillUseAdviserFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => variationDeclarationWorkingKnowledge(
+  private def createView: () => HtmlFormat.Appendable = () => stillUseAdviser(
       frontendAppConfig,
     form,
     UpdateMode,
-    psaName,
+    Some(psaName),
     personWithWorkingKnowledgeName)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view (variations)" must {
@@ -48,7 +48,7 @@ class VariationDeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
     }
 
     "display the second (dynamic) statement" in {
-      createView must haveDynamicText("declarationWorkingKnowledge.variations.p2", psaName, personWithWorkingKnowledgeName)
+      createView must haveDynamicText("stillUseAdviser.p2", psaName, personWithWorkingKnowledgeName)
     }
 
   }

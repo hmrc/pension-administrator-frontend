@@ -18,7 +18,7 @@ package views.address
 
 import controllers.register.individual.routes
 import forms.AddressFormProvider
-import models.{Address, NormalMode}
+import models.{Address, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import utils.{FakeCountryOptions, InputOption}
@@ -38,22 +38,24 @@ class ManualAddressViewSpec extends QuestionViewBehaviours[Address] {
     countryOptions,
     Message("common.manual.address.title"),
     Message("common.manual.address.heading"),
-    None
+    None,
+    psaName = Some("test psa name")
   )
 
   override val form = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
 
-  def createView: () => _root_.play.twirl.api.HtmlFormat.Appendable = () =>
-    manualAddress(frontendAppConfig, new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig)).apply(), viewModel)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => _root_.play.twirl.api.HtmlFormat.Appendable = () =>
+    manualAddress(frontendAppConfig, new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig)).apply(),
+      viewModel, mode)(fakeRequest, messages)
 
   def createViewUsingForm: (Form[_]) => _root_.play.twirl.api.HtmlFormat.Appendable = (form: Form[_]) =>
-    manualAddress(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+    manualAddress(frontendAppConfig, form, viewModel, UpdateMode)(fakeRequest, messages)
 
   "ManualAddress view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
+    behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like pageWithTextFields(
       createViewUsingForm,
@@ -61,8 +63,5 @@ class ManualAddressViewSpec extends QuestionViewBehaviours[Address] {
       routes.IndividualPreviousAddressController.onSubmit(NormalMode).url,
       "addressLine1", "addressLine2", "addressLine3", "addressLine4"
     )
-
-
   }
-
 }

@@ -20,7 +20,7 @@
 @import models.Mode
 @import viewmodels.{Message}
 
-@(appConfig: FrontendAppConfig, psaName: String, mode : Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("noLongerFitAndProper.title"),
@@ -31,9 +31,10 @@
             headingKey=messages("noLongerFitAndProper.heading")
         )
 
-        <p>@messages("noLongerFitAndProper.p1", psaName)</p>
+        <p>@messages("noLongerFitAndProper.p1", psaNameOpt.getOrElse(""))</p>
         <p>@messages("noLongerFitAndProper.p2")</p>
 
-        @components.return_link(psaName, mode)
-
+        @psaNameOpt.map{ psaName =>
+            @components.return_link(psaName, mode)
+        }
 }

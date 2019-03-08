@@ -17,11 +17,13 @@
 package controllers
 
 import identifiers.TypedIdentifier
+import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{PersonDetails, UserType}
+import models.{PersonDetails, RegistrationLegalStatus, UserType}
 import models.UserType.UserType
 import models.requests.DataRequest
 import play.api.libs.json.Reads
@@ -105,15 +107,22 @@ trait Retrievals {
   implicit def merge(f: Either[Future[Result], Future[Result]]): Future[Result] =
     f.merge
 
-  private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): String = {
-    val userType: UserType = request.user.userType
-    val optionPsaName = userType match {
-      case UserType.Individual =>
-        request.userAnswers.get(IndividualDetailsId).map(_.fullName)
-      case UserType.Organisation =>
-        request.userAnswers.get(BusinessDetailsId).map(_.companyName)
-      case _ => None
+  private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): Option[String] = {
+    val userAnswers = request.userAnswers
+    val registrationInfo = userAnswers.get(RegistrationInfoId)
+
+    registrationInfo match {
+      case Some(details) =>
+        details.legalStatus match {
+          case RegistrationLegalStatus.Individual =>
+            userAnswers.get(IndividualDetailsId).map(_.fullName)
+          case RegistrationLegalStatus.LimitedCompany =>
+            userAnswers.get(BusinessDetailsId).map(_.companyName)
+          case RegistrationLegalStatus.Partnership =>
+            userAnswers.get(PartnershipDetailsId).map(_.companyName)
+        }
+      case _ =>
+        None
     }
-    optionPsaName.getOrElse("")
   }
 }

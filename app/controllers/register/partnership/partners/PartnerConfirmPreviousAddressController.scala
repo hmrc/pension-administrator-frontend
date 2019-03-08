@@ -20,11 +20,9 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
-import forms.address.SameContactAddressFormProvider
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.{Index, Mode}
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -43,8 +41,8 @@ class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
                                                         requireData: DataRequiredAction,
                                                         val countryOptions: CountryOptions
                                                        ) extends ConfirmPreviousAddressController with I18nSupport {
-  private[controllers] val title: Message = "partnership.partner.confirmPreviousAddress.title"
-  private[controllers] val heading: Message = "partnership.partner.confirmPreviousAddress.heading"
+  private[controllers] val title: Message = "confirmPreviousAddress.title"
+  private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
   private def viewmodel(mode: Mode, index: Index) =
     Retrieval(

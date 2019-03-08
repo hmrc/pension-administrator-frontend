@@ -55,8 +55,6 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, routes.IndividualDetailsCorrectController.onSubmit(NormalMode).url, s"$messageKeyPrefix.heading")
 
     behave like pageWithSubmitButton(createView)

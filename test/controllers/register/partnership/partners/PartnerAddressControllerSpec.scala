@@ -220,7 +220,8 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
     manualAddress(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
 }

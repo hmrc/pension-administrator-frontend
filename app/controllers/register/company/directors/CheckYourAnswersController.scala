@@ -46,30 +46,29 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-        val answersSection = Seq(
-          AnswerSection(
-            Some("directorCheckYourAnswers.directorDetails.heading"),
-            checkYourAnswerHelper.directorDetails(index.id) ++
-              checkYourAnswerHelper.directorNino(index.id) ++
-              checkYourAnswerHelper.directorUniqueTaxReference(index.id)
-          ),
-          AnswerSection(
-            Some("directorCheckYourAnswers.contactDetails.heading"),
-            checkYourAnswerHelper.directorAddress(index.id) ++
-              checkYourAnswerHelper.directorAddressYears(index.id) ++
-              checkYourAnswerHelper.directorPreviousAddress(index.id) ++
-              checkYourAnswerHelper.directorContactDetails(index.id)
-          ))
+      val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
+      val answersSection = Seq(
+        AnswerSection(
+          Some("directorCheckYourAnswers.directorDetails.heading"),
+          checkYourAnswerHelper.directorDetails(index.id) ++
+            checkYourAnswerHelper.directorNino(index.id) ++
+            checkYourAnswerHelper.directorUniqueTaxReference(index.id)
+        ),
+        AnswerSection(
+          Some("directorCheckYourAnswers.contactDetails.heading"),
+          checkYourAnswerHelper.directorAddress(index.id) ++
+            checkYourAnswerHelper.directorAddressYears(index.id) ++
+            checkYourAnswerHelper.directorPreviousAddress(index.id) ++
+            checkYourAnswerHelper.directorContactDetails(index.id)
+        ))
 
-        Future.successful(Ok(check_your_answers(
-          appConfig,
-          answersSection,
-          Some(directorName),
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)))
-        )
-      }
+      Future.successful(Ok(check_your_answers(
+        appConfig,
+        answersSection,
+        controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+        psaName(),
+        mode
+      )))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

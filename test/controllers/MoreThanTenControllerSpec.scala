@@ -48,7 +48,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
     "return OK and the correct view for a GET" in {
       val fixture = testFixture(this)
 
-      val result = Future.successful(fixture.controller.get(viewModel())(testRequest()))
+      val result = Future.successful(fixture.controller.get(viewModel(), NormalMode)(testRequest()))
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(this)
@@ -59,7 +59,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val answers = UserAnswers().set(testId)(true).asOpt.value
       val request = testRequest(answers)
 
-      val result = Future.successful(fixture.controller.get(viewModel())(request))
+      val result = Future.successful(fixture.controller.get(viewModel(), NormalMode)(request))
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(this, form.fill(true))
@@ -155,10 +155,11 @@ object MoreThanTenControllerSpec {
       heading = "moreThanTenDirectors.heading",
       hint = "moreThanTenDirectors.hint",
       postCall = Call("POST", "/"),
-      id
+      id,
+      None
     )
 
   def viewAsString(base: SpecBase, form: Form[_] = form): String =
-    moreThanTen(base.frontendAppConfig, form, viewModel())(base.fakeRequest, base.messages).toString
+    moreThanTen(base.frontendAppConfig, form, viewModel(), NormalMode)(base.fakeRequest, base.messages).toString
 
 }

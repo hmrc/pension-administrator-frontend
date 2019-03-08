@@ -32,9 +32,9 @@ class VariationDeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
   private def returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
 
   private def createView(isWorkingKnowldge: Boolean = true) = () => variationDeclaration(
-    frontendAppConfig, form, "Mark Wright", isWorkingKnowldge)(fakeRequest, messages)
+    frontendAppConfig, form, Some("Mark Wright"), isWorkingKnowldge)(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = variationDeclaration(frontendAppConfig, form, "Mark Wright",
+  private def createViewUsingForm(form: Form[_]) = variationDeclaration(frontendAppConfig, form, Some("Mark Wright"),
     isWorkingKnowldge = true)(fakeRequest, messages)
 
   "Declaration variation view" must {

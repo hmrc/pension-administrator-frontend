@@ -45,13 +45,8 @@ class VatViewSpec extends ViewBehaviours {
     vat(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
 
   "Vat view" must {
-
     behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
-
   }
-
 
   "Vat view" when {
     "rendered" must {

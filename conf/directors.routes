@@ -7,6 +7,8 @@ POST       /:index/director-details                             controllers.regi
 GET        /:index/director-details                             controllers.register.company.directors.DirectorDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-director-details                      controllers.register.company.directors.DirectorDetailsController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-director-details                      controllers.register.company.directors.DirectorDetailsController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-director-details                    controllers.register.company.directors.DirectorDetailsController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-director-details                    controllers.register.company.directors.DirectorDetailsController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
@@ -18,7 +20,9 @@ POST       /:index/changing-national-insurance-number           controllers.regi
 GET        /:index/directors-address                            controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-address                            controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-directors-address                     controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/change-address                               controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode, index: Index)
+POST       /:index/change-directors-address                     controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-directors-address                   controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-directors-address                   controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/directors-address-manual                     controllers.register.company.directors.DirectorAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-address-manual                     controllers.register.company.directors.DirectorAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
@@ -38,6 +42,8 @@ GET        /:index/directors-previous-address                   controllers.regi
 POST       /:index/directors-previous-address                   controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-directors-previous-address            controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-directors-previous-address            controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-directors-previous-address            controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-directors-previous-address            controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/how-long-at-address                          controllers.register.company.directors.DirectorAddressYearsController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/how-long-at-address                          controllers.register.company.directors.DirectorAddressYearsController.onSubmit(mode: Mode = NormalMode, index: Index)
@@ -50,6 +56,8 @@ GET        /:index/directors-previous-address-results           controllers.regi
 POST       /:index/directors-previous-address-results           controllers.register.company.directors.DirectorPreviousAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-directors-previous-address-results    controllers.register.company.directors.DirectorPreviousAddressListController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-directors-previous-address-results    controllers.register.company.directors.DirectorPreviousAddressListController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-directors-previous-address-results  controllers.register.company.directors.DirectorPreviousAddressListController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-directors-previous-address-results  controllers.register.company.directors.DirectorPreviousAddressListController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/directors-previous-address-manual            controllers.register.company.directors.DirectorPreviousAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-previous-address-manual            controllers.register.company.directors.DirectorPreviousAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
@@ -69,10 +77,12 @@ GET        /:index/directors-address-results                    controllers.regi
 POST       /:index/directors-address-results                    controllers.register.company.directors.CompanyDirectorAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/change-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onPageLoad(mode: Mode = CheckMode, index: Index)
 POST       /:index/change-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/check-your-answers                           controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = CheckMode, index: Index)
-POST       /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = CheckMode, index: Index)
+GET        /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/changing-check-your-answers                  controllers.register.company.directors.CheckYourAnswersController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /:index/already-deleted                              controllers.register.company.directors.AlreadyDeletedController.onPageLoad(mode: Mode = NormalMode, index: Index)

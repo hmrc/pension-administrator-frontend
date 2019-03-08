@@ -17,6 +17,7 @@
 package views.address
 
 import forms.address.PostCodeLookupFormProvider
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -38,36 +39,39 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     "test.hint",
     "test.enter-postcode",
     Some("test.enter-postcode-link"),
-    "test.form-label"
+    "test.form-label",
+    psaName = Some("test-psa")
   )
 
-  private def createView: () => HtmlFormat.Appendable =
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable =
     () => postcodeLookup(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      mode
     )(fakeRequest, messages)
 
   private def createViewUsingForm: Form[_] => HtmlFormat.Appendable =
     (form: Form[_]) => postcodeLookup(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages)
 
   "PostcodeLookup view" must {
-    behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
+    appRunning()
+    behave like normalPage(createView(), messageKeyPrefix)
 
     "render the hint" in {
-      val doc = asDocument(createView())
+      val doc = asDocument(createView()())
       assertContainsText(doc, viewModel.hint.resolve)
     }
 
     behave like stringPage(createViewUsingForm, messageKeyPrefix, "www.example.com", None, "form-label")
 
-    behave like pageWithSubmitButton(createView)
+    behave like pageWithSubmitButton(createView())
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
 }

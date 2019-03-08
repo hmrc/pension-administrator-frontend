@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import forms.register.VariationDeclarationWorkingKnowledgeFormProvider
+import forms.register.StillUseAdviserFormProvider
 import identifiers.register.adviser.AdviserNameId
 import identifiers.vary.DeclarationWorkingKnowledgeId
 import javax.inject.Inject
@@ -31,11 +31,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
-import views.html.register.variationDeclarationWorkingKnowledge
+import views.html.register.stillUseAdviser
 
 import scala.concurrent.Future
 
-class VariationDeclarationWorkingKnowledgeController @Inject()(
+class StillUseAdviserController @Inject()(
                                                        appConfig: FrontendAppConfig,
                                                        override val messagesApi: MessagesApi,
                                                        override val cacheConnector: UserAnswersCacheConnector,
@@ -44,7 +44,7 @@ class VariationDeclarationWorkingKnowledgeController @Inject()(
                                                        allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
-                                                       formProvider: VariationDeclarationWorkingKnowledgeFormProvider
+                                                       formProvider: StillUseAdviserFormProvider
                                                      ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
@@ -55,14 +55,14 @@ class VariationDeclarationWorkingKnowledgeController @Inject()(
   def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
-      Ok(variationDeclarationWorkingKnowledge(appConfig, form, mode, psaName(), adviserName()))
+      Ok(stillUseAdviser(appConfig, form, mode, psaName(), adviserName()))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(variationDeclarationWorkingKnowledge(appConfig, formWithErrors, mode, psaName(), adviserName()))),
+          Future.successful(BadRequest(stillUseAdviser(appConfig, formWithErrors, mode, psaName(), adviserName()))),
         value => {
           cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
             Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))

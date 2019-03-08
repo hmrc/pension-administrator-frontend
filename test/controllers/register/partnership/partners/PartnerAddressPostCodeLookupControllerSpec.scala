@@ -55,7 +55,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
     formProvider
   )
 
-  private def viewAsString(boundForm: Form[String] = form) = postcodeLookup(frontendAppConfig, boundForm, viewModel(firstIndex))(fakeRequest, messages).toString
+  private def viewAsString(boundForm: Form[String] = form) = postcodeLookup(frontendAppConfig, boundForm, viewModel(firstIndex), NormalMode)(fakeRequest, messages).toString
 
   "PartnerAddressPostCodeLookupController" when {
 

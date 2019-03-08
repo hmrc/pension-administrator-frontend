@@ -59,8 +59,6 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
   "Are you in UK view" must {
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
-
     behave like pageWithSubmitButton(createView())
 
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading",

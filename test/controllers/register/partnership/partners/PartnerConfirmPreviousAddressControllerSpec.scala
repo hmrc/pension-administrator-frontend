@@ -100,7 +100,7 @@ class PartnerConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(PartnerConfirmPreviousAddressId)(false)).get.json))
+      val getData = new FakeDataRetrievalAction(Some(validData.flatMap(_.set(PartnerConfirmPreviousAddressId(0))(false)).get.json))
 
       val result = controller(getData).onPageLoad(UpdateMode, 0)(fakeRequest)
 

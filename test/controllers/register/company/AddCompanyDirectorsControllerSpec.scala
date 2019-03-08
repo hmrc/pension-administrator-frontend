@@ -183,7 +183,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors)(request, messages).toString
+    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, None)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))

@@ -20,9 +20,11 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
-import models.{Mode, NormalMode}
+import models.requests.DataRequest
+import models.{Mode, NormalMode, PSAUser, UserType}
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
-import utils.FakeNavigator
+import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{Message, MoreThanTenViewModel}
 
 class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
@@ -35,7 +37,8 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
       heading = Message("moreThanTenPartners.heading"),
       hint = "moreThanTenPartners.hint",
       postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
-      id = MoreThanTenPartnersId
+      id = MoreThanTenPartnersId,
+      None
     )
 
   "MoreThanTenPartnersController" must {
@@ -56,12 +59,16 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
     }
 
     "check the view model is correct" in {
+      implicit val request: DataRequest[AnyContent] =
+        DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, false, None, None), UserAnswers())
+
       val expected: MoreThanTenViewModel = MoreThanTenViewModel(
         title = "moreThanTenPartners.title",
         heading = Message("moreThanTenPartners.heading"),
         hint = "moreThanTenPartners.hint",
         postCall = routes.MoreThanTenPartnersController.onSubmit(NormalMode),
-        id = MoreThanTenPartnersId
+        id = MoreThanTenPartnersId,
+        None
       )
 
       val actual = controller(this).viewModel(NormalMode)

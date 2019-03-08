@@ -26,7 +26,7 @@ class VariationNoLongerFitAndProperViewSpec extends ViewBehaviours {
   private val messageKeyPrefix = "noLongerFitAndProper"
 
   private def createView: () => HtmlFormat.Appendable = () =>
-    variationNoLongerFitAndProper(frontendAppConfig, "Mark Wright", UpdateMode)(fakeRequest, messages)
+    variationNoLongerFitAndProper(frontendAppConfig, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
 
   "noLongerFitAndProper view" must {

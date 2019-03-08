@@ -18,10 +18,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.routes._
 @import utils.DateHelper._
+@import models.UpdateMode
 
 @(
     appConfig: FrontendAppConfig,
-    form: Form[_]
+    form: Form[_],
+    psaNameOpt: Option[String]
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -48,5 +50,9 @@
         )
 
         @components.submit_button("site.save_and_continue")
+
+        @psaNameOpt.map { psaName =>
+            @components.return_link(psaName, UpdateMode)
+        }
     }
 }
