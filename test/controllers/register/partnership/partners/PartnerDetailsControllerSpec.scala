@@ -19,15 +19,20 @@ package controllers.register.partnership.partners
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
-import models.NormalMode
+import models.{NormalMode, PSAUser, UserType}
+import models.requests.DataRequest
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 
 class PartnerDetailsControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
 
   import PartnerDetailsControllerSpec._
 
   "PartnerDetailsController" must {
+
+    implicit val dataRequest: DataRequest[AnyContent] = DataRequest(fakeRequest, "cacheId",
+      PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
 
     val controller = testController(this, getEmptyData)
     val viewModel = controller.viewModel(NormalMode, 0)

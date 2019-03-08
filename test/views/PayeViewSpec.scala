@@ -45,7 +45,6 @@ class PayeViewSpec extends ViewBehaviours {
 
   "Paye view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
   }
 
   "Paye view" when {

@@ -26,7 +26,7 @@ class PSAVarianceSuccessViewSpec extends ViewBehaviours {
   private val returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
 
   private val createView: () => HtmlFormat.Appendable = () =>
-    psaVarianceSuccess(frontendAppConfig, "Mark Wright")(fakeRequest, messages)
+    psaVarianceSuccess(frontendAppConfig, Some("Mark Wright"))(fakeRequest, messages)
 
 
   "noLongerFitAndProper view" must {

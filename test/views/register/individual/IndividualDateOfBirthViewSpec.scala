@@ -37,8 +37,6 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
   "IndividualDateOfBirth view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithDateField(
       createViewUsingForm,
       "dateOfBirth",

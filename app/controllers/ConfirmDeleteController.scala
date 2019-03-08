@@ -43,9 +43,9 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   protected val form: Form[Boolean]
 
-  def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call)(implicit request: DataRequest[AnyContent]): Future[Result] =
+  def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] =
     if (!isDeleted) {
-      Future.successful(Ok(confirmDelete(appConfig, form, vm)))
+      Future.successful(Ok(confirmDelete(appConfig, form, vm, mode)))
     } else {
       Future.successful(Redirect(redirectTo))
     }
@@ -72,7 +72,7 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(confirmDelete(appConfig, formWithError, vm))),
+      (formWithError: Form[_]) => Future.successful(BadRequest(confirmDelete(appConfig, formWithError, vm, mode))),
       {
         case true =>
           id.retrieve.right.map { details =>

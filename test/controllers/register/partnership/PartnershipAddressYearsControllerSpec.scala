@@ -46,7 +46,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
       implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel)(request, messages).toString
+        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
       }
     )
   }

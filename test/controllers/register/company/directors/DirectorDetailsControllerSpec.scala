@@ -16,16 +16,22 @@
 
 package controllers.register.company.directors
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
-import models.NormalMode
+import models.requests.DataRequest
+import models.{NormalMode, PSAUser, UserType}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 
 class DirectorDetailsControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
 
   import DirectorDetailsControllerSpec._
+
+  implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
 
   "DirectorDetailsController" must {
 
@@ -55,7 +61,6 @@ class DirectorDetailsControllerSpec extends ControllerSpecBase with PersonDetail
 }
 
 object DirectorDetailsControllerSpec {
-
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction

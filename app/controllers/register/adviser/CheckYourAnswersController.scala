@@ -49,7 +49,7 @@ class CheckYourAnswersController @Inject()(
       val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
       val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(CheckMode).url)))
       val sections = Seq(AnswerSection(None, adviserName ++ details ++ address))
-      Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
+      Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(), None, mode))
   }
 
   def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

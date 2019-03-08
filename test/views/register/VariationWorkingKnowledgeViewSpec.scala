@@ -30,10 +30,10 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
   val form = new VariationWorkingKnowledgeFormProvider()()
 
-  def createView: () => HtmlFormat.Appendable = () => variationWorkingKnowledge(frontendAppConfig, form, "Mark Wright", UpdateMode)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    variationWorkingKnowledge(frontendAppConfig, form, "Mark Wright", UpdateMode)(fakeRequest, messages)
+    variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
   "variationWorkingKnowledge view" must {
 

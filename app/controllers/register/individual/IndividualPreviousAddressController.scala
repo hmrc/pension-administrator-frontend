@@ -25,6 +25,7 @@ import controllers.register.individual.routes._
 import forms.AddressFormProvider
 import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,18 +56,19 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def viewmodel(mode: Mode) = ManualAddressViewModel(
+  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
     title = Message(title),
     heading = Message(heading),
     hint = Some(Message(hint)),
-    secondaryHeader = None
+    secondaryHeader = None,
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode))
+      get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

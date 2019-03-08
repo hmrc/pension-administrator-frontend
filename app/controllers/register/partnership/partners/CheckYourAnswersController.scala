@@ -54,7 +54,6 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) { partnerName =>
         val answersSection = Seq(
           AnswerSection(
             Some("partnerCheckYourAnswers.partnerDetails.heading"),
@@ -70,13 +69,13 @@ class CheckYourAnswersController @Inject()(
               PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url)))
           ))
 
-        Future.successful(Ok(check_your_answers(
-          appConfig,
-          answersSection,
-          Some(partnerName),
-          routes.CheckYourAnswersController.onSubmit(index, mode)))
-        )
-      }
+      Future.successful(Ok(check_your_answers(
+        appConfig,
+        answersSection,
+        routes.CheckYourAnswersController.onSubmit(index, mode),
+        psaName(),
+        mode))
+      )
   }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

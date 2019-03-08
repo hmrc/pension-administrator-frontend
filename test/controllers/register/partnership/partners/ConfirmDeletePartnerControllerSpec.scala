@@ -48,7 +48,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
       implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel)(request, messages).toString()
+        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
       }
     )
   }

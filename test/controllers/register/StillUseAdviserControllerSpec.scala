@@ -116,5 +116,5 @@ object StillUseAdviserControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form) = stillUseAdviser(frontendAppConfig,
-    form, UpdateMode, psaName, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
+    form, UpdateMode, None, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
 }

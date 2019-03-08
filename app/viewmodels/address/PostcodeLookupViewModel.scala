@@ -28,5 +28,6 @@ case class PostcodeLookupViewModel(
                                     hint: Message,
                                     enterPostcode: Message,
                                     enterPostCodeLink: Option[Message],
-                                    formLabel: Message
+                                    formLabel: Message,
+                                    psaName: Option[String] = None
                                   )
