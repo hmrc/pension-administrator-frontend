@@ -29,7 +29,7 @@ import identifiers.{TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
-import models.{Address, RegistrationLegalStatus, TolerantAddress}
+import models.{Address, RegistrationLegalStatus, TolerantAddress, UpdateMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -118,7 +118,7 @@ class PsaDetailServiceImpl @Inject()(
         (Nil, Map(IndividualContactAddressId -> ExistingCurrentAddressId))
 
       case Some(LimitedCompany) =>
-        val allDirectors = userAnswers.allDirectorsAfterDelete
+        val allDirectors = userAnswers.allDirectorsAfterDelete(UpdateMode)
         val allDirectorsCompleteIds = allDirectors.map(director => IsDirectorCompleteId(allDirectors.indexOf(director))).toList
         val allDirectorsAddressIdMap = allDirectors.map { director =>
           val index = allDirectors.indexOf(director)
@@ -128,7 +128,7 @@ class PsaDetailServiceImpl @Inject()(
         (allDirectorsCompleteIds, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
 
       case Some(Partnership) =>
-        val allPartners = userAnswers.allPartnersAfterDelete
+        val allPartners = userAnswers.allPartnersAfterDelete(UpdateMode)
         val allPartnersCompleteIds = allPartners.map(partner => IsPartnerCompleteId(allPartners.indexOf(partner))).toList
         val allPartnersAddressIds = allPartners.map { partner =>
           val index = allPartners.indexOf(partner)
