@@ -19,7 +19,7 @@ package views
 import controllers.register.company.routes
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
-import models.NormalMode
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.{Message, MoreThanTenViewModel}
@@ -38,23 +38,24 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
       heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
-      id = new TypedIdentifier[Boolean] {}
+      id = new TypedIdentifier[Boolean] {},
+      psaName = Some("test psa")
     )
 
-  def createView: () => HtmlFormat.Appendable = () => moreThanTen(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => moreThanTen(frontendAppConfig, form, viewModel, mode)(fakeRequest, messages)
 
-  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => moreThanTen(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => moreThanTen(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages)
 
   "MoreThanTenDirectors view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
+    behave like normalPage(createView(), messageKeyPrefix)
 
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
       routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,
       s"$messageKeyPrefix.heading",
       Some(s"$messageKeyPrefix.hint"))
+
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 }

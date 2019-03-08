@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package forms.vary
+package identifiers.register.partnership
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-class AnyMoreChangesFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("anyMoreChanges.error.required")
-    )
+case object ExistingCurrentAddressId extends TypedIdentifier[TolerantAddress] {
+  override def toString: String = "existingCurrentAddress"
 }

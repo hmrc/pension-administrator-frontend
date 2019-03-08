@@ -109,7 +109,8 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
     manualAddress(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "directorAddress Controller" must {

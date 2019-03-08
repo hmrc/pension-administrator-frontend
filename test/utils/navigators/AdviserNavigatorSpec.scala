@@ -39,6 +39,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage, true, Some(checkYourAnswersPage), false),
     (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage, true, Some(checkYourAnswersPage), false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), false, Some(adviserAddressListPage(CheckMode)), false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), true, Some(adviserAddressPage(CheckMode)), true),
@@ -56,6 +57,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object AdviserNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val adviserPostCodeLookUpPage: Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
+  lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
 
   def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
 

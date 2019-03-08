@@ -20,8 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.SameContactAddressFormProvider
-import identifiers.register.individual.{IndividualAddressId, IndividualSameContactAddressId}
-import models.{AddressYears, NormalMode, TolerantAddress}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId, IndividualSameContactAddressId}
+import models.{AddressYears, NormalMode, TolerantAddress, TolerantIndividual}
 import play.api.data.Form
 import play.api.libs.json.JsResult
 import play.api.mvc.Call
@@ -52,7 +52,9 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     heading = Message("individual.same.contact.address.heading"),
     secondaryHeader = None,
     hint = Some(Message("individual.same.contact.address.hint")),
-    address = testAddress
+    address = testAddress,
+    psaName = "Test name",
+    mode = NormalMode
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
@@ -80,7 +82,7 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(IndividualAddressId)(testAddress)
+    .set(IndividualAddressId)(testAddress).flatMap(_.set(IndividualDetailsId)(TolerantIndividual(Some("First"), Some("Middle"), Some("Last"))))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 

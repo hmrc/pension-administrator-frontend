@@ -55,9 +55,6 @@ class NonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like normalPageWithDynamicTitle(
       createView, messageKeyPrefix, Message("companyRegisteredNonUKAddress.heading", companyName),  "hintText")
 
-    behave like pageWithBackLink(createView)
-
-
     behave like pageWithTextFields(
         createViewUsingForm,
         messageKeyPrefix,

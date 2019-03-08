@@ -46,7 +46,8 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     entities = entities,
     maxLimit = maxPartners,
     entityType = entityType,
-    subHeading = None
+    subHeading = None,
+    psaName = Some("test psa")
   )
 
   private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
@@ -61,7 +62,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),
@@ -113,6 +114,19 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
       view must haveDynamicText("addEntity.tellUsIfYouHaveMore")
     }
 
+    "not show the remove link in UpdateMode if only one partner is present" in {
+      createView(Seq(johnUpdateMode), UpdateMode) mustNot haveLink(
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(0, UpdateMode).url, "person-0-delete")
+    }
+
+    "show the edit link in UpdateMode only for newly added partners" in {
+      val view = createView(Seq(johnUpdateMode, joeUpdateMode), UpdateMode)
+      view mustNot haveLink(
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(UpdateMode, 0).url, "person-0-edit")
+      view must haveLink(
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(UpdateMode, 1).url, "person-1-edit")
+    }
+
   }
 
 }
@@ -126,13 +140,19 @@ object AddEntityViewSpec {
     UserAnswers(Json.obj())
   )
 
-  private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
+  private def deleteLink(index: Int, mode: Mode = NormalMode) =
+    controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url
 
-  private def editLink(index: Int) = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index).url
+  private def editLink(index: Int, mode: Mode = NormalMode) =
+    controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, index).url
 
   // scalastyle:off magic.number
   private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
+
+  private val johnUpdateMode = johnDoe.copy(deleteLink = deleteLink(0, UpdateMode), editLink = editLink(0, UpdateMode))
+  private val joeUpdateMode = joeBloggs.copy(deleteLink = deleteLink(1, UpdateMode), editLink = editLink(1, UpdateMode), isNew = true)
+
   // scalastyle:on magic.number
 
 }

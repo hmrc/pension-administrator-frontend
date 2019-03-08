@@ -16,7 +16,7 @@
 
 package viewmodels.address
 
-import models.TolerantAddress
+import models.{Mode, TolerantAddress}
 import play.api.mvc.Call
 import viewmodels.Message
 
@@ -26,7 +26,9 @@ case class SameContactAddressViewModel(
                                         heading: Message,
                                         secondaryHeader: Option[Message],
                                         hint: Option[Message] = None,
-                                        address: TolerantAddress
+                                        address: TolerantAddress,
+                                        psaName: String,
+                                        mode: Mode
                                       ) {
 
 }

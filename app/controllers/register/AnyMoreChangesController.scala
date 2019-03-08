@@ -30,13 +30,13 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.vary.AnyMoreChangesFormProvider
+import forms.register.AnyMoreChangesFormProvider
 import identifiers.vary.AnyMoreChangesId
 import javax.inject.Inject
 import models.NormalMode
@@ -46,7 +46,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
-import views.html.vary.anyMoreChanges
+import views.html.register.anyMoreChanges
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -64,14 +64,14 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(anyMoreChanges(appConfig, form)))
+      Future.successful(Ok(anyMoreChanges(appConfig, form, psaName())))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors))),
+          Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors, psaName()))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnyMoreChangesId, NormalMode, UserAnswers(cacheMap))))

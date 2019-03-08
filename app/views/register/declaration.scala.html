@@ -25,8 +25,6 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.back_link()
-
     @components.error_summary(form.errors)
 
     @components.heading(messages("declaration.heading"))
@@ -53,13 +51,16 @@
             <div class="form-field @if(form("agree").hasErrors){form-field--error}">
                 <fieldset class="inline">
                     <legend>
+
+                        <span class="visually-hidden">@messages("common.declaration.legend")</span>
+
                         @form("agree").errors.map { error =>
                             <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
                         }
                     </legend>
                     <div class="multiple-choice">
                         <input id="agree" name="agree" type="checkbox" value="agreed">
-                        <label for="agree">I agree</label>
+                        <label for="agree">@messages("declaration.agree")</label>
                     </div>
                 </fieldset>
             </div>

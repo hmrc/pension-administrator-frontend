@@ -26,7 +26,8 @@ case class ManualAddressViewModel(
                                    title: Message,
                                    heading: Message,
                                    secondaryHeader: Option[Message],
-                                   hint: Option[Message] = None
+                                   hint: Option[Message] = None,
+                                   psaName: Option[String] = None
                                  ) {
 
 }

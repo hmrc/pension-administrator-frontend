@@ -24,6 +24,7 @@ import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -46,26 +47,27 @@ class AddPartnerController @Inject()(
 
   private val form: Form[Boolean] = formProvider()
 
-  private def viewmodel(partners: Seq[Person]) = EntityViewModel(
-    postCall = routes.AddPartnerController.onSubmit(NormalMode),
+  private def viewmodel(partners: Seq[Person], mode: Mode)(implicit request: DataRequest[AnyContent]) = EntityViewModel(
+    postCall = routes.AddPartnerController.onSubmit(mode),
     title = Message("addPartners.title"),
     heading = Message("addPartners.heading"),
     entities = partners,
     maxLimit = appConfig.maxPartners,
     entityType = Message("addPartners.entityType"),
-    subHeading = None
+    subHeading = None,
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
-      get(AddPartnersId, form, viewmodel(partners), mode)
+      get(AddPartnersId, form, viewmodel(partners, mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
-      post(AddPartnersId, form, viewmodel(partners), mode)
+      post(AddPartnersId, form, viewmodel(partners, mode), mode)
   }
 
 }

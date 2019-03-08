@@ -78,7 +78,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeNavigator,
       messagesApi,
       checkYourAnswersFactory,
-      FakeSectionComplete
+      FakeSectionComplete,
+      FakeUserAnswersCacheConnector
     )
 
   def viewAsString(): String = check_your_answers(
@@ -87,8 +88,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"), answersDD),
       AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"), Seq.empty)
     ),
-    Some(directorName),
-    call
+    call,
+    None,
+    NormalMode
   )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
@@ -101,12 +103,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired page" when {
-      "director name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(NormalMode, index)(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-
       "no existing data is found" in {
         val result = controller(dontGetAnyData).onPageLoad(NormalMode, index)(fakeRequest)
 

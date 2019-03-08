@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
@@ -268,14 +268,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   private def directorsSuperSection: SuperSection = {
-    val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete.size match {
+    val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete(NormalMode).size match {
       case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", Some("director-add-link-onlyOne-additionalText"))
       case noOfDirectors if noOfDirectors == 10 => ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
       case _ => ("director-add-link-lessThanTen", None)
     }
     SuperSection(
       Some("director.supersection.header"),
-      for (person <- userAnswers.allDirectorsAfterDelete) yield directorSection(person, countryOptions),
+      for (person <- userAnswers.allDirectorsAfterDelete(NormalMode)) yield directorSection(person, countryOptions),
       Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
@@ -402,8 +402,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   }
 
   //Pension Adviser
-  private def pensionAdviser: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
-    AnswerRow("pensions.advisor.label", Seq(adviser.name), answerIsMessageKey = false,
+  private def pensionAdviser: Option[AnswerRow] = userAnswers.get(AdviserNameId) map { adviserName =>
+    AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
       None)
   }
 

@@ -17,9 +17,10 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import models.Address
+@import models.Mode
 @import viewmodels.address.AddressListViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: AddressListViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: AddressListViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = viewModel.title,
@@ -27,8 +28,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -59,5 +58,9 @@
         }
 
         @components.submit_button("site.save_and_continue")
+
+        @viewModel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

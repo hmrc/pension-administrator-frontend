@@ -72,7 +72,7 @@ class RegisterCompanyNavigator @Inject()(
     case _ => None
   }
 
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case CompanySameContactAddressId =>
       sameContactAddress(CheckMode, from.userAnswers)
     case CompanyContactAddressPostCodeLookupId =>

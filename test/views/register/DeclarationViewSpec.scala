@@ -36,8 +36,6 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
   "Declaration view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     "show an error summary when rendered with an error" in {
       val doc = asDocument(createViewUsingForm(form.withError(error)))
       assertRenderedById(doc, "error-summary-heading")

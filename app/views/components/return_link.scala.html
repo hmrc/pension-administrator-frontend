@@ -15,13 +15,16 @@
  *@
 
 @(
-psaName: String
+psaName: String,
+mode: Mode
 )(implicit messages: Messages)
 
-<div class="grid-row">
- <div class="column-two-thirds">
-  <p class="govuk-margin-top-5">
-   <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
-  </p>
- </div>
-</div>
+@if(mode == UpdateMode) {
+    <div class="grid-row">
+     <div class="column-two-thirds">
+      <p class="govuk-margin-top-5">
+       <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
+      </p>
+     </div>
+    </div>
+}

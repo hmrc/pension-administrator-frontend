@@ -18,13 +18,14 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId}
-import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId}
 import identifiers.register.individual.{IndividualContactAddressChangedId, IndividualContactDetailsChangedId, IndividualPreviousAddressChangedId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
-import models.{Index, Mode, NormalMode, PersonDetails}
+import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
+import models._
 import play.api.libs.json._
 import viewmodels.Person
 
@@ -56,24 +57,25 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
   }
 
-  def allDirectorsAfterDelete: Seq[Person] = {
+  def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
     val directors = allDirectors
     directors.filterNot(_.isDeleted).map { director =>
       val index = directors.indexOf(director)
       val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
       val editUrl = if (isComplete) {
-        routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(index)).url
+        routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
       } else {
-        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+        routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
       }
 
       Person(
         index,
         director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, index).url,
+        routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
         editUrl,
         director.isDeleted,
-        get(IsDirectorCompleteId(index)).getOrElse(false)
+        isComplete,
+        director.isNew
       )
     }
   }
@@ -91,13 +93,22 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     val partners = allPartners
     partners.filterNot(_.isDeleted).map { partner =>
       val index = partners.indexOf(partner)
+
+      val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+      val editUrl = if (isComplete) {
+        controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+      } else {
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
+      }
+
       Person(
         index,
         partner.fullName,
         controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
+        editUrl,
         partner.isDeleted,
-        get(IsPartnerCompleteId(index)).getOrElse(false)
+        isComplete,
+        partner.isNew
       )
     }
   }
@@ -143,6 +154,31 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         case failure => failure
       }
     }
+
+    setRec(ids, JsSuccess(this))
+  }
+
+  def setAllExistingAddress(ids: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]): JsResult[UserAnswers] = {
+
+    @tailrec
+    def setRec(addressIds: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]], resultAnswers: JsResult[UserAnswers])(
+      implicit writes: Writes[Address]): JsResult[UserAnswers] = {
+      resultAnswers match {
+        case JsSuccess(_, _) =>
+          if (addressIds.nonEmpty) {
+            val updatedUserAnswers = resultAnswers.map { userAnswers =>
+              userAnswers.get(addressIds.head._1).map { address =>
+                userAnswers.set(addressIds.head._2)(address.toTolerantAddress)
+              }
+            }.asOpt.flatten.getOrElse(resultAnswers)
+
+            setRec(addressIds.tail, updatedUserAnswers)
+          } else {
+            resultAnswers
+          }
+        case failure => failure
+      }
+    }
     setRec(ids, JsSuccess(this))
   }
 
@@ -158,7 +194,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     @tailrec
     def removeRec[II <: TypedIdentifier.PathDependent](localIds: List[II], result: JsResult[UserAnswers]): JsResult[UserAnswers] = {
       result match {
-        case JsSuccess(value, path) =>
+        case JsSuccess(_, _) =>
           localIds match {
             case Nil => result
             case id :: tail => removeRec(tail, result.flatMap(_.remove(id)))
@@ -170,7 +206,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     removeRec(ids, JsSuccess(this))
   }
 
-  def isUserAnswerUpdated(): Boolean ={
+  def isUserAnswerUpdated(): Boolean = {
     List(
       get[Boolean](DeclarationChangedId),
       get[Boolean](DirectorsOrPartnersChangedId),

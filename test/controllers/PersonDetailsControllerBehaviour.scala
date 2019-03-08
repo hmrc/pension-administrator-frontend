@@ -48,7 +48,7 @@ trait PersonDetailsControllerBehaviour {
     "return OK and the correct view for a GET request" in {
       val fixture = testFixture(createController)
 
-      val result = Future(fixture.controller.get(id, viewModel)(testRequest()))
+      val result = Future(fixture.controller.get(id, viewModel, NormalMode)(testRequest()))
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(this, testForm(), viewModel)
@@ -59,7 +59,7 @@ trait PersonDetailsControllerBehaviour {
       val data = UserAnswers().set(id)(testPersonDetails).asOpt.value
       val request = testRequest(data)
 
-      val result = Future(fixture.controller.get(id, viewModel)(request))
+      val result = Future(fixture.controller.get(id, viewModel, NormalMode)(request))
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(this, testForm().fill(testPersonDetails), viewModel)
@@ -168,6 +168,6 @@ object PersonDetailsControllerBehaviour {
     new PersonDetailsFormProvider()()
 
   def viewAsString(base: ControllerSpecBase, form: Form[_], viewModel: PersonDetailsViewModel): String =
-    personDetails(base.frontendAppConfig, form, viewModel)(base.fakeRequest, base.messages).toString()
+    personDetails(base.frontendAppConfig, form, viewModel, NormalMode)(base.fakeRequest, base.messages).toString()
 
 }

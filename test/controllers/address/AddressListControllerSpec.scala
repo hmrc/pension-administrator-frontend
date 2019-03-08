@@ -167,7 +167,8 @@ object AddressListControllerSpec {
     def onPageLoad(viewModel: AddressListViewModel): Future[Result] = {
 
       get(
-        viewModel
+        viewModel,
+        NormalMode
       )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
 
     }
@@ -237,7 +238,7 @@ object AddressListControllerSpec {
       case None => new AddressListFormProvider()(viewModel.addresses)
     }
 
-    addressList(appConfig, form, viewModel)(request, messages).toString()
+    addressList(appConfig, form, viewModel, NormalMode)(request, messages).toString()
 
   }
 

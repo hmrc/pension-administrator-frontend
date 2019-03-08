@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.vary
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.vary.AnyMoreChangesFormProvider
+import forms.register.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.vary.anyMoreChanges
+import views.html.register.anyMoreChanges
 
 
 class AnyMoreChangesControllerSpec extends ControllerSpecBase {
@@ -43,7 +43,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form) = anyMoreChanges(frontendAppConfig, form)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = anyMoreChanges(frontendAppConfig, form, None)(fakeRequest, messages).toString
 
   "AnyMoreChangesController" must {
 

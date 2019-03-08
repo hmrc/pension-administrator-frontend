@@ -56,15 +56,17 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        IndividualAddressId.retrieve.right.map {
-          address =>
+        (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+          case individual ~ address =>
             SameContactAddressViewModel(
               postCall(mode),
               title = Message(title),
               heading = Message(heading),
               hint = Some(Message(hint)),
               secondaryHeader = None,
-              address = address
+              address = address,
+              psaName = individual.fullName,
+              mode = mode
             )
         }
     )

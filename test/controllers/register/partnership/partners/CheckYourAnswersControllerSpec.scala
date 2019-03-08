@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)
     ))
 
-  def call = controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(0)
+  def call = controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(0, NormalMode)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new CheckYourAnswersController(
@@ -77,7 +77,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeNavigator,
       messagesApi,
       FakeSectionComplete,
-      countryOptions
+      countryOptions,
+      FakeUserAnswersCacheConnector
     )
 
   def viewAsString(): String = check_your_answers(
@@ -86,8 +87,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       AnswerSection(Some("partnerCheckYourAnswers.partnerDetails.heading"), answersDD),
       AnswerSection(Some("partnerCheckYourAnswers.contactDetails.heading"), Seq.empty)
     ),
-    Some(partnerName),
-    call
+    call,
+    None,
+    NormalMode
   )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {
@@ -100,12 +102,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired page" when {
-      "partner name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(index, NormalMode)(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-
       "no existing data is found" in {
         val result = controller(dontGetAnyData).onPageLoad(index, NormalMode)(fakeRequest)
 

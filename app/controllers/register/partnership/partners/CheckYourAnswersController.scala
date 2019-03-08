@@ -17,13 +17,18 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
+import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
-import models.{CheckMode, Index, Mode, NormalMode}
+import models.Mode.checkMode
+import models.requests.DataRequest
+import models.{Index, Mode, PersonDetails, UpdateMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
@@ -43,41 +48,52 @@ class CheckYourAnswersController @Inject()(
                                             @PartnershipPartner navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             sectionComplete: SectionComplete,
-                                            implicit val countryOptions: CountryOptions
+                                            implicit val countryOptions: CountryOptions,
+                                            userAnswersCacheConnector: UserAnswersCacheConnector
                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) { partnerName =>
         val answersSection = Seq(
           AnswerSection(
             Some("partnerCheckYourAnswers.partnerDetails.heading"),
-            PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url))) ++
-              PartnerNinoId(index).row(Some(Link(routes.PartnerNinoController.onPageLoad(CheckMode, index).url))) ++
-              PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)))
+            PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(checkMode(mode), index).url))) ++
+              PartnerNinoId(index).row(Some(Link(routes.PartnerNinoController.onPageLoad(checkMode(mode), index).url))) ++
+              PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url)))
           ),
           AnswerSection(
             Some("partnerCheckYourAnswers.contactDetails.heading"),
-            PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(CheckMode, index).url))) ++
-              PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url))) ++
+            PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(checkMode(mode), index).url))) ++
+              PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
               PartnerPreviousAddressId(index).row(None) ++
-              PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)))
+              PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url)))
           ))
 
-        Future.successful(Ok(check_your_answers(
-          appConfig,
-          answersSection,
-          Some(partnerName),
-          routes.CheckYourAnswersController.onSubmit(index)))
-        )
-      }
+      Future.successful(Ok(check_your_answers(
+        appConfig,
+        answersSection,
+        routes.CheckYourAnswersController.onSubmit(index, mode),
+        psaName(),
+        mode))
+      )
   }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) map { _ =>
-        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      PartnerDetailsId(index).retrieve.right.map { details =>
+        setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
+          sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) map { _ =>
+            Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+          }
+        }
       }
+  }
+
+  private def setNewFlagInUpdateMode(index: Index, mode: Mode, partnerDetails: PersonDetails)
+                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
+    if(mode == UpdateMode) {
+      userAnswersCacheConnector.save(request.externalId, PartnerDetailsId(index), partnerDetails.copy(isNew = true))
+    } else { Future(request.userAnswers.json)}
   }
 
 }

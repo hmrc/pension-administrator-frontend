@@ -16,6 +16,7 @@
 
 package views
 
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import viewmodels.Section
@@ -30,26 +31,30 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
 
   val fakeCall = Call("method", "url")
 
-  def createView: () => HtmlFormat.Appendable = () =>
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
     check_your_answers(
       frontendAppConfig,
       emptyAnswerSections,
-      None,
-      fakeCall
+      fakeCall,
+      Some("test psa"),
+      mode
     )(fakeRequest, messages)
 
   def createViewWithData: (Seq[Section]) => HtmlFormat.Appendable = (sections) =>
     check_your_answers(
       frontendAppConfig,
       sections,
+      fakeCall,
       None,
-      fakeCall
+      NormalMode
     )(fakeRequest, messages)
 
   "check_your_answers view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithSubmitButton(createView)
+    behave like pageWithSubmitButton(createView())
+
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like checkYourAnswersPage(createViewWithData)
   }
