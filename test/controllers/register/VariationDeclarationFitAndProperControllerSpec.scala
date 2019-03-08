@@ -109,7 +109,7 @@ object VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase
     variationDeclarationFitAndProper(
       frontendAppConfig,
       form,
-      psaName
+      Some(psaName)
     )(fakeRequest, messages).toString
 
 }

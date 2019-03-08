@@ -53,31 +53,23 @@ class PartnerUniqueTaxReferenceController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) { partnerName =>
-        val redirectResult = request.userAnswers.get(PartnerUniqueTaxReferenceId(index)) match {
-          case None => Ok(partnerUniqueTaxReference(appConfig, form, mode, index, partnerName))
-          case Some(value) => Ok(partnerUniqueTaxReference(appConfig, form.fill(value), mode, index, partnerName))
-        }
-        Future.successful(redirectResult)
-      }
+      val updatedForm = request.userAnswers.get(PartnerUniqueTaxReferenceId(index)).fold(form)(form.fill)
+      Future.successful(Ok(partnerUniqueTaxReference(appConfig, updatedForm, mode, index, psaName())))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) { partnerName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(partnerUniqueTaxReference(appConfig, formWithErrors, mode, index, partnerName))),
-          value => {
-            val id = PartnerUniqueTaxReferenceId(index)
-            cacheConnector.save(request.externalId, PartnerUniqueTaxReferenceId(index), value).flatMap(json =>
-              saveChangeFlag(mode, id).map { _ =>
-                Redirect(navigator.nextPage(PartnerUniqueTaxReferenceId(index), mode, UserAnswers(json)))
-              }
-            )
-          }
-        )
-
-      }
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(partnerUniqueTaxReference(appConfig, formWithErrors, mode, index, psaName()))),
+        value => {
+          val id = PartnerUniqueTaxReferenceId(index)
+          cacheConnector.save(request.externalId, PartnerUniqueTaxReferenceId(index), value).flatMap(json =>
+            saveChangeFlag(mode, id).map { _ =>
+              Redirect(navigator.nextPage(PartnerUniqueTaxReferenceId(index), mode, UserAnswers(json)))
+            }
+          )
+        }
+      )
   }
 }

@@ -19,9 +19,10 @@ package controllers.register.partnership.partners
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.PersonDetailsController
+import controllers.{PersonDetailsController, Retrievals}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.partners.PartnerDetailsId
+import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -38,13 +39,14 @@ class PartnerDetailsController @Inject()(
                                           override val allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
-                                        ) extends PersonDetailsController {
+                                        ) extends PersonDetailsController with Retrievals {
 
-  private[partners] def viewModel(mode: Mode, index: Int) =
+  private[partners] def viewModel(mode: Mode, index: Int)(implicit request: DataRequest[AnyContent]) =
     PersonDetailsViewModel(
       title = "partnerDetails.title",
       heading = Message("partnerDetails.heading"),
-      postCall = routes.PartnerDetailsController.onSubmit(mode, index)
+      postCall = routes.PartnerDetailsController.onSubmit(mode, index),
+      psaName = psaName()
     )
 
   private[partners] def id(index: Int) =
@@ -52,7 +54,7 @@ class PartnerDetailsController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      get(id(index), viewModel(mode, index))
+      get(id(index), viewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

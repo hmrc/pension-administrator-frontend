@@ -49,7 +49,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
     new ConfirmDeleteAdviserController(frontendAppConfig, messagesApi, FakeAuthAction, new FakeAllowAccessProvider(),
       dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute))
 
-  def viewAsString(form: Form[_] = form): String = confirmDelete(frontendAppConfig, form, viewModel(adviserName))(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = confirmDelete(frontendAppConfig, form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
 
   "ConfirmDeleteAdviserController" must {
 

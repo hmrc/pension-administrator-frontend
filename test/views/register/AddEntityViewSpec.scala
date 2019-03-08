@@ -46,7 +46,8 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     entities = entities,
     maxLimit = maxPartners,
     entityType = entityType,
-    subHeading = None
+    subHeading = None,
+    psaName = Some("test psa")
   )
 
   private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
@@ -61,7 +62,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),

@@ -51,29 +51,20 @@ class PartnerNinoController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnerDetailsId(index).retrieve.right.map { partnerName =>
-        val redirectResult = request.userAnswers.get(PartnerNinoId(index)) match {
-          case None =>
-            Ok(partnerNino(appConfig, form, mode, index, partnerName.fullName))
-          case Some(value) =>
-            Ok(partnerNino(appConfig, form.fill(value), mode, index, partnerName.fullName))
-        }
-        Future.successful(redirectResult)
-      }
+      val updatedForm = request.userAnswers.get(PartnerNinoId(index)).fold(form)(form.fill)
+      Future.successful(Ok(partnerNino(appConfig, updatedForm, mode, index, psaName())))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnerDetailsId(index).retrieve.right.map { partnerName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(partnerNino(appConfig, formWithErrors, mode, index, partnerName.fullName))),
-          value =>
-            cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(json =>
-              saveChangeFlag(mode, DirectorNinoId(index)).map(_ =>
-                Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
-            )
-        )
-      }
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(partnerNino(appConfig, formWithErrors, mode, index, psaName()))),
+        value =>
+          cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(json =>
+            saveChangeFlag(mode, DirectorNinoId(index)).map(_ =>
+              Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
+          )
+      )
   }
 }

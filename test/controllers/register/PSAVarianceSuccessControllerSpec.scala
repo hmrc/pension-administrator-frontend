@@ -82,6 +82,6 @@ object PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoS
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    psaVarianceSuccess(frontendAppConfig, psaName)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    psaVarianceSuccess(frontendAppConfig, None)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 }

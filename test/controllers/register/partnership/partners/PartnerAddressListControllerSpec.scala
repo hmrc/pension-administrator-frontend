@@ -53,7 +53,8 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
     addressList(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "PartnerAddressListController" must {

@@ -27,7 +27,6 @@ class CompanyNotFoundViewSpec extends ViewBehaviours {
 
   "CompanyNotFound view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
 
     "have link to companies house" in {
       createView must haveLink(

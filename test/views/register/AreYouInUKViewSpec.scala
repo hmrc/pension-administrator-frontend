@@ -59,8 +59,6 @@ class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
     behave like normalPage(createView(CheckMode), messageKeyPrefix,
       "check.selectedUkAddress", "check.provideNonUkAddress")
 
-    behave like pageWithBackLink(createView())
-
     behave like pageWithSubmitButton(createView())
 
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading")

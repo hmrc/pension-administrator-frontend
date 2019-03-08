@@ -24,6 +24,7 @@ import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -42,20 +43,20 @@ class ConfirmDeleteDirectorController @Inject()(
 
   val form = formProvider()
 
-  private def vm(index: Index, name: String, mode:Mode) = ConfirmDeleteViewModel(
+  private def vm(index: Index, name: String, mode:Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
     Some(name),
-    None
+    None,
+    psaName()
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       DirectorDetailsId(index).retrieve.right.map { details =>
-
-        get(vm(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index))
+        get(vm(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
       }
   }
 

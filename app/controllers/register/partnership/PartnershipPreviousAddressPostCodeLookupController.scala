@@ -19,11 +19,13 @@ package controllers.register.partnership
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
+import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -44,27 +46,9 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
                                                                     getData: DataRetrievalAction,
                                                                     requireData: DataRequiredAction,
                                                                     formProvider: PostCodeLookupFormProvider
-                                                                  ) extends PostcodeLookupController {
+                                                                  ) extends PostcodeLookupController with Retrievals {
 
-  import PartnershipPreviousAddressPostCodeLookupController._
-
-  override protected def form: Form[String] = formProvider()
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      get(viewModel(mode))
-  }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      post(PartnershipPreviousAddressPostCodeLookupId, viewModel(mode), mode)
-  }
-
-}
-
-object PartnershipPreviousAddressPostCodeLookupController {
-
-  def viewModel(mode: Mode) = PostcodeLookupViewModel(
+  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
     Message("common.previousAddress.title"),
@@ -73,8 +57,21 @@ object PartnershipPreviousAddressPostCodeLookupController {
     Message("common.previousAddress.lede"),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),
-    Message("common.address.enterPostcode.formLabel")
+    Message("common.address.enterPostcode.formLabel"),
+    psaName()
   )
+
+  override protected def form: Form[String] = formProvider()
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+    implicit request =>
+      get(viewModel(mode), mode)
+  }
+
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+      post(PartnershipPreviousAddressPostCodeLookupId, viewModel(mode), mode)
+  }
 }
 
 
