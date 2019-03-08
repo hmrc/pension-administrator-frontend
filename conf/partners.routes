@@ -87,3 +87,6 @@ GET        /:index/check-your-answers                         controllers.regist
 POST       /:index/check-your-answers                         controllers.register.partnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
 GET        /:index/changing-check-your-answers                controllers.register.partnership.partners.CheckYourAnswersController.onPageLoad(index: Index, mode: Mode = UpdateMode)
 POST       /:index/changing-check-your-answers                controllers.register.partnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = UpdateMode)
+
+GET        /:index/is-this-previous-address                   controllers.register.partnership.partners.PartnerConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST       /:index/is-this-previous-address                   controllers.register.partnership.partners.PartnerConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
