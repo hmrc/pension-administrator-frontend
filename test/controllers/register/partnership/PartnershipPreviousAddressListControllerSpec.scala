@@ -79,7 +79,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
         val form = new AddressListFormProvider()(viewModel.addresses)
 
-        contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel)(request, messages).toString
+        contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
       }
 
     }

@@ -39,7 +39,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any())(any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)))
 
       val result = controller(userType = UserType.Organisation).onPageLoad(UpdateMode)(fakeRequest)

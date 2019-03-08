@@ -21,6 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.RegistrationConnectorSpec.{nino, sapNumber}
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
+import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
@@ -44,6 +45,8 @@ trait ControllerSpecBase extends SpecBase {
 
   def getCompany: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
+      RegistrationInfoId.toString -> RegistrationInfo(
+        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None),
       BusinessDetailsId.toString ->
         BusinessDetails("Test Company Name", Some("Test UTR"))
     )))
@@ -61,6 +64,8 @@ trait ControllerSpecBase extends SpecBase {
 
   def getIndividual: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
+      RegistrationInfoId.toString -> RegistrationInfo(
+        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None),
       IndividualDetailsId.toString ->
         TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
     )))

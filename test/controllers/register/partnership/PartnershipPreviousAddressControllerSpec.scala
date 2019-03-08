@@ -187,5 +187,5 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
       fakeAuditService
     )
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
 }

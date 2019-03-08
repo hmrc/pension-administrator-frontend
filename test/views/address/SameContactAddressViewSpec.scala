@@ -68,8 +68,6 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
   "Same Contact Address View" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "www.example.com", s"$messageKeyPrefix.heading")
 
     behave like pageWithSubmitButton(createView)

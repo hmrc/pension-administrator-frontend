@@ -19,19 +19,20 @@ package services
 import com.google.inject.ImplementedBy
 import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
-import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
-import identifiers.register.company.BusinessDetailsId
-import identifiers.register.company.directors.IsDirectorCompleteId
+import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
-import identifiers.register.partnership.PartnershipDetailsId
-import identifiers.register.partnership.partners.IsPartnerCompleteId
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
+import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipDetailsId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
+import identifiers.{TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
-import models.RegistrationLegalStatus
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.requests.AuthenticatedRequest
+import models.{Address, Mode, RegistrationLegalStatus, TolerantAddress}
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsResult, JsSuccess, JsValue}
+import play.api.libs.json.{JsResult, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
 import utils.countryOptions.CountryOptions
@@ -42,7 +43,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
-  def retrievePsaDataAndGenerateViewModel(psaId: String)(implicit hc: HeaderCarrier,
+  def retrievePsaDataAndGenerateViewModel(psaId: String, mode:Mode)(implicit hc: HeaderCarrier,
                                                          ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel]
 }
 
@@ -55,11 +56,11 @@ class PsaDetailServiceImpl @Inject()(
                                       userAnswersCacheConnector: UserAnswersCacheConnector
                                     ) extends PsaDetailsService with I18nSupport {
 
-  override def retrievePsaDataAndGenerateViewModel(psaId: String)(
+  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode:Mode)(
     implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
 
     if (fs.get(isVariationsEnabled)) {
-      retrievePsaDataFromUserAnswers(psaId)
+      retrievePsaDataFromUserAnswers(psaId, mode)
     } else {
       canStopBeingAPsa(psaId).flatMap { canDeregister =>
         retrievePsaDataFromModel(psaId, canDeregister)
@@ -67,10 +68,10 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  def retrievePsaDataFromUserAnswers(psaId: String
+  def retrievePsaDataFromUserAnswers(psaId: String, mode:Mode
                                     )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
     for {
-      userAnswers <- getUserAnswers(psaId)
+      userAnswers <- getUserAnswers(psaId, mode)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
       canDeregister <- canStopBeingAPsa(psaId)
     } yield {
@@ -78,17 +79,17 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  private def getUserAnswers(psaId: String
+  private def getUserAnswers(psaId: String, mode:Mode
                             )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]) =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
-      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_)}
+      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_, mode)}
       case Some(data) => Future(UserAnswers(data))
     }
 
-  private def getUpdatedUserAnswers(response: JsValue)(implicit ec: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue, mode:Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-    Future(setAdditionalInfoToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers))
+    Future(setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers))
   }
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
@@ -116,23 +117,39 @@ class PsaDetailServiceImpl @Inject()(
     PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeRegister)
   }
 
-  private def setAdditionalInfoToUserAnswers(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
-    val seqOfCompleteIds = legalStatus match {
-      case Some(LimitedCompany) =>
-        val directors = userAnswers.allDirectors
-        directors.filterNot(_.isDeleted).map(director => IsDirectorCompleteId(directors.indexOf(director))).toList
-      case Some(Partnership) =>
-        val partners = userAnswers.allPartners
-        partners.filterNot(_.isDeleted).map(partner => IsPartnerCompleteId(partners.indexOf(partner))).toList
-      case _ => Nil
-    }
-    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(setAllExistingAddress)
-  }
+  private def setCompleteAndAddressIdsToUserAnswers(userAnswers: UserAnswers,
+                                                    legalStatus: Option[RegistrationLegalStatus],
+                                                    mode:Mode): JsResult[UserAnswers] = {
 
-  private def setAllExistingAddress(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.get(IndividualContactAddressId).map { address =>
-      userAnswers.set(ExistingCurrentAddressId)(address.toTolerantAddress)
-    }.getOrElse(JsSuccess(userAnswers))
+    val (seqOfCompleteIds, mapOfAddressIds):
+      (List[TypedIdentifier[Boolean]], Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]) = legalStatus match {
+      case Some(Individual) =>
+        (Nil, Map(IndividualContactAddressId -> ExistingCurrentAddressId))
+
+      case Some(LimitedCompany) =>
+        val allDirectors = userAnswers.allDirectorsAfterDelete(mode)
+        val allDirectorsCompleteIds = allDirectors.map(director => IsDirectorCompleteId(allDirectors.indexOf(director))).toList
+        val allDirectorsAddressIdMap = allDirectors.map { director =>
+          val index = allDirectors.indexOf(director)
+          (DirectorAddressId(index), DirectorsExistingCurrentAddressId(index))
+        }.toMap
+
+        (allDirectorsCompleteIds, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
+
+      case Some(Partnership) =>
+        val allPartners = userAnswers.allPartnersAfterDelete(mode)
+        val allPartnersCompleteIds = allPartners.map(partner => IsPartnerCompleteId(allPartners.indexOf(partner))).toList
+        val allPartnersAddressIds = allPartners.map { partner =>
+          val index = allPartners.indexOf(partner)
+          (PartnerAddressId(index), PartnersExistingCurrentAddressId(index))
+        }.toMap
+
+        (allPartnersCompleteIds, Map(PartnershipContactAddressId -> PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds)
+
+      case _ =>
+        (Nil, Map.empty)
+    }
+    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {

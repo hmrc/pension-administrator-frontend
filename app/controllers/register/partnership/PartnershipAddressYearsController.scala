@@ -64,7 +64,7 @@ class PartnershipAddressYearsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map {
-        get(PartnershipAddressYearsId, form, _)
+        get(PartnershipAddressYearsId, form, _, mode)
       }
   }
 

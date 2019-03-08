@@ -21,5 +21,6 @@ import play.api.mvc.Call
 case class PersonDetailsViewModel(
                                    title: String,
                                    heading: String,
-                                   postCall: Call
+                                   postCall: Call,
+                                   psaName: Option[String] = None
                                  )

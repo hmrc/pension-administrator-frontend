@@ -35,7 +35,6 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
 
   "PartnershipReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
   }
 
   "display partnership name" in {

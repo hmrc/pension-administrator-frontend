@@ -25,6 +25,7 @@ import controllers.register.partnership.routes._
 import forms.AddressFormProvider
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,18 +53,19 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def viewmodel(mode: Mode) = ManualAddressViewModel(
+  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
     title = Message("common.previousAddress.title"),
     heading = Message("common.previousAddress.heading"),
     hint = Some(Message("common.previousAddress.lede")),
-    secondaryHeader = None
+    secondaryHeader = None,
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode))
+      get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

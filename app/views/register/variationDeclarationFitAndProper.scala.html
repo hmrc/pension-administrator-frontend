@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 
-@(appConfig: FrontendAppConfig,form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig,form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declarationFitAndProper.variations.title"),
@@ -28,11 +28,11 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(messages("declarationFitAndProper.variations.heading", psaName))
+    @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
     @helpers.form(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaName))
+        @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 
         <ul class="list-bullet">
             <li>
@@ -64,7 +64,9 @@
 
         @components.submit_button("site.continue")
 
-        @components.return_link(psaName, UpdateMode)
+        @psaNameOpt.map{ psaName =>
+            @components.return_link(psaName, UpdateMode)
+        }
     }
 
 }

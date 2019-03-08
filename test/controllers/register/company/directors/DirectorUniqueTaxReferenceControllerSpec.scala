@@ -77,7 +77,7 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
     form,
     NormalMode,
     index,
-    directorName
+    None
   )(fakeRequest, messages).toString
 
   "DirectorUniqueTaxReference Controller" must {
@@ -144,13 +144,6 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
-      }
-
-      "the index is not valid" in {
-        val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-        val result = controller(getRelevantData).onPageLoad(NormalMode, Index(2))(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
 

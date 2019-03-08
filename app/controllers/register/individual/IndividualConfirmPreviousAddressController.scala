@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import controllers.register.individual.routes._
-import forms.address.SameContactAddressFormProvider
+import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
@@ -42,15 +42,12 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
                                                            allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
-                                                           formProvider: SameContactAddressFormProvider,
                                                            val countryOptions: CountryOptions
                                                       ) extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit _
-  private[controllers] val title: Message = "individual.confirmPreviousAddress.title"
-  private[controllers] val heading: Message = "individual.confirmPreviousAddress.heading"
-
-  protected val form: Form[Boolean] = formProvider()
+  private[controllers] val title: Message = "confirmPreviousAddress.title"
+  private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
   private def viewmodel(mode: Mode) =
     Retrieval(

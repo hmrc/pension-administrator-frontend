@@ -35,8 +35,6 @@ class CompanyRegistrationNumberViewSpec extends StringViewBehaviours {
   "CompanyRegistrationNumber view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like stringPage(
       createViewUsingForm,
       messageKeyPrefix,

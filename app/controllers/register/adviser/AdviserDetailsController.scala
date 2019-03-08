@@ -18,8 +18,8 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.register.adviser.AdviserDetailsFormProvider
 import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId}
 import javax.inject.Inject
@@ -55,7 +55,7 @@ class AdviserDetailsController @Inject()(
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(adviserDetails(appConfig, preparedForm, mode, adviserName)))
+        Future.successful(Ok(adviserDetails(appConfig, preparedForm, mode, adviserName, psaName())))
       }
   }
 
@@ -64,7 +64,7 @@ class AdviserDetailsController @Inject()(
       AdviserNameId.retrieve.right.map { adviserName =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode, adviserName))),
+            Future.successful(BadRequest(adviserDetails(appConfig, formWithErrors, mode, adviserName, psaName()))),
           value =>
             cacheConnector.save(request.externalId, AdviserDetailsId, value).flatMap(cacheMap =>
               saveChangeFlag(mode, AdviserDetailsId).map(_ =>

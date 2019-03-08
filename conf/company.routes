@@ -43,8 +43,8 @@ POST       /check-your-answers                          controllers.register.com
 
 GET        /add-directors                               controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
 POST       /add-directors                               controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/directors                            controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode)
-POST       /:mode/directors                            controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode)
+GET        /:mode/add-directors                         controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode)
+POST       /:mode/add-directors                         controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode)
 
 GET        /other-directors                             controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = NormalMode)
 POST       /other-directors                             controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
@@ -94,3 +94,6 @@ GET        /enter-registered-address                    controllers.register.com
 POST       /enter-registered-address                    controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 
 GET        /outside-eu-eea                              controllers.register.company.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
+
+GET         /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)

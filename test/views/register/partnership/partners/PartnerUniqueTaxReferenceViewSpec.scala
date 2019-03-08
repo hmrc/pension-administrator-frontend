@@ -17,7 +17,7 @@
 package views.register.partnership.partners
 
 import forms.UniqueTaxReferenceFormProvider
-import models.{Index, NormalMode}
+import models.{Index, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.partnership.partners.partnerUniqueTaxReference
@@ -29,16 +29,15 @@ class PartnerUniqueTaxReferenceViewSpec extends ViewBehaviours {
   val form = new UniqueTaxReferenceFormProvider().apply("partnerUniqueTaxReference.error.required", "partnerUniqueTaxReference.error.reason.required")
   val partnerName = "test partner name"
 
-  def createView = () => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode) = () => partnerUniqueTaxReference(frontendAppConfig, form, mode, Index(1), Some("test psa"))(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), partnerName)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => partnerUniqueTaxReference(frontendAppConfig, form, NormalMode, Index(1), None)(fakeRequest, messages)
 
   val utrOptions = Seq("true", "false")
 
   "PartnerUniqueTaxReference view" must {
-    behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
+    behave like normalPage(createView(), messageKeyPrefix)
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
   "PartnerUniqueTaxReference view" when {

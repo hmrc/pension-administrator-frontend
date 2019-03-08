@@ -86,7 +86,8 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
     addressYears(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "DirectorAddressYears Controller" must {
