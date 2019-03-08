@@ -25,6 +25,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.partnership.partners.{PartnerPreviousAddressId, PartnerPreviousAddressListId, PartnerPreviousAddressPostCodeLookupId}
+import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -51,30 +52,25 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) {
-        partnerName =>
-          get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, partnerName))
-      }
+      get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) {
-        partnerName =>
-          val vm = addressViewModel(mode, index, partnerName)
-          post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode, context(vm),
-            PartnerPreviousAddressPostCodeLookupId(index))
-      }
+      val vm = addressViewModel(mode, index)
+      post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode, context(vm),
+        PartnerPreviousAddressPostCodeLookupId(index))
   }
 
-  private def addressViewModel(mode: Mode, index: Index, partnerName: String) =
+  private def addressViewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
       Message("partnerPreviousAddress.title"),
       Message("partnerPreviousAddress.heading"),
-      Some(Message(partnerName)),
-      Some(Message("partnerPreviousAddress.hint"))
+      None,
+      Some(Message("partnerPreviousAddress.hint")),
+      psaName = psaName()
     )
 
   private def context(viewModel: ManualAddressViewModel): String = {

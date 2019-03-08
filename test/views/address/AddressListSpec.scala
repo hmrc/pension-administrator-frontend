@@ -17,7 +17,7 @@
 package views.address
 
 import forms.address.AddressListFormProvider
-import models.TolerantAddress
+import models.{Mode, NormalMode, TolerantAddress, UpdateMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.Message
@@ -36,7 +36,7 @@ class AddressListSpec extends ViewBehaviours {
   private val call = controllers.routes.IndexController.onPageLoad()
   private val subHeading = "sub-heading"
 
-  private val viewModel = AddressListViewModel(call, call, addresses, subHeading = Some(Message(subHeading)))
+  private val viewModel = AddressListViewModel(call, call, addresses, subHeading = Some(Message(subHeading)), psaName = Some("test-psa"))
 
   def address(postCode: String): TolerantAddress = TolerantAddress(
     Some("address line 1"),
@@ -47,12 +47,12 @@ class AddressListSpec extends ViewBehaviours {
     Some("United Kingdom")
   )
 
-  private def createView: () => HtmlFormat.Appendable =
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable =
     () =>
       addressList(
         frontendAppConfig,
         form,
-        viewModel
+        viewModel, mode
       )(fakeRequest, messages)
 
   private def createViewUsingForm: Form[_] => HtmlFormat.Appendable =
@@ -60,16 +60,17 @@ class AddressListSpec extends ViewBehaviours {
       addressList(
         frontendAppConfig,
         form,
-        viewModel
+        viewModel,
+        NormalMode
       )(fakeRequest, messages)
 
   "AddressListView view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     "have link for enter address manually" in {
-      createView must haveLink(call.url, "manual-address-link")
+      createView() must haveLink(call.url, "manual-address-link")
     }
   }
 

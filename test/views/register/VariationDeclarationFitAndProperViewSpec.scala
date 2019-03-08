@@ -30,18 +30,15 @@ class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Bo
 
   val messageKeyPrefix = "declarationFitAndProper.variations"
 
-  private def createView = () => variationDeclarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
+  private def createView = () => variationDeclarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = variationDeclarationFitAndProper(frontendAppConfig, form, psaName)(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]) = variationDeclarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
 
   "DeclarationFitAndProper (variations) view" must {
+    appRunning()
     behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
 
-    "behave like a page with a return link" in {
-      appRunning()
-      val doc = asDocument(createView())
-      assertLink(doc, "return-link", controllers.routes.PsaDetailsController.onPageLoad().url)
-    }
+    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
 
     "display the correct page title" in {
       val doc = asDocument(createView())

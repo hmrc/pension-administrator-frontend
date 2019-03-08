@@ -48,29 +48,28 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(index) { partnerName =>
-        val answersSection = Seq(
-          AnswerSection(
-            Some("partnerCheckYourAnswers.partnerDetails.heading"),
-            PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url))) ++
-              PartnerNinoId(index).row(Some(Link(routes.PartnerNinoController.onPageLoad(CheckMode, index).url))) ++
-              PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)))
-          ),
-          AnswerSection(
-            Some("partnerCheckYourAnswers.contactDetails.heading"),
-            PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(CheckMode, index).url))) ++
-              PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url))) ++
-              PartnerPreviousAddressId(index).row(None) ++
-              PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)))
-          ))
+      val answersSection = Seq(
+        AnswerSection(
+          Some("partnerCheckYourAnswers.partnerDetails.heading"),
+          PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url))) ++
+            PartnerNinoId(index).row(Some(Link(routes.PartnerNinoController.onPageLoad(CheckMode, index).url))) ++
+            PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(CheckMode, index).url)))
+        ),
+        AnswerSection(
+          Some("partnerCheckYourAnswers.contactDetails.heading"),
+          PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(CheckMode, index).url))) ++
+            PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(CheckMode, index).url))) ++
+            PartnerPreviousAddressId(index).row(None) ++
+            PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(CheckMode, index).url)))
+        ))
 
-        Future.successful(Ok(check_your_answers(
-          appConfig,
-          answersSection,
-          Some(partnerName),
-          routes.CheckYourAnswersController.onSubmit(index, NormalMode)))
-        )
-      }
+      Future.successful(Ok(check_your_answers(
+        appConfig,
+        answersSection,
+        routes.CheckYourAnswersController.onSubmit(index, mode),
+        psaName(),
+        mode))
+      )
   }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

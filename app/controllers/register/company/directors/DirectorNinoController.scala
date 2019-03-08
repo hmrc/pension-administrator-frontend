@@ -44,35 +44,26 @@ class DirectorNinoController @Inject()(
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: DirectorNinoFormProvider
-                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits with Variations{
+                                      ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits with Variations {
 
   private val form: Form[Nino] = formProvider()
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val redirectResult = request.userAnswers.get(DirectorNinoId(index)) match {
-          case None =>
-            Ok(directorNino(appConfig, form, mode, index, directorName))
-          case Some(value) =>
-            Ok(directorNino(appConfig, form.fill(value), mode, index, directorName))
-        }
-        Future.successful(redirectResult)
-      }
+      val updatedForm = request.userAnswers.get(DirectorNinoId(index)).fold(form)(form.fill)
+      Future.successful(Ok(directorNino(appConfig, updatedForm, mode, index, psaName())))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, directorName))),
-          value =>
-            cacheConnector.save(request.externalId, DirectorNinoId(index), value).flatMap(answers =>
-              saveChangeFlag(mode, DirectorNinoId(index)).map (_ =>
-                Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(answers))))
-              )
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(directorNino(appConfig, formWithErrors, mode, index, psaName()))),
+        value =>
+          cacheConnector.save(request.externalId, DirectorNinoId(index), value).flatMap(answers =>
+            saveChangeFlag(mode, DirectorNinoId(index)).map(_ =>
+              Redirect(navigator.nextPage(DirectorNinoId(index), mode, UserAnswers(answers))))
           )
-      }
+      )
   }
 }

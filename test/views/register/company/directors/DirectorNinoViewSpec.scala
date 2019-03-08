@@ -17,7 +17,7 @@
 package views.register.company.directors
 
 import forms.register.company.directors.DirectorNinoFormProvider
-import models.{Index, NormalMode}
+import models.{Index, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.directorNino
@@ -30,13 +30,14 @@ class DirectorNinoViewSpec extends ViewBehaviours {
 
   val form = new DirectorNinoFormProvider()()
 
-  def createView = () => directorNino(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode) = () =>
+    directorNino(frontendAppConfig, form, mode, index, Some("test psa"))(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => directorNino(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => directorNino(frontendAppConfig, form, NormalMode, index, None)(fakeRequest, messages)
 
   "DirectorNino view" must {
-    behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
+    behave like normalPage(createView(), messageKeyPrefix)
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
   "DirectorNino view" when {

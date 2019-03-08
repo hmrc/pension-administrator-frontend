@@ -53,33 +53,24 @@ class DirectorUniqueTaxReferenceController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val redirectResult = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
-          case None =>
-            Ok(directorUniqueTaxReference(appConfig, form, mode, index, directorName))
-          case Some(value) =>
-            Ok(directorUniqueTaxReference(appConfig, form.fill(value), mode, index, directorName))
-        }
-        Future.successful(redirectResult)
-      }
+      val updatedForm = request.userAnswers.get(DirectorUniqueTaxReferenceId(index)).fold(form)(form.fill)
+      Future.successful(Ok(directorUniqueTaxReference(appConfig, updatedForm, mode, index, psaName())))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, directorName))),
-          value => {
-            val id = DirectorUniqueTaxReferenceId(index)
-            cacheConnector.save(request.externalId, id, value).flatMap { json =>
-              saveChangeFlag(mode, id).map { _ =>
-                Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json)))
-              }
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(directorUniqueTaxReference(appConfig, formWithErrors, mode, index, psaName()))),
+        value => {
+          val id = DirectorUniqueTaxReferenceId(index)
+          cacheConnector.save(request.externalId, id, value).flatMap { json =>
+            saveChangeFlag(mode, id).map { _ =>
+              Redirect(navigator.nextPage(DirectorUniqueTaxReferenceId(index), mode, UserAnswers(json)))
             }
           }
-        )
-      }
+        }
+      )
   }
 
 }
