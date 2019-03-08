@@ -21,7 +21,7 @@ import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import identifiers.UpdateModeId
 import identifiers.register.RegistrationInfoId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId}
 import identifiers.register.company.directors.IsDirectorCompleteId
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.PartnershipDetailsId
@@ -120,14 +120,23 @@ class PsaDetailServiceImpl @Inject()(
         partners.filterNot(_.isDeleted).map(partner => IsPartnerCompleteId(partners.indexOf(partner))).toList
       case _ => Nil
     }
-    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(setAllExistingAddress)
+    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(ua => setAllExistingAddress(ua, legalStatus))
   }
 
-  private def setAllExistingAddress(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.get(IndividualContactAddressId).map { address =>
-      userAnswers.set(ExistingCurrentAddressId)(address.toTolerantAddress)
-    }.getOrElse(JsSuccess(userAnswers))
+  private def setAllExistingAddress(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
+    legalStatus match {
+      case Some(Individual) =>
+        userAnswers.get(IndividualContactAddressId).map { address =>
+          userAnswers.set(ExistingCurrentAddressId)(address.toTolerantAddress)
+        }.getOrElse(JsSuccess(userAnswers))
+      case Some(LimitedCompany) =>
+        userAnswers.get(CompanyContactAddressId).map { address =>
+          userAnswers.set(identifiers.register.company.ExistingCurrentAddressId)(address.toTolerantAddress)
+        }.getOrElse(JsSuccess(userAnswers))
+      case _ => JsSuccess(userAnswers)
+    }
   }
+
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     if (fs.get(isDeregistrationEnabled)) {
