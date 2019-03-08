@@ -17,7 +17,7 @@
 package views
 
 import forms.ContactDetailsFormProvider
-import models.{ContactDetails, NormalMode}
+import models.{ContactDetails, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -36,20 +36,22 @@ class ContactDetailsViewSpec extends QuestionViewBehaviours[ContactDetails] {
     title = Message("contactDetails.title"),
     heading = Message("contactDetails.heading"),
     subHeading = None,
-    body = Some(Message("contactDetails.lede"))
+    body = Some(Message("contactDetails.lede")),
+    psaName = Some("test psa name")
   )
 
-  def createView: () => HtmlFormat.Appendable = () =>
-    contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    contactDetails(frontendAppConfig, form, viewmodel, mode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages)
+    contactDetails(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages)
 
   "ContactDetails view" must {
+    appRunning()
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
+    behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like pageWithTextFields(
       createViewUsingForm,

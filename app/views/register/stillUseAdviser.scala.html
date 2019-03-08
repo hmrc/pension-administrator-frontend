@@ -23,7 +23,7 @@
 @(appConfig: FrontendAppConfig,
     form: Form[_],
     mode: Mode,
-    psaName:String,
+    psaNameOpt:Option[String],
     personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -35,10 +35,10 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("stillUseAdviser.heading", psaName, personWithWorkingKnowledgeName))
+        @components.heading(messages("stillUseAdviser.heading", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
 
         <p>@messages("stillUseAdviser.p1")</p>
-        <p>@messages("stillUseAdviser.p2", psaName, personWithWorkingKnowledgeName)</p>
+        <p>@messages("stillUseAdviser.p2", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName)</p>
 
         @components.input_yes_no(
             field = form("value"),
@@ -49,6 +49,8 @@
 
         @components.submit_button("site.save_and_continue")
 
-        @components.return_link(psaName, mode)
+        @psaNameOpt.map{psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

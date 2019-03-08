@@ -18,11 +18,12 @@ package controllers.register.partnership
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.MoreThanTenController
+import controllers.{MoreThanTenController, Retrievals}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -38,20 +39,21 @@ class MoreThanTenPartnersController @Inject()(
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction
-                                             ) extends MoreThanTenController {
+                                             ) extends MoreThanTenController with Retrievals {
 
-  def viewModel(mode: Mode): MoreThanTenViewModel =
+  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenPartners.title",
       heading = Message("moreThanTenPartners.heading"),
       hint = "moreThanTenPartners.hint",
       postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
-      id = MoreThanTenPartnersId
+      id = MoreThanTenPartnersId,
+      psaName = psaName()
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      get(viewModel(mode))
+      get(viewModel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

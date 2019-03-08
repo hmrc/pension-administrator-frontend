@@ -90,7 +90,8 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
     postcodeLookup(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   private def fakeAddress(postCode: String): TolerantAddress = TolerantAddress(

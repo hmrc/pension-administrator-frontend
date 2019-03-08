@@ -64,7 +64,8 @@ object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase wi
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val psaUser = PSAUser(UserType.Individual, None, false, None)
 
-  private val individual = UserAnswers(Json.obj())
+  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
@@ -81,7 +82,7 @@ object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase wi
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    variationNoLongerFitAndProper(frontendAppConfig, psaName, UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    variationNoLongerFitAndProper(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 
 }

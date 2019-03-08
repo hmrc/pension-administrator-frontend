@@ -58,7 +58,7 @@ object ContactDetailsControllerSpec {
                                 ) extends ContactDetailsController {
 
     def onPageLoad(viewmodel: ContactDetailsViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
+      get(FakeIdentifier, formProvider(), viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
@@ -101,7 +101,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual contactDetails(appConfig, formProvider(), viewmodel)(request, messages).toString
+          contentAsString(result) mustEqual contactDetails(appConfig, formProvider(), viewmodel, NormalMode)(request, messages).toString
       }
     }
 
@@ -126,7 +126,8 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
           contentAsString(result) mustEqual contactDetails(
             appConfig,
             formProvider().fill(ContactDetails("test@test.com", "123456789")),
-            viewmodel
+            viewmodel,
+            NormalMode
           )(request, messages).toString
       }
     }
@@ -186,7 +187,8 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
           contentAsString(result) mustEqual contactDetails(
             appConfig,
             formProvider().bind(Map.empty[String, String]),
-            viewmodel
+            viewmodel,
+            NormalMode
           )(request, messages).toString
       }
     }

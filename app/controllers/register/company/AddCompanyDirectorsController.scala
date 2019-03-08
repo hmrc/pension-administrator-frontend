@@ -18,6 +18,7 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
@@ -46,14 +47,14 @@ class AddCompanyDirectorsController @Inject()(
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddCompanyDirectorsFormProvider
-                                             )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                             )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
-      Ok(addCompanyDirectors(appConfig, form, mode, directors))
+      Ok(addCompanyDirectors(appConfig, form, mode, directors, psaName()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
@@ -66,7 +67,7 @@ class AddCompanyDirectorsController @Inject()(
       else {
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors)),
+            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors, psaName())),
           value => {
             request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
               errors => {

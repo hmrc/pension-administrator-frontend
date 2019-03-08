@@ -23,6 +23,7 @@ import forms.ContactDetailsFormProvider
 import identifiers.register.company.ContactDetailsId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -45,7 +46,7 @@ class ContactDetailsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(ContactDetailsId, form, viewmodel(mode))
+      get(ContactDetailsId, form, viewmodel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -54,11 +55,12 @@ class ContactDetailsController @Inject()(
 
   }
 
-  private def viewmodel(mode: Mode) = ContactDetailsViewModel(
+  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ContactDetailsViewModel(
     postCall = routes.ContactDetailsController.onSubmit(mode),
     title = Message("contactDetails.company.title"),
     heading = Message("contactDetails.company.heading"),
     body = Some(Message("contactDetails.body")),
-    subHeading = None
+    subHeading = None,
+    psaName = psaName()
   )
 }

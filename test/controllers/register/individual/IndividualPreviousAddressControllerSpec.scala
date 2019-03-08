@@ -54,7 +54,8 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading"),
     secondaryHeader = None,
-    hint = Some(Message(s"$messagePrefix.lede"))
+    hint = Some(Message(s"$messagePrefix.lede")),
+    psaName = None
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()
@@ -74,7 +75,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       fakeAuditService
     )
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   "IndividualPreviousAddress Controller" must {
 
@@ -186,6 +187,5 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
         }
       }
     }
-
   }
 }

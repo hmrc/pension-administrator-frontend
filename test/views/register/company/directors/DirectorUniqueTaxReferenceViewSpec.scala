@@ -17,7 +17,7 @@
 package views.register.company.directors
 
 import forms.UniqueTaxReferenceFormProvider
-import models.{Index, NormalMode}
+import models.{Index, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.directorUniqueTaxReference
@@ -29,21 +29,21 @@ class DirectorUniqueTaxReferenceViewSpec extends ViewBehaviours {
   val form = new UniqueTaxReferenceFormProvider().apply("directorUniqueTaxReference.error.required", "directorUniqueTaxReference.error.reason.required")
   val directorName = "test director name"
 
-  def createView = () => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode) = () =>
+    directorUniqueTaxReference(frontendAppConfig, form, mode, index, Some("test psa"))(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, directorName)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) =>
+    directorUniqueTaxReference(frontendAppConfig, form, NormalMode, index, None)(fakeRequest, messages)
 
   val utrOptions = Seq("true", "false")
 
   "DirectorUniqueTaxReference view" must {
-    behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
+    behave like normalPage(createView(), messageKeyPrefix)
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
   "DirectorUniqueTaxReference view" when {
     "rendered" must {
-
-
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- utrOptions) {

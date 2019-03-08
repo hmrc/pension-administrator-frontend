@@ -45,7 +45,7 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
       implicit app => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode))(request, messages).toString()
+        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
       }
     )
   }

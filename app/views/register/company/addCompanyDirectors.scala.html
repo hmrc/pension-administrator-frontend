@@ -23,7 +23,7 @@
 @import play.api.mvc.AnyContent
 @import viewmodels.Person
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[Person])(implicit request: DataRequest[AnyContent], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, directors: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
     directors.exists(!_.isComplete)
@@ -35,8 +35,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -61,6 +59,9 @@
             }
 
             @components.submit_button(disabled = disableSubmission)
+        }
+        @psaNameOpt.map{ psaName =>
+            @components.return_link(psaName, mode)
         }
     }
 }
