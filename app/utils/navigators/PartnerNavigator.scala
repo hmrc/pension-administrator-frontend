@@ -24,6 +24,7 @@ import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
 import models._
 import models.Mode.journeyMode
+import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
@@ -38,44 +39,17 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case MoreThanTenPartnersId => NavigateTo.save(controllers.register.partnership.routes.PartnershipReviewController.onPageLoad())
-    case _ => commonMap(from, NormalMode)
+    case _ => commonRouteMap(from, NormalMode)
   }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case MoreThanTenPartnersId => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
     case PartnerConfirmPreviousAddressId(index) => confirmPreviousAddressRoutes(index, from.userAnswers)
-    case _ => commonMap(from, UpdateMode)
-  }
-
-  private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] =
-    answers.get(PartnerConfirmPreviousAddressId(index)) match {
-      case Some(true) => anyMoreChanges
-      case Some(false) => NavigateTo.save(routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-
-  private def previousAddressRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
-    answers.get(PartnerDetailsId(index)).map { person =>
-      (person.isNew, mode) match {
-        case (_, NormalMode) | (true, _) => NavigateTo.save(routes.PartnerContactDetailsController.onPageLoad(mode, index))
-        case (false, UpdateMode) => anyMoreChanges
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-    }.getOrElse(NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad()))
-  }
-
-  private def contactDetailsRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
-    answers.get(PartnerDetailsId(index)).map { person =>
-      (person.isNew, mode) match {
-        case (_, NormalMode) | (true, _) => checkYourAnswers(index, mode)
-        case (false, UpdateMode) => anyMoreChanges
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-    }.getOrElse(NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad()))
+    case _ => commonRouteMap(from, UpdateMode)
   }
 
   //noinspection ScalaStyle
-  private def commonMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+  private def commonRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AddPartnersId => addPartnerRoutes(from.userAnswers, mode)
     case PartnerDetailsId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
     case PartnerNinoId(index) => NavigateTo.save(routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, index))
@@ -92,6 +66,43 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
+  private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] =
+    answers.get(PartnerConfirmPreviousAddressId(index)) match {
+      case Some(true) => anyMoreChanges
+      case Some(false) => NavigateTo.save(routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
+  private def previousAddressRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode =>
+        NavigateTo.save(routes.PartnerContactDetailsController.onPageLoad(mode, index))
+      case UpdateMode =>
+        redirectBasedOnIsNew(
+          answers,
+          index,
+          routes.PartnerContactDetailsController.onPageLoad(mode, index),
+          controllers.register.routes.AnyMoreChangesController.onPageLoad()
+        )
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def contactDetailsRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad(index, mode))
+      case UpdateMode =>
+        redirectBasedOnIsNew(
+          answers,
+          index,
+          routes.CheckYourAnswersController.onPageLoad(index, mode),
+          controllers.register.routes.AnyMoreChangesController.onPageLoad()
+        )
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case PartnerDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
@@ -101,31 +112,37 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case PartnerAddressYearsId(index) => partnerAddressYearsCheckRoutes(index, from.userAnswers, mode)
     case PartnerPreviousAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerContactDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
-    case _ => commonMap(from, mode)
+    case _ => commonRouteMap(from, mode)
   }
 
   private def partnerAddressYearsRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     (answers.get(PartnerAddressYearsId(index)), mode) match {
-      case (Some(AddressYears.UnderAYear), NormalMode) => NavigateTo.save(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index))
+      case (Some(AddressYears.UnderAYear), NormalMode) =>
+        NavigateTo.save(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index))
       case (Some(AddressYears.UnderAYear), UpdateMode) =>
-        answers.get(PartnerDetailsId(index)).map { person =>
-          person.isNew match {
-            case true => NavigateTo.save(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index))
-            case false => NavigateTo.save(routes.PartnerConfirmPreviousAddressController.onPageLoad(index))
-          }
-        }.getOrElse(NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad()))
-
-      case (Some(AddressYears.OverAYear), NormalMode) => NavigateTo.save(routes.PartnerContactDetailsController.onPageLoad(mode, index))
-      case (Some(AddressYears.OverAYear), UpdateMode) => {
-        answers.get(PartnerDetailsId(index)).map { person =>
-          person.isNew match {
-            case true => NavigateTo.save(routes.PartnerContactDetailsController.onPageLoad(mode, index))
-            case false => anyMoreChanges
-          }
-        }.getOrElse(NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad()))
-      }
+        redirectBasedOnIsNew(answers, index,
+            routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index),
+            routes.PartnerConfirmPreviousAddressController.onPageLoad(index)
+          )
+      case (Some(AddressYears.OverAYear), NormalMode) =>
+        NavigateTo.save(routes.PartnerContactDetailsController.onPageLoad(mode, index))
+      case (Some(AddressYears.OverAYear), UpdateMode) =>
+        redirectBasedOnIsNew(answers, index,
+          routes.PartnerContactDetailsController.onPageLoad(mode, index),
+          controllers.register.routes.AnyMoreChangesController.onPageLoad()
+        )
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+  }
+
+  private def redirectBasedOnIsNew(answers: UserAnswers, index: Int, ifNewRoute: Call, ifNotNew: Call) = {
+    answers.get(PartnerDetailsId(index)).map { person =>
+      if (person.isNew) {
+        NavigateTo.save(ifNewRoute)
+      } else {
+        NavigateTo.save(ifNotNew)
+      }
+    }.getOrElse(NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad()))
   }
 
   private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
