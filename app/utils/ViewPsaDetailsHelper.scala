@@ -24,12 +24,15 @@ import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
 import models._
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.countryOptions.CountryOptions
 import viewmodels._
 
 //scalastyle:off number.of.methods
-class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOptions)(implicit messages: Messages) {
+class ViewPsaDetailsHelper(userAnswers: UserAnswers,
+                           countryOptions: CountryOptions,
+                           override val messagesApi: MessagesApi
+                          )(implicit messages: Messages) extends I18nSupport {
 
   import ViewPsaDetailsHelper._
 
@@ -101,7 +104,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       None
     }
 
-  private val pensionAdviserSection: Option[SuperSection] =
+  private val pensionAdviserSection: Option[SuperSection] = {
+
     toOptionSeq(Seq(
       pensionAdviser,
       pensionAdviserEmail,
@@ -115,9 +119,22 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
             None,
             seqAnswerRow
           )
-        )
+        ),
+        getAdviserDeleteLink
       )
     }
+  }
+
+  private def getAdviserDeleteLink: Option[AddLink] ={
+    userAnswers.get(AdviserNameId) match {
+      case Some(adviserName) =>
+        Some(AddLink(Link(
+          controllers.register.adviser.routes.ConfirmDeleteAdviserController.onPageLoad().url,
+          Message("adviser-delete-link", adviserName)), Some(Message("adviser-delete-link-additionalText", adviserName)))
+        )
+      case _ => None
+    }
+  }
 
 
   //Individual PSA

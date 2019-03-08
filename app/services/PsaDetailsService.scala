@@ -88,7 +88,7 @@ class PsaDetailServiceImpl @Inject()(
   private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
+    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
 
     val (superSections, name) = legalStatus match {
       case Some(Individual) =>
