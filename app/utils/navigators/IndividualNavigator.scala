@@ -36,7 +36,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
 
   private def anyMoreChanges: Option[NavigateTo] =
-    NavigateTo.save(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+    NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
 
   //noinspection ScalaStyle
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
@@ -130,14 +130,14 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
       case Some(AddressYears.UnderAYear) =>
         NavigateTo.save(routes.IndividualConfirmPreviousAddressController.onPageLoad())
       case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+        anyMoreChanges
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers):  Option[NavigateTo] =
     answers.get(IndividualConfirmPreviousAddressId) match {
       case Some(true) => anyMoreChanges
-      case Some(false) => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(UpdateMode))
+      case Some(false) => NavigateTo.dontSave(routes.IndividualPreviousAddressController.onPageLoad(UpdateMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
