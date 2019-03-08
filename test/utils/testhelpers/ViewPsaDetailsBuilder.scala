@@ -43,7 +43,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false,
       None),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,

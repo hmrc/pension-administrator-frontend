@@ -42,8 +42,8 @@ POST       /register-as-business                    controllers.register.Registe
 
 GET        /details-updated                         controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
 
-GET        /make-more-changes                       controllers.register.AnyMoreChangesController.onPageLoad(mode: Mode = UpdateMode)
-POST       /make-more-changes                       controllers.register.AnyMoreChangesController.onSubmit(mode: Mode = UpdateMode)
+GET        /make-more-changes                       controllers.register.AnyMoreChangesController.onPageLoad()
+POST       /make-more-changes                       controllers.register.AnyMoreChangesController.onSubmit()
 
 GET        /still-fit-and-proper-person             controllers.register.VariationDeclarationFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
 POST       /still-fit-and-proper-person             controllers.register.VariationDeclarationFitAndProperController.onSubmit(mode: Mode = UpdateMode)

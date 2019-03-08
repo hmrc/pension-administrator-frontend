@@ -39,7 +39,7 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import identifiers.vary.AnyMoreChangesId
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -55,7 +55,6 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
                                          dataCacheConnector: UserAnswersCacheConnector,
                                          @Variations navigator: Navigator,
                                          authenticate: AuthAction,
-                                         allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AnyMoreChangesFormProvider)(implicit val ec: ExecutionContext)
@@ -63,19 +62,19 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       Future.successful(Ok(anyMoreChanges(appConfig, form, psaName())))
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors, psaName()))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AnyMoreChangesId, mode, UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(AnyMoreChangesId, NormalMode, UserAnswers(cacheMap))))
       )
   }
 }
