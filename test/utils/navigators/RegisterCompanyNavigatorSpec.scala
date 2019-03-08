@@ -88,16 +88,16 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyContactAddressListId, emptyAnswers, contactAddress(UpdateMode), true, None, true),
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(UpdateMode), true, None, true),
 
-    (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges, true, None, true),
+    (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges, false, None, true),
     (CompanyAddressYearsId, addressYearsUnderAYearUk, confirmPreviousAddressPage, true, None, true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode), true, None, true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
-    (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(UpdateMode), true, None, true),
+    (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
 
-    (ContactDetailsId, uk, companyDetailsPage, true, None, true),
-    (ContactDetailsId, nonUk, checkYourAnswersPage, true, None, true)
+    (ContactDetailsId, uk, anyMoreChanges, false, None, true),
+    (ContactDetailsId, nonUk, anyMoreChanges, false, None, true)
   )
 
   navigator.getClass.getSimpleName must {

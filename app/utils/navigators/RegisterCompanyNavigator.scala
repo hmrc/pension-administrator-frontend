@@ -123,7 +123,7 @@ class RegisterCompanyNavigator @Inject()(
   private def checkYourAnswers: Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
 
-  private def anyMoreChanges: Option[NavigateTo] = NavigateTo.save(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+  private def anyMoreChanges: Option[NavigateTo] = NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
