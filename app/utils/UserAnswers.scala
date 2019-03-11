@@ -23,6 +23,7 @@ import identifiers.register.company.{CompanyContactAddressChangedId, CompanyCont
 import identifiers.register.individual.{IndividualContactAddressChangedId, IndividualContactDetailsChangedId, IndividualPreviousAddressChangedId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import models.{Index, Mode, PersonDetails, _}
 import play.api.libs.json._

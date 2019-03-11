@@ -149,7 +149,6 @@ object AddEntityViewSpec {
   // scalastyle:off magic.number
   private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
-  // scalastyle:on magic.number
 
   private val johnUpdateMode = johnDoe.copy(deleteLink = deleteLink(0, UpdateMode), editLink = editLink(0, UpdateMode))
   private val joeUpdateMode = joeBloggs.copy(deleteLink = deleteLink(1, UpdateMode), editLink = editLink(1, UpdateMode), isNew = true)
