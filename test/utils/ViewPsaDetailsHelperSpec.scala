@@ -26,7 +26,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, Json}
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels.{AddLink, AnswerRow, Link, SuperSection}
+import viewmodels._
 
 class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
@@ -132,6 +132,14 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 
     behave like validSection(testName = "pension advisor details", headingKey = pensionAdvisorSuperSectionKey,
       result = partnershipResult, expectedAnswerRows = pensionAdviserSeqAnswers)
+
+    "have add link for adviser" in {
+      partnershipResult.exists(_.addLink.contains(AddLink(Link(
+        controllers.register.adviser.routes.ConfirmDeleteAdviserController.onPageLoad().url,
+        Message("adviser-delete-link", "Pension Adviser")),
+        Some(Message("adviser-delete-link-additionalText", "Pension Adviser"))))
+      ) mustBe true
+    }
   }
 }
 
@@ -158,8 +166,9 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions)
-  val address = Address("Telford1", "Telford2",Some("Telford3"), Some("Telford4"), Some("TF3 4ER"), "GB")
+  private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
+
+  val address = Address("Telford1", "Telford2", Some("Telford3"), Some("Telford4"), Some("TF3 4ER"), "GB")
   val psaAddress = Address("addline1", "addline2", Some("addline3"), Some("addline4"), Some("56765"), "AD")
   val previousAddress = Address("London1", "London2", Some("London3"), Some("London4"), Some("LN12 4DC"), "GB")
 

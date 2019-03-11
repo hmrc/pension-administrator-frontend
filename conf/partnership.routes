@@ -90,3 +90,5 @@ POST       /partnership-name                            controllers.register.par
 GET        /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 
+GET         /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)

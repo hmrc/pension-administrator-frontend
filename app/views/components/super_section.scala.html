@@ -29,6 +29,7 @@
 @superSection.addLink.map{ addLink =>
    <a id="add-link" href='@{addLink.link.url}'>
      <span aria-hidden="true">@messages(addLink.link.text)</span>
+     <span class="visually-hidden">@messages(addLink.link.text)</span>
    </a>
     @addLink.additionalText.map{ text =>
         <p>

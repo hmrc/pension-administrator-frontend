@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership.partners
+package identifiers.register.company.directors
 
-import identifiers._
+import identifiers.TypedIdentifier
+import play.api.libs.json.JsPath
 
-case object CheckYourAnswersId extends TypedIdentifier[Nothing] {
-  override def toString: String = "checkYourAnswers"
+case class DirectorConfirmPreviousAddressId(index: Int) extends TypedIdentifier[Boolean] {
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorConfirmPreviousAddressId.toString
 }
+
+object PartnerConfirmPreviousAddressId {
+  override def toString: String = "directorConfirmPreviousAddress"
+}
+

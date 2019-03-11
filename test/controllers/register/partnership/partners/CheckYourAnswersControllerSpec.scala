@@ -22,9 +22,10 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.TypedIdentifier
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.partners.IsPartnerCompleteId
 import models.requests.DataRequest
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Index, NormalMode, UpdateMode}
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -111,13 +112,19 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     }
 
     "mark partner as complete on submit" in {
-
+      FakeUserAnswersCacheConnector.reset()
       val result = controller().onSubmit(index, NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       FakeSectionComplete.verify(IsPartnerCompleteId(index), true)
-
+      FakeUserAnswersCacheConnector.verifyNot(DirectorsOrPartnersChangedId)
     }
 
+    "save the change flag for UpdateMode on submit" in {
+      val result = controller().onSubmit(index, UpdateMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
+    }
   }
 }
