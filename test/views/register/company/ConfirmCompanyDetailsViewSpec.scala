@@ -63,8 +63,6 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
   "CompanyAddress view" must {
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like pageWithBackLink(createView())
-
     behave like pageWithAddress(address => createView(address)(), "companyAddress")
 
     behave like pageWithSubmitButton(createView())

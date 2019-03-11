@@ -18,7 +18,7 @@ package viewmodels
 
 import scala.language.implicitConversions
 
-case class Person(index: Int, name: String, deleteLink: String, editLink: String, isDeleted: Boolean, isComplete: Boolean) {
+case class Person(index: Int, name: String, deleteLink: String, editLink: String, isDeleted: Boolean, isComplete: Boolean, isNew: Boolean= false) {
   def id = s"person-$index"
 
   def deleteLinkId = s"$id-delete"

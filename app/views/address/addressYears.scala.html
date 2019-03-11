@@ -17,8 +17,9 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.address.AddressYearsViewModel
+@import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: AddressYearsViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: AddressYearsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = viewmodel.title,
@@ -26,8 +27,6 @@
   bodyClasses = None) {
 
   @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
-
-    @components.back_link()
 
     @components.error_summary(form.errors)
 
@@ -42,6 +41,11 @@
       inputs = viewmodel.inputs
     )
 
-    @components.submit_button()
+    <div class="subsection">
+        @components.submit_button()
+    </div>
+    @viewmodel.psaName.map { psaName =>
+        @components.return_link(psaName, mode)
+    }
   }
 }

@@ -29,12 +29,12 @@
 
     @helpers.form(action = ConfirmDeleteDirectorController.onSubmit(mode, index), 'autoComplete -> "off") {
 
-        @components.back_link()
-
         @components.heading(
             headingKey = messages("confirmDeleteDirector.heading", fullName))
 
-        @components.submit_button("site.confirm")
+        <div class="section">
+            @components.submit_button("site.confirm")
+        </div>
 
         <a id="cancel" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
             @messages("site.cancel")

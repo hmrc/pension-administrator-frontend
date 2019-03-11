@@ -20,7 +20,7 @@
 @import viewmodels.address.ManualAddressViewModel
 @import utils.InputOption
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ManualAddressViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = messages(viewmodel.title),
@@ -28,8 +28,6 @@
   bodyClasses = None
 ) {
   @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
-
-    @components.back_link()
 
     @components.error_summary(form.errors)
 
@@ -42,7 +40,11 @@
     }
 
     @components.address(form, viewmodel.countryOptions)
-
-    @components.submit_button("site.save_and_continue")
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
+        @viewmodel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
   }
 }

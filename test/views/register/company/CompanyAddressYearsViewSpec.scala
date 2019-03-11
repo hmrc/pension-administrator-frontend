@@ -50,9 +50,6 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
 
   "CompanyAddressYears view" must {
     behave like normalPage(createView, messageKeyPrefix)
-
-    behave like pageWithBackLink(createView)
-
   }
 
   "CompanyAddressYears view" when {

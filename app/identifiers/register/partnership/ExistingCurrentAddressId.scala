@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package forms.register
+package identifiers.register.partnership
 
-import com.google.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import models.TolerantAddress
 
-class VariationDeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("declarationWorkingKnowledge.variations.error.required" )
-    )
+case object ExistingCurrentAddressId extends TypedIdentifier[TolerantAddress] {
+  override def toString: String = "existingCurrentAddress"
 }

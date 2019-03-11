@@ -30,8 +30,6 @@
 
     @helpers.form(action = CompanyAddressYearsController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
-
         @components.error_summary(form.errors)
 
         @components.heading(messages("companyAddressYears.heading"))
@@ -45,6 +43,8 @@
             inputs = AddressYears.options
         )
 
-        @components.submit_button("site.save_and_continue")
+        <div class="subsection">
+            @components.submit_button("site.save_and_continue")
+        </div>
     }
 }

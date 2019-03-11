@@ -77,14 +77,16 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       title = Message("partnerAddressYears.title"),
       heading = Message("partnerAddressYears.heading"),
       legend = Message("partnerAddressYears.heading"),
-      Some(Message(partnerName))
+      Some(Message(partnerName)),
+      psaName = None
     )
 
   private def viewAsString(form: Form[_] = form) =
     addressYears(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "PartnersAddressYears Controller" must {

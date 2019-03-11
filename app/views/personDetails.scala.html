@@ -21,7 +21,7 @@
 @import models.Mode
 @import viewmodels.PersonDetailsViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: PersonDetailsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages(viewModel.title),
@@ -29,8 +29,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -56,7 +54,11 @@
             label = messages("common.dateOfBirth"),
             hint = Some(messages("common.dateOfBirth.hint"))
         )
-
-        @components.submit_button()
+        <div class="subsection">
+            @components.submit_button()
+        </div>
+        @viewModel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

@@ -17,9 +17,10 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
+@import models.Mode
 @import viewmodels.MoreThanTenViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: MoreThanTenViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages(viewModel.title),
@@ -27,8 +28,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -40,6 +39,11 @@
             hint = Some(messages(viewModel.hint))
         )
 
-        @components.submit_button("site.save_and_continue")
+        <div class="subsection">
+            @components.submit_button("site.save_and_continue")
+        </div>
+        @viewModel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

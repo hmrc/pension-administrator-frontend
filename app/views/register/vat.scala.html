@@ -34,8 +34,6 @@ Vat.options
 
     @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
-
         @components.error_summary(form.errors)
 
         @components.heading(viewmodel.heading)
@@ -68,7 +66,8 @@ Vat.options
             )
 
         }
-
-        @components.submit_button()
+        <div class="section">
+            @components.submit_button()
+        </div>
     }
 }

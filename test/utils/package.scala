@@ -16,7 +16,7 @@
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
-import identifiers.register.RegisterAsBusinessId
+import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId}
 import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
@@ -36,6 +36,10 @@ package object utils {
       answers.set(LastPageId)(page).asOpt.value
     }
 
+    def registrationInfo(answer: RegistrationInfo): UserAnswers = {
+      answers.set(RegistrationInfoId)(answer).asOpt.value
+    }
+
     def areYouInUk(answer: Boolean): UserAnswers = {
       answers.set(identifiers.register.AreYouInUKId)(answer).asOpt.value
     }
@@ -43,6 +47,10 @@ package object utils {
     // Individual PSA Contact
     def individualContactAddress(address: Address): UserAnswers = {
       answers.set(IndividualContactAddressId)(address).asOpt.value
+    }
+
+    def individualDetails(individualDetails: TolerantIndividual): UserAnswers = {
+      answers.set(IndividualDetailsId)(individualDetails).asOpt.value
     }
 
     def individualContactAddressList(address: TolerantAddress): UserAnswers = {

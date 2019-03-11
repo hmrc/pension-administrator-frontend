@@ -21,7 +21,7 @@
 @import models.ContactDetails
 @import viewmodels.ContactDetailsViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ContactDetailsViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ContactDetailsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = viewmodel.title,
@@ -29,8 +29,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -53,7 +51,11 @@
             label = messages("contactDetails.phone"),
             inputClass = Some("form-control-3-4")
         )
-
-        @components.submit_button("site.save_and_continue")
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
+        @viewmodel.psaName.map{ psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

@@ -42,13 +42,13 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected def get(id: TypedIdentifier[ContactDetails], form: Form[ContactDetails], viewmodel: ContactDetailsViewModel)
+  protected def get(id: TypedIdentifier[ContactDetails], form: Form[ContactDetails], viewmodel: ContactDetailsViewModel, mode: Mode)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(contactDetails(appConfig, filledForm, viewmodel)))
+    Future.successful(Ok(contactDetails(appConfig, filledForm, viewmodel, mode)))
   }
 
   protected def post(
@@ -60,7 +60,7 @@ trait ContactDetailsController extends FrontendController with Retrievals with I
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel))),
+        Future.successful(BadRequest(contactDetails(appConfig, formWithErrors, viewmodel, mode))),
       contactDetails => {
         cacheConnector.save(request.externalId, id, contactDetails).flatMap {
           answers => saveChangeFlag(mode, id). map {_ =>

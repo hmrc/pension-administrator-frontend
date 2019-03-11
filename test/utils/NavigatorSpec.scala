@@ -16,10 +16,10 @@
 
 package utils
 
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.{LastPageId, TypedIdentifier}
 import models.requests.IdentifiedRequest
-import models.{CheckMode, LastPage, NormalMode}
+import models.{CheckMode, LastPage, Mode, NormalMode}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
@@ -103,12 +103,13 @@ object NavigatorSpec {
         case _ => None
       }
 
-    override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] =
+    override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] =
       from.id match {
         case `testExistId` => NavigateTo.dontSave(testExistCheckModeCall)
         case _ => None
       }
 
+    override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = None
   }
 
   trait TestFixture {

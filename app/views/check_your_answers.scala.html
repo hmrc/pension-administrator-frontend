@@ -15,12 +15,12 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.Index
+@import models.Mode
 @import play.api.mvc.Call
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.{Section, AnswerSection, RepeaterAnswerSection}
 
-@(appConfig: FrontendAppConfig, answerSections: Seq[Section], secondaryHeader: Option[String], postUrl: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode)(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("checkYourAnswers.title"),
@@ -42,7 +42,12 @@
             }
         }
 
-        @components.submit_button("site.confirm")
+        <div class="section">
+             @components.submit_button("site.confirm")
+        </div>
+        @psaNameOpt.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 
 }

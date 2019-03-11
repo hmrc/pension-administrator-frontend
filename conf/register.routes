@@ -5,19 +5,19 @@
 
 GET        /business-type                           controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
 POST       /business-type                           controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-business-type                    controllers.register.BusinessTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-business-type                    controllers.register.BusinessTypeController.onSubmit(mode: Mode = CheckMode)
+GET        /:mode/business-type                     controllers.register.BusinessTypeController.onPageLoad(mode: Mode)
+POST       /:mode/business-type                     controllers.register.BusinessTypeController.onSubmit(mode: Mode)
 
 GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
 POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
 
 GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-declaration-working-knowledge    controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-declaration-working-knowledge    controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = CheckMode)
+GET        /:mode/declaration-working-knowledge     controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
+POST       /:mode/declaration-working-knowledge     controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
 
-GET        /changing-having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+GET        /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode)
+POST       /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode)
 
 GET        /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)
@@ -34,8 +34,8 @@ GET        /unable-to-send-details                  controllers.register.Submiss
 
 GET        /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
 POST       /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)
-GET        /change-registered-in-uk                 controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-registered-in-uk                 controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = CheckMode)
+GET        /:mode/registered-in-uk                  controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode)
+POST       /:mode/registered-in-uk                  controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
 
 GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
 POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
@@ -50,8 +50,8 @@ POST       /still-fit-and-proper-person             controllers.register.Variati
 
 GET        /cannot-make-changes                     controllers.register.VariationNoLongerFitAndProperController.onPageLoad()
 
-GET        /do-you-still-use-an-adviser             controllers.register.VariationDeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
-POST       /do-you-still-use-an-adviser             controllers.register.VariationDeclarationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+GET        /do-you-still-use-an-adviser             controllers.register.StillUseAdviserController.onPageLoad(mode: Mode = UpdateMode)
+POST       /do-you-still-use-an-adviser             controllers.register.StillUseAdviserController.onSubmit(mode: Mode = UpdateMode)
 
 
 GET        /declare-after-changing-details          controllers.register.VariationDeclarationController.onPageLoad()

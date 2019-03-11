@@ -64,7 +64,7 @@ object PostcodeLookupControllerSpec {
     override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
-      get(viewmodel)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
 
     def onSubmit(viewmodel: PostcodeLookupViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
       post(FakeIdentifier, viewmodel, NormalMode, invalidError, noResultError)(DataRequest(request,
@@ -113,7 +113,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider(), viewmodel)(request, messages).toString
+          contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider(), viewmodel, NormalMode)(request, messages).toString
       }
     }
   }
@@ -179,7 +179,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
             val result = controller.onSubmit(viewmodel, UserAnswers(), request.withFormUrlEncodedBody("value" -> "ZZ11ZZ"))
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider().withError("value", "foo"), viewmodel)(request, messages).toString
+            contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider().withError("value", "foo"), viewmodel, NormalMode)(request, messages).toString
         }
       }
       "the postcode is invalid" in {
@@ -210,7 +210,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
             val form = formProvider().bind(Map("value" -> invalidPostcode))
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual postcodeLookup(appConfig, form, viewmodel)(request, messages).toString
+            contentAsString(result) mustEqual postcodeLookup(appConfig, form, viewmodel, NormalMode)(request, messages).toString
         }
       }
     }
@@ -243,7 +243,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
               val result = controller.onSubmit(viewmodel, UserAnswers(), request.withFormUrlEncodedBody("value" -> "ZZ11ZZ"))
 
               status(result) mustEqual OK
-              contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider().withError("value", "bar"), viewmodel)(request, messages).toString
+              contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider().withError("value", "bar"), viewmodel, NormalMode)(request, messages).toString
           }
         }
       }

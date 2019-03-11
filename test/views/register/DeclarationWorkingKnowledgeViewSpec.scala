@@ -39,8 +39,6 @@ class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     "contain radio buttons for the value" in {
       val doc = asDocument(createViewUsingForm(form))
       for (option <- DeclarationWorkingKnowledge.options) {

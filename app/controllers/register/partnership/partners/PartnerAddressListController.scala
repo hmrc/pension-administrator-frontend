@@ -45,7 +45,9 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(get)
+      viewModel(mode, index).right.map{vm =>
+        get(vm, mode)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -66,7 +68,8 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
               Message("common.selectAddress.heading"),
               Some(Message(partner.fullName)),
               Message("common.selectAddress.text"),
-              Message("common.selectAddress.link")
+              Message("common.selectAddress.link"),
+              psaName = psaName()
             )
         }
     }.left.map(_ => Future.successful(Redirect(routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index))))

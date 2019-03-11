@@ -55,7 +55,7 @@ class DirectorAddressYearsController @Inject()(
       implicit request =>
         viewmodel(mode, index).right.map {
           viewModel =>
-            get(DirectorAddressYearsId(index), form, viewModel)
+            get(DirectorAddressYearsId(index), form, viewModel, mode)
         }
     }
 
@@ -75,7 +75,8 @@ class DirectorAddressYearsController @Inject()(
           title = Message("directorAddressYears.title"),
           heading = Message("directorAddressYears.heading"),
           legend = Message("directorAddressYears.heading"),
-          Some(Message(director.fullName))
+          Some(Message(director.fullName)),
+          psaName = psaName()
         )
     }
   }

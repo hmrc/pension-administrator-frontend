@@ -21,23 +21,28 @@ import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector, UserAn
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import models.{NormalMode, TolerantAddress}
+import models.requests.DataRequest
+import models._
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Partnership
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, Navigator, UserAnswers}
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import PartnershipPreviousAddressPostCodeLookupController._
+  implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+
   import PartnershipPreviousAddressPostCodeLookupControllerSpec._
 
   "PartnershipPreviousAddressPostCodeLookupController" must {
@@ -47,7 +52,7 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
         implicit app => addToken(FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode))(request, messages).toString()
+          contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
         }
       )
     }
@@ -70,6 +75,8 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
 
 object PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
+  implicit val request: DataRequest[AnyContent] =
+    DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, false, None, None), UserAnswers())
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
 
@@ -109,6 +116,19 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
         test(req, result)
     }
   }
+
+  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
+    routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
+    routes.PartnershipPreviousAddressController.onPageLoad(mode),
+    Message("common.previousAddress.title"),
+    Message("common.previousAddress.heading"),
+    None,
+    Message("common.previousAddress.lede"),
+    Message("common.previousAddress.enterPostcode"),
+    Some(Message("common.previousAddress.enterPostcode.link")),
+    Message("common.address.enterPostcode.formLabel"),
+    None
+  )
 }
 
 

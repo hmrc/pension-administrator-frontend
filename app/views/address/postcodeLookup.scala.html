@@ -20,7 +20,7 @@
 @import viewmodels.address.PostcodeLookupViewModel
 @import uk.gov.hmrc.urls.Link
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: PostcodeLookupViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @link = {
     @Link.toInternalPage(
@@ -35,8 +35,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -53,6 +51,11 @@
             label = messages(viewmodel.formLabel)
         )
 
-        @components.submit_button("site.find_address")
+        <div class="section">
+            @components.submit_button("site.find_address")
+        </div>
+        @viewmodel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

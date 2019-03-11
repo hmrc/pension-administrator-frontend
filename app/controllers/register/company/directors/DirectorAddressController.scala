@@ -27,6 +27,7 @@ import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId}
+import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -51,19 +52,21 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
 
   override protected val form: Form[Address] = formProvider()
 
-  private def addressViewModel(mode: Mode, index: Index, directorName: String) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode, index: Index, directorName: String)
+                              (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(mode, index),
     countryOptions.options,
     Message("directorAddress.title"),
     Message("directorAddress.heading"),
-    Some(Message(directorName))
+    Some(Message(directorName)),
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName))
+          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
       }
   }
 

@@ -28,7 +28,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -44,6 +43,8 @@
             label = messages("confirmCompanyAddress.title")
         )
 
-        @components.submit_button("site.save_and_continue")
+        <div class="subsection">
+            @components.submit_button("site.save_and_continue")
+        </div>
     }
 }

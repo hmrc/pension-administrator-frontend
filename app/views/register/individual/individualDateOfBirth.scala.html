@@ -28,8 +28,6 @@
 
     @helpers.form(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
-
         @components.error_summary(form.errors)
 
         @components.heading(messages("individualDateOfBirth.heading"))
@@ -41,6 +39,8 @@
             hint = Some(messages("common.dateOfBirth.hint"))
         )
 
-        @components.submit_button()
+        <div class="subsection">
+            @components.submit_button()
+        </div>
     }
 }

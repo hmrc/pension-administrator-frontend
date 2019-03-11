@@ -18,11 +18,12 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.MoreThanTenController
+import controllers.{MoreThanTenController, Retrievals}
 import controllers.actions._
 import identifiers.register.company.MoreThanTenDirectorsId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -38,20 +39,21 @@ class MoreThanTenDirectorsController @Inject()(
                                                 allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction
-                                              ) extends MoreThanTenController {
+                                              ) extends MoreThanTenController with Retrievals {
 
-  private def viewModel(mode: Mode): MoreThanTenViewModel =
+  private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
       heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = routes.MoreThanTenDirectorsController.onSubmit(mode),
-      id = MoreThanTenDirectorsId
+      id = MoreThanTenDirectorsId,
+      psaName = psaName()
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      get(viewModel(mode))
+      get(viewModel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

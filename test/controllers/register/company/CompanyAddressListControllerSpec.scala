@@ -83,7 +83,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     addressList(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
   "CompanyAddressList Controller" must {

@@ -20,7 +20,7 @@
 @import models.Mode
 @import models.UniqueTaxReference
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, directorName: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, index: Index, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @options = @{
     UniqueTaxReference.options
@@ -32,8 +32,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = routes.DirectorUniqueTaxReferenceController.onSubmit(mode, index), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 
@@ -76,6 +74,11 @@
             )
         }
 
-        @components.submit_button()
+        <div class="section">
+            @components.submit_button()
+        </div>
+        @psaNameOpt.map{ psaName =>
+            @components.return_link(psaName, mode)
+        }
     }
 }

@@ -29,8 +29,6 @@
 
     @helpers.form(action = DeclarationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
-
         @components.error_summary(form.errors)
 
         @components.heading(messages("declarationWorkingKnowledge.heading"))
@@ -42,6 +40,8 @@
             inputs = DeclarationWorkingKnowledge.options
         )
 
-        @components.submit_button("site.agree")
+        <div class="subsection">
+            @components.submit_button("site.agree")
+        </div>
     }
 }

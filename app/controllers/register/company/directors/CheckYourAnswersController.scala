@@ -20,11 +20,14 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
 import javax.inject.Inject
-import models.{Index, Mode, NormalMode}
+import models._
+import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
 import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
@@ -43,44 +46,56 @@ class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             sectionComplete: SectionComplete,
-                                            val cacheConnector: UserAnswersCacheConnector
+                                            override val cacheConnector: UserAnswersCacheConnector
                                           )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) { directorName =>
-        val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
-        val answersSection = Seq(
-          AnswerSection(
-            Some("directorCheckYourAnswers.directorDetails.heading"),
-            checkYourAnswerHelper.directorDetails(index.id) ++
-              checkYourAnswerHelper.directorNino(index.id) ++
-              checkYourAnswerHelper.directorUniqueTaxReference(index.id)
-          ),
-          AnswerSection(
-            Some("directorCheckYourAnswers.contactDetails.heading"),
-            checkYourAnswerHelper.directorAddress(index.id) ++
-              checkYourAnswerHelper.directorAddressYears(index.id) ++
-              checkYourAnswerHelper.directorPreviousAddress(index.id) ++
-              checkYourAnswerHelper.directorContactDetails(index.id)
-          ))
+      val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
+      val answersSection = Seq(
+        AnswerSection(
+          Some("directorCheckYourAnswers.directorDetails.heading"),
+          checkYourAnswerHelper.directorDetails(index.id, mode) ++
+            checkYourAnswerHelper.directorNino(index.id, mode) ++
+            checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode)
+        ),
+        AnswerSection(
+          Some("directorCheckYourAnswers.contactDetails.heading"),
+          checkYourAnswerHelper.directorAddress(index.id, mode) ++
+            checkYourAnswerHelper.directorAddressYears(index.id, mode) ++
+            checkYourAnswerHelper.directorPreviousAddress(index.id, mode) ++
+            checkYourAnswerHelper.directorContactDetails(index.id, mode)
+        ))
 
-        Future.successful(Ok(check_your_answers(
-          appConfig,
-          answersSection,
-          Some(directorName),
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)))
-        )
-      }
+      Future.successful(Ok(check_your_answers(
+        appConfig,
+        answersSection,
+        controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+        psaName(),
+        mode
+      )))
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { userAnswers =>
-        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-          Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, userAnswers))
+      DirectorDetailsId(index).retrieve.right.map { details =>
+        sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { userAnswers =>
+          setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
+            saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+              Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, userAnswers))
+            }
+          }
         }
       }
+  }
+
+  private def setNewFlagInUpdateMode(index: Index, mode: Mode, directorDetails: PersonDetails)
+                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
+    if (mode == UpdateMode) {
+      cacheConnector.save(request.externalId, DirectorDetailsId(index), directorDetails.copy(isNew = true))
+    } else {
+      Future(request.userAnswers.json)
+    }
   }
 
 }

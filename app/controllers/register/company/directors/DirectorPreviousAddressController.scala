@@ -25,6 +25,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
+import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -51,29 +52,24 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
-        directorName =>
-          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName))
-      }
+      get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
-        directorName =>
-          val vm = addressViewModel(mode, index, directorName)
-          post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, context(vm),
-            DirectorPreviousAddressPostCodeLookupId(index))
-      }
+      val vm = addressViewModel(mode, index)
+      post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, context(vm),
+        DirectorPreviousAddressPostCodeLookupId(index))
   }
 
-  private def addressViewModel(mode: Mode, index: Index, directorName: String) =
+  private def addressViewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
       Message("directorPreviousAddress.title"),
       Message("directorPreviousAddress.heading"),
-      Some(Message(directorName))
+      None,
+      psaName = psaName()
     )
 
   private def context(viewModel: ManualAddressViewModel): String = {
@@ -82,5 +78,4 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
       case _ => "Company Director Previous Address"
     }
   }
-
 }

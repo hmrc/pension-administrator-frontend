@@ -97,7 +97,8 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     manualAddress(
       frontendAppConfig,
       form,
-      viewModel
+      viewModel,
+      NormalMode
     )(fakeRequest, messages).toString
 
   "PartnerPreviousAddress Controller" must {

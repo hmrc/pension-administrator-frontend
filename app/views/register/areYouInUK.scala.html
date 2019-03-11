@@ -28,7 +28,6 @@
     bodyClasses = None) {
 
         @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
-            @components.back_link()
 
             @components.error_summary(form.errors)
 
@@ -46,6 +45,8 @@
                 secondaryLabel = viewModel.secondaryLabel
             )
 
-            @components.submit_button("site.save_and_continue")
+            <div class="subsection">
+                @components.submit_button("site.save_and_continue")
+            </div>
         }
     }

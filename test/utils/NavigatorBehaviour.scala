@@ -19,9 +19,8 @@ package utils
 import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.LastPageId
-import models.CheckMode
-import models.LastPage
-import models.NormalMode
+import models.{CheckMode, LastPage, Mode, NormalMode}
+import models.Mode.checkMode
 import models.requests.IdentifiedRequest
 import org.scalatest.MustMatchers
 import org.scalatest.OptionValues
@@ -54,10 +53,11 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
                                                                navigator: Navigator,
                                                                dataCacheConnector: FakeUserAnswersCacheConnector,
                                                                routes: TableFor6[A, UserAnswers, Call, Boolean, B, Boolean],
-                                                               describer: UserAnswers => String
+                                                               describer: UserAnswers => String,
+                                                               mode: Mode = NormalMode
                                                              ): Unit = {
 
-    "behave like a navigator" when {
+    s"behave like a navigator in ${Mode.jsLiteral.to(mode)} journey" when {
 
       "navigating in NormalMode" must {
 
@@ -65,13 +65,13 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
           forAll(routes) {
             (id: Identifier, userAnswers: UserAnswers, call: Call, save: Boolean, _: Option[Call], _: Boolean) =>
               s"move from $id to $call with data: ${describer(userAnswers)}" in {
-                val result = navigator.nextPage(id, NormalMode, userAnswers)
+                val result = navigator.nextPage(id, mode, userAnswers)
                 result mustBe call
               }
 
               s"move from $id to $call and ${if (!save) "not " else ""}save the page with data: ${describer(userAnswers)}" in {
                 dataCacheConnector.reset()
-                navigator.nextPage(id, NormalMode, userAnswers)
+                navigator.nextPage(id, mode, userAnswers)
                 if (save) {
                   dataCacheConnector.verify(LastPageId, LastPage(call.method, call.url))
                 }
@@ -96,13 +96,13 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
             forAll(routes) { (id: Identifier, userAnswers: UserAnswers, _: Call, _: Boolean, editCall: Option[Call], save: Boolean) =>
               if (editCall.isDefined) {
                 s"move from $id to ${editCall.value} with data: ${describer(userAnswers)}" in {
-                  val result = navigator.nextPage(id, CheckMode, userAnswers)
+                  val result = navigator.nextPage(id, checkMode(mode), userAnswers)
                   result mustBe editCall.value
                 }
 
                 s"move from $id to $editCall and ${if (!save) "not " else ""}save the page with data: ${describer(userAnswers)}" in {
                   dataCacheConnector.reset()
-                  navigator.nextPage(id, CheckMode, userAnswers)
+                  navigator.nextPage(id, checkMode(mode), userAnswers)
                   if (save) {
                     dataCacheConnector.verify(LastPageId, LastPage(editCall.value.method, editCall.value.url))
                   }

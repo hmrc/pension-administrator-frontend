@@ -26,8 +26,6 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.back_link()
-
     @components.heading(messages("partnershipReview.heading"))
 
     @components.review_section(
@@ -50,6 +48,8 @@
     )
 
     @helpers.form(action = PartnershipReviewController.onSubmit, 'autoComplete -> "off") {
-        @components.submit_button("site.confirm")
+        <div class="section">
+            @components.submit_button("site.confirm")
+        </div>
     }
 }

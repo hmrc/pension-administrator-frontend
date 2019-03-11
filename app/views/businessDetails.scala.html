@@ -27,8 +27,6 @@ bodyClasses = None) {
 
   @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 
-  @components.back_link()
-
   @components.error_summary(form.errors)
 
   @components.heading(viewModel.heading, "heading-xlarge")
@@ -45,6 +43,8 @@ bodyClasses = None) {
   hint = Some(viewModel.utrHint)
   )
 
-  @components.submit_button("site.save_and_continue")
+    <div class="section">
+        @components.submit_button("site.save_and_continue")
+    </div>
 }
 }
