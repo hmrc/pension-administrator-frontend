@@ -18,11 +18,12 @@ package utils.testhelpers
 
 import java.time.LocalDate
 
-import models.{UpdateMode}
+import base.SpecBase
+import models.UpdateMode
 import viewmodels._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
-object ViewPsaDetailsBuilder {
+object ViewPsaDetailsBuilder extends SpecBase {
 
   val pensionAdviserSeqAnswers = Seq(
     AnswerRow("pensions.advisor.label", Seq("Pension Adviser"), false,
@@ -146,7 +147,13 @@ object ViewPsaDetailsBuilder {
     Seq(
       AnswerSection(
         None, pensionAdviserSeqAnswers
-        )))
+        )),
+    Some(AddLink(Link(
+      controllers.register.adviser.routes.ConfirmDeleteAdviserController.onPageLoad().url,
+      Message("adviser-delete-link", "Pension Adviser")),
+      Some(Message("adviser-delete-link-additionalText", "Pension Adviser")))
+    )
+  )
 
   val directorsSuperSection =SuperSection(Some("director.supersection.header"),
     Seq(AnswerSection(
