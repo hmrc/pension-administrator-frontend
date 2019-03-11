@@ -35,7 +35,9 @@
     </ul>
 
     @helpers.form(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-        @components.submit_button("site.start")
+        <div class="section">
+            @components.submit_button("site.start")
+        </div>
     }
 
 }

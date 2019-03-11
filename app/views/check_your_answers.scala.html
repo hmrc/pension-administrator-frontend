@@ -42,8 +42,9 @@
             }
         }
 
-        @components.submit_button("site.confirm")
-
+        <div class="section">
+             @components.submit_button("site.confirm")
+        </div>
         @psaNameOpt.map { psaName =>
             @components.return_link(psaName, mode)
         }

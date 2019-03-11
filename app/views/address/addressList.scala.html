@@ -57,10 +57,12 @@
             }
         }
 
-        @components.submit_button("site.save_and_continue")
-
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
         @viewModel.psaName.map { psaName =>
             @components.return_link(psaName, mode)
         }
+
     }
 }

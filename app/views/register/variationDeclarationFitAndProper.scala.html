@@ -62,7 +62,9 @@
             secondaryLabel = None
         )
 
-        @components.submit_button("site.continue")
+        <div class="subsection">
+            @components.submit_button("site.continue")
+        </div>
 
         @psaNameOpt.map{ psaName =>
             @components.return_link(psaName, UpdateMode)

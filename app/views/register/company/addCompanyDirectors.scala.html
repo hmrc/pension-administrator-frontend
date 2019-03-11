@@ -42,7 +42,9 @@
 
         @if(directors.isEmpty) {
             @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
-            @components.submit_button("addCompanyDirectors.addADirector")
+            <div class="section">
+                @components.submit_button("addCompanyDirectors.addADirector")
+            </div>
         } else {
 
             @components.person_list(appConfig, directors, mode)
