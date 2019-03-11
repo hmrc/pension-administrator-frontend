@@ -18,6 +18,6 @@ package identifiers.register.company.directors
 
 import identifiers._
 
-case object CheckYourAnswersId extends Identifier {
+case object CheckYourAnswersId extends TypedIdentifier[Nothing] {
   override def toString: String = "checkYourAnswers"
 }
