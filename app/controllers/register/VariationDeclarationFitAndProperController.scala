@@ -59,10 +59,11 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
     implicit request =>
       form.bindFromRequest().fold(
         errors => Future.successful(BadRequest(views.html.register.variationDeclarationFitAndProper(appConfig, errors, psaName()))),
-        success =>
+        success => {
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>
             Redirect(navigator.nextPage(DeclarationFitAndProperId, mode, UserAnswers(json)))
           }
+        }
       )
   }
 }

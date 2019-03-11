@@ -108,11 +108,19 @@ class PartnershipNavigator @Inject()(
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = {
     from.id match {
       case PartnershipContactAddressId =>
-        NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(UpdateMode))
+        NavigateTo.dontSave(routes.PartnershipAddressYearsController.onPageLoad(UpdateMode))
       case PartnershipAddressYearsId =>
         addressYearsRoutes(from.userAnswers, UpdateMode)
       case PartnershipContactDetailsId =>
         NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      case PartnershipPreviousAddressPostCodeLookupId =>
+        NavigateTo.dontSave(routes.PartnershipPreviousAddressListController.onPageLoad(UpdateMode))
+      case PartnershipPreviousAddressListId =>
+        NavigateTo.dontSave(routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode))
+      case PartnershipPreviousAddressId =>
+        NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      case PartnershipConfirmPreviousAddressId =>
+        variationManualPreviousAddressRoutes(from.userAnswers, UpdateMode)
       case _ =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
@@ -121,15 +129,25 @@ class PartnershipNavigator @Inject()(
 
   private def addressYearsRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
     (answers.get(PartnershipAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.PartnershipPreviousAddressController.onPageLoad(mode))
-      case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))
+      case (Some(AddressYears.UnderAYear), Some(false)) =>
+        mode match {
+          case NormalMode | CheckMode => NavigateTo.dontSave(routes.PartnershipPreviousAddressController.onPageLoad(mode))
+          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(routes.PartnershipConfirmPreviousAddressController.onPageLoad())
+        }
+
+      case (Some(AddressYears.UnderAYear), Some(true)) =>
+        mode match {
+          case NormalMode | CheckMode => NavigateTo.dontSave(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))
+          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(routes.PartnershipConfirmPreviousAddressController.onPageLoad())
+        }
       case (Some(AddressYears.OverAYear), _) =>
         mode match {
-          case NormalMode => NavigateTo.save(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
-          case CheckMode => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+          case NormalMode => NavigateTo.dontSave(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
+          case CheckMode => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
           case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
         }
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ =>
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
@@ -166,6 +184,14 @@ class PartnershipNavigator @Inject()(
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case Some(true) => NavigateTo.save(routes.PartnershipVatController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+    answers.get(PartnershipConfirmPreviousAddressId) match {
+      case Some(false) =>NavigateTo.dontSave(routes.PartnershipPreviousAddressController.onPageLoad(mode))
+      case Some(true) => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }

@@ -26,8 +26,8 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
 import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -57,9 +57,9 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
 
-    (PartnershipAddressYearsId, addressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(NormalMode), true, Some(contactPreviousPostcodePage(CheckMode)), true),
-    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
+    (PartnershipAddressYearsId, addressYearsOverAYear, contactDetailsPage, false, Some(checkYourAnswersPage), false),
+    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(NormalMode), false, Some(contactPreviousPostcodePage(CheckMode)), false),
+    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(NormalMode), false, Some(contactPreviousAddressPage(CheckMode)), false),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
@@ -83,12 +83,20 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), true, None, true),
-    (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, false, None, true),
-    (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(UpdateMode), true, None, true),
-    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(UpdateMode), true, None, true),
-    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false)
+    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), false, None, false),
+    (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, false, None, false),
+    (PartnershipAddressYearsId, addressYearsUnderAYearUk, confirmPreviousAddressPage, false, None, false),
+    (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, confirmPreviousAddressPage, false, None, false),
+    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (PartnershipContactDetailsId, uk, anyMoreChangesPage, false, None, false),
+    (PartnershipContactDetailsId, nonUk, anyMoreChangesPage, false, None, false),
+    (PartnershipContactDetailsId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode), false, None, false),
+    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(UpdateMode), false, None, false),
+    (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage, false, None, false),
+    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousAddressPage(UpdateMode), false, None, false)
   )
 
   navigator.getClass.getSimpleName must {
@@ -133,6 +141,8 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def contactPreviousAddressListPage(mode: Mode): Call = routes.PartnershipPreviousAddressListController.onPageLoad(mode)
 
+  private def confirmPreviousAddressPage: Call = routes.PartnershipConfirmPreviousAddressController.onPageLoad()
+
   private def contactPreviousAddressPage(mode: Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
 
   private def declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
@@ -145,6 +155,9 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
+  private val varianceConfirmPreviousAddressYes = UserAnswers().set(PartnershipConfirmPreviousAddressId)(true).asOpt.get
+  private val varianceConfirmPreviousAddressNo = UserAnswers().set(PartnershipConfirmPreviousAddressId)(false).asOpt.get
 
   private val nonUkEuAddress = UserAnswers().nonUkPartnershipAddress(address("AT"))
   private val uKAddress = UserAnswers().nonUkPartnershipAddress(address("GB"))

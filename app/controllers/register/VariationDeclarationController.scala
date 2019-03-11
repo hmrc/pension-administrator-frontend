@@ -69,7 +69,11 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
             success =>
               dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { json =>
                 val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-                pensionsSchemeConnector.updatePsa(psaId, UserAnswers(json)).map(_ =>
+                val answers = UserAnswers(json).set(ExistingPSAId)(ExistingPSA(
+                  request.user.isExistingPSA,
+                  request.user.existingPSAId
+                )).asOpt.getOrElse(UserAnswers(json))
+                pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
                   Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(json)))
                 )
               }
