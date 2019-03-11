@@ -61,7 +61,7 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     if(mode==NormalMode){
       call
     } else {
-      from.userAnswers.get(IsAdviserChangeId) match {
+      from.userAnswers.get(IsNewAdviserId) match {
         case Some(true) => call
         case _ =>  NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       }

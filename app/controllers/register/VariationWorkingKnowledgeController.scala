@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
-import identifiers.register.adviser.IsAdviserChangeId
+import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.Mode
@@ -67,7 +67,7 @@ class VariationWorkingKnowledgeController @Inject()(
             case None => true
             case Some(existing) => existing != value
           }
-          cacheConnector.save(request.externalId, IsAdviserChangeId, !value).flatMap(_ =>
+          cacheConnector.save(request.externalId, IsNewAdviserId, !value).flatMap(_ =>
             if (hasAnswerChanged) {
               cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
                 saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>

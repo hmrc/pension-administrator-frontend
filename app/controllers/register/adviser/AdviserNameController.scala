@@ -19,6 +19,7 @@ package controllers.register.adviser
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.adviser.AdviserNameFormProvider
 import identifiers.register.adviser.AdviserNameId
@@ -42,7 +43,7 @@ class AdviserNameController @Inject()(
                                        requiredData: DataRequiredAction,
                                        formProvider: AdviserNameFormProvider,
                                        dataCacheConnector: UserAnswersCacheConnector
-                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
   val form = formProvider()
 
@@ -53,7 +54,7 @@ class AdviserNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Future.successful(Ok(adviserName(appConfig, preparedForm, mode)))
+      Future.successful(Ok(adviserName(appConfig, preparedForm, mode, psaName())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
@@ -61,7 +62,7 @@ class AdviserNameController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(adviserName(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(adviserName(appConfig, formWithErrors, mode, psaName()))),
         value => {
           dataCacheConnector.save(request.externalId, AdviserNameId, value).map(
             cacheMap =>

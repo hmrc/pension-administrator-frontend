@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.VariationWorkingKnowledgeFormProvider
-import identifiers.register.adviser.IsAdviserChangeId
+import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
 import models.{TolerantIndividual, UpdateMode, UserType}
@@ -119,7 +119,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
-      FakeUserAnswersCacheConnector.verify(IsAdviserChangeId, true)
+      FakeUserAnswersCacheConnector.verify(IsNewAdviserId, true)
     }
 
     "redirect to the next page but not update the change ID when data has not changed" in {
@@ -130,7 +130,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
-      FakeUserAnswersCacheConnector.verify(IsAdviserChangeId, false)
+      FakeUserAnswersCacheConnector.verify(IsNewAdviserId, false)
     }
   }
 }
