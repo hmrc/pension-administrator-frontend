@@ -68,6 +68,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
   (AddPartnersId, addPartnersFalse, anyMoreChangesPage, false, None, true),
   (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage, true, None, true),
+    (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress, true, None, true),
   (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, false, None, true),
   (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), previousAddressPage(UpdateMode), true, None, true),
   (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
@@ -134,22 +136,27 @@ object PartnerNavigatorSpec extends OptionValues {
 
   val defaultAnswers = UserAnswers(Json.obj())
     .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
+  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
+    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
   private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+
+  private val addressYearsOverAYearExistingPartner = existingPartnerInUpdate(0)
+    .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
+  private val addressYearsUnderAYearExistingPartner = existingPartnerInUpdate(0)
+    .set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+
   private val addPartnersFalse = UserAnswers(Json.obj())
     .set(AddPartnersId)(false).asOpt.value
   private val addPartnersTrue =  UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
 
-  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
-
-  private def confirmPreviousAddressSame(index: Int) = defaultAnswers
+  private def confirmPreviousAddressSame(index: Int) = existingPartnerInUpdate(0)
     .set(PartnerConfirmPreviousAddressId(0))(true).asOpt.value
 
-  private def confirmPreviousAddressNotSame(index: Int) = defaultAnswers
+  private def confirmPreviousAddressNotSame(index: Int) = existingPartnerInUpdate(0)
     .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(

@@ -353,7 +353,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerAddressId(index)) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(UpdateMode, index).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
