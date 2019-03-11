@@ -45,15 +45,19 @@ trait AreYouInUKController extends FrontendController with I18nSupport {
 
   protected val form = formProvider()
 
-  protected def viewmodel(mode: Mode) : AreYouInUKViewModel
+  protected def viewmodel(mode: Mode): AreYouInUKViewModel
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AreYouInUKId).fold(form)(v=>form.fill(v))
+      val preparedForm = request.userAnswers match {
+        case None => form
+        case Some(userAnswers) =>
+          userAnswers.get(AreYouInUKId).fold(form)(v => form.fill(v))
+      }
       Ok(areYouInUK(appConfig, preparedForm, viewmodel(mode)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
