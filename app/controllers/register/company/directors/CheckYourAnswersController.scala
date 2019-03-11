@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Retrievals
+import controllers.{Retrievals, Variations}
 import controllers.actions._
 import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
 import javax.inject.Inject
@@ -46,8 +46,8 @@ class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             sectionComplete: SectionComplete,
-                                            userAnswersCacheConnector: UserAnswersCacheConnector
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                            override val cacheConnector: UserAnswersCacheConnector
+                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -78,20 +78,12 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      DirectorDetailsId(index).retrieve.right.map { details =>
-        setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
+        setNewFlag(DirectorDetailsId(index), mode).flatMap { _ =>
           sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
             Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
           }
         }
-      }
   }
 
-  private def setNewFlagInUpdateMode(index: Index, mode: Mode, directorDetails: PersonDetails)
-                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
-    if(mode == UpdateMode) {
-      userAnswersCacheConnector.save(request.externalId, DirectorDetailsId(index), directorDetails.copy(isNew = true))
-    } else { Future(request.userAnswers.json)}
-  }
 
 }

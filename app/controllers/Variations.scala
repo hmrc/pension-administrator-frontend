@@ -29,6 +29,7 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +38,7 @@ trait Variations extends FrontendController {
 
   protected def cacheConnector: UserAnswersCacheConnector
 
-  protected implicit val ec: ExecutionContext = play.api.libs.concurrent.Execution.defaultContext
+  protected implicit val exec: ExecutionContext = play.api.libs.concurrent.Execution.defaultContext
 
   private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,
@@ -83,6 +84,17 @@ trait Variations extends FrontendController {
       findChangeIdNonIndexed(id).fold(findChangeIdIndexed(id))(Some(_))
         .map(cacheConnector.save(request.externalId, _, value = true))
     }
-    result.fold(Future.successful(request.userAnswers.json))(identity)
+    result.fold(doNothing)(identity)
   }
+
+  def setNewFlag(id: TypedIdentifier[PersonDetails], mode: Mode)
+                                    (implicit request: DataRequest[_]): Future[JsValue] = {
+    if(mode == UpdateMode) {
+      request.userAnswers.get(id).fold(doNothing){ details =>
+        cacheConnector.save(request.externalId, id, details.copy(isNew = true))
+      }
+    } else { doNothing }
+  }
+
+  private def doNothing(implicit request: DataRequest[_]): Future[JsValue] = Future.successful(request.userAnswers.json)
 }
