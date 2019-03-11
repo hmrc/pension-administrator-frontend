@@ -71,8 +71,9 @@
             )
         }
 
-        @components.submit_button()
-
+        <div class="section">
+            @components.submit_button()
+        </div>
         @psaNameOpt.map{ psaName =>
             @components.return_link(psaName, mode)
         }

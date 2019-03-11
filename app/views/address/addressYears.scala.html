@@ -41,8 +41,9 @@
       inputs = viewmodel.inputs
     )
 
-    @components.submit_button()
-
+    <div class="subsection">
+        @components.submit_button()
+    </div>
     @viewmodel.psaName.map { psaName =>
         @components.return_link(psaName, mode)
     }
