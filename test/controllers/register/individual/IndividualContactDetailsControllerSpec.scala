@@ -57,7 +57,7 @@ class IndividualContactDetailsControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = contactDetails(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   "ContactDetails Controller" must {
 

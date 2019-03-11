@@ -49,7 +49,7 @@ trait PersonDetailsController extends FrontendController with I18nSupport {
 
   def get[I <: TypedIdentifier[PersonDetails]](
                                                 id: I, viewModel:
-  PersonDetailsViewModel
+  PersonDetailsViewModel, mode: Mode
                                               )(implicit request: DataRequest[AnyContent]): Result = {
 
     val preparedForm = request.userAnswers.get(id) match {
@@ -57,7 +57,7 @@ trait PersonDetailsController extends FrontendController with I18nSupport {
       case Some(value) => form.fill(value)
     }
 
-    Ok(personDetails(appConfig, preparedForm, viewModel))
+    Ok(personDetails(appConfig, preparedForm, viewModel, mode))
 
   }
 
@@ -69,7 +69,7 @@ trait PersonDetailsController extends FrontendController with I18nSupport {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(personDetails(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(personDetails(appConfig, formWithErrors, viewModel, mode))),
       value =>
         dataCacheConnector.save(request.externalId, id, value).map(cacheMap =>
           Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))

@@ -19,4 +19,10 @@ package viewmodels
 import identifiers.TypedIdentifier
 import play.api.mvc.Call
 
-case class MoreThanTenViewModel(title: String, heading: String, hint: String, postCall: Call, id: TypedIdentifier[Boolean])
+case class MoreThanTenViewModel(title: String,
+                                heading: String,
+                                hint: String,
+                                postCall: Call,
+                                id: TypedIdentifier[Boolean],
+                                psaName: Option[String]
+                               )

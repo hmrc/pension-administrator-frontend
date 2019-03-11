@@ -69,7 +69,7 @@ class CheckYourAnswersController @Inject()(
         ).flatten
       )
       val sections = Seq(section)
-      Ok(check_your_answers(appConfig, sections, None, postUrl))
+      Ok(check_your_answers(appConfig, sections, postUrl, None, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

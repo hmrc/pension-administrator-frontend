@@ -57,8 +57,6 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithSubmitButton(createView)
 
     behave like pageWithTextFields(

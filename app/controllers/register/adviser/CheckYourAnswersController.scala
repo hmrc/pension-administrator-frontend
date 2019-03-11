@@ -18,7 +18,7 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import controllers.actions._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, CheckYourAnswersId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, CheckYourAnswersId}
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,10 +45,11 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
+      val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(CheckMode).url)))
       val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(CheckMode).url)))
       val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(CheckMode).url)))
-      val sections = Seq(AnswerSection(None, details ++ address))
-      Ok(check_your_answers(appConfig, sections, Some("common.adviser.secondary.heading"), routes.CheckYourAnswersController.onSubmit()))
+      val sections = Seq(AnswerSection(None, adviserName ++ details ++ address))
+      Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(), None, mode))
   }
 
   def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

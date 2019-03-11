@@ -29,13 +29,13 @@ import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
 import models._
 import models.register.{KnownFact, KnownFacts, PsaSubscriptionResponse}
-import models.requests.{AuthenticatedRequest, DataRequest}
+import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.{Writes, _}
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
@@ -209,11 +209,6 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     PartnershipDetailsId.toString -> businessDetails
   )
 
-  private def fakeAuthAction(userType: UserType) = new AuthAction {
-    override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, true, Some("test psa id"))))
-  }
-
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")
   private val knownFacts = Some(KnownFacts(
     Set(KnownFact("PSAID", "test-psa")),
@@ -226,6 +221,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.successful(validPsaResponse)
     }
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private val duplicateRegistrationPensionsSchemeConnector = new PensionsSchemeConnector {
@@ -234,6 +230,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidBusinessPartnerException())
     }
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private val submissionInvalidPensionsSchemeConnector = new PensionsSchemeConnector {
@@ -242,6 +239,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
       Future.failed(InvalidPayloadException())
     }
+    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
@@ -273,7 +271,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     new DeclarationFitAndProperController(
       appConfig,
       messagesApi,
-      fakeAuthAction(userType),
+      FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,

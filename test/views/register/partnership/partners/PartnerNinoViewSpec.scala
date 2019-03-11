@@ -17,7 +17,7 @@
 package views.register.partnership.partners
 
 import forms.register.partnership.partners.PartnerNinoFormProvider
-import models.{Index, NormalMode}
+import models.{Index, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
@@ -31,15 +31,15 @@ class PartnerNinoViewSpec extends ViewBehaviours {
 
   val form = new PartnerNinoFormProvider()()
 
-  def createView: () => HtmlFormat.Appendable = () =>
-    partnerNino(frontendAppConfig, form, NormalMode, index, partnerName)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    partnerNino(frontendAppConfig, form, mode, index, Some("test psa"))(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    partnerNino(frontendAppConfig, form, NormalMode, index, partnerName)(fakeRequest, messages)
+    partnerNino(frontendAppConfig, form, NormalMode, index, None)(fakeRequest, messages)
 
   "PartnerNino view" must {
-    behave like normalPage(createView, messageKeyPrefix)
-    behave like pageWithBackLink(createView)
+    behave like normalPage(createView(), messageKeyPrefix)
+    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
   "PartnerNino view" when {

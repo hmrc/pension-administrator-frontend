@@ -19,8 +19,9 @@ package utils
 import java.time.LocalDate
 
 import controllers.register.company.directors.routes
-import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
-import models.{Index, NormalMode, PersonDetails}
+import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
+import models.{Address, Index, NormalMode, PersonDetails}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
 import viewmodels.Person
@@ -81,7 +82,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
     }
   }
 
-  "isUserAnswerUpdated" must{
+  "isUserAnswerUpdated" must {
 
     "return false if isChanged is not present" in {
       val userAnswers = UserAnswers(establishers)
@@ -123,6 +124,33 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
       userAnswers.isUserAnswerUpdated() mustBe false
+    }
+  }
+
+  "setAllExistingAddress" must {
+    def address(typeOfUser: String) = Address(s"${typeOfUser}line1", s"line2", None, None, Some("test postcode"), "GB")
+
+    val userAnswers = UserAnswers()
+      .set(DirectorAddressId(0))(address("director1"))
+      .flatMap(_.set(DirectorAddressId(1))(address("director2")))
+      .flatMap(_.set(CompanyContactAddressId)(address("company"))).get
+
+    "return the updated user answers with existing address" in {
+      val result = userAnswers.setAllExistingAddress(
+        Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId,
+          DirectorAddressId(0) -> DirectorsExistingCurrentAddressId(0),
+          DirectorAddressId(1) -> DirectorsExistingCurrentAddressId(1)
+        )
+      ).get
+
+      result mustBe userAnswers.set(DirectorsExistingCurrentAddressId(0))(address("director1").toTolerantAddress)
+        .flatMap(_.set(DirectorsExistingCurrentAddressId(1))(address("director2").toTolerantAddress))
+        .flatMap(_.set(CompanyExistingCurrentAddressId)(address("company").toTolerantAddress)).get
+    }
+
+    "return the same user answers if map is empty" in {
+      val result = userAnswers.setAllExistingAddress(Map.empty).get
+      result mustBe userAnswers
     }
   }
 }

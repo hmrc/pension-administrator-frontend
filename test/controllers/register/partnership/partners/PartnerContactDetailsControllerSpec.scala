@@ -49,7 +49,7 @@ class PartnerContactDetailsControllerSpec extends ControllerSpecBase with CSRFRe
       implicit app => addToken(FakeRequest(routes.PartnerContactDetailsController.onPageLoad(NormalMode, firstIndex))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe contactDetails(frontendAppConfig, formProvider(), viewModel)(request, messages).toString()
+        contentAsString(result) mustBe contactDetails(frontendAppConfig, formProvider(), viewModel, NormalMode)(request, messages).toString()
       }
     )
   }
@@ -71,7 +71,7 @@ object PartnerContactDetailsControllerSpec extends OptionValues {
   val partnershipName = "Test Partner"
   val firstIndex = Index(0)
 
-  val onwardRoute = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(firstIndex)
+  val onwardRoute = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(firstIndex, NormalMode)
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "partners" -> Json.arr(Json.obj(
@@ -82,7 +82,8 @@ object PartnerContactDetailsControllerSpec extends OptionValues {
 
   val viewModel = ContactDetailsViewModel(
     routes.PartnerContactDetailsController.onSubmit(NormalMode, firstIndex),
-    Message("partnership.partner.contactDetails.title"), Message("partnership.partner.contactDetails.heading"), None, Some(partnershipName)
+    Message("partnership.partner.contactDetails.title"), Message("partnership.partner.contactDetails.heading"), None, Some(partnershipName),
+    psaName = None
   )
 
   def requestResult[T](dataRetrieval: DataRetrievalAction)

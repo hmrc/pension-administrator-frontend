@@ -40,8 +40,6 @@ class CompanyDetailsViewSpec extends QuestionViewBehaviours[CompanyDetails] {
 
     behave like normalPage(createView, messageKeyPrefix)
 
-    behave like pageWithBackLink(createView)
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,

@@ -39,7 +39,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
     data += (id.toString -> Json.toJson(value))
-    Future.successful(Json.obj())
+    Future.successful(Json.obj(id.toString -> Json.toJson(value)))
   }
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)

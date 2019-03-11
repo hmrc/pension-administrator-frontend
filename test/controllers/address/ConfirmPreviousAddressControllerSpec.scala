@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
-import forms.address.SameContactAddressFormProvider
+import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
 import identifiers.TypedIdentifier
 import identifiers.register.individual.IndividualSameContactAddressId
 import models._
@@ -31,7 +31,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, Request, Result}
@@ -39,6 +39,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
+import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
@@ -67,6 +68,8 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
     psaName = "Test name",
     mode = NormalMode
   )
+
+  def errorMessage(implicit messages: Messages) = Message("confirmPreviousAddress.error", "Test name").resolve
 
   "get" must {
 
@@ -189,7 +192,7 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
       )) {
         app =>
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
-          val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
+          val formProvider = app.injector.instanceOf[ConfirmPreviousAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val countryOptions = app.injector.instanceOf[CountryOptions]
@@ -199,7 +202,7 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
           status(result) mustEqual BAD_REQUEST
           contentAsString(result) mustEqual sameContactAddress(
             appConfig,
-            formProvider().bind(Map.empty[String, String]),
+            formProvider(errorMessage(messages)).bind(Map.empty[String, String]),
             viewmodel(),
             countryOptions
           )(request, messages).toString
@@ -220,7 +223,6 @@ object ConfirmPreviousAddressControllerSpec {
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: SameContactAddressFormProvider,
                                   override val countryOptions: CountryOptions
                                 ) extends ConfirmPreviousAddressController {
 
@@ -234,7 +236,7 @@ object ConfirmPreviousAddressControllerSpec {
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    override protected val form: Form[Boolean] = formProvider()
+
   }
 
 }

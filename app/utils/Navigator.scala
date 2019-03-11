@@ -41,6 +41,7 @@ abstract class Navigator {
         case NormalMode => routeMap(NavigateFrom(id, userAnswers))
         case CheckMode => editRouteMap(NavigateFrom(id, userAnswers))
         case UpdateMode => editRouteMap(NavigateFrom(id, userAnswers))
+        case CheckUpdateMode => editRouteMap(NavigateFrom(id, userAnswers))
       }
     }
 

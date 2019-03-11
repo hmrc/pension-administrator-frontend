@@ -53,7 +53,9 @@ class PartnerAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(get)
+      viewModel(mode, index).right.map{vm =>
+        get(vm, mode)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -76,7 +78,8 @@ class PartnerAddressPostCodeLookupController @Inject()(
           Message("partnerAddressPostCodeLookup.body"),
           Message("common.postcodeLookup.enterPostcode"),
           Some(Message("common.postcodeLookup.enterPostcode.link")),
-          Message("common.address.enterPostcode.formLabel")
+          Message("common.address.enterPostcode.formLabel"),
+          psaName = psaName()
         )
     }
   }

@@ -49,8 +49,6 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", "directorName")
     }
 
-    behave like pageWithBackLink(createView)
-
     "have a confirm button" in {
       val doc = asDocument(createView())
       assertRenderedById(doc, "submit")

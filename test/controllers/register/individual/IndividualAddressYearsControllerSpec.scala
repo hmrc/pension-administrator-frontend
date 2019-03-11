@@ -55,7 +55,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form): String = addressYears(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = addressYears(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
     .set(IndividualDetailsId)(individualDetails)

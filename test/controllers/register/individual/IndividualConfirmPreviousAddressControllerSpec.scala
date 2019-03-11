@@ -19,7 +19,7 @@ package controllers.register.individual
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.address.SameContactAddressFormProvider
+import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualConfirmPreviousAddressId, IndividualDetailsId}
 import models._
 import play.api.data.Form
@@ -36,7 +36,10 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new SameContactAddressFormProvider()
+  val psa: String = "John Doe"
+
+  val formProvider = new ConfirmPreviousAddressFormProvider()
+  val form = formProvider(Message("confirmPreviousAddress.error", psa))
 
   val testAddress = TolerantAddress(
     Some("address line 1"),
@@ -48,12 +51,12 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
   def viewmodel = SameContactAddressViewModel(
     postCall = routes.IndividualConfirmPreviousAddressController.onSubmit(),
-    title = Message("individual.confirmPreviousAddress.title"),
-    heading = Message("individual.confirmPreviousAddress.heading", "John Doe"),
+    title = Message("confirmPreviousAddress.title"),
+    heading = Message("confirmPreviousAddress.heading", psa),
     secondaryHeader = None,
     hint = None,
     address = testAddress,
-    psaName = "John Doe",
+    psaName = psa,
     mode = UpdateMode
   )
 
@@ -69,11 +72,10 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
       countryOptions
     )
 
-  def viewAsString(form: Form[_] = formProvider()): String =
+  def viewAsString(form: Form[_] = form): String =
     sameContactAddress(
       frontendAppConfig,
       form,
@@ -101,7 +103,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
       val result = controller(getData).onPageLoad(UpdateMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(formProvider().fill(false))
+      contentAsString(result) mustBe viewAsString(form.fill(false))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -115,7 +117,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = formProvider().bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller(getRelevantData).onSubmit(UpdateMode)(postRequest)
 

@@ -235,8 +235,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       check_your_answers(
         frontendAppConfig,
         sections,
+        postUrl,
         None,
-        postUrl
+        NormalMode
       )(fakeRequest, messages).toString()
   }
 }

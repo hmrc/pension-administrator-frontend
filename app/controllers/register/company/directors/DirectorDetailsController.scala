@@ -18,10 +18,11 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.PersonDetailsController
+import controllers.{PersonDetailsController, Retrievals}
 import controllers.actions._
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -38,13 +39,14 @@ class DirectorDetailsController @Inject()(
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction
-                                         ) extends PersonDetailsController {
+                                         ) extends PersonDetailsController with Retrievals{
 
-  private[directors] def viewModel(mode: Mode, index: Index) =
+  private[directors] def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
     PersonDetailsViewModel(
       title = "directorDetails.title",
       heading = Message("directorDetails.title"),
-      postCall = routes.DirectorDetailsController.onSubmit(mode, index)
+      postCall = routes.DirectorDetailsController.onSubmit(mode, index),
+      psaName = psaName()
     )
 
   private[directors] def id(index: Index): DirectorDetailsId =
@@ -52,7 +54,7 @@ class DirectorDetailsController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      get(id(index), viewModel(mode, index))
+      get(id(index), viewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

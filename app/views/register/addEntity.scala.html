@@ -37,8 +37,6 @@
 
         @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-            @components.back_link()
-
             @components.error_summary(form.errors)
 
             @components.heading(viewmodel.heading)
@@ -66,6 +64,9 @@
                 <div class="section">
                     @components.submit_button(disabled = disableSubmission)
                 </div>
+            }
+            @viewmodel.psaName.map { psaName =>
+                @components.return_link(psaName, mode)
             }
         }
 }
