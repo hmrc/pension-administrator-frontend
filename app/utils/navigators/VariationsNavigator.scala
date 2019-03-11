@@ -19,6 +19,7 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import identifiers.register.adviser.ConfirmDeleteAdviserId
 import identifiers.register.{DeclarationChangedId, DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import identifiers.vary.AnyMoreChangesId
 import models.{Mode, UpdateMode}
@@ -33,6 +34,8 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
 
+    case ConfirmDeleteAdviserId => deleteAdviserRoute(from)
+
     case AnyMoreChangesId => anyMoreChangesRoute(from)
 
     case VariationWorkingKnowledgeId => variationWorkingKnowledgeRoute(from)
@@ -44,6 +47,12 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case DeclarationChangedId => declarationChange(from)
 
     case _ => None
+  }
+
+  private def deleteAdviserRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(ConfirmDeleteAdviserId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+    case Some(false) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
   private def anyMoreChangesRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(AnyMoreChangesId) match {

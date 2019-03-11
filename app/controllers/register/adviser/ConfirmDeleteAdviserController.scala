@@ -31,8 +31,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Adviser
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator, UserAnswers, annotations}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
@@ -47,7 +46,7 @@ class ConfirmDeleteAdviserController @Inject()(
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector,
                                                 formProvider: ConfirmDeleteAdviserFormProvider,
-                                                @Adviser navigator: Navigator
+                                                @annotations.Variations navigator: Navigator
                                               ) extends FrontendController with I18nSupport with Retrievals with Variations {
 
   private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
