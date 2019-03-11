@@ -19,6 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import base.SpecBase
+import connectors.RegistrationConnectorSpec.{nino, sapNumber}
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId

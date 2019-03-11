@@ -21,15 +21,12 @@ import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser._
 import models.requests.IdentifiedRequest
-import models.{CheckMode, Mode, NormalMode}
+import models.{CheckMode, Mode, NormalMode, UpdateMode}
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
-
-//scalastyle:off line.size.limit
 
 class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -39,32 +36,46 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage, true, Some(checkYourAnswersPage), false),
-    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage, true, Some(checkYourAnswersPage), false),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage(NormalMode), false, Some(checkYourAnswersPage(CheckMode)), false),
+    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode), false, Some(checkYourAnswersPage(CheckMode)), false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), false, Some(adviserAddressListPage(CheckMode)), false),
-    (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), true, Some(adviserAddressPage(CheckMode)), true),
-    (AdviserAddressId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), false),
-    (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, true, None, false)
+    (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), false, Some(adviserAddressPage(CheckMode)), false),
+    (AdviserAddressId, emptyAnswers, checkYourAnswersPage(NormalMode), false, Some(checkYourAnswersPage(CheckMode)), false),
+    (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, false, None, false)
+  )
+
+  def updateModeRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, None, false),
+    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false, None, false),
+    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
+    (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
+    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), false, None, false),
+    (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false)
   )
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateModeRoutes(), dataDescriber, UpdateMode)
   }
 }
 
 object AdviserNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
-  lazy val adviserPostCodeLookUpPage: Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode)
-  lazy val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(NormalMode)
+  lazy val adviserUpdated = UserAnswers(Json.obj()).set(IsAdviserChangeId)(true).asOpt.get
 
-  def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
+  private def adviserPostCodeLookUpPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)
+  private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)
+  private def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
+  private def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
+  private  def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
 
-  def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
-
-  lazy val checkYourAnswersPage: Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad()
   lazy val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+  lazy val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"

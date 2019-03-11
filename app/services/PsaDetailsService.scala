@@ -29,7 +29,8 @@ import identifiers.{TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
-import models.{Address, RegistrationLegalStatus, TolerantAddress, UpdateMode}
+import models.{Address, Mode, RegistrationLegalStatus, TolerantAddress}
+import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,8 +43,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
-  def retrievePsaDataAndGenerateViewModel(psaId: String)(implicit hc: HeaderCarrier,
-                                                         ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel]
+  def retrievePsaDataAndGenerateViewModel(psaId: String, mode:Mode)(implicit hc: HeaderCarrier,
+                                                         ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel]
 }
 
 class PsaDetailServiceImpl @Inject()(
@@ -55,11 +56,11 @@ class PsaDetailServiceImpl @Inject()(
                                       userAnswersCacheConnector: UserAnswersCacheConnector
                                     ) extends PsaDetailsService with I18nSupport {
 
-  override def retrievePsaDataAndGenerateViewModel(psaId: String)(
-    implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
+  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode:Mode)(
+    implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
 
     if (fs.get(isVariationsEnabled)) {
-      retrievePsaDataFromUserAnswers(psaId)
+      retrievePsaDataFromUserAnswers(psaId, mode)
     } else {
       canStopBeingAPsa(psaId).flatMap { canDeregister =>
         retrievePsaDataFromModel(psaId, canDeregister)
@@ -67,10 +68,10 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  def retrievePsaDataFromUserAnswers(psaId: String
-                                    )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[PsaViewDetailsViewModel] = {
+  def retrievePsaDataFromUserAnswers(psaId: String, mode:Mode
+                                    )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
     for {
-      userAnswers <- getUserAnswers(psaId)
+      userAnswers <- getUserAnswers(psaId, mode)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
       canDeregister <- canStopBeingAPsa(psaId)
     } yield {
@@ -78,17 +79,17 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  private def getUserAnswers(psaId: String
-                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]) =
+  private def getUserAnswers(psaId: String, mode:Mode
+                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]) =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
-      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_)}
+      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_, mode)}
       case Some(data) => Future(UserAnswers(data))
     }
 
-  private def getUpdatedUserAnswers(response: JsValue)(implicit ec: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue, mode:Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-    Future(setCompleteAndAddressIdsToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers))
+    Future(setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers))
   }
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
@@ -116,7 +117,9 @@ class PsaDetailServiceImpl @Inject()(
     PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeRegister)
   }
 
-  private def setCompleteAndAddressIdsToUserAnswers(userAnswers: UserAnswers, legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
+  private def setCompleteAndAddressIdsToUserAnswers(userAnswers: UserAnswers,
+                                                    legalStatus: Option[RegistrationLegalStatus],
+                                                    mode:Mode): JsResult[UserAnswers] = {
 
     val (seqOfCompleteIds, mapOfAddressIds):
       (List[TypedIdentifier[Boolean]], Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]) = legalStatus match {
@@ -124,7 +127,7 @@ class PsaDetailServiceImpl @Inject()(
         (Nil, Map(IndividualContactAddressId -> ExistingCurrentAddressId))
 
       case Some(LimitedCompany) =>
-        val allDirectors = userAnswers.allDirectorsAfterDelete(UpdateMode)
+        val allDirectors = userAnswers.allDirectorsAfterDelete(mode)
         val allDirectorsCompleteIds = allDirectors.map(director => IsDirectorCompleteId(allDirectors.indexOf(director))).toList
         val allDirectorsAddressIdMap = allDirectors.map { director =>
           val index = allDirectors.indexOf(director)
@@ -134,7 +137,7 @@ class PsaDetailServiceImpl @Inject()(
         (allDirectorsCompleteIds, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
 
       case Some(Partnership) =>
-        val allPartners = userAnswers.allPartnersAfterDelete(UpdateMode)
+        val allPartners = userAnswers.allPartnersAfterDelete(mode)
         val allPartnersCompleteIds = allPartners.map(partner => IsPartnerCompleteId(allPartners.indexOf(partner))).toList
         val allPartnersAddressIds = allPartners.map { partner =>
           val index = allPartners.indexOf(partner)

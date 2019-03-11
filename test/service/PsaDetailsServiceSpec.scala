@@ -20,13 +20,14 @@ import base.SpecBase
 import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import identifiers.UpdateModeId
+import identifiers.register.DeclarationChangedId
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId}
 import identifiers.register.partnership.PartnershipContactAddressId
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
-import models.requests.AuthenticatedRequest
-import models.{PSAUser, UserType}
+import models.requests.OptionalDataRequest
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
@@ -54,7 +55,10 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
   import PsaDetailsServiceSpec._
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request = AuthenticatedRequest(fakeRequest, "", PSAUser(UserType.Organisation, None, false, Some("test Psa id")))
+  implicit val request = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
+    Some(UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value))//AuthenticatedRequest(fakeRequest, "", PSAUser(UserType.Organisation, None, false, Some("test Psa id")))
+
+  private val mode = UpdateMode
 
   "PsaDetailsService" must {
     "when variations and dergistration are disabled" when {
@@ -64,7 +68,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockSubscriptionConnector.getSubscriptionModel(any())(any(), any()))
           .thenReturn(Future.successful(psaSubscriptionIndividual))
 
-        val result  = service.retrievePsaDataAndGenerateViewModel("123")
+        val result  = service.retrievePsaDataAndGenerateViewModel("123", mode)
 
         whenReady(result) { _ mustBe PsaViewDetailsViewModel(individualSuperSections, "Stephen Wood", false, false)}
 
@@ -76,7 +80,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           .thenReturn(Future.successful(psaSubscriptionCompany))
 
 
-        val result  = service.retrievePsaDataAndGenerateViewModel("123")
+        val result  = service.retrievePsaDataAndGenerateViewModel("123", mode)
           whenReady(result) { _  mustBe PsaViewDetailsViewModel(organisationSuperSections, "Test company name", false, false)}
       }
     }
@@ -93,7 +97,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockDeRegistrationConnector.canDeRegister(any())(any(), any())).thenReturn(
           Future.successful(false)
         )
-        val result  = service.retrievePsaDataAndGenerateViewModel("123")
+        val result  = service.retrievePsaDataAndGenerateViewModel("123", mode)
           whenReady(result) { _  mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", false, false)}
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
@@ -110,7 +114,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           Future.successful(true)
         )
 
-        val result  = service.retrievePsaDataAndGenerateViewModel("123")
+        val result  = service.retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) { _  mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)}
 
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
@@ -130,7 +134,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           Future.successful(true)
         )
 
-        val result  = service.retrievePsaDataAndGenerateViewModel("123")
+        val result  = service.retrievePsaDataAndGenerateViewModel("123", mode)
           whenReady(result) { _  mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", false, true)}
 
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true

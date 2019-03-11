@@ -19,7 +19,7 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
-import identifiers.register.{DeclarationFitAndProperId, VariationWorkingKnowledgeId}
+import identifiers.register.{DeclarationChangedId, DeclarationFitAndProperId, VariationWorkingKnowledgeId}
 import identifiers.vary.AnyMoreChangesId
 import models.UpdateMode
 import models.requests.IdentifiedRequest
@@ -42,11 +42,14 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AnyMoreChangesId, noMoreChanges, variationWorkingKnowledgePage, false, None, false),
     (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, false, None, false),
     (VariationWorkingKnowledgeId, haveWorkingKnowledge, variationDeclarationFitAndProperPage, false, None, false),
-    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserDetailsPage, false, None, false),
+    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage, false, None, false),
     (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
     (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, false, None, false),
     (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, false, None, false),
-    (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false)
+    (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (DeclarationChangedId, emptyAnswers, variationWorkingKnowledgePage, false, None, false),
+    (DeclarationChangedId, declarationNoChanges, variationWorkingKnowledgePage, false, None, false),
+    (DeclarationChangedId, declarationChanged, variationDeclarationFitAndProperPage, false, None, false)
   )
 
   navigator.getClass.getSimpleName must {
@@ -65,6 +68,9 @@ object VariationsNavigatorSpec extends OptionValues {
   private val haveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(true).asOpt.value
   private val noWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(false).asOpt.value
 
+  private val declarationChanged: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value
+  private val declarationNoChanges: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(false).asOpt.value
+
   private val haveFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(true).asOpt.value
   private val noFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(false).asOpt.value
 
@@ -72,7 +78,7 @@ object VariationsNavigatorSpec extends OptionValues {
   private val variationWorkingKnowledgePage: Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
 
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
-  private val adviserDetailsPage: Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode)
+  private val adviserNamePage: Call = controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode)
 
   private val variationDeclarationPage: Call = controllers.register.routes.VariationDeclarationController.onPageLoad()
   private val variationNoLongerFitAndProperPage: Call = controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad()

@@ -66,6 +66,7 @@ class ConfirmDeletePartnerController @Inject()(
   def onSubmit(index: Index, mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerDetailsId(index).retrieve.right.map { details =>
+        post(viewModel(index, details.fullName, mode), PartnerDetailsId(index), controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode), mode)
         post(viewModel(index, details.fullName, mode), PartnerDetailsId(index),
           controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode), mode)
       }

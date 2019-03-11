@@ -111,6 +111,8 @@ class PartnershipNavigator @Inject()(
         NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(UpdateMode))
       case PartnershipAddressYearsId =>
         addressYearsRoutes(from.userAnswers, UpdateMode)
+      case PartnershipContactDetailsId =>
+        NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
