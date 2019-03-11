@@ -75,7 +75,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           routes.DirectorDetailsController.onPageLoad(NormalMode, Index(1)).url,
           isDeleted = false, isComplete = false))
 
-      val result = userAnswers.allDirectorsAfterDelete
+      val result = userAnswers.allDirectorsAfterDelete(NormalMode)
 
       result.size mustEqual 2
       result mustBe directorEntities

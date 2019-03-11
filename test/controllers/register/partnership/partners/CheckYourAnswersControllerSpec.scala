@@ -77,7 +77,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeNavigator,
       messagesApi,
       FakeSectionComplete,
-      countryOptions
+      countryOptions,
+      FakeUserAnswersCacheConnector
     )
 
   def viewAsString(): String = check_your_answers(

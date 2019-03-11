@@ -76,7 +76,7 @@ class PartnershipNavigator @Inject()(
       NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  override protected def editRouteMap(from: NavigateFrom): Option[NavigateTo] = {
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = {
     from.id match {
       case PartnershipSameContactAddressId =>
         sameContactAddress(CheckMode, from.userAnswers)
@@ -104,6 +104,8 @@ class PartnershipNavigator @Inject()(
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
+
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
 
   private def addressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     (answers.get(PartnershipAddressYearsId), answers.get(AreYouInUKId)) match {

@@ -24,6 +24,7 @@ import controllers.register.partnership.partners.routes
 import identifiers.Identifier
 import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
+import models.Mode._
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
@@ -31,7 +32,6 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{NavigatorBehaviour, UserAnswers}
 
 class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
@@ -41,26 +41,43 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   val navigator = new PartnerNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
 
   //scalastyle:off line.size.limit
-  def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (AddPartnersId, addPartnersFalse, partnershipReviewPage, true, Some(partnershipReviewPage), true),
-    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage, true, Some(moreThanTenPartnersPage), true),
-    (AddPartnersId, addPartnersTrue, partnerDetailsPage, true, Some(partnerDetailsPage), true),
-    (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage, true, None, false),
-    (PartnerDetailsId(0), emptyAnswers, partnerNinoPage, true, Some(checkYourAnswersPage), true),
-    (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage, true, Some(checkYourAnswersPage), true),
-    (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(NormalMode), false, Some(addressListPage(CheckMode)), false),
-    (PartnerAddressListId(0), emptyAnswers, addressPage(NormalMode), true, Some(addressPage(CheckMode)), true),
-    (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage, true, Some(checkYourAnswersPage), true),
-    (PartnerAddressYearsId(0), addressYearsOverAYear, partnerContactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
+  def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), true, Some(moreThanTenPartnersPage(checkMode(mode))), true),
+    (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
+    (PartnerDetailsId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
+    (PartnerAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
+    (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerAddressYearsId(0), addressYearsOverAYear, partnerContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), true, Some(paPostCodePage(checkMode(mode))), true),
     (PartnerAddressYearsId(0), emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
-    (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(NormalMode), false, Some(paAddressListPage(CheckMode)), false),
-    (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (PartnerPreviousAddressId(0), emptyAnswers, partnerContactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (PartnerContactDetailsId(0), emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, false)
+    (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), false, Some(paAddressListPage(checkMode(mode))), false),
+    (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), true, Some(previousAddressPage(checkMode(mode))), true),
+    (PartnerPreviousAddressId(0), emptyAnswers, partnerContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerContactDetailsId(0), emptyAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (CheckYourAnswersId, emptyAnswers, addPartnersPage(mode), true, None, false)
+  )
+
+  def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] =
+    Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), true, None, true),
+    (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
+  )
+
+  def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+  (AddPartnersId, addPartnersFalse, anyMoreChangesPage, true, None, true),
+  (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, true, None, false)
+  )
+
+  def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    normalOnlyRoutes ++ routes(NormalMode): _*
+  )
+
+  def updateRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+    updateOnlyRoutes ++ routes(UpdateMode): _*
   )
 
   //scalastyle:on line.size.limit
@@ -68,22 +85,26 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, normalRoutes, dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes, dataDescriber, UpdateMode)
   }
 }
 
 object PartnerNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  private lazy val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad(0, NormalMode)
-  private lazy val partnershipReviewPage = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
-  private lazy val moreThanTenPartnersPage = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(NormalMode)
-  private lazy val partnerDetailsPage = routes.PartnerDetailsController.onPageLoad(NormalMode, 0)
-  private lazy val partnerNinoPage = routes.PartnerNinoController.onPageLoad(NormalMode, 0)
-  private lazy val partnerUniqueTaxReferencePage = routes.PartnerUniqueTaxReferenceController.onPageLoad(NormalMode, 0)
-  private lazy val partnerAddressYearsPage = routes.PartnerAddressYearsController.onPageLoad(NormalMode, 0)
-  private lazy val partnerContactDetailsPage = routes.PartnerContactDetailsController.onPageLoad(NormalMode, 0)
-  private lazy val addPartnersPage = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
+  private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
+  def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+  def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
+  def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
+  def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
+  def partnerContactDetailsPage(mode: Mode) = routes.PartnerContactDetailsController.onPageLoad(mode, 0)
+  def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
+
+  def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
+
+  def partnerDetailsPage(mode: Mode) = routes.PartnerDetailsController.onPageLoad(mode, 0)
 
   def paPostCodePage(mode: Mode): Call = routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
 

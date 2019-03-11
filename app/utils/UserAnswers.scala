@@ -23,6 +23,7 @@ import identifiers.register.company.{CompanyContactAddressChangedId, CompanyCont
 import identifiers.register.individual.{IndividualContactAddressChangedId, IndividualContactDetailsChangedId, IndividualPreviousAddressChangedId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import models._
 import play.api.libs.json._
@@ -56,24 +57,25 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
   }
 
-  def allDirectorsAfterDelete: Seq[Person] = {
+  def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
     val directors = allDirectors
     directors.filterNot(_.isDeleted).map { director =>
       val index = directors.indexOf(director)
       val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
       val editUrl = if (isComplete) {
-        routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(index)).url
+        routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
       } else {
-        routes.DirectorDetailsController.onPageLoad(NormalMode, Index(index)).url
+        routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
       }
 
       Person(
         index,
         director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, index).url,
+        routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
         editUrl,
         director.isDeleted,
-        get(IsDirectorCompleteId(index)).getOrElse(false)
+        isComplete,
+        director.isNew
       )
     }
   }
@@ -87,17 +89,26 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonDetails](PartnerDetailsId.collectionPath).getOrElse(Nil)
   }
 
-  def allPartnersAfterDelete: Seq[Person] = {
+  def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
     val partners = allPartners
     partners.filterNot(_.isDeleted).map { partner =>
       val index = partners.indexOf(partner)
+
+      val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+      val editUrl = if (isComplete) {
+        controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+      } else {
+        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
+      }
+
       Person(
         index,
         partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url,
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, Index(index)).url,
+        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
+        editUrl,
         partner.isDeleted,
-        get(IsPartnerCompleteId(index)).getOrElse(false)
+        isComplete,
+        partner.isNew
       )
     }
   }

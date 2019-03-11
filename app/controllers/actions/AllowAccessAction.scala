@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.{CheckMode, Mode, NormalMode, UpdateMode}
+import models._
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{ActionFilter, Request, Result}
 import play.api.mvc.Results._
@@ -29,7 +29,7 @@ class AllowAccessAction(mode:Mode) extends ActionFilter[AuthenticatedRequest]{
 
     (request.user.alreadyEnrolledPsaId, mode) match {
       case (None, NormalMode | CheckMode) =>  Future.successful(None)
-      case (Some(_), UpdateMode) =>  Future.successful(None)
+      case (Some(_), UpdateMode | CheckUpdateMode) =>  Future.successful(None)
       case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>  Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>  Future.successful(Some(Redirect(controllers.routes.InterceptPSAController.onPageLoad())))
       case _ =>  Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))

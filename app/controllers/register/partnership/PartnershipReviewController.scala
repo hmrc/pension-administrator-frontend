@@ -43,7 +43,7 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnershipDetailsId.retrieve.right.map { details =>
-        val partners = request.userAnswers.allPartnersAfterDelete.map(_.name)
+        val partners = request.userAnswers.allPartnersAfterDelete(mode).map(_.name)
         Future.successful(Ok(partnershipReview(appConfig, details.companyName, partners)))
       }
   }

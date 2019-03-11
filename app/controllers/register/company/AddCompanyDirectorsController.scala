@@ -53,13 +53,13 @@ class AddCompanyDirectorsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
+      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
       Ok(addCompanyDirectors(appConfig, form, mode, directors, psaName()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete
+      val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
 
       if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))

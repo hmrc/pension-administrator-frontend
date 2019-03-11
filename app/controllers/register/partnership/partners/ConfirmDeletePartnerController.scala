@@ -67,7 +67,7 @@ class ConfirmDeletePartnerController @Inject()(
     implicit request =>
       PartnerDetailsId(index).retrieve.right.map { details =>
         post(viewModel(index, details.fullName, mode), PartnerDetailsId(index),
-          controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode), mode)
+          controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode), mode)
       }
   }
 
