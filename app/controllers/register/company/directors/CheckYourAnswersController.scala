@@ -20,10 +20,11 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
@@ -47,7 +48,7 @@ class CheckYourAnswersController @Inject()(
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             sectionComplete: SectionComplete,
                                             override val cacheConnector: UserAnswersCacheConnector
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
+                                          )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -79,8 +80,10 @@ class CheckYourAnswersController @Inject()(
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
         setNewFlag(DirectorDetailsId(index), mode).flatMap { _ =>
-          sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) map { _ =>
-            Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+          sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { _ =>
+            saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+              Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+            }
           }
         }
   }

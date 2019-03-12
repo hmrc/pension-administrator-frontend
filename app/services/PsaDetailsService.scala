@@ -31,6 +31,7 @@ import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.AuthenticatedRequest
 import models.{Address, Mode, RegistrationLegalStatus, TolerantAddress}
 import models.requests.OptionalDataRequest
+import models.{Address, RegistrationLegalStatus, TolerantAddress, UpdateMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -95,7 +96,7 @@ class PsaDetailServiceImpl @Inject()(
   private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
+    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
 
     val (superSections, name) = legalStatus match {
       case Some(Individual) =>
@@ -127,7 +128,7 @@ class PsaDetailServiceImpl @Inject()(
         (Nil, Map(IndividualContactAddressId -> ExistingCurrentAddressId))
 
       case Some(LimitedCompany) =>
-        val allDirectors = userAnswers.allDirectorsAfterDelete(mode)
+        val allDirectors = userAnswers.allDirectorsAfterDelete(UpdateMode)
         val allDirectorsCompleteIds = allDirectors.map(director => IsDirectorCompleteId(allDirectors.indexOf(director))).toList
         val allDirectorsAddressIdMap = allDirectors.map { director =>
           val index = allDirectors.indexOf(director)
@@ -137,7 +138,7 @@ class PsaDetailServiceImpl @Inject()(
         (allDirectorsCompleteIds, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
 
       case Some(Partnership) =>
-        val allPartners = userAnswers.allPartnersAfterDelete(mode)
+        val allPartners = userAnswers.allPartnersAfterDelete(UpdateMode)
         val allPartnersCompleteIds = allPartners.map(partner => IsPartnerCompleteId(allPartners.indexOf(partner))).toList
         val allPartnersAddressIds = allPartners.map { partner =>
           val index = allPartners.indexOf(partner)

@@ -31,6 +31,8 @@ import play.api.libs.json._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import identifiers.register.company.directors.{CheckYourAnswersId => DirectorsCheckYourAnswersId}
+import identifiers.register.partnership.partners.{CheckYourAnswersId => PartnersCheckYourAnswersId}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -55,7 +57,9 @@ trait Variations extends FrontendController {
     AdviserDetailsId -> DeclarationChangedId,
     ConfirmDeleteAdviserId -> DeclarationChangedId,
     MoreThanTenDirectorsId -> MoreThanTenDirectorsOrPartnersChangedId,
-    MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId
+    MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId,
+    DirectorsCheckYourAnswersId -> DirectorsOrPartnersChangedId,
+    PartnersCheckYourAnswersId -> DirectorsOrPartnersChangedId
   )
 
   protected def findChangeIdNonIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {

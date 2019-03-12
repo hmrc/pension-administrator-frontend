@@ -24,12 +24,15 @@ import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
 import models._
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.countryOptions.CountryOptions
 import viewmodels._
 
 //scalastyle:off number.of.methods
-class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOptions)(implicit messages: Messages) {
+class ViewPsaDetailsHelper(userAnswers: UserAnswers,
+                           countryOptions: CountryOptions,
+                           override val messagesApi: MessagesApi
+                          )(implicit messages: Messages) extends I18nSupport {
 
   import ViewPsaDetailsHelper._
 
@@ -101,7 +104,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
       None
     }
 
-  private val pensionAdviserSection: Option[SuperSection] =
+  private val pensionAdviserSection: Option[SuperSection] = {
+
     toOptionSeq(Seq(
       pensionAdviser,
       pensionAdviserEmail,
@@ -115,9 +119,22 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
             None,
             seqAnswerRow
           )
-        )
+        ),
+        getAdviserDeleteLink
       )
     }
+  }
+
+  private def getAdviserDeleteLink: Option[AddLink] ={
+    userAnswers.get(AdviserNameId) match {
+      case Some(adviserName) =>
+        Some(AddLink(Link(
+          controllers.register.adviser.routes.ConfirmDeleteAdviserController.onPageLoad().url,
+          Message("adviser-delete-link", adviserName)), Some(Message("adviser-delete-link-additionalText", adviserName)))
+        )
+      case _ => None
+    }
+  }
 
 
   //Individual PSA
@@ -144,7 +161,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def individualPreviousAddress: Option[AnswerRow] = userAnswers.get(IndividualPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+      None)
   }
 
   private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
@@ -187,7 +204,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(CompanyPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+      None)
   }
 
   private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
@@ -238,7 +255,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
     userAnswers.get(DirectorPreviousAddressId(index)) map { address =>
       AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-        Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, index).url)))
+        None)
     }
 
   private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
@@ -307,7 +324,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
 
   private def partnershipPreviousAddress: Option[AnswerRow] = userAnswers.get(PartnershipPreviousAddressId) map { address =>
     AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url)))
+      None)
   }
 
   private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
@@ -359,7 +376,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers, countryOptions: CountryOpti
   private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
     userAnswers.get(PartnerPreviousAddressId(index)) map { address =>
       AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-        Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index).url)))
+        None)
     }
 
   private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>

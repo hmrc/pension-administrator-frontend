@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership.partners
+package identifiers.register.partnership
 
-import identifiers._
+import identifiers.TypedIdentifier
 
-case object CheckYourAnswersId extends TypedIdentifier[Nothing] {
-  override def toString: String = "checkYourAnswers"
+case object PartnershipConfirmPreviousAddressId extends TypedIdentifier[Boolean] {
+  override def toString: String = "partnershipConfirmPreviousAddress"
+
 }
