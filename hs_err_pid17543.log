@@ -1,0 +1,2210 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 69730304 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2743), pid=17543, tid=0x00007f5b1f5f5700
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_191-b12) (build 1.8.0_191-b12)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.191-b12 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f5b34085800):  VMThread [stack: 0x00007f5b1f4f5000,0x00007f5b1f5f6000] [id=17553]
+
+Stack: [0x00007f5b1f4f5000,0x00007f5b1f5f6000],  sp=0x00007f5b1f5f4490,  free space=1021k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xace425]  VMError::report_and_die()+0x2c5
+V  [libjvm.so+0x4deb77]  report_vm_out_of_memory(char const*, int, unsigned long, VMErrorType, char const*)+0x67
+V  [libjvm.so+0x90c570]  os::pd_commit_memory(char*, unsigned long, unsigned long, bool)+0x100
+V  [libjvm.so+0x903eaf]  os::commit_memory(char*, unsigned long, unsigned long, bool)+0x1f
+V  [libjvm.so+0x988346]  PSVirtualSpace::expand_by(unsigned long)+0x56
+V  [libjvm.so+0x9895d8]  PSYoungGen::resize(unsigned long, unsigned long)+0xd8
+V  [libjvm.so+0x985d66]  PSScavenge::invoke_no_policy()+0x1356
+V  [libjvm.so+0x98610c]  PSScavenge::invoke()+0x4c
+V  [libjvm.so+0x935fb8]  ParallelScavengeHeap::failed_mem_allocate(unsigned long)+0x68
+V  [libjvm.so+0xacff53]  VM_ParallelGCFailedAllocation::doit()+0x93
+V  [libjvm.so+0xad50f6]  VM_Operation::evaluate()+0x46
+V  [libjvm.so+0xad347d]  VMThread::evaluate_operation(VM_Operation*) [clone .constprop.44]+0xcd
+V  [libjvm.so+0xad3a3b]  VMThread::loop()+0x37b
+V  [libjvm.so+0xad3de8]  VMThread::run()+0x78
+V  [libjvm.so+0x909c92]  java_start(Thread*)+0x102
+
+VM_Operation (0x00007f5a7e674660): ParallelGCFailedAllocation, mode: safepoint, requested by thread 0x00007f5ada254800
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f5ada267000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18997, stack(0x00007f5a7d868000,0x00007f5a7d969000)]
+  0x00007f5ada254800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18996, stack(0x00007f5a7e575000,0x00007f5a7e676000)]
+  0x00007f5ada25e800 JavaThread "default-scheduler-1" [_thread_blocked, id=18995, stack(0x00007f5a7cd5d000,0x00007f5a7ce5e000)]
+  0x00007f5ada28d000 JavaThread "pool-62-thread-1" [_thread_blocked, id=18994, stack(0x00007f5a7e676000,0x00007f5a7e777000)]
+  0x00007f5ae0035800 JavaThread "application-akka.actor.default-dispatcher-7" [_thread_blocked, id=18993, stack(0x00007f5a938bd000,0x00007f5a939be000)]
+  0x00007f5ad4023000 JavaThread "application-akka.actor.default-dispatcher-6" [_thread_blocked, id=18992, stack(0x00007f5a7e272000,0x00007f5a7e373000)]
+  0x00007f5ae0034800 JavaThread "application-akka.actor.default-dispatcher-5" [_thread_blocked, id=18991, stack(0x00007f5a7e373000,0x00007f5a7e474000)]
+  0x00007f5ada265800 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=18990, stack(0x00007f5a7cc5c000,0x00007f5a7cd5d000)]
+  0x00007f5ada284000 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=18989, stack(0x00007f5a86efa000,0x00007f5a86ffb000)]
+  0x00007f5ada085000 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=18988, stack(0x00007f5a7e878000,0x00007f5a7e979000)]
+  0x00007f5ada280800 JavaThread "application-scheduler-1" [_thread_blocked, id=18987, stack(0x00007f5a7e474000,0x00007f5a7e575000)]
+  0x00007f5a9800b800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18976, stack(0x00007f5a8800b000,0x00007f5a8810c000)]
+  0x000000000105b000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18975, stack(0x00007f5a7d161000,0x00007f5a7d262000)]
+  0x00007f5ada25a000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18974, stack(0x00007f5a91aa1000,0x00007f5a91ba2000)]
+  0x00007f5ada249000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18973, stack(0x00007f5a7d565000,0x00007f5a7d666000)]
+  0x00007f5ad986a000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18972, stack(0x00007f5a7d969000,0x00007f5a7da6a000)]
+  0x00007f5ada263800 JavaThread "default-scheduler-1" [_thread_blocked, id=18971, stack(0x00007f5a7ff8d000,0x00007f5a8008e000)]
+  0x00007f5ad4022000 JavaThread "globalEventExecutor-1-25" [_thread_blocked, id=18963, stack(0x00007f5a7d262000,0x00007f5a7d363000)]
+  0x00007f5abc008800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18953, stack(0x00007f5a7fc8a000,0x00007f5a7fd8b000)]
+  0x00007f5ada252800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18952, stack(0x00007f5a7d767000,0x00007f5a7d868000)]
+  0x00007f5ada27e800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18951, stack(0x00007f5a7d666000,0x00007f5a7d767000)]
+  0x00007f5ada08d000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18950, stack(0x00007f5a8a932000,0x00007f5a8aa33000)]
+  0x00007f5ada28e800 JavaThread "default-scheduler-1" [_thread_blocked, id=18949, stack(0x00007f5a8008e000,0x00007f5a8018f000)]
+  0x00007f5ada24c800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18930, stack(0x00007f5a7d363000,0x00007f5a7d464000)]
+  0x00007f5ae8009000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18929, stack(0x00007f5a7d464000,0x00007f5a7d565000)]
+  0x00007f5ada24b000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18928, stack(0x00007f5a80a98000,0x00007f5a80b99000)]
+  0x00007f5adc007000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18927, stack(0x00007f5a7e979000,0x00007f5a7ea7a000)]
+  0x00007f5ada290800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18926, stack(0x00007f5a7ed7d000,0x00007f5a7ee7e000)]
+  0x00007f5ada250000 JavaThread "default-scheduler-1" [_thread_blocked, id=18925, stack(0x00007f5a7e777000,0x00007f5a7e878000)]
+  0x00007f5ac4014800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18893, stack(0x00007f5a7da6a000,0x00007f5a7db6b000)]
+  0x00007f5ad001c800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18892, stack(0x00007f5a7db6b000,0x00007f5a7dc6c000)]
+  0x00007f5ada28b000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18891, stack(0x00007f5a7dc6c000,0x00007f5a7dd6d000)]
+  0x00007f5ac4018800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18890, stack(0x00007f5a7dd6d000,0x00007f5a7de6e000)]
+  0x00007f5ada289800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18889, stack(0x00007f5a7de6e000,0x00007f5a7df6f000)]
+  0x00007f5ada287800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18888, stack(0x00007f5a7df6f000,0x00007f5a7e070000)]
+  0x00007f5ada286000 JavaThread "default-scheduler-1" [_thread_blocked, id=18887, stack(0x00007f5a7e070000,0x00007f5a7e171000)]
+  0x000000000105a000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18879, stack(0x00007f5a868f4000,0x00007f5a869f5000)]
+  0x00007f5b340fc800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18878, stack(0x00007f5a7ec7c000,0x00007f5a7ed7d000)]
+  0x00007f5b2003b000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18877, stack(0x00007f5a7ef7f000,0x00007f5a7f080000)]
+  0x00007f5ada262000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18876, stack(0x00007f5a7eb7b000,0x00007f5a7ec7c000)]
+  0x00007f5ada293800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18875, stack(0x00007f5a7ea7a000,0x00007f5a7eb7b000)]
+  0x00007f5ada247000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18874, stack(0x00007f5a7f181000,0x00007f5a7f282000)]
+  0x00007f5ada323000 JavaThread "default-scheduler-1" [_thread_blocked, id=18873, stack(0x00007f5a80d9b000,0x00007f5a80e9c000)]
+  0x00007f5aa0006800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18852, stack(0x00007f5a7f785000,0x00007f5a7f886000)]
+  0x00007f5ada292000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18851, stack(0x00007f5a7f282000,0x00007f5a7f383000)]
+  0x00007f5aa0005800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18850, stack(0x00007f5a7f080000,0x00007f5a7f181000)]
+  0x00007f5aa400c800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18849, stack(0x00007f5a7fb89000,0x00007f5a7fc8a000)]
+  0x00007f5ada2a1800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18848, stack(0x00007f5a7ee7e000,0x00007f5a7ef7f000)]
+  0x00007f5ada29d800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18847, stack(0x00007f5a7f583000,0x00007f5a7f684000)]
+  0x00007f5ada29f800 JavaThread "default-scheduler-1" [_thread_blocked, id=18846, stack(0x00007f5a80c9a000,0x00007f5a80d9b000)]
+  0x00007f5ad001b800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18829, stack(0x00007f5a7f886000,0x00007f5a7f987000)]
+  0x00007f5acc012800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18828, stack(0x00007f5a9139a000,0x00007f5a9149b000)]
+  0x00007f5ada297000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18827, stack(0x00007f5a7fa88000,0x00007f5a7fb89000)]
+  0x00007f5ad001a000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18826, stack(0x00007f5a7f987000,0x00007f5a7fa88000)]
+  0x00007f5ada2a3800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18825, stack(0x00007f5a7f684000,0x00007f5a7f785000)]
+  0x00007f5ada299000 JavaThread "default-scheduler-1" [_thread_blocked, id=18824, stack(0x00007f5a7fd8b000,0x00007f5a7fe8c000)]
+  0x00007f5af8016800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18807, stack(0x00007f5a8e970000,0x00007f5a8ea71000)]
+  0x00007f5af403d000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18806, stack(0x00007f5a80997000,0x00007f5a80a98000)]
+  0x00007f5ada06e000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18805, stack(0x00007f5a80492000,0x00007f5a80593000)]
+  0x00007f5af8004800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18804, stack(0x00007f5a80795000,0x00007f5a80896000)]
+  0x00007f5ada06d800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18803, stack(0x00007f5a7fe8c000,0x00007f5a7ff8d000)]
+  0x00007f5ada06c800 JavaThread "default-scheduler-1" [_thread_blocked, id=18802, stack(0x00007f5a80896000,0x00007f5a80997000)]
+  0x00007f5b34503000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18783, stack(0x00007f5a8018f000,0x00007f5a80290000)]
+  0x0000000001058000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18782, stack(0x00007f5a80290000,0x00007f5a80391000)]
+  0x00007f5ada06a800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18781, stack(0x00007f5a80391000,0x00007f5a80492000)]
+  0x00007f5ada06a000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18780, stack(0x00007f5a80593000,0x00007f5a80694000)]
+  0x00007f5ada087000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18779, stack(0x00007f5a948cd000,0x00007f5a949ce000)]
+  0x00007f5ada086000 JavaThread "default-scheduler-1" [_thread_blocked, id=18778, stack(0x00007f5a829b5000,0x00007f5a82ab6000)]
+  0x00007f5ab800a000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18761, stack(0x00007f5a93dc2000,0x00007f5a93ec3000)]
+  0x00007f5ab8004000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18760, stack(0x00007f5a80694000,0x00007f5a80795000)]
+  0x00007f5ad9f05800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18759, stack(0x00007f5a8119f000,0x00007f5a812a0000)]
+  0x00007f5ad9eb2800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18758, stack(0x00007f5a820ac000,0x00007f5a821ad000)]
+  0x00007f5ad9eb1000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18757, stack(0x00007f5a825b1000,0x00007f5a826b2000)]
+  0x00007f5ad9eb0000 JavaThread "default-scheduler-1" [_thread_blocked, id=18756, stack(0x00007f5a96ff2000,0x00007f5a970f3000)]
+  0x00007f5ae0066800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18736, stack(0x00007f5a80e9c000,0x00007f5a80f9d000)]
+  0x00007f5ad9e21800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18735, stack(0x00007f5a8109e000,0x00007f5a8119f000)]
+  0x00007f5acc012000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18734, stack(0x00007f5a812a0000,0x00007f5a813a1000)]
+  0x00007f5acc00e800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18733, stack(0x00007f5a81aa8000,0x00007f5a81ba9000)]
+  0x00007f5ad9e20800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18732, stack(0x00007f5a81ba9000,0x00007f5a81caa000)]
+  0x00007f5ad9e39000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18731, stack(0x00007f5a858e4000,0x00007f5a859e5000)]
+  0x00007f5ad9e37000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18730, stack(0x00007f5a80b99000,0x00007f5a80c9a000)]
+  0x00007f5ad9e48000 JavaThread "default-scheduler-1" [_thread_blocked, id=18729, stack(0x00007f5a832be000,0x00007f5a833bf000)]
+  0x00007f5ae4482000 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18710, stack(0x00007f5a8c853000,0x00007f5a8c954000)]
+  0x00007f5af403c000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18709, stack(0x00007f5a940c5000,0x00007f5a941c6000)]
+  0x00007f5ad9e44800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18708, stack(0x00007f5a833bf000,0x00007f5a834c0000)]
+  0x00007f5ae4900800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18707, stack(0x00007f5a80f9d000,0x00007f5a8109e000)]
+  0x00007f5af0dcb000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18706, stack(0x00007f5a827b3000,0x00007f5a828b4000)]
+  0x00007f5ad9e42800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18705, stack(0x00007f5a818a6000,0x00007f5a819a7000)]
+  0x00007f5ad9e41000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18704, stack(0x00007f5a819a7000,0x00007f5a81aa8000)]
+  0x00007f5ad9f17000 JavaThread "default-scheduler-1" [_thread_blocked, id=18703, stack(0x00007f5a9078e000,0x00007f5a9088f000)]
+  0x00007f5ae8008000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18674, stack(0x00007f5a813a1000,0x00007f5a814a2000)]
+  0x00007f5ad9e3f800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18673, stack(0x00007f5a814a2000,0x00007f5a815a3000)]
+  0x00007f5ad9e3d800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18672, stack(0x00007f5a815a3000,0x00007f5a816a4000)]
+  0x00007f5ad9e3c000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18671, stack(0x00007f5a816a4000,0x00007f5a817a5000)]
+  0x00007f5ad9e3a000 JavaThread "default-scheduler-1" [_thread_blocked, id=18670, stack(0x00007f5a817a5000,0x00007f5a818a6000)]
+  0x00007f5ab000f000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18661, stack(0x00007f5a826b2000,0x00007f5a827b3000)]
+  0x00007f5ada0aa800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18660, stack(0x00007f5a822ae000,0x00007f5a823af000)]
+  0x00007f5aa8009000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18659, stack(0x00007f5a824b0000,0x00007f5a825b1000)]
+  0x00007f5ada0a1800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18658, stack(0x00007f5a81eaa000,0x00007f5a81fab000)]
+  0x00007f5ad9133800 JavaThread "default-scheduler-1" [_thread_blocked, id=18657, stack(0x00007f5a9038a000,0x00007f5a9048b000)]
+  0x00007f5ad4020000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18640, stack(0x00007f5a821ad000,0x00007f5a822ae000)]
+  0x00007f5ae0065000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18639, stack(0x00007f5a834c0000,0x00007f5a835c1000)]
+  0x00007f5ad90c8800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18638, stack(0x00007f5a81fab000,0x00007f5a820ac000)]
+  0x00007f5ada0ac000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18637, stack(0x00007f5a830bc000,0x00007f5a831bd000)]
+  0x00007f5ad9b96800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18636, stack(0x00007f5a84ad6000,0x00007f5a84bd7000)]
+  0x00007f5ad9ea1800 JavaThread "default-scheduler-1" [_thread_blocked, id=18635, stack(0x00007f5a831bd000,0x00007f5a832be000)]
+  0x00007f5af403b800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18617, stack(0x00007f5a84cd8000,0x00007f5a84dd9000)]
+  0x00007f5af403a800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18616, stack(0x00007f5a82fbb000,0x00007f5a830bc000)]
+  0x00007f5afc022800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18615, stack(0x00007f5ac078a000,0x00007f5ac088b000)]
+  0x00007f5ad9ba1000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18614, stack(0x00007f5a964e7000,0x00007f5a965e8000)]
+  0x00007f5ada0a3800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18613, stack(0x00007f5a828b4000,0x00007f5a829b5000)]
+  0x00007f5ada018800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18612, stack(0x00007f5a823af000,0x00007f5a824b0000)]
+  0x00007f5ada09f800 JavaThread "default-scheduler-1" [_thread_blocked, id=18611, stack(0x00007f5a94cd1000,0x00007f5a94dd2000)]
+  0x00007f5af0dbe800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18580, stack(0x00007f5a82ab6000,0x00007f5a82bb7000)]
+  0x00007f5ada09c000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18579, stack(0x00007f5a82bb7000,0x00007f5a82cb8000)]
+  0x00007f5ada09a800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18578, stack(0x00007f5a82cb8000,0x00007f5a82db9000)]
+  0x00007f5ada098800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18577, stack(0x00007f5a82db9000,0x00007f5a82eba000)]
+  0x00007f5ada097000 JavaThread "default-scheduler-1" [_thread_blocked, id=18576, stack(0x00007f5a82eba000,0x00007f5a82fbb000)]
+  0x00007f5ab000e000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18568, stack(0x00007f5a978f9000,0x00007f5a979fa000)]
+  0x00007f5ab400f000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18567, stack(0x00007f5a85ae6000,0x00007f5a85be7000)]
+  0x00007f5ab000d000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18566, stack(0x00007f5a836c2000,0x00007f5a837c3000)]
+  0x00007f5ad9ba0000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18565, stack(0x00007f5a835c1000,0x00007f5a836c2000)]
+  0x00007f5ad9b9c800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18564, stack(0x00007f5a866f2000,0x00007f5a867f3000)]
+  0x00007f5ad9b9b000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18563, stack(0x00007f5a837c3000,0x00007f5a838c4000)]
+  0x00007f5ad9b9e800 JavaThread "default-scheduler-1" [_thread_blocked, id=18562, stack(0x00007f5a84dd9000,0x00007f5a84eda000)]
+  0x00007f5ad9b93000 JavaThread "default-akka.actor.default-dispatcher-9" [_thread_blocked, id=18545, stack(0x00007f5a838c4000,0x00007f5a839c5000)]
+  0x00007f5ad401f800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18544, stack(0x00007f5a839c5000,0x00007f5a83ac6000)]
+  0x00007f5ad9158800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18543, stack(0x00007f5a95de0000,0x00007f5a95ee1000)]
+  0x00007f5acc00d800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18542, stack(0x00007f5a83ac6000,0x00007f5a83bc7000)]
+  0x00007f5acc00b800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18541, stack(0x00007f5a83bc7000,0x00007f5a83cc8000)]
+  0x00007f5ad9b90800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18540, stack(0x00007f5a83cc8000,0x00007f5a83dc9000)]
+  0x00007f5ad9b8f000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18539, stack(0x00007f5a83dc9000,0x00007f5a83eca000)]
+  0x00007f5ad9b8d000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18538, stack(0x00007f5a83eca000,0x00007f5a83fcb000)]
+  0x00007f5ad9b8b800 JavaThread "default-scheduler-1" [_thread_blocked, id=18537, stack(0x00007f5a83fcb000,0x00007f5a840cc000)]
+  0x00007f5ad9af2800 JavaThread "pool-43-thread-1" [_thread_blocked, id=18536, stack(0x00007f5a840cc000,0x00007f5a841cd000)]
+  0x00007f5ab400c800 JavaThread "application-akka.actor.default-dispatcher-6" [_thread_blocked, id=18535, stack(0x00007f5a841cd000,0x00007f5a842ce000)]
+  0x00007f5ab000c000 JavaThread "application-akka.actor.default-dispatcher-5" [_thread_blocked, id=18534, stack(0x00007f5a842ce000,0x00007f5a843cf000)]
+  0x00007f5ad9e63000 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=18533, stack(0x00007f5a843cf000,0x00007f5a844d0000)]
+  0x00007f5ad9e61800 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=18532, stack(0x00007f5a844d0000,0x00007f5a845d1000)]
+  0x00007f5ad9e5f800 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=18531, stack(0x00007f5a845d1000,0x00007f5a846d2000)]
+  0x00007f5ad9e5e000 JavaThread "application-scheduler-1" [_thread_blocked, id=18530, stack(0x00007f5a846d2000,0x00007f5a847d3000)]
+  0x00007f5b34ad3000 JavaThread "default-akka.actor.default-dispatcher-9" [_thread_blocked, id=18529, stack(0x00007f5a847d3000,0x00007f5a848d4000)]
+  0x00007f5b20039800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18528, stack(0x00007f5a848d4000,0x00007f5a849d5000)]
+  0x00007f5ad9e5c000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18527, stack(0x00007f5a849d5000,0x00007f5a84ad6000)]
+  0x00007f5b34ad2000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18526, stack(0x00007f5a84fdb000,0x00007f5a850dc000)]
+  0x00007f5b20038800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18525, stack(0x00007f5a84bd7000,0x00007f5a84cd8000)]
+  0x00007f5b34ad1800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18524, stack(0x00007f5a84eda000,0x00007f5a84fdb000)]
+  0x00007f5ad9c19800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18523, stack(0x00007f5a853df000,0x00007f5a854e0000)]
+  0x00007f5ad9c19000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18522, stack(0x00007f5a967ea000,0x00007f5a968eb000)]
+  0x00007f5ad9eb5000 JavaThread "default-scheduler-1" [_thread_blocked, id=18521, stack(0x00007f5a8830e000,0x00007f5a8840f000)]
+  0x00007f5aa8007800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18500, stack(0x00007f5a850dc000,0x00007f5a851dd000)]
+  0x00007f5aac00d800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18499, stack(0x00007f5a89b24000,0x00007f5a89c25000)]
+  0x00007f5aa0004000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18498, stack(0x00007f5a869f5000,0x00007f5a86af6000)]
+  0x00007f5ada0b4000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18497, stack(0x00007f5a86af6000,0x00007f5a86bf7000)]
+  0x00007f5ad9f15800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18496, stack(0x00007f5ac1293000,0x00007f5ac1394000)]
+  0x00007f5ad9f18800 JavaThread "default-scheduler-1" [_thread_blocked, id=18495, stack(0x00007f5a86bf7000,0x00007f5a86cf8000)]
+  0x00007f5ad401e000 JavaThread "default-akka.actor.default-dispatcher-9" [_thread_blocked, id=18478, stack(0x00007f5a851dd000,0x00007f5a852de000)]
+  0x00007f5acc009800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18477, stack(0x00007f5a852de000,0x00007f5a853df000)]
+  0x00007f5ad9e7a000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18476, stack(0x00007f5a859e5000,0x00007f5a85ae6000)]
+  0x00007f5ac4013000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18475, stack(0x00007f5a867f3000,0x00007f5a868f4000)]
+  0x00007f5ac800c800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18474, stack(0x00007f5a85eea000,0x00007f5a85feb000)]
+  0x00007f5ad9e79000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18473, stack(0x00007f5a854e0000,0x00007f5a855e1000)]
+  0x00007f5ad9bf6000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18472, stack(0x00007f5a855e1000,0x00007f5a856e2000)]
+  0x00007f5ad9bf7800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18471, stack(0x00007f5a85de9000,0x00007f5a85eea000)]
+  0x00007f5ad9bf9000 JavaThread "default-scheduler-1" [_thread_blocked, id=18470, stack(0x00007f5a856e2000,0x00007f5a857e3000)]
+  0x00007f5b08030800 JavaThread "ForkJoinPool-1-worker-3" daemon [_thread_blocked, id=18449, stack(0x00007f5a85ce8000,0x00007f5a85de9000)]
+  0x00007f5ad9e9e000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18447, stack(0x00007f5a8a32c000,0x00007f5a8a42d000)]
+  0x00007f5ada0b7800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18446, stack(0x00007f5a85be7000,0x00007f5a85ce8000)]
+  0x00007f5ad401d000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18445, stack(0x00007f5a8d863000,0x00007f5a8d964000)]
+  0x00007f5ada0b5800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18444, stack(0x00007f5a857e3000,0x00007f5a858e4000)]
+  0x00007f5ad9ed0000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18443, stack(0x00007f5ac088b000,0x00007f5ac098c000)]
+  0x00007f5ad9ed1800 JavaThread "default-scheduler-1" [_thread_blocked, id=18442, stack(0x00007f5a8c954000,0x00007f5a8ca55000)]
+  0x00007f5acc007800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18413, stack(0x00007f5a85feb000,0x00007f5a860ec000)]
+  0x00007f5ad0018800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18412, stack(0x00007f5a860ec000,0x00007f5a861ed000)]
+  0x00007f5ac4011800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18411, stack(0x00007f5a861ed000,0x00007f5a862ee000)]
+  0x00007f5ada0b2000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18410, stack(0x00007f5a862ee000,0x00007f5a863ef000)]
+  0x00007f5ada0b0800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18409, stack(0x00007f5a863ef000,0x00007f5a864f0000)]
+  0x00007f5ada0ae800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18408, stack(0x00007f5a864f0000,0x00007f5a865f1000)]
+  0x00007f5ada0ad000 JavaThread "default-scheduler-1" [_thread_blocked, id=18407, stack(0x00007f5a865f1000,0x00007f5a866f2000)]
+  0x00007f5a9c19e800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18399, stack(0x00007f5a86cf8000,0x00007f5a86df9000)]
+  0x00007f5a9c1ec000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18398, stack(0x00007f5a8f57c000,0x00007f5a8f67d000)]
+  0x00007f5ad9e67800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18397, stack(0x00007f5a86df9000,0x00007f5a86efa000)]
+  0x00007f5b34ad0000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18396, stack(0x00007f5a8840f000,0x00007f5a88510000)]
+  0x00007f5ad9e69000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18395, stack(0x00007f5a8b53e000,0x00007f5a8b63f000)]
+  0x00007f5ad9e64800 JavaThread "default-scheduler-1" [_thread_blocked, id=18394, stack(0x00007f5a8a029000,0x00007f5a8a12a000)]
+  0x00007f5ac8009800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18372, stack(0x00007f5a86ffb000,0x00007f5a870fc000)]
+  0x00007f5ad9eca800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18371, stack(0x00007f5a870fc000,0x00007f5a871fd000)]
+  0x00007f5ad9ec8800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18370, stack(0x00007f5a871fd000,0x00007f5a872fe000)]
+  0x00007f5ad9ec7000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18369, stack(0x00007f5a872fe000,0x00007f5a873ff000)]
+  0x00007f5ad9ec6000 JavaThread "default-scheduler-1" [_thread_blocked, id=18368, stack(0x00007f5a873ff000,0x00007f5a87500000)]
+  0x00007f5ad9c73800 JavaThread "pool-36-thread-1" [_thread_blocked, id=18367, stack(0x00007f5a87500000,0x00007f5a87601000)]
+  0x00007f5aac00a800 JavaThread "application-akka.actor.default-dispatcher-6" [_thread_blocked, id=18366, stack(0x00007f5a87601000,0x00007f5a87702000)]
+  0x00007f5aa0003000 JavaThread "application-akka.actor.default-dispatcher-5" [_thread_blocked, id=18365, stack(0x00007f5a87d08000,0x00007f5a87e09000)]
+  0x00007f5ad9eb9800 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=18364, stack(0x00007f5a87b06000,0x00007f5a87c07000)]
+  0x00007f5ad9ebb000 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=18363, stack(0x00007f5a87c07000,0x00007f5a87d08000)]
+  0x00007f5ad9ec1000 JavaThread "application-scheduler-1" [_thread_blocked, id=18361, stack(0x00007f5a924ab000,0x00007f5a925ac000)]
+  0x00007f5b18026000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18360, stack(0x00007f5a87e09000,0x00007f5a87f0a000)]
+  0x00007f5b20037000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18359, stack(0x00007f5a87702000,0x00007f5a87803000)]
+  0x00007f5b34acf000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18358, stack(0x00007f5a87803000,0x00007f5a87904000)]
+  0x00007f5b20036000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18357, stack(0x00007f5a87a05000,0x00007f5a87b06000)]
+  0x00007f5ad9eb8000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18356, stack(0x00007f5a87904000,0x00007f5a87a05000)]
+  0x00007f5ad9c58000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18355, stack(0x00007f5a928af000,0x00007f5a929b0000)]
+  0x00007f5ad9e86800 JavaThread "default-scheduler-1" [_thread_blocked, id=18354, stack(0x00007f5a8d762000,0x00007f5a8d863000)]
+  0x00007f5ab000b000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18337, stack(0x00007f5a88510000,0x00007f5a88611000)]
+  0x00007f5ab4006000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18336, stack(0x00007f5a8820d000,0x00007f5a8830e000)]
+  0x00007f5aa8006000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18335, stack(0x00007f5a8810c000,0x00007f5a8820d000)]
+  0x00007f5ad9e8e800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18334, stack(0x00007f5a88813000,0x00007f5a88914000)]
+  0x00007f5ad9c5c000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18333, stack(0x00007f5a96aed000,0x00007f5a96bee000)]
+  0x00007f5ad9e9c000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18332, stack(0x00007f5a87f0a000,0x00007f5a8800b000)]
+  0x00007f5ad9dff000 JavaThread "default-scheduler-1" [_thread_blocked, id=18331, stack(0x00007f5a89922000,0x00007f5a89a23000)]
+  0x00007f5ac4008000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18311, stack(0x00007f5a8d15c000,0x00007f5a8d25d000)]
+  0x00007f5ad9c68000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18310, stack(0x00007f5a88c17000,0x00007f5a88d18000)]
+  0x00007f5ac4007800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18309, stack(0x00007f5a88914000,0x00007f5a88a15000)]
+  0x00007f5ac4009000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18308, stack(0x00007f5a88712000,0x00007f5a88813000)]
+  0x00007f5ad9c52000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18307, stack(0x00007f5a88611000,0x00007f5a88712000)]
+  0x00007f5ad9c56000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18306, stack(0x00007f5a88a15000,0x00007f5a88b16000)]
+  0x00007f5ad9c54000 JavaThread "default-scheduler-1" [_thread_blocked, id=18305, stack(0x00007f5a89e27000,0x00007f5a89f28000)]
+  0x00007f5af01d2800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18288, stack(0x00007f5a8901b000,0x00007f5a8911c000)]
+  0x00007f5af01d1800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18287, stack(0x00007f5a88d18000,0x00007f5a88e19000)]
+  0x00007f5af01ce000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18286, stack(0x00007f5a88e19000,0x00007f5a88f1a000)]
+  0x00007f5ad9c4c000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18285, stack(0x00007f5a88f1a000,0x00007f5a8901b000)]
+  0x00007f5af01cd000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18284, stack(0x00007f5a8ce59000,0x00007f5a8cf5a000)]
+  0x00007f5ad9c4a000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18283, stack(0x00007f5a88b16000,0x00007f5a88c17000)]
+  0x00007f5ad9c48800 JavaThread "default-scheduler-1" [_thread_blocked, id=18282, stack(0x00007f5a90289000,0x00007f5a9038a000)]
+  0x0000000001057000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18266, stack(0x00007f5a8951e000,0x00007f5a8961f000)]
+  0x00007f5a9c1eb000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18265, stack(0x00007f5a8961f000,0x00007f5a89720000)]
+  0x00007f5b34ace800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18264, stack(0x00007f5a89720000,0x00007f5a89821000)]
+  0x00007f5ad9e8a000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18263, stack(0x00007f5a89821000,0x00007f5a89922000)]
+  0x00007f5ad9e83000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18262, stack(0x00007f5a89f28000,0x00007f5a8a029000)]
+  0x00007f5ad9e9a800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18261, stack(0x00007f5a8941d000,0x00007f5a8951e000)]
+  0x00007f5ad9e88000 JavaThread "default-scheduler-1" [_thread_blocked, id=18260, stack(0x00007f5a8931c000,0x00007f5a8941d000)]
+  0x00007f5ab8007000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18242, stack(0x00007f5a8a62f000,0x00007f5a8a730000)]
+  0x00007f5ad9c37800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18241, stack(0x00007f5a89a23000,0x00007f5a89b24000)]
+  0x00007f5ad9c69800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18240, stack(0x00007f5a90f96000,0x00007f5a91097000)]
+  0x00007f5ad9c66800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18239, stack(0x00007f5a89d26000,0x00007f5a89e27000)]
+  0x00007f5ad9e7c000 JavaThread "default-scheduler-1" [_thread_blocked, id=18238, stack(0x00007f5a89c25000,0x00007f5a89d26000)]
+  0x00007f5adc004000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18217, stack(0x00007f5a8a730000,0x00007f5a8a831000)]
+  0x00007f5ad9c36800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18216, stack(0x00007f5a8a12a000,0x00007f5a8a22b000)]
+  0x00007f5ad9c64800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18215, stack(0x00007f5a8a22b000,0x00007f5a8a32c000)]
+  0x00007f5ad9c43800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18214, stack(0x00007f5a8a42d000,0x00007f5a8a52e000)]
+  0x00007f5ad9c6b800 JavaThread "default-scheduler-1" [_thread_blocked, id=18213, stack(0x00007f5a8a52e000,0x00007f5a8a62f000)]
+  0x00007f5af008a800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18191, stack(0x00007f5a8af38000,0x00007f5a8b039000)]
+  0x00007f5ae43fe800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18190, stack(0x00007f5a8aa33000,0x00007f5a8ab34000)]
+  0x00007f5ae4536000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18189, stack(0x00007f5a8b83f000,0x00007f5a8b940000)]
+  0x00007f5af12cb000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18188, stack(0x00007f5a8ac35000,0x00007f5a8ad36000)]
+  0x00007f5ad9c61800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18187, stack(0x00007f5a8a831000,0x00007f5a8a932000)]
+  0x00007f5ae4535800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18186, stack(0x00007f5a8ab34000,0x00007f5a8ac35000)]
+  0x00007f5ad9c60800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18185, stack(0x00007f5a8ae37000,0x00007f5a8af38000)]
+  0x00007f5ad9c60000 JavaThread "default-scheduler-1" [_thread_blocked, id=18184, stack(0x00007f5a8ad36000,0x00007f5a8ae37000)]
+  0x00007f5b20034800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18166, stack(0x00007f5a8b039000,0x00007f5a8b13a000)]
+  0x00007f5b20033000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18165, stack(0x00007f5a8b13a000,0x00007f5a8b23b000)]
+  0x00007f5ad9e96000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18164, stack(0x00007f5a8b23b000,0x00007f5a8b33c000)]
+  0x00007f5ad9e94800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18163, stack(0x00007f5a8b33c000,0x00007f5a8b43d000)]
+  0x00007f5ad9e92800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18162, stack(0x00007f5a8b43d000,0x00007f5a8b53e000)]
+  0x00007f5ad9e91800 JavaThread "default-scheduler-1" [_thread_blocked, id=18161, stack(0x00007f5a8eb72000,0x00007f5a8ec73000)]
+  0x00007f5ad9d75800 JavaThread "AsyncHttpClient-25-1" [_thread_blocked, id=18148, stack(0x00007f5a8b940000,0x00007f5a8ba41000)]
+  0x00007f5abc005800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18147, stack(0x00007f5a8ba41000,0x00007f5a8bb42000)]
+  0x00007f5ac8008000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18146, stack(0x00007f5a8bb42000,0x00007f5a8bc43000)]
+  0x00007f5ad9d73800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18145, stack(0x00007f5a8bc43000,0x00007f5a8bd44000)]
+  0x00007f5ad9d72000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18144, stack(0x00007f5a8bd44000,0x00007f5a8be45000)]
+  0x00007f5ad9d70000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18143, stack(0x00007f5a8be45000,0x00007f5a8bf46000)]
+  0x00007f5ad9d6e800 JavaThread "default-scheduler-1" [_thread_blocked, id=18142, stack(0x00007f5a8bf46000,0x00007f5a8c047000)]
+  0x00007f5ad9ca5000 JavaThread "pool-26-thread-1" [_thread_blocked, id=18141, stack(0x00007f5a8ca55000,0x00007f5a8cb56000)]
+  0x00007f5aa0001800 JavaThread "application-akka.actor.default-dispatcher-7" [_thread_blocked, id=18140, stack(0x00007f5a8cb56000,0x00007f5a8cc57000)]
+  0x00007f5a98008800 JavaThread "application-akka.actor.default-dispatcher-6" [_thread_blocked, id=18139, stack(0x00007f5a8f67d000,0x00007f5a8f77e000)]
+  0x00007f5ad9ca4000 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=18137, stack(0x00007f5a922a9000,0x00007f5a923aa000)]
+  0x00007f5ad9ca3000 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=18136, stack(0x00007f5a8c752000,0x00007f5a8c853000)]
+  0x00007f5ad9c89000 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=18135, stack(0x00007f5a8c651000,0x00007f5a8c752000)]
+  0x00007f5ad9c88800 JavaThread "application-scheduler-1" [_thread_blocked, id=18134, stack(0x00007f5a8fb82000,0x00007f5a8fc83000)]
+  0x00007f5aa8004800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18112, stack(0x00007f5a8cf5a000,0x00007f5a8d05b000)]
+  0x00007f5aa8003000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18111, stack(0x00007f5a8d05b000,0x00007f5a8d15c000)]
+  0x00007f5ad9a7a800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18110, stack(0x00007f5a8d25d000,0x00007f5a8d35e000)]
+  0x00007f5ab4004800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18109, stack(0x00007f5a8cd58000,0x00007f5a8ce59000)]
+  0x00007f5ad9aa6000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18108, stack(0x00007f5a8cc57000,0x00007f5a8cd58000)]
+  0x00007f5ad9aa4800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18107, stack(0x00007f5a8f980000,0x00007f5a8fa81000)]
+  0x00007f5ad9a79000 JavaThread "default-scheduler-1" [_thread_blocked, id=18106, stack(0x00007f5a8f37a000,0x00007f5a8f47b000)]
+  0x00007f5ae004b000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18088, stack(0x00007f5a8d35e000,0x00007f5a8d45f000)]
+  0x00007f5ad4012800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18087, stack(0x00007f5a8d661000,0x00007f5a8d762000)]
+  0x00007f5ad9a9f000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18086, stack(0x00007f5a8d560000,0x00007f5a8d661000)]
+  0x00007f5ad9aa8000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18085, stack(0x00007f5a8d45f000,0x00007f5a8d560000)]
+  0x00007f5ad9a5a800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18084, stack(0x00007f5a8ea71000,0x00007f5a8eb72000)]
+  0x00007f5ad983d000 JavaThread "default-scheduler-1" [_thread_blocked, id=18083, stack(0x00007f5a90188000,0x00007f5a90289000)]
+  0x00007f5b0c017000 JavaThread "ForkJoinPool-1-worker-2" daemon [_thread_blocked, id=18064, stack(0x00007f5a8d964000,0x00007f5a8da65000)]
+  0x00007f5ad401b800 JavaThread "ForkJoinPool-1-worker-1" daemon [_thread_blocked, id=18063, stack(0x00007f5a8da65000,0x00007f5a8db66000)]
+  0x00007f5ae457e000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18062, stack(0x00007f5a8db66000,0x00007f5a8dc67000)]
+  0x00007f5af112a800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18061, stack(0x00007f5a8e06b000,0x00007f5a8e16c000)]
+  0x00007f5ad983b000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18060, stack(0x00007f5a8de69000,0x00007f5a8df6a000)]
+  0x00007f5af112a000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18059, stack(0x00007f5a8df6a000,0x00007f5a8e06b000)]
+  0x00007f5ad983a000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18058, stack(0x00007f5a8dd68000,0x00007f5a8de69000)]
+  0x00007f5ad99a5000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18057, stack(0x00007f5a8f87f000,0x00007f5a8f980000)]
+  0x00007f5ad9a5d800 JavaThread "default-scheduler-1" [_thread_blocked, id=18056, stack(0x00007f5a8dc67000,0x00007f5a8dd68000)]
+  0x00007f5b1000d800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=18036, stack(0x00007f5a91fa6000,0x00007f5a920a7000)]
+  0x00007f5b0c016000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18035, stack(0x00007f5a8e56c000,0x00007f5a8e66d000)]
+  0x00007f5afc012800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=18034, stack(0x00007f5a8e66d000,0x00007f5a8e76e000)]
+  0x00007f5ad9a58000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18033, stack(0x00007f5a8f77e000,0x00007f5a8f87f000)]
+  0x00007f5afc026800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18032, stack(0x00007f5a921a8000,0x00007f5a922a9000)]
+  0x00007f5ad99a8000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18031, stack(0x00007f5a8e86f000,0x00007f5a8e970000)]
+  0x00007f5ad99a7800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18030, stack(0x00007f5a8e76e000,0x00007f5a8e86f000)]
+  0x00007f5ad99a6800 JavaThread "default-scheduler-1" [_thread_blocked, id=18029, stack(0x00007f5a8f47b000,0x00007f5a8f57c000)]
+  0x00007f5a98007800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=18009, stack(0x00007f5a91da4000,0x00007f5a91ea5000)]
+  0x00007f5a98006800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=18008, stack(0x00007f5a8f279000,0x00007f5a8f37a000)]
+  0x00007f5ad9a78800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=18007, stack(0x00007f5a920a7000,0x00007f5a921a8000)]
+  0x00007f5ad9a77800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=18006, stack(0x00007f5a91ea5000,0x00007f5a91fa6000)]
+  0x00007f5ad9a77000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=18005, stack(0x00007f5a923aa000,0x00007f5a924ab000)]
+  0x00007f5ad9a76000 JavaThread "default-scheduler-1" [_thread_blocked, id=18004, stack(0x00007f5a8fc83000,0x00007f5a8fd84000)]
+  0x00007f5b34544000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17975, stack(0x00007f5a8ec73000,0x00007f5a8ed74000)]
+  0x00007f5b2002f800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17974, stack(0x00007f5a8ed74000,0x00007f5a8ee75000)]
+  0x00007f5b34543000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17973, stack(0x00007f5a8ee75000,0x00007f5a8ef76000)]
+  0x00007f5ad9a70800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17972, stack(0x00007f5a8ef76000,0x00007f5a8f077000)]
+  0x00007f5ad9a6f000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17971, stack(0x00007f5a8f077000,0x00007f5a8f178000)]
+  0x00007f5ad9a6d000 JavaThread "default-scheduler-1" [_thread_blocked, id=17970, stack(0x00007f5a8f178000,0x00007f5a8f279000)]
+  0x00007f5ad4013000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17959, stack(0x00007f5a8fd84000,0x00007f5a8fe85000)]
+  0x00007f5ad9861800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17958, stack(0x00007f5a8fe85000,0x00007f5a8ff86000)]
+  0x00007f5acc005800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17957, stack(0x00007f5a8ff86000,0x00007f5a90087000)]
+  0x00007f5ad9860800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17956, stack(0x00007f5a90087000,0x00007f5a90188000)]
+  0x00007f5ad9860000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17955, stack(0x00007f5a8fa81000,0x00007f5a8fb82000)]
+  0x00007f5ad9981800 JavaThread "default-scheduler-1" [_thread_blocked, id=17954, stack(0x00007f5a91ca3000,0x00007f5a91da4000)]
+  0x00007f5ad9983800 JavaThread "ForkJoinPool-1-worker-3" daemon [_thread_blocked, id=17933, stack(0x00007f5a9048b000,0x00007f5a9058c000)]
+  0x00007f5ad9980000 JavaThread "ForkJoinPool-1-worker-5" daemon [_thread_blocked, id=17932, stack(0x00007f5a9058c000,0x00007f5a9068d000)]
+  0x00007f5ae0048000 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=17931, stack(0x00007f5a9068d000,0x00007f5a9078e000)]
+  0x00007f5ae0044000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17929, stack(0x00007f5a9088f000,0x00007f5a90990000)]
+  0x00007f5ad400a000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17928, stack(0x00007f5a90990000,0x00007f5a90a91000)]
+  0x00007f5ad9971000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17927, stack(0x00007f5a90a91000,0x00007f5a90b92000)]
+  0x00007f5ad996f000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17926, stack(0x00007f5a90b92000,0x00007f5a90c93000)]
+  0x00007f5ad996d800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17925, stack(0x00007f5a90c93000,0x00007f5a90d94000)]
+  0x00007f5ad98a1800 JavaThread "default-scheduler-1" [_thread_blocked, id=17924, stack(0x00007f5a90d94000,0x00007f5a90e95000)]
+  0x00007f5ad98a2000 JavaThread "pool-18-thread-1" [_thread_blocked, id=17923, stack(0x00007f5a90e95000,0x00007f5a90f96000)]
+  0x00007f5ab0008000 JavaThread "application-akka.actor.default-dispatcher-6" [_thread_blocked, id=17921, stack(0x00007f5a91097000,0x00007f5a91198000)]
+  0x00007f5abc004000 JavaThread "application-akka.actor.default-dispatcher-5" [_thread_blocked, id=17920, stack(0x00007f5a91198000,0x00007f5a91299000)]
+  0x00007f5ad9889800 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=17919, stack(0x00007f5a91299000,0x00007f5a9139a000)]
+  0x00007f5ad9886000 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=17917, stack(0x00007f5a9149b000,0x00007f5a9159c000)]
+  0x00007f5ad9884800 JavaThread "application-scheduler-1" [_thread_blocked, id=17916, stack(0x00007f5a9159c000,0x00007f5a9169d000)]
+  0x00007f5aa400a000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17915, stack(0x00007f5a9169d000,0x00007f5a9179e000)]
+  0x00007f5a98004800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17914, stack(0x00007f5a9179e000,0x00007f5a9189f000)]
+  0x00007f5ad986d800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17913, stack(0x00007f5a9189f000,0x00007f5a919a0000)]
+  0x00007f5ad986b800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17912, stack(0x00007f5a919a0000,0x00007f5a91aa1000)]
+  0x00007f5ad9868000 JavaThread "default-scheduler-1" [_thread_blocked, id=17910, stack(0x00007f5a91ba2000,0x00007f5a91ca3000)]
+  0x00007f5ad4008000 JavaThread "default-akka.actor.default-dispatcher-9" [_thread_blocked, id=17900, stack(0x00007f5a925ac000,0x00007f5a926ad000)]
+  0x00007f5ad4006800 JavaThread "default-akka.actor.default-dispatcher-8" [_thread_blocked, id=17899, stack(0x00007f5a930b5000,0x00007f5a931b6000)]
+  0x00007f5ad4005800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=17898, stack(0x00007f5a927ae000,0x00007f5a928af000)]
+  0x00007f5ae0042800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17897, stack(0x00007f5a92eb3000,0x00007f5a92fb4000)]
+  0x00007f5ad4004800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17896, stack(0x00007f5a926ad000,0x00007f5a927ae000)]
+  0x00007f5ad9303000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17895, stack(0x00007f5ac0d90000,0x00007f5ac0e91000)]
+  0x00007f5ad9302800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17894, stack(0x00007f5a957da000,0x00007f5a958db000)]
+  0x00007f5ad9306800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17893, stack(0x00007f5a971f4000,0x00007f5a972f5000)]
+  0x00007f5ad92f9000 JavaThread "default-scheduler-1" [_thread_blocked, id=17892, stack(0x00007f5a934b9000,0x00007f5a935ba000)]
+  0x00007f5ad92fb000 JavaThread "pool-16-thread-1" [_thread_blocked, id=17891, stack(0x00007f5a93fc4000,0x00007f5a940c5000)]
+  0x00007f5a98003000 JavaThread "application-akka.actor.default-dispatcher-5" [_thread_blocked, id=17889, stack(0x00007f5a976f7000,0x00007f5a977f8000)]
+  0x00007f5ad9170000 JavaThread "application-akka.actor.default-dispatcher-4" [_thread_blocked, id=17888, stack(0x00007f5ac098c000,0x00007f5ac0a8d000)]
+  0x00007f5ad916a800 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=17887, stack(0x00007f5a936bb000,0x00007f5a937bc000)]
+  0x00007f5ad9503000 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=17886, stack(0x00007f5a943c8000,0x00007f5a944c9000)]
+  0x00007f5ad9504000 JavaThread "application-scheduler-1" [_thread_blocked, id=17885, stack(0x00007f5a932b7000,0x00007f5a933b8000)]
+  0x00007f5b08004800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=17874, stack(0x00007f5a92fb4000,0x00007f5a930b5000)]
+  0x00007f5b0c013000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17873, stack(0x00007f5a931b6000,0x00007f5a932b7000)]
+  0x00007f5afc008000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17872, stack(0x00007f5a92db2000,0x00007f5a92eb3000)]
+  0x00007f5ad92fc800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17871, stack(0x00007f5a92cb1000,0x00007f5a92db2000)]
+  0x00007f5ad950f800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17869, stack(0x00007f5a92bb0000,0x00007f5a92cb1000)]
+  0x00007f5ad950e000 JavaThread "default-scheduler-1" [_thread_blocked, id=17868, stack(0x00007f5b0009e000,0x00007f5b0019f000)]
+  0x00007f5aac007800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17851, stack(0x00007f5a933b8000,0x00007f5a934b9000)]
+  0x00007f5ad90f1800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17850, stack(0x00007f5a949ce000,0x00007f5a94acf000)]
+  0x00007f5ad91d9000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17849, stack(0x00007f5a93bc0000,0x00007f5a93cc1000)]
+  0x00007f5ad9507800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17848, stack(0x00007f5a937bc000,0x00007f5a938bd000)]
+  0x00007f5ad80c6000 JavaThread "default-scheduler-1" [_thread_blocked, id=17847, stack(0x00007f5a935ba000,0x00007f5a936bb000)]
+  0x00007f5ad0015800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=17826, stack(0x00007f5a93cc1000,0x00007f5a93dc2000)]
+  0x00007f5ac8004000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17824, stack(0x00007f5a93ec3000,0x00007f5a93fc4000)]
+  0x00007f5ad80b1000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17823, stack(0x00007f5a93abf000,0x00007f5a93bc0000)]
+  0x00007f5ad9119000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17822, stack(0x00007f5a939be000,0x00007f5a93abf000)]
+  0x00007f5ad916e000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17821, stack(0x00007f5a94bd0000,0x00007f5a94cd1000)]
+  0x00007f5ad911e000 JavaThread "default-scheduler-1" [_thread_blocked, id=17820, stack(0x00007f5a944c9000,0x00007f5a945ca000)]
+  0x00007f5af0a25800 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17801, stack(0x00007f5a941c6000,0x00007f5a942c7000)]
+  0x00007f5ae4977800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17800, stack(0x00007f5a942c7000,0x00007f5a943c8000)]
+  0x00007f5ad80c1800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17799, stack(0x00007f5a945ca000,0x00007f5a946cb000)]
+  0x00007f5ad80bf000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17798, stack(0x00007f5ac0188000,0x00007f5ac0289000)]
+  0x00007f5ad8e1b800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17797, stack(0x00007f5a94dd2000,0x00007f5a94ed3000)]
+  0x00007f5ad80bd800 JavaThread "default-scheduler-1" [_thread_blocked, id=17796, stack(0x00007f5a94fd4000,0x00007f5a950d5000)]
+  0x00007f5b1801c000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17770, stack(0x00007f5a947cc000,0x00007f5a948cd000)]
+  0x00007f5b2002e000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17769, stack(0x00007f5a946cb000,0x00007f5a947cc000)]
+  0x00007f5ad80b4800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17768, stack(0x00007f5a94acf000,0x00007f5a94bd0000)]
+  0x00007f5ad9117000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17767, stack(0x00007f5ac0a8d000,0x00007f5ac0b8e000)]
+  0x00007f5ad80bb800 JavaThread "default-scheduler-1" [_thread_blocked, id=17766, stack(0x00007f5a94ed3000,0x00007f5a94fd4000)]
+  0x00007f5ad9120000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=17749, stack(0x00007f5a954d9000,0x00007f5a955da000)]
+  0x00007f5ad9113800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17748, stack(0x00007f5b144fe000,0x00007f5b145ff000)]
+  0x00007f5ab0005000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17747, stack(0x00007f5a950d5000,0x00007f5a951d6000)]
+  0x00007f5ad9112800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17746, stack(0x00007f5a952d7000,0x00007f5a953d8000)]
+  0x00007f5ad911c000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17745, stack(0x00007f5a951d6000,0x00007f5a952d7000)]
+  0x00007f5ad911a800 JavaThread "default-scheduler-1" [_thread_blocked, id=17744, stack(0x00007f5a953d8000,0x00007f5a954d9000)]
+  0x00007f5acc003000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17721, stack(0x00007f5a95cdf000,0x00007f5a95de0000)]
+  0x00007f5ad0013000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17720, stack(0x00007f5a95bde000,0x00007f5a95cdf000)]
+  0x00007f5ad9157800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17719, stack(0x00007f5a959dc000,0x00007f5a95add000)]
+  0x00007f5ad9156800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17718, stack(0x00007f5a95ee1000,0x00007f5a95fe2000)]
+  0x00007f5ad9265800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17717, stack(0x00007f5a958db000,0x00007f5a959dc000)]
+  0x00007f5ad9264800 JavaThread "default-scheduler-1" [_thread_blocked, id=17716, stack(0x00007f5a95add000,0x00007f5a95bde000)]
+  0x00007f5af4001000 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=17698, stack(0x00007f5a95fe2000,0x00007f5a960e3000)]
+  0x00007f5af8003000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17697, stack(0x00007f5a960e3000,0x00007f5a961e4000)]
+  0x00007f5aec571000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17696, stack(0x00007f5a961e4000,0x00007f5a962e5000)]
+  0x00007f5ad8102000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17695, stack(0x00007f5a962e5000,0x00007f5a963e6000)]
+  0x00007f5ad9135000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17694, stack(0x00007f5a963e6000,0x00007f5a964e7000)]
+  0x00007f5ad9131800 JavaThread "default-scheduler-1" [_thread_blocked, id=17692, stack(0x00007f5a965e8000,0x00007f5a966e9000)]
+  0x00007f5ad9130000 JavaThread "pool-8-thread-1" [_thread_blocked, id=17691, stack(0x00007f5a966e9000,0x00007f5a967ea000)]
+  0x00007f5ad912e000 JavaThread "application-akka.actor.default-dispatcher-6" [_thread_blocked, id=17689, stack(0x00007f5a968eb000,0x00007f5a969ec000)]
+  0x00007f5acc001800 JavaThread "application-akka.actor.default-dispatcher-5" [_thread_blocked, id=17688, stack(0x00007f5a969ec000,0x00007f5a96aed000)]
+  0x00007f5ad8169000 JavaThread "application-akka.actor.default-dispatcher-3" [_thread_blocked, id=17686, stack(0x00007f5a96bee000,0x00007f5a96cef000)]
+  0x00007f5ad8167800 JavaThread "application-akka.actor.default-dispatcher-2" [_thread_blocked, id=17685, stack(0x00007f5a96cef000,0x00007f5a96df0000)]
+  0x00007f5ad8165800 JavaThread "application-scheduler-1" [_thread_blocked, id=17684, stack(0x00007f5a96df0000,0x00007f5a96ef1000)]
+  0x00007f5ab0004000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17683, stack(0x00007f5b141fd000,0x00007f5b142fe000)]
+  0x00007f5ab0003000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17681, stack(0x00007f5a970f3000,0x00007f5a971f4000)]
+  0x00007f5ad8129000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17680, stack(0x00007f5ac0289000,0x00007f5ac038a000)]
+  0x00007f5ad8125800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17679, stack(0x00007f5a96ef1000,0x00007f5a96ff2000)]
+  0x00007f5ad90c3000 JavaThread "default-scheduler-1" [_thread_blocked, id=17678, stack(0x00007f5a979fa000,0x00007f5a97afb000)]
+  0x00007f5ae8002000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17658, stack(0x00007f5ac0087000,0x00007f5ac0188000)]
+  0x00007f5ad8171000 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17656, stack(0x00007f5a977f8000,0x00007f5a978f9000)]
+  0x00007f5ad8174800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17655, stack(0x00007f5a974f5000,0x00007f5a975f6000)]
+  0x00007f5ad91e8800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17654, stack(0x00007f5a975f6000,0x00007f5a976f7000)]
+  0x00007f5ad907f000 JavaThread "default-scheduler-1" [_thread_blocked, id=17653, stack(0x00007f5b0019f000,0x00007f5b002a0000)]
+  0x00007f5b10002000 JavaThread "default-akka.actor.default-dispatcher-6" [_thread_blocked, id=17634, stack(0x00007f5a97eff000,0x00007f5a98000000)]
+  0x00007f5b18012800 JavaThread "default-akka.actor.default-dispatcher-7" [_thread_blocked, id=17633, stack(0x00007f5a97cfd000,0x00007f5a97dfe000)]
+  0x00007f5ad9795800 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17632, stack(0x00007f5a97dfe000,0x00007f5a97eff000)]
+  0x00007f5b18011800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17631, stack(0x00007f5a97bfc000,0x00007f5a97cfd000)]
+  0x00007f5ad8111000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17630, stack(0x00007f5a97afb000,0x00007f5a97bfc000)]
+  0x00007f5ad973d800 JavaThread "default-scheduler-1" [_thread_blocked, id=17628, stack(0x00007f5b140fc000,0x00007f5b141fd000)]
+  0x00007f5ab8003000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17608, stack(0x00007f5ac0f92000,0x00007f5ac1093000)]
+  0x00007f5ad972e800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17607, stack(0x00007f5ac0c8f000,0x00007f5ac0d90000)]
+  0x00007f5ad941b800 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17606, stack(0x00007f5ac0e91000,0x00007f5ac0f92000)]
+  0x00007f5ad947f800 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17605, stack(0x00007f5ac0b8e000,0x00007f5ac0c8f000)]
+  0x00007f5ad9743000 JavaThread "default-scheduler-1" [_thread_blocked, id=17604, stack(0x00007f5ac1c99000,0x00007f5ac1d9a000)]
+  0x00007f5aa8001000 JavaThread "default-akka.actor.default-dispatcher-5" [_thread_blocked, id=17583, stack(0x00007f5ac1394000,0x00007f5ac1495000)]
+  0x00007f5ad966a800 JavaThread "default-akka.actor.default-dispatcher-4" [_thread_blocked, id=17582, stack(0x00007f5ac1495000,0x00007f5ac1596000)]
+  0x00007f5ad9669000 JavaThread "default-akka.actor.default-dispatcher-3" [_thread_blocked, id=17581, stack(0x00007f5ac1596000,0x00007f5ac1697000)]
+  0x00007f5ad9667000 JavaThread "default-akka.actor.default-dispatcher-2" [_thread_blocked, id=17580, stack(0x00007f5ac1697000,0x00007f5ac1798000)]
+  0x00007f5ad9666800 JavaThread "default-scheduler-1" [_thread_blocked, id=17579, stack(0x00007f5ac1798000,0x00007f5ac1899000)]
+  0x00007f5b356b1000 JavaThread "pool-1-thread-1" [_thread_blocked, id=17565, stack(0x00007f5b1c0e9000,0x00007f5b1c1ea000)]
+  0x00007f5b3425a800 JavaThread "Timer-0" [_thread_blocked, id=17564, stack(0x00007f5b1ce1f000,0x00007f5b1cf20000)]
+  0x00007f5b34122000 JavaThread "ScalaTest-dispatcher" [_thread_blocked, id=17563, stack(0x00007f5b1cf20000,0x00007f5b1d021000)]
+  0x00007f5b340d6800 JavaThread "Service Thread" daemon [_thread_blocked, id=17560, stack(0x00007f5b1e42f000,0x00007f5b1e530000)]
+  0x00007f5b340cb800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=17559, stack(0x00007f5b1e530000,0x00007f5b1e631000)]
+  0x00007f5b340c9800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=17558, stack(0x00007f5b1e631000,0x00007f5b1e732000)]
+  0x00007f5b340c6800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=17557, stack(0x00007f5b1e732000,0x00007f5b1e833000)]
+  0x00007f5b340c5000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=17556, stack(0x00007f5b1e833000,0x00007f5b1e934000)]
+  0x00007f5b34091800 JavaThread "Finalizer" daemon [_thread_blocked, id=17555, stack(0x00007f5b1f2f3000,0x00007f5b1f3f4000)]
+  0x00007f5b3408f000 JavaThread "Reference Handler" daemon [_thread_blocked, id=17554, stack(0x00007f5b1f3f4000,0x00007f5b1f4f5000)]
+  0x00007f5b34017800 JavaThread "main" [_thread_blocked, id=17546, stack(0x00007f5b3cbfb000,0x00007f5b3ccfc000)]
+
+Other Threads:
+=>0x00007f5b34085800 VMThread [stack: 0x00007f5b1f4f5000,0x00007f5b1f5f6000] [id=17553]
+  0x00007f5b340db800 WatcherThread [stack: 0x00007f5b1e32e000,0x00007f5b1e42f000] [id=17561]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f5b34013d40] Threads_lock - owner thread: 0x00007f5b34085800
+[0x00007f5b34014240] Heap_lock - owner thread: 0x00007f5ada254800
+
+Heap:
+ PSYoungGen      total 1243648K, used 51326K [0x000000076c700000, 0x00000007bbd80000, 0x00000007c0000000)
+  eden space 1191936K, 0% used [0x000000076c700000,0x000000076c700000,0x00000007b5300000)
+  from space 51712K, 99% used [0x00000007b5300000,0x00000007b851fbe0,0x00000007b8580000)
+  to   space 46592K, 0% used [0x00000007b8580000,0x00000007b8580000,0x00000007bb300000)
+ ParOldGen       total 285184K, used 50089K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84ea630,0x00000006d6a80000)
+ Metaspace       used 116036K, capacity 117270K, committed 117548K, reserved 1153024K
+  class space    used 14347K, capacity 14623K, committed 14636K, reserved 1048576K
+
+Card table byte_map: [0x00007f5b391c9000,0x00007f5b399a0000] byte_map_base: 0x00007f5b35b9f000
+
+Marking Bits: (ParMarkBitMap*) 0x00007f5b3c0d1d40
+ Begin Bits: [0x00007f5b002a0000, 0x00007f5b04150000)
+ End Bits:   [0x00007f5b04150000, 0x00007f5b08000000)
+
+Polling page: 0x00007f5b3cd16000
+
+CodeCache: size=245760Kb used=33249Kb max_used=33264Kb free=212510Kb
+ bounds [0x00007f5b25000000, 0x00007f5b270c0000, 0x00007f5b34000000]
+ total_blobs=11574 nmethods=10966 adapters=517
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 33.166 Thread 0x00007f5b340c9800 nmethod 13326 0x00007f5b27086110 code [0x00007f5b270862a0, 0x00007f5b270864e8]
+Event: 33.247 Thread 0x00007f5b340c6800 13329       4       scala.util.Either::fold (65 bytes)
+Event: 33.248 Thread 0x00007f5b340c6800 nmethod 13329 0x00007f5b270a6010 code [0x00007f5b270a6160, 0x00007f5b270a6238]
+Event: 33.260 Thread 0x00007f5b340c9800 13330   !   4       controllers.actions.FullAuthentication$$FastClassByGuice$$a82aff8f::newInstance (87 bytes)
+Event: 33.262 Thread 0x00007f5b340c6800 13331       4       uk.gov.hmrc.play.config.ServicesConfig$$anonfun$1::apply (5 bytes)
+Event: 33.264 Thread 0x00007f5b340c9800 nmethod 13330 0x00007f5b27087710 code [0x00007f5b270878c0, 0x00007f5b27087d18]
+Event: 33.264 Thread 0x00007f5b340c9800 13332       4       uk.gov.hmrc.play.config.ServicesConfig$class::defaultProtocol (86 bytes)
+Event: 33.289 Thread 0x00007f5b340c9800 nmethod 13332 0x00007f5b270b0fd0 code [0x00007f5b270b1340, 0x00007f5b270b2648]
+Event: 33.289 Thread 0x00007f5b340c9800 13333   !   4       connectors.IdentityVerificationConnectorImpl$$FastClassByGuice$$4c623c4c::newInstance (62 bytes)
+Event: 33.292 Thread 0x00007f5b340c9800 nmethod 13333 0x00007f5b270a5ad0 code [0x00007f5b270a5c40, 0x00007f5b270a5e38]
+
+GC Heap History (10 events):
+Event: 19.180 GC heap after
+Heap after GC invocations=18 (full 4):
+ PSYoungGen      total 832000K, used 19220K [0x000000076c700000, 0x00000007a2000000, 0x00000007c0000000)
+  eden space 797696K, 0% used [0x000000076c700000,0x000000076c700000,0x000000079d200000)
+  from space 34304K, 56% used [0x000000079fe80000,0x00000007a1145108,0x00000007a2000000)
+  to   space 39936K, 0% used [0x000000079d200000,0x000000079d200000,0x000000079f900000)
+ ParOldGen       total 285184K, used 50049K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e0630,0x00000006d6a80000)
+ Metaspace       used 102149K, capacity 103352K, committed 103468K, reserved 1140736K
+  class space    used 12311K, capacity 12588K, committed 12588K, reserved 1048576K
+}
+Event: 22.025 GC heap before
+{Heap before GC invocations=19 (full 4):
+ PSYoungGen      total 832000K, used 816916K [0x000000076c700000, 0x00000007a2000000, 0x00000007c0000000)
+  eden space 797696K, 100% used [0x000000076c700000,0x000000079d200000,0x000000079d200000)
+  from space 34304K, 56% used [0x000000079fe80000,0x00000007a1145108,0x00000007a2000000)
+  to   space 39936K, 0% used [0x000000079d200000,0x000000079d200000,0x000000079f900000)
+ ParOldGen       total 285184K, used 50049K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e0630,0x00000006d6a80000)
+ Metaspace       used 110340K, capacity 111592K, committed 111916K, reserved 1146880K
+  class space    used 13547K, capacity 13840K, committed 13868K, reserved 1048576K
+Event: 22.057 GC heap after
+Heap after GC invocations=19 (full 4):
+ PSYoungGen      total 837632K, used 27853K [0x000000076c700000, 0x00000007b0a80000, 0x00000007c0000000)
+  eden space 797696K, 0% used [0x000000076c700000,0x000000076c700000,0x000000079d200000)
+  from space 39936K, 69% used [0x000000079d200000,0x000000079ed33540,0x000000079f900000)
+  to   space 41472K, 0% used [0x00000007ae200000,0x00000007ae200000,0x00000007b0a80000)
+ ParOldGen       total 285184K, used 50057K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e2630,0x00000006d6a80000)
+ Metaspace       used 110340K, capacity 111592K, committed 111916K, reserved 1146880K
+  class space    used 13547K, capacity 13840K, committed 13868K, reserved 1048576K
+}
+Event: 24.275 GC heap before
+{Heap before GC invocations=20 (full 4):
+ PSYoungGen      total 837632K, used 825549K [0x000000076c700000, 0x00000007b0a80000, 0x00000007c0000000)
+  eden space 797696K, 100% used [0x000000076c700000,0x000000079d200000,0x000000079d200000)
+  from space 39936K, 69% used [0x000000079d200000,0x000000079ed33540,0x000000079f900000)
+  to   space 41472K, 0% used [0x00000007ae200000,0x00000007ae200000,0x00000007b0a80000)
+ ParOldGen       total 285184K, used 50057K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e2630,0x00000006d6a80000)
+ Metaspace       used 111230K, capacity 112456K, committed 112812K, reserved 1148928K
+  class space    used 13654K, capacity 13936K, committed 13996K, reserved 1048576K
+Event: 24.298 GC heap after
+Heap after GC invocations=20 (full 4):
+ PSYoungGen      total 1043968K, used 25649K [0x000000076c700000, 0x00000007afb80000, 0x00000007c0000000)
+  eden space 1017856K, 0% used [0x000000076c700000,0x000000076c700000,0x00000007aa900000)
+  from space 26112K, 98% used [0x00000007ae200000,0x00000007afb0c618,0x00000007afb80000)
+  to   space 41472K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007ad300000)
+ ParOldGen       total 285184K, used 50065K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e4630,0x00000006d6a80000)
+ Metaspace       used 111230K, capacity 112456K, committed 112812K, reserved 1148928K
+  class space    used 13654K, capacity 13936K, committed 13996K, reserved 1048576K
+}
+Event: 27.348 GC heap before
+{Heap before GC invocations=21 (full 4):
+ PSYoungGen      total 1043968K, used 1043505K [0x000000076c700000, 0x00000007afb80000, 0x00000007c0000000)
+  eden space 1017856K, 100% used [0x000000076c700000,0x00000007aa900000,0x00000007aa900000)
+  from space 26112K, 98% used [0x00000007ae200000,0x00000007afb0c618,0x00000007afb80000)
+  to   space 41472K, 0% used [0x00000007aaa80000,0x00000007aaa80000,0x00000007ad300000)
+ ParOldGen       total 285184K, used 50065K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e4630,0x00000006d6a80000)
+ Metaspace       used 112776K, capacity 113956K, committed 114348K, reserved 1148928K
+  class space    used 13858K, capacity 14140K, committed 14252K, reserved 1048576K
+Event: 27.389 GC heap after
+Heap after GC invocations=21 (full 4):
+ PSYoungGen      total 1060864K, used 40413K [0x000000076c700000, 0x00000007bb300000, 0x00000007c0000000)
+  eden space 1019392K, 0% used [0x000000076c700000,0x000000076c700000,0x00000007aaa80000)
+  from space 41472K, 97% used [0x00000007aaa80000,0x00000007ad1f74f0,0x00000007ad300000)
+  to   space 46592K, 0% used [0x00000007b8580000,0x00000007b8580000,0x00000007bb300000)
+ ParOldGen       total 285184K, used 50073K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e6630,0x00000006d6a80000)
+ Metaspace       used 112776K, capacity 113956K, committed 114348K, reserved 1148928K
+  class space    used 13858K, capacity 14140K, committed 14252K, reserved 1048576K
+}
+Event: 30.434 GC heap before
+{Heap before GC invocations=22 (full 4):
+ PSYoungGen      total 1060864K, used 1059805K [0x000000076c700000, 0x00000007bb300000, 0x00000007c0000000)
+  eden space 1019392K, 100% used [0x000000076c700000,0x00000007aaa80000,0x00000007aaa80000)
+  from space 41472K, 97% used [0x00000007aaa80000,0x00000007ad1f74f0,0x00000007ad300000)
+  to   space 46592K, 0% used [0x00000007b8580000,0x00000007b8580000,0x00000007bb300000)
+ ParOldGen       total 285184K, used 50073K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e6630,0x00000006d6a80000)
+ Metaspace       used 114296K, capacity 115492K, committed 115884K, reserved 1150976K
+  class space    used 14111K, capacity 14396K, committed 14508K, reserved 1048576K
+Event: 30.486 GC heap after
+Heap after GC invocations=22 (full 4):
+ PSYoungGen      total 1238528K, used 42521K [0x000000076c700000, 0x00000007bbd80000, 0x00000007c0000000)
+  eden space 1191936K, 0% used [0x000000076c700000,0x000000076c700000,0x00000007b5300000)
+  from space 46592K, 91% used [0x00000007b8580000,0x00000007baf06798,0x00000007bb300000)
+  to   space 51712K, 0% used [0x00000007b5300000,0x00000007b5300000,0x00000007b8580000)
+ ParOldGen       total 285184K, used 50081K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e8630,0x00000006d6a80000)
+ Metaspace       used 114296K, capacity 115492K, committed 115884K, reserved 1150976K
+  class space    used 14111K, capacity 14396K, committed 14508K, reserved 1048576K
+}
+Event: 33.301 GC heap before
+{Heap before GC invocations=23 (full 4):
+ PSYoungGen      total 1238528K, used 1234457K [0x000000076c700000, 0x00000007bbd80000, 0x00000007c0000000)
+  eden space 1191936K, 100% used [0x000000076c700000,0x00000007b5300000,0x00000007b5300000)
+  from space 46592K, 91% used [0x00000007b8580000,0x00000007baf06798,0x00000007bb300000)
+  to   space 51712K, 0% used [0x00000007b5300000,0x00000007b5300000,0x00000007b8580000)
+ ParOldGen       total 285184K, used 50081K [0x00000006c5400000, 0x00000006d6a80000, 0x000000076c700000)
+  object space 285184K, 17% used [0x00000006c5400000,0x00000006c84e8630,0x00000006d6a80000)
+ Metaspace       used 116036K, capacity 117270K, committed 117548K, reserved 1153024K
+  class space    used 14347K, capacity 14623K, committed 14636K, reserved 1048576K
+
+Deoptimization events (10 events):
+Event: 30.359 Thread 0x00007f5b356b1000 Uncommon trap: reason=predicate action=maybe_recompile pc=0x00007f5b25e89efc method=com.google.common.collect.ImmutableCollection$Builder.addAll(Ljava/lang/Iterable;)Lcom/google/common/collect/ImmutableCollection$Builder; @ 16
+Event: 30.672 Thread 0x00007f5b356b1000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f5b26322b64 method=java.lang.Class.privateGetDeclaredConstructors(Z)[Ljava/lang/reflect/Constructor; @ 38
+Event: 30.755 Thread 0x00007f5b356b1000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007f5b25cebdf8 method=java.util.Arrays.fill([Ljava/lang/Object;Ljava/lang/Object;)V @ 13
+Event: 30.755 Thread 0x00007f5b356b1000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007f5b25cebdf8 method=java.util.Arrays.fill([Ljava/lang/Object;Ljava/lang/Object;)V @ 13
+Event: 30.756 Thread 0x00007f5b356b1000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007f5b25cebdf8 method=java.util.Arrays.fill([Ljava/lang/Object;Ljava/lang/Object;)V @ 13
+Event: 30.768 Thread 0x00007f5b356b1000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007f5b25cebdf8 method=java.util.Arrays.fill([Ljava/lang/Object;Ljava/lang/Object;)V @ 13
+Event: 30.921 Thread 0x00007f5b356b1000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f5b25dd7e28 method=java.io.ExpiringCache.entryFor(Ljava/lang/String;)Ljava/io/ExpiringCache$Entry; @ 39
+Event: 31.513 Thread 0x00007f5ada292000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f5b269542e4 method=akka.dispatch.Mailbox.canBeScheduledForExecution(ZZ)Z @ 74
+Event: 31.980 Thread 0x00007f5aac010800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f5b26d2a688 method=akka.dispatch.forkjoin.ForkJoinPool.scan(Lakka/dispatch/forkjoin/ForkJoinPool$WorkQueue;)Lakka/dispatch/forkjoin/ForkJoinTask; @ 630
+Event: 32.589 Thread 0x00007f5b356b1000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f5b26bf4ddc method=scala.Option.contains(Ljava/lang/Object;)Z @ 14
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 30.565 Thread 0x00007f5ad9ead800 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x0000000770e3dd70) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 30.948 Thread 0x00007f5ada085000 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x0000000777edd898) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 31.125 Thread 0x00007f5ada084000 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x000000077efce2c8) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 31.330 Thread 0x00007f5ada293800 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x0000000785f87440) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 31.543 Thread 0x00007f5ada14c000 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x000000078cf83dc8) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 31.946 Thread 0x00007f5ada263800 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x000000079aecded0) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 32.005 Thread 0x00007f5ada284000 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x000000079b2ef9d0) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 32.190 Thread 0x00007f5ada263800 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x00000007a233a960) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 32.704 Thread 0x00007f5ada249000 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x00000007a932f8c8) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+Event: 33.040 Thread 0x00007f5ada28d000 Exception <a 'java/lang/InterruptedException': sleep interrupted> (0x00000007b02e5fd0) thrown at [/HUDSON/workspace/8-2-build-linux-amd64/jdk8u191/11894/hotspot/src/share/vm/prims/jvm.cpp, line 3273]
+
+Events (10 events):
+Event: 33.139 Thread 0x00007f5ada284000 Thread added: 0x00007f5ada284000
+Event: 33.140 Thread 0x00007f5ada265800 Thread added: 0x00007f5ada265800
+Event: 33.140 Thread 0x00007f5ae0034800 Thread added: 0x00007f5ae0034800
+Event: 33.140 Thread 0x00007f5ad4023000 Thread added: 0x00007f5ad4023000
+Event: 33.143 Thread 0x00007f5ae0035800 Thread added: 0x00007f5ae0035800
+Event: 33.256 Thread 0x00007f5ada28d000 Thread added: 0x00007f5ada28d000
+Event: 33.285 Thread 0x00007f5ada25e800 Thread added: 0x00007f5ada25e800
+Event: 33.287 Thread 0x00007f5ada254800 Thread added: 0x00007f5ada254800
+Event: 33.287 Executing VM operation: ParallelGCFailedAllocation
+Event: 33.292 Thread 0x00007f5ada267000 Thread added: 0x00007f5ada267000
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:01 541460                             /usr/lib/jvm/java-8-oracle/jre/bin/java
+00600000-00601000 r--p 00000000 08:01 541460                             /usr/lib/jvm/java-8-oracle/jre/bin/java
+00601000-00602000 rw-p 00001000 08:01 541460                             /usr/lib/jvm/java-8-oracle/jre/bin/java
+0103b000-0105c000 rw-p 00000000 00:00 0                                  [heap]
+6c5400000-6d6a80000 rw-p 00000000 00:00 0 
+6d6a80000-76c700000 ---p 00000000 00:00 0 
+76c700000-7bbd80000 rw-p 00000000 00:00 0 
+7c0000000-7c0e4b000 rw-p 00000000 00:00 0 
+7c0e4b000-800000000 ---p 00000000 00:00 0 
+7f5a7cc5c000-7f5a7cc5f000 ---p 00000000 00:00 0 
+7f5a7cc5f000-7f5a7cd5d000 rw-p 00000000 00:00 0 
+7f5a7cd5d000-7f5a7cd60000 ---p 00000000 00:00 0 
+7f5a7cd60000-7f5a7ce5e000 rw-p 00000000 00:00 0 
+7f5a7ce5e000-7f5a7ce61000 ---p 00000000 00:00 0 
+7f5a7ce61000-7f5a7cf5f000 rw-p 00000000 00:00 0 
+7f5a7cf5f000-7f5a7cf62000 ---p 00000000 00:00 0 
+7f5a7cf62000-7f5a7d060000 rw-p 00000000 00:00 0 
+7f5a7d060000-7f5a7d063000 ---p 00000000 00:00 0 
+7f5a7d063000-7f5a7d161000 rw-p 00000000 00:00 0 
+7f5a7d161000-7f5a7d164000 ---p 00000000 00:00 0 
+7f5a7d164000-7f5a7d262000 rw-p 00000000 00:00 0 
+7f5a7d262000-7f5a7d265000 ---p 00000000 00:00 0 
+7f5a7d265000-7f5a7d363000 rw-p 00000000 00:00 0 
+7f5a7d363000-7f5a7d366000 ---p 00000000 00:00 0 
+7f5a7d366000-7f5a7d464000 rw-p 00000000 00:00 0 
+7f5a7d464000-7f5a7d467000 ---p 00000000 00:00 0 
+7f5a7d467000-7f5a7d565000 rw-p 00000000 00:00 0 
+7f5a7d565000-7f5a7d568000 ---p 00000000 00:00 0 
+7f5a7d568000-7f5a7d666000 rw-p 00000000 00:00 0 
+7f5a7d666000-7f5a7d669000 ---p 00000000 00:00 0 
+7f5a7d669000-7f5a7d767000 rw-p 00000000 00:00 0 
+7f5a7d767000-7f5a7d76a000 ---p 00000000 00:00 0 
+7f5a7d76a000-7f5a7d868000 rw-p 00000000 00:00 0 
+7f5a7d868000-7f5a7d86b000 ---p 00000000 00:00 0 
+7f5a7d86b000-7f5a7d969000 rw-p 00000000 00:00 0 
+7f5a7d969000-7f5a7d96c000 ---p 00000000 00:00 0 
+7f5a7d96c000-7f5a7da6a000 rw-p 00000000 00:00 0 
+7f5a7da6a000-7f5a7da6d000 ---p 00000000 00:00 0 
+7f5a7da6d000-7f5a7db6b000 rw-p 00000000 00:00 0 
+7f5a7db6b000-7f5a7db6e000 ---p 00000000 00:00 0 
+7f5a7db6e000-7f5a7dc6c000 rw-p 00000000 00:00 0 
+7f5a7dc6c000-7f5a7dc6f000 ---p 00000000 00:00 0 
+7f5a7dc6f000-7f5a7dd6d000 rw-p 00000000 00:00 0 
+7f5a7dd6d000-7f5a7dd70000 ---p 00000000 00:00 0 
+7f5a7dd70000-7f5a7de6e000 rw-p 00000000 00:00 0 
+7f5a7de6e000-7f5a7de71000 ---p 00000000 00:00 0 
+7f5a7de71000-7f5a7df6f000 rw-p 00000000 00:00 0 
+7f5a7df6f000-7f5a7df72000 ---p 00000000 00:00 0 
+7f5a7df72000-7f5a7e070000 rw-p 00000000 00:00 0 
+7f5a7e070000-7f5a7e073000 ---p 00000000 00:00 0 
+7f5a7e073000-7f5a7e171000 rw-p 00000000 00:00 0 
+7f5a7e171000-7f5a7e174000 ---p 00000000 00:00 0 
+7f5a7e174000-7f5a7e272000 rw-p 00000000 00:00 0 
+7f5a7e272000-7f5a7e275000 ---p 00000000 00:00 0 
+7f5a7e275000-7f5a7e373000 rw-p 00000000 00:00 0 
+7f5a7e373000-7f5a7e376000 ---p 00000000 00:00 0 
+7f5a7e376000-7f5a7e474000 rw-p 00000000 00:00 0 
+7f5a7e474000-7f5a7e477000 ---p 00000000 00:00 0 
+7f5a7e477000-7f5a7e575000 rw-p 00000000 00:00 0 
+7f5a7e575000-7f5a7e578000 ---p 00000000 00:00 0 
+7f5a7e578000-7f5a7e676000 rw-p 00000000 00:00 0 
+7f5a7e676000-7f5a7e679000 ---p 00000000 00:00 0 
+7f5a7e679000-7f5a7e777000 rw-p 00000000 00:00 0 
+7f5a7e777000-7f5a7e77a000 ---p 00000000 00:00 0 
+7f5a7e77a000-7f5a7e878000 rw-p 00000000 00:00 0 
+7f5a7e878000-7f5a7e87b000 ---p 00000000 00:00 0 
+7f5a7e87b000-7f5a7e979000 rw-p 00000000 00:00 0 
+7f5a7e979000-7f5a7e97c000 ---p 00000000 00:00 0 
+7f5a7e97c000-7f5a7ea7a000 rw-p 00000000 00:00 0 
+7f5a7ea7a000-7f5a7ea7d000 ---p 00000000 00:00 0 
+7f5a7ea7d000-7f5a7eb7b000 rw-p 00000000 00:00 0 
+7f5a7eb7b000-7f5a7eb7e000 ---p 00000000 00:00 0 
+7f5a7eb7e000-7f5a7ec7c000 rw-p 00000000 00:00 0 
+7f5a7ec7c000-7f5a7ec7f000 ---p 00000000 00:00 0 
+7f5a7ec7f000-7f5a7ed7d000 rw-p 00000000 00:00 0 
+7f5a7ed7d000-7f5a7ed80000 ---p 00000000 00:00 0 
+7f5a7ed80000-7f5a7ee7e000 rw-p 00000000 00:00 0 
+7f5a7ee7e000-7f5a7ee81000 ---p 00000000 00:00 0 
+7f5a7ee81000-7f5a7ef7f000 rw-p 00000000 00:00 0 
+7f5a7ef7f000-7f5a7ef82000 ---p 00000000 00:00 0 
+7f5a7ef82000-7f5a7f080000 rw-p 00000000 00:00 0 
+7f5a7f080000-7f5a7f083000 ---p 00000000 00:00 0 
+7f5a7f083000-7f5a7f181000 rw-p 00000000 00:00 0 
+7f5a7f181000-7f5a7f184000 ---p 00000000 00:00 0 
+7f5a7f184000-7f5a7f282000 rw-p 00000000 00:00 0 
+7f5a7f282000-7f5a7f285000 ---p 00000000 00:00 0 
+7f5a7f285000-7f5a7f403000 rw-p 00000000 00:00 0 
+7f5a7f403000-7f5a7f583000 ---p 00000000 00:00 0 
+7f5a7f583000-7f5a7f586000 ---p 00000000 00:00 0 
+7f5a7f586000-7f5a7f684000 rw-p 00000000 00:00 0 
+7f5a7f684000-7f5a7f687000 ---p 00000000 00:00 0 
+7f5a7f687000-7f5a7f785000 rw-p 00000000 00:00 0 
+7f5a7f785000-7f5a7f788000 ---p 00000000 00:00 0 
+7f5a7f788000-7f5a7f886000 rw-p 00000000 00:00 0 
+7f5a7f886000-7f5a7f889000 ---p 00000000 00:00 0 
+7f5a7f889000-7f5a7f987000 rw-p 00000000 00:00 0 
+7f5a7f987000-7f5a7f98a000 ---p 00000000 00:00 0 
+7f5a7f98a000-7f5a7fa88000 rw-p 00000000 00:00 0 
+7f5a7fa88000-7f5a7fa8b000 ---p 00000000 00:00 0 
+7f5a7fa8b000-7f5a7fb89000 rw-p 00000000 00:00 0 
+7f5a7fb89000-7f5a7fb8c000 ---p 00000000 00:00 0 
+7f5a7fb8c000-7f5a7fc8a000 rw-p 00000000 00:00 0 
+7f5a7fc8a000-7f5a7fc8d000 ---p 00000000 00:00 0 
+7f5a7fc8d000-7f5a7fd8b000 rw-p 00000000 00:00 0 
+7f5a7fd8b000-7f5a7fd8e000 ---p 00000000 00:00 0 
+7f5a7fd8e000-7f5a7fe8c000 rw-p 00000000 00:00 0 
+7f5a7fe8c000-7f5a7fe8f000 ---p 00000000 00:00 0 
+7f5a7fe8f000-7f5a7ff8d000 rw-p 00000000 00:00 0 
+7f5a7ff8d000-7f5a7ff90000 ---p 00000000 00:00 0 
+7f5a7ff90000-7f5a8008e000 rw-p 00000000 00:00 0 
+7f5a8008e000-7f5a80091000 ---p 00000000 00:00 0 
+7f5a80091000-7f5a8018f000 rw-p 00000000 00:00 0 
+7f5a8018f000-7f5a80192000 ---p 00000000 00:00 0 
+7f5a80192000-7f5a80290000 rw-p 00000000 00:00 0 
+7f5a80290000-7f5a80293000 ---p 00000000 00:00 0 
+7f5a80293000-7f5a80391000 rw-p 00000000 00:00 0 
+7f5a80391000-7f5a80394000 ---p 00000000 00:00 0 
+7f5a80394000-7f5a80492000 rw-p 00000000 00:00 0 
+7f5a80492000-7f5a80495000 ---p 00000000 00:00 0 
+7f5a80495000-7f5a80593000 rw-p 00000000 00:00 0 
+7f5a80593000-7f5a80596000 ---p 00000000 00:00 0 
+7f5a80596000-7f5a80694000 rw-p 00000000 00:00 0 
+7f5a80694000-7f5a80697000 ---p 00000000 00:00 0 
+7f5a80697000-7f5a80795000 rw-p 00000000 00:00 0 
+7f5a80795000-7f5a80798000 ---p 00000000 00:00 0 
+7f5a80798000-7f5a80896000 rw-p 00000000 00:00 0 
+7f5a80896000-7f5a80899000 ---p 00000000 00:00 0 
+7f5a80899000-7f5a80997000 rw-p 00000000 00:00 0 
+7f5a80997000-7f5a8099a000 ---p 00000000 00:00 0 
+7f5a8099a000-7f5a80a98000 rw-p 00000000 00:00 0 
+7f5a80a98000-7f5a80a9b000 ---p 00000000 00:00 0 
+7f5a80a9b000-7f5a80b99000 rw-p 00000000 00:00 0 
+7f5a80b99000-7f5a80b9c000 ---p 00000000 00:00 0 
+7f5a80b9c000-7f5a80c9a000 rw-p 00000000 00:00 0 
+7f5a80c9a000-7f5a80c9d000 ---p 00000000 00:00 0 
+7f5a80c9d000-7f5a80d9b000 rw-p 00000000 00:00 0 
+7f5a80d9b000-7f5a80d9e000 ---p 00000000 00:00 0 
+7f5a80d9e000-7f5a80e9c000 rw-p 00000000 00:00 0 
+7f5a80e9c000-7f5a80e9f000 ---p 00000000 00:00 0 
+7f5a80e9f000-7f5a80f9d000 rw-p 00000000 00:00 0 
+7f5a80f9d000-7f5a80fa0000 ---p 00000000 00:00 0 
+7f5a80fa0000-7f5a8109e000 rw-p 00000000 00:00 0 
+7f5a8109e000-7f5a810a1000 ---p 00000000 00:00 0 
+7f5a810a1000-7f5a8119f000 rw-p 00000000 00:00 0 
+7f5a8119f000-7f5a811a2000 ---p 00000000 00:00 0 
+7f5a811a2000-7f5a812a0000 rw-p 00000000 00:00 0 
+7f5a812a0000-7f5a812a3000 ---p 00000000 00:00 0 
+7f5a812a3000-7f5a813a1000 rw-p 00000000 00:00 0 
+7f5a813a1000-7f5a813a4000 ---p 00000000 00:00 0 
+7f5a813a4000-7f5a814a2000 rw-p 00000000 00:00 0 
+7f5a814a2000-7f5a814a5000 ---p 00000000 00:00 0 
+7f5a814a5000-7f5a815a3000 rw-p 00000000 00:00 0 
+7f5a815a3000-7f5a815a6000 ---p 00000000 00:00 0 
+7f5a815a6000-7f5a816a4000 rw-p 00000000 00:00 0 
+7f5a816a4000-7f5a816a7000 ---p 00000000 00:00 0 
+7f5a816a7000-7f5a817a5000 rw-p 00000000 00:00 0 
+7f5a817a5000-7f5a817a8000 ---p 00000000 00:00 0 
+7f5a817a8000-7f5a818a6000 rw-p 00000000 00:00 0 
+7f5a818a6000-7f5a818a9000 ---p 00000000 00:00 0 
+7f5a818a9000-7f5a819a7000 rw-p 00000000 00:00 0 
+7f5a819a7000-7f5a819aa000 ---p 00000000 00:00 0 
+7f5a819aa000-7f5a81aa8000 rw-p 00000000 00:00 0 
+7f5a81aa8000-7f5a81aab000 ---p 00000000 00:00 0 
+7f5a81aab000-7f5a81ba9000 rw-p 00000000 00:00 0 
+7f5a81ba9000-7f5a81bac000 ---p 00000000 00:00 0 
+7f5a81bac000-7f5a81eaa000 rw-p 00000000 00:00 0 
+7f5a81eaa000-7f5a81ead000 ---p 00000000 00:00 0 
+7f5a81ead000-7f5a81fab000 rw-p 00000000 00:00 0 
+7f5a81fab000-7f5a81fae000 ---p 00000000 00:00 0 
+7f5a81fae000-7f5a820ac000 rw-p 00000000 00:00 0 
+7f5a820ac000-7f5a820af000 ---p 00000000 00:00 0 
+7f5a820af000-7f5a821ad000 rw-p 00000000 00:00 0 
+7f5a821ad000-7f5a821b0000 ---p 00000000 00:00 0 
+7f5a821b0000-7f5a822ae000 rw-p 00000000 00:00 0 
+7f5a822ae000-7f5a822b1000 ---p 00000000 00:00 0 
+7f5a822b1000-7f5a823af000 rw-p 00000000 00:00 0 
+7f5a823af000-7f5a823b2000 ---p 00000000 00:00 0 
+7f5a823b2000-7f5a824b0000 rw-p 00000000 00:00 0 
+7f5a824b0000-7f5a824b3000 ---p 00000000 00:00 0 
+7f5a824b3000-7f5a825b1000 rw-p 00000000 00:00 0 
+7f5a825b1000-7f5a825b4000 ---p 00000000 00:00 0 
+7f5a825b4000-7f5a826b2000 rw-p 00000000 00:00 0 
+7f5a826b2000-7f5a826b5000 ---p 00000000 00:00 0 
+7f5a826b5000-7f5a827b3000 rw-p 00000000 00:00 0 
+7f5a827b3000-7f5a827b6000 ---p 00000000 00:00 0 
+7f5a827b6000-7f5a828b4000 rw-p 00000000 00:00 0 
+7f5a828b4000-7f5a828b7000 ---p 00000000 00:00 0 
+7f5a828b7000-7f5a829b5000 rw-p 00000000 00:00 0 
+7f5a829b5000-7f5a829b8000 ---p 00000000 00:00 0 
+7f5a829b8000-7f5a82ab6000 rw-p 00000000 00:00 0 
+7f5a82ab6000-7f5a82ab9000 ---p 00000000 00:00 0 
+7f5a82ab9000-7f5a82bb7000 rw-p 00000000 00:00 0 
+7f5a82bb7000-7f5a82bba000 ---p 00000000 00:00 0 
+7f5a82bba000-7f5a82cb8000 rw-p 00000000 00:00 0 
+7f5a82cb8000-7f5a82cbb000 ---p 00000000 00:00 0 
+7f5a82cbb000-7f5a82db9000 rw-p 00000000 00:00 0 
+7f5a82db9000-7f5a82dbc000 ---p 00000000 00:00 0 
+7f5a82dbc000-7f5a82eba000 rw-p 00000000 00:00 0 
+7f5a82eba000-7f5a82ebd000 ---p 00000000 00:00 0 
+7f5a82ebd000-7f5a82fbb000 rw-p 00000000 00:00 0 
+7f5a82fbb000-7f5a82fbe000 ---p 00000000 00:00 0 
+7f5a82fbe000-7f5a830bc000 rw-p 00000000 00:00 0 
+7f5a830bc000-7f5a830bf000 ---p 00000000 00:00 0 
+7f5a830bf000-7f5a831bd000 rw-p 00000000 00:00 0 
+7f5a831bd000-7f5a831c0000 ---p 00000000 00:00 0 
+7f5a831c0000-7f5a832be000 rw-p 00000000 00:00 0 
+7f5a832be000-7f5a832c1000 ---p 00000000 00:00 0 
+7f5a832c1000-7f5a833bf000 rw-p 00000000 00:00 0 
+7f5a833bf000-7f5a833c2000 ---p 00000000 00:00 0 
+7f5a833c2000-7f5a834c0000 rw-p 00000000 00:00 0 
+7f5a834c0000-7f5a834c3000 ---p 00000000 00:00 0 
+7f5a834c3000-7f5a835c1000 rw-p 00000000 00:00 0 
+7f5a835c1000-7f5a835c4000 ---p 00000000 00:00 0 
+7f5a835c4000-7f5a836c2000 rw-p 00000000 00:00 0 
+7f5a836c2000-7f5a836c5000 ---p 00000000 00:00 0 
+7f5a836c5000-7f5a837c3000 rw-p 00000000 00:00 0 
+7f5a837c3000-7f5a837c6000 ---p 00000000 00:00 0 
+7f5a837c6000-7f5a838c4000 rw-p 00000000 00:00 0 
+7f5a838c4000-7f5a838c7000 ---p 00000000 00:00 0 
+7f5a838c7000-7f5a839c5000 rw-p 00000000 00:00 0 
+7f5a839c5000-7f5a839c8000 ---p 00000000 00:00 0 
+7f5a839c8000-7f5a83ac6000 rw-p 00000000 00:00 0 
+7f5a83ac6000-7f5a83ac9000 ---p 00000000 00:00 0 
+7f5a83ac9000-7f5a83bc7000 rw-p 00000000 00:00 0 
+7f5a83bc7000-7f5a83bca000 ---p 00000000 00:00 0 
+7f5a83bca000-7f5a83cc8000 rw-p 00000000 00:00 0 
+7f5a83cc8000-7f5a83ccb000 ---p 00000000 00:00 0 
+7f5a83ccb000-7f5a83dc9000 rw-p 00000000 00:00 0 
+7f5a83dc9000-7f5a83dcc000 ---p 00000000 00:00 0 
+7f5a83dcc000-7f5a83eca000 rw-p 00000000 00:00 0 
+7f5a83eca000-7f5a83ecd000 ---p 00000000 00:00 0 
+7f5a83ecd000-7f5a83fcb000 rw-p 00000000 00:00 0 
+7f5a83fcb000-7f5a83fce000 ---p 00000000 00:00 0 
+7f5a83fce000-7f5a840cc000 rw-p 00000000 00:00 0 
+7f5a840cc000-7f5a840cf000 ---p 00000000 00:00 0 
+7f5a840cf000-7f5a841cd000 rw-p 00000000 00:00 0 
+7f5a841cd000-7f5a841d0000 ---p 00000000 00:00 0 
+7f5a841d0000-7f5a842ce000 rw-p 00000000 00:00 0 
+7f5a842ce000-7f5a842d1000 ---p 00000000 00:00 0 
+7f5a842d1000-7f5a843cf000 rw-p 00000000 00:00 0 
+7f5a843cf000-7f5a843d2000 ---p 00000000 00:00 0 
+7f5a843d2000-7f5a844d0000 rw-p 00000000 00:00 0 
+7f5a844d0000-7f5a844d3000 ---p 00000000 00:00 0 
+7f5a844d3000-7f5a845d1000 rw-p 00000000 00:00 0 
+7f5a845d1000-7f5a845d4000 ---p 00000000 00:00 0 
+7f5a845d4000-7f5a846d2000 rw-p 00000000 00:00 0 
+7f5a846d2000-7f5a846d5000 ---p 00000000 00:00 0 
+7f5a846d5000-7f5a847d3000 rw-p 00000000 00:00 0 
+7f5a847d3000-7f5a847d6000 ---p 00000000 00:00 0 
+7f5a847d6000-7f5a848d4000 rw-p 00000000 00:00 0 
+7f5a848d4000-7f5a848d7000 ---p 00000000 00:00 0 
+7f5a848d7000-7f5a849d5000 rw-p 00000000 00:00 0 
+7f5a849d5000-7f5a849d8000 ---p 00000000 00:00 0 
+7f5a849d8000-7f5a84ad6000 rw-p 00000000 00:00 0 
+7f5a84ad6000-7f5a84ad9000 ---p 00000000 00:00 0 
+7f5a84ad9000-7f5a84bd7000 rw-p 00000000 00:00 0 
+7f5a84bd7000-7f5a84bda000 ---p 00000000 00:00 0 
+7f5a84bda000-7f5a84cd8000 rw-p 00000000 00:00 0 
+7f5a84cd8000-7f5a84cdb000 ---p 00000000 00:00 0 
+7f5a84cdb000-7f5a84dd9000 rw-p 00000000 00:00 0 
+7f5a84dd9000-7f5a84ddc000 ---p 00000000 00:00 0 
+7f5a84ddc000-7f5a84eda000 rw-p 00000000 00:00 0 
+7f5a84eda000-7f5a84edd000 ---p 00000000 00:00 0 
+7f5a84edd000-7f5a84fdb000 rw-p 00000000 00:00 0 
+7f5a84fdb000-7f5a84fde000 ---p 00000000 00:00 0 
+7f5a84fde000-7f5a850dc000 rw-p 00000000 00:00 0 
+7f5a850dc000-7f5a850df000 ---p 00000000 00:00 0 
+7f5a850df000-7f5a851dd000 rw-p 00000000 00:00 0 
+7f5a851dd000-7f5a851e0000 ---p 00000000 00:00 0 
+7f5a851e0000-7f5a852de000 rw-p 00000000 00:00 0 
+7f5a852de000-7f5a852e1000 ---p 00000000 00:00 0 
+7f5a852e1000-7f5a853df000 rw-p 00000000 00:00 0 
+7f5a853df000-7f5a853e2000 ---p 00000000 00:00 0 
+7f5a853e2000-7f5a854e0000 rw-p 00000000 00:00 0 
+7f5a854e0000-7f5a854e3000 ---p 00000000 00:00 0 
+7f5a854e3000-7f5a855e1000 rw-p 00000000 00:00 0 
+7f5a855e1000-7f5a855e4000 ---p 00000000 00:00 0 
+7f5a855e4000-7f5a856e2000 rw-p 00000000 00:00 0 
+7f5a856e2000-7f5a856e5000 ---p 00000000 00:00 0 
+7f5a856e5000-7f5a857e3000 rw-p 00000000 00:00 0 
+7f5a857e3000-7f5a857e6000 ---p 00000000 00:00 0 
+7f5a857e6000-7f5a858e4000 rw-p 00000000 00:00 0 
+7f5a858e4000-7f5a858e7000 ---p 00000000 00:00 0 
+7f5a858e7000-7f5a859e5000 rw-p 00000000 00:00 0 
+7f5a859e5000-7f5a859e8000 ---p 00000000 00:00 0 
+7f5a859e8000-7f5a85ae6000 rw-p 00000000 00:00 0 
+7f5a85ae6000-7f5a85ae9000 ---p 00000000 00:00 0 
+7f5a85ae9000-7f5a85be7000 rw-p 00000000 00:00 0 
+7f5a85be7000-7f5a85bea000 ---p 00000000 00:00 0 
+7f5a85bea000-7f5a85ce8000 rw-p 00000000 00:00 0 
+7f5a85ce8000-7f5a85ceb000 ---p 00000000 00:00 0 
+7f5a85ceb000-7f5a85de9000 rw-p 00000000 00:00 0 
+7f5a85de9000-7f5a85dec000 ---p 00000000 00:00 0 
+7f5a85dec000-7f5a85eea000 rw-p 00000000 00:00 0 
+7f5a85eea000-7f5a85eed000 ---p 00000000 00:00 0 
+7f5a85eed000-7f5a85feb000 rw-p 00000000 00:00 0 
+7f5a85feb000-7f5a85fee000 ---p 00000000 00:00 0 
+7f5a85fee000-7f5a860ec000 rw-p 00000000 00:00 0 
+7f5a860ec000-7f5a860ef000 ---p 00000000 00:00 0 
+7f5a860ef000-7f5a861ed000 rw-p 00000000 00:00 0 
+7f5a861ed000-7f5a861f0000 ---p 00000000 00:00 0 
+7f5a861f0000-7f5a862ee000 rw-p 00000000 00:00 0 
+7f5a862ee000-7f5a862f1000 ---p 00000000 00:00 0 
+7f5a862f1000-7f5a863ef000 rw-p 00000000 00:00 0 
+7f5a863ef000-7f5a863f2000 ---p 00000000 00:00 0 
+7f5a863f2000-7f5a864f0000 rw-p 00000000 00:00 0 
+7f5a864f0000-7f5a864f3000 ---p 00000000 00:00 0 
+7f5a864f3000-7f5a865f1000 rw-p 00000000 00:00 0 
+7f5a865f1000-7f5a865f4000 ---p 00000000 00:00 0 
+7f5a865f4000-7f5a866f2000 rw-p 00000000 00:00 0 
+7f5a866f2000-7f5a866f5000 ---p 00000000 00:00 0 
+7f5a866f5000-7f5a867f3000 rw-p 00000000 00:00 0 
+7f5a867f3000-7f5a867f6000 ---p 00000000 00:00 0 
+7f5a867f6000-7f5a868f4000 rw-p 00000000 00:00 0 
+7f5a868f4000-7f5a868f7000 ---p 00000000 00:00 0 
+7f5a868f7000-7f5a869f5000 rw-p 00000000 00:00 0 
+7f5a869f5000-7f5a869f8000 ---p 00000000 00:00 0 
+7f5a869f8000-7f5a86af6000 rw-p 00000000 00:00 0 
+7f5a86af6000-7f5a86af9000 ---p 00000000 00:00 0 
+7f5a86af9000-7f5a86bf7000 rw-p 00000000 00:00 0 
+7f5a86bf7000-7f5a86bfa000 ---p 00000000 00:00 0 
+7f5a86bfa000-7f5a86cf8000 rw-p 00000000 00:00 0 
+7f5a86cf8000-7f5a86cfb000 ---p 00000000 00:00 0 
+7f5a86cfb000-7f5a86df9000 rw-p 00000000 00:00 0 
+7f5a86df9000-7f5a86dfc000 ---p 00000000 00:00 0 
+7f5a86dfc000-7f5a86efa000 rw-p 00000000 00:00 0 
+7f5a86efa000-7f5a86efd000 ---p 00000000 00:00 0 
+7f5a86efd000-7f5a86ffb000 rw-p 00000000 00:00 0 
+7f5a86ffb000-7f5a86ffe000 ---p 00000000 00:00 0 
+7f5a86ffe000-7f5a870fc000 rw-p 00000000 00:00 0 
+7f5a870fc000-7f5a870ff000 ---p 00000000 00:00 0 
+7f5a870ff000-7f5a871fd000 rw-p 00000000 00:00 0 
+7f5a871fd000-7f5a87200000 ---p 00000000 00:00 0 
+7f5a87200000-7f5a872fe000 rw-p 00000000 00:00 0 
+7f5a872fe000-7f5a87301000 ---p 00000000 00:00 0 
+7f5a87301000-7f5a873ff000 rw-p 00000000 00:00 0 
+7f5a873ff000-7f5a87402000 ---p 00000000 00:00 0 
+7f5a87402000-7f5a87500000 rw-p 00000000 00:00 0 
+7f5a87500000-7f5a87503000 ---p 00000000 00:00 0 
+7f5a87503000-7f5a87601000 rw-p 00000000 00:00 0 
+7f5a87601000-7f5a87604000 ---p 00000000 00:00 0 
+7f5a87604000-7f5a87702000 rw-p 00000000 00:00 0 
+7f5a87702000-7f5a87705000 ---p 00000000 00:00 0 
+7f5a87705000-7f5a87803000 rw-p 00000000 00:00 0 
+7f5a87803000-7f5a87806000 ---p 00000000 00:00 0 
+7f5a87806000-7f5a87904000 rw-p 00000000 00:00 0 
+7f5a87904000-7f5a87907000 ---p 00000000 00:00 0 
+7f5a87907000-7f5a87a05000 rw-p 00000000 00:00 0 
+7f5a87a05000-7f5a87a08000 ---p 00000000 00:00 0 
+7f5a87a08000-7f5a87b06000 rw-p 00000000 00:00 0 
+7f5a87b06000-7f5a87b09000 ---p 00000000 00:00 0 
+7f5a87b09000-7f5a87c07000 rw-p 00000000 00:00 0 
+7f5a87c07000-7f5a87c0a000 ---p 00000000 00:00 0 
+7f5a87c0a000-7f5a87d08000 rw-p 00000000 00:00 0 
+7f5a87d08000-7f5a87d0b000 ---p 00000000 00:00 0 
+7f5a87d0b000-7f5a87e09000 rw-p 00000000 00:00 0 
+7f5a87e09000-7f5a87e0c000 ---p 00000000 00:00 0 
+7f5a87e0c000-7f5a87f0a000 rw-p 00000000 00:00 0 
+7f5a87f0a000-7f5a87f0d000 ---p 00000000 00:00 0 
+7f5a87f0d000-7f5a8800b000 rw-p 00000000 00:00 0 
+7f5a8800b000-7f5a8800e000 ---p 00000000 00:00 0 
+7f5a8800e000-7f5a8810c000 rw-p 00000000 00:00 0 
+7f5a8810c000-7f5a8810f000 ---p 00000000 00:00 0 
+7f5a8810f000-7f5a8820d000 rw-p 00000000 00:00 0 
+7f5a8820d000-7f5a88210000 ---p 00000000 00:00 0 
+7f5a88210000-7f5a8830e000 rw-p 00000000 00:00 0 
+7f5a8830e000-7f5a88311000 ---p 00000000 00:00 0 
+7f5a88311000-7f5a8840f000 rw-p 00000000 00:00 0 
+7f5a8840f000-7f5a88412000 ---p 00000000 00:00 0 
+7f5a88412000-7f5a88510000 rw-p 00000000 00:00 0 
+7f5a88510000-7f5a88513000 ---p 00000000 00:00 0 
+7f5a88513000-7f5a88611000 rw-p 00000000 00:00 0 
+7f5a88611000-7f5a88614000 ---p 00000000 00:00 0 
+7f5a88614000-7f5a88712000 rw-p 00000000 00:00 0 
+7f5a88712000-7f5a88715000 ---p 00000000 00:00 0 
+7f5a88715000-7f5a88813000 rw-p 00000000 00:00 0 
+7f5a88813000-7f5a88816000 ---p 00000000 00:00 0 
+7f5a88816000-7f5a88914000 rw-p 00000000 00:00 0 
+7f5a88914000-7f5a88917000 ---p 00000000 00:00 0 
+7f5a88917000-7f5a88a15000 rw-p 00000000 00:00 0 
+7f5a88a15000-7f5a88a18000 ---p 00000000 00:00 0 
+7f5a88a18000-7f5a88b16000 rw-p 00000000 00:00 0 
+7f5a88b16000-7f5a88b19000 ---p 00000000 00:00 0 
+7f5a88b19000-7f5a88c17000 rw-p 00000000 00:00 0 
+7f5a88c17000-7f5a88c1a000 ---p 00000000 00:00 0 
+7f5a88c1a000-7f5a88d18000 rw-p 00000000 00:00 0 
+7f5a88d18000-7f5a88d1b000 ---p 00000000 00:00 0 
+7f5a88d1b000-7f5a88e19000 rw-p 00000000 00:00 0 
+7f5a88e19000-7f5a88e1c000 ---p 00000000 00:00 0 
+7f5a88e1c000-7f5a88f1a000 rw-p 00000000 00:00 0 
+7f5a88f1a000-7f5a88f1d000 ---p 00000000 00:00 0 
+7f5a88f1d000-7f5a8901b000 rw-p 00000000 00:00 0 
+7f5a8901b000-7f5a8901e000 ---p 00000000 00:00 0 
+7f5a8901e000-7f5a8931c000 rw-p 00000000 00:00 0 
+7f5a8931c000-7f5a8931f000 ---p 00000000 00:00 0 
+7f5a8931f000-7f5a8941d000 rw-p 00000000 00:00 0 
+7f5a8941d000-7f5a89420000 ---p 00000000 00:00 0 
+7f5a89420000-7f5a8951e000 rw-p 00000000 00:00 0 
+7f5a8951e000-7f5a89521000 ---p 00000000 00:00 0 
+7f5a89521000-7f5a8961f000 rw-p 00000000 00:00 0 
+7f5a8961f000-7f5a89622000 ---p 00000000 00:00 0 
+7f5a89622000-7f5a89720000 rw-p 00000000 00:00 0 
+7f5a89720000-7f5a89723000 ---p 00000000 00:00 0 
+7f5a89723000-7f5a89821000 rw-p 00000000 00:00 0 
+7f5a89821000-7f5a89824000 ---p 00000000 00:00 0 
+7f5a89824000-7f5a89922000 rw-p 00000000 00:00 0 
+7f5a89922000-7f5a89925000 ---p 00000000 00:00 0 
+7f5a89925000-7f5a89a23000 rw-p 00000000 00:00 0 
+7f5a89a23000-7f5a89a26000 ---p 00000000 00:00 0 
+7f5a89a26000-7f5a89b24000 rw-p 00000000 00:00 0 
+7f5a89b24000-7f5a89b27000 ---p 00000000 00:00 0 
+7f5a89b27000-7f5a89c25000 rw-p 00000000 00:00 0 
+7f5a89c25000-7f5a89c28000 ---p 00000000 00:00 0 
+7f5a89c28000-7f5a89d26000 rw-p 00000000 00:00 0 
+7f5a89d26000-7f5a89d29000 ---p 00000000 00:00 0 
+7f5a89d29000-7f5a89e27000 rw-p 00000000 00:00 0 
+7f5a89e27000-7f5a89e2a000 ---p 00000000 00:00 0 
+7f5a89e2a000-7f5a89f28000 rw-p 00000000 00:00 0 
+7f5a89f28000-7f5a89f2b000 ---p 00000000 00:00 0 
+7f5a89f2b000-7f5a8a029000 rw-p 00000000 00:00 0 
+7f5a8a029000-7f5a8a02c000 ---p 00000000 00:00 0 
+7f5a8a02c000-7f5a8a12a000 rw-p 00000000 00:00 0 
+7f5a8a12a000-7f5a8a12d000 ---p 00000000 00:00 0 
+7f5a8a12d000-7f5a8a22b000 rw-p 00000000 00:00 0 
+7f5a8a22b000-7f5a8a22e000 ---p 00000000 00:00 0 
+7f5a8a22e000-7f5a8a32c000 rw-p 00000000 00:00 0 
+7f5a8a32c000-7f5a8a32f000 ---p 00000000 00:00 0 
+7f5a8a32f000-7f5a8a42d000 rw-p 00000000 00:00 0 
+7f5a8a42d000-7f5a8a430000 ---p 00000000 00:00 0 
+7f5a8a430000-7f5a8a52e000 rw-p 00000000 00:00 0 
+7f5a8a52e000-7f5a8a531000 ---p 00000000 00:00 0 
+7f5a8a531000-7f5a8a62f000 rw-p 00000000 00:00 0 
+7f5a8a62f000-7f5a8a632000 ---p 00000000 00:00 0 
+7f5a8a632000-7f5a8a730000 rw-p 00000000 00:00 0 
+7f5a8a730000-7f5a8a733000 ---p 00000000 00:00 0 
+7f5a8a733000-7f5a8a831000 rw-p 00000000 00:00 0 
+7f5a8a831000-7f5a8a834000 ---p 00000000 00:00 0 
+7f5a8a834000-7f5a8a932000 rw-p 00000000 00:00 0 
+7f5a8a932000-7f5a8a935000 ---p 00000000 00:00 0 
+7f5a8a935000-7f5a8aa33000 rw-p 00000000 00:00 0 
+7f5a8aa33000-7f5a8aa36000 ---p 00000000 00:00 0 
+7f5a8aa36000-7f5a8ab34000 rw-p 00000000 00:00 0 
+7f5a8ab34000-7f5a8ab37000 ---p 00000000 00:00 0 
+7f5a8ab37000-7f5a8ac35000 rw-p 00000000 00:00 0 
+7f5a8ac35000-7f5a8ac38000 ---p 00000000 00:00 0 
+7f5a8ac38000-7f5a8ad36000 rw-p 00000000 00:00 0 
+7f5a8ad36000-7f5a8ad39000 ---p 00000000 00:00 0 
+7f5a8ad39000-7f5a8ae37000 rw-p 00000000 00:00 0 
+7f5a8ae37000-7f5a8ae3a000 ---p 00000000 00:00 0 
+7f5a8ae3a000-7f5a8af38000 rw-p 00000000 00:00 0 
+7f5a8af38000-7f5a8af3b000 ---p 00000000 00:00 0 
+7f5a8af3b000-7f5a8b039000 rw-p 00000000 00:00 0 
+7f5a8b039000-7f5a8b03c000 ---p 00000000 00:00 0 
+7f5a8b03c000-7f5a8b13a000 rw-p 00000000 00:00 0 
+7f5a8b13a000-7f5a8b13d000 ---p 00000000 00:00 0 
+7f5a8b13d000-7f5a8b23b000 rw-p 00000000 00:00 0 
+7f5a8b23b000-7f5a8b23e000 ---p 00000000 00:00 0 
+7f5a8b23e000-7f5a8b33c000 rw-p 00000000 00:00 0 
+7f5a8b33c000-7f5a8b33f000 ---p 00000000 00:00 0 
+7f5a8b33f000-7f5a8b43d000 rw-p 00000000 00:00 0 
+7f5a8b43d000-7f5a8b440000 ---p 00000000 00:00 0 
+7f5a8b440000-7f5a8b53e000 rw-p 00000000 00:00 0 
+7f5a8b53e000-7f5a8b541000 ---p 00000000 00:00 0 
+7f5a8b541000-7f5a8b83f000 rw-p 00000000 00:00 0 
+7f5a8b83f000-7f5a8b842000 ---p 00000000 00:00 0 
+7f5a8b842000-7f5a8b940000 rw-p 00000000 00:00 0 
+7f5a8b940000-7f5a8b943000 ---p 00000000 00:00 0 
+7f5a8b943000-7f5a8ba41000 rw-p 00000000 00:00 0 
+7f5a8ba41000-7f5a8ba44000 ---p 00000000 00:00 0 
+7f5a8ba44000-7f5a8bb42000 rw-p 00000000 00:00 0 
+7f5a8bb42000-7f5a8bb45000 ---p 00000000 00:00 0 
+7f5a8bb45000-7f5a8bc43000 rw-p 00000000 00:00 0 
+7f5a8bc43000-7f5a8bc46000 ---p 00000000 00:00 0 
+7f5a8bc46000-7f5a8bd44000 rw-p 00000000 00:00 0 
+7f5a8bd44000-7f5a8bd47000 ---p 00000000 00:00 0 
+7f5a8bd47000-7f5a8be45000 rw-p 00000000 00:00 0 
+7f5a8be45000-7f5a8be48000 ---p 00000000 00:00 0 
+7f5a8be48000-7f5a8bf46000 rw-p 00000000 00:00 0 
+7f5a8bf46000-7f5a8bf49000 ---p 00000000 00:00 0 
+7f5a8bf49000-7f5a8c247000 rw-p 00000000 00:00 0 
+7f5a8c247000-7f5a8c24f000 r-xp 00000000 08:01 541729                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f5a8c24f000-7f5a8c44f000 ---p 00008000 08:01 541729                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f5a8c44f000-7f5a8c450000 r--p 00008000 08:01 541729                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f5a8c450000-7f5a8c451000 rw-p 00009000 08:01 541729                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f5a8c451000-7f5a8c651000 rw-p 00000000 00:00 0 
+7f5a8c651000-7f5a8c654000 ---p 00000000 00:00 0 
+7f5a8c654000-7f5a8c752000 rw-p 00000000 00:00 0 
+7f5a8c752000-7f5a8c755000 ---p 00000000 00:00 0 
+7f5a8c755000-7f5a8c853000 rw-p 00000000 00:00 0 
+7f5a8c853000-7f5a8c856000 ---p 00000000 00:00 0 
+7f5a8c856000-7f5a8c954000 rw-p 00000000 00:00 0 
+7f5a8c954000-7f5a8c957000 ---p 00000000 00:00 0 
+7f5a8c957000-7f5a8ca55000 rw-p 00000000 00:00 0 
+7f5a8ca55000-7f5a8ca58000 ---p 00000000 00:00 0 
+7f5a8ca58000-7f5a8cb56000 rw-p 00000000 00:00 0 
+7f5a8cb56000-7f5a8cb59000 ---p 00000000 00:00 0 
+7f5a8cb59000-7f5a8cc57000 rw-p 00000000 00:00 0 
+7f5a8cc57000-7f5a8cc5a000 ---p 00000000 00:00 0 
+7f5a8cc5a000-7f5a8cd58000 rw-p 00000000 00:00 0 
+7f5a8cd58000-7f5a8cd5b000 ---p 00000000 00:00 0 
+7f5a8cd5b000-7f5a8ce59000 rw-p 00000000 00:00 0 
+7f5a8ce59000-7f5a8ce5c000 ---p 00000000 00:00 0 
+7f5a8ce5c000-7f5a8cf5a000 rw-p 00000000 00:00 0 
+7f5a8cf5a000-7f5a8cf5d000 ---p 00000000 00:00 0 
+7f5a8cf5d000-7f5a8d05b000 rw-p 00000000 00:00 0 
+7f5a8d05b000-7f5a8d05e000 ---p 00000000 00:00 0 
+7f5a8d05e000-7f5a8d15c000 rw-p 00000000 00:00 0 
+7f5a8d15c000-7f5a8d15f000 ---p 00000000 00:00 0 
+7f5a8d15f000-7f5a8d25d000 rw-p 00000000 00:00 0 
+7f5a8d25d000-7f5a8d260000 ---p 00000000 00:00 0 
+7f5a8d260000-7f5a8d35e000 rw-p 00000000 00:00 0 
+7f5a8d35e000-7f5a8d361000 ---p 00000000 00:00 0 
+7f5a8d361000-7f5a8d45f000 rw-p 00000000 00:00 0 
+7f5a8d45f000-7f5a8d462000 ---p 00000000 00:00 0 
+7f5a8d462000-7f5a8d560000 rw-p 00000000 00:00 0 
+7f5a8d560000-7f5a8d563000 ---p 00000000 00:00 0 
+7f5a8d563000-7f5a8d661000 rw-p 00000000 00:00 0 
+7f5a8d661000-7f5a8d664000 ---p 00000000 00:00 0 
+7f5a8d664000-7f5a8d762000 rw-p 00000000 00:00 0 
+7f5a8d762000-7f5a8d765000 ---p 00000000 00:00 0 
+7f5a8d765000-7f5a8d863000 rw-p 00000000 00:00 0 
+7f5a8d863000-7f5a8d866000 ---p 00000000 00:00 0 
+7f5a8d866000-7f5a8d964000 rw-p 00000000 00:00 0 
+7f5a8d964000-7f5a8d967000 ---p 00000000 00:00 0 
+7f5a8d967000-7f5a8da65000 rw-p 00000000 00:00 0 
+7f5a8da65000-7f5a8da68000 ---p 00000000 00:00 0 
+7f5a8da68000-7f5a8db66000 rw-p 00000000 00:00 0 
+7f5a8db66000-7f5a8db69000 ---p 00000000 00:00 0 
+7f5a8db69000-7f5a8dc67000 rw-p 00000000 00:00 0 
+7f5a8dc67000-7f5a8dc6a000 ---p 00000000 00:00 0 
+7f5a8dc6a000-7f5a8dd68000 rw-p 00000000 00:00 0 
+7f5a8dd68000-7f5a8dd6b000 ---p 00000000 00:00 0 
+7f5a8dd6b000-7f5a8de69000 rw-p 00000000 00:00 0 
+7f5a8de69000-7f5a8de6c000 ---p 00000000 00:00 0 
+7f5a8de6c000-7f5a8df6a000 rw-p 00000000 00:00 0 
+7f5a8df6a000-7f5a8df6d000 ---p 00000000 00:00 0 
+7f5a8df6d000-7f5a8e06b000 rw-p 00000000 00:00 0 
+7f5a8e06b000-7f5a8e06e000 ---p 00000000 00:00 0 
+7f5a8e06e000-7f5a8e36c000 rw-p 00000000 00:00 0 
+7f5a8e36c000-7f5a8e56c000 rw-p 00000000 00:00 0 
+7f5a8e56c000-7f5a8e56f000 ---p 00000000 00:00 0 
+7f5a8e56f000-7f5a8e66d000 rw-p 00000000 00:00 0 
+7f5a8e66d000-7f5a8e670000 ---p 00000000 00:00 0 
+7f5a8e670000-7f5a8e76e000 rw-p 00000000 00:00 0 
+7f5a8e76e000-7f5a8e771000 ---p 00000000 00:00 0 
+7f5a8e771000-7f5a8e86f000 rw-p 00000000 00:00 0 
+7f5a8e86f000-7f5a8e872000 ---p 00000000 00:00 0 
+7f5a8e872000-7f5a8e970000 rw-p 00000000 00:00 0 
+7f5a8e970000-7f5a8e973000 ---p 00000000 00:00 0 
+7f5a8e973000-7f5a8ea71000 rw-p 00000000 00:00 0 
+7f5a8ea71000-7f5a8ea74000 ---p 00000000 00:00 0 
+7f5a8ea74000-7f5a8eb72000 rw-p 00000000 00:00 0 
+7f5a8eb72000-7f5a8eb75000 ---p 00000000 00:00 0 
+7f5a8eb75000-7f5a8ec73000 rw-p 00000000 00:00 0 
+7f5a8ec73000-7f5a8ec76000 ---p 00000000 00:00 0 
+7f5a8ec76000-7f5a8ed74000 rw-p 00000000 00:00 0 
+7f5a8ed74000-7f5a8ed77000 ---p 00000000 00:00 0 
+7f5a8ed77000-7f5a8ee75000 rw-p 00000000 00:00 0 
+7f5a8ee75000-7f5a8ee78000 ---p 00000000 00:00 0 
+7f5a8ee78000-7f5a8ef76000 rw-p 00000000 00:00 0 
+7f5a8ef76000-7f5a8ef79000 ---p 00000000 00:00 0 
+7f5a8ef79000-7f5a8f077000 rw-p 00000000 00:00 0 
+7f5a8f077000-7f5a8f07a000 ---p 00000000 00:00 0 
+7f5a8f07a000-7f5a8f178000 rw-p 00000000 00:00 0 
+7f5a8f178000-7f5a8f17b000 ---p 00000000 00:00 0 
+7f5a8f17b000-7f5a8f279000 rw-p 00000000 00:00 0 
+7f5a8f279000-7f5a8f27c000 ---p 00000000 00:00 0 
+7f5a8f27c000-7f5a8f37a000 rw-p 00000000 00:00 0 
+7f5a8f37a000-7f5a8f37d000 ---p 00000000 00:00 0 
+7f5a8f37d000-7f5a8f47b000 rw-p 00000000 00:00 0 
+7f5a8f47b000-7f5a8f47e000 ---p 00000000 00:00 0 
+7f5a8f47e000-7f5a8f57c000 rw-p 00000000 00:00 0 
+7f5a8f57c000-7f5a8f57f000 ---p 00000000 00:00 0 
+7f5a8f57f000-7f5a8f67d000 rw-p 00000000 00:00 0 
+7f5a8f67d000-7f5a8f680000 ---p 00000000 00:00 0 
+7f5a8f680000-7f5a8f77e000 rw-p 00000000 00:00 0 
+7f5a8f77e000-7f5a8f781000 ---p 00000000 00:00 0 
+7f5a8f781000-7f5a8f87f000 rw-p 00000000 00:00 0 
+7f5a8f87f000-7f5a8f882000 ---p 00000000 00:00 0 
+7f5a8f882000-7f5a8f980000 rw-p 00000000 00:00 0 
+7f5a8f980000-7f5a8f983000 ---p 00000000 00:00 0 
+7f5a8f983000-7f5a8fa81000 rw-p 00000000 00:00 0 
+7f5a8fa81000-7f5a8fa84000 ---p 00000000 00:00 0 
+7f5a8fa84000-7f5a8fb82000 rw-p 00000000 00:00 0 
+7f5a8fb82000-7f5a8fb85000 ---p 00000000 00:00 0 
+7f5a8fb85000-7f5a8fc83000 rw-p 00000000 00:00 0 
+7f5a8fc83000-7f5a8fc86000 ---p 00000000 00:00 0 
+7f5a8fc86000-7f5a8fd84000 rw-p 00000000 00:00 0 
+7f5a8fd84000-7f5a8fd87000 ---p 00000000 00:00 0 
+7f5a8fd87000-7f5a8fe85000 rw-p 00000000 00:00 0 
+7f5a8fe85000-7f5a8fe88000 ---p 00000000 00:00 0 
+7f5a8fe88000-7f5a8ff86000 rw-p 00000000 00:00 0 
+7f5a8ff86000-7f5a8ff89000 ---p 00000000 00:00 0 
+7f5a8ff89000-7f5a90087000 rw-p 00000000 00:00 0 
+7f5a90087000-7f5a9008a000 ---p 00000000 00:00 0 
+7f5a9008a000-7f5a90188000 rw-p 00000000 00:00 0 
+7f5a90188000-7f5a9018b000 ---p 00000000 00:00 0 
+7f5a9018b000-7f5a90289000 rw-p 00000000 00:00 0 
+7f5a90289000-7f5a9028c000 ---p 00000000 00:00 0 
+7f5a9028c000-7f5a9038a000 rw-p 00000000 00:00 0 
+7f5a9038a000-7f5a9038d000 ---p 00000000 00:00 0 
+7f5a9038d000-7f5a9048b000 rw-p 00000000 00:00 0 
+7f5a9048b000-7f5a9048e000 ---p 00000000 00:00 0 
+7f5a9048e000-7f5a9058c000 rw-p 00000000 00:00 0 
+7f5a9058c000-7f5a9058f000 ---p 00000000 00:00 0 
+7f5a9058f000-7f5a9068d000 rw-p 00000000 00:00 0 
+7f5a9068d000-7f5a90690000 ---p 00000000 00:00 0 
+7f5a90690000-7f5a9078e000 rw-p 00000000 00:00 0 
+7f5a9078e000-7f5a90791000 ---p 00000000 00:00 0 
+7f5a90791000-7f5a9088f000 rw-p 00000000 00:00 0 
+7f5a9088f000-7f5a90892000 ---p 00000000 00:00 0 
+7f5a90892000-7f5a90990000 rw-p 00000000 00:00 0 
+7f5a90990000-7f5a90993000 ---p 00000000 00:00 0 
+7f5a90993000-7f5a90a91000 rw-p 00000000 00:00 0 
+7f5a90a91000-7f5a90a94000 ---p 00000000 00:00 0 
+7f5a90a94000-7f5a90b92000 rw-p 00000000 00:00 0 
+7f5a90b92000-7f5a90b95000 ---p 00000000 00:00 0 
+7f5a90b95000-7f5a90c93000 rw-p 00000000 00:00 0 
+7f5a90c93000-7f5a90c96000 ---p 00000000 00:00 0 
+7f5a90c96000-7f5a90d94000 rw-p 00000000 00:00 0 
+7f5a90d94000-7f5a90d97000 ---p 00000000 00:00 0 
+7f5a90d97000-7f5a90e95000 rw-p 00000000 00:00 0 
+7f5a90e95000-7f5a90e98000 ---p 00000000 00:00 0 
+7f5a90e98000-7f5a90f96000 rw-p 00000000 00:00 0 
+7f5a90f96000-7f5a90f99000 ---p 00000000 00:00 0 
+7f5a90f99000-7f5a91097000 rw-p 00000000 00:00 0 
+7f5a91097000-7f5a9109a000 ---p 00000000 00:00 0 
+7f5a9109a000-7f5a91198000 rw-p 00000000 00:00 0 
+7f5a91198000-7f5a9119b000 ---p 00000000 00:00 0 
+7f5a9119b000-7f5a91299000 rw-p 00000000 00:00 0 
+7f5a91299000-7f5a9129c000 ---p 00000000 00:00 0 
+7f5a9129c000-7f5a9139a000 rw-p 00000000 00:00 0 
+7f5a9139a000-7f5a9139d000 ---p 00000000 00:00 0 
+7f5a9139d000-7f5a9149b000 rw-p 00000000 00:00 0 
+7f5a9149b000-7f5a9149e000 ---p 00000000 00:00 0 
+7f5a9149e000-7f5a9159c000 rw-p 00000000 00:00 0 
+7f5a9159c000-7f5a9159f000 ---p 00000000 00:00 0 
+7f5a9159f000-7f5a9169d000 rw-p 00000000 00:00 0 
+7f5a9169d000-7f5a916a0000 ---p 00000000 00:00 0 
+7f5a916a0000-7f5a9179e000 rw-p 00000000 00:00 0 
+7f5a9179e000-7f5a917a1000 ---p 00000000 00:00 0 
+7f5a917a1000-7f5a9189f000 rw-p 00000000 00:00 0 
+7f5a9189f000-7f5a918a2000 ---p 00000000 00:00 0 
+7f5a918a2000-7f5a919a0000 rw-p 00000000 00:00 0 
+7f5a919a0000-7f5a919a3000 ---p 00000000 00:00 0 
+7f5a919a3000-7f5a91aa1000 rw-p 00000000 00:00 0 
+7f5a91aa1000-7f5a91aa4000 ---p 00000000 00:00 0 
+7f5a91aa4000-7f5a91ba2000 rw-p 00000000 00:00 0 
+7f5a91ba2000-7f5a91ba5000 ---p 00000000 00:00 0 
+7f5a91ba5000-7f5a91ca3000 rw-p 00000000 00:00 0 
+7f5a91ca3000-7f5a91ca6000 ---p 00000000 00:00 0 
+7f5a91ca6000-7f5a91da4000 rw-p 00000000 00:00 0 
+7f5a91da4000-7f5a91da7000 ---p 00000000 00:00 0 
+7f5a91da7000-7f5a91ea5000 rw-p 00000000 00:00 0 
+7f5a91ea5000-7f5a91ea8000 ---p 00000000 00:00 0 
+7f5a91ea8000-7f5a91fa6000 rw-p 00000000 00:00 0 
+7f5a91fa6000-7f5a91fa9000 ---p 00000000 00:00 0 
+7f5a91fa9000-7f5a920a7000 rw-p 00000000 00:00 0 
+7f5a920a7000-7f5a920aa000 ---p 00000000 00:00 0 
+7f5a920aa000-7f5a921a8000 rw-p 00000000 00:00 0 
+7f5a921a8000-7f5a921ab000 ---p 00000000 00:00 0 
+7f5a921ab000-7f5a922a9000 rw-p 00000000 00:00 0 
+7f5a922a9000-7f5a922ac000 ---p 00000000 00:00 0 
+7f5a922ac000-7f5a923aa000 rw-p 00000000 00:00 0 
+7f5a923aa000-7f5a923ad000 ---p 00000000 00:00 0 
+7f5a923ad000-7f5a924ab000 rw-p 00000000 00:00 0 
+7f5a924ab000-7f5a924ae000 ---p 00000000 00:00 0 
+7f5a924ae000-7f5a925ac000 rw-p 00000000 00:00 0 
+7f5a925ac000-7f5a925af000 ---p 00000000 00:00 0 
+7f5a925af000-7f5a926ad000 rw-p 00000000 00:00 0 
+7f5a926ad000-7f5a926b0000 ---p 00000000 00:00 0 
+7f5a926b0000-7f5a927ae000 rw-p 00000000 00:00 0 
+7f5a927ae000-7f5a927b1000 ---p 00000000 00:00 0 
+7f5a927b1000-7f5a928af000 rw-p 00000000 00:00 0 
+7f5a928af000-7f5a928b2000 ---p 00000000 00:00 0 
+7f5a928b2000-7f5a92bb0000 rw-p 00000000 00:00 0 
+7f5a92bb0000-7f5a92bb3000 ---p 00000000 00:00 0 
+7f5a92bb3000-7f5a92cb1000 rw-p 00000000 00:00 0 
+7f5a92cb1000-7f5a92cb4000 ---p 00000000 00:00 0 
+7f5a92cb4000-7f5a92db2000 rw-p 00000000 00:00 0 
+7f5a92db2000-7f5a92db5000 ---p 00000000 00:00 0 
+7f5a92db5000-7f5a92eb3000 rw-p 00000000 00:00 0 
+7f5a92eb3000-7f5a92eb6000 ---p 00000000 00:00 0 
+7f5a92eb6000-7f5a92fb4000 rw-p 00000000 00:00 0 
+7f5a92fb4000-7f5a92fb7000 ---p 00000000 00:00 0 
+7f5a92fb7000-7f5a930b5000 rw-p 00000000 00:00 0 
+7f5a930b5000-7f5a930b8000 ---p 00000000 00:00 0 
+7f5a930b8000-7f5a931b6000 rw-p 00000000 00:00 0 
+7f5a931b6000-7f5a931b9000 ---p 00000000 00:00 0 
+7f5a931b9000-7f5a932b7000 rw-p 00000000 00:00 0 
+7f5a932b7000-7f5a932ba000 ---p 00000000 00:00 0 
+7f5a932ba000-7f5a933b8000 rw-p 00000000 00:00 0 
+7f5a933b8000-7f5a933bb000 ---p 00000000 00:00 0 
+7f5a933bb000-7f5a934b9000 rw-p 00000000 00:00 0 
+7f5a934b9000-7f5a934bc000 ---p 00000000 00:00 0 
+7f5a934bc000-7f5a935ba000 rw-p 00000000 00:00 0 
+7f5a935ba000-7f5a935bd000 ---p 00000000 00:00 0 
+7f5a935bd000-7f5a936bb000 rw-p 00000000 00:00 0 
+7f5a936bb000-7f5a936be000 ---p 00000000 00:00 0 
+7f5a936be000-7f5a937bc000 rw-p 00000000 00:00 0 
+7f5a937bc000-7f5a937bf000 ---p 00000000 00:00 0 
+7f5a937bf000-7f5a938bd000 rw-p 00000000 00:00 0 
+7f5a938bd000-7f5a938c0000 ---p 00000000 00:00 0 
+7f5a938c0000-7f5a939be000 rw-p 00000000 00:00 0 
+7f5a939be000-7f5a939c1000 ---p 00000000 00:00 0 
+7f5a939c1000-7f5a93abf000 rw-p 00000000 00:00 0 
+7f5a93abf000-7f5a93ac2000 ---p 00000000 00:00 0 
+7f5a93ac2000-7f5a93bc0000 rw-p 00000000 00:00 0 
+7f5a93bc0000-7f5a93bc3000 ---p 00000000 00:00 0 
+7f5a93bc3000-7f5a93cc1000 rw-p 00000000 00:00 0 
+7f5a93cc1000-7f5a93cc4000 ---p 00000000 00:00 0 
+7f5a93cc4000-7f5a93dc2000 rw-p 00000000 00:00 0 
+7f5a93dc2000-7f5a93dc5000 ---p 00000000 00:00 0 
+7f5a93dc5000-7f5a93ec3000 rw-p 00000000 00:00 0 
+7f5a93ec3000-7f5a93ec6000 ---p 00000000 00:00 0 
+7f5a93ec6000-7f5a93fc4000 rw-p 00000000 00:00 0 
+7f5a93fc4000-7f5a93fc7000 ---p 00000000 00:00 0 
+7f5a93fc7000-7f5a940c5000 rw-p 00000000 00:00 0 
+7f5a940c5000-7f5a940c8000 ---p 00000000 00:00 0 
+7f5a940c8000-7f5a941c6000 rw-p 00000000 00:00 0 
+7f5a941c6000-7f5a941c9000 ---p 00000000 00:00 0 
+7f5a941c9000-7f5a942c7000 rw-p 00000000 00:00 0 
+7f5a942c7000-7f5a942ca000 ---p 00000000 00:00 0 
+7f5a942ca000-7f5a943c8000 rw-p 00000000 00:00 0 
+7f5a943c8000-7f5a943cb000 ---p 00000000 00:00 0 
+7f5a943cb000-7f5a944c9000 rw-p 00000000 00:00 0 
+7f5a944c9000-7f5a944cc000 ---p 00000000 00:00 0 
+7f5a944cc000-7f5a945ca000 rw-p 00000000 00:00 0 
+7f5a945ca000-7f5a945cd000 ---p 00000000 00:00 0 
+7f5a945cd000-7f5a946cb000 rw-p 00000000 00:00 0 
+7f5a946cb000-7f5a946ce000 ---p 00000000 00:00 0 
+7f5a946ce000-7f5a947cc000 rw-p 00000000 00:00 0 
+7f5a947cc000-7f5a947cf000 ---p 00000000 00:00 0 
+7f5a947cf000-7f5a948cd000 rw-p 00000000 00:00 0 
+7f5a948cd000-7f5a948d0000 ---p 00000000 00:00 0 
+7f5a948d0000-7f5a949ce000 rw-p 00000000 00:00 0 
+7f5a949ce000-7f5a949d1000 ---p 00000000 00:00 0 
+7f5a949d1000-7f5a94acf000 rw-p 00000000 00:00 0 
+7f5a94acf000-7f5a94ad2000 ---p 00000000 00:00 0 
+7f5a94ad2000-7f5a94bd0000 rw-p 00000000 00:00 0 
+7f5a94bd0000-7f5a94bd3000 ---p 00000000 00:00 0 
+7f5a94bd3000-7f5a94cd1000 rw-p 00000000 00:00 0 
+7f5a94cd1000-7f5a94cd4000 ---p 00000000 00:00 0 
+7f5a94cd4000-7f5a94dd2000 rw-p 00000000 00:00 0 
+7f5a94dd2000-7f5a94dd5000 ---p 00000000 00:00 0 
+7f5a94dd5000-7f5a94ed3000 rw-p 00000000 00:00 0 
+7f5a94ed3000-7f5a94ed6000 ---p 00000000 00:00 0 
+7f5a94ed6000-7f5a94fd4000 rw-p 00000000 00:00 0 
+7f5a94fd4000-7f5a94fd7000 ---p 00000000 00:00 0 
+7f5a94fd7000-7f5a950d5000 rw-p 00000000 00:00 0 
+7f5a950d5000-7f5a950d8000 ---p 00000000 00:00 0 
+7f5a950d8000-7f5a951d6000 rw-p 00000000 00:00 0 
+7f5a951d6000-7f5a951d9000 ---p 00000000 00:00 0 
+7f5a951d9000-7f5a952d7000 rw-p 00000000 00:00 0 
+7f5a952d7000-7f5a952da000 ---p 00000000 00:00 0 
+7f5a952da000-7f5a953d8000 rw-p 00000000 00:00 0 
+7f5a953d8000-7f5a953db000 ---p 00000000 00:00 0 
+7f5a953db000-7f5a954d9000 rw-p 00000000 00:00 0 
+7f5a954d9000-7f5a954dc000 ---p 00000000 00:00 0 
+7f5a954dc000-7f5a957da000 rw-p 00000000 00:00 0 
+7f5a957da000-7f5a957dd000 ---p 00000000 00:00 0 
+7f5a957dd000-7f5a958db000 rw-p 00000000 00:00 0 
+7f5a958db000-7f5a958de000 ---p 00000000 00:00 0 
+7f5a958de000-7f5a959dc000 rw-p 00000000 00:00 0 
+7f5a959dc000-7f5a959df000 ---p 00000000 00:00 0 
+7f5a959df000-7f5a95add000 rw-p 00000000 00:00 0 
+7f5a95add000-7f5a95ae0000 ---p 00000000 00:00 0 
+7f5a95ae0000-7f5a95bde000 rw-p 00000000 00:00 0 
+7f5a95bde000-7f5a95be1000 ---p 00000000 00:00 0 
+7f5a95be1000-7f5a95cdf000 rw-p 00000000 00:00 0 
+7f5a95cdf000-7f5a95ce2000 ---p 00000000 00:00 0 
+7f5a95ce2000-7f5a95de0000 rw-p 00000000 00:00 0 
+7f5a95de0000-7f5a95de3000 ---p 00000000 00:00 0 
+7f5a95de3000-7f5a95ee1000 rw-p 00000000 00:00 0 
+7f5a95ee1000-7f5a95ee4000 ---p 00000000 00:00 0 
+7f5a95ee4000-7f5a95fe2000 rw-p 00000000 00:00 0 
+7f5a95fe2000-7f5a95fe5000 ---p 00000000 00:00 0 
+7f5a95fe5000-7f5a960e3000 rw-p 00000000 00:00 0 
+7f5a960e3000-7f5a960e6000 ---p 00000000 00:00 0 
+7f5a960e6000-7f5a961e4000 rw-p 00000000 00:00 0 
+7f5a961e4000-7f5a961e7000 ---p 00000000 00:00 0 
+7f5a961e7000-7f5a962e5000 rw-p 00000000 00:00 0 
+7f5a962e5000-7f5a962e8000 ---p 00000000 00:00 0 
+7f5a962e8000-7f5a963e6000 rw-p 00000000 00:00 0 
+7f5a963e6000-7f5a963e9000 ---p 00000000 00:00 0 
+7f5a963e9000-7f5a964e7000 rw-p 00000000 00:00 0 
+7f5a964e7000-7f5a964ea000 ---p 00000000 00:00 0 
+7f5a964ea000-7f5a965e8000 rw-p 00000000 00:00 0 
+7f5a965e8000-7f5a965eb000 ---p 00000000 00:00 0 
+7f5a965eb000-7f5a966e9000 rw-p 00000000 00:00 0 
+7f5a966e9000-7f5a966ec000 ---p 00000000 00:00 0 
+7f5a966ec000-7f5a967ea000 rw-p 00000000 00:00 0 
+7f5a967ea000-7f5a967ed000 ---p 00000000 00:00 0 
+7f5a967ed000-7f5a968eb000 rw-p 00000000 00:00 0 
+7f5a968eb000-7f5a968ee000 ---p 00000000 00:00 0 
+7f5a968ee000-7f5a969ec000 rw-p 00000000 00:00 0 
+7f5a969ec000-7f5a969ef000 ---p 00000000 00:00 0 
+7f5a969ef000-7f5a96aed000 rw-p 00000000 00:00 0 
+7f5a96aed000-7f5a96af0000 ---p 00000000 00:00 0 
+7f5a96af0000-7f5a96bee000 rw-p 00000000 00:00 0 
+7f5a96bee000-7f5a96bf1000 ---p 00000000 00:00 0 
+7f5a96bf1000-7f5a96cef000 rw-p 00000000 00:00 0 
+7f5a96cef000-7f5a96cf2000 ---p 00000000 00:00 0 
+7f5a96cf2000-7f5a96df0000 rw-p 00000000 00:00 0 
+7f5a96df0000-7f5a96df3000 ---p 00000000 00:00 0 
+7f5a96df3000-7f5a96ef1000 rw-p 00000000 00:00 0 
+7f5a96ef1000-7f5a96ef4000 ---p 00000000 00:00 0 
+7f5a96ef4000-7f5a96ff2000 rw-p 00000000 00:00 0 
+7f5a96ff2000-7f5a96ff5000 ---p 00000000 00:00 0 
+7f5a96ff5000-7f5a970f3000 rw-p 00000000 00:00 0 
+7f5a970f3000-7f5a970f6000 ---p 00000000 00:00 0 
+7f5a970f6000-7f5a971f4000 rw-p 00000000 00:00 0 
+7f5a971f4000-7f5a971f7000 ---p 00000000 00:00 0 
+7f5a971f7000-7f5a974f5000 rw-p 00000000 00:00 0 
+7f5a974f5000-7f5a974f8000 ---p 00000000 00:00 0 
+7f5a974f8000-7f5a975f6000 rw-p 00000000 00:00 0 
+7f5a975f6000-7f5a975f9000 ---p 00000000 00:00 0 
+7f5a975f9000-7f5a976f7000 rw-p 00000000 00:00 0 
+7f5a976f7000-7f5a976fa000 ---p 00000000 00:00 0 
+7f5a976fa000-7f5a977f8000 rw-p 00000000 00:00 0 
+7f5a977f8000-7f5a977fb000 ---p 00000000 00:00 0 
+7f5a977fb000-7f5a978f9000 rw-p 00000000 00:00 0 
+7f5a978f9000-7f5a978fc000 ---p 00000000 00:00 0 
+7f5a978fc000-7f5a979fa000 rw-p 00000000 00:00 0 
+7f5a979fa000-7f5a979fd000 ---p 00000000 00:00 0 
+7f5a979fd000-7f5a97afb000 rw-p 00000000 00:00 0 
+7f5a97afb000-7f5a97afe000 ---p 00000000 00:00 0 
+7f5a97afe000-7f5a97bfc000 rw-p 00000000 00:00 0 
+7f5a97bfc000-7f5a97bff000 ---p 00000000 00:00 0 
+7f5a97bff000-7f5a97cfd000 rw-p 00000000 00:00 0 
+7f5a97cfd000-7f5a97d00000 ---p 00000000 00:00 0 
+7f5a97d00000-7f5a97dfe000 rw-p 00000000 00:00 0 
+7f5a97dfe000-7f5a97e01000 ---p 00000000 00:00 0 
+7f5a97e01000-7f5a97eff000 rw-p 00000000 00:00 0 
+7f5a97eff000-7f5a97f02000 ---p 00000000 00:00 0 
+7f5a97f02000-7f5a98000000 rw-p 00000000 00:00 0 
+7f5a98000000-7f5a98021000 rw-p 00000000 00:00 0 
+7f5a98021000-7f5a9c000000 ---p 00000000 00:00 0 
+7f5a9c000000-7f5a9c1ef000 rw-p 00000000 00:00 0 
+7f5a9c1ef000-7f5aa0000000 ---p 00000000 00:00 0 
+7f5aa0000000-7f5aa0021000 rw-p 00000000 00:00 0 
+7f5aa0021000-7f5aa4000000 ---p 00000000 00:00 0 
+7f5aa4000000-7f5aa4021000 rw-p 00000000 00:00 0 
+7f5aa4021000-7f5aa8000000 ---p 00000000 00:00 0 
+7f5aa8000000-7f5aa8021000 rw-p 00000000 00:00 0 
+7f5aa8021000-7f5aac000000 ---p 00000000 00:00 0 
+7f5aac000000-7f5aac021000 rw-p 00000000 00:00 0 
+7f5aac021000-7f5ab0000000 ---p 00000000 00:00 0 
+7f5ab0000000-7f5ab0021000 rw-p 00000000 00:00 0 
+7f5ab0021000-7f5ab4000000 ---p 00000000 00:00 0 
+7f5ab4000000-7f5ab4021000 rw-p 00000000 00:00 0 
+7f5ab4021000-7f5ab8000000 ---p 00000000 00:00 0 
+7f5ab8000000-7f5ab829a000 rw-p 00000000 00:00 0 
+7f5ab829a000-7f5abc000000 ---p 00000000 00:00 0 
+7f5abc000000-7f5abc021000 rw-p 00000000 00:00 0 
+7f5abc021000-7f5ac0000000 ---p 00000000 00:00 0 
+7f5ac0087000-7f5ac008a000 ---p 00000000 00:00 0 
+7f5ac008a000-7f5ac0188000 rw-p 00000000 00:00 0 
+7f5ac0188000-7f5ac018b000 ---p 00000000 00:00 0 
+7f5ac018b000-7f5ac0289000 rw-p 00000000 00:00 0 
+7f5ac0289000-7f5ac028c000 ---p 00000000 00:00 0 
+7f5ac028c000-7f5ac058a000 rw-p 00000000 00:00 0 
+7f5ac058a000-7f5ac078a000 rw-p 00000000 00:00 0 
+7f5ac078a000-7f5ac078d000 ---p 00000000 00:00 0 
+7f5ac078d000-7f5ac088b000 rw-p 00000000 00:00 0 
+7f5ac088b000-7f5ac088e000 ---p 00000000 00:00 0 
+7f5ac088e000-7f5ac098c000 rw-p 00000000 00:00 0 
+7f5ac098c000-7f5ac098f000 ---p 00000000 00:00 0 
+7f5ac098f000-7f5ac0a8d000 rw-p 00000000 00:00 0 
+7f5ac0a8d000-7f5ac0a90000 ---p 00000000 00:00 0 
+7f5ac0a90000-7f5ac0b8e000 rw-p 00000000 00:00 0 
+7f5ac0b8e000-7f5ac0b91000 ---p 00000000 00:00 0 
+7f5ac0b91000-7f5ac0c8f000 rw-p 00000000 00:00 0 
+7f5ac0c8f000-7f5ac0c92000 ---p 00000000 00:00 0 
+7f5ac0c92000-7f5ac0d90000 rw-p 00000000 00:00 0 
+7f5ac0d90000-7f5ac0d93000 ---p 00000000 00:00 0 
+7f5ac0d93000-7f5ac0e91000 rw-p 00000000 00:00 0 
+7f5ac0e91000-7f5ac0e94000 ---p 00000000 00:00 0 
+7f5ac0e94000-7f5ac0f92000 rw-p 00000000 00:00 0 
+7f5ac0f92000-7f5ac0f95000 ---p 00000000 00:00 0 
+7f5ac0f95000-7f5ac1293000 rw-p 00000000 00:00 0 
+7f5ac1293000-7f5ac1296000 ---p 00000000 00:00 0 
+7f5ac1296000-7f5ac1394000 rw-p 00000000 00:00 0 
+7f5ac1394000-7f5ac1397000 ---p 00000000 00:00 0 
+7f5ac1397000-7f5ac1495000 rw-p 00000000 00:00 0 
+7f5ac1495000-7f5ac1498000 ---p 00000000 00:00 0 
+7f5ac1498000-7f5ac1596000 rw-p 00000000 00:00 0 
+7f5ac1596000-7f5ac1599000 ---p 00000000 00:00 0 
+7f5ac1599000-7f5ac1697000 rw-p 00000000 00:00 0 
+7f5ac1697000-7f5ac169a000 ---p 00000000 00:00 0 
+7f5ac169a000-7f5ac1798000 rw-p 00000000 00:00 0 
+7f5ac1798000-7f5ac179b000 ---p 00000000 00:00 0 
+7f5ac179b000-7f5ac1a99000 rw-p 00000000 00:00 0 
+7f5ac1a99000-7f5ac1c99000 rw-p 00000000 00:00 0 
+7f5ac1c99000-7f5ac1c9c000 ---p 00000000 00:00 0 
+7f5ac1c9c000-7f5ac1f9a000 rw-p 00000000 00:00 0 
+7f5ac1f9a000-7f5ac219a000 rw-p 00000000 00:00 0 
+7f5ac219a000-7f5ac239a000 rw-p 00000000 00:00 0 
+7f5ac239a000-7f5ac259a000 rw-p 00000000 00:00 0 
+7f5ac259a000-7f5ac279a000 rw-p 00000000 00:00 0 
+7f5ac279a000-7f5ac299a000 rw-p 00000000 00:00 0 
+7f5ac299a000-7f5ac2b9a000 rw-p 00000000 00:00 0 
+7f5ac2b9a000-7f5ac2d9a000 rw-p 00000000 00:00 0 
+7f5ac2d9a000-7f5ac2f9a000 rw-p 00000000 00:00 0 
+7f5ac2f9a000-7f5ac319a000 rw-p 00000000 00:00 0 
+7f5ac319a000-7f5ac339a000 rw-p 00000000 00:00 0 
+7f5ac339a000-7f5ac359a000 rw-p 00000000 00:00 0 
+7f5ac359a000-7f5ac379a000 rw-p 00000000 00:00 0 
+7f5ac379a000-7f5ac37b0000 r-xp 00000000 08:01 1313909                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5ac37b0000-7f5ac39af000 ---p 00016000 08:01 1313909                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5ac39af000-7f5ac39b0000 rw-p 00015000 08:01 1313909                    /lib/x86_64-linux-gnu/libgcc_s.so.1
+7f5ac39b0000-7f5ac39e8000 r-xp 00000000 08:01 541676                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libsunec.so
+7f5ac39e8000-7f5ac3be7000 ---p 00038000 08:01 541676                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libsunec.so
+7f5ac3be7000-7f5ac3bec000 r--p 00037000 08:01 541676                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libsunec.so
+7f5ac3bec000-7f5ac3bee000 rw-p 0003c000 08:01 541676                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libsunec.so
+7f5ac3bee000-7f5ac3bff000 r-xp 00000000 08:01 541724                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f5ac3bff000-7f5ac3dfe000 ---p 00011000 08:01 541724                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f5ac3dfe000-7f5ac3dff000 r--p 00010000 08:01 541724                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f5ac3dff000-7f5ac3e00000 rw-p 00011000 08:01 541724                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f5ac3e00000-7f5ac4000000 rw-p 00000000 00:00 0 
+7f5ac4000000-7f5ac4021000 rw-p 00000000 00:00 0 
+7f5ac4021000-7f5ac8000000 ---p 00000000 00:00 0 
+7f5ac8000000-7f5ac8021000 rw-p 00000000 00:00 0 
+7f5ac8021000-7f5acc000000 ---p 00000000 00:00 0 
+7f5acc000000-7f5acc021000 rw-p 00000000 00:00 0 
+7f5acc021000-7f5ad0000000 ---p 00000000 00:00 0 
+7f5ad0000000-7f5ad0021000 rw-p 00000000 00:00 0 
+7f5ad0021000-7f5ad4000000 ---p 00000000 00:00 0 
+7f5ad4000000-7f5ad4024000 rw-p 00000000 00:00 0 
+7f5ad4024000-7f5ad8000000 ---p 00000000 00:00 0 
+7f5ad8000000-7f5ada41f000 rw-p 00000000 00:00 0 
+7f5ada41f000-7f5adc000000 ---p 00000000 00:00 0 
+7f5adc000000-7f5adc021000 rw-p 00000000 00:00 0 
+7f5adc021000-7f5ae0000000 ---p 00000000 00:00 0 
+7f5ae0000000-7f5ae0069000 rw-p 00000000 00:00 0 
+7f5ae0069000-7f5ae4000000 ---p 00000000 00:00 0 
+7f5ae4000000-7f5ae5153000 rw-p 00000000 00:00 0 
+7f5ae5153000-7f5ae8000000 ---p 00000000 00:00 0 
+7f5ae8000000-7f5ae8021000 rw-p 00000000 00:00 0 
+7f5ae8021000-7f5aec000000 ---p 00000000 00:00 0 
+7f5aec000000-7f5aee2aa000 rw-p 00000000 00:00 0 
+7f5aee2aa000-7f5af0000000 ---p 00000000 00:00 0 
+7f5af0000000-7f5af15e0000 rw-p 00000000 00:00 0 
+7f5af15e0000-7f5af4000000 ---p 00000000 00:00 0 
+7f5af4000000-7f5af403f000 rw-p 00000000 00:00 0 
+7f5af403f000-7f5af8000000 ---p 00000000 00:00 0 
+7f5af8000000-7f5af8021000 rw-p 00000000 00:00 0 
+7f5af8021000-7f5afc000000 ---p 00000000 00:00 0 
+7f5afc000000-7f5afc02a000 rw-p 00000000 00:00 0 
+7f5afc02a000-7f5b00000000 ---p 00000000 00:00 0 
+7f5b0009e000-7f5b000a1000 ---p 00000000 00:00 0 
+7f5b000a1000-7f5b0019f000 rw-p 00000000 00:00 0 
+7f5b0019f000-7f5b001a2000 ---p 00000000 00:00 0 
+7f5b001a2000-7f5b08000000 rw-p 00000000 00:00 0 
+7f5b08000000-7f5b08039000 rw-p 00000000 00:00 0 
+7f5b08039000-7f5b0c000000 ---p 00000000 00:00 0 
+7f5b0c000000-7f5b0c2d7000 rw-p 00000000 00:00 0 
+7f5b0c2d7000-7f5b10000000 ---p 00000000 00:00 0 
+7f5b10000000-7f5b10183000 rw-p 00000000 00:00 0 
+7f5b10183000-7f5b14000000 ---p 00000000 00:00 0 
+7f5b140fc000-7f5b140ff000 ---p 00000000 00:00 0 
+7f5b140ff000-7f5b141fd000 rw-p 00000000 00:00 0 
+7f5b141fd000-7f5b14200000 ---p 00000000 00:00 0 
+7f5b14200000-7f5b144fe000 rw-p 00000000 00:00 0 
+7f5b144fe000-7f5b14501000 ---p 00000000 00:00 0 
+7f5b14501000-7f5b147ff000 rw-p 00000000 00:00 0 
+7f5b147ff000-7f5b149ff000 rw-p 00000000 00:00 0 
+7f5b149ff000-7f5b14bff000 rw-p 00000000 00:00 0 
+7f5b14bff000-7f5b14dff000 rw-p 00000000 00:00 0 
+7f5b14dff000-7f5b14fff000 rw-p 00000000 00:00 0 
+7f5b14fff000-7f5b18000000 rw-p 00000000 00:00 0 
+7f5b18000000-7f5b1802d000 rw-p 00000000 00:00 0 
+7f5b1802d000-7f5b1c000000 ---p 00000000 00:00 0 
+7f5b1c0e9000-7f5b1c0ec000 ---p 00000000 00:00 0 
+7f5b1c0ec000-7f5b1c3ea000 rw-p 00000000 00:00 0 
+7f5b1c410000-7f5b1c415000 r--s 0003f000 08:01 541577                     /usr/lib/jvm/java-8-oracle/jre/lib/ext/sunjce_provider.jar
+7f5b1c415000-7f5b1c417000 r--s 00009000 08:01 541567                     /usr/lib/jvm/java-8-oracle/jre/lib/ext/sunec.jar
+7f5b1c417000-7f5b1c41b000 r--s 0003a000 08:01 541574                     /usr/lib/jvm/java-8-oracle/jre/lib/ext/sunpkcs11.jar
+7f5b1c41b000-7f5b1c41e000 r--s 0001a000 08:01 541741                     /usr/lib/jvm/java-8-oracle/jre/lib/jce.jar
+7f5b1c41e000-7f5b1c41f000 r--p 00000000 08:01 1051934                    /usr/share/locale-langpack/en_GB/LC_MESSAGES/libc.mo
+7f5b1c41f000-7f5b1c61f000 rw-p 00000000 00:00 0 
+7f5b1c61f000-7f5b1c81f000 rw-p 00000000 00:00 0 
+7f5b1c81f000-7f5b1ca1f000 rw-p 00000000 00:00 0 
+7f5b1ca1f000-7f5b1cc1f000 rw-p 00000000 00:00 0 
+7f5b1cc1f000-7f5b1ce1f000 rw-p 00000000 00:00 0 
+7f5b1ce1f000-7f5b1ce22000 ---p 00000000 00:00 0 
+7f5b1ce22000-7f5b1cf20000 rw-p 00000000 00:00 0 
+7f5b1cf20000-7f5b1cf23000 ---p 00000000 00:00 0 
+7f5b1cf23000-7f5b1d221000 rw-p 00000000 00:00 0 
+7f5b1d221000-7f5b1d421000 rw-p 00000000 00:00 0 
+7f5b1d421000-7f5b1d423000 r--s 00002000 08:01 1600422                    /home/abhijeet/.sbt/boot/scala-2.10.7/org.scala-sbt/sbt/0.13.17/test-interface-1.0.jar
+7f5b1d423000-7f5b1d623000 rw-p 00000000 00:00 0 
+7f5b1d623000-7f5b1d823000 rw-p 00000000 00:00 0 
+7f5b1d823000-7f5b1da23000 rw-p 00000000 00:00 0 
+7f5b1da23000-7f5b1da28000 r--s 000a0000 08:01 541565                     /usr/lib/jvm/java-8-oracle/jre/lib/jsse.jar
+7f5b1da28000-7f5b1da3e000 r-xp 00000000 08:01 541721                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f5b1da3e000-7f5b1dc3d000 ---p 00016000 08:01 541721                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f5b1dc3d000-7f5b1dc3e000 r--p 00015000 08:01 541721                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f5b1dc3e000-7f5b1dc3f000 rw-p 00016000 08:01 541721                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f5b1dc3f000-7f5b1dc40000 r--s 00005000 08:01 1600383                    /home/abhijeet/.sbt/boot/scala-2.10.7/org.scala-sbt/sbt/0.13.17/test-agent-0.13.17.jar
+7f5b1dc40000-7f5b1dc4d000 r--s 00109000 08:01 3929207                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.mozilla/rhino/rhino-1.7R4.jar
+7f5b1dc4d000-7f5b1dc4e000 r--s 00002000 08:01 3928946                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.github.jknack/handlebars-helpers/handlebars-helpers-4.0.6.jar
+7f5b1dc4e000-7f5b1dc54000 r--s 00044000 08:01 3401426                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.antlr/antlr4-runtime/antlr4-runtime-4.5.1-1.jar
+7f5b1dc54000-7f5b1dc5b000 r--s 0004b000 08:01 3929145                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.github.jknack/handlebars/handlebars-4.0.6.jar
+7f5b1dc5b000-7f5b1dc5d000 r--s 00006000 08:01 3929002                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.flipkart.zjsonpatch/zjsonpatch/zjsonpatch-0.4.4.jar
+7f5b1dc5d000-7f5b1dc65000 r--s 00072000 08:01 3664111                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.apache.commons/commons-lang3/commons-lang3-3.7.jar
+7f5b1dc65000-7f5b1dc68000 r--s 00011000 08:01 3929217                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.sf.jopt-simple/jopt-simple/jopt-simple-5.0.3.jar
+7f5b1dc68000-7f5b1dc6a000 r--s 0000c000 08:01 3928961                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.ow2.asm/asm/asm-5.0.4.jar
+7f5b1dc6a000-7f5b1dc6c000 r--s 00006000 08:01 3402506                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/net.minidev/accessors-smart/accessors-smart-1.2.jar
+7f5b1dc6c000-7f5b1dc6f000 r--s 0001b000 08:01 3928922                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/net.minidev/json-smart/json-smart-2.3.jar
+7f5b1dc6f000-7f5b1dc75000 r--s 00031000 08:01 3929117                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.jayway.jsonpath/json-path/json-path-2.4.0.jar
+7f5b1dc75000-7f5b1dc78000 r--s 0001c000 08:01 3929048                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.xmlunit/xmlunit-legacy/xmlunit-legacy-2.5.1.jar
+7f5b1dc78000-7f5b1dc7d000 r--s 00022000 08:01 3928916                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.xmlunit/xmlunit-core/xmlunit-core-2.5.1.jar
+7f5b1dc7d000-7f5b1dc84000 r--s 00049000 08:01 3929427                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.apache.httpcomponents/httpcore/httpcore-4.4.9.jar
+7f5b1dc84000-7f5b1dc92000 r--s 000ae000 08:01 3929580                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.apache.httpcomponents/httpclient/httpclient-4.5.5.jar
+7f5b1dc92000-7f5b1dcc1000 r--s 00226000 08:01 3929224                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.google.guava/guava/guava-20.0.jar
+7f5b1dcc1000-7f5b1dcc2000 r--s 0000a000 08:01 3401594                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-xml/jetty-xml-9.2.24.v20180105.jar
+7f5b1dcc2000-7f5b1dcc4000 r--s 00019000 08:01 3928974                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-webapp/jetty-webapp-9.2.24.v20180105.jar
+7f5b1dcc4000-7f5b1dcc5000 r--s 00003000 08:01 3401580                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-continuation/jetty-continuation-9.2.24.v20180105.jar
+7f5b1dcc5000-7f5b1dcc8000 r--s 0001c000 08:01 3928918                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-servlets/jetty-servlets-9.2.24.v20180105.jar
+7f5b1dcc8000-7f5b1dccb000 r--s 00015000 08:01 3928982                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-security/jetty-security-9.2.24.v20180105.jar
+7f5b1dccb000-7f5b1dcce000 r--s 0001a000 08:01 3929852                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-servlet/jetty-servlet-9.2.24.v20180105.jar
+7f5b1dcce000-7f5b1dcd1000 r--s 00018000 08:01 3929045                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-io/jetty-io-9.2.24.v20180105.jar
+7f5b1dcd1000-7f5b1dcd8000 r--s 00057000 08:01 3401481                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-util/jetty-util-9.2.24.v20180105.jar
+7f5b1dcd8000-7f5b1dcdb000 r--s 0001d000 08:01 3401453                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-http/jetty-http-9.2.24.v20180105.jar
+7f5b1dcdb000-7f5b1dcde000 r--s 00015000 08:01 3929252                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/javax.servlet/javax.servlet-api/javax.servlet-api-3.1.0.jar
+7f5b1dcde000-7f5b1dce4000 r--s 00061000 08:01 3929189                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty/jetty-server/jetty-server-9.2.24.v20180105.jar
+7f5b1dce4000-7f5b1dcf5000 r--s 00179000 08:01 3928930                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.github.tomakehurst/wiremock/wiremock-2.18.0.jar
+7f5b1dcf5000-7f5b1dcfc000 r--s 0003a000 08:01 3402511                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/wolfendale/scalacheck-gen-regexp_2.11/scalacheck-gen-regexp_2.11-0.1.1.jar
+7f5b1dcfc000-7f5b1dd20000 r--s 001b1000 08:01 3929140                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scalacheck/scalacheck_2.11/scalacheck_2.11-1.14.0.jar
+7f5b1dd20000-7f5b1dd3e000 r--s 00110000 08:01 3402323                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.mockito/mockito-all/mockito-all-1.10.19.jar
+7f5b1dd3e000-7f5b1dd44000 r--s 0005b000 08:01 3929148                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.jsoup/jsoup/jsoup-1.11.3.jar
+7f5b1dd44000-7f5b1dd49000 r--s 0005d000 08:01 3929069                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-leg-rc/selenium-leg-rc-2.53.1.jar
+7f5b1dd49000-7f5b1dd4e000 r--s 00025000 08:01 3401536                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-support/selenium-support-2.53.1.jar
+7f5b1dd4e000-7f5b1dd50000 r--s 00014000 08:01 3928950                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-safari-driver/selenium-safari-driver-2.53.1.jar
+7f5b1dd50000-7f5b1dd51000 r--s 00002000 08:01 3929191                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-ie-driver/selenium-ie-driver-2.53.1.jar
+7f5b1dd51000-7f5b1dd53000 r--s 000c7000 08:01 3929074                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-firefox-driver/selenium-firefox-driver-2.53.1.jar
+7f5b1dd53000-7f5b1dd55000 r--s 0000e000 08:01 3928978                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/htmlunit-driver/htmlunit-driver-2.21.jar
+7f5b1dd55000-7f5b1dd56000 r--s 00001000 08:01 3929033                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-edge-driver/selenium-edge-driver-2.53.1.jar
+7f5b1dd56000-7f5b1dd5b000 r--s 0001f000 08:01 3664106                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-api/selenium-api-2.53.1.jar
+7f5b1dd5b000-7f5b1dd60000 r--s 00035000 08:01 3928886                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-remote-driver/selenium-remote-driver-2.53.1.jar
+7f5b1dd60000-7f5b1dd61000 r--s 00002000 08:01 3929283                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-chrome-driver/selenium-chrome-driver-2.53.1.jar
+7f5b1dd61000-7f5b1dd62000 r--s 00000000 08:01 3929130                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.seleniumhq.selenium/selenium-java/selenium-java-2.53.1.jar
+7f5b1dd62000-7f5b1dd66000 r--s 00030000 08:01 3929168                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scalatestplus.play/scalatestplus-play_2.11/scalatestplus-play_2.11-2.0.1.jar
+7f5b1dd66000-7f5b1dd70000 r--s 0009a000 08:01 3928883                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/org.scala-lang.modules/scala-xml_2.11/scala-xml_2.11-1.0.6.jar
+7f5b1dd70000-7f5b1dd7a000 r--s 000ac000 08:01 3928943                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/org.scalactic/scalactic_2.11/scalactic_2.11-3.0.5.jar
+7f5b1dd7a000-7f5b1de25000 r--s 00948000 08:01 3929262                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/org.scalatest/scalatest_2.11/scalatest_2.11-3.0.5.jar
+7f5b1de25000-7f5b1de26000 r--s 0000a000 08:01 3402502                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.ow2.asm/asm-util/asm-util-5.0.3.jar
+7f5b1de26000-7f5b1de27000 r--s 00004000 08:01 3929284                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.ow2.asm/asm-analysis/asm-analysis-5.0.3.jar
+7f5b1de27000-7f5b1de29000 r--s 00006000 08:01 3928959                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.ow2.asm/asm-tree/asm-tree-5.0.3.jar
+7f5b1de29000-7f5b1de2e000 r--s 00029000 08:01 3928892                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.parboiled/parboiled-core/parboiled-core-1.1.7.jar
+7f5b1de2e000-7f5b1de30000 r--s 00010000 08:01 3928932                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.parboiled/parboiled-java/parboiled-java-1.1.7.jar
+7f5b1de30000-7f5b1de33000 r--s 00011000 08:01 3928967                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.pegdown/pegdown/pegdown-1.6.0.jar
+7f5b1de33000-7f5b1de36000 r--s 00019000 08:01 3928920                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/hmrctest_2.11/hmrctest_2.11-3.5.0-play-25.jar
+7f5b1de36000-7f5b1de47000 r--s 00155000 08:01 3402206                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.java.dev.jna/jna-platform/jna-platform-4.1.0.jar
+7f5b1de47000-7f5b1de4b000 r--s 000dc000 08:01 3402564                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.java.dev.jna/jna/jna-4.1.0.jar
+7f5b1de4b000-7f5b1de4d000 r--s 0000c000 08:01 3401590                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.apache.commons/commons-exec/commons-exec-1.3.jar
+7f5b1de4d000-7f5b1de52000 r--s 0002f000 08:01 3929043                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.google.code.gson/gson/gson-2.3.1.jar
+7f5b1de52000-7f5b1de59000 r--s 00049000 08:01 3929238                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/cglib/cglib-nodep/cglib-nodep-2.1_3.jar
+7f5b1de59000-7f5b1de5c000 r--s 00014000 08:01 3928897                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.fluentlenium/fluentlenium-core/fluentlenium-core-0.10.9.jar
+7f5b1de5c000-7f5b1de5e000 r--s 00009000 08:01 3402541                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty.websocket/websocket-api/websocket-api-9.2.15.v20160210.jar
+7f5b1de5e000-7f5b1de63000 r--s 00028000 08:01 3929278                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty.websocket/websocket-common/websocket-common-9.2.15.v20160210.jar
+7f5b1de63000-7f5b1de64000 r--s 00008000 08:01 3928940                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.eclipse.jetty.websocket/websocket-client/websocket-client-9.2.15.v20160210.jar
+7f5b1de64000-7f5b1de65000 r--s 00003000 08:01 3929318                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.w3c.css/sac/sac-1.3.jar
+7f5b1de65000-7f5b1de69000 r--s 00058000 08:01 3928964                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.sourceforge.cssparser/cssparser/cssparser-0.9.18.jar
+7f5b1de69000-7f5b1de6b000 r--s 0001d000 08:01 3928955                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.sourceforge.nekohtml/nekohtml/nekohtml-1.9.22.jar
+7f5b1de6b000-7f5b1de79000 r--s 000fc000 08:01 3929010                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.sourceforge.htmlunit/htmlunit-core-js/htmlunit-core-js-2.17.jar
+7f5b1de79000-7f5b1de7b000 r--s 00009000 08:01 3929137                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.apache.httpcomponents/httpmime/httpmime-4.5.2.jar
+7f5b1de7b000-7f5b1de7f000 r--s 00040000 08:01 3929178                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/xalan/serializer/serializer-2.7.2.jar
+7f5b1de7f000-7f5b1dea4000 r--s 002de000 08:01 3929280                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/xalan/xalan/xalan-2.7.2.jar
+7f5b1dea4000-7f5b1deca000 r--s 0019d000 08:01 3929052                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.sourceforge.htmlunit/htmlunit/htmlunit-2.20.jar
+7f5b1deca000-7f5b1decc000 r--s 00003000 08:01 3928933                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.google.code.findbugs/jsr305/jsr305-3.0.1.jar
+7f5b1decc000-7f5b1dece000 r--s 00002000 08:01 3929154                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scala-sbt/test-interface/test-interface-1.0.jar
+7f5b1dece000-7f5b1ded0000 r--s 00006000 08:01 3928999                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.novocode/junit-interface/junit-interface-0.11.jar
+7f5b1ded0000-7f5b1ded2000 r--s 00009000 08:01 3929322                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.hamcrest/hamcrest-core/hamcrest-core-1.3.jar
+7f5b1ded2000-7f5b1deda000 r--s 00045000 08:01 3929029                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/junit/junit/junit-4.12.jar
+7f5b1deda000-7f5b1dedd000 r--s 0001f000 08:01 3664110                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-test_2.11/play-test_2.11-2.5.19.jar
+7f5b1dedd000-7f5b1dede000 r--s 00002000 08:01 3929259                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-whitelist-filter_2.11/play-whitelist-filter_2.11-2.0.0.jar
+7f5b1dede000-7f5b1dee3000 r--s 00039000 08:01 3929165                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/domain_2.11/domain_2.11-5.3.0.jar
+7f5b1dee3000-7f5b1df46000 r--s 00a3a000 08:01 3929072                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.ibm.icu/icu4j/icu4j-54.1.1.jar
+7f5b1df46000-7f5b1df47000 r--s 0000a000 08:01 3401549                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/url-builder_2.11/url-builder_2.11-2.0.0.jar
+7f5b1df47000-7f5b1df49000 r--s 0000b000 08:01 3402550                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-language_2.11/play-language_2.11-3.4.0.jar
+7f5b1df49000-7f5b1df4b000 r--s 00001000 08:01 3929018                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.github.rishabh9/mdc-propagation-dispatcher_2.11/mdc-propagation-dispatcher_2.11-0.0.5.jar
+7f5b1df4b000-7f5b1df4d000 r--s 00000000 08:01 3929083                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/io.dropwizard.metrics/metrics-logback/metrics-logback-3.1.2.jar
+7f5b1df4d000-7f5b1df4f000 r--s 00008000 08:01 3664102                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/io.dropwizard.metrics/metrics-jvm/metrics-jvm-3.1.2.jar
+7f5b1df4f000-7f5b1df50000 r--s 00003000 08:01 3928989                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/io.dropwizard.metrics/metrics-json/metrics-json-3.1.2.jar
+7f5b1df50000-7f5b1df52000 r--s 00008000 08:01 3929036                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/de.threedimensions/metrics-play_2.11/metrics-play_2.11-2.5.13.jar
+7f5b1df52000-7f5b1df56000 r--s 0001e000 08:01 3928972                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/io.dropwizard.metrics/metrics-core/metrics-core-3.2.5.jar
+7f5b1df56000-7f5b1df58000 r--s 00004000 08:01 3929257                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/io.dropwizard.metrics/metrics-graphite/metrics-graphite-3.2.5.jar
+7f5b1df58000-7f5b1df59000 r--s 00003000 08:01 3928948                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/logback-json-logger_2.11/logback-json-logger_2.11-4.3.0.jar
+7f5b1df59000-7f5b1df5b000 r--s 0000c000 08:01 3929213                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-config_2.11/play-config_2.11-7.3.0.jar
+7f5b1df5b000-7f5b1df5f000 r--s 00018000 08:01 3928881                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/net.ceedubs/ficus_2.11/ficus_2.11-1.1.2.jar
+7f5b1df5f000-7f5b1df66000 r--s 0004e000 08:01 3929186                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/auth-client_2.11/auth-client_2.11-2.11.0-play-25.jar
+7f5b1df66000-7f5b1df77000 r--s 0008a000 08:01 3929218                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/joda-time/joda-time/joda-time-2.9.7.jar
+7f5b1df77000-7f5b1df7c000 r--s 0002e000 08:01 3929275                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.github.nscala-time/nscala-time_2.11/nscala-time_2.11-2.16.0.jar
+7f5b1df7c000-7f5b1df7d000 r--s 00007000 08:01 3929223                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/time_2.11/time_2.11-3.2.0.jar
+7f5b1df7d000-7f5b1df81000 r--s 00028000 08:01 3402508                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-auditing_2.11/play-auditing_2.11-3.16.0-play-25.jar
+7f5b1df81000-7f5b1df83000 r--s 00013000 08:01 3929306                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/crypto_2.11/crypto_2.11-5.2.0.jar
+7f5b1df83000-7f5b1df85000 r--s 00004000 08:01 3928957                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.akka/akka-slf4j_2.11/akka-slf4j_2.11-2.5.18.jar
+7f5b1df85000-7f5b1df91000 r--s 00068000 08:01 3929184                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/org.scala-lang.modules/scala-parser-combinators_2.11/scala-parser-combinators_2.11-1.1.1.jar
+7f5b1df91000-7f5b1df99000 r--s 0005a000 08:01 3928996                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.typesafe/ssl-config-core_2.11/ssl-config-core_2.11-0.3.6.jar
+7f5b1df99000-7f5b1df9a000 r--s 00000000 08:01 3402568                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.reactivestreams/reactive-streams/reactive-streams-1.0.2.jar
+7f5b1df9a000-7f5b1dfa1000 r--s 00070000 08:01 3401484                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.akka/akka-protobuf_2.11/akka-protobuf_2.11-2.5.18.jar
+7f5b1dfa1000-7f5b1dff9000 r--s 004b0000 08:01 3929143                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.akka/akka-stream_2.11/akka-stream_2.11-2.5.18.jar
+7f5b1dff9000-7f5b1e031000 r--s 00386000 08:01 3929202                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.akka/akka-actor_2.11/akka-actor_2.11-2.5.18.jar
+7f5b1e031000-7f5b1e03c000 r--s 00066000 08:01 3928927                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/bootstrap-play-25_2.11/bootstrap-play-25_2.11-4.9.0.jar
+7f5b1e03c000-7f5b1e03e000 r--s 0000f000 08:01 3402451                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-conditional-form-mapping_2.11/play-conditional-form-mapping_2.11-0.2.0.jar
+7f5b1e03e000-7f5b1e041000 r--s 00016000 08:01 3929031                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/jackson-datatype-jsr310-2.9.8.jar
+7f5b1e041000-7f5b1e043000 r--s 00007000 08:01 3929175                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/jackson-datatype-jdk8-2.9.8.jar
+7f5b1e043000-7f5b1e046000 r--s 0000e000 08:01 3929151                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.fasterxml.jackson.core/jackson-annotations/jackson-annotations-2.9.8.jar
+7f5b1e046000-7f5b1e058000 r--s 00137000 08:01 3402548                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.fasterxml.jackson.core/jackson-databind/jackson-databind-2.9.8.jar
+7f5b1e058000-7f5b1e05c000 r--s 0004c000 08:01 3929941                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.fasterxml.jackson.core/jackson-core/jackson-core-2.9.8.jar
+7f5b1e05c000-7f5b1e05d000 r--s 00001000 08:01 3929135                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/http-verbs-play-25_2.11/http-verbs-play-25_2.11-1.0.0.jar
+7f5b1e05d000-7f5b1e05e000 r--s 00001000 08:01 3928991                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/http-core_2.11/http-core_2.11-2.1.0.jar
+7f5b1e05e000-7f5b1e066000 r--s 0004d000 08:01 3929272                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/http-verbs_2.11/http-verbs_2.11-9.2.0-play-25.jar
+7f5b1e066000-7f5b1e06b000 r--s 00041000 08:01 3401547                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/com.typesafe/config/config-1.3.3.jar
+7f5b1e06b000-7f5b1e0c3000 r--s 003a7000 08:01 3929302                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.bouncycastle/bcprov-jdk15on/bcprov-jdk15on-1.60.jar
+7f5b1e0c3000-7f5b1e0c5000 r--s 00006000 08:01 3929173                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/secure_2.11/secure_2.11-7.4.0.jar
+7f5b1e0c5000-7f5b1e0c6000 r--s 00003000 08:01 3402533                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/json-encryption_2.11/json-encryption_2.11-4.0.0.jar
+7f5b1e0c6000-7f5b1e0c9000 r--s 0000d000 08:01 3929038                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/http-caching-client_2.11/http-caching-client_2.11-8.1.0.jar
+7f5b1e0c9000-7f5b1e0cd000 r--s 0001f000 08:01 3402560                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.joda/joda-convert/joda-convert-2.0.2.jar
+7f5b1e0cd000-7f5b1e0d7000 r--s 0005f000 08:01 3928909                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/filters-helpers_2.11/filters-helpers_2.11-2.5.19.jar
+7f5b1e0d7000-7f5b1e0e1000 r--s 0006e000 08:01 3929056                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-ui_2.11/play-ui_2.11-7.32.0-play-25.jar
+7f5b1e0e1000-7f5b1e0fa000 r--s 0013a000 08:01 3928900                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/xerces/xercesImpl/xercesImpl-2.12.0.jar
+7f5b1e0fa000-7f5b1e0fc000 r--s 0000c000 08:01 3929157                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-health_2.11/play-health_2.11-3.11.0-play-25.jar
+7f5b1e0fc000-7f5b1e0ff000 r--s 000c4000 08:01 3929904                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/govuk-template_2.11/govuk-template_2.11-5.26.0-play-25.jar
+7f5b1e0ff000-7f5b1e103000 r--s 0002a000 08:01 3929126                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/commons-io/commons-io/commons-io-2.4.jar
+7f5b1e103000-7f5b1e106000 r--s 00021000 08:01 3929221                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.apache.logging.log4j/log4j-api/log4j-api-2.5.jar
+7f5b1e106000-7f5b1e11f000 r--s 00123000 08:01 3928970                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/io.netty/netty/netty-3.10.6.Final.jar
+7f5b1e11f000-7f5b1e163000 r--s 0032f000 08:01 3401450                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/reactivemongo-shaded/reactivemongo-shaded-0.15.1.jar
+7f5b1e163000-7f5b1e16d000 r--s 00068000 08:01 3402431                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/reactivemongo-bson_2.11/reactivemongo-bson_2.11-0.15.1.jar
+7f5b1e16d000-7f5b1e172000 r--s 0002f000 08:01 3929270                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/reactivemongo-bson-macros_2.11/reactivemongo-bson-macros_2.11-0.15.1.jar
+7f5b1e172000-7f5b1e1b5000 r--s 002f9000 08:01 3929211                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/reactivemongo_2.11/reactivemongo_2.11-0.15.1.jar
+7f5b1e1b5000-7f5b1e1c7000 r--s 000be000 08:01 3929060                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.sksamuel.scapegoat/scalac-scapegoat-plugin_2.11/scalac-scapegoat-plugin_2.11-1.3.0.jar
+7f5b1e1c7000-7f5b1e1d2000 r--s 0006e000 08:01 3402530                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.reactivemongo/reactivemongo-play-json_2.11/reactivemongo-play-json_2.11-0.12.6-play25.jar
+7f5b1e1d2000-7f5b1e1d5000 r--s 00020000 08:01 3929050                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/simple-reactivemongo_2.11/simple-reactivemongo_2.11-6.1.0.jar
+7f5b1e1d5000-7f5b1e1d8000 r--s 00018000 08:01 3401420                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/uk.gov.hmrc/play-reactivemongo_2.11/play-reactivemongo_2.11-6.4.0.jar
+7f5b1e1d8000-7f5b1e1da000 r--s 0000e000 08:01 3929228                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/commons-logging/commons-logging/commons-logging-1.2.jar
+7f5b1e1da000-7f5b1e1db000 r--s 00001000 08:01 3402562                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/oauth.signpost/signpost-commonshttp4/signpost-commonshttp4-1.2.1.2.jar
+7f5b1e1db000-7f5b1e1de000 r--s 00009000 08:01 3401530                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/oauth.signpost/signpost-core/signpost-core-1.2.1.2.jar
+7f5b1e1de000-7f5b1e1e0000 r--s 0000c000 08:01 3929040                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.asynchttpclient/netty-codec-dns/netty-codec-dns-2.0.36.jar
+7f5b1e1e0000-7f5b1e1e2000 r--s 00007000 08:01 3401429                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.asynchttpclient/netty-resolver/netty-resolver-2.0.36.jar
+7f5b1e1e2000-7f5b1e1e4000 r--s 00014000 08:01 3402232                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.asynchttpclient/netty-resolver-dns/netty-resolver-dns-2.0.36.jar
+7f5b1e1e4000-7f5b1e1eb000 r--s 00051000 08:01 3401497                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-handler/netty-handler-4.0.51.Final.jar
+7f5b1e1eb000-7f5b1e1ef000 r--s 00021000 08:01 3929132                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-codec/netty-codec-4.0.51.Final.jar
+7f5b1e1ef000-7f5b1e1f8000 r--s 00068000 08:01 3929142                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-codec-http/netty-codec-http-4.0.51.Final.jar
+7f5b1e1f8000-7f5b1e1f9000 r--s 00001000 08:01 3929150                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.asynchttpclient/async-http-client-netty-utils/async-http-client-netty-utils-2.0.36.jar
+7f5b1e1f9000-7f5b1e202000 r--s 00061000 08:01 3929304                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.asynchttpclient/async-http-client/async-http-client-2.0.36.jar
+7f5b1e202000-7f5b1e20f000 r--s 00096000 08:01 3401533                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-ws_2.11/play-ws_2.11-2.5.19.jar
+7f5b1e20f000-7f5b1e211000 r--s 00009000 08:01 3402558                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.slf4j/slf4j-api/slf4j-api-1.7.25.jar
+7f5b1e211000-7f5b1e21c000 r--s 00069000 08:01 3929268                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/ch.qos.logback/logback-core/logback-core-1.2.3.jar
+7f5b1e21c000-7f5b1e222000 r--s 00041000 08:01 3929249                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/ch.qos.logback/logback-classic/logback-classic-1.2.3.jar
+7f5b1e222000-7f5b1e22a000 r--s 00057000 08:01 3929315                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-transport/netty-transport-4.0.51.Final.jar
+7f5b1e22a000-7f5b1e22e000 r--s 00036000 08:01 3929062                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-buffer/netty-buffer-4.0.51.Final.jar
+7f5b1e22e000-7f5b1e237000 r--s 00058000 08:01 3928913                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-common/netty-common-4.0.51.Final.jar
+7f5b1e237000-7f5b1e283000 r--s 00418000 08:01 3928903                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scala-lang/scala-reflect/scala-reflect-2.11.11.jar
+7f5b1e283000-7f5b1e2d5000 r--s 0039b000 08:01 3929308                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play_2.11/play_2.11-2.5.19.jar
+7f5b1e2d5000-7f5b1e32e000 r--s 00523000 08:01 3929182                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scala-lang/scala-library/scala-library-2.11.11.jar
+7f5b1e32e000-7f5b1e32f000 ---p 00000000 00:00 0 
+7f5b1e32f000-7f5b1e42f000 rw-p 00000000 00:00 0 
+7f5b1e42f000-7f5b1e432000 ---p 00000000 00:00 0 
+7f5b1e432000-7f5b1e530000 rw-p 00000000 00:00 0 
+7f5b1e530000-7f5b1e533000 ---p 00000000 00:00 0 
+7f5b1e533000-7f5b1e631000 rw-p 00000000 00:00 0 
+7f5b1e631000-7f5b1e634000 ---p 00000000 00:00 0 
+7f5b1e634000-7f5b1e732000 rw-p 00000000 00:00 0 
+7f5b1e732000-7f5b1e735000 ---p 00000000 00:00 0 
+7f5b1e735000-7f5b1e833000 rw-p 00000000 00:00 0 
+7f5b1e833000-7f5b1e836000 ---p 00000000 00:00 0 
+7f5b1e836000-7f5b1e934000 rw-p 00000000 00:00 0 
+7f5b1e934000-7f5b1f2f3000 r--p 00000000 08:01 532362                     /usr/lib/locale/locale-archive
+7f5b1f2f3000-7f5b1f2f6000 ---p 00000000 00:00 0 
+7f5b1f2f6000-7f5b1f3f4000 rw-p 00000000 00:00 0 
+7f5b1f3f4000-7f5b1f3f7000 ---p 00000000 00:00 0 
+7f5b1f3f7000-7f5b1f4f5000 rw-p 00000000 00:00 0 
+7f5b1f4f5000-7f5b1f4f6000 ---p 00000000 00:00 0 
+7f5b1f4f6000-7f5b20000000 rw-p 00000000 00:00 0 
+7f5b20000000-7f5b20041000 rw-p 00000000 00:00 0 
+7f5b20041000-7f5b24000000 ---p 00000000 00:00 0 
+7f5b24000000-7f5b24001000 r--s 00005000 08:01 3929054                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-logback_2.11/play-logback_2.11-2.5.19.jar
+7f5b24001000-7f5b24004000 r--s 00023000 08:01 3402421                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/io.netty/netty-transport-native-epoll/netty-transport-native-epoll-4.0.51.Final-linux-x86_64.jar
+7f5b24004000-7f5b24006000 r--s 00004000 08:01 3928894                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.netty/netty-reactive-streams/netty-reactive-streams-1.0.8.jar
+7f5b24006000-7f5b24007000 r--s 00007000 08:01 3928889                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.netty/netty-reactive-streams-http/netty-reactive-streams-http-1.0.8.jar
+7f5b24007000-7f5b2400c000 r--s 0002b000 08:01 3928905                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-netty-server_2.11/play-netty-server_2.11-2.5.19.jar
+7f5b2400c000-7f5b2400e000 r--s 00009000 08:01 3929295                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.google.inject.extensions/guice-assistedinject/guice-assistedinject-4.0.jar
+7f5b2400e000-7f5b2401c000 r--s 00096000 08:01 3402156                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.google.inject/guice/guice-4.0.jar
+7f5b2401c000-7f5b24025000 r--s 0002d000 08:01 3929298                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/xml-apis/xml-apis/xml-apis-1.4.01.jar
+7f5b24025000-7f5b2402c000 r--s 0003f000 08:01 3929201                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/commons-codec/commons-codec/commons-codec-1.10.jar
+7f5b2402c000-7f5b2403a000 r--s 00081000 08:01 3928878                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/bundles/org.scala-lang.modules/scala-java8-compat_2.11/scala-java8-compat_2.11-0.7.0.jar
+7f5b2403a000-7f5b24041000 r--s 00042000 08:01 3929123                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-streams_2.11/play-streams_2.11-2.5.19.jar
+7f5b24041000-7f5b2404e000 r--s 00092000 08:01 3929194                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-json_2.11/play-json_2.11-2.5.19.jar
+7f5b2404e000-7f5b24626000 rw-p 00000000 00:00 0 
+7f5b24626000-7f5b24800000 r--s 03d6c000 08:01 541560                     /usr/lib/jvm/java-8-oracle/jre/lib/rt.jar
+7f5b24800000-7f5b25000000 rw-p 00000000 00:00 0 
+7f5b25000000-7f5b270c0000 rwxp 00000000 00:00 0 
+7f5b270c0000-7f5b34000000 ---p 00000000 00:00 0 
+7f5b34000000-7f5b35704000 rw-p 00000000 00:00 0 
+7f5b35704000-7f5b38000000 ---p 00000000 00:00 0 
+7f5b38000000-7f5b38002000 r--s 00000000 08:01 3929781                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/aopalliance/aopalliance/aopalliance-1.0.jar
+7f5b38002000-7f5b3800b000 r--s 0005c000 08:01 3929067                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-functional_2.11/play-functional_2.11-2.5.19.jar
+7f5b3800b000-7f5b3801e000 r--s 000ad000 08:01 3402062                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-iteratees_2.11/play-iteratees_2.11-2.5.19.jar
+7f5b3801e000-7f5b3888b000 rw-p 00000000 00:00 0 
+7f5b3888b000-7f5b3888c000 ---p 00000000 00:00 0 
+7f5b3888c000-7f5b3898c000 rw-p 00000000 00:00 0 
+7f5b3898c000-7f5b3898d000 ---p 00000000 00:00 0 
+7f5b3898d000-7f5b38a8d000 rw-p 00000000 00:00 0 
+7f5b38a8d000-7f5b38a8e000 ---p 00000000 00:00 0 
+7f5b38a8e000-7f5b38b8e000 rw-p 00000000 00:00 0 
+7f5b38b8e000-7f5b38b8f000 ---p 00000000 00:00 0 
+7f5b38b8f000-7f5b38d1b000 rw-p 00000000 00:00 0 
+7f5b38d1b000-7f5b391c9000 ---p 00000000 00:00 0 
+7f5b391c9000-7f5b39255000 rw-p 00000000 00:00 0 
+7f5b39255000-7f5b39702000 ---p 00000000 00:00 0 
+7f5b39702000-7f5b3997e000 rw-p 00000000 00:00 0 
+7f5b3997e000-7f5b3999f000 ---p 00000000 00:00 0 
+7f5b3999f000-7f5b39a23000 rw-p 00000000 00:00 0 
+7f5b39a23000-7f5b39d60000 ---p 00000000 00:00 0 
+7f5b39d60000-7f5b39d7a000 r-xp 00000000 08:01 541717                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f5b39d7a000-7f5b39f7a000 ---p 0001a000 08:01 541717                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f5b39f7a000-7f5b39f7b000 r--p 0001a000 08:01 541717                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f5b39f7b000-7f5b39f7c000 rw-p 0001b000 08:01 541717                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f5b39f7c000-7f5b39f87000 r-xp 00000000 08:01 1313970                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f5b39f87000-7f5b3a186000 ---p 0000b000 08:01 1313970                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f5b3a186000-7f5b3a187000 r--p 0000a000 08:01 1313970                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f5b3a187000-7f5b3a188000 rw-p 0000b000 08:01 1313970                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f5b3a188000-7f5b3a18e000 rw-p 00000000 00:00 0 
+7f5b3a18e000-7f5b3a199000 r-xp 00000000 08:01 1313980                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f5b3a199000-7f5b3a398000 ---p 0000b000 08:01 1313980                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f5b3a398000-7f5b3a399000 r--p 0000a000 08:01 1313980                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f5b3a399000-7f5b3a39a000 rw-p 0000b000 08:01 1313980                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f5b3a39a000-7f5b3a3b0000 r-xp 00000000 08:01 1313964                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f5b3a3b0000-7f5b3a5af000 ---p 00016000 08:01 1313964                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f5b3a5af000-7f5b3a5b0000 r--p 00015000 08:01 1313964                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f5b3a5b0000-7f5b3a5b1000 rw-p 00016000 08:01 1313964                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f5b3a5b1000-7f5b3a5b3000 rw-p 00000000 00:00 0 
+7f5b3a5b3000-7f5b3a5bb000 r-xp 00000000 08:01 1313966                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f5b3a5bb000-7f5b3a7ba000 ---p 00008000 08:01 1313966                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f5b3a7ba000-7f5b3a7bb000 r--p 00007000 08:01 1313966                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f5b3a7bb000-7f5b3a7bc000 rw-p 00008000 08:01 1313966                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f5b3a7bc000-7f5b3a7e9000 r-xp 00000000 08:01 541711                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f5b3a7e9000-7f5b3a9e8000 ---p 0002d000 08:01 541711                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f5b3a9e8000-7f5b3a9e9000 r--p 0002c000 08:01 541711                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f5b3a9e9000-7f5b3a9eb000 rw-p 0002d000 08:01 541711                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f5b3a9eb000-7f5b3a9f8000 r-xp 00000000 08:01 541716                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f5b3a9f8000-7f5b3abf7000 ---p 0000d000 08:01 541716                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f5b3abf7000-7f5b3abf9000 r--p 0000c000 08:01 541716                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f5b3abf9000-7f5b3abfa000 rw-p 0000e000 08:01 541716                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f5b3abfa000-7f5b3ac01000 r-xp 00000000 08:01 1314025                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f5b3ac01000-7f5b3ae00000 ---p 00007000 08:01 1314025                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f5b3ae00000-7f5b3ae01000 r--p 00006000 08:01 1314025                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f5b3ae01000-7f5b3ae02000 rw-p 00007000 08:01 1314025                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f5b3ae02000-7f5b3af0a000 r-xp 00000000 08:01 1313941                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f5b3af0a000-7f5b3b109000 ---p 00108000 08:01 1313941                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f5b3b109000-7f5b3b10a000 r--p 00107000 08:01 1313941                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f5b3b10a000-7f5b3b10b000 rw-p 00108000 08:01 1313941                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f5b3b10b000-7f5b3bded000 r-xp 00000000 08:01 541737                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f5b3bded000-7f5b3bfed000 ---p 00ce2000 08:01 541737                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f5b3bfed000-7f5b3c083000 r--p 00ce2000 08:01 541737                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f5b3c083000-7f5b3c0b4000 rw-p 00d78000 08:01 541737                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f5b3c0b4000-7f5b3c0ef000 rw-p 00000000 00:00 0 
+7f5b3c0ef000-7f5b3c2af000 r-xp 00000000 08:01 1313871                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f5b3c2af000-7f5b3c4af000 ---p 001c0000 08:01 1313871                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f5b3c4af000-7f5b3c4b3000 r--p 001c0000 08:01 1313871                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f5b3c4b3000-7f5b3c4b5000 rw-p 001c4000 08:01 1313871                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f5b3c4b5000-7f5b3c4b9000 rw-p 00000000 00:00 0 
+7f5b3c4b9000-7f5b3c4bc000 r-xp 00000000 08:01 1313895                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f5b3c4bc000-7f5b3c6bb000 ---p 00003000 08:01 1313895                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f5b3c6bb000-7f5b3c6bc000 r--p 00002000 08:01 1313895                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f5b3c6bc000-7f5b3c6bd000 rw-p 00003000 08:01 1313895                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f5b3c6bd000-7f5b3c6d4000 r-xp 00000000 08:01 541692                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f5b3c6d4000-7f5b3c8d3000 ---p 00017000 08:01 541692                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f5b3c8d3000-7f5b3c8d4000 r--p 00016000 08:01 541692                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f5b3c8d4000-7f5b3c8d5000 rw-p 00017000 08:01 541692                     /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f5b3c8d5000-7f5b3c8ed000 r-xp 00000000 08:01 1314017                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f5b3c8ed000-7f5b3caec000 ---p 00018000 08:01 1314017                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f5b3caec000-7f5b3caed000 r--p 00017000 08:01 1314017                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f5b3caed000-7f5b3caee000 rw-p 00018000 08:01 1314017                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f5b3caee000-7f5b3caf2000 rw-p 00000000 00:00 0 
+7f5b3caf2000-7f5b3cb18000 r-xp 00000000 08:01 1313843                    /lib/x86_64-linux-gnu/ld-2.23.so
+7f5b3cb18000-7f5b3cb19000 r--s 00000000 08:01 3929024                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/javax.inject/javax.inject/javax.inject-1.jar
+7f5b3cb19000-7f5b3cb1a000 r--s 00003000 08:01 3401446                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/javax.transaction/jta/jta-1.1.jar
+7f5b3cb1a000-7f5b3cb1c000 r--s 00003000 08:01 3402527                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.slf4j/jcl-over-slf4j/jcl-over-slf4j-1.7.21.jar
+7f5b3cb1c000-7f5b3cb1e000 r--s 00000000 08:01 3401473                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.slf4j/jul-to-slf4j/jul-to-slf4j-1.7.21.jar
+7f5b3cb1e000-7f5b3cb1f000 r--s 00004000 08:01 3929291                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-netty-utils/play-netty-utils-2.5.19.jar
+7f5b3cb1f000-7f5b3cb20000 r--s 00001000 08:01 3929287                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-datacommons_2.11/play-datacommons_2.11-2.5.19.jar
+7f5b3cb20000-7f5b3cb29000 r--s 00091000 08:01 3929094                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scala-stm/scala-stm_2.11/scala-stm_2.11-0.7.jar
+7f5b3cb29000-7f5b3cbfb000 rw-p 00000000 00:00 0 
+7f5b3cbfb000-7f5b3cbfe000 ---p 00000000 00:00 0 
+7f5b3cbfe000-7f5b3cd01000 rw-p 00000000 00:00 0 
+7f5b3cd01000-7f5b3cd03000 r--s 00000000 08:01 3929007                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-exceptions/play-exceptions-2.5.19.jar
+7f5b3cd03000-7f5b3cd04000 r--s 00000000 08:01 3929128                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/build-link/build-link-2.5.19.jar
+7f5b3cd04000-7f5b3cd0b000 r--s 00041000 08:01 3930099                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-server_2.11/play-server_2.11-2.5.19.jar
+7f5b3cd0b000-7f5b3cd0d000 r--s 0000d000 08:01 3401538                    /home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/twirl-api_2.11/twirl-api_2.11-1.1.1.jar
+7f5b3cd0d000-7f5b3cd15000 rw-s 00000000 08:01 1601425                    /tmp/hsperfdata_abhijeet/17543
+7f5b3cd15000-7f5b3cd16000 rw-p 00000000 00:00 0 
+7f5b3cd16000-7f5b3cd17000 ---p 00000000 00:00 0 
+7f5b3cd17000-7f5b3cd18000 r--p 00025000 08:01 1313843                    /lib/x86_64-linux-gnu/ld-2.23.so
+7f5b3cd18000-7f5b3cd19000 rw-p 00026000 08:01 1313843                    /lib/x86_64-linux-gnu/ld-2.23.so
+7f5b3cd19000-7f5b3cd1a000 rw-p 00000000 00:00 0 
+7ffe08b4e000-7ffe08b76000 rw-p 00000000 00:00 0                          [stack]
+7ffe08bcf000-7ffe08bd2000 r--p 00000000 00:00 0                          [vvar]
+7ffe08bd2000-7ffe08bd4000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Djna.nosys=true -Dconfig.file=conf/test.application.conf 
+java_command: sbt.ForkMain 35031
+java_class_path (initial): /home/abhijeet/Applications/pods/pension-administrator-frontend/target/scala-2.11/test-classes:/home/abhijeet/Applications/pods/pension-administrator-frontend/target/web/classes/test:/home/abhijeet/Applications/pods/pension-administrator-frontend/target/scala-2.11/classes:/home/abhijeet/Applications/pods/pension-administrator-frontend/target/web/classes/main:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scala-lang/scala-library/scala-library-2.11.11.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/twirl-api_2.11/twirl-api_2.11-1.1.1.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-server_2.11/play-server_2.11-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play_2.11/play_2.11-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/build-link/build-link-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-exceptions/play-exceptions-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-iteratees_2.11/play-iteratees_2.11-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/org.scala-stm/scala-stm_2.11/scala-stm_2.11-0.7.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-json_2.11/play-json_2.11-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-functional_2.11/play-functional_2.11-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-frontend/lib_managed/jars/com.typesafe.play/play-datacommons_2.11/play-datacommons_2.11-2.5.19.jar:/home/abhijeet/Applications/pods/pension-administrator-fro
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/java-8-oracle
+PATH=/home/abhijeet/bin:/home/abhijeet/.local/bin:/home/abhijeet/bin:/home/abhijeet/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xaced60], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xaced60], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x907ca0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x907ca0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x907ca0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x907ca0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x907b70], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x908190], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: [libjvm.so+0x908190], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGTERM: [libjvm.so+0x908190], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x908190], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.5 LTS"
+
+uname:Linux 4.15.0-46-generic #49~16.04.1-Ubuntu SMP Tue Feb 12 17:45:24 UTC 2019 x86_64
+libc:glibc 2.23 NPTL 2.23 
+rlimit: STACK 8192k, CORE 0k, NPROC 63931, NOFILE 1048576, AS infinity
+load average:7.19 5.50 5.45
+
+/proc/meminfo:
+MemTotal:       16425960 kB
+MemFree:          133416 kB
+MemAvailable:          0 kB
+Buffers:             592 kB
+Cached:            74800 kB
+SwapCached:            0 kB
+Active:         15958704 kB
+Inactive:          67496 kB
+Active(anon):   15951828 kB
+Inactive(anon):    59452 kB
+Active(file):       6876 kB
+Inactive(file):     8044 kB
+Unevictable:          64 kB
+Mlocked:              64 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:               424 kB
+Writeback:           352 kB
+AnonPages:      15950936 kB
+Mapped:            63224 kB
+Shmem:             60408 kB
+Slab:             103000 kB
+SReclaimable:      50264 kB
+SUnreclaim:        52736 kB
+KernelStack:       31808 kB
+PageTables:        78992 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     8212980 kB
+Committed_AS:   23828784 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      143296 kB
+DirectMap2M:    16633856 kB
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-3
+cpu_memory_nodes: 0
+active_processor_count: 4
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 16410218496
+memory_max_usage_in_bytes: 0
+
+
+CPU:total 4 (initial active 4) (4 cores per cpu, 1 threads per core) family 6 model 158 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, 3dnowpref, lzcnt, tsc, tscinvbit
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
+stepping	: 9
+cpu MHz		: 2904.124
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 5808.24
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
+stepping	: 9
+cpu MHz		: 2904.124
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 5808.24
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
+stepping	: 9
+cpu MHz		: 2904.124
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 5808.24
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 158
+model name	: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
+stepping	: 9
+cpu MHz		: 2904.124
+cache size	: 8192 KB
+physical id	: 0
+siblings	: 4
+core id		: 3
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 22
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid pni pclmulqdq ssse3 cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single pti fsgsbase avx2 invpcid rdseed clflushopt
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips	: 5808.24
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 16425960k(133340k free), swap 0k(0k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.191-b12) for linux-amd64 JRE (1.8.0_191-b12), built on Oct  6 2018 05:43:09 by "java_re" with gcc 7.3.0
+
+time: Tue Mar 12 09:46:16 2019
+elapsed time: 33 seconds (0d 0h 0m 33s)
+

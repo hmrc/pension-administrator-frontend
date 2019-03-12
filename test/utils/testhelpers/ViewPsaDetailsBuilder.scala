@@ -18,11 +18,12 @@ package utils.testhelpers
 
 import java.time.LocalDate
 
-import models.{UpdateMode}
+import base.SpecBase
+import models.UpdateMode
 import viewmodels._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
-object ViewPsaDetailsBuilder {
+object ViewPsaDetailsBuilder extends SpecBase {
 
   val pensionAdviserSeqAnswers = Seq(
     AnswerRow("pensions.advisor.label", Seq("Pension Adviser"), false,
@@ -43,7 +44,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false,
       None),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
+      None),
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
@@ -64,7 +65,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false,
       None),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url))),
+      None),
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
@@ -80,7 +81,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, 0).url))),
+      None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
@@ -100,7 +101,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("Has Test partnership name been at their address for more than 12 months?", Seq("No"), false,
       None),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url))),
+      None),
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
@@ -116,7 +117,7 @@ object ViewPsaDetailsBuilder {
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, 0).url))),
+      None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
@@ -146,7 +147,13 @@ object ViewPsaDetailsBuilder {
     Seq(
       AnswerSection(
         None, pensionAdviserSeqAnswers
-        )))
+        )),
+    Some(AddLink(Link(
+      controllers.register.adviser.routes.ConfirmDeleteAdviserController.onPageLoad().url,
+      Message("adviser-delete-link", "Pension Adviser")),
+      Some(Message("adviser-delete-link-additionalText", "Pension Adviser")))
+    )
+  )
 
   val directorsSuperSection =SuperSection(Some("director.supersection.header"),
     Seq(AnswerSection(

@@ -74,6 +74,8 @@ class MicroserviceCacheConnector @Inject()(
               blockForAdmin()
             case (false, true) =>
               blockForScheme()
+            case (false, false) =>
+              blockForAdmin()
             case _ =>
               Future.successful(returnDefault)
           }
