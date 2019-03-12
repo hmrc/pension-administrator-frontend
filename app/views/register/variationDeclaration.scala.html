@@ -68,7 +68,9 @@
             </fieldset>
         </div>
 
-        @components.submit_button("site.agreeAndContinue")
+        <div class="subsection">
+            @components.submit_button("site.agreeAndContinue")
+        </div>
 
         @psaNameOpt.map { psaName =>
             @components.return_link(psaName, UpdateMode)
