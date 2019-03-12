@@ -30,7 +30,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import utils.annotations.Register
+import utils.annotations.{Register, Variations}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,7 +40,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               @Register navigator: Navigator,
+                                               @Variations navigator: Navigator,
                                                formProvider: VariationDeclarationFormProvider,
                                                dataCacheConnector: UserAnswersCacheConnector,
                                                pensionsSchemeConnector: PensionsSchemeConnector
@@ -78,7 +78,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                     DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(workingKnowledge))
                   .asOpt.getOrElse(UserAnswers(json))
                 pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
-                  Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(json)))
+                  Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
                 )
               }
           )
