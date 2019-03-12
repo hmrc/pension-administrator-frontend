@@ -33,7 +33,7 @@ import viewmodels.{Message, PersonDetailsViewModel}
 class DirectorDetailsController @Inject()(
                                            val appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
-                                           val dataCacheConnector: UserAnswersCacheConnector,
+                                           val cacheConnector: UserAnswersCacheConnector,
                                            @CompanyDirector val navigator: Navigator,
                                            override val allowAccess: AllowAccessActionProvider,
                                            authenticate: AuthAction,

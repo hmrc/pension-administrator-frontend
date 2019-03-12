@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{PersonDetailsController, Retrievals}
+import controllers.{PersonDetailsController, Retrievals, Variations}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models.requests.DataRequest
@@ -33,7 +33,7 @@ import viewmodels.{Message, PersonDetailsViewModel}
 class PartnerDetailsController @Inject()(
                                           val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          val dataCacheConnector: UserAnswersCacheConnector,
+                                          val cacheConnector: UserAnswersCacheConnector,
                                           @PartnershipPartner val navigator: Navigator,
                                           authenticate: AuthAction,
                                           override val allowAccess: AllowAccessActionProvider,

@@ -17,10 +17,20 @@
 package identifiers.register.partnership.partners
 
 import identifiers.TypedIdentifier
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsResult}
+import utils.UserAnswers
 
 case class PartnerConfirmPreviousAddressId(index: Int) extends TypedIdentifier[Boolean] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerConfirmPreviousAddressId.toString
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(PartnerPreviousAddressId(index))
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 }
 
 object PartnerConfirmPreviousAddressId {

@@ -80,15 +80,10 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-        setNewFlag(PartnerDetailsId(index), mode).flatMap { _ =>
-          sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) flatMap { _ =>
-            saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-              Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-            }
-          }
+      sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) flatMap { _ =>
+        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
+      }
   }
-
-
-
 }

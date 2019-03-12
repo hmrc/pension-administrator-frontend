@@ -74,7 +74,7 @@ object DirectorDetailsControllerSpec {
     new DirectorDetailsController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
-      dataCacheConnector = connector,
+      cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),

@@ -17,8 +17,18 @@
 package identifiers.register.company
 
 import identifiers.TypedIdentifier
+import play.api.libs.json.JsResult
+import utils.UserAnswers
 
 case object CompanyConfirmPreviousAddressId extends TypedIdentifier[Boolean] {
   override def toString: String = "companyConfirmPreviousAddress"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(CompanyPreviousAddressId)
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 }
