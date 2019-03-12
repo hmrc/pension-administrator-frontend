@@ -66,7 +66,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object AdviserNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
-  lazy val adviserUpdated = UserAnswers(Json.obj()).set(IsAdviserChangeId)(true).asOpt.get
+  lazy val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(true).asOpt.get
 
   private def adviserPostCodeLookUpPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)
   private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)

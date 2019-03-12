@@ -49,7 +49,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector).onSubmit(NormalMode)
   }
 
-  private def viewAsString(form: Form[_] = form) = adviserName(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = adviserName(frontendAppConfig, form, NormalMode, None)(fakeRequest, messages).toString
 
 
   behave like controllerWithOnPageLoadMethod(onPageLoadAction, getEmptyData, userAnswer.dataRetrievalAction, form, form.fill("test"), viewAsString)

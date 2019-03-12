@@ -19,6 +19,7 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
+import identifiers.register.adviser.ConfirmDeleteAdviserId
 import identifiers.register.{DeclarationChangedId, DeclarationFitAndProperId, VariationWorkingKnowledgeId}
 import identifiers.vary.AnyMoreChangesId
 import models.UpdateMode
@@ -38,6 +39,9 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage, false, None, false),
+    (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage, false, None, false),
+    (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage, false, None, false),
     (AnyMoreChangesId, haveMoreChanges, checkYourAnswersPage, false, None, false),
     (AnyMoreChangesId, noMoreChanges, variationWorkingKnowledgePage, false, None, false),
     (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, false, None, false),
@@ -63,6 +67,8 @@ object VariationsNavigatorSpec extends OptionValues {
   private val emptyAnswers = UserAnswers(Json.obj())
 
   private val haveMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(true).asOpt.value
+  private val confirmDeleteYes: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(true).asOpt.value
+  private val confirmDeleteNo: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(false).asOpt.value
   private val noMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(false).asOpt.value
 
   private val haveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(true).asOpt.value
