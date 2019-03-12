@@ -74,7 +74,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   private def doesAdviserExist(ua:UserAnswers):Boolean  =
-      ua.get(AdviserNameId).isDefined
+    ua.get(VariationWorkingKnowledgeId).isDefined
 
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
     from.userAnswers.get(DeclarationChangedId) match {
