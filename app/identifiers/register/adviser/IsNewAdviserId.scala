@@ -21,7 +21,7 @@ import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 
 object IsNewAdviserId extends TypedIdentifier[Boolean] {
-  override def toString: String = "adviserChange"
+  override def toString: String = "newAdviser"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {

@@ -55,7 +55,7 @@ class ConfirmDeleteAdviserController @Inject()(
     Message("confirmDelete.adviser.title"),
     "confirmDelete.adviser.heading",
     Some(name),
-    psaName()
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
