@@ -33,15 +33,15 @@ import views.html.personDetails
 
 import scala.concurrent.Future
 
-trait PersonDetailsController extends FrontendController with I18nSupport {
+trait PersonDetailsController extends FrontendController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  override implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
   def appConfig: FrontendAppConfig
 
-  def dataCacheConnector: UserAnswersCacheConnector
+  def cacheConnector: UserAnswersCacheConnector
 
   def navigator: Navigator
 
@@ -71,10 +71,11 @@ trait PersonDetailsController extends FrontendController with I18nSupport {
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(personDetails(appConfig, formWithErrors, viewModel, mode))),
       value =>
-        dataCacheConnector.save(request.externalId, id, value).map(cacheMap =>
-          Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))
+        cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
+          setNewFlag(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>
+            Redirect(navigator.nextPage(id, mode, UserAnswers(updatedUserAnswers)))
+          }
+        }
     )
-
   }
-
 }

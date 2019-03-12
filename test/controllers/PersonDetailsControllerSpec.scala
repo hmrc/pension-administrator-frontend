@@ -51,7 +51,7 @@ object PersonDetailsControllerSpec {
     new PersonDetailsController {
       override def appConfig: FrontendAppConfig = base.frontendAppConfig
 
-      override def dataCacheConnector: UserAnswersCacheConnector = connector
+      override def cacheConnector: UserAnswersCacheConnector = connector
 
       override def navigator: Navigator = nav
 

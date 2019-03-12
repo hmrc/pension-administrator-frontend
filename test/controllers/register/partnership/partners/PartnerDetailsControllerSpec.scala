@@ -74,7 +74,7 @@ object PartnerDetailsControllerSpec {
     new PartnerDetailsController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
-      dataCacheConnector = connector,
+      cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       FakeAllowAccessProvider(),
