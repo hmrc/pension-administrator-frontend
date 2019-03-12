@@ -45,8 +45,6 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
     (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorDetailsPage(mode), true, None, true),
     (DirectorDetailsId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CompanyDirectorAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (CompanyDirectorAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (DirectorAddressId(0), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -62,12 +60,18 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 
   def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
+    (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
   )
 
   def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
     (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
+    (DirectorNinoId(0), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (DirectorNinoId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (DirectorUniqueTaxReferenceId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
     (DirectorAddressYearsId(0), addressYearsOverAYearExistingDirector, anyMoreChangesPage, true, None, true),
     (DirectorAddressYearsId(0), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, true, None, true),
     (DirectorConfirmPreviousAddressId(0), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), false, None, true),

@@ -94,7 +94,7 @@ trait Variations extends FrontendController {
 
   def setNewFlag(id: TypedIdentifier[PersonDetails], mode: Mode, userAnswers: UserAnswers)
                                     (implicit request: DataRequest[_]): Future[JsValue] = {
-    if(mode == UpdateMode) {
+    if(mode == UpdateMode | mode == CheckUpdateMode) {
       userAnswers.get(id).fold(doNothing){ details =>
         cacheConnector.save(request.externalId, id, details.copy(isNew = true))
       }

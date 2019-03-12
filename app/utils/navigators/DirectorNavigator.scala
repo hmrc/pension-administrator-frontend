@@ -56,8 +56,8 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers, mode)
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
     case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
-    case DirectorNinoId(index) => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index))
-    case DirectorUniqueTaxReferenceId(index) => NavigateTo.save(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))
+    case DirectorNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
+    case DirectorUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
     case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(mode, index))
     case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(mode, index))
     case DirectorAddressId(index) => NavigateTo.save(routes.DirectorAddressYearsController.onPageLoad(mode, index))
@@ -80,6 +80,24 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorPreviousAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorContactDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
     case _ => commonMap(from, mode)
+  }
+
+  private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index))
+      case UpdateMode => redirectBasedOnIsNew(answers, index,
+        routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index), anyMoreChangesPage)
+      case _ => sessionExpired
+    }
+  }
+
+  private def utrRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode => NavigateTo.save(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))
+      case UpdateMode => redirectBasedOnIsNew(answers, index,
+        routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index), anyMoreChangesPage)
+      case _ => sessionExpired
+    }
   }
 
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] =
