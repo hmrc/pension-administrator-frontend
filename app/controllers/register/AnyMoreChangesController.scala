@@ -37,7 +37,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
-import identifiers.vary.AnyMoreChangesId
+import identifiers.register.AnyMoreChangesId
 import javax.inject.Inject
 import models.{NormalMode, UpdateMode}
 import play.api.data.Form

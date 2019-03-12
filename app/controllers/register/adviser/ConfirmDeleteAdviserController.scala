@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.ConfirmDeleteAdviserFormProvider
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId, ConfirmDeleteAdviserId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -72,22 +72,12 @@ class ConfirmDeleteAdviserController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmDelete(appConfig, formWithErrors, viewModel(name), mode))),
-          value => {
-            saveDataWithChangeFlag(value, request.externalId, mode).map(cacheMap =>
-              Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
-          }
+          value =>
+            cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap(cacheMap =>
+              saveChangeFlag(mode, ConfirmDeleteAdviserId).map(_ =>
+                Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
+            )
         )
       }
-  }
-
-  private def saveDataWithChangeFlag(value: Boolean, id: String, mode: Mode)(implicit
-                                                                             request: DataRequest[AnyContent], hc: HeaderCarrier): Future[JsValue] = {
-    if (value) {
-      cacheConnector.save(id, ConfirmDeleteAdviserId, value).flatMap(_ =>
-        saveChangeFlag(mode, ConfirmDeleteAdviserId)
-      )
-    } else {
-      cacheConnector.save(id, ConfirmDeleteAdviserId, value)
-    }
   }
 }

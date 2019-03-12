@@ -27,17 +27,17 @@ import utils.Navigator
 @Singleton
 class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
-  private def checkYourAnswers(): Call =
-    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(CheckMode)
+  private def checkYourAnswers(mode:Mode): Call =
+    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
 
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, NormalMode)
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case AdviserNameId => NavigateTo.dontSave(checkYourAnswers())
-    case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers())
+    case AdviserNameId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
+    case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
     case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(CheckMode))
-    case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers())
+    case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 

@@ -21,7 +21,7 @@ import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser._
 import models.requests.IdentifiedRequest
-import models.{CheckMode, Mode, NormalMode, UpdateMode}
+import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
@@ -36,22 +36,22 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage(NormalMode), false, Some(checkYourAnswersPage(CheckMode)), false),
-    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode), false, Some(checkYourAnswersPage(CheckMode)), false),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage(NormalMode), false, Some(checkYourAnswersPage(Mode.journeyMode(CheckMode))), false),
+    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode), false, Some(checkYourAnswersPage(Mode.journeyMode(CheckMode))), false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), false, Some(adviserAddressListPage(CheckMode)), false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), false, Some(adviserAddressPage(CheckMode)), false),
-    (AdviserAddressId, emptyAnswers, checkYourAnswersPage(NormalMode), false, Some(checkYourAnswersPage(CheckMode)), false),
+    (AdviserAddressId, emptyAnswers, checkYourAnswersPage(NormalMode), false, Some(checkYourAnswersPage(Mode.journeyMode(CheckMode))), false),
     (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, false, None, false)
   )
 
   def updateModeRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, None, false),
-    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
+    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
     (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false, None, false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
-    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
     (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), false, None, false),
     (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false)
   )

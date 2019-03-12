@@ -21,8 +21,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.StillUseAdviserFormProvider
+import identifiers.register.VariationStillDeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserNameId
-import identifiers.vary.DeclarationWorkingKnowledgeId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -64,8 +64,8 @@ class StillUseAdviserController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(stillUseAdviser(appConfig, formWithErrors, mode, psaName(), adviserName()))),
         value => {
-          cacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+          cacheConnector.save(request.externalId, VariationStillDeclarationWorkingKnowledgeId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(VariationStillDeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
         }
       )
   }

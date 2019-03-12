@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers.vary
+package identifiers.register
 
-import identifiers._
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserDetailsId}
-import models.register.DeclarationWorkingKnowledge
-import play.api.libs.json.JsResult
-import utils.UserAnswers
+import identifiers.TypedIdentifier
 
-case object DeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
-  override def toString: String = "variationsDeclarationWorkingKnowledge"
+case object VariationStillDeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
+  override def toString: String = "variationsStillDeclarationWorkingKnowledge"
 }

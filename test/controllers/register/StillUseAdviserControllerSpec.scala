@@ -20,9 +20,9 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.StillUseAdviserFormProvider
+import identifiers.register.{VariationDeclarationWorkingKnowledgeId, VariationStillDeclarationWorkingKnowledgeId}
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.BusinessDetailsId
-import identifiers.vary.DeclarationWorkingKnowledgeId
 import models.register.DeclarationWorkingKnowledge
 import models.{BusinessDetails, UpdateMode}
 import play.api.data.Form
@@ -48,13 +48,13 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
       val result = controller().onSubmit(UpdateMode)(fakeRequest.withFormUrlEncodedBody("value" -> "true"))
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-      FakeUserAnswersCacheConnector.verify(DeclarationWorkingKnowledgeId, true)
+      FakeUserAnswersCacheConnector.verify(VariationStillDeclarationWorkingKnowledgeId, true)
     }
 
     "save the answer no on a valid request" in {
       val result = controller().onSubmit(UpdateMode)(fakeRequest.withFormUrlEncodedBody("value" -> "false"))
       status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(DeclarationWorkingKnowledgeId, false)
+      FakeUserAnswersCacheConnector.verify(VariationStillDeclarationWorkingKnowledgeId, false)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
