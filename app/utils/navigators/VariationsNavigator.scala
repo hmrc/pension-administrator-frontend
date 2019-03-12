@@ -19,11 +19,11 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import identifiers.register.adviser.ConfirmDeleteAdviserId
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register.{DeclarationChangedId, DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import identifiers.vary.AnyMoreChangesId
 import models.{Mode, UpdateMode}
-import utils.{Enumerable, Navigator}
+import utils.{Enumerable, Navigator, UserAnswers}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
                                     config: FrontendAppConfig)extends Navigator with Enumerable.Implicits {
@@ -73,9 +73,24 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private def declarationChange(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationChangedId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+  private def doesAdviserExist(ua:UserAnswers):Boolean  =
+      ua.get(AdviserNameId).isDefined
+
+  private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
+    from.userAnswers.get(DeclarationChangedId) match {
+      case Some(true) =>
+        if (doesAdviserExist(from.userAnswers)) {
+          NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
+        } else {
+          NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+        }
+      case _ =>
+        if (doesAdviserExist(from.userAnswers)) {
+          NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
+        } else {
+          NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+        }
+    }
   }
 
 }
