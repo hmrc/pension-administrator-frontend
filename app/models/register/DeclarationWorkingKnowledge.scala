@@ -37,5 +37,9 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[DeclarationWorkingKnowledge] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
+  def variationDeclarationWorkingKnowledge(workingKnowledge: Boolean): DeclarationWorkingKnowledge ={
+    if(workingKnowledge) WorkingKnowledge else Adviser
+  }
 }
 
