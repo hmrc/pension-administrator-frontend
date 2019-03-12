@@ -97,7 +97,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("utr.label", Seq("121414151"), false,
       None),
     AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("Has Test partnership name been at their address for more than 12 months?", Seq("No"), false,
       None),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,

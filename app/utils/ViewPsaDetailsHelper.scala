@@ -313,7 +313,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def partnershipAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactAddressId) map { address =>
     AnswerRow("partnership.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(

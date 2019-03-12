@@ -105,7 +105,7 @@ class VariationsSpec extends ControllerSpecBase {
 
     "set the new flag when setNewFalg is called in Update Mode with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsIndexed.setNewFlag(testPersonId, UpdateMode)(dataRequest(validData)), Duration.Inf)
+      Await.result(testVariationsIndexed.setNewFlag(testPersonId, UpdateMode, validData)(dataRequest(validData)), Duration.Inf)
       FakeUserAnswersCacheConnector.verify(testPersonId, person.copy(isNew=true))
     }
   }

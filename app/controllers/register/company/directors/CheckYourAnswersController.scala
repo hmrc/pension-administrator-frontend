@@ -18,17 +18,13 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
 import javax.inject.Inject
 import models._
-import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
 import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
@@ -79,14 +75,10 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-        setNewFlag(DirectorDetailsId(index), mode).flatMap { _ =>
-          sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { _ =>
-            saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-              Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-            }
-          }
+      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { _ =>
+        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
+      }
   }
-
-
 }

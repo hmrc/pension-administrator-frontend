@@ -107,6 +107,10 @@ class PartnershipNavigator @Inject()(
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = {
     from.id match {
+      case PartnershipContactAddressPostCodeLookupId =>
+        NavigateTo.save(routes.PartnershipContactAddressListController.onPageLoad(UpdateMode))
+      case PartnershipContactAddressListId =>
+        NavigateTo.save(routes.PartnershipContactAddressController.onPageLoad(UpdateMode))
       case PartnershipContactAddressId =>
         NavigateTo.dontSave(routes.PartnershipAddressYearsController.onPageLoad(UpdateMode))
       case PartnershipAddressYearsId =>
