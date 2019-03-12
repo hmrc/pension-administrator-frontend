@@ -52,8 +52,8 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   private def commonRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AddPartnersId => addPartnerRoutes(from.userAnswers, mode)
     case PartnerDetailsId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
-    case PartnerNinoId(index) => NavigateTo.save(routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, index))
-    case PartnerUniqueTaxReferenceId(index) => NavigateTo.save(routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index))
+    case PartnerNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
+    case PartnerUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
     case PartnerAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.PartnerAddressListController.onPageLoad(mode, index))
     case PartnerAddressListId(index) => NavigateTo.save(routes.PartnerAddressController.onPageLoad(mode, index))
     case PartnerAddressId(index) => NavigateTo.save(routes.PartnerAddressYearsController.onPageLoad(mode, index))
@@ -84,6 +84,24 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
           routes.PartnerContactDetailsController.onPageLoad(mode, index),
           anyMoreChangesPage
         )
+      case _ => sessionExpired
+    }
+  }
+
+  private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode => NavigateTo.save(routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, index))
+      case UpdateMode => redirectBasedOnIsNew(answers, index,
+        routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, index), anyMoreChangesPage)
+      case _ => sessionExpired
+    }
+  }
+
+  private def utrRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode => NavigateTo.save(routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index))
+      case UpdateMode => redirectBasedOnIsNew(answers, index,
+        routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index), anyMoreChangesPage)
       case _ => sessionExpired
     }
   }

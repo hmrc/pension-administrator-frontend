@@ -45,8 +45,6 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), false, Some(moreThanTenPartnersPage(checkMode(mode))), false),
     (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
     (PartnerDetailsId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (PartnerAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -62,18 +60,24 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 
   def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] =
     Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), true, None, true),
-    (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
-  )
+      (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+      (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+      (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
+    )
 
   def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
-  (AddPartnersId, addPartnersFalse, anyMoreChangesPage, false, None, true),
-  (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (AddPartnersId, addPartnersFalse, anyMoreChangesPage, false, None, true),
+    (PartnerNinoId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (PartnerNinoId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (PartnerUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (PartnerUniqueTaxReferenceId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, false, None, false),
     (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage, true, None, true),
     (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress, true, None, true),
-  (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, false, None, true),
-  (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), previousAddressPage(UpdateMode), true, None, true),
-  (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
-  (PartnerContactDetailsId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true)
+    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, false, None, true),
+    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), previousAddressPage(UpdateMode), true, None, true),
+    (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (PartnerContactDetailsId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true)
   )
 
   def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -101,12 +105,19 @@ object PartnerNavigatorSpec extends OptionValues {
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private lazy val confirmPreviousAddress = routes.PartnerConfirmPreviousAddressController.onPageLoad(0)
+
   def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
+
   def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+
   def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
+
   def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
+
   def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
+
   def partnerContactDetailsPage(mode: Mode) = routes.PartnerContactDetailsController.onPageLoad(mode, 0)
+
   def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
 
   def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
@@ -136,8 +147,10 @@ object PartnerNavigatorSpec extends OptionValues {
 
   val defaultAnswers = UserAnswers(Json.obj())
     .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
+
   private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
     .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
+
   private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = defaultAnswers
@@ -150,7 +163,7 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private val addPartnersFalse = UserAnswers(Json.obj())
     .set(AddPartnersId)(false).asOpt.value
-  private val addPartnersTrue =  UserAnswers(Json.obj())
+  private val addPartnersTrue = UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
 
   private def confirmPreviousAddressSame(index: Int) = existingPartnerInUpdate(0)
