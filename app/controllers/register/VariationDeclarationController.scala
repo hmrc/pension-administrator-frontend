@@ -50,38 +50,38 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      VariationWorkingKnowledgeId.retrieve.right.map {
-        case workingKnowledge =>
 
-          Future.successful(Ok(views.html.register.variationDeclaration(
-            appConfig, form, psaName(), workingKnowledge)))
-      }
+      val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
+
+      Future.successful(Ok(views.html.register.variationDeclaration(
+        appConfig, form, psaName(), workingKnowledge)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      VariationWorkingKnowledgeId.retrieve.right.map {
-        case workingKnowledge =>
 
-          form.bindFromRequest().fold(
-            errors => Future.successful(BadRequest(views.html.register.variationDeclaration(
-              appConfig, errors, psaName(), workingKnowledge))),
+      val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
 
-            success =>
-              dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { json =>
-                val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-                val answers = UserAnswers(json).set(ExistingPSAId)(ExistingPSA(
-                  request.user.isExistingPSA,
-                  request.user.existingPSAId
-                )).asOpt.getOrElse(UserAnswers(json))
-                  .set(DeclarationWorkingKnowledgeId)(
-                    DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(workingKnowledge))
-                  .asOpt.getOrElse(UserAnswers(json))
-                pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
-                  Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
-                )
-              }
-          )
-      }
+        form.bindFromRequest().fold(
+          errors => Future.successful(BadRequest(views.html.register.variationDeclaration(
+            appConfig, errors, psaName(), workingKnowledge))),
+
+          success =>
+            dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { json =>
+
+              val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+              val answers = UserAnswers(json).set(ExistingPSAId)(ExistingPSA(
+                request.user.isExistingPSA,
+                request.user.existingPSAId
+              )).asOpt.getOrElse(UserAnswers(json))
+                .set(DeclarationWorkingKnowledgeId)(
+                  DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(workingKnowledge))
+                .asOpt.getOrElse(UserAnswers(json))
+
+              pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
+                Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
+              )
+            }
+        )
   }
 }
