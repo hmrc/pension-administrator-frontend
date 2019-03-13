@@ -58,7 +58,7 @@
     "phone": "0044-09876542312"
   },
   "individualDateOfBirth": "1947-03-29",
-  "declarationWorkingKnowledge" : "adviser",
+  "declarationWorkingKnowledge" : false,
   "adviserName" : "Pension Adviser",
   "adviserDetails" : {
     "email" : "aaa@yahoo.com",
