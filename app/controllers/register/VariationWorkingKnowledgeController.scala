@@ -49,7 +49,6 @@ class VariationWorkingKnowledgeController @Inject()(
 
   def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
         case None => form
         case Some(value) => form.fill(value)

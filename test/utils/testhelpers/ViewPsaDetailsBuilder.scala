@@ -27,7 +27,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
 
   val pensionAdviserSeqAnswers = Seq(
     AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
-      Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad().url))),
+      Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
     AnswerRow("pensions.advisor.label", Seq("Pension Adviser"), false,
       None),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,

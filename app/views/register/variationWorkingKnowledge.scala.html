@@ -25,7 +25,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(), 'autoComplete -> "off") {
+    @helpers.form(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 

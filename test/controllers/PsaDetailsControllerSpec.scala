@@ -75,7 +75,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
                            canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) = {
 
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeregister)
-    psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())(fakeRequest, messages).toString
+    psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
   }
 
   val organisationSuperSections: Seq[SuperSection] = Seq(

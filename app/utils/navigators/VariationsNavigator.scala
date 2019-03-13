@@ -51,7 +51,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   private def deleteAdviserRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(ConfirmDeleteAdviserId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
     case Some(false) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
@@ -71,7 +71,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   private def variationStillWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] =
     from.userAnswers.get(VariationStillDeclarationWorkingKnowledgeId) match {
       case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
@@ -94,7 +94,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   private def workingKonwldgeOrFnProute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(_) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
   }
 
 }

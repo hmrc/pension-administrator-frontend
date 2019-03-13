@@ -37,7 +37,7 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
   val navigator = new VariationsNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
 
   def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    ("Id", "User Answers", "Next Page (UpdateMode)", "Save(UpdateMode)", "Next Page (CheckUpdateMode)", "Save(CheckUpdateMode"),
     (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage, false, None, false),
     (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage, false, None, false),
     (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage, false, None, false),
@@ -57,8 +57,7 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, false, None, false),
     (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, false, None, false),
     (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
-
-    (DeclarationChangedId, emptyAnswers, sessionExpiredPage, false, None, false),
+    
     (DeclarationChangedId, declarationChanged, variationWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationChangedWithAdviser, variationStillWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationChangedWithWorkingKnowldge, variationDeclarationFitAndProperPage, false, None, false),
@@ -97,7 +96,7 @@ object VariationsNavigatorSpec extends OptionValues {
   private val noFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(false).asOpt.value
 
   private val checkYourAnswersPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
-  private val variationWorkingKnowledgePage: Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
+  private val variationWorkingKnowledgePage: Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
   private val variationStillWorkingKnowledgePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
