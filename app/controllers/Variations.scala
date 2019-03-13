@@ -19,20 +19,17 @@ package controllers
 import connectors.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, ConfirmDeleteAdviserId}
 import identifiers.register.company._
-import identifiers.register.company.directors._
+import identifiers.register.company.directors.{CheckYourAnswersId => DirectorsCheckYourAnswersId, _}
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners._
+import identifiers.register.partnership.partners.{CheckYourAnswersId => PartnersCheckYourAnswersId, _}
 import models._
 import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import identifiers.register.company.directors.{CheckYourAnswersId => DirectorsCheckYourAnswersId}
-import identifiers.register.partnership.partners.{CheckYourAnswersId => PartnersCheckYourAnswersId}
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
