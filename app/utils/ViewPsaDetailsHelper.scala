@@ -17,6 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
+import identifiers.register.VariationWorkingKnowledgeId
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
@@ -107,6 +108,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private val pensionAdviserSection: Option[SuperSection] = {
 
     toOptionSeq(Seq(
+      workingKnowledge,
       pensionAdviser,
       pensionAdviserEmail,
       pensionAdviserPhone,
@@ -419,6 +421,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   //Pension Adviser
+
+  private def workingKnowledge: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) map { wk =>
+    AnswerRow("variationWorkingKnowledge.heading", Seq( messages(if (wk) "site.yes" else "site.no")), answerIsMessageKey = false,
+      Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad().url)))
+  }
+  
   private def pensionAdviser: Option[AnswerRow] = userAnswers.get(AdviserNameId) map { adviserName =>
     AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
       None)

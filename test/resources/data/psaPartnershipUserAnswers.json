@@ -120,7 +120,7 @@
       "isPartnerComplete": true
     }
   ],
-  "declarationWorkingKnowledge" : "adviser",
+  "declarationWorkingKnowledge" : false,
   "adviserName" : "Pension Adviser",
   "adviserDetails" : {
     "email" : "aaa@yahoo.com",
