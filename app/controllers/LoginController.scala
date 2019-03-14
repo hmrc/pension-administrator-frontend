@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.AuthAction
-import identifiers.IndexId
 import javax.inject.Inject
 import models.{NormalMode, UserType}
 import play.api.i18n.{I18nSupport, MessagesApi}
