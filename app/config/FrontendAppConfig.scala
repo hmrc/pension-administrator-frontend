@@ -134,5 +134,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val retryWaitFactor: Double = runModeConfiguration.getDouble("retry.wait.factor").getOrElse(1)
   lazy val daysDataSaved: Int = loadConfig("daysDataSaved").toInt
 
-  lazy val minimalPsaDetailsUrl: String = s"${baseUrl("pension-administrator")}${runModeConfiguration.underlying.getString("urls.minimalPsaDetails")}"
+  lazy val minimalPsaDetailsUrl: String = s"${baseUrl("pension-administrator")}${
+    runModeConfiguration.underlying.getString("urls.pension-administrator.minimalPsaDetails")}"
 }

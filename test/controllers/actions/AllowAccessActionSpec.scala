@@ -106,6 +106,20 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     }
 
+    "redirect to intercept pages for suspended user with enrolment and UpdateMode" in {
+
+      val action = new TestAllowAccessAction(UpdateMode)
+
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"), true)))
+
+      whenReady(futureResult) { result =>
+
+        result.map { _.header.status  } mustBe Some(SEE_OTHER)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.IndexController.onPageLoad().url)
+      }
+
+    }
+
     "redirect to intercept page for user with enrolment and Normal/Check mode" in {
 
       val action = new TestAllowAccessAction(NormalMode)
