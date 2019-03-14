@@ -33,7 +33,7 @@ case class DirectorConfirmPreviousAddressId(index: Int) extends TypedIdentifier[
   }
 }
 
-object PartnerConfirmPreviousAddressId {
+object DirectorConfirmPreviousAddressId {
   override def toString: String = "directorConfirmPreviousAddress"
 }
 

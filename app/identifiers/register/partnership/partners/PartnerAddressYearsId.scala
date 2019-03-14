@@ -17,6 +17,7 @@
 package identifiers.register.partnership.partners
 
 import identifiers._
+import identifiers.register.DirectorsOrPartnersChangedId
 import models.AddressYears
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
@@ -29,9 +30,8 @@ case class PartnerAddressYearsId(index: Int) extends TypedIdentifier[AddressYear
   override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
       case Some(AddressYears.OverAYear) =>
-        userAnswers
-          .remove(PartnerPreviousAddressPostCodeLookupId(this.index))
-          .flatMap(_.remove(PartnerPreviousAddressId(this.index)))
+        userAnswers.set(DirectorsOrPartnersChangedId)(true).asOpt.getOrElse(userAnswers)
+          .removeAllOf(List(PartnerPreviousAddressPostCodeLookupId(index), PartnerPreviousAddressId(index)))
       case _ => super.cleanup(value, userAnswers)
     }
   }
