@@ -20,7 +20,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.adviser._
 import identifiers.register.adviser._
 import javax.inject.{Inject, Singleton}
-import models.{CheckMode, Mode, NormalMode, UpdateMode}
+import models._
 import play.api.mvc.Call
 import utils.Navigator
 
@@ -32,13 +32,26 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, NormalMode)
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case AdviserNameId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
-    case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
-    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
-    case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(CheckMode))
-    case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case CheckUpdateMode =>
+        from.id match {
+          case AdviserNameId => NavigateTo.dontSave(routes.AdviserDetailsController.onPageLoad(mode))
+          case AdviserDetailsId => isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
+          case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
+          case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
+          case AdviserAddressId => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(UpdateMode))
+        }
+      case _ =>
+        from.id match {
+          case AdviserNameId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
+          case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
+          case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
+          case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(CheckMode))
+          case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
+          case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        }
+    }
   }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, UpdateMode)
@@ -48,7 +61,9 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case AdviserDetailsId => isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
     case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
-    case AdviserAddressId => isAdviserChange(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
+    case AdviserAddressId =>
+      println( "\nmode=" + mode)
+      isAdviserChange(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
     case CheckYourAnswersId => if(mode == UpdateMode) {
       NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
     } else {
