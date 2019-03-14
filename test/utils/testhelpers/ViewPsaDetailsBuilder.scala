@@ -81,7 +81,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("utr.label", Seq("1234567892"), false,
       None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(UpdateMode, 0).url))),
+      Some(Link(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,

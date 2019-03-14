@@ -66,7 +66,8 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
           Message("common.previousAddressList.heading"),
           None,
           Message("common.selectAddress.text"),
-          Message("common.selectAddress.link")
+          Message("common.selectAddress.link"),
+          psaName = psaName()
         )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }

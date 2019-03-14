@@ -16,6 +16,7 @@
 
 package identifiers.register.company.directors
 
+import identifiers.register.DirectorsOrPartnersChangedId
 import models.{Address, AddressYears, TolerantAddress}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
@@ -52,6 +53,10 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
       "remove the data for `PreviousAddress`" in {
         result.get(DirectorPreviousAddressId(0)) mustNot be(defined)
       }
+
+      "set the change flag for `DirectorsOrPartnersChangedId`" in {
+        result.get(DirectorsOrPartnersChangedId).value mustBe true
+      }
     }
 
     "`AddressYears` is set to `UnderAYear`" must {
@@ -68,6 +73,10 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
 
       "not remove the data for `PreviousAddress`" in {
         result.get(DirectorPreviousAddressId(0)) mustBe defined
+      }
+
+      "don't set the change flag for `DirectorsOrPartnersChangedId`" in {
+        result.get(DirectorsOrPartnersChangedId) mustNot be(defined)
       }
     }
 
