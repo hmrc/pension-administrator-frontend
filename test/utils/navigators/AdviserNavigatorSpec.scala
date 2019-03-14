@@ -46,12 +46,12 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def updateModeRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
-    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
-    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false, None, false),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, Some(checkYourAnswersPage(UpdateMode)), false),
+    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false,  Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
-    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
+    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), false, None, false),
     (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false)
   )
