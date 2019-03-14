@@ -249,7 +249,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(UpdateMode, index).url)))
+      Some(Link(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
