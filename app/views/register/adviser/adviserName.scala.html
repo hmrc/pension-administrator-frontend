@@ -41,7 +41,7 @@
         )
 
         <div class="section">
-            @components.submit_button()
+            @components.submit_button("site.save_and_continue")
         </div>
         @psaNameOpt.map{ psaName =>
             @components.return_link(psaName, mode)
