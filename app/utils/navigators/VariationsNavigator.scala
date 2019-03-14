@@ -58,7 +58,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   private def anyMoreChangesRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(AnyMoreChangesId) match {
     case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
-    case Some(false) => declarationChange(from)
+    case Some(false) => workingKonwldgeOrFnProute(from)
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
