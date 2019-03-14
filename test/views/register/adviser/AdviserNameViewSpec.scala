@@ -29,9 +29,9 @@ class AdviserNameViewSpec extends QuestionViewBehaviours[String] {
 
   override val form = new AdviserNameFormProvider().apply()
 
-  def createView: () => HtmlFormat.Appendable = () => adviserName(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => adviserName(frontendAppConfig, form, NormalMode, Some("Mark Wright"))(fakeRequest, messages)
 
-  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => adviserName(frontendAppConfig, form, CheckMode)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => adviserName(frontendAppConfig, form, CheckMode, Some("Mark Wright"))(fakeRequest, messages)
 
   "Adviser Details view" must {
 

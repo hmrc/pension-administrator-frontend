@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package identifiers.vary
+package identifiers.register.adviser
 
 import identifiers.TypedIdentifier
+import play.api.libs.json.{JsResult, JsSuccess}
+import utils.UserAnswers
 
-case object AnyMoreChangesId extends TypedIdentifier[Boolean] {
-  self =>
-  override def toString: String = "anyMoreChanges"
+object IsNewAdviserId extends TypedIdentifier[Boolean] {
+  override def toString: String = "newAdviser"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(true) =>  userAnswers.removeAllOf(List(AdviserNameId, AdviserDetailsId, AdviserAddressId,
+        AdviserAddressListId, AdviserAddressPostCodeLookupId))
+      case _ => JsSuccess(userAnswers)
+    }
+  }
 }

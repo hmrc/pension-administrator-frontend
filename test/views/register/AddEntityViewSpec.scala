@@ -53,8 +53,8 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
   private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
   = () => addEntity(frontendAppConfig, form, viewmodel(entities), mode)(request, messages)
 
-  private def createViewUsingForm(entities: Seq[Person] = Nil)
-  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities), NormalMode)(request, messages)
+  private def createViewUsingForm(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
+  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities), mode)(request, messages)
 
   val form = new AddEntityFormProvider()()
 
@@ -152,7 +152,5 @@ object AddEntityViewSpec {
 
   private val johnUpdateMode = johnDoe.copy(deleteLink = deleteLink(0, UpdateMode), editLink = editLink(0, UpdateMode))
   private val joeUpdateMode = joeBloggs.copy(deleteLink = deleteLink(1, UpdateMode), editLink = editLink(1, UpdateMode), isNew = true)
-
-  // scalastyle:on magic.number
 
 }

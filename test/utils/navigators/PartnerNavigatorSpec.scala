@@ -42,32 +42,42 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 
   //scalastyle:off line.size.limit
   def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
-    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), true, Some(moreThanTenPartnersPage(checkMode(mode))), true),
+    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), false, Some(moreThanTenPartnersPage(checkMode(mode))), false),
     (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
     (PartnerDetailsId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (PartnerAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerAddressYearsId(0), addressYearsOverAYear, partnerContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), true, Some(paPostCodePage(checkMode(mode))), true),
-    (PartnerAddressYearsId(0), emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), false, Some(paAddressListPage(checkMode(mode))), false),
     (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), true, Some(previousAddressPage(checkMode(mode))), true),
-    (PartnerPreviousAddressId(0), emptyAnswers, partnerContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (PartnerContactDetailsId(0), emptyAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerPreviousAddressId(0), defaultAnswers, partnerContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerContactDetailsId(0), defaultAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CheckYourAnswersId, emptyAnswers, addPartnersPage(mode), true, None, false)
   )
 
   def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] =
     Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), true, None, true),
-    (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
-  )
+      (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+      (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+      (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
+    )
 
   def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
-  (AddPartnersId, addPartnersFalse, anyMoreChangesPage, true, None, true),
-  (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, true, None, false)
+    (AddPartnersId, addPartnersFalse, anyMoreChangesPage, false, None, true),
+    (PartnerNinoId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (PartnerNinoId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (PartnerUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (PartnerUniqueTaxReferenceId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage, true, None, true),
+    (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress, true, None, true),
+    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, false, None, true),
+    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), previousAddressPage(UpdateMode), true, None, true),
+    (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (PartnerContactDetailsId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true)
   )
 
   def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -94,12 +104,20 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private lazy val confirmPreviousAddress = routes.PartnerConfirmPreviousAddressController.onPageLoad(0)
+
   def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
+
   def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+
   def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
+
   def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
+
   def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
+
   def partnerContactDetailsPage(mode: Mode) = routes.PartnerContactDetailsController.onPageLoad(mode, 0)
+
   def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
 
   def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
@@ -118,21 +136,41 @@ object PartnerNavigatorSpec extends OptionValues {
 
   def addressPage(mode: Mode): Call = routes.PartnerAddressController.onPageLoad(mode, 0)
 
+  private def partner(index: Int) =
+    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0), isNew = true)
+
   private def data = {
     (0 to 19).map(index => Json.obj(
-      PartnerDetailsId.toString -> PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0))
-    )).toArray
+      PartnerDetailsId.toString -> partner(index))
+    ).toArray
   }
 
-  val emptyAnswers = UserAnswers(Json.obj())
-  private val addressYearsOverAYear = UserAnswers(Json.obj())
+  val defaultAnswers = UserAnswers(Json.obj())
+    .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
+
+  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
+    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
+
+  private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYear = UserAnswers(Json.obj())
+  private val addressYearsUnderAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+
+  private val addressYearsOverAYearExistingPartner = existingPartnerInUpdate(0)
+    .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
+  private val addressYearsUnderAYearExistingPartner = existingPartnerInUpdate(0)
+    .set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+
   private val addPartnersFalse = UserAnswers(Json.obj())
     .set(AddPartnersId)(false).asOpt.value
   private val addPartnersTrue = UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
+
+  private def confirmPreviousAddressSame(index: Int) = existingPartnerInUpdate(0)
+    .set(PartnerConfirmPreviousAddressId(0))(true).asOpt.value
+
+  private def confirmPreviousAddressNotSame(index: Int) = existingPartnerInUpdate(0)
+    .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(
     "partners" -> data))

@@ -17,7 +17,7 @@
 package views.register.company
 
 import forms.address.AddressYearsFormProvider
-import models.{AddressYears, NormalMode, TolerantAddress}
+import models._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.countryOptions.CountryOptions
@@ -37,7 +37,8 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
   val form = new AddressYearsFormProvider()("companyAddressYears.error.required")
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  def createView: () => HtmlFormat.Appendable = () => companyAddressYears(frontendAppConfig, address, form, NormalMode, countryOptions)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    companyAddressYears(frontendAppConfig, address, form, mode, countryOptions, Some("test-psa"))(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
     companyAddressYears(
@@ -45,11 +46,14 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
       address,
       form,
       NormalMode,
-      countryOptions
+      countryOptions,
+      None
     )(fakeRequest, messages)
 
   "CompanyAddressYears view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
+
+    behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
   "CompanyAddressYears view" when {

@@ -16,11 +16,14 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.UserAnswers
@@ -39,6 +42,13 @@ class VariationsSpec extends ControllerSpecBase {
     override def toString = "testChangeId"
   }
 
+  val testPersonId: TypedIdentifier[PersonDetails] = new TypedIdentifier[PersonDetails] {
+    override def toString = "personDetailsId"
+  }
+
+  val person = PersonDetails("John", None, "Doe", LocalDate.now)
+  val validData = UserAnswers(Json.obj(testPersonId.toString -> person))
+
   private val testVariationsNonIndexed = new Variations {
 
     override def findChangeIdNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
@@ -54,43 +64,49 @@ class VariationsSpec extends ControllerSpecBase {
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   }
 
-  def dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), externalId, psaUser, UserAnswers())
+  def dataRequest(userAnswers: UserAnswers = UserAnswers()): DataRequest[AnyContent] = DataRequest(FakeRequest(), externalId, psaUser, userAnswers)
 
   "Variations" must {
     "update the changed flag when save is called in Update Mode" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsNonIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsNonIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verify(testChangeId, true)
     }
 
     "not update the changed flag when save is called in NormalMode" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsNonIndexed.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsNonIndexed.saveChangeFlag(NormalMode, testId)(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
 
     "not update the changed flag when save is called in CheckMode" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsNonIndexed.saveChangeFlag(CheckMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsNonIndexed.saveChangeFlag(CheckMode, testId)(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
 
     "update the changed flag when save is called in Update Mode with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verify(testChangeId, true)
     }
 
     "not update the changed flag when save is called in NormalMode  with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsIndexed.saveChangeFlag(NormalMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsIndexed.saveChangeFlag(NormalMode, testId)(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
     }
 
     "not update the changed flag when save is called in CheckMode  with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsIndexed.saveChangeFlag(CheckMode, testId)(dataRequest), Duration.Inf)
+      Await.result(testVariationsIndexed.saveChangeFlag(CheckMode, testId)(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(testChangeId)
+    }
+
+    "set the new flag when setNewFalg is called in Update Mode with indexed identifier" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsIndexed.setNewFlag(testPersonId, UpdateMode, validData)(dataRequest(validData)), Duration.Inf)
+      FakeUserAnswersCacheConnector.verify(testPersonId, person.copy(isNew=true))
     }
   }
 }

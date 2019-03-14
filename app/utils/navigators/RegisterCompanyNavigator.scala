@@ -98,12 +98,32 @@ class RegisterCompanyNavigator @Inject()(
     case _ => None
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = ???
+  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+    case CompanyContactAddressPostCodeLookupId =>
+      NavigateTo.save(routes.CompanyContactAddressListController.onPageLoad(UpdateMode))
+    case CompanyContactAddressListId =>
+      NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(UpdateMode))
+    case CompanyContactAddressId =>
+      NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(UpdateMode))
+    case CompanyAddressYearsId =>
+      companyAddressYearsUpdateIdRoutes(from.userAnswers)
+    case CompanyConfirmPreviousAddressId => confirmPreviousAddressRoutes(from.userAnswers)
+    case CompanyPreviousAddressPostCodeLookupId =>
+      NavigateTo.save(routes.CompanyAddressListController.onPageLoad(UpdateMode))
+    case CompanyAddressListId =>
+      NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
+    case CompanyPreviousAddressId =>
+      anyMoreChanges
+    case ContactDetailsId =>
+      anyMoreChanges
+  }
 
   //scalastyle:on cyclomatic.complexity
 
   private def checkYourAnswers: Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
+
+  private def anyMoreChanges: Option[NavigateTo] = NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
@@ -123,6 +143,13 @@ class RegisterCompanyNavigator @Inject()(
     }
   }
 
+  private def companyAddressYearsUpdateIdRoutes(answers: UserAnswers): Option[NavigateTo] =
+    answers.get(CompanyAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.CompanyConfirmPreviousAddressController.onPageLoad())
+      case Some(AddressYears.OverAYear) => anyMoreChanges
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
     (answers.get(CompanySameContactAddressId), answers.get(AreYouInUKId)) match {
       case (Some(true), _) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
@@ -140,6 +167,14 @@ class RegisterCompanyNavigator @Inject()(
         case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
         case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       }
+    }
+  }
+
+  private def confirmPreviousAddressRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    answers.get(CompanyConfirmPreviousAddressId) match {
+      case Some(false) => NavigateTo.dontSave(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
+      case Some(true) => anyMoreChanges
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 

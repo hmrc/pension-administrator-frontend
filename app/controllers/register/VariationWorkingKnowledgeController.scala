@@ -21,28 +21,28 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
-import identifiers.register.VariationWorkingKnowledgeId
+import identifiers.register.adviser.IsNewAdviserId
+import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Register
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.variationWorkingKnowledge
 
 import scala.concurrent.Future
 
 class VariationWorkingKnowledgeController @Inject()(
-                                                       appConfig: FrontendAppConfig,
-                                                       override val messagesApi: MessagesApi,
-                                                       override val cacheConnector: UserAnswersCacheConnector,
-                                                       @Register navigator: Navigator,
-                                                       authenticate: AuthAction,
-                                                       allowAccess: AllowAccessActionProvider,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: VariationWorkingKnowledgeFormProvider
+                                                     appConfig: FrontendAppConfig,
+                                                     override val messagesApi: MessagesApi,
+                                                     override val cacheConnector: UserAnswersCacheConnector,
+                                                     @annotations.Variations navigator: Navigator,
+                                                     authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: VariationWorkingKnowledgeFormProvider
                                                      ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
@@ -67,15 +67,17 @@ class VariationWorkingKnowledgeController @Inject()(
             case None => true
             case Some(existing) => existing != value
           }
-          if (hasAnswerChanged) {
-            cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
-              saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>
+          cacheConnector.save(request.externalId, IsNewAdviserId, !value).flatMap(_ =>
+            if (hasAnswerChanged) {
+              cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
+                saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>
+                  Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+              )
+            } else {
+              cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).map(cacheMap =>
                 Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-            )
-          } else {
-            cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-          }
+            }
+          )
         }
       )
   }

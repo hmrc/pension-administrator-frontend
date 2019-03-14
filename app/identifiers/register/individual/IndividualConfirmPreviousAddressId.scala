@@ -23,4 +23,12 @@ import utils.UserAnswers
 case object IndividualConfirmPreviousAddressId extends TypedIdentifier[Boolean] {
   override def toString: String = "individualConfirmPreviousAddress"
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(IndividualPreviousAddressId)
+      case _ => super.cleanup(value, userAnswers)
+    }
+  }
 }

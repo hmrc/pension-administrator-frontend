@@ -67,7 +67,8 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
       address,
       form,
       NormalMode,
-      countryOptions
+      countryOptions,
+      None
     )(fakeRequest, messages).toString
 
   "CompanyAddressYears Controller" must {

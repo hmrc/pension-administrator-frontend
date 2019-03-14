@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package identifiers.register
 
-import identifiers._
-import play.api.libs.json.JsPath
+import identifiers.TypedIdentifier
 
-case object PartnershipPreviousAddressChangedId extends TypedIdentifier[Boolean] {
-  override def path: JsPath = JsPath \ PartnershipPreviousAddressChangedId.toString
-
-  override def toString: String = "partnershipPreviousAddressIsChanged"
+case object VariationDeclarationWorkingKnowledgeId extends TypedIdentifier[Boolean] {
+  override def toString: String = "variationsDeclarationWorkingKnowledge"
 }

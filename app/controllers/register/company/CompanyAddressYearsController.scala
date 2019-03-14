@@ -57,7 +57,7 @@ class CompanyAddressYearsController @Inject()(
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(companyAddressYears(appConfig, address.toTolerantAddress, preparedForm, mode, countryOptions)))
+        Future.successful(Ok(companyAddressYears(appConfig, address.toTolerantAddress, preparedForm, mode, countryOptions, psaName())))
       }
   }
 
@@ -66,7 +66,7 @@ class CompanyAddressYearsController @Inject()(
       CompanyContactAddressId.retrieve.right.map { address =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyAddressYears(appConfig, address.toTolerantAddress, formWithErrors, mode, countryOptions))),
+            Future.successful(BadRequest(companyAddressYears(appConfig, address.toTolerantAddress, formWithErrors, mode, countryOptions, psaName()))),
           value =>
             dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
               Redirect(navigator.nextPage(CompanyAddressYearsId, mode, UserAnswers(cacheMap))))

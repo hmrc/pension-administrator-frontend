@@ -37,9 +37,9 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
-import identifiers.vary.AnyMoreChangesId
+import identifiers.register.AnyMoreChangesId
 import javax.inject.Inject
-import models.NormalMode
+import models.{NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -74,7 +74,7 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
           Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors, psaName()))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AnyMoreChangesId, NormalMode, UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(AnyMoreChangesId, UpdateMode, UserAnswers(cacheMap))))
       )
   }
 }

@@ -45,8 +45,6 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
     (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorDetailsPage(mode), true, None, true),
     (DirectorDetailsId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CompanyDirectorAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (CompanyDirectorAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (DirectorAddressId(0), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -55,19 +53,31 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (DirectorAddressYearsId(0), emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (DirectorPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), false, Some(paAddressListPage(checkMode(mode))), false),
     (DirectorPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), true, Some(previousAddressPage(checkMode(mode))), true),
-    (DirectorPreviousAddressId(0), emptyAnswers, directorContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorContactDetailsId(0), emptyAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorPreviousAddressId(0), defaultAnswers, directorContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorContactDetailsId(0), defaultAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CheckYourAnswersId, emptyAnswers, addDirectorsPage(mode), true, None, false)
   )
 
   def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
+    (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
   )
 
   def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
-    (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false)
+    (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
+    (DirectorNinoId(0), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (DirectorNinoId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (DirectorUniqueTaxReferenceId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorAddressYearsId(0), addressYearsOverAYearExistingDirector, anyMoreChangesPage, true, None, true),
+    (DirectorAddressYearsId(0), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, true, None, true),
+    (DirectorConfirmPreviousAddressId(0), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), false, None, true),
+    (DirectorConfirmPreviousAddressId(0), confirmPreviousAddressSame, anyMoreChangesPage, false, None, true),
+    (DirectorPreviousAddressId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorContactDetailsId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true)
   )
 
   def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -94,6 +104,7 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private lazy val confirmPreviousAddressPage = routes.DirectorConfirmPreviousAddressController.onPageLoad(0)
   def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(mode, 0)
   def companyReviewPage(mode: Mode) = controllers.register.company.routes.CompanyReviewController.onPageLoad()
   def moreThanTenDirectorsPage(mode: Mode) = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode)
@@ -116,16 +127,35 @@ object DirectorNavigatorSpec extends OptionValues {
 
   def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, 0)
 
+  private def director(index: Int) =
+    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0), isNew = true)
+
   private def data = {
     (0 to 19).map(index => Json.obj(
-      DirectorDetailsId.toString -> PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0))
+      DirectorDetailsId.toString -> director(index)
     )).toArray
   }
 
   val emptyAnswers = UserAnswers(Json.obj())
-  private val addressYearsOverAYear = UserAnswers(Json.obj())
+  val defaultAnswers = UserAnswers(Json.obj())
+    .set(DirectorDetailsId(0))(director(0).copy(isNew = true)).asOpt.value
+  private def existingDirectorInUpdate(index: Index) = UserAnswers(Json.obj())
+    .set(DirectorDetailsId(index))(director(index).copy(isNew = false)).asOpt.value
+  private val addressYearsOverAYear = defaultAnswers
     .set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYear = UserAnswers(Json.obj())
+  private val addressYearsUnderAYear = defaultAnswers
+    .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+
+  private val confirmPreviousAddressSame = existingDirectorInUpdate(0)
+    .set(DirectorConfirmPreviousAddressId(0))(true).asOpt.value
+
+  private val confirmPreviousAddressNotSame = existingDirectorInUpdate(0)
+    .set(DirectorConfirmPreviousAddressId(0))(false).asOpt.value
+
+
+  private val addressYearsOverAYearExistingDirector = existingDirectorInUpdate(0)
+    .set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
+  private val addressYearsUnderAYearExistingDirector = existingDirectorInUpdate(0)
     .set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
   private val addCompanyDirectorsFalse = UserAnswers(Json.obj())
     .set(AddCompanyDirectorsId)(false).asOpt.value

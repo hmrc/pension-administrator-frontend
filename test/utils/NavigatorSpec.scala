@@ -19,7 +19,7 @@ package utils
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.{LastPageId, TypedIdentifier}
 import models.requests.IdentifiedRequest
-import models.{CheckMode, LastPage, Mode, NormalMode}
+import models._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier

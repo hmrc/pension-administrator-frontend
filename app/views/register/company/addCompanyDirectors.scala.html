@@ -60,7 +60,9 @@
                 @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
             }
 
-            @components.submit_button(disabled = disableSubmission)
+            <div class="subsection">
+                @components.submit_button(disabled = disableSubmission)
+            </div>
         }
         @psaNameOpt.map{ psaName =>
             @components.return_link(psaName, mode)

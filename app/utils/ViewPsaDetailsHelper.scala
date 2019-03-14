@@ -149,7 +149,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def individualAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -192,7 +192,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def companyAddress: Option[AnswerRow] = userAnswers.get(CompanyContactAddressId) map { address =>
     AnswerRow("company.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -313,7 +313,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def partnershipAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactAddressId) map { address =>
     AnswerRow("partnership.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
@@ -370,7 +370,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerAddressId(index)) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressController.onPageLoad(UpdateMode, index).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
   }
 
   private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =

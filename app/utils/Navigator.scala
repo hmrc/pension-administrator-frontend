@@ -34,6 +34,7 @@ abstract class Navigator {
   protected def routeMap(from: NavigateFrom): Option[NavigateTo]
 
   protected def editRouteMap(from: NavigateFrom, mode: Mode = CheckMode): Option[NavigateTo]
+
   protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo]
 
   def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)(implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {

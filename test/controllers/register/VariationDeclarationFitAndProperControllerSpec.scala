@@ -67,7 +67,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
       "save the answer yes on a valid request and redirect to Session Expired" in {
         val result = controller().onSubmit(UpdateMode)(fakeRequest.withFormUrlEncodedBody("value" -> "true"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(onwardRoute.url)
         FakeUserAnswersCacheConnector.verify(DeclarationFitAndProperId, true)
       }
 

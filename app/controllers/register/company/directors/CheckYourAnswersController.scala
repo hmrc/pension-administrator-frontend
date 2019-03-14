@@ -20,14 +20,11 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import identifiers.register.company.directors.{CheckYourAnswersId, DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
 import javax.inject.Inject
 import models._
-import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
 import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
@@ -78,24 +75,10 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      DirectorDetailsId(index).retrieve.right.map { details =>
-        sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { userAnswers =>
-          setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
-            saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-              Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, userAnswers))
-            }
-          }
+      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { _ =>
+        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
       }
   }
-
-  private def setNewFlagInUpdateMode(index: Index, mode: Mode, directorDetails: PersonDetails)
-                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
-    if (mode == UpdateMode) {
-      cacheConnector.save(request.externalId, DirectorDetailsId(index), directorDetails.copy(isNew = true))
-    } else {
-      Future(request.userAnswers.json)
-    }
-  }
-
 }

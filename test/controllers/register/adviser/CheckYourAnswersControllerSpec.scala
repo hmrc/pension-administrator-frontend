@@ -32,7 +32,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit()
+  private def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit(NormalMode)
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)

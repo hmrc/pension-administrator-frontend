@@ -17,7 +17,6 @@
 package utils.navigators
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.Identifier
@@ -26,7 +25,6 @@ import identifiers.register.individual._
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
@@ -83,13 +81,32 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
+  def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), false, None, false),
+    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), true, None, true),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), true, None, true),
+    (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, false, None, false),
+    (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress, true, None, true),
+    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges, false, None, false),
+    (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousAddressPage(UpdateMode), false, None, false),
+    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), false, None, false),
+    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
+    (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
+    (IndividualContactDetailsId, nonUk, anyMoreChanges, false, None, true)
+  )
+
+
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig(isHubEnabled = false))
+
   val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig(isHubEnabled = false), countryOptions)
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
@@ -109,6 +126,8 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy private val nonUkIndividualAddressPage = routes.IndividualRegisteredAddressController.onPageLoad(NormalMode)
   lazy private val reconsiderAreYouInUk = routes.IndividualAreYouInUKController.onPageLoad(CheckMode)
   lazy private val outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
+  lazy private val anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  lazy private val confirmPreviousAddress = routes.IndividualConfirmPreviousAddressController.onPageLoad()
 
   private def addressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
 
@@ -144,7 +163,7 @@ object IndividualNavigatorSpec extends OptionValues {
 
   private def sameContactAddressIncomplete(areYouInUk: Boolean) = UserAnswers(Json.obj()).areYouInUk(areYouInUk).
     set(
-    IndividualSameContactAddressId)(true)
+      IndividualSameContactAddressId)(true)
     .flatMap(_.set(IndividualContactAddressListId)(TolerantAddress(Some("foo"), None, None, None, None, Some("GB"))))
     .asOpt.value
 
@@ -176,7 +195,12 @@ object IndividualNavigatorSpec extends OptionValues {
   private val nonUkButUKAddress = UserAnswers().nonUkIndividualAddress(address("GB"))
   private val nonUkNonEuAddress = UserAnswers().nonUkIndividualAddress(address("AF"))
 
-  private def address(countryCode: String) =Address("addressLine1","addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
+  private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
+  private def samePreviousAddress = UserAnswers(Json.obj())
+    .set(IndividualConfirmPreviousAddressId)(true).asOpt.value
+
+  private def notSamePreviousAddress = UserAnswers(Json.obj())
+    .set(IndividualConfirmPreviousAddressId)(false).asOpt.value
 
 }

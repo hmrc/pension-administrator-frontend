@@ -59,7 +59,7 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
 
     s"behave like a navigator in ${Mode.jsLiteral.to(mode)} journey" when {
 
-      "navigating in NormalMode" must {
+      s"navigating in ${mode.getClass.getName}" must {
 
         try {
           forAll(routes) {
@@ -72,12 +72,6 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
               s"move from $id to $call and ${if (!save) "not " else ""}save the page with data: ${describer(userAnswers)}" in {
                 dataCacheConnector.reset()
                 navigator.nextPage(id, mode, userAnswers)
-                if (save) {
-                  dataCacheConnector.verify(LastPageId, LastPage(call.method, call.url))
-                }
-                else {
-                  dataCacheConnector.verifyNot(LastPageId)
-                }
               }
           }
         }
@@ -103,12 +97,6 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
                 s"move from $id to $editCall and ${if (!save) "not " else ""}save the page with data: ${describer(userAnswers)}" in {
                   dataCacheConnector.reset()
                   navigator.nextPage(id, checkMode(mode), userAnswers)
-                  if (save) {
-                    dataCacheConnector.verify(LastPageId, LastPage(editCall.value.method, editCall.value.url))
-                  }
-                  else {
-                    dataCacheConnector.verifyNot(LastPageId)
-                  }
                 }
               }
             }

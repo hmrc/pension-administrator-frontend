@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.ConfirmDeleteAdviserFormProvider
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId, ConfirmDeleteAdviserId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -31,8 +31,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.Adviser
-import utils.{Navigator, UserAnswers}
+import utils.{Navigator, UserAnswers, annotations}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
@@ -47,7 +46,7 @@ class ConfirmDeleteAdviserController @Inject()(
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector,
                                                 formProvider: ConfirmDeleteAdviserFormProvider,
-                                                @Adviser navigator: Navigator
+                                                @annotations.Variations navigator: Navigator
                                               ) extends FrontendController with I18nSupport with Retrievals with Variations {
 
   private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
@@ -56,7 +55,7 @@ class ConfirmDeleteAdviserController @Inject()(
     Message("confirmDelete.adviser.title"),
     "confirmDelete.adviser.heading",
     Some(name),
-    psaName()
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -73,22 +72,12 @@ class ConfirmDeleteAdviserController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmDelete(appConfig, formWithErrors, viewModel(name), mode))),
-          value => {
-            saveDataWithChangeFlag(value, request.externalId, mode).map(cacheMap =>
-              Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
-          }
+          value =>
+            cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap(cacheMap =>
+              saveChangeFlag(mode, ConfirmDeleteAdviserId).map(_ =>
+                Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
+            )
         )
       }
-  }
-
-  private def saveDataWithChangeFlag(value: Boolean, id: String, mode: Mode)(implicit
-                                                                             request: DataRequest[AnyContent], hc: HeaderCarrier): Future[JsValue] = {
-    if (value) {
-      cacheConnector.save(id, ConfirmDeleteAdviserId, value).flatMap(_ =>
-        saveChangeFlag(mode, ConfirmDeleteAdviserId)
-      )
-    } else {
-      cacheConnector.save(id, ConfirmDeleteAdviserId, value)
-    }
   }
 }

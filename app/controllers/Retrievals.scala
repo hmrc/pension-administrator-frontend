@@ -23,6 +23,7 @@ import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.{PersonDetails, RegistrationLegalStatus, UserType}
 import models.UserType.UserType
 import models.requests.DataRequest
@@ -108,21 +109,17 @@ trait Retrievals {
     f.merge
 
   private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): Option[String] = {
-    val userAnswers = request.userAnswers
-    val registrationInfo = userAnswers.get(RegistrationInfoId)
 
-    registrationInfo match {
-      case Some(details) =>
-        details.legalStatus match {
-          case RegistrationLegalStatus.Individual =>
-            userAnswers.get(IndividualDetailsId).map(_.fullName)
-          case RegistrationLegalStatus.LimitedCompany =>
-            userAnswers.get(BusinessDetailsId).map(_.companyName)
-          case RegistrationLegalStatus.Partnership =>
-            userAnswers.get(PartnershipDetailsId).map(_.companyName)
-        }
-      case _ =>
-        None
+    val legalStatus =  request.userAnswers.get(RegistrationInfoId).map(_.legalStatus)
+
+    legalStatus match {
+      case Some(Individual) => request.userAnswers.get(IndividualDetailsId).map(_.fullName)
+
+      case Some(LimitedCompany) => request.userAnswers.get(BusinessDetailsId).map(_.companyName)
+
+      case Some(Partnership) => request.userAnswers.get(PartnershipDetailsId).map(_.companyName)
+
+      case _ => None
     }
   }
 }

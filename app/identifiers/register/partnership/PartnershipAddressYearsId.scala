@@ -27,10 +27,8 @@ case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
 
   override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = value match {
     case Some(OverAYear) =>
-      userAnswers
-        .remove(PartnershipPreviousAddressPostCodeLookupId)
-        .flatMap(_.remove(PartnershipPreviousAddressListId))
-        .flatMap(_.remove(PartnershipPreviousAddressId))
+      userAnswers.set(PartnershipPreviousAddressChangedId)(true).asOpt.getOrElse(userAnswers)
+        .removeAllOf(List(PartnershipPreviousAddressPostCodeLookupId, PartnershipPreviousAddressListId,PartnershipPreviousAddressId))
     case _ => super.cleanup(value, userAnswers)
   }
 }

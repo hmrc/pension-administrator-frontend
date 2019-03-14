@@ -28,8 +28,8 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
-import utils.annotations.Register
+import utils.{Navigator, UserAnswers}
+import utils.annotations.Variations
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,7 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
                                                            allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
-                                                           @Register navigator: Navigator,
+                                                           @Variations navigator: Navigator,
                                                            formProvider: VariationDeclarationFitAndProperFormProvider,
                                                            dataCacheConnector: UserAnswersCacheConnector
                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
@@ -48,17 +48,22 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(views.html.register.variationDeclarationFitAndProper(appConfig, form, psaName())))
+      val preparedForm = request.userAnswers.get(DeclarationFitAndProperId) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
+      Future.successful(Ok(views.html.register.variationDeclarationFitAndProper(appConfig, preparedForm, psaName())))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         errors => Future.successful(BadRequest(views.html.register.variationDeclarationFitAndProper(appConfig, errors, psaName()))),
-        success =>
-          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { _ =>
-            Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        success => {
+          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>
+            Redirect(navigator.nextPage(DeclarationFitAndProperId, mode, UserAnswers(json)))
           }
+        }
       )
   }
 }

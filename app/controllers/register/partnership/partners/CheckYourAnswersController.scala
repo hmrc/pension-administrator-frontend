@@ -80,24 +80,10 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnerDetailsId(index).retrieve.right.map { details =>
-        sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) flatMap { userAnswers =>
-          setNewFlagInUpdateMode(index, mode, details).flatMap { _ =>
-            saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-              Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, userAnswers))
-            }
-          }
+      sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) flatMap { _ =>
+        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
       }
   }
-
-  private def setNewFlagInUpdateMode(index: Index, mode: Mode, partnerDetails: PersonDetails)
-                                    (implicit request: DataRequest[_], hc: HeaderCarrier): Future[JsValue] = {
-    if (mode == UpdateMode) {
-      cacheConnector.save(request.externalId, PartnerDetailsId(index), partnerDetails.copy(isNew = true))
-    } else {
-      Future(request.userAnswers.json)
-    }
-  }
-
 }

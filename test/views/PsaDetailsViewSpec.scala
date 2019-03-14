@@ -38,13 +38,15 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
   def createView(canBeDeregistered: Boolean = true, isUserAnswerUpdated: Boolean=false): () => HtmlFormat.Appendable = () =>
     psa_details(
       frontendAppConfig,
-      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, canBeDeregistered)
+      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, canBeDeregistered),
+      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
-      PsaViewDetailsViewModel(sections, secondaryHeader, false, true)
+      PsaViewDetailsViewModel(sections, secondaryHeader, false, true),
+      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
     )(fakeRequest, messages)
 
   "supersection page" must {
@@ -70,7 +72,7 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       val doc = Jsoup.parse(createView(true, true).apply().toString())
       doc must haveLinkWithUrlAndContent(
         "declaration-link",
-        controllers.register.routes.DeclarationController.onPageLoad().url,
+        controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad().url,
         messages("psaDetails.declaration.link.text")
       )
     }
