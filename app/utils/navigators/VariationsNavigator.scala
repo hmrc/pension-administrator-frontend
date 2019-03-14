@@ -25,7 +25,7 @@ import models.{CheckUpdateMode, Mode, UpdateMode}
 import utils.{Enumerable, Navigator, UserAnswers}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                    config: FrontendAppConfig)extends Navigator with Enumerable.Implicits {
+                                    config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
 
@@ -80,9 +80,9 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   private def variationStillWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] =
     from.userAnswers.get(VariationStillDeclarationWorkingKnowledgeId) match {
       case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
+      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-  }
+    }
 
   private def declarationFitAndProperRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationFitAndProperId) match {
     case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
@@ -90,20 +90,16 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private def doesAdviserStillExist(ua:UserAnswers):Boolean  =
-    ua.get(AdviserNameId).isDefined && ua.get(IsNewAdviserId).isEmpty
-
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
-    if (doesAdviserStillExist(from.userAnswers)) {
-      NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
-    } else {
-      workingKonwldgeOrFnProute(from)
+    from.userAnswers.get(DeclarationChangedId) match {
+      case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+      case _ =>
+        if (from.userAnswers.get(AdviserNameId).isDefined) {
+          NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
+        } else {
+          NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
+        }
     }
-  }
-
-  private def workingKonwldgeOrFnProute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
-    case Some(_) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
   }
 
 }

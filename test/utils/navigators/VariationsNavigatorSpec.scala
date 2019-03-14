@@ -21,7 +21,7 @@ import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register._
-import models.UpdateMode
+import models.{CheckUpdateMode, Mode, UpdateMode}
 import models.requests.IdentifiedRequest
 import navigators.VariationsNavigator
 import org.scalatest.OptionValues
@@ -38,12 +38,13 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (UpdateMode)", "Save(UpdateMode)", "Next Page (CheckUpdateMode)", "Save(CheckUpdateMode"),
-    (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage, false, None, false),
+    (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage(UpdateMode), false, None, false),
     (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage, false, None, false),
     (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (AnyMoreChangesId, haveMoreChanges, checkYourAnswersPage, false, None, false),
-    (AnyMoreChangesId, noMoreChanges, variationWorkingKnowledgePage, false, None, false),
+    (AnyMoreChangesId, noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode), false, None, false),
+    (AnyMoreChangesId, noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage, false, None, false),
     (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage, false, Some(variationDeclarationFitAndProperPage), false),
@@ -52,15 +53,15 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
     (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage, false, None, false),
-    (VariationStillDeclarationWorkingKnowledgeId, stillNotHaveWorkingKnowledge, variationWorkingKnowledgePage, false, None, false),
+    (VariationStillDeclarationWorkingKnowledgeId, stillNotHaveWorkingKnowledge, variationWorkingKnowledgePage(CheckUpdateMode), false, None, false),
 
     (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, false, None, false),
     (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, false, None, false),
     (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
 
-    (DeclarationChangedId, declarationChanged, variationWorkingKnowledgePage, false, None, false),
-    (DeclarationChangedId, declarationChangedWithAdviser, variationStillWorkingKnowledgePage, false, None, false),
-    (DeclarationChangedId, declarationChangedWithWorkingKnowldge, variationDeclarationFitAndProperPage, false, None, false),
+    (DeclarationChangedId, declarationChanged, variationDeclarationFitAndProperPage, false, None, false),
+    (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage, false, None, false),
+    (DeclarationChangedId, emptyAnswers, variationWorkingKnowledgePage(CheckUpdateMode), false, None, false),
 
     (DeclarationId, emptyAnswers, variationSuccessPage, false, None, false)
   )
@@ -78,7 +79,10 @@ object VariationsNavigatorSpec extends OptionValues {
   private val haveMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(true).asOpt.value
   private val confirmDeleteYes: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(true).asOpt.value
   private val confirmDeleteNo: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(false).asOpt.value
-  private val noMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(false).asOpt.value
+  private val noMoreChangesAdviserUnchanged: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(false).asOpt.value
+  private val noMoreChangesAdviserChanged: UserAnswers = UserAnswers(Json.obj())
+    .set(AnyMoreChangesId)(false).asOpt.value
+    .set(DeclarationChangedId)(true).asOpt.value
 
   private val haveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(true).asOpt.value
   private val noWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(false).asOpt.value
@@ -87,8 +91,8 @@ object VariationsNavigatorSpec extends OptionValues {
   private val stillNotHaveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationStillDeclarationWorkingKnowledgeId)(false).asOpt.value
 
   private val declarationChanged: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value
-  private val declarationChangedWithAdviser: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true)
-    .asOpt.value.set(AdviserNameId)("adviser-Name").asOpt.value
+  private val declarationNotChangedWithAdviser: UserAnswers = UserAnswers(Json.obj())
+    .set(AdviserNameId)("adviser-Name").asOpt.value
   private val declarationChangedWithWorkingKnowldge: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true)
     .asOpt.value.set(VariationWorkingKnowledgeId)(true).asOpt.value
 
@@ -96,7 +100,8 @@ object VariationsNavigatorSpec extends OptionValues {
   private val noFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(false).asOpt.value
 
   private val checkYourAnswersPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
-  private val variationWorkingKnowledgePage: Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
+  private def variationWorkingKnowledgePage(mode:Mode): Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(mode)
+
   private val variationStillWorkingKnowledgePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
