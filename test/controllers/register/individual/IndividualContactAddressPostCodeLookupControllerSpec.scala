@@ -17,11 +17,11 @@
 package controllers.register.individual
 
 import base.CSRFRequest
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
-import models.{NormalMode, TolerantAddress}
+import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject._
@@ -31,13 +31,14 @@ import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Individual
 import utils.{FakeNavigator, Navigator}
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import IndividualContactAddressPostCodeLookupController._
   import IndividualContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
@@ -66,6 +67,20 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val validPostcode = "ZZ1 1ZZ"
+
+  def viewModel(mode: Mode): PostcodeLookupViewModel =
+    PostcodeLookupViewModel(
+      routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
+      routes.IndividualContactAddressController.onPageLoad(mode),
+      Message("individualContactAddressPostCodeLookup.title"),
+      Message("individualContactAddressPostCodeLookup.heading"),
+      None,
+      Message("individualContactAddressPostCodeLookup.hint"),
+      Message("individualContactAddressPostCodeLookup.enterPostcode"),
+      Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
+      Message("individualContactAddressPostCodeLookup.formLabel"),
+      psaName = None
+    )
 
   private val onwardRoute = controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)
   private val address = TolerantAddress(
