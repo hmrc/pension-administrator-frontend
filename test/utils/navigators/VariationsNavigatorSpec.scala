@@ -46,8 +46,8 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AnyMoreChangesId, noMoreChanges, variationWorkingKnowledgePage, false, None, false),
     (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, false, None, false),
 
-    (VariationWorkingKnowledgeId, haveWorkingKnowledge, variationDeclarationFitAndProperPage, false, None, false),
-    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage, false, None, false),
+    (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage, false, Some(variationDeclarationFitAndProperPage), false),
+    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage, false, Some(adviserNamePage), false),
     (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
@@ -107,6 +107,7 @@ object VariationsNavigatorSpec extends OptionValues {
   private val variationNoLongerFitAndProperPage: Call = controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad()
 
   private val variationSuccessPage: Call = controllers.register.routes.PSAVarianceSuccessController.onPageLoad()
+  private val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
