@@ -103,7 +103,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
       }
 
-      "return the correct PSA company view model, also verify the correct existing current address ids and flags" in {
+      "return the correct PSA company view model, also verify the correct existing current address ids and flags, and adviser Add links" in {
         val companyExpectedAddress = UserAnswers(companyUserAnswers).get(CompanyContactAddressId).get.toTolerantAddress
         val directorExpectedAddress = UserAnswers(companyUserAnswers).get(DirectorAddressId(0)).get.toTolerantAddress
 

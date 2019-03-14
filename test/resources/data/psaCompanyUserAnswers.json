@@ -118,18 +118,5 @@
       "isDirectorComplete": true
     }
   ],
-  "declarationWorkingKnowledge" : false,
-  "adviserName" : "Pension Adviser",
-  "adviserDetails" : {
-    "email" : "aaa@yahoo.com",
-    "phone" : "0044-0987654232"
-  },
-  "adviserAddress" : {
-    "addressLine1" : "addline1",
-    "addressLine2" : "addline2",
-    "addressLine3" : "addline3",
-    "addressLine4" : "addline4",
-    "postcode" : "56765",
-    "country" : "AD"
-  }
+  "declarationWorkingKnowledge" : false
 }

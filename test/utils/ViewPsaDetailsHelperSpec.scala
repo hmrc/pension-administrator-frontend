@@ -133,13 +133,6 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
     behave like validSection(testName = "pension advisor details", headingKey = pensionAdvisorSuperSectionKey,
       result = partnershipResult, expectedAnswerRows = pensionAdviserSeqAnswers)
 
-    "have add link for adviser" in {
-      partnershipResult.exists(_.addLink.contains(AddLink(Link(
-        controllers.register.adviser.routes.ConfirmDeleteAdviserController.onPageLoad().url,
-        Message("adviser-delete-link", "Pension Adviser")),
-        Some(Message("adviser-delete-link-additionalText", "Pension Adviser"))))
-      ) mustBe true
-    }
   }
 }
 

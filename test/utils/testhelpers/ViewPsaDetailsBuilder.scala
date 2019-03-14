@@ -37,6 +37,18 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
       Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url))))
 
+  val pensionAdviserSeqAnswersIncomplete = Seq(
+    AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
+      Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
+    AnswerRow("pensions.advisor.label", Seq("site.not_entered"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add"))),
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
+    AnswerRow("cya.label.address", Seq("site.not_entered"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+
   val individualSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
       None),
@@ -157,6 +169,15 @@ object ViewPsaDetailsBuilder extends SpecBase {
     )
   )
 
+  val pensionAdviserSuperSectionWithAddLinks = SuperSection(
+    Some("pensionAdvisor.section.header"),
+    Seq(
+      AnswerSection(
+        None, pensionAdviserSeqAnswersIncomplete
+      )),
+    None
+  )
+
   val directorsSuperSection =SuperSection(Some("director.supersection.header"),
     Seq(AnswerSection(
       Some("Director number one"),
@@ -203,7 +224,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
             None,
             companySeqAnswers))),
       directorsSuperSection,
-      pensionAdviserSuperSection)
+      pensionAdviserSuperSectionWithAddLinks)
 
   val partnershipWithChangeLinks =
     Seq(
