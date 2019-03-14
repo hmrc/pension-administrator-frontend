@@ -57,7 +57,7 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, false, None, false),
     (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, false, None, false),
     (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
-    
+
     (DeclarationChangedId, declarationChanged, variationWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationChangedWithAdviser, variationStillWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationChangedWithWorkingKnowldge, variationDeclarationFitAndProperPage, false, None, false),

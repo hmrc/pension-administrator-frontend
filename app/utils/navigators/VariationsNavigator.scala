@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId, IsNewAdviserId}
 import identifiers.register._
-import models.{Mode, UpdateMode}
+import models.{CheckUpdateMode, Mode, UpdateMode}
 import utils.{Enumerable, Navigator, UserAnswers}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
@@ -29,7 +29,10 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+    case VariationWorkingKnowledgeId => variationWorkingKnowledgeEditRoute(from)
+    case _ => None
+  }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
 
@@ -65,6 +68,12 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   private def variationWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
     case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode))
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def variationWorkingKnowledgeEditRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
+    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckUpdateMode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
