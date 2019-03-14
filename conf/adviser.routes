@@ -18,8 +18,8 @@ POST       /adviser-details                    controllers.register.adviser.Advi
 GET        /:mode/adviser-details              controllers.register.adviser.AdviserDetailsController.onPageLoad(mode: Mode)
 POST       /:mode/adviser-details              controllers.register.adviser.AdviserDetailsController.onSubmit(mode: Mode)
 
-GET        /check-your-answers                 controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode = CheckMode)
-POST       /check-your-answers                 controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode = CheckMode)
+GET        /check-your-answers                 controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
+POST       /check-your-answers                 controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/check-your-answers           controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode)
 POST       /:mode/check-your-answers           controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode)
 
