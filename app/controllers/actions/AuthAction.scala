@@ -59,10 +59,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold {
+        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold{
           val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
-        } { result => Future.successful(result) }
+        }{result => Future.successful(result)}
       case _ =>
         Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
 
@@ -251,16 +251,19 @@ class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthC
                                                config: FrontendAppConfig,
                                                fs: FeatureSwitchManagementService,
                                                userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               identityVerificationConnector: IdentityVerificationConnector
-                                              )(implicit ec: ExecutionContext)
-  extends FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector) with AuthorisedFunctions {
+                                               identityVerificationConnector: IdentityVerificationConnector,
+                                               minimalPsaConnector: MinimalPsaConnector
+                                              )(implicit ec: ExecutionContext) extends
+    FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector, minimalPsaConnector)
 
+  with AuthorisedFunctions {
 
-  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier) =
+    override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
+                                    enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                    block: AuthenticatedRequest[A] => Future[Result])
+                                   (implicit hc: HeaderCarrier) =
 
-    savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+      savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
 }
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

@@ -39,7 +39,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
       val action = new TestAllowAccessAction(NormalMode)
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, None, false)))
 
       whenReady(futureResult) { result =>
 
@@ -53,7 +53,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
       val action = new TestAllowAccessAction(CheckMode)
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, None, false)))
 
       whenReady(futureResult) { result =>
 
@@ -69,7 +69,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, None, false)))
 
       whenReady(futureResult) { result =>
 
@@ -83,7 +83,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
       val action = new TestAllowAccessAction(UpdateMode)
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, None, false)))
 
       whenReady(futureResult) { result =>
 
@@ -97,7 +97,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
       val action = new TestAllowAccessAction(UpdateMode)
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"), false)))
 
       whenReady(futureResult) { result =>
 
@@ -106,11 +106,25 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     }
 
+    "redirect to intercept pages for suspended user with enrolment and UpdateMode" in {
+
+      val action = new TestAllowAccessAction(UpdateMode)
+
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"), true)))
+
+      whenReady(futureResult) { result =>
+
+        result.map { _.header.status  } mustBe Some(SEE_OTHER)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.IndexController.onPageLoad().url)
+      }
+
+    }
+
     "redirect to intercept page for user with enrolment and Normal/Check mode" in {
 
       val action = new TestAllowAccessAction(NormalMode)
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"), false)))
 
       whenReady(futureResult) { result =>
 
