@@ -60,8 +60,11 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
         redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
-          successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+          psaUser(cl, affinityGroup, nino, enrolments).flatMap{ user =>
+            val authRequest = AuthenticatedRequest(request, id, user)
+            successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+          }
+
         } { result => Future.successful(result) }
       case _ =>
         Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
@@ -237,9 +240,13 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   }
 
   private def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
-                      nino: Option[String], enrolments: Enrolments): PSAUser = {
+                      nino: Option[String], enrolments: Enrolments)(implicit hc: HeaderCarrier): Future[PSAUser] = {
     val psa = existingPSA(enrolments)
-    PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
+    psa.fold(Future.successful(PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa, isPSASuspended = false)))(psaId=>
+     minimalPsaConnector.isPsaSuspended(psaId).map( isPsaSuspended =>
+        PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa, isPSASuspended = isPsaSuspended))
+    )
+
   }
 
   private def getPSAId(enrolments: Enrolments): String =
@@ -251,16 +258,19 @@ class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthC
                                                config: FrontendAppConfig,
                                                fs: FeatureSwitchManagementService,
                                                userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               identityVerificationConnector: IdentityVerificationConnector
-                                              )(implicit ec: ExecutionContext)
-  extends FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector) with AuthorisedFunctions {
+                                               identityVerificationConnector: IdentityVerificationConnector,
+                                               minimalPsaConnector: MinimalPsaConnector
+                                              )(implicit ec: ExecutionContext) extends
+    FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector, minimalPsaConnector)
 
+  with AuthorisedFunctions {
 
-  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier) =
+    override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
+                                    enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                    block: AuthenticatedRequest[A] => Future[Result])
+                                   (implicit hc: HeaderCarrier) =
 
-    savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+      savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
 }
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

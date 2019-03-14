@@ -45,7 +45,7 @@ class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppCon
         case _ => handleErrorResponse("GET", config.minimalPsaDetailsUrl)(response)
       }
     } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to invite PSA to administer scheme", t)
+      case Failure(t: Throwable) => Logger.warn("Unable to get PSA minimal details", t)
     }
   }
 
