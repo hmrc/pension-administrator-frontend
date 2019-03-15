@@ -22,7 +22,7 @@ import identifiers.TypedIdentifier
    Note on the PAInDeclarationJourneyId flag.
    ------------------------------------------
    If the save and continue button on the variations working knowledge page is clicked and
-   the page has been navigated to within the declaration journey (hence is in CheckUpdateMode)
+   the page has been navigated to within the declaration journey (hence mode is CheckUpdateMode)
    then the PAInDeclarationJourneyId flag is saved with value true. This is so that when the
    pension adviser cya page at the end of the declaration journey is submitted the cya controller
    knows to direct the user to the fit and proper page rather than back to the PSA details page
