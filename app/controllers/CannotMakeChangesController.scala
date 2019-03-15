@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
 import config.FrontendAppConfig
-import controllers.Retrievals
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import javax.inject.Inject
-import models.{Mode, UpdateMode}
+import models.UpdateMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.register.cannotMakeChanges
+import views.html.cannotMakeChanges
 
-class CannotMakeChangesController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
+import scala.concurrent.{ExecutionContext, Future}
+
+class CannotMakeChangesController @Inject()(val appConfig: FrontendAppConfig,
+                                            val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
-                                            allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction
-                                           ) extends FrontendController with I18nSupport with Retrievals {
+                                           )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
-    implicit request =>
-      Ok(cannotMakeChanges(appConfig, psaName(), UpdateMode))
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+    Future.successful(Ok(cannotMakeChanges(appConfig, psaName(), UpdateMode)))
   }
 }

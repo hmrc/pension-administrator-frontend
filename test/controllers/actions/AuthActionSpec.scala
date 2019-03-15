@@ -23,9 +23,13 @@ import config.FeatureSwitchManagementService
 import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector, MinimalPsaConnector}
 import controllers.routes
 import identifiers.JourneyId
-import models.{Mode, NormalMode, UpdateMode}
+import models._
+import models.requests.AuthenticatedRequest
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Controller
+import play.api.mvc.{Controller, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
@@ -36,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionSpec extends SpecBase {
+class AuthActionSpec extends SpecBase with MockitoSugar{
 
   import AuthActionSpec._
 
@@ -103,7 +107,25 @@ class AuthActionSpec extends SpecBase {
           def controller = new Harness(authAction)
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.VariationDeclarationController.onPageLoad().url))
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.register.routes.CannotMakeChangesController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad().url)
+        }
+
+        "if isPSASuspended flag is allready present in auth request, not make call to isPsaSuspended" in {
+          val mockMinimalPsaConnector = mock[MinimalPsaConnector]
+
+          when(mockMinimalPsaConnector.isPsaSuspended(any())(any(), any())).thenReturn(Future.successful(true))
+
+          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
+              fakeUserAnswersConnector, fakeIVConnector, mockMinimalPsaConnector) {
+            override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
+              block(AuthenticatedRequest(request, "externalId", PSAUser(UserType.Organisation, None, false, None, Some("psaId"), isPSASuspended = Some(true))))
+          }
+
+          def controller = new Harness(authAction)
+          val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.VariationDeclarationController.onPageLoad().url))
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad().url)
+          verify(mockMinimalPsaConnector, never()).isPsaSuspended(any())(any(), any())
         }
 
       }
@@ -429,7 +451,9 @@ object AuthActionSpec {
 
   private def fakeMinimalPsaConnector(isSuspended:Boolean = false) : MinimalPsaConnector = {
     new MinimalPsaConnector {
-      override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = Future.successful(isSuspended)
+      override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+        Future.successful(isSuspended)
+      }
     }
   }
 }

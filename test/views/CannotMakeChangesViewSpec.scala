@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.register
+package views
 
 import models.UpdateMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.register.cannotMakeChanges
+import views.html.cannotMakeChanges
 
 class CannotMakeChangesViewSpec extends ViewBehaviours {
 
