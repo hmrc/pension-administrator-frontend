@@ -35,7 +35,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("0044-0987654232"), false,
       Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url))))
 
   val pensionAdviserSeqAnswersIncomplete = Seq(
     AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
@@ -47,7 +47,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), true,
       Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
     AnswerRow("cya.label.address", Seq("site.not_entered"), true,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
 
   val individualSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,

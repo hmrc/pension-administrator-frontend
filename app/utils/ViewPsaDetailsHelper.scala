@@ -464,10 +464,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     case Some(false) =>
       Option(userAnswers.get(AdviserAddressId).fold[AnswerRow](
         AnswerRow("cya.label.address", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url, "site.add")))) {
+          Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))) {
         address =>
           AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-            Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url)))
+            Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
       })
     case _ => None
   }
