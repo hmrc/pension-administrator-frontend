@@ -420,8 +420,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
-  //Pension Adviser
-
   private def workingKnowledge: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) map { wk =>
     AnswerRow("variationWorkingKnowledge.heading", Seq(messages(if (wk) "site.yes" else "site.no")), answerIsMessageKey = false,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url)))
