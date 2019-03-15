@@ -25,7 +25,7 @@ import models.{Mode, UpdateMode}
 import utils.{Enumerable, Navigator, UserAnswers}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                    config: FrontendAppConfig)extends Navigator with Enumerable.Implicits {
+                                    config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
 
@@ -73,7 +73,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
       case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
       case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-  }
+    }
 
   private def declarationFitAndProperRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationFitAndProperId) match {
     case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
@@ -81,11 +81,13 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private def doesAdviserStillExist(ua:UserAnswers):Boolean  =
+  private def doesAdviserStillExist(ua: UserAnswers): Boolean =
     ua.get(AdviserNameId).isDefined && ua.get(IsNewAdviserId).isEmpty
 
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
-    if (doesAdviserStillExist(from.userAnswers)) {
+    if (from.userAnswers.isPsaUpdateDetailsInComplete) {
+      NavigateTo.dontSave(controllers.register.routes.IncompleteChangesController.onPageLoad())
+    } else if (doesAdviserStillExist(from.userAnswers)) {
       NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
     } else {
       workingKonwldgeOrFnProute(from)

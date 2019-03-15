@@ -202,111 +202,97 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
+
+      "partnership previous address is incomplete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
+          .partnershipAddressYears(AddressYears.UnderAYear)
+          .adviserComplete(true)
+          .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(IsPartnerCompleteId(0))(true))
+          .flatMap(_.set(IsPartnerCompleteId(1))(true))
+          .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+
+        userAnswers.isPsaUpdateDetailsInComplete mustBe true
+      }
+
+      "individual previous address is incomplete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualAddressYears(AddressYears.UnderAYear)
+          .adviserComplete(true)
+
+        userAnswers.isPsaUpdateDetailsInComplete mustBe true
+      }
+
+      " adviser is incomplete i.e the flag value is false" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualAddressYears(AddressYears.UnderAYear)
+          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserComplete(false)
+
+        userAnswers.isPsaUpdateDetailsInComplete mustBe true
+      }
+
+      "adviser is incomplete i.e there is no flag" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualAddressYears(AddressYears.UnderAYear)
+          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+
+        userAnswers.isPsaUpdateDetailsInComplete mustBe true
+      }
     }
 
-    "set the flag as true(incomplete) when any one of the partners is incomplete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-        .partnershipAddressYears(AddressYears.UnderAYear)
-        .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-        .adviserComplete(true)
-        .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
-        .flatMap(_.set(IsPartnerCompleteId(0))(true))
-        .flatMap(_.set(IsPartnerCompleteId(1))(false))
-        .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+    "set the flag as false(complete)" when {
 
+      "all the details of company is complete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
+          .companyAddressYears(AddressYears.UnderAYear)
+          .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserComplete(true)
+          .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(IsDirectorCompleteId(0))(true))
+          .flatMap(_.set(IsDirectorCompleteId(1))(true))
+          .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
 
-      userAnswers.isPsaUpdateDetailsInComplete mustBe true
-    }
+        userAnswers.isPsaUpdateDetailsInComplete mustBe false
+      }
 
-    "set the flag as true(incomplete) when partnership previous address is incomplete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-        .partnershipAddressYears(AddressYears.UnderAYear)
-        .adviserComplete(true)
-        .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
-        .flatMap(_.set(IsPartnerCompleteId(0))(true))
-        .flatMap(_.set(IsPartnerCompleteId(1))(true))
-        .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+      "all the details of individual including previous address with less than 12 months address years is complete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualAddressYears(AddressYears.UnderAYear)
+          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserComplete(true)
 
+        userAnswers.isPsaUpdateDetailsInComplete mustBe false
+      }
 
-      userAnswers.isPsaUpdateDetailsInComplete mustBe true
-    }
+      "all the details of individual with more than 12 months address years is complete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualAddressYears(AddressYears.OverAYear)
+          .adviserComplete(true)
 
-    "set the flag as true(incomplete) when individual previous address is incomplete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-        .individualAddressYears(AddressYears.UnderAYear)
-        .adviserComplete(true)
+        userAnswers.isPsaUpdateDetailsInComplete mustBe false
+      }
 
-      userAnswers.isPsaUpdateDetailsInComplete mustBe true
-    }
+      "all the details of partnership is complete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
+          .partnershipAddressYears(AddressYears.UnderAYear)
+          .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserComplete(true)
+          .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(IsPartnerCompleteId(0))(true))
+          .flatMap(_.set(IsPartnerCompleteId(1))(true))
+          .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
 
-    "set the flag as true(incomplete) when adviser is incomplete i.e the flag value is false" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-        .individualAddressYears(AddressYears.UnderAYear)
-        .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-        .adviserComplete(false)
-
-      userAnswers.isPsaUpdateDetailsInComplete mustBe true
-    }
-
-    "set the flag as true(incomplete) when adviser is incomplete i.e there is no flag" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-        .individualAddressYears(AddressYears.UnderAYear)
-        .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-
-      userAnswers.isPsaUpdateDetailsInComplete mustBe true
-    }
-
-    "set the flag as false(complete) when all the details of company is complete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-        .companyAddressYears(AddressYears.UnderAYear)
-        .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-        .adviserComplete(true)
-        .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
-        .flatMap(_.set(IsDirectorCompleteId(0))(true))
-        .flatMap(_.set(IsDirectorCompleteId(1))(true))
-        .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
-
-      userAnswers.isPsaUpdateDetailsInComplete mustBe false
-    }
-
-    "set the flag as false(complete) when all the details of individual including previous address with less than 12 months address years is complete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-        .individualAddressYears(AddressYears.UnderAYear)
-        .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-        .adviserComplete(true)
-
-      userAnswers.isPsaUpdateDetailsInComplete mustBe false
-    }
-
-    "set the flag as false(complete) when all the details of individual with more than 12 months address years is complete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-        .individualAddressYears(AddressYears.OverAYear)
-        .adviserComplete(true)
-
-      userAnswers.isPsaUpdateDetailsInComplete mustBe false
-    }
-
-    "set the flag as false(complete) when all the details of partnership is complete" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-        .partnershipAddressYears(AddressYears.UnderAYear)
-        .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-        .adviserComplete(true)
-        .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
-        .flatMap(_.set(IsPartnerCompleteId(0))(true))
-        .flatMap(_.set(IsPartnerCompleteId(1))(true))
-        .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
-
-
-      userAnswers.isPsaUpdateDetailsInComplete mustBe false
+        userAnswers.isPsaUpdateDetailsInComplete mustBe false
+      }
     }
   }
 }
