@@ -18,14 +18,14 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import controllers.actions._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, CheckYourAnswersId}
+import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
 import models.Mode._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, SectionComplete}
 import utils.annotations.Adviser
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
@@ -41,10 +41,11 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            sectionComplete: SectionComplete,
                                             implicit val countryOptions: CountryOptions
                                           )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
       val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(checkMode(mode)).url)))
@@ -53,8 +54,10 @@ class CheckYourAnswersController @Inject()(
       Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(mode), None, mode))
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      sectionComplete.setComplete(IsAdviserCompleteId, request.userAnswers) map { _ =>
+        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      }
   }
 }
