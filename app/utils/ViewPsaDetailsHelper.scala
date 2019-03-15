@@ -430,7 +430,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def pensionAdviser: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(false) =>
       Option(userAnswers.get(AdviserNameId).fold[AnswerRow](
-        AnswerRow("pensions.advisor.label", Seq("site.not_entered"), answerIsMessageKey = false,
+        AnswerRow("pensions.advisor.label", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add")))) { adviserName =>
         AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
           None)
@@ -441,7 +441,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(false) =>
       Option(userAnswers.get(AdviserDetailsId).fold[AnswerRow](
-        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = false,
+        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add")))) { adviser =>
         AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
           Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
@@ -453,7 +453,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
     case Some(false) =>
       Option(userAnswers.get(AdviserDetailsId).fold[AnswerRow](
-        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = false,
+        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add")))) {
         adviser =>
           AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
@@ -465,7 +465,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def pensionAdviserAddress: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(false) =>
       Option(userAnswers.get(AdviserAddressId).fold[AnswerRow](
-        AnswerRow("cya.label.address", Seq("site.not_entered"), answerIsMessageKey = false,
+        AnswerRow("cya.label.address", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url, "site.add")))) {
         address =>
           AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,

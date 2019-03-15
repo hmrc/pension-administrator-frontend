@@ -40,13 +40,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
   val pensionAdviserSeqAnswersIncomplete = Seq(
     AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
-    AnswerRow("pensions.advisor.label", Seq("site.not_entered"), false,
+    AnswerRow("pensions.advisor.label", Seq("site.not_entered"),answerIsMessageKey = true,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add"))),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), false,
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), true,
       Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
-    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), false,
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), true,
       Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
-    AnswerRow("cya.label.address", Seq("site.not_entered"), false,
+    AnswerRow("cya.label.address", Seq("site.not_entered"), true,
       Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url, "site.add"))))
 
   val individualSeqAnswers = Seq(
