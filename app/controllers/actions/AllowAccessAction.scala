@@ -30,7 +30,7 @@ class AllowAccessAction(mode:Mode) extends ActionFilter[AuthenticatedRequest]{
     (request.user.alreadyEnrolledPsaId, mode) match {
       case (None, NormalMode | CheckMode) =>  Future.successful(None)
       case (Some(_), UpdateMode | CheckUpdateMode) if request.user.isPSASuspended =>
-        Future.successful(Some(Redirect(controllers.routes.IndexController.onPageLoad())))
+        Future.successful(Some(Redirect(controllers.register.routes.CannotMakeChangesController.onPageLoad())))
       case (Some(_), UpdateMode | CheckUpdateMode) =>  Future.successful(None)
       case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>  Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>  Future.successful(Some(Redirect(controllers.routes.InterceptPSAController.onPageLoad())))
