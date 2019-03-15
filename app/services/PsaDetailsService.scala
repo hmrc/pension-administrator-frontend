@@ -20,6 +20,7 @@ import com.google.inject.ImplementedBy
 import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import identifiers.register.RegistrationInfoId
+import identifiers.register.adviser.{AdviserNameId, IsAdviserCompleteId}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
@@ -161,7 +162,7 @@ class PsaDetailServiceImpl @Inject()(
       case _ =>
         (Nil, Map.empty)
     }
-    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
+    userAnswers.setAllFlagsTrue(seqOfCompleteIds ++ Seq(IsAdviserCompleteId)).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
