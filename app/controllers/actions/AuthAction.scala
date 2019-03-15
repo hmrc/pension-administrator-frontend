@@ -154,14 +154,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                                  block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
     if (alreadyEnrolledInPODS(enrolments)) {
       val psaId = getPSAId(enrolments)
-      if(authRequest.user.isPSASuspended.nonEmpty){
+      minimalPsaConnector.isPsaSuspended(psaId).flatMap { isPsaSuspended =>
         block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
-          alreadyEnrolledPsaId = Some(psaId))))
-      } else {
-        minimalPsaConnector.isPsaSuspended(psaId).flatMap { isPsaSuspended =>
-          block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
-            alreadyEnrolledPsaId = Some(psaId), isPSASuspended = Some(isPsaSuspended))))
-        }
+          alreadyEnrolledPsaId = Some(psaId), isPSASuspended = Some(isPsaSuspended))))
       }
     }
     else {
