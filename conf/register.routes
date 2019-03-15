@@ -56,3 +56,5 @@ POST       /do-you-still-use-an-adviser             controllers.register.StillUs
 
 GET        /declare-after-changing-details          controllers.register.VariationDeclarationController.onPageLoad(mode: Mode = UpdateMode)
 POST       /declare-after-changing-details          controllers.register.VariationDeclarationController.onSubmit(mode: Mode = UpdateMode)
+
+GET        /incomplete-changes                      controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)

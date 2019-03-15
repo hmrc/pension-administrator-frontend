@@ -17,7 +17,7 @@
 package controllers.register
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.ControllerSpecBase
+import controllers.{ControllerSpecBase, IncompleteChangesController}
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models._
@@ -29,12 +29,12 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
-import views.html.register.variationNoLongerFitAndProper
+import views.html.register.incompleteChanges
 
 import scala.concurrent.Future
 
-class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
-  import VariationNoLongerFitAndProperControllerSpec._
+class IncompleteChangesControllerSpec extends ControllerSpecBase {
+  import IncompleteChangesControllerSpec._
 
   "NoLongerFitAndProperController" must {
 
@@ -54,7 +54,9 @@ class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   }
 }
 
-object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+
+
+object IncompleteChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
   private val psaUser = PSAUser(UserType.Individual, None, false, None)
@@ -66,7 +68,7 @@ object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase wi
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new VariationNoLongerFitAndProperController(
+    new IncompleteChangesController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction(UserType.Individual),
@@ -77,10 +79,12 @@ object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase wi
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    variationNoLongerFitAndProper(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    incompleteChanges(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 
 }
+
+
 
 
 
