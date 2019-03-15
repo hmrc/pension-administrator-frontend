@@ -289,6 +289,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def directorsSuperSection: SuperSection = {
     val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete(NormalMode).size match {
       case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", Some("director-add-link-onlyOne-additionalText"))
+      case _ if ifAnyDirectorIncomplete => ("director-add-link-incomplete", None)
       case noOfDirectors if noOfDirectors == 10 => ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
       case _ => ("director-add-link-lessThanTen", None)
     }
@@ -298,6 +299,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
+
+  private def ifAnyDirectorIncomplete = userAnswers.allDirectorsAfterDelete(NormalMode).exists(!_.isComplete)
 
   //Partnership PSA
   private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(PartnershipVatId) match {
@@ -410,6 +413,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def partnersSuperSection: SuperSection = {
     val (linkText, additionalText) = userAnswers.allPartnersAfterDelete(UpdateMode).size match {
       case noOfPartners if noOfPartners == 1 => ("partner-add-link-onlyOne", Some("partner-add-link-onlyOne-additionalText"))
+      case _ if ifAnyPartnerIncomplete => ("partner-add-link-incomplete", None)
       case noOfPartners if noOfPartners == 10 => ("partner-add-link-Ten", Some("partner-add-link-Ten-additionalText"))
       case _ => ("partner-add-link-lessThanTen", None)
     }
@@ -419,6 +423,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(AddLink(Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
+
+  private def ifAnyPartnerIncomplete = userAnswers.allPartnersAfterDelete(NormalMode).exists(!_.isComplete)
 
   private def workingKnowledge: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) map { wk =>
     AnswerRow("variationWorkingKnowledge.heading", Seq(messages(if (wk) "site.yes" else "site.no")), answerIsMessageKey = false,
