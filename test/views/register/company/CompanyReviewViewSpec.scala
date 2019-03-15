@@ -17,7 +17,7 @@
 package views.register.company
 
 import controllers.register.company.routes
-import models.CheckMode
+import models.{CheckMode, NormalMode}
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyReview
 
@@ -49,7 +49,7 @@ class CompanyReviewViewSpec extends ViewBehaviours {
 
   "have link to edit director details when there are less than 10 directors" in {
     createView must haveLink(
-      routes.AddCompanyDirectorsController.onPageLoad(CheckMode).url, "edit-director-details"
+      routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "edit-director-details"
     )
     createView must haveDynamicText("companyReview.directors.editLink")
   }
