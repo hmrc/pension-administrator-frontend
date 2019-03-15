@@ -19,11 +19,13 @@ package controllers.register.individual
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
+import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -46,7 +48,18 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                   formProvider: PostCodeLookupFormProvider
                                                                 ) extends PostcodeLookupController {
 
-  import IndividualContactAddressPostCodeLookupController._
+  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
+    routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
+    routes.IndividualContactAddressController.onPageLoad(mode),
+    Message("individualContactAddressPostCodeLookup.title"),
+    Message("individualContactAddressPostCodeLookup.heading"),
+    None,
+    Message("individualContactAddressPostCodeLookup.hint"),
+    Message("individualContactAddressPostCodeLookup.enterPostcode"),
+    Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
+    Message("individualContactAddressPostCodeLookup.formLabel"),
+    psaName = psaName()
+  )
 
   override protected def form: Form[String] = formProvider()
 
@@ -59,21 +72,6 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
     implicit request =>
       post(IndividualContactAddressPostCodeLookupId, viewModel(mode), mode)
   }
-
 }
 
-object IndividualContactAddressPostCodeLookupController {
-
-  def viewModel(mode: Mode) = PostcodeLookupViewModel(
-    routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
-    routes.IndividualContactAddressController.onPageLoad(mode),
-    Message("individualContactAddressPostCodeLookup.title"),
-    Message("individualContactAddressPostCodeLookup.heading"),
-    None,
-    Message("individualContactAddressPostCodeLookup.hint"),
-    Message("individualContactAddressPostCodeLookup.enterPostcode"),
-    Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
-    Message("individualContactAddressPostCodeLookup.formLabel")
-  )
-}
 

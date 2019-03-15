@@ -67,7 +67,7 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  def retrievePsaDataFromUserAnswers(psaId: String, mode:Mode
+  def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
                                     )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, mode)
@@ -87,7 +87,6 @@ class PsaDetailServiceImpl @Inject()(
       case Some(data) => {
         (UserAnswers(data).get(IndexId), UserAnswers(data).get(RegistrationInfoId)) match {
           case (Some(_), None) =>
-            UserAnswers(data).get(RegistrationInfoId)
             userAnswersCacheConnector.removeAll(request.externalId).flatMap { _ =>
               subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
                 getUpdatedUserAnswers(_, mode)

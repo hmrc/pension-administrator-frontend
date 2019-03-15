@@ -59,7 +59,8 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
           Message("companyContactAddressPostCodeLookup.lede").withArgs(businessDetails.companyName),
           Message("common.postcodeLookup.enterPostcode"),
           Some(Message("common.postcodeLookup.enterPostcode.link")),
-          Message("address.postcode")
+          Message("address.postcode"),
+          psaName = psaName()
         )
       }
   )
