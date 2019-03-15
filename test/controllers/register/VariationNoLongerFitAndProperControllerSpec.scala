@@ -16,22 +16,17 @@
 
 package controllers.register
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
-import org.mockito.Matchers._
-import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
-import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.variationNoLongerFitAndProper
-
-import scala.concurrent.Future
 
 class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   import VariationNoLongerFitAndProperControllerSpec._

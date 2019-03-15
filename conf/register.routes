@@ -1,60 +1,60 @@
-->         /company                                 company.Routes
-->         /individual                              individual.Routes
-->         /adviser                                 adviser.Routes
-->         /partnership                             partnership.Routes
+->         /company                                     company.Routes
+->         /individual                                  individual.Routes
+->         /adviser                                     adviser.Routes
+->         /partnership                                 partnership.Routes
 
-GET        /business-type                           controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /business-type                           controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/business-type                     controllers.register.BusinessTypeController.onPageLoad(mode: Mode)
-POST       /:mode/business-type                     controllers.register.BusinessTypeController.onSubmit(mode: Mode)
+GET        /business-type                               controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /business-type                               controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/business-type                         controllers.register.BusinessTypeController.onPageLoad(mode: Mode)
+POST       /:mode/business-type                         controllers.register.BusinessTypeController.onSubmit(mode: Mode)
 
-GET        /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /what-kind-of-business                   controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /what-kind-of-business                       controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /what-kind-of-business                       controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
 
-GET        /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration-working-knowledge           controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/declaration-working-knowledge     controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
-POST       /:mode/declaration-working-knowledge     controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
+GET        /declaration-working-knowledge               controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
+POST       /declaration-working-knowledge               controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/declaration-working-knowledge         controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
+POST       /:mode/declaration-working-knowledge         controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
 
-GET        /changing-having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+GET        /changing-having-pensions-working-knowledge  controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
+POST       /changing-having-pensions-working-knowledge  controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration-fit-and-proper              controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)
+GET        /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
+POST       /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)
 
-GET        /declaration                             controllers.register.DeclarationController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration                             controllers.register.DeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /declaration                                 controllers.register.DeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /declaration                                 controllers.register.DeclarationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /confirmation                            controllers.register.ConfirmationController.onPageLoad(mode: Mode = NormalMode)
-POST       /confirmation                            controllers.register.ConfirmationController.onSubmit(mode: Mode = NormalMode)
+GET        /confirmation                                controllers.register.ConfirmationController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirmation                                controllers.register.ConfirmationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /duplicate-registration                  controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = NormalMode)
+GET        /duplicate-registration                      controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /unable-to-send-details                  controllers.register.SubmissionInvalidController.onPageLoad(mode: Mode = NormalMode)
+GET        /unable-to-send-details                      controllers.register.SubmissionInvalidController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
-POST       /registered-in-uk                        controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/registered-in-uk                  controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode)
-POST       /:mode/registered-in-uk                  controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
+GET        /registered-in-uk                            controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /registered-in-uk                            controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/registered-in-uk                      controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode)
+POST       /:mode/registered-in-uk                      controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
 
-GET        /register-as-business                    controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
-POST       /register-as-business                    controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
+GET        /register-as-business                        controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
+POST       /register-as-business                        controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
 
-GET        /details-updated                         controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
+GET        /details-updated                             controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
 
-GET        /make-more-changes                       controllers.register.AnyMoreChangesController.onPageLoad()
-POST       /make-more-changes                       controllers.register.AnyMoreChangesController.onSubmit()
+GET        /make-more-changes                           controllers.register.AnyMoreChangesController.onPageLoad()
+POST       /make-more-changes                           controllers.register.AnyMoreChangesController.onSubmit()
 
-GET        /still-fit-and-proper-person             controllers.register.VariationDeclarationFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
-POST       /still-fit-and-proper-person             controllers.register.VariationDeclarationFitAndProperController.onSubmit(mode: Mode = UpdateMode)
+GET        /still-fit-and-proper-person                 controllers.register.VariationDeclarationFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
+POST       /still-fit-and-proper-person                 controllers.register.VariationDeclarationFitAndProperController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /cannot-make-changes                     controllers.register.VariationNoLongerFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
+GET        /cannot-make-changes                         controllers.register.VariationNoLongerFitAndProperController.onPageLoad(mode: Mode = UpdateMode)
 
-GET        /do-you-still-use-an-adviser             controllers.register.StillUseAdviserController.onPageLoad(mode: Mode = UpdateMode)
-POST       /do-you-still-use-an-adviser             controllers.register.StillUseAdviserController.onSubmit(mode: Mode = UpdateMode)
+GET        /do-you-still-use-an-adviser                 controllers.register.StillUseAdviserController.onPageLoad(mode: Mode = UpdateMode)
+POST       /do-you-still-use-an-adviser                 controllers.register.StillUseAdviserController.onSubmit(mode: Mode = UpdateMode)
 
 
-GET        /declare-after-changing-details          controllers.register.VariationDeclarationController.onPageLoad(mode: Mode = UpdateMode)
-POST       /declare-after-changing-details          controllers.register.VariationDeclarationController.onSubmit(mode: Mode = UpdateMode)
+GET        /declare-after-changing-details              controllers.register.VariationDeclarationController.onPageLoad(mode: Mode = UpdateMode)
+POST       /declare-after-changing-details              controllers.register.VariationDeclarationController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /incomplete-changes                      controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)
+GET        /incomplete-changes                          controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)

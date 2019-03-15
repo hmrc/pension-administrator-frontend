@@ -19,14 +19,14 @@ package views.register
 import models.UpdateMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.register.variationNoLongerFitAndProper
+import views.html.register.incompleteChanges
 
 class IncompleteChangesViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "incompleteChanges"
 
   private def createView: () => HtmlFormat.Appendable = () =>
-    variationNoLongerFitAndProper(frontendAppConfig, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
+    incompleteChanges(frontendAppConfig, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
 
   "incompleteChanges view" must {

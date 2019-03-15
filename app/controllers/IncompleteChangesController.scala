@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.register.incompleteChanges
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IncompleteChangesController @Inject()(appConfig: FrontendAppConfig,
                                             override val messagesApi: MessagesApi,
@@ -39,9 +39,6 @@ class IncompleteChangesController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val PSAName = psaName()
-      dataCacheConnector.removeAll(request.externalId).map { _=>
-        Ok(incompleteChanges(appConfig, PSAName, mode))
-      }
+      Future.successful(Ok(incompleteChanges(appConfig, psaName(), mode)))
   }
 }
