@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
 import javax.inject.Inject
 import models.Mode

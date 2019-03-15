@@ -18,7 +18,7 @@ package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.actions._
-import controllers.{ControllerSpecBase, IncompleteChangesController}
+import controllers.ControllerSpecBase
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
