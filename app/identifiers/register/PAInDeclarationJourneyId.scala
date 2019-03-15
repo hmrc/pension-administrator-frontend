@@ -18,6 +18,18 @@ package identifiers.register
 
 import identifiers.TypedIdentifier
 
+/*
+   Note on the PAInDeclarationJourneyId flag.
+   ------------------------------------------
+   If the save and continue button on the variations working knowledge page is clicked and
+   the page has been navigated to within the declaration journey (hence is in CheckUpdateMode)
+   then save the PAInDeclarationJourneyId flag to UserAnswers. This is so that when the
+   pension adviser cya page at the end of the declaration journey is submitted the cya controller
+   knows to direct the user to the fit and proper page rather than back to the PSA details page
+   (since the pension adviser cya controller is also now reachable via the change link on the PSA
+   details page).
+*/
+
 case object PAInDeclarationJourneyId extends TypedIdentifier[Boolean] {
   self =>
   override def toString: String = "pensionAdviserInDeclarationJourney"
