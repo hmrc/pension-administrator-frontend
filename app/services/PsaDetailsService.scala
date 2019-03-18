@@ -25,13 +25,11 @@ import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId,
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipDetailsId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
-import identifiers.{TypedIdentifier, UpdateModeId}
+import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.requests.AuthenticatedRequest
-import models.{Address, Mode, RegistrationLegalStatus, TolerantAddress}
 import models.requests.OptionalDataRequest
-import models.{Address, RegistrationLegalStatus, TolerantAddress, UpdateMode}
+import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,8 +42,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
-  def retrievePsaDataAndGenerateViewModel(psaId: String, mode:Mode)(implicit hc: HeaderCarrier,
-                                                         ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel]
+  def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)(implicit hc: HeaderCarrier,
+                                                                     ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel]
 }
 
 class PsaDetailServiceImpl @Inject()(
@@ -57,7 +55,7 @@ class PsaDetailServiceImpl @Inject()(
                                       userAnswersCacheConnector: UserAnswersCacheConnector
                                     ) extends PsaDetailsService with I18nSupport {
 
-  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode:Mode)(
+  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)(
     implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
 
     if (fs.get(isVariationsEnabled)) {
@@ -69,7 +67,7 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  def retrievePsaDataFromUserAnswers(psaId: String, mode:Mode
+  def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
                                     )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, mode)
@@ -80,11 +78,24 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  private def getUserAnswers(psaId: String, mode:Mode
-                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]) =
+  private def getUserAnswers(psaId: String, mode: Mode
+                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
-      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers(_, mode)}
-      case Some(data) => Future(UserAnswers(data))
+      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
+        getUpdatedUserAnswers(_, mode)
+      }
+      case Some(data) => {
+        (UserAnswers(data).get(IndexId), UserAnswers(data).get(RegistrationInfoId)) match {
+          case (Some(_), None) =>
+            userAnswersCacheConnector.removeAll(request.externalId).flatMap { _ =>
+              subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
+                getUpdatedUserAnswers(_, mode)
+              }
+            }
+          case _ =>
+            Future(UserAnswers(data))
+        }
+      }
     }
 
   private def getUpdatedUserAnswers(response: JsValue, mode:Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
@@ -120,7 +131,7 @@ class PsaDetailServiceImpl @Inject()(
 
   private def setCompleteAndAddressIdsToUserAnswers(userAnswers: UserAnswers,
                                                     legalStatus: Option[RegistrationLegalStatus],
-                                                    mode:Mode): JsResult[UserAnswers] = {
+                                                    mode: Mode): JsResult[UserAnswers] = {
 
     val (seqOfCompleteIds, mapOfAddressIds):
       (List[TypedIdentifier[Boolean]], Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]) = legalStatus match {

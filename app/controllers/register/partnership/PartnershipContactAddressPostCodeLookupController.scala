@@ -59,7 +59,8 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
           Message("partnershipContactAddressPostCodeLookup.lede").withArgs(details.companyName),
           Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
           Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),
-          Message("address.postcode")
+          Message("address.postcode"),
+          psaName = psaName()
         )
       }
   )
