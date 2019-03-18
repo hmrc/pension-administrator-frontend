@@ -217,18 +217,12 @@ case class UserAnswers(json: JsValue = Json.obj()) {
           isPreviousAddressIncomplete(get(IndividualAddressYearsId), IndividualPreviousAddressId)
         case Some(LimitedCompany) =>
           allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            isPreviousAddressIncomplete(get(CompanyAddressYearsId), CompanyPreviousAddressId) |
-            allDirectorsAfterDelete(UpdateMode).exists { x =>
-              isPreviousAddressIncomplete(get(DirectorAddressYearsId(x.index)), DirectorPreviousAddressId(x.index))
-            }
+            isPreviousAddressIncomplete(get(CompanyAddressYearsId), CompanyPreviousAddressId)
         case Some(Partnership) =>
           isPreviousAddressIncomplete(get(PartnershipAddressYearsId), PartnershipPreviousAddressId) |
-            allPartnersAfterDelete(UpdateMode).exists(!_.isComplete) |
-            allPartnersAfterDelete(UpdateMode).exists { x =>
-              isPreviousAddressIncomplete(get(PartnerAddressYearsId(x.index)), PartnerPreviousAddressId(x.index))
-            }
+            allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
         case _ =>
-          false
+          true
       }
     incompleteAdviser | incompleteDetails
   }

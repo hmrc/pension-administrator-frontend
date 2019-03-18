@@ -21,12 +21,13 @@ import java.time.LocalDate
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier
+import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressId, IsDirectorCompleteId}
 import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import utils.UserAnswers
+import utils.{FakeSectionComplete, SectionComplete, UserAnswers}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -66,7 +67,35 @@ class VariationsSpec extends ControllerSpecBase {
 
   def dataRequest(userAnswers: UserAnswers = UserAnswers()): DataRequest[AnyContent] = DataRequest(FakeRequest(), externalId, psaUser, userAnswers)
 
+  def userAnswersWithDirector(isNew: Boolean = false) = UserAnswers(Json.obj(
+    "directors" -> Json.arr(
+      Json.obj(DirectorDetailsId.toString ->
+        PersonDetails("", Some(""), "", LocalDate.now(), isNew = isNew))
+    )))
+
   "Variations" must {
+
+    "set the complete flag for existing director or partner" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsNonIndexed.setCompleteFlagForExistingDirOrPartners(
+        UpdateMode, DirectorPreviousAddressId(0), userAnswersWithDirector())(dataRequest()), Duration.Inf)
+      FakeUserAnswersCacheConnector.verify(IsDirectorCompleteId(0), true)
+    }
+
+    "not set the complete flag for new director or partner" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsNonIndexed.setCompleteFlagForExistingDirOrPartners(
+        UpdateMode, DirectorPreviousAddressId(0), userAnswersWithDirector(true))(dataRequest()), Duration.Inf)
+      FakeUserAnswersCacheConnector.verifyNot(IsDirectorCompleteId(0))
+    }
+
+    "not set the complete flag for NormalMode" in {
+      FakeUserAnswersCacheConnector.reset()
+      Await.result(testVariationsNonIndexed.setCompleteFlagForExistingDirOrPartners(
+        NormalMode, DirectorPreviousAddressId(0), userAnswersWithDirector())(dataRequest()), Duration.Inf)
+      FakeUserAnswersCacheConnector.verifyNot(IsDirectorCompleteId(0))
+    }
+
     "update the changed flag when save is called in Update Mode" in {
       FakeUserAnswersCacheConnector.reset()
       Await.result(testVariationsNonIndexed.saveChangeFlag(UpdateMode, testId)(dataRequest()), Duration.Inf)
