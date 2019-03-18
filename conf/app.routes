@@ -25,3 +25,5 @@ GET        /psp                                         controllers.PensionSchem
 GET        /registered-psa-details                      controllers.PsaDetailsController.onPageLoad()
 
 GET        /cannot-register                             controllers.AgentCannotRegisterController.onPageLoad
+
+GET        /cannot-make-changes                         controllers.CannotMakeChangesController.onPageLoad
