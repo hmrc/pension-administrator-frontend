@@ -894,6 +894,9 @@ declaration.variations.statement5 = you do not have a working knowledge of pensi
 declaration.variations.agree = Agree
 declaration.variations.invalid = You need to agree to all the declarations before you can continue
 
+incompleteChanges.title = You have not completed your pension administrator changes
+incompleteChanges.heading = You have not completed your pension administrator changes
+incompleteChanges.p1 = You are missing details
 
 cannotMakeChanges.title = Changes cannot be made
 cannotMakeChanges.heading = Changes cannot be made
