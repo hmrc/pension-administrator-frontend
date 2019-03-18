@@ -16,17 +16,10 @@
 
 package identifiers.register.adviser
 
-import identifiers._
+import identifiers.TypedIdentifier
 import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 
-case object ConfirmDeleteAdviserId extends TypedIdentifier[Boolean] {
-  override def toString: String = "confirmDeleteAdviser"
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    value match {
-      case Some(true) =>  userAnswers.removeAllOf(List(AdviserNameId, AdviserDetailsId, AdviserAddressId,
-        AdviserAddressListId, AdviserAddressPostCodeLookupId, IsAdviserCompleteId))
-      case _ => JsSuccess(userAnswers)
-    }
-  }
+object IsAdviserCompleteId extends TypedIdentifier[Boolean] {
+  override def toString: String = "isAdviserComplete"
 }

@@ -17,7 +17,7 @@
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId}
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserNameId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserNameId, IsAdviserCompleteId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
@@ -73,6 +73,10 @@ package object utils {
     // Company PSA
     def companyPreviousAddress(address: Address): UserAnswers = {
       answers.set(CompanyPreviousAddressId)(address).asOpt.value
+    }
+
+    def adviserComplete(value: Boolean): UserAnswers = {
+      answers.set(IsAdviserCompleteId)(value).asOpt.value
     }
 
     def companyAddressList(address: TolerantAddress): UserAnswers = {
@@ -154,8 +158,16 @@ package object utils {
       answers.set(PartnershipSameContactAddressId)(areSame).asOpt.value
     }
 
+    def companyAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
+      answers.set(CompanyAddressYearsId)(underOrOverAddressYear).asOpt.value
+    }
+
     def partnershipAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
       answers.set(PartnershipAddressYearsId)(underOrOverAddressYear).asOpt.value
+    }
+
+    def individualAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
+      answers.set(IndividualAddressYearsId)(underOrOverAddressYear).asOpt.value
     }
 
     def partnershipContactAddress(address: Address): UserAnswers = {

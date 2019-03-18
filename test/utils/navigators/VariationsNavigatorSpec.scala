@@ -21,7 +21,7 @@ import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register._
-import models.UpdateMode
+import models._
 import models.requests.IdentifiedRequest
 import navigators.VariationsNavigator
 import org.scalatest.OptionValues
@@ -58,6 +58,7 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, false, None, false),
     (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
 
+    (DeclarationChangedId, declarationChangedWithIncompleteIndividual, incompleteChangesPage, false, None, false),
     (DeclarationChangedId, declarationChanged, variationWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationChangedWithAdviser, variationStillWorkingKnowledgePage, false, None, false),
     (DeclarationChangedId, declarationChangedWithWorkingKnowldge, variationDeclarationFitAndProperPage, false, None, false),
@@ -74,11 +75,17 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object VariationsNavigatorSpec extends OptionValues {
   private val emptyAnswers = UserAnswers(Json.obj())
+  private val declarationChangedWithIncompleteIndividual = UserAnswers(Json.obj()).registrationInfo(
+    RegistrationInfo(
+      RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)
+  ).individualAddressYears(AddressYears.OverAYear)
 
-  private val haveMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(true).asOpt.value
+  private val completeIndividual = declarationChangedWithIncompleteIndividual.adviserComplete(true)
+
+  private val haveMoreChanges: UserAnswers = completeIndividual.set(AnyMoreChangesId)(true).asOpt.value
   private val confirmDeleteYes: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(true).asOpt.value
   private val confirmDeleteNo: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(false).asOpt.value
-  private val noMoreChanges: UserAnswers = UserAnswers(Json.obj()).set(AnyMoreChangesId)(false).asOpt.value
+  private val noMoreChanges: UserAnswers = completeIndividual.set(AnyMoreChangesId)(false).asOpt.value
 
   private val haveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(true).asOpt.value
   private val noWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationWorkingKnowledgeId)(false).asOpt.value
@@ -86,17 +93,18 @@ object VariationsNavigatorSpec extends OptionValues {
   private val stillHaveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationStillDeclarationWorkingKnowledgeId)(true).asOpt.value
   private val stillNotHaveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationStillDeclarationWorkingKnowledgeId)(false).asOpt.value
 
-  private val declarationChanged: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value
-  private val declarationChangedWithAdviser: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true)
+  private val declarationChanged: UserAnswers = completeIndividual.set(DeclarationChangedId)(true).asOpt.value
+  private val declarationChangedWithAdviser: UserAnswers = completeIndividual.set(DeclarationChangedId)(true)
     .asOpt.value.set(AdviserNameId)("adviser-Name").asOpt.value
-  private val declarationChangedWithWorkingKnowldge: UserAnswers = UserAnswers(Json.obj()).set(DeclarationChangedId)(true)
-    .asOpt.value.set(VariationWorkingKnowledgeId)(true).asOpt.value
+  private val declarationChangedWithWorkingKnowldge: UserAnswers = completeIndividual.
+    set(DeclarationChangedId)(true).asOpt.value.set(VariationWorkingKnowledgeId)(true).asOpt.value
 
   private val haveFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(true).asOpt.value
   private val noFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(false).asOpt.value
 
   private val checkYourAnswersPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
   private val variationWorkingKnowledgePage: Call = controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
+  private val incompleteChangesPage: Call = controllers.register.routes.IncompleteChangesController.onPageLoad()
   private val variationStillWorkingKnowledgePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
