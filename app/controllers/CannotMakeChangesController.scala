@@ -17,23 +17,24 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import javax.inject.Inject
+import models.UpdateMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.index
+import views.html.cannotMakeChanges
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexController @Inject()(val appConfig: FrontendAppConfig,
-                                val messagesApi: MessagesApi,
-                                authenticate: AuthAction,
-                                dataCacheConnector: UserAnswersCacheConnector
-                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+class CannotMakeChangesController @Inject()(val appConfig: FrontendAppConfig,
+                                            val messagesApi: MessagesApi,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction
+                                           )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
-      Future.successful(Ok(index(appConfig)))
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+    Future.successful(Ok(cannotMakeChanges(appConfig, psaName(), UpdateMode)))
   }
 }

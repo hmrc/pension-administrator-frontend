@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
-import connectors.FakeUserAnswersCacheConnector
-import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models._
@@ -26,22 +24,22 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.UserAnswers
-import views.html.register.variationNoLongerFitAndProper
+import views.html.cannotMakeChanges
 
-class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
-  import VariationNoLongerFitAndProperControllerSpec._
+class CannotMakeChangesControllerSpec extends ControllerSpecBase {
+  import CannotMakeChangesControllerSpec._
 
-  "NoLongerFitAndProperController" must {
+  "CannotMakeChangesController" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller(dataRetrievalAction).onPageLoad(UpdateMode)(fakeRequest)
+      val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(individual)
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
-      val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -49,10 +47,11 @@ class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   }
 }
 
-object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+
+object CannotMakeChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, false, None, isPSASuspended = Some(false))
 
   private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
@@ -61,21 +60,19 @@ object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase wi
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new VariationNoLongerFitAndProperController(
+    new CannotMakeChangesController(
       frontendAppConfig,
       messagesApi,
       FakeAuthAction(UserType.Individual),
-      FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      FakeUserAnswersCacheConnector
+      new DataRequiredActionImpl
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    variationNoLongerFitAndProper(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
-
-
+    cannotMakeChanges(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 }
+
+
 
 
 
