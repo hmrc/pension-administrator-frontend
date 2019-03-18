@@ -19,12 +19,11 @@ package utils
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.IsAdviserCompleteId
-import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId, DirectorPreviousAddressId, IsDirectorCompleteId}
 import identifiers.register.company._
 import identifiers.register.individual._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressYearsId, PartnerDetailsId, PartnerPreviousAddressId}
 import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
@@ -218,12 +217,18 @@ case class UserAnswers(json: JsValue = Json.obj()) {
           isPreviousAddressIncomplete(get(IndividualAddressYearsId), IndividualPreviousAddressId)
         case Some(LimitedCompany) =>
           allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            isPreviousAddressIncomplete(get(CompanyAddressYearsId), CompanyPreviousAddressId)
+            isPreviousAddressIncomplete(get(CompanyAddressYearsId), CompanyPreviousAddressId) |
+            allDirectorsAfterDelete(UpdateMode).exists { x =>
+              isPreviousAddressIncomplete(get(DirectorAddressYearsId(x.index)), DirectorPreviousAddressId(x.index))
+            }
         case Some(Partnership) =>
           isPreviousAddressIncomplete(get(PartnershipAddressYearsId), PartnershipPreviousAddressId) |
-            allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
+            allPartnersAfterDelete(UpdateMode).exists(!_.isComplete) |
+            allPartnersAfterDelete(UpdateMode).exists { x =>
+              isPreviousAddressIncomplete(get(PartnerAddressYearsId(x.index)), PartnerPreviousAddressId(x.index))
+            }
         case _ =>
-          true
+          false
       }
     incompleteAdviser | incompleteDetails
   }

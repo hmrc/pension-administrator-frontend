@@ -23,6 +23,7 @@ import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
+import models.AddressYears.UnderAYear
 import models._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import utils.countryOptions.CountryOptions
@@ -159,9 +160,16 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   ))
 
 
-  private def individualPreviousAddress: Option[AnswerRow] = userAnswers.get(IndividualPreviousAddressId) map { address =>
-    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      None)
+  private def individualPreviousAddress: Option[AnswerRow] = {
+    (userAnswers.get(IndividualAddressYearsId), userAnswers.get(IndividualPreviousAddressId)) match {
+      case (Some(UnderAYear), None) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+      case (_, Some(address)) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+          None))
+      case _ => None
+    }
   }
 
   private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
@@ -202,9 +210,16 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   ))
 
 
-  private def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(CompanyPreviousAddressId) map { address =>
-    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      None)
+  private def companyPreviousAddress: Option[AnswerRow] = {
+    (userAnswers.get(CompanyAddressYearsId), userAnswers.get(CompanyPreviousAddressId)) match {
+      case (Some(UnderAYear), None) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+      case (_, Some(address)) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+          None))
+      case _ => None
+    }
   }
 
   private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
@@ -252,11 +267,17 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
   }
 
-  private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
-    userAnswers.get(DirectorPreviousAddressId(index)) map { address =>
-      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-        None)
+  private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = {
+    (userAnswers.get(DirectorAddressYearsId(index)), userAnswers.get(DirectorPreviousAddressId(index))) match {
+      case (Some(UnderAYear), None) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, index).url, "site.add"))))
+      case (_, Some(address)) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+          None))
+      case _ => None
     }
+  }
 
   private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
@@ -322,9 +343,16 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     , answerIsMessageKey = false, None
   ))
 
-  private def partnershipPreviousAddress: Option[AnswerRow] = userAnswers.get(PartnershipPreviousAddressId) map { address =>
-    AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      None)
+  private def partnershipPreviousAddress: Option[AnswerRow] = {
+    (userAnswers.get(PartnershipAddressYearsId), userAnswers.get(PartnershipPreviousAddressId)) match {
+      case (Some(UnderAYear), None) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+      case (_, Some(address)) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+          None))
+      case _ => None
+    }
   }
 
   private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
@@ -373,11 +401,17 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.partnership.partners.routes.PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
   }
 
-  private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
-    userAnswers.get(PartnerPreviousAddressId(index)) map { address =>
-      AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-        None)
+  private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = {
+    (userAnswers.get(PartnerAddressYearsId(index)), userAnswers.get(PartnerPreviousAddressId(index))) match {
+      case (Some(UnderAYear), None) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index).url, "site.add"))))
+      case (_, Some(address)) =>
+        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+          None))
+      case _ => None
     }
+  }
 
   private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,

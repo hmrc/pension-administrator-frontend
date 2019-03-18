@@ -19,9 +19,9 @@ package utils
 import java.time.LocalDate
 
 import controllers.register.company.directors.routes
-import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, DirectorAddressYearsId, DirectorDetailsId, DirectorPreviousAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressYearsId, PartnerDetailsId, PartnerPreviousAddressId}
 import models._
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
@@ -174,6 +174,38 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
 
+      "any one of the directors previous address is incomplete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
+          .companyAddressYears(AddressYears.UnderAYear)
+          .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserComplete(true)
+          .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(IsDirectorCompleteId(0))(true))
+          .flatMap(_.set(DirectorAddressYearsId(0))(AddressYears.UnderAYear))
+          .flatMap(_.set(DirectorAddressYearsId(1))(AddressYears.OverAYear))
+          .flatMap(_.set(IsDirectorCompleteId(1))(true))
+          .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+
+        userAnswers.isPsaUpdateDetailsInComplete mustBe true
+      }
+
+      "any one of the partners previous address is incomplete" in {
+        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
+          .partnershipAddressYears(AddressYears.UnderAYear)
+          .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserComplete(true)
+          .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(IsPartnerCompleteId(0))(true))
+          .flatMap(_.set(PartnerAddressYearsId(0))(AddressYears.UnderAYear))
+          .flatMap(_.set(PartnerAddressYearsId(1))(AddressYears.OverAYear))
+          .flatMap(_.set(IsPartnerCompleteId(1))(true))
+          .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+
+        userAnswers.isPsaUpdateDetailsInComplete mustBe true
+      }
+
       "company previous address is incomplete" in {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
@@ -254,7 +286,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .adviserComplete(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(DirectorAddressYearsId(0))(AddressYears.UnderAYear))
+          .flatMap(_.set(DirectorPreviousAddressId(0))(Address("line1", "line2", None, None, None, "GB")))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
+          .flatMap(_.set(DirectorAddressYearsId(1))(AddressYears.OverAYear))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
           .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
 
@@ -287,7 +322,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .adviserComplete(true)
           .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .flatMap(_.set(PartnerAddressYearsId(0))(AddressYears.UnderAYear))
+          .flatMap(_.set(PartnerPreviousAddressId(0))(Address("line1", "line2", None, None, None, "GB")))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
+          .flatMap(_.set(PartnerAddressYearsId(1))(AddressYears.OverAYear))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))
           .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
 

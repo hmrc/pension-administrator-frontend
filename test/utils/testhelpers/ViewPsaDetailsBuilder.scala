@@ -35,7 +35,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
       Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url))))
 
-  val individualSeqAnswers = Seq(
+  def individualSeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
       None),
     AnswerRow("common.nino", Seq("AA999999A"), false, None),
@@ -43,15 +43,19 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false,
       None),
-    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      None),
+    if(noPrevAddr) {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
+        Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
+    } else {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+        None)
+    },
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))))
 
-
-  val companySeqAnswers = Seq(
+  def companySeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
       None),
     AnswerRow("paye.label", Seq("9876543210"), false,
@@ -64,8 +68,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false,
       None),
-    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      None),
+    if(noPrevAddr) {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
+        Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
+    } else {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+        None)
+    },
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
@@ -89,7 +98,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
   )
 
 
-  val partnershipSeqAnswers = Seq(
+  def partnershipSeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
       None),
     AnswerRow("paye.label", Seq("9876543210"), false,
@@ -100,8 +109,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("Has Test partnership name been at their address for more than 12 months?", Seq("No"), false,
       None),
-    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      None),
+    if(noPrevAddr) {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
+        Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
+    } else {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+        None)
+    },
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
@@ -130,7 +144,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("utr.label", Seq("site.not_entered"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add")))
+      Some(Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+    AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )
 
   val partnersSeqAnswersWithAddLinks = Seq(
@@ -139,7 +155,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("utr.label", Seq("site.not_entered"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add")))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+    AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )
 
   val pensionAdviserSuperSection = SuperSection(
@@ -188,7 +206,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Seq(
         AnswerSection(
           None,
-          individualSeqAnswers))),
+          individualSeqAnswers()))),
     pensionAdviserSuperSection
   )
 
@@ -199,7 +217,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
         Seq(
           AnswerSection(
             None,
-            companySeqAnswers))),
+            companySeqAnswers()))),
       directorsSuperSection,
       pensionAdviserSuperSection)
 
@@ -210,7 +228,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
         Seq(
           AnswerSection(
             None,
-            partnershipSeqAnswers))),
+            partnershipSeqAnswers()))),
       partnersSuperSection,
       pensionAdviserSuperSection)
 }
