@@ -22,8 +22,8 @@ import controllers.actions._
 import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
-import models.{TolerantIndividual, UpdateMode, UserType}
+import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
+import models.{CheckUpdateMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -85,6 +85,19 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
+
+    "redirect to the next page when valid data is submitted for check update mode and set PAInDeclarationJourneyId" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      FakeUserAnswersCacheConnector.reset()
+
+      val result = controller().onSubmit(CheckUpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(PAInDeclarationJourneyId, true)
+    }
+
 
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))

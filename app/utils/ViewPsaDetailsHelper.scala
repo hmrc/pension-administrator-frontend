@@ -17,6 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
+import identifiers.register.VariationWorkingKnowledgeId
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
@@ -108,6 +109,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private val pensionAdviserSection: Option[SuperSection] = {
 
     toOptionSeq(Seq(
+      workingKnowledge,
       pensionAdviser,
       pensionAdviserEmail,
       pensionAdviserPhone,
@@ -126,7 +128,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def getAdviserDeleteLink: Option[AddLink] ={
+  private def getAdviserDeleteLink: Option[AddLink] = {
     userAnswers.get(AdviserNameId) match {
       case Some(adviserName) =>
         Some(AddLink(Link(
@@ -452,25 +454,56 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
-  //Pension Adviser
-  private def pensionAdviser: Option[AnswerRow] = userAnswers.get(AdviserNameId) map { adviserName =>
-    AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
-      None)
+  private def workingKnowledge: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) map { wk =>
+    AnswerRow("variationWorkingKnowledge.heading", Seq(messages(if (wk) "site.yes" else "site.no")), answerIsMessageKey = false,
+      Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url)))
   }
 
-  private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+  private def pensionAdviser: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
+    case Some(false) =>
+      Option(userAnswers.get(AdviserNameId).fold[AnswerRow](
+        AnswerRow("pensions.advisor.label", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add")))) { adviserName =>
+        AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
+          None)
+      })
+    case _ => None
   }
 
-  private def pensionAdviserPhone: Option[AnswerRow] = userAnswers.get(AdviserDetailsId) map { adviser =>
-    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+  private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
+    case Some(false) =>
+      Option(userAnswers.get(AdviserDetailsId).fold[AnswerRow](
+        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add")))) { adviser =>
+        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
+          Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+      })
+    case _ => None
   }
 
-  private def pensionAdviserAddress: Option[AnswerRow] = userAnswers.get(AdviserAddressId) map { address =>
-    AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(UpdateMode).url)))
+  private def pensionAdviserPhone: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
+
+    case Some(false) =>
+      Option(userAnswers.get(AdviserDetailsId).fold[AnswerRow](
+        AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add")))) {
+        adviser =>
+          AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
+            Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+      })
+    case _ => None
+  }
+
+  private def pensionAdviserAddress: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
+    case Some(false) =>
+      Option(userAnswers.get(AdviserAddressId).fold[AnswerRow](
+        AnswerRow("cya.label.address", Seq("site.not_entered"), answerIsMessageKey = true,
+          Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))) {
+        address =>
+          AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+            Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+      })
+    case _ => None
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
