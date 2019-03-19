@@ -134,16 +134,5 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
       FakeUserAnswersCacheConnector.verify(IsNewAdviserId, true)
     }
-
-    "redirect to the next page but not update the change ID when data has not changed" in {
-      FakeUserAnswersCacheConnector.reset()
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-      FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
-      FakeUserAnswersCacheConnector.verify(IsNewAdviserId, false)
-    }
   }
 }
