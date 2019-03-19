@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.psa_details
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
@@ -39,12 +39,15 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      psaDetailsService: PsaDetailsService
                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
+  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-      val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
-        val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
-        Ok(psa_details(appConfig, psaDetails, nextPage))
-      }
+      request.user.alreadyEnrolledPsaId.map { psaId =>
+        psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
+          val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
+          Ok(psa_details(appConfig, psaDetails, nextPage))
+        }
+      }.getOrElse(
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      )
   }
 }

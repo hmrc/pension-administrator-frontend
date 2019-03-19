@@ -22,7 +22,9 @@ case class PSAUser(userType: UserType,
                    nino: Option[String],
                    isExistingPSA: Boolean,
                    existingPSAId: Option[String],
-                   alreadyEnrolledPsaId: Option[String] = None)
+                   alreadyEnrolledPsaId: Option[String] = None,
+                   isPSASuspended: Option[Boolean] = None
+                  )
 
 object UserType extends Enumeration {
   type UserType = Value
