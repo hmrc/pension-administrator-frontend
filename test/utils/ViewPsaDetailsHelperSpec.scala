@@ -89,6 +89,13 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
       ))
     }
 
+    "have add link for directors for incomplete directors" in {
+      companyResult.exists(_.addLink == AddLink(
+        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "director-add-link-incomplete"),
+        None
+      ))
+    }
+
     behave like validSection(testName = "director details", headingKey = directorDetailsSuperSectionKey,
       result = companyResult, expectedAnswerRows = directorsSeqAnswers)
 
@@ -99,23 +106,30 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
       partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
     }
 
-    "have add link for partners for only one director" in {
-      companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "partner-add-link-onlyOne"),
+    "have add link for partners for only one partners" in {
+      partnershipResult.exists(_.addLink == AddLink(
+        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-onlyOne"),
         Some("partner-add-link-onlyOne-additionalText")
       ))
     }
 
-    "have add link for partners for less than 10 directors" in {
-      companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "partner-add-link-lessThanTen"),
+    "have add link for partners for less than 10 partners" in {
+      partnershipResult.exists(_.addLink == AddLink(
+        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-lessThanTen"),
         None
       ))
     }
 
-    "have add link for partners for 10 directors" in {
-      companyResult.exists(_.addLink == AddLink(
-        Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, "partner-add-link-Ten"),
+    "have add link for partners for 10 partners" in {
+      partnershipResult.exists(_.addLink == AddLink(
+        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-Ten"),
+        Some("partner-add-link-Ten-additionalText")
+      ))
+    }
+
+    "have add link for partners if any of the partners is incomplete" in {
+      partnershipResult.exists(_.addLink == AddLink(
+        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-incomplete"),
         Some("partner-add-link-Ten-additionalText")
       ))
     }
