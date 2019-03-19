@@ -18,28 +18,31 @@ package utils.navigators
 
 import connectors.UserAnswersCacheConnector
 import controllers.register.adviser._
+import identifiers.register.PAInDeclarationJourneyId
 import identifiers.register.adviser._
 import javax.inject.{Inject, Singleton}
-import models.{CheckMode, Mode, NormalMode, UpdateMode}
+import models.Mode.journeyMode
+import models._
 import play.api.mvc.Call
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 
 @Singleton
 class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
 
-  private def checkYourAnswers(mode:Mode): Call =
+  private def checkYourAnswers(mode: Mode): Call =
     controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
 
   override def routeMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, NormalMode)
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case AdviserNameId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
-    case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
-    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(CheckMode))
-    case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(CheckMode))
-    case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers(Mode.journeyMode(mode)))
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-  }
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] =
+    from.id match {
+      case AdviserNameId => NavigateTo.dontSave(checkYourAnswers(journeyMode(mode)))
+      case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers(journeyMode(mode)))
+      case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(journeyMode(mode)))
+      case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(journeyMode(mode)))
+      case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers(journeyMode(mode)))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, UpdateMode)
 
@@ -48,23 +51,34 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case AdviserDetailsId => isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
     case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
-    case AdviserAddressId => isAdviserChange(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
-    case CheckYourAnswersId => if(mode == UpdateMode) {
-      NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
-    } else {
-      NavigateTo.dontSave(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
-    }
+    case AdviserAddressId =>
+      isAdviserChange(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
+    case CheckYourAnswersId => checkYourAnswersRoutes(mode, from.userAnswers)
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
   private def isAdviserChange(from: NavigateFrom, call: Option[NavigateTo], mode: Mode): Option[NavigateTo] = {
-    if(mode==NormalMode){
+    if (mode == NormalMode) {
       call
     } else {
       from.userAnswers.get(IsNewAdviserId) match {
         case Some(true) => call
-        case _ =>  NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+        case _ => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       }
     }
   }
+
+  private def checkYourAnswersRoutes(mode: Mode, userAnswers: UserAnswers) = {
+    if (mode == UpdateMode) {
+      userAnswers.get(PAInDeclarationJourneyId) match {
+        case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+        case _ => NavigateTo.dontSave (controllers.register.routes.AnyMoreChangesController.onPageLoad () )
+      }
+    } else {
+      NavigateTo.dontSave(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
+    }
+
+
+  }
+
 }

@@ -22,9 +22,9 @@ import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
-import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
+import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
-import models.Mode
+import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -43,13 +43,12 @@ class VariationWorkingKnowledgeController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: VariationWorkingKnowledgeFormProvider
-                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+                                                   ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
         case None => form
         case Some(value) => form.fill(value)
@@ -63,20 +62,20 @@ class VariationWorkingKnowledgeController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(variationWorkingKnowledge(appConfig, formWithErrors, psaName(), mode))),
         value => {
-          val hasAnswerChanged = request.userAnswers.get(VariationWorkingKnowledgeId) match {
-            case None => true
-            case Some(existing) => existing != value
+          val resultOfSaveDeclarationFlag = mode match {
+            case CheckUpdateMode =>
+              cacheConnector.save(request.externalId, PAInDeclarationJourneyId, true)
+            case _ =>
+              Future.successful(())
           }
-          cacheConnector.save(request.externalId, IsNewAdviserId, !value).flatMap(_ =>
-            if (hasAnswerChanged) {
+
+          resultOfSaveDeclarationFlag.flatMap(_ =>
+            cacheConnector.save(request.externalId, IsNewAdviserId, !value).flatMap(_ =>
               cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
                 saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>
                   Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
               )
-            } else {
-              cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).map(cacheMap =>
-                Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-            }
+            )
           )
         }
       )

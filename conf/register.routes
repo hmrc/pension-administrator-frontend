@@ -16,8 +16,8 @@ POST       /declaration-working-knowledge               controllers.register.Dec
 GET        /:mode/declaration-working-knowledge         controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
 POST       /:mode/declaration-working-knowledge         controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
 
-GET        /changing-having-pensions-working-knowledge  controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode = UpdateMode)
-POST       /changing-having-pensions-working-knowledge  controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode = UpdateMode)
+GET        /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode)
+POST       /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode)
 
 GET        /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)

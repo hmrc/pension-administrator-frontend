@@ -22,8 +22,8 @@ import controllers.actions._
 import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
-import models.{TolerantIndividual, UpdateMode, UserType}
+import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
+import models.{CheckUpdateMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -86,6 +86,19 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
+    "redirect to the next page when valid data is submitted for check update mode and set PAInDeclarationJourneyId" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      FakeUserAnswersCacheConnector.reset()
+
+      val result = controller().onSubmit(CheckUpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(PAInDeclarationJourneyId, true)
+    }
+
+
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,17 +133,6 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
       FakeUserAnswersCacheConnector.verify(IsNewAdviserId, true)
-    }
-
-    "redirect to the next page but not update the change ID when data has not changed" in {
-      FakeUserAnswersCacheConnector.reset()
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-      FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
-      FakeUserAnswersCacheConnector.verify(IsNewAdviserId, false)
     }
   }
 }

@@ -19,6 +19,7 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
+import identifiers.register.PAInDeclarationJourneyId
 import identifiers.register.adviser._
 import models.requests.IdentifiedRequest
 import models._
@@ -46,20 +47,19 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def updateModeRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
-    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
-    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false, None, false),
+    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, Some(checkYourAnswersPage(UpdateMode)), false),
+    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false,  Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
-    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(Mode.journeyMode(CheckUpdateMode))), false),
+    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), false, None, false),
-    (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false)
+    (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false),
+    (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage, false, None, false)
   )
 
   navigator.getClass.getSimpleName must {
     appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateModeRoutes(), dataDescriber, UpdateMode)
   }
 }
@@ -67,12 +67,14 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object AdviserNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(true).asOpt.get
+  lazy val declarationPensionAdvisorTrue = UserAnswers(Json.obj()).set(PAInDeclarationJourneyId)(true).asOpt.get
 
   private def adviserPostCodeLookUpPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)
   private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)
   private def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
   private def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
   private  def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
+  private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
 
   lazy val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
   lazy val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
