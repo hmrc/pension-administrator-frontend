@@ -18,13 +18,13 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.IsAdviserCompleteId
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, IsAdviserCompleteId}
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId, DirectorPreviousAddressId, IsDirectorCompleteId}
 import identifiers.register.company._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressYearsId, PartnerDetailsId, PartnerPreviousAddressId}
-import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
+import identifiers.register._
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
@@ -210,7 +210,6 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
 
   def isPsaUpdateDetailsInComplete: Boolean = {
-    val incompleteAdviser = !get(IsAdviserCompleteId).getOrElse(false)
     val incompleteDetails =
       get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
@@ -224,7 +223,15 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         case _ =>
           true
       }
-    incompleteAdviser | incompleteDetails
+    isAdviserIncomplete | incompleteDetails
+  }
+
+  private def isAdviserIncomplete: Boolean = {
+    if (get(VariationDeclarationWorkingKnowledgeId).contains(true)) {
+      false
+    } else {
+      get(AdviserDetailsId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty
+    }
   }
 
   private def isPreviousAddressIncomplete(addressYears: Option[AddressYears], addressId: TypedIdentifier[Address]): Boolean = {

@@ -85,6 +85,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     ua.get(AdviserNameId).isDefined && ua.get(IsNewAdviserId).isEmpty
 
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
+    println("\n\n\n from.userAnswers.isPsaUpdateDetailsInComplete : "+from.userAnswers.isPsaUpdateDetailsInComplete)
     if (from.userAnswers.isPsaUpdateDetailsInComplete) {
       NavigateTo.dontSave(controllers.register.routes.IncompleteChangesController.onPageLoad())
     } else if (doesAdviserStillExist(from.userAnswers)) {

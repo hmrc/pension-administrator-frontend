@@ -80,7 +80,7 @@ object VariationsNavigatorSpec extends OptionValues {
       RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)
   ).individualAddressYears(AddressYears.OverAYear)
 
-  private val completeIndividual = declarationChangedWithIncompleteIndividual.adviserComplete(true)
+  private val completeIndividual = declarationChangedWithIncompleteIndividual.variationDeclarationWorkingKnowledge(true)
 
   private val haveMoreChanges: UserAnswers = completeIndividual.set(AnyMoreChangesId)(true).asOpt.value
   private val confirmDeleteYes: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(true).asOpt.value
