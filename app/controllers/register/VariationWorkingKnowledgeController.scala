@@ -62,29 +62,19 @@ class VariationWorkingKnowledgeController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(variationWorkingKnowledge(appConfig, formWithErrors, psaName(), mode))),
         value => {
-          val hasAnswerChanged = request.userAnswers.get(VariationWorkingKnowledgeId) match {
-            case None => true
-            case Some(existing) => existing != value
-          }
-
           val resultOfSaveDeclarationFlag = mode match {
             case CheckUpdateMode =>
-              cacheConnector.save (request.externalId, PAInDeclarationJourneyId, true)
+              cacheConnector.save(request.externalId, PAInDeclarationJourneyId, true)
             case _ =>
               Future.successful(())
           }
 
           resultOfSaveDeclarationFlag.flatMap(_ =>
             cacheConnector.save(request.externalId, IsNewAdviserId, !value).flatMap(_ =>
-              if (hasAnswerChanged) {
-                cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
-                  saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>
-                    Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-                )
-              } else {
-                cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).map(cacheMap =>
+              cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
+                saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>
                   Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
-              }
+              )
             )
           )
         }
