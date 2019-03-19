@@ -25,7 +25,7 @@ case object ConfirmDeleteAdviserId extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
       case Some(true) =>  userAnswers.removeAllOf(List(AdviserNameId, AdviserDetailsId, AdviserAddressId,
-        AdviserAddressListId, AdviserAddressPostCodeLookupId, IsAdviserCompleteId))
+        AdviserAddressListId, AdviserAddressPostCodeLookupId))
       case _ => JsSuccess(userAnswers)
     }
   }

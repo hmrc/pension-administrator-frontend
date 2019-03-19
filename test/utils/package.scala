@@ -76,10 +76,6 @@ package object utils {
       answers.set(CompanyPreviousAddressId)(address).asOpt.value
     }
 
-    def adviserComplete(value: Boolean): UserAnswers = {
-      answers.set(IsAdviserCompleteId)(value).asOpt.value
-    }
-
     def companyAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(CompanyAddressListId)(address).asOpt.value
     }

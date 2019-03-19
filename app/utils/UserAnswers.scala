@@ -18,13 +18,13 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, IsAdviserCompleteId}
-import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId, DirectorPreviousAddressId, IsDirectorCompleteId}
+import identifiers.register._
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
+import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressYearsId, PartnerDetailsId, PartnerPreviousAddressId}
-import identifiers.register._
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
