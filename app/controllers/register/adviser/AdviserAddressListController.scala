@@ -66,7 +66,8 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
           Message("common.selectAddress.heading"),
           Some(Message("common.adviser.secondary.heading")),
           Message("common.selectAddress.text"),
-          Message("common.selectAddress.link")
+          Message("common.selectAddress.link"),
+          psaName = psaName()
         )
     }.left.map(_ => Future.successful(Redirect(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))))
   }

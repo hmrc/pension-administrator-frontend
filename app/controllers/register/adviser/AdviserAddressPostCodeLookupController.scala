@@ -24,6 +24,7 @@ import forms.address.PostCodeLookupFormProvider
 import identifiers.register.adviser.AdviserAddressPostCodeLookupId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -47,7 +48,18 @@ class AdviserAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  import AdviserAddressPostCodeLookupController._
+  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = PostcodeLookupViewModel(
+    controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
+    controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
+    Message("common.adviser.address.title"),
+    Message("common.adviser.address.heading"),
+    Some(Message("common.adviser.secondary.heading")),
+    Message("adviserAddressPostCodeLookup.hint"),
+    Message("adviserAddressPostCodeLookup.enterPostcode"),
+    Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
+    Message("adviserAddressPostCodeLookup.formLabel"),
+    psaName = psaName()
+  )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -60,18 +72,4 @@ class AdviserAddressPostCodeLookupController @Inject()(
   }
 }
 
-object AdviserAddressPostCodeLookupController {
-
-  def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
-    controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
-    controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
-    Message("common.adviser.address.title"),
-    Message("common.adviser.address.heading"),
-    Some(Message("common.adviser.secondary.heading")),
-    Message("adviserAddressPostCodeLookup.hint"),
-    Message("adviserAddressPostCodeLookup.enterPostcode"),
-    Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
-    Message("adviserAddressPostCodeLookup.formLabel")
-  )
-}
 
