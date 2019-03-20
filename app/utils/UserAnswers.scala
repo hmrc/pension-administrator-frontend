@@ -210,7 +210,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
 
   def isPsaUpdateDetailsInComplete: Boolean = {
-    val incompleteDetails =
+    def incompleteDetails: Boolean =
       get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
           isPreviousAddressIncomplete(get(IndividualAddressYearsId), IndividualPreviousAddressId)
