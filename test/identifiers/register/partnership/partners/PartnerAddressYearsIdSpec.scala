@@ -53,6 +53,10 @@ class PartnerAddressYearsIdSpec extends WordSpec with MustMatchers with OptionVa
 
       val result: UserAnswers = answersWithPreviousAddress.set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
 
+      "remove the IsPartnerComplete flag" in {
+        result.get(IsPartnerCompleteId(0)).value mustBe false
+      }
+
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(PartnerPreviousAddressPostCodeLookupId(0)) mustBe defined
       }

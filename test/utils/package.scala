@@ -16,14 +16,15 @@
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
-import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId}
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserNameId}
+import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId, VariationDeclarationWorkingKnowledgeId}
+import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
 import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
 import models._
+import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
 
 
@@ -125,12 +126,20 @@ package object utils {
       answers.set(AdviserAddressId)(address).asOpt.value
     }
 
+    def adviserDetails(details: AdviserDetails): UserAnswers = {
+      answers.set(AdviserDetailsId)(details).asOpt.value
+    }
+
     def adviserAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(AdviserAddressListId)(address).asOpt.value
     }
 
     def adviserName(name: String): UserAnswers = {
       answers.set(AdviserNameId)(name).asOpt.value
+    }
+
+    def variationDeclarationWorkingKnowledge(value: Boolean) = {
+      answers.set(VariationDeclarationWorkingKnowledgeId)(value).asOpt.value
     }
 
     def businessDetails: UserAnswers = {
@@ -154,8 +163,16 @@ package object utils {
       answers.set(PartnershipSameContactAddressId)(areSame).asOpt.value
     }
 
+    def companyAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
+      answers.set(CompanyAddressYearsId)(underOrOverAddressYear).asOpt.value
+    }
+
     def partnershipAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
       answers.set(PartnershipAddressYearsId)(underOrOverAddressYear).asOpt.value
+    }
+
+    def individualAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
+      answers.set(IndividualAddressYearsId)(underOrOverAddressYear).asOpt.value
     }
 
     def partnershipContactAddress(address: Address): UserAnswers = {

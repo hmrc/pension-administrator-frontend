@@ -19,10 +19,10 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId, IsNewAdviserId}
 import identifiers.register._
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models.{CheckUpdateMode, Mode, UpdateMode}
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
                                     config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
@@ -91,15 +91,18 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
-    from.userAnswers.get(DeclarationChangedId) match {
-      case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-      case _ =>
-        if (from.userAnswers.get(AdviserNameId).isDefined) {
-          NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
-        } else {
-          NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
-        }
+    if (from.userAnswers.isPsaUpdateDetailsInComplete) {
+      NavigateTo.dontSave(controllers.register.routes.IncompleteChangesController.onPageLoad())
+    } else {
+      from.userAnswers.get(DeclarationChangedId) match {
+        case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+        case _ =>
+          if (from.userAnswers.get(AdviserNameId).isDefined) {
+            NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
+          } else {
+            NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
+          }
+      }
     }
   }
-
 }
