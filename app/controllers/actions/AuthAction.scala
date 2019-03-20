@@ -20,7 +20,7 @@ import java.net.URLEncoder
 
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
-import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
+import connectors.{IdentityVerificationConnector, MinimalPsaConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
 import identifiers.{JourneyId, TypedIdentifier}
@@ -44,7 +44,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    fs: FeatureSwitchManagementService,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   ivConnector: IdentityVerificationConnector
+                                   ivConnector: IdentityVerificationConnector,
+                                   minimalPsaConnector: MinimalPsaConnector
                                   )
                                   (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
@@ -70,7 +71,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel, enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
                          block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    if(fs.get(IsManualIVEnabled)) {
+    if (fs.get(IsManualIVEnabled)) {
       successRedirectIVEnable(affinityGroup, cl, enrolments, authRequest, block)
     } else {
       successRedirectIVDisable(affinityGroup, cl, enrolments, authRequest, block)
@@ -78,8 +79,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   }
 
   private def successRedirectIVDisable[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier): Future[Result] =
+                                          enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
+                                         (implicit hc: HeaderCarrier): Future[Result] =
     if (affinityGroup == Individual) {
       getData(AreYouInUKId, authRequest.externalId).flatMap {
         case Some(true) if !allowedIndividual(cl) =>
@@ -124,8 +125,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                              authRequest: AuthenticatedRequest[A])(implicit hc: HeaderCarrier): Future[Result] = {
     ivConnector.retrieveNinoFromIV(journeyId).flatMap {
       case Some(nino) =>
-          val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
-          savePsaIdAndReturnAuthRequest(enrolments, updatedAuth, block)
+        val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
+        savePsaIdAndReturnAuthRequest(enrolments, updatedAuth, block)
       case _ =>
         orgManualIV(authRequest.externalId, enrolments, authRequest, block)
     }
@@ -150,11 +151,15 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
 
   protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                                                 block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier) = {
+                                                 block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
     if (alreadyEnrolledInPODS(enrolments)) {
-      block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
-        alreadyEnrolledPsaId = Some(getPSAId(enrolments)))))
-    } else {
+      val psaId = getPSAId(enrolments)
+      minimalPsaConnector.isPsaSuspended(psaId).flatMap { isPsaSuspended =>
+        block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
+          alreadyEnrolledPsaId = Some(psaId), isPSASuspended = Some(isPsaSuspended))))
+      }
+    }
+    else {
       block(authRequest)
     }
   }
@@ -164,7 +169,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                           cl: ConfidenceLevel, affinityGroup: AffinityGroup, id: String)(implicit hc: HeaderCarrier) = {
     if (isPSP(enrolments) && !isPSA(enrolments)) {
       Some((Redirect(routes.PensionSchemePractitionerController.onPageLoad())))
-    } else if (affinityGroup == Agent){
+    } else if (affinityGroup == Agent) {
       Some((Redirect(routes.AgentCannotRegisterController.onPageLoad)))
     }
     else {
@@ -246,16 +251,19 @@ class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthC
                                                config: FrontendAppConfig,
                                                fs: FeatureSwitchManagementService,
                                                userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               identityVerificationConnector: IdentityVerificationConnector
-                                              )(implicit ec: ExecutionContext)
-  extends FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector) with AuthorisedFunctions {
+                                               identityVerificationConnector: IdentityVerificationConnector,
+                                               minimalPsaConnector: MinimalPsaConnector
+                                              )(implicit ec: ExecutionContext) extends
+    FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector, minimalPsaConnector)
 
+  with AuthorisedFunctions {
 
-  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier) =
+    override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
+                                    enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                    block: AuthenticatedRequest[A] => Future[Result])
+                                   (implicit hc: HeaderCarrier) =
 
-    savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+      savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
 }
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

@@ -18,14 +18,13 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.IsAdviserCompleteId
-import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register._
+import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
+import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
 import identifiers.register.individual._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
-import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
@@ -211,8 +210,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
 
   def isPsaUpdateDetailsInComplete: Boolean = {
-    val incompleteAdviser = !get(IsAdviserCompleteId).getOrElse(false)
-    val incompleteDetails =
+    def incompleteDetails: Boolean =
       get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
           isPreviousAddressIncomplete(get(IndividualAddressYearsId), IndividualPreviousAddressId)
@@ -225,7 +223,15 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         case _ =>
           true
       }
-    incompleteAdviser | incompleteDetails
+    isAdviserIncomplete | incompleteDetails
+  }
+
+  private def isAdviserIncomplete: Boolean = {
+    if (get(VariationDeclarationWorkingKnowledgeId).contains(true)) {
+      false
+    } else {
+      get(AdviserDetailsId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty
+    }
   }
 
   private def isPreviousAddressIncomplete(addressYears: Option[AddressYears], addressId: TypedIdentifier[Address]): Boolean = {

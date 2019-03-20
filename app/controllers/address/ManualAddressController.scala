@@ -82,17 +82,19 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
         val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress, context)
 
         cacheConnector.remove(request.externalId, postCodeLookupIdForCleanup)
-          .flatMap { cacheMap =>
+          .flatMap { _ =>
             cacheConnector.save(
               request.externalId,
               id,
               address
-            ).flatMap { _ =>
+            ).flatMap { userAnswersJson =>
                 saveChangeFlag(mode, id)
-                  .map {
+                  .flatMap {
                     _ =>
-                      auditEvent.foreach(auditService.sendEvent(_))
-                      Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+                      setCompleteFlagForExistingDirOrPartners(mode, id, UserAnswers(userAnswersJson)).map {answers =>
+                        auditEvent.foreach(auditService.sendEvent(_))
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+                      }
                   }
               }
           }

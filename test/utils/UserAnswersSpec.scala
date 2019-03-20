@@ -23,6 +23,7 @@ import identifiers.register.company.directors.{DirectorAddressId, DirectorDetail
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models._
+import models.register.adviser.AdviserDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
 import viewmodels.Person
@@ -164,7 +165,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(false))
@@ -178,7 +179,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
@@ -193,7 +194,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
           .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(false))
@@ -207,7 +208,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
           .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))
@@ -220,26 +221,29 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
 
-      " adviser is incomplete i.e the flag value is false" in {
+      " adviser is incomplete i.e the flag value is false and only some details is entered" in {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserComplete(false)
+          .variationDeclarationWorkingKnowledge(false)
+          .adviserName("test adviser")
+          .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
 
-      "adviser is incomplete i.e there is no flag" in {
+      "adviser is incomplete i.e flag value is false and no details is entered" in {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .variationDeclarationWorkingKnowledge(false)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
@@ -252,7 +256,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
@@ -266,7 +270,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
@@ -275,7 +279,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.OverAYear)
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
@@ -285,7 +289,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserComplete(true)
+          .variationDeclarationWorkingKnowledge(false)
+          .adviserName("test adviser")
+          .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
+          .adviserDetails(AdviserDetails("email", "234"))
           .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))

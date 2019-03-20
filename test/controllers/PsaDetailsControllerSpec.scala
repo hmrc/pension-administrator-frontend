@@ -42,10 +42,20 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)))
 
-      val result = controller(userType = UserType.Organisation).onPageLoad(UpdateMode)(fakeRequest)
+      val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", true)
+    }
+
+    "redirect to session expired if psa id not present" in {
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)))
+
+      val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
 }
@@ -53,19 +63,19 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val externalId = "test-external-id"
 
-  class FakeAuthAction(userType: UserType) extends AuthAction {
+  class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, false, None, Some("test Psa id"))))
+      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, false, None, psaId)))
   }
 
   val fakePsaDataService = mock[PsaDetailsService]
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
     new PsaDetailsController(
       frontendAppConfig,
       messagesApi,
       FakeNavigator,
-      new FakeAuthAction(userType),
+      new FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       fakePsaDataService
@@ -75,7 +85,7 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
                            canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) = {
 
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeregister)
-    psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())(fakeRequest, messages).toString
+    psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
   }
 
   val organisationSuperSections: Seq[SuperSection] = Seq(

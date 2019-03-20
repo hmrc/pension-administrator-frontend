@@ -30,7 +30,7 @@ import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.UserAnswers
+import utils.{SectionComplete, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -71,7 +71,7 @@ trait Variations extends FrontendController {
     id match {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorContactDetailsId(_) |
            DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_) | DirectorDetailsId(_)
-              => Some(DirectorsOrPartnersChangedId)
+      => Some(DirectorsOrPartnersChangedId)
       case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
            PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerDetailsId(_)
       => Some(DirectorsOrPartnersChangedId)
@@ -80,7 +80,7 @@ trait Variations extends FrontendController {
   }
 
   def saveChangeFlag[A](mode: Mode, id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    val applicableMode = if(mode == UpdateMode) Some(mode) else None
+    val applicableMode = if (mode == UpdateMode) Some(mode) else None
 
     val result = applicableMode.flatMap { _ =>
       findChangeIdNonIndexed(id).fold(findChangeIdIndexed(id))(Some(_))
@@ -89,13 +89,38 @@ trait Variations extends FrontendController {
     result.fold(doNothing)(identity)
   }
 
+  def setCompleteFlagForExistingDirOrPartners(mode: Mode, inputId: TypedIdentifier[Address],
+                                              userAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+    (mode, inputId) match {
+      case (UpdateMode, DirectorPreviousAddressId(index)) =>
+        setCompleteFlag(userAnswers, DirectorDetailsId(index), index, IsDirectorCompleteId(index))
+      case (UpdateMode, PartnerPreviousAddressId(index)) =>
+        setCompleteFlag(userAnswers, PartnerDetailsId(index), index, IsPartnerCompleteId(index))
+      case _ =>
+        doNothing
+    }
+  }
+
+  private def setCompleteFlag(userAnswers: UserAnswers, id: TypedIdentifier[PersonDetails],
+                              index: Int, completeId: TypedIdentifier[Boolean])
+                             (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+    userAnswers.get(id) match {
+      case Some(details) if !details.isNew =>
+        cacheConnector.save(request.externalId, completeId, true)
+      case _ =>
+        doNothing
+    }
+  }
+
   def setNewFlag(id: TypedIdentifier[PersonDetails], mode: Mode, userAnswers: UserAnswers)
-                                    (implicit request: DataRequest[_]): Future[JsValue] = {
-    if(mode == UpdateMode | mode == CheckUpdateMode) {
-      userAnswers.get(id).fold(doNothing){ details =>
+                (implicit request: DataRequest[_]): Future[JsValue] = {
+    if (mode == UpdateMode | mode == CheckUpdateMode) {
+      userAnswers.get(id).fold(doNothing) { details =>
         cacheConnector.save(request.externalId, id, details.copy(isNew = true))
       }
-    } else { doNothing }
+    } else {
+      doNothing
+    }
   }
 
   private def doNothing(implicit request: DataRequest[_]): Future[JsValue] = Future.successful(request.userAnswers.json)

@@ -16,6 +16,7 @@
 
 package views
 
+import models.UpdateMode
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
@@ -39,14 +40,14 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
     psa_details(
       frontendAppConfig,
       PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, canBeDeregistered),
-      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
+      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
       PsaViewDetailsViewModel(sections, secondaryHeader, false, true),
-      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad()
+      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
   "supersection page" must {
@@ -72,7 +73,7 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       val doc = Jsoup.parse(createView(true, true).apply().toString())
       doc must haveLinkWithUrlAndContent(
         "declaration-link",
-        controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad().url,
+        controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url,
         messages("psaDetails.declaration.link.text")
       )
     }

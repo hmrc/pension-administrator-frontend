@@ -32,6 +32,8 @@ case class PartnerAddressYearsId(index: Int) extends TypedIdentifier[AddressYear
       case Some(AddressYears.OverAYear) =>
         userAnswers.set(DirectorsOrPartnersChangedId)(true).asOpt.getOrElse(userAnswers)
           .removeAllOf(List(PartnerPreviousAddressPostCodeLookupId(index), PartnerPreviousAddressId(index)))
+      case Some(AddressYears.UnderAYear) =>
+        userAnswers.set(IsPartnerCompleteId(index))(false)
       case _ => super.cleanup(value, userAnswers)
     }
   }

@@ -20,14 +20,14 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.VariationWorkingKnowledgeFormProvider
-import identifiers.register.adviser.{IsAdviserCompleteId, IsNewAdviserId}
+import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{DeclarationChangedId, VariationWorkingKnowledgeId}
-import models.{TolerantIndividual, UpdateMode, UserType}
+import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
+import models.{CheckUpdateMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import utils.{FakeNavigator, FakeSectionComplete, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.variationWorkingKnowledge
 
 class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
@@ -54,8 +54,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider,
-      FakeSectionComplete
+      formProvider
     )
 
   def viewAsString(form: Form[_] = form) = variationWorkingKnowledge(frontendAppConfig, form, None, UpdateMode)(fakeRequest, messages).toString
@@ -87,6 +86,19 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
+    "redirect to the next page when valid data is submitted for check update mode and set PAInDeclarationJourneyId" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      FakeUserAnswersCacheConnector.reset()
+
+      val result = controller().onSubmit(CheckUpdateMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+      FakeUserAnswersCacheConnector.verify(PAInDeclarationJourneyId, true)
+    }
+
+
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -112,7 +124,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
-    "redirect to the next page, remove the complete flag and update the change ID when data has changed to no working knowledge" in {
+    "redirect to the next page and update the change ID when data has changed" in {
       FakeUserAnswersCacheConnector.reset()
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
       val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
@@ -121,19 +133,6 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
       FakeUserAnswersCacheConnector.verify(IsNewAdviserId, true)
-      FakeUserAnswersCacheConnector.verifyRemoved(IsAdviserCompleteId)
-    }
-
-    "redirect to the next page, set the complete flag but not update the change ID when data has not changed and the value is have working knowledge" in {
-      FakeUserAnswersCacheConnector.reset()
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(existingData).onSubmit(UpdateMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-      FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
-      FakeUserAnswersCacheConnector.verify(IsNewAdviserId, false)
-      FakeSectionComplete.verify(IsAdviserCompleteId, true)
     }
   }
 }

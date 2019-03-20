@@ -19,17 +19,20 @@ package navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId, IsNewAdviserId}
 import identifiers.register._
-import models.{Mode, UpdateMode}
-import utils.{Enumerable, Navigator, UserAnswers}
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
+import models.{CheckUpdateMode, Mode, UpdateMode}
+import utils.{Enumerable, Navigator}
 
 class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
                                     config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
+  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+    case VariationWorkingKnowledgeId => variationWorkingKnowledgeEditRoute(from)
+    case _ => None
+  }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
 
@@ -51,7 +54,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   private def deleteAdviserRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(ConfirmDeleteAdviserId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
     case Some(false) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
@@ -63,6 +66,12 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   }
 
   private def variationWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
+    case Some(true) => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode))
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+  private def variationWorkingKnowledgeEditRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
     case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode))
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
@@ -71,7 +80,7 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   private def variationStillWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] =
     from.userAnswers.get(VariationStillDeclarationWorkingKnowledgeId) match {
       case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
+      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 
@@ -81,22 +90,19 @@ class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private def doesAdviserStillExist(ua: UserAnswers): Boolean =
-    ua.get(AdviserNameId).isDefined && ua.get(IsNewAdviserId).isEmpty
-
   private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
     if (from.userAnswers.isPsaUpdateDetailsInComplete) {
       NavigateTo.dontSave(controllers.register.routes.IncompleteChangesController.onPageLoad())
-    } else if (doesAdviserStillExist(from.userAnswers)) {
-      NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
     } else {
-      workingKonwldgeOrFnProute(from)
+      from.userAnswers.get(DeclarationChangedId) match {
+        case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+        case _ =>
+          if (from.userAnswers.get(AdviserNameId).isDefined) {
+            NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
+          } else {
+            NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
+          }
+      }
     }
   }
-
-  private def workingKonwldgeOrFnProute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
-    case Some(_) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad())
-  }
-
 }

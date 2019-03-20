@@ -39,7 +39,7 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import identifiers.register.AnyMoreChangesId
 import javax.inject.Inject
-import models.{NormalMode, UpdateMode}
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -55,6 +55,7 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
                                          dataCacheConnector: UserAnswersCacheConnector,
                                          @Variations navigator: Navigator,
                                          authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AnyMoreChangesFormProvider)(implicit val ec: ExecutionContext)
@@ -62,12 +63,12 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       Future.successful(Ok(anyMoreChanges(appConfig, form, psaName())))
   }
 
-  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

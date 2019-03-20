@@ -20,7 +20,6 @@ import com.google.inject.ImplementedBy
 import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import identifiers.register.RegistrationInfoId
-import identifiers.register.adviser.{AdviserNameId, IsAdviserCompleteId}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
@@ -29,8 +28,8 @@ import identifiers.register.partnership.{PartnershipContactAddressId, Partnershi
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.requests.OptionalDataRequest
 import models._
+import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResult, JsValue}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -162,7 +161,7 @@ class PsaDetailServiceImpl @Inject()(
       case _ =>
         (Nil, Map.empty)
     }
-    userAnswers.setAllFlagsTrue(seqOfCompleteIds ++ Seq(IsAdviserCompleteId)).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
+    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
