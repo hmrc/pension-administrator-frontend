@@ -16,13 +16,13 @@
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
-import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId, VariationDeclarationWorkingKnowledgeId}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
 import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
+import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
 import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
@@ -138,8 +138,8 @@ package object utils {
       answers.set(AdviserNameId)(name).asOpt.value
     }
 
-    def variationDeclarationWorkingKnowledge(value: Boolean) = {
-      answers.set(VariationDeclarationWorkingKnowledgeId)(value).asOpt.value
+    def variationWorkingKnowledge(value: Boolean): UserAnswers = {
+      answers.set(VariationWorkingKnowledgeId)(value).asOpt.value
     }
 
     def businessDetails: UserAnswers = {

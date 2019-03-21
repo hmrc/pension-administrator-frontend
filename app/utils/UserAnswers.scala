@@ -227,7 +227,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   private def isAdviserIncomplete: Boolean = {
-    if (get(VariationDeclarationWorkingKnowledgeId).contains(true)) {
+    if (get(VariationWorkingKnowledgeId).contains(true)) {
       false
     } else {
       get(AdviserDetailsId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty

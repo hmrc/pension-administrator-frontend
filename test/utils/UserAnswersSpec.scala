@@ -165,7 +165,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(false))
@@ -179,7 +179,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
@@ -194,7 +194,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
           .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(false))
@@ -208,7 +208,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
           .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))
@@ -221,7 +221,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
@@ -231,7 +231,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(false)
+          .variationWorkingKnowledge(false)
           .adviserName("test adviser")
           .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
 
@@ -243,7 +243,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(false)
+          .variationWorkingKnowledge(false)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
@@ -256,7 +256,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
           .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
@@ -270,7 +270,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.UnderAYear)
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
@@ -279,7 +279,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
           .individualAddressYears(AddressYears.OverAYear)
-          .variationDeclarationWorkingKnowledge(true)
+          .variationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
@@ -289,7 +289,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationDeclarationWorkingKnowledge(false)
+          .variationWorkingKnowledge(false)
           .adviserName("test adviser")
           .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
           .adviserDetails(AdviserDetails("email", "234"))

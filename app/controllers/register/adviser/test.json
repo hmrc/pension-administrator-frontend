@@ -1,0 +1,436 @@
+{
+  "companyDetails": {
+    "vatRegistrationNumber": "123456789",
+    "payeEmployerReferenceNumber": "123AB45678"
+  },
+  "companyRegistrationNumber": "AB123456",
+  "registrationInfo": {
+    "customerType": "UK",
+    "noIdentifier": false,
+    "idType": "UTR",
+    "legalStatus": "Limited Company",
+    "sapNumber": "",
+    "idNumber": "0123456789"
+  },
+  "companyAddressYears": "over_a_year",
+  "directors": [
+    {
+      "directorAddressYears": "under_a_year",
+      "directorUtr": {
+        "utr": "0123456789",
+        "hasUtr": true
+      },
+      "directorPreviousAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "1 Previous Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorNino": {
+        "hasNino": true,
+        "nino": "JC000001A"
+      },
+      "directorDetails": {
+        "firstName": "Ann",
+        "lastName": "Baker",
+        "middleName": "Sarah",
+        "dateOfBirth": "1980-03-01"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "1 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "ann_baker@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "1 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "utr": "0123456789",
+        "hasUtr": true
+      },
+      "directorNino": {
+        "hasNino": true,
+        "nino": "JC000002A"
+      },
+      "directorDetails": {
+        "firstName": "Eugene",
+        "lastName": "Jackson",
+        "dateOfBirth": "1980-03-02"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "2 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "eugene_jackson@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "2 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "utr": "0123456789",
+        "hasUtr": true
+      },
+      "directorNino": {
+        "hasNino": true,
+        "nino": "JC000003A"
+      },
+      "directorDetails": {
+        "firstName": "Stephen",
+        "lastName": "Perez",
+        "dateOfBirth": "1980-03-03"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "3 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "director_three@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "3 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "utr": "0123456789",
+        "hasUtr": true
+      },
+      "directorNino": {
+        "hasNino": true,
+        "nino": "JC000004A"
+      },
+      "directorDetails": {
+        "firstName": "Craig",
+        "lastName": "Scott",
+        "middleName": "Andrew",
+        "dateOfBirth": "1980-03-04"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "4 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "craig_scott@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "4 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "utr": "0123456789",
+        "hasUtr": true
+      },
+      "directorNino": {
+        "hasNino": true,
+        "nino": "JC000005A"
+      },
+      "directorDetails": {
+        "firstName": "Wanda",
+        "lastName": "Wright",
+        "middleName": "Jane",
+        "dateOfBirth": "1980-03-05"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "5 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "wanda_wright@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "5 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "reason": "No UTR",
+        "hasUtr": false
+      },
+      "directorNino": {
+        "reason": "No Nino",
+        "hasNino": false
+      },
+      "directorDetails": {
+        "firstName": "Anna",
+        "lastName": "Sanchez",
+        "dateOfBirth": "1980-03-06"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "6 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "anna_sanchez@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "6 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "reason": "No UTR",
+        "hasUtr": false
+      },
+      "directorNino": {
+        "reason": "No Nino",
+        "hasNino": false
+      },
+      "directorDetails": {
+        "firstName": "Sara",
+        "lastName": "Wood",
+        "dateOfBirth": "1980-03-07"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "7 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "sara_wood@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "7 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "reason": "No UTR",
+        "hasUtr": false
+      },
+      "directorNino": {
+        "reason": "No Nino",
+        "hasNino": false
+      },
+      "directorDetails": {
+        "firstName": "Carolyn",
+        "lastName": "Watson",
+        "middleName": "Anne",
+        "dateOfBirth": "1980-03-08"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "8 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "anne_watson@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "8 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "reason": "No UTR",
+        "hasUtr": false
+      },
+      "directorNino": {
+        "reason": "No Nino",
+        "hasNino": false
+      },
+      "directorDetails": {
+        "firstName": "Ruby",
+        "lastName": "Roberts",
+        "middleName": "Ruby",
+        "dateOfBirth": "1980-03-09"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "9 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "phone": "0044-09876542312",
+        "email": "ruby_roberts@test.com"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "9 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    },
+    {
+      "directorAddressYears": "over_a_year",
+      "directorUtr": {
+        "reason": "No UTR",
+        "hasUtr": false
+      },
+      "directorNino": {
+        "reason": "No Nino",
+        "hasNino": false
+      },
+      "directorDetails": {
+        "firstName": "David",
+        "lastName": "Green",
+        "middleName": "John",
+        "dateOfBirth": "1980-03-10"
+      },
+      "directorAddress": {
+        "country": "GB",
+        "postcode": "YO1 9EX",
+        "addressLine1": "10 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire"
+      },
+      "directorContactDetails": {
+        "email": "david_green@test.comf",
+        "phone": "0044-09876542312"
+      },
+      "isDirectorComplete": true,
+      "existingCurrentAddress": {
+        "addressLine1": "10 Director Road",
+        "addressLine2": "Clifton",
+        "addressLine3": "York",
+        "addressLine4": "Yorkshire",
+        "postalCode": "YO1 9EX",
+        "countryCode": "GB"
+      }
+    }
+  ],
+  "areYouInUK": true,
+  "businessDetails": {
+    "companyName": "Global Pensions Ltd",
+    "uniqueTaxReferenceNumber": "0123456789"
+  },
+  "contactDetails": {
+    "phone": "0191 644595 ",
+    "email": "global.pensions@test.com"
+  },
+  "companyContactAddress": {
+    "country": "GB",
+    "postcode": "NG1 5BT",
+    "addressLine1": "55 West Avenue",
+    "addressLine2": "Nottingham",
+    "addressLine3": "Nottinghamshire"
+  },
+  "declarationWorkingKnowledge": true,
+  "existingCurrentAddress": {
+    "addressLine1": "55 West Avenue",
+    "addressLine2": "Nottingham",
+    "addressLine3": "Nottinghamshire",
+    "postalCode": "NG1 5BT",
+    "countryCode": "GB"
+  },
+  "updateMode": true,
+  "areDirectorsOrPartnersChanged": true,
+  "lastPage": {
+    "method": "GET",
+    "url": "/register-as-pension-scheme-administrator/register/make-more-changes"
+  },
+  "anyMoreChanges": false,
+  "variationsStillDeclarationWorkingKnowledge": false,
+  "pensionAdviserInDeclarationJourney": true,
+  "newAdviser": false
+}
