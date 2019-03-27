@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.StillUseAdviserFormProvider
-import identifiers.register.{VariationDeclarationWorkingKnowledgeId, VariationStillDeclarationWorkingKnowledgeId}
+import identifiers.register.VariationStillDeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.BusinessDetailsId
 import models.register.DeclarationWorkingKnowledge

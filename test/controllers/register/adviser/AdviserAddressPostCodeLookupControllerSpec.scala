@@ -17,27 +17,29 @@
 package controllers.register.adviser
 
 import base.CSRFRequest
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import models.{NormalMode, TolerantAddress}
+import models.requests.DataRequest
+import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Adviser
 import utils.{FakeNavigator, Navigator}
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  import AdviserAddressPostCodeLookupController._
   import AdviserAddressPostCodeLookupControllerSpec._
 
   "AdviserAddressPostCodeLookup Controller" must {
@@ -71,6 +73,19 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
 
   private val validPostcode = "ZZ1 1ZZ"
+
+  def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
+    controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
+    controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
+    Message("common.adviser.address.title"),
+    Message("common.adviser.address.heading"),
+    Some(Message("common.adviser.secondary.heading")),
+    Message("adviserAddressPostCodeLookup.hint"),
+    Message("adviserAddressPostCodeLookup.enterPostcode"),
+    Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
+    Message("adviserAddressPostCodeLookup.formLabel"),
+    psaName = None
+  )
 
   private val address = TolerantAddress(
     Some("test-address-line-1"),

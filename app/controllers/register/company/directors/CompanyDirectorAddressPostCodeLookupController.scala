@@ -51,7 +51,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode, index).right.map{ vm =>
         get(vm, mode)
@@ -79,7 +79,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
           Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
           Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
           Message("companyDirectorAddressPostCodeLookup.postcode"),
-          psaName()
+          psaName = psaName()
         )
     }
   }
