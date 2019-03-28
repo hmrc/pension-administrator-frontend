@@ -27,12 +27,12 @@ import views.html.register.adviser.adviserDetails
 class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
 
   val messageKeyPrefix = "adviserDetails"
-  val adviserName = "test adviser"
+  val adviserName = Some("test adviser")
   val psaName = "test psa"
 
   override val form = new AdviserDetailsFormProvider()()
 
-  private def createView(mode: Mode = NormalMode) = () =>
+  private def createView(mode: Mode = NormalMode, adviserName: Option[String]=adviserName) = () =>
     adviserDetails(frontendAppConfig, form, mode, adviserName, Some(psaName))(fakeRequest, messages)
 
   private def createViewUsingForm = (form: Form[_]) =>
@@ -49,4 +49,11 @@ class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
     behave like pageWithTextFields(
       createViewUsingForm, messageKeyPrefix, controllers.register.adviser.routes.AdviserDetailsController.onSubmit(NormalMode).url, "email", "phone")
   }
-}
+
+  "AdviserDetails view when adviser name is not present" must {
+    appRunning()
+
+    behave like normalPageWithDynamicTitle(
+      createView(adviserName = None), messageKeyPrefix, Message("adviserDetails.generic.heading"))
+  }
+  }

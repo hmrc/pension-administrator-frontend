@@ -35,6 +35,7 @@ class AdviserDetailsControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   val adviserName = "test adviser"
+  val adviserNameOpt = Some(adviserName)
 
   val formProvider = new AdviserDetailsFormProvider()
   val form = formProvider()
@@ -44,7 +45,7 @@ class AdviserDetailsControllerSpec extends ControllerSpecBase {
     new AdviserDetailsController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode, adviserName, None)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = adviserDetails(frontendAppConfig, form, NormalMode, adviserNameOpt, None)(fakeRequest, messages).toString
 
   "AdviserDetails Controller" must {
 
