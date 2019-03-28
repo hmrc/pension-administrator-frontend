@@ -21,8 +21,10 @@ import controllers.actions.{DataRetrievalAction, _}
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.ConfirmDeleteAdviserFormProvider
 import identifiers.register.DeclarationChangedId
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models.{NormalMode, UpdateMode}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{ConfirmDeleteViewModel, Message}
@@ -34,7 +36,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
 
   val formProvider = new ConfirmDeleteAdviserFormProvider(messagesApi)
   val form = formProvider(adviserName)
-  val validData = UserAnswers().adviserName(adviserName).dataRetrievalAction
+  private val validData = UserAnswers().adviserName(adviserName).dataRetrievalAction
 
   private def viewModel(name: String) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteAdviserController.onSubmit(),
@@ -46,7 +48,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
-    new ConfirmDeleteAdviserController(frontendAppConfig, messagesApi, FakeAuthAction, new FakeAllowAccessProvider(),
+    new ConfirmDeleteAdviserController(frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(),
       dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute))
 
   def viewAsString(form: Form[_] = form): String = confirmDelete(frontendAppConfig, form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
@@ -67,7 +69,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "don't remove the adviser information, don't set the change flag when in NormalMode and user answers no, to confirm delete" in {
       FakeUserAnswersCacheConnector.reset()
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
@@ -76,9 +78,10 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verifyNot(DeclarationChangedId)
+      FakeUserAnswersCacheConnector.lastUpsert must be(None)
     }
 
-    "set the change flag when in Update mode and user answers yes, he wants to delete the adviser" in {
+    "set the change flag, remove all the adviser information when in Update mode and user answers yes, to confirm delete" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       val result = controller().onSubmit(UpdateMode)(postRequest)
@@ -86,6 +89,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       FakeUserAnswersCacheConnector.verify(DeclarationChangedId, true)
+      FakeUserAnswersCacheConnector.lastUpsert.get mustEqual Json.obj(ConfirmDeleteAdviserId.toString -> true)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
