@@ -48,7 +48,17 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   private def commonNavigator(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AdviserNameId => NavigateTo.dontSave(routes.AdviserDetailsController.onPageLoad(mode))
-    case AdviserDetailsId => isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
+    case AdviserDetailsId =>
+      if (mode == UpdateMode) {
+        val tt = from.userAnswers.get(AdviserAddressId)
+        if (tt.isDefined) {
+          NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+        } else {
+          isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
+        }
+      } else {
+        isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
+      }
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
     case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
     case AdviserAddressId =>

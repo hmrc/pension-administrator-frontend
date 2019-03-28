@@ -50,6 +50,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), false, Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
     (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false,  Some(checkYourAnswersPage(UpdateMode)), false),
+    (AdviserDetailsId, adviserUpdatedWithAddressOnly, haveMoreChangesPage, false,  Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
     (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(UpdateMode)), false),
@@ -65,9 +66,13 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object AdviserNavigatorSpec extends OptionValues {
-  lazy val emptyAnswers = UserAnswers(Json.obj())
-  lazy val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(true).asOpt.get
-  lazy val declarationPensionAdvisorTrue = UserAnswers(Json.obj()).set(PAInDeclarationJourneyId)(true).asOpt.get
+  private val address = Address("line 1", "line 2", Some("line 3"), Some("line 4"), None, "UK")
+  private val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(true).asOpt.get
+  private val adviserUpdatedWithAddressOnly = UserAnswers(Json.obj())
+    .set(IsNewAdviserId)(true).asOpt.get
+    .set(AdviserAddressId)(address).asOpt.get
+
+  private val declarationPensionAdvisorTrue = UserAnswers(Json.obj()).set(PAInDeclarationJourneyId)(true).asOpt.get
 
   private def adviserPostCodeLookUpPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)
   private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)
@@ -76,8 +81,8 @@ object AdviserNavigatorSpec extends OptionValues {
   private  def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
 
-  lazy val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
-  lazy val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+  private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
