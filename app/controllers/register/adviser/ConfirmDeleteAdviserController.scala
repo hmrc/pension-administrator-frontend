@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.ConfirmDeleteAdviserFormProvider
-import identifiers.register.adviser.{AdviserDetailsId, AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -29,7 +29,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers, annotations}
 import viewmodels.{ConfirmDeleteViewModel, Message}
@@ -72,12 +71,27 @@ class ConfirmDeleteAdviserController @Inject()(
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(confirmDelete(appConfig, formWithErrors, viewModel(name), mode))),
-          value =>
-            cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap(cacheMap =>
-              saveChangeFlag(mode, ConfirmDeleteAdviserId).map(_ =>
-                Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(cacheMap))))
-            )
+          value => {
+            cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap { cacheMap =>
+              deleteAdviserAndSetChangeFlag(value, UserAnswers(cacheMap), mode).map { updatedCacheMap =>
+                Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(updatedCacheMap)))
+              }
+            }
+          }
         )
       }
+  }
+
+  private def deleteAdviserAndSetChangeFlag(value: Boolean, userAnswers: UserAnswers, mode: Mode)
+                                           (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+    if (value) {
+      val updatedAnswers = userAnswers.removeAllOf(List(AdviserNameId, AdviserDetailsId, AdviserAddressId,
+        AdviserAddressListId, AdviserAddressPostCodeLookupId)).asOpt.getOrElse(userAnswers)
+      cacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+        saveChangeFlag(mode, ConfirmDeleteAdviserId)
+      }
+    } else {
+      Future.successful(userAnswers.json)
+    }
   }
 }
