@@ -49,32 +49,22 @@ class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   private def commonNavigator(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AdviserNameId => NavigateTo.dontSave(routes.AdviserDetailsController.onPageLoad(mode))
     case AdviserDetailsId =>
-      if (mode == UpdateMode) {
-        val tt = from.userAnswers.get(AdviserAddressId)
-        if (tt.isDefined) {
-          NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
-        } else {
-          isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
-        }
-      } else {
-        isAdviserChange(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
-      }
+      adviserCompletionCheckNavigator(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
     case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
     case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
     case AdviserAddressId =>
-      isAdviserChange(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
+      adviserCompletionCheckNavigator(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
     case CheckYourAnswersId => checkYourAnswersRoutes(mode, from.userAnswers)
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private def isAdviserChange(from: NavigateFrom, call: Option[NavigateTo], mode: Mode): Option[NavigateTo] = {
-    if (mode == NormalMode) {
-      call
-    } else {
-      from.userAnswers.get(IsNewAdviserId) match {
-        case Some(true) => call
-        case _ => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
-      }
+  private def adviserCompletionCheckNavigator(from: NavigateFrom, call: Option[NavigateTo], mode: Mode): Option[NavigateTo] = {
+    (mode, from.userAnswers.get(AdviserAddressId), from.userAnswers.get(IsNewAdviserId)) match {
+      case (NormalMode, _, _) => call
+      case (UpdateMode, Some(_), _) =>
+        NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      case (_, _, Some(true)) => call
+      case _ => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
     }
   }
 
