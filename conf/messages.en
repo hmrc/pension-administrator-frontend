@@ -67,7 +67,6 @@ site.edit = Edit
 site.change = Change
 site.add = Add
 site.confirm = Confirm
-site.agree = Agree and continue
 site.cancel = Cancel
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
