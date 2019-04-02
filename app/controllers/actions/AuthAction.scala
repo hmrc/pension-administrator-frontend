@@ -59,10 +59,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.nino and
         Retrievals.allEnrolments) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
-        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold{
+        redirectToInterceptPages(enrolments, request, cl, affinityGroup, id).fold {
           val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
-        }{result => Future.successful(result)}
+        } { result => Future.successful(result) }
       case _ =>
         Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
 
@@ -225,7 +225,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   protected def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
-  private def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
+  protected def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
     affinityGroup match {
       case Individual =>
         UserType.Individual
@@ -236,13 +236,13 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  private def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
-                      nino: Option[String], enrolments: Enrolments): PSAUser = {
+  protected def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
+                        nino: Option[String], enrolments: Enrolments): PSAUser = {
     val psa = existingPSA(enrolments)
     PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
   }
 
-  private def getPSAId(enrolments: Enrolments): String =
+  protected def getPSAId(enrolments: Enrolments): String =
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
@@ -254,16 +254,40 @@ class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthC
                                                identityVerificationConnector: IdentityVerificationConnector,
                                                minimalPsaConnector: MinimalPsaConnector
                                               )(implicit ec: ExecutionContext) extends
-    FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector, minimalPsaConnector)
+  FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector, minimalPsaConnector)
 
   with AuthorisedFunctions {
 
-    override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                    enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                                    block: AuthenticatedRequest[A] => Future[Result])
-                                   (implicit hc: HeaderCarrier) =
+  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
+                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                  block: AuthenticatedRequest[A] => Future[Result])
+                                 (implicit hc: HeaderCarrier) =
 
-      savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+    savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+}
+
+class FullAuthenticationExcludingSuspendedCheck @Inject()(override val authConnector: AuthConnector,
+                                                          config: FrontendAppConfig,
+                                                          fs: FeatureSwitchManagementService,
+                                                          userAnswersCacheConnector: UserAnswersCacheConnector,
+                                                          ivConnector: IdentityVerificationConnector,
+                                                          minimalPsaConnector: MinimalPsaConnector
+                                                    )
+                                                         (implicit ec: ExecutionContext)
+  extends FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, ivConnector, minimalPsaConnector) {
+
+  override protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                                          block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+    if (alreadyEnrolledInPODS(enrolments)) {
+      val psaId = getPSAId(enrolments)
+      block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
+        alreadyEnrolledPsaId = Some(psaId), isPSASuspended = None)))
+    }
+    else {
+      block(authRequest)
+    }
+  }
+
 }
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

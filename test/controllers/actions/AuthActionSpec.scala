@@ -21,6 +21,7 @@ import java.net.URLEncoder
 import base.SpecBase
 import config.FeatureSwitchManagementService
 import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector, MinimalPsaConnector}
+import controllers.actions.AuthActionSpec.fakeMinimalPsaConnector
 import controllers.routes
 import identifiers.JourneyId
 import models._
@@ -76,18 +77,26 @@ class AuthActionSpec extends SpecBase{
       val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
 
       "return OK" when {
+
+        val fakeMinimalPsa = fakeMinimalPsaConnector()
+
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsa)
         def controller = new Harness(authAction)
 
         "coming from confirmation" in {
+          val authAction = new FullAuthenticationExcludingSuspendedCheck(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
+            fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsa)
+          def controller = new Harness(authAction)
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.ConfirmationController.onPageLoad().url))
           status(result) mustBe OK
+          fakeMinimalPsa.verifyIsCalled mustBe false
         }
 
         "coming from duplicate registration" in {
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.DuplicateRegistrationController.onPageLoad().url))
           status(result) mustBe OK
+          fakeMinimalPsa.verifyIsCalled mustBe true
         }
 
         "coming from registered psa details" in {
@@ -224,15 +233,18 @@ class AuthActionSpec extends SpecBase{
         }
 
         "user is in UK and wants to register as Organisation" in {
+          val fakeMinimalPsa = fakeMinimalPsaConnector()
+
           val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
           val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> true)
 
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector, fakeMinimalPsaConnector())
+            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector, fakeMinimalPsa)
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(fakeRequest)
           status(result) mustBe OK
         }
+
       }
 
       "return OK if affinity Group is Organisation" in {
@@ -427,11 +439,21 @@ object AuthActionSpec {
     def onPageLoad(mode:Mode=NormalMode) = (authAction andThen allowAccess(mode)) { _ => Ok }
   }
 
-  private def fakeMinimalPsaConnector(isSuspended:Boolean = false) : MinimalPsaConnector = {
-    new MinimalPsaConnector {
-      override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-        Future.successful(isSuspended)
-      }
+  class FakeMinimalPsaConnector(isSuspended:Boolean) extends MinimalPsaConnector {
+
+    def verifyIsCalled():Boolean = isCalled
+
+    private var isCalled: Boolean = false
+
+    override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+
+      isCalled = true
+
+      Future.successful(isSuspended)
     }
+  }
+
+  private def fakeMinimalPsaConnector(isSuspended:Boolean = false) : FakeMinimalPsaConnector = {
+    new FakeMinimalPsaConnector(isSuspended)
   }
 }
