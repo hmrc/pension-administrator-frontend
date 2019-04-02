@@ -24,6 +24,9 @@ import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector,
 import controllers.routes
 import identifiers.JourneyId
 import models._
+import org.mockito.Matchers
+import org.mockito.Mockito.{when, _}
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Controller
 import play.api.test.FakeRequest
@@ -36,7 +39,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionSpec extends SpecBase{
+class AuthActionSpec extends SpecBase with MockitoSugar {
 
   import AuthActionSpec._
 
@@ -75,20 +78,40 @@ class AuthActionSpec extends SpecBase{
       val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
       val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
 
-      "return OK" when {
+
+      "Return OK and interact correctly with min details connector" when {
+        val mockMinimalPsaConnector = mock[MinimalPsaConnector] //fakeMinimalPsaConnector()
+        when(mockMinimalPsaConnector.isPsaSuspended(Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(false))
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersConnector, fakeIVConnector, mockMinimalPsaConnector)
+
         def controller = new Harness(authAction)
 
         "coming from confirmation" in {
+          val authAction = new FullAuthenticationExcludingSuspendedCheck(fakeAuthConnector(retrievalResult),
+            frontendAppConfig, fakeFeatureSwitchManagerService(),
+            fakeUserAnswersConnector, fakeIVConnector, mockMinimalPsaConnector)
+
+          def controller = new Harness(authAction)
+
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.ConfirmationController.onPageLoad().url))
           status(result) mustBe OK
+          verify(mockMinimalPsaConnector, times(0)).isPsaSuspended(Matchers.any())(Matchers.any(), Matchers.any())
         }
 
         "coming from duplicate registration" in {
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.DuplicateRegistrationController.onPageLoad().url))
           status(result) mustBe OK
+          verify(mockMinimalPsaConnector, times(1)).isPsaSuspended(Matchers.any())(Matchers.any(), Matchers.any())
         }
+      }
+
+      "return OK" when {
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
+          fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector())
+
+        def controller = new Harness(authAction)
 
         "coming from registered psa details" in {
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.routes.PsaDetailsController.onPageLoad().url))
@@ -100,7 +123,9 @@ class AuthActionSpec extends SpecBase{
         "coming from change page when user is suspended" in {
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
             fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector(true))
+
           def controller = new Harness(authAction)
+
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.VariationDeclarationController.onPageLoad().url))
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad().url)
@@ -423,11 +448,11 @@ object AuthActionSpec {
     enrolments)
   )
 
-  class Harness(authAction: AuthAction, allowAccess: AllowAccessActionProvider= new AllowAccessActionProviderImpl()) extends Controller {
-    def onPageLoad(mode:Mode=NormalMode) = (authAction andThen allowAccess(mode)) { _ => Ok }
+  class Harness(authAction: AuthAction, allowAccess: AllowAccessActionProvider = new AllowAccessActionProviderImpl()) extends Controller {
+    def onPageLoad(mode: Mode = NormalMode) = (authAction andThen allowAccess(mode)) { _ => Ok }
   }
 
-  private def fakeMinimalPsaConnector(isSuspended:Boolean = false) : MinimalPsaConnector = {
+  private def fakeMinimalPsaConnector(isSuspended: Boolean = false): MinimalPsaConnector = {
     new MinimalPsaConnector {
       override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
         Future.successful(isSuspended)
