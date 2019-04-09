@@ -118,10 +118,8 @@ class PsaDetailServiceImpl @Inject()(
     Future.successful(
       setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
         .asOpt.getOrElse(answers)
-        .setAllFlagsToValue(changeFlagIds, value = false) match {
-        case JsSuccess(value, _) => value
-        case JsError(errors) => throw JsResultException(errors)
-      }
+        .setAllFlagsToValue(changeFlagIds, value = false)
+        .asOpt.getOrElse(answers)
     )
   }
 
