@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package service
+package services
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.actions.FakeRegistrationConnector
 import identifiers.register.RegistrationInfoId
-import models.{Address, RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, TolerantIndividual}
+import models._
 import org.joda.time.LocalDate
 import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
-import services.{MandatoryIndividualDetailsMissing, RegistrationServiceImpl}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
 class RegistrationServiceSpec extends AsyncFlatSpec with Matchers with OptionValues {

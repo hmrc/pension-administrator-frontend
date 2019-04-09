@@ -78,7 +78,7 @@ class PsaDetailServiceImpl @Inject()(
     }
   }
 
-  private def getUserAnswers(psaId: String, mode: Mode
+  private[services] def getUserAnswers(psaId: String, mode: Mode
                             )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
       case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
