@@ -19,19 +19,19 @@ package services
 import com.google.inject.ImplementedBy
 import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
-import identifiers.register.RegistrationInfoId
+import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
-import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.individual.{ExistingCurrentAddressId, IndividualContactAddressId, IndividualDetailsId}
+import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
+import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
-import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipDetailsId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
+import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipDetailsId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsResult, JsValue}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
 import utils.countryOptions.CountryOptions
@@ -79,7 +79,7 @@ class PsaDetailServiceImpl @Inject()(
   }
 
   private[services] def getUserAnswers(psaId: String, mode: Mode
-                            )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
+                                      )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
       case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
         getUpdatedUserAnswers(_, mode)
@@ -98,10 +98,31 @@ class PsaDetailServiceImpl @Inject()(
       }
     }
 
-  private def getUpdatedUserAnswers(response: JsValue, mode:Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
+  private val changeFlagIds = List(IndividualAddressChangedId,
+    IndividualPreviousAddressChangedId,
+    IndividualContactDetailsChangedId,
+    CompanyContactAddressChangedId,
+    CompanyPreviousAddressChangedId,
+    CompanyContactDetailsChangedId,
+    PartnershipContactAddressChangedId,
+    PartnershipPreviousAddressChangedId,
+    PartnershipContactDetailsChangedId,
+    DeclarationChangedId,
+    MoreThanTenDirectorsOrPartnersChangedId,
+    DirectorsOrPartnersChangedId
+  )
+
+  private def getUpdatedUserAnswers(response: JsValue, mode: Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
-    Future(setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true)).asOpt.getOrElse(answers))
+    Future.successful(
+      setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
+        .asOpt.getOrElse(answers)
+        .setAllFlagsToValue(changeFlagIds, value = false) match {
+        case JsSuccess(value, _) => value
+        case JsError(errors) => throw JsResultException(errors)
+      }
+    )
   }
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
@@ -161,7 +182,7 @@ class PsaDetailServiceImpl @Inject()(
       case _ =>
         (Nil, Map.empty)
     }
-    userAnswers.setAllFlagsTrue(seqOfCompleteIds).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
+    userAnswers.setAllFlagsToValue(seqOfCompleteIds, value = true).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {

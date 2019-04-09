@@ -205,10 +205,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
             DeclarationChangedId,
             MoreThanTenDirectorsOrPartnersChangedId,
             DirectorsOrPartnersChangedId
-          ).foreach { id =>
-            val yy = userAnswers.get(id)
-            yy mustBe Some(true)
-          }
+          ).foreach(userAnswers.get(_) mustBe Some(false))
         }
       }
 
