@@ -117,8 +117,7 @@ class PsaDetailServiceImpl @Inject()(
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(
       setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
-        .asOpt.getOrElse(answers)
-        .setAllFlagsToValue(changeFlagIds, value = false)
+        .flatMap( _.setAllFlagsToValue(changeFlagIds, value = false))
         .asOpt.getOrElse(answers)
     )
   }
