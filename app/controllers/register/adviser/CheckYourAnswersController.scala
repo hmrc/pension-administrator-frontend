@@ -17,6 +17,7 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
+import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId, CheckYourAnswersId}
 import javax.inject.Inject
@@ -42,7 +43,7 @@ class CheckYourAnswersController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             implicit val countryOptions: CountryOptions
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
@@ -50,7 +51,7 @@ class CheckYourAnswersController @Inject()(
       val details = AdviserDetailsId.row(Some(Link(routes.AdviserDetailsController.onPageLoad(checkMode(mode)).url)))
       val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(checkMode(mode)).url)))
       val sections = Seq(AnswerSection(None, adviserName ++ details ++ address))
-      Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(mode), None, mode))
+      Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(mode), psaName() , mode))
   }
 
   def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
+@import models.{CheckUpdateMode, UpdateMode}
 
 @(appConfig: FrontendAppConfig, form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
@@ -46,7 +47,15 @@
         </div>
 
         @psaNameOpt.map{ psaName =>
-            @components.return_link(psaName, mode)
+            @if(mode == UpdateMode | mode == CheckUpdateMode) {
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p class="govuk-margin-top-5">
+                            <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
+                        </p>
+                    </div>
+                </div>
+            }
         }
     }
 }
