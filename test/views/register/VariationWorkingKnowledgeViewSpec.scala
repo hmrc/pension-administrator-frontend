@@ -18,7 +18,7 @@ package views.register
 
 import controllers.register.company.routes
 import forms.register.VariationWorkingKnowledgeFormProvider
-import models.{NormalMode, UpdateMode}
+import models.{CheckUpdateMode, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -30,7 +30,8 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
   val form = new VariationWorkingKnowledgeFormProvider()()
 
-  def createView: () => HtmlFormat.Appendable = () => variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), mode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
     variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
@@ -39,12 +40,18 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
     appRunning()
 
-    behave like normalPage(createView, messageKeyPrefix, "p1", "p2", "p3")
-
-    behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
+    behave like normalPage(createView(), messageKeyPrefix, "p1", "p2", "p3")
 
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
-      routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,s"$messageKeyPrefix.heading")
+      routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url, s"$messageKeyPrefix.heading")
+  }
+
+  "variationWorkingKnowledge view" when {
+    Seq(UpdateMode, CheckUpdateMode).foreach { mode =>
+      s"in $mode mode" must {
+        behave like pageWithReturnLink(createView(mode), controllers.routes.PsaDetailsController.onPageLoad().url)
+      }
+    }
   }
 }
