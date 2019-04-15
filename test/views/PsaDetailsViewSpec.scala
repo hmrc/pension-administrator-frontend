@@ -92,6 +92,11 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       assertRenderedByIdWithText(doc, "supersection-0-heading", superSectionHeading)
     }
 
+    "display sub-heading" in {
+      val doc: Document = asDocument(createViewWithData(seqSuperSection))
+      assertRenderedByIdWithText(doc, "psadetails-header", subSectionHeading)
+    }
+
     "correctly display an AnswerSection" in {
       val doc: Document = asDocument(createViewWithData(seqSuperSection))
       assertRenderedByIdWithText(doc, "cya-0-0-heading", headingKey)
@@ -121,6 +126,7 @@ object PsaDetailsViewSpec {
   val answer1 = "test-answer-1"
   val answer2 = "test-answer-2"
   val superSectionHeading = "Main Heading"
+  val subSectionHeading = "Pension scheme administrator details"
   val headingKey = "Director Name"
 
   val answerRow = AnswerRow("test-label", Seq(answer1, answer2), answerIsMessageKey = false, None)
