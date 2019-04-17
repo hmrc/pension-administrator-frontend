@@ -38,10 +38,9 @@
             </p>
         }
 
+            <h2 id="psadetails-header" class="heading-large">@messages("psaDetails.header")</h2>
+
         @for((section, i) <- psaDetails.superSections.zipWithIndex){
-            @if(psaDetails.canDeregister){
-                <h2 class="heading-large">@messages("psaDetails.header")</h2>
-            }
             @{
                 components.super_section(section, i.toString)
             }
