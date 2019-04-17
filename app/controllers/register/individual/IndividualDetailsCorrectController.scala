@@ -62,8 +62,12 @@ class IndividualDetailsCorrectController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      (IndividualDetailsId and IndividualAddressId).retrieve match {
-        case Right(individual ~ address) =>
+      val existingIndividualDetailsId = request.userAnswers.get(IndividualDetailsId)
+      val existingIndividualAddressId = request.userAnswers.get(IndividualAddressId)
+      val existingRegistrationInfo = request.userAnswers.get(RegistrationInfoId)
+
+      (existingIndividualDetailsId, existingIndividualAddressId, existingRegistrationInfo) match {
+        case (Some(individual), Some(address), Some(_)) =>
           Future.successful(Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address, countryOptions)))
         case _ =>
           request.user.nino match {
