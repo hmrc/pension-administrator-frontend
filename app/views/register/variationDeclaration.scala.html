@@ -40,15 +40,16 @@
                 @components.paragraph_text(messages("declaration.variations.statement2"))
             </li>
             <li>
-                @components.paragraph_text(messages("declaration.variations.statement3"))
+                @if(isWorkingKnowldge){
+                @components.paragraph_text(messages("declaration.variations.statement31"))
+                } else {
+                @components.paragraph_text(messages("declaration.variations.statement32"))
+                }
             </li>
             <li>
-            @if(isWorkingKnowldge){
                 @components.paragraph_text(messages("declaration.variations.statement4"))
-            } else {
-                @components.paragraph_text(messages("declaration.variations.statement5"))
-            }
             </li>
+
         </ol>
 
         <div class="form-group @if(form("agree").hasErrors){form-field--error}">

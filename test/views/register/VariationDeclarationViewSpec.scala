@@ -70,18 +70,18 @@ class VariationDeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
       createView() must haveDynamicText("declaration.variations.statement2")
     }
 
-    "display the third statement" in {
-      createView() must haveDynamicText("declaration.variations.statement3")
+    "display the thirdOne statement" in {
+      createView() must haveDynamicText("declaration.variations.statement31")
+      createView() must notHaveDynamicText("declaration.variations.statement32")
+    }
+
+    "display the thirdTwo statement" in {
+      createView(isWorkingKnowldge = false) must notHaveDynamicText("declaration.variations.statement31")
+      createView(isWorkingKnowldge = false) must haveDynamicText("declaration.variations.statement32")
     }
 
     "display the fourth statement" in {
       createView() must haveDynamicText("declaration.variations.statement4")
-      createView() must notHaveDynamicText("declaration.variations.statement5")
-    }
-
-    "display the fifth statement" in {
-      createView(isWorkingKnowldge = false) must notHaveDynamicText("declaration.variations.statement4")
-      createView(isWorkingKnowldge = false) must haveDynamicText("declaration.variations.statement5")
     }
 
     "have an Agree checkbox" in {
