@@ -22,6 +22,8 @@ import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import models.RegistrationCustomerType.UK
+import models.RegistrationLegalStatus.Individual
 import models.requests.AuthenticatedRequest
 import models.{RegistrationInfo, _}
 import org.scalatest.mockito.MockitoSugar
@@ -145,16 +147,32 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
-    "use existing individual details and address data if present" in {
+    "use existing individual details, address data and registrationInfo if present" in {
+      val registrationInfo = RegistrationInfo(Individual, "", noIdentifier=false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
       val data = Json.obj(
         IndividualDetailsId.toString -> individual,
-        IndividualAddressId.toString -> address
+        IndividualAddressId.toString -> address,
+        RegistrationInfoId.toString -> registrationInfo
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(data))
 
       val result = controller(getRelevantData, ExceptionThrowingRegistrationConnector).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
+    }
+
+    "re-register if existing registrationInfo not present" in {
+      FakeUserAnswersCacheConnector.reset()
+      val data = Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressId.toString -> address
+      )
+      val getRelevantData = new FakeDataRetrievalAction(Some(data))
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      status(result) mustBe OK
+      FakeUserAnswersCacheConnector.verify(IndividualDetailsId, individual)
+      FakeUserAnswersCacheConnector.verify(IndividualAddressId, address)
+      FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
     }
 
     "redirect to the next page when valid data is submitted" in {
