@@ -21,7 +21,7 @@ import connectors.{PensionAdministratorFeatureSwitchConnectorImpl, PensionsSchem
 import controllers.ControllerSpecBase
 import controllers.testOnlyDoNotUseInAppConf.TestFeatureSwitchManagerController
 import forms.mappings.Mappings
-import org.mockito.Matchers.any
+import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
@@ -49,26 +49,41 @@ class TestFeatureSwitchManagerControllerSpec extends ControllerSpecBase with Map
   "TestFeatureSwitchManager Controller" when {
 
     "toggle on is called" must {
-      "return No Content if the toggle value is changed successfully" in {
+      "return Ok if the toggle value is changed successfully" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(true)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(true)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(true))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+
         val result = controller.toggleOn(toggleName)(fakeRequest)
-        status(result) mustBe NO_CONTENT
+        status(result) mustBe OK
       }
 
       "return Expectation Failed if changing the frontend toggle value is failed" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(false)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(false)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(true))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+
         val result = controller.toggleOn(toggleName)(fakeRequest)
         status(result) mustBe EXPECTATION_FAILED
       }
 
       "return Expectation Failed if changing the toggle value for pensions scheme is failed" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(true)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(true)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(false))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(true))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(false)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+
         val result = controller.toggleOn(toggleName)(fakeRequest)
         status(result) mustBe EXPECTATION_FAILED
       }
@@ -77,6 +92,10 @@ class TestFeatureSwitchManagerControllerSpec extends ControllerSpecBase with Map
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(true)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOn(any())(any(), any())).thenReturn(Future.successful(false))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(false)))
+
         val result = controller.toggleOn(toggleName)(fakeRequest)
         status(result) mustBe EXPECTATION_FAILED
       }
@@ -85,37 +104,56 @@ class TestFeatureSwitchManagerControllerSpec extends ControllerSpecBase with Map
     "toggle off is called" must {
       "return No Content if the toggle value is changed successfully" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(true)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(false)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(true))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(false)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(false)))
+
         val result = controller.toggleOff(toggleName)(fakeRequest)
-        status(result) mustBe NO_CONTENT
+        status(result) mustBe OK
       }
 
       "return Expectation Failed if changing the frontend toggle value is failed" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(false)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(false)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(true))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+
         val result = controller.toggleOff(toggleName)(fakeRequest)
         status(result) mustBe EXPECTATION_FAILED
       }
       "return Expectation Failed if changing the pensions scheme toggle value is failed" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(true)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(true)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(false))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(true))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(false)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+
         val result = controller.toggleOff(toggleName)(fakeRequest)
         status(result) mustBe EXPECTATION_FAILED
       }
       "return Expectation Failed if changing the pension administrator toggle value is failed" in {
         when(fakeFeatureSwitchManagerService.change(any(), any())).thenReturn(true)
+        when(fakeFeatureSwitchManagerService.get(any())).thenReturn(true)
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.toggleOff(any())(any(), any())).thenReturn(Future.successful(false))
+
+        when(fakePensionsSchemeFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(true)))
+        when(fakePensionAdminFeatureSwitchConnectorImpl.get(any())(any(), any())).thenReturn(Future.successful(Some(false)))
+
         val result = controller.toggleOff(toggleName)(fakeRequest)
         status(result) mustBe EXPECTATION_FAILED
       }
     }
 
     "reset is called" must {
-
       "return No Content when reset is done successfully" in {
         when(fakePensionsSchemeFeatureSwitchConnectorImpl.reset(any())(any(), any())).thenReturn(Future.successful(true))
         when(fakePensionAdminFeatureSwitchConnectorImpl.reset(any())(any(), any())).thenReturn(Future.successful(true))
