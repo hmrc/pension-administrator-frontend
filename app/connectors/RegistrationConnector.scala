@@ -16,8 +16,6 @@
 
 package connectors
 
-import java.util.UUID.randomUUID
-
 import com.google.inject.{ImplementedBy, Inject}
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import javax.inject.Singleton
@@ -29,7 +27,7 @@ import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.Toggles.IsManualIVEnabled
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -105,14 +103,9 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
-    val postCall = if (fs.get(IsManualIVEnabled)) {
-      val body = Json.obj(
-        "nino" -> nino
-      )
-      http.POST(url, body)
-    } else {
-      http.POSTEmpty(url)
-    }
+    val postCall = http.POST(url, Json.obj(
+      "nino" -> nino
+    ))
 
     postCall map { response =>
       require(response.status == Status.OK, "The only valid response to registerWithIdIndividual is 200 OK")

@@ -35,7 +35,6 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import utils.Toggles.IsManualIVEnabled
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,32 +68,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     } recover handleFailure
   }
 
-  def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel, enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                         block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    if (fs.get(IsManualIVEnabled)) {
-      successRedirectIVEnable(affinityGroup, cl, enrolments, authRequest, block)
-    } else {
-      successRedirectIVDisable(affinityGroup, cl, enrolments, authRequest, block)
-    }
-  }
 
-  private def successRedirectIVDisable[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                          enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
-                                         (implicit hc: HeaderCarrier): Future[Result] =
-    if (affinityGroup == Individual) {
-      getData(AreYouInUKId, authRequest.externalId).flatMap {
-        case Some(true) if !allowedIndividual(cl) =>
-          Future.successful(Redirect(ivUpliftUrl))
-        case _ =>
-          savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
-      }
-    } else {
-      savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
-    }
-
-  private def successRedirectIVEnable[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                         enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
-                                        (implicit hc: HeaderCarrier) = {
+  def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
+                         enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
+                        (implicit hc: HeaderCarrier):Future[Result] = {
 
     getData(AreYouInUKId, authRequest.externalId).flatMap {
       case Some(true) if affinityGroup == Individual && !allowedIndividual(cl) =>
@@ -168,9 +145,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   private def redirectToInterceptPages[A](enrolments: Enrolments, request: Request[A],
                                           cl: ConfidenceLevel, affinityGroup: AffinityGroup, id: String)(implicit hc: HeaderCarrier) = {
     if (isPSP(enrolments) && !isPSA(enrolments)) {
-      Some((Redirect(routes.PensionSchemePractitionerController.onPageLoad())))
+      Some(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
     } else if (affinityGroup == Agent) {
-      Some((Redirect(routes.AgentCannotRegisterController.onPageLoad)))
+      Some(Redirect(routes.AgentCannotRegisterController.onPageLoad()))
     }
     else {
       None
@@ -261,7 +238,7 @@ class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthC
   override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
                                   enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
                                   block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier) =
+                                 (implicit hc: HeaderCarrier):Future[Result] =
 
     savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
 }
@@ -272,7 +249,7 @@ class FullAuthenticationExcludingSuspendedCheck @Inject()(override val authConne
                                                           userAnswersCacheConnector: UserAnswersCacheConnector,
                                                           ivConnector: IdentityVerificationConnector,
                                                           minimalPsaConnector: MinimalPsaConnector
-                                                    )
+                                                         )
                                                          (implicit ec: ExecutionContext)
   extends FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, ivConnector, minimalPsaConnector) {
 
