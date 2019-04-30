@@ -17,21 +17,18 @@
 package connectors
 
 import com.google.inject.Inject
-import config.FeatureSwitchManagementService
 import identifiers.TypedIdentifier
 import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import play.mvc.Http.Status
 import uk.gov.hmrc.http._
-import utils.Toggles.IsPsaDataShiftEnabled
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class MicroserviceCacheConnector @Inject()(
                                             ps: PensionsSchemeCacheConnector,
-                                            pa: PensionAdminCacheConnector,
-                                            fs: FeatureSwitchManagementService
+                                            pa: PensionAdminCacheConnector
                                           ) extends UserAnswersCacheConnector {
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
@@ -40,24 +37,20 @@ class MicroserviceCacheConnector @Inject()(
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
-    if (fs.get(IsPsaDataShiftEnabled)) {
-      isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
-        isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
-          (dataExistInAdmin, dataExistInScheme) match {
-            case (true, false) =>
-              pa.save(cacheId, id, value)
-            case (false, true) =>
-              ps.save(cacheId, id, value)
-            case (false, false) =>
-              pa.save(cacheId, id, value)
-            case _ =>
-              Future.failed(
-                new HttpException("Mongo Data cannot exist in both pensions scheme and pension administrator", Status.BAD_REQUEST))
-          }
+    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
+      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
+        (dataExistInAdmin, dataExistInScheme) match {
+          case (true, false) =>
+            pa.save(cacheId, id, value)
+          case (false, true) =>
+            ps.save(cacheId, id, value)
+          case (false, false) =>
+            pa.save(cacheId, id, value)
+          case _ =>
+            Future.failed(
+              new HttpException("Mongo Data cannot exist in both pensions scheme and pension administrator", Status.BAD_REQUEST))
         }
       }
-    } else {
-      ps.save(cacheId, id, value)
     }
   }
 
@@ -66,23 +59,19 @@ class MicroserviceCacheConnector @Inject()(
                                                                                           ec: ExecutionContext,
                                                                                           hc: HeaderCarrier
                                        ): Future[T] = {
-    if (fs.get(IsPsaDataShiftEnabled)) {
-      isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
-        isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
-          (dataExistInAdmin, dataExistInScheme) match {
-            case (true, false) =>
-              blockForAdmin()
-            case (false, true) =>
-              blockForScheme()
-            case (false, false) =>
-              blockForAdmin()
-            case _ =>
-              Future.successful(returnDefault)
-          }
+    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
+      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
+        (dataExistInAdmin, dataExistInScheme) match {
+          case (true, false) =>
+            blockForAdmin()
+          case (false, true) =>
+            blockForScheme()
+          case (false, false) =>
+            blockForAdmin()
+          case _ =>
+            Future.successful(returnDefault)
         }
       }
-    } else {
-      blockForScheme()
     }
   }
 
