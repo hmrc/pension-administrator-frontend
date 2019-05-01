@@ -24,7 +24,7 @@ import play.api.libs.ws.{WSClient, WSRequest}
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,64 +40,20 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   ".save is called" must {
-    "save the data to scheme if data already exist in scheme and not in admin collection" in {
+    "save the data to admin if data already exist in admin" in {
       val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(false)
-      )
-      connector.save("foo", FakeIdentifier, "") map {
-        result =>
-          result mustBe Json.obj("data" -> "scheme saved")
-      }
-    }
-
-    "save the data to admin if data already exist in admin and not in scheme collection" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(false),
         fakePensionAdminCacheConnector(true)
       )
       connector.save("foo", FakeIdentifier, "") map {
         result =>
           result mustBe Json.obj("data" -> "admin saved")
-      }
-    }
-
-    "save the data to admin if data doesn't exist in admin or scheme collection" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(false),
-        fakePensionAdminCacheConnector(false)
-      )
-      connector.save("foo", FakeIdentifier, "") map {
-        result =>
-          result mustBe Json.obj("data" -> "admin saved")
-      }
-    }
-
-    "throw error when data is in admin as well as scheme" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(true)
-      )
-      recoverToSucceededIf[HttpException] {
-        connector.save("foo", FakeIdentifier, "")
       }
     }
   }
   ".fetch  is called" must {
-    "return data from scheme collection when the scheme collection has data and no data in psa collection" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(false)
-      )
-      connector.fetch("foo") map {
-        result =>
-          result.value mustBe Json.obj("data" -> "scheme")
-      }
-    }
 
-    "return data from admin collection when the admin collection has data and no data in scheme collection" in {
+    "return data from admin collection when the admin collection has data" in {
       val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(false),
         fakePensionAdminCacheConnector(true)
       )
       connector.fetch("foo") map {
@@ -105,34 +61,10 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           result.value mustBe Json.obj("data" -> "admin")
       }
     }
-
-    "throw error when data is in admin as well as scheme" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(true)
-      )
-      connector.fetch("foo") map {
-        result =>
-          result mustBe None
-      }
-    }
   }
   ".remove is called" must {
-
-    "removes data from scheme collection when the scheme collection has data and no data in psa collection" in {
+    "removes data from admin collection when the admin collection has data" in {
       val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(false)
-      )
-      connector.remove("foo", FakeIdentifier) map {
-        result =>
-          result mustBe Json.obj("data" -> "scheme removed")
-      }
-    }
-
-    "removes data from admin collection when the admin collection has data and no data in scheme collection" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(false),
         fakePensionAdminCacheConnector(true)
       )
       connector.remove("foo", FakeIdentifier) map {
@@ -140,80 +72,25 @@ class MicroserviceCacheConnectorSpec extends AsyncWordSpec with MustMatchers wit
           result mustBe Json.obj("data" -> "admin removed")
       }
     }
-
-    "throw error when data is in admin as well as scheme" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(true)
-      )
-      connector.remove("foo", FakeIdentifier) map {
-        result =>
-          result mustBe Json.obj()
-      }
-    }
   }
   ".removeAll is called" must {
-    "removes all the data from scheme collection when the scheme collection has data and no data in psa collection" in {
+    "removes all the data from admin collection when the admin collection has data" in {
       val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(false)
-      )
-      val result = connector.removeAll("foo")
-      status(result) mustBe OK
-      contentAsString(result) mustBe "scheme remove all"
-    }
-
-    "removes all the data from admin collection when the admin collection has data and no data in scheme collection" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(false),
         fakePensionAdminCacheConnector(true)
       )
       val result = connector.removeAll("foo")
       status(result) mustBe OK
       contentAsString(result) mustBe "admin remove all"
     }
-
-    "throw error when data is in admin as well as scheme" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(true)
-      )
-      val result = connector.removeAll("foo")
-      status(result) mustBe OK
-    }
   }
   ".upsert is called" must {
-
-    "upsert the data from scheme collection when the scheme collection has data and no data in psa collection" in {
+    "upsert the data from admin collection when the admin collection has data" in {
       val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(false)
-      )
-      connector.upsert("foo", Json.obj()) map {
-        result =>
-          result mustBe Json.obj("data" -> "scheme upsert")
-      }
-    }
-
-    "upsert the data from admin collection when the admin collection has data and no data in scheme collection" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(false),
         fakePensionAdminCacheConnector(true)
       )
       connector.upsert("foo", Json.obj()) map {
         result =>
           result mustBe Json.obj("data" -> "admin upsert")
-      }
-    }
-
-    "throw error when data is in admin as well as scheme" in {
-      val connector = new MicroserviceCacheConnector(
-        fakePensionSchemeCacheConnector(true),
-        fakePensionAdminCacheConnector(true)
-      )
-      connector.upsert("foo", Json.obj()) map {
-        result =>
-          result mustBe Json.obj()
       }
     }
   }

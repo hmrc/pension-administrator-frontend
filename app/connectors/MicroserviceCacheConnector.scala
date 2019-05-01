@@ -20,15 +20,12 @@ import com.google.inject.Inject
 import identifiers.TypedIdentifier
 import play.api.libs.json._
 import play.api.mvc.Result
-import play.api.mvc.Results.Ok
-import play.mvc.Http.Status
 import uk.gov.hmrc.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class MicroserviceCacheConnector @Inject()(
-                                            ps: PensionsSchemeCacheConnector,
-                                            pa: PensionAdminCacheConnector
+                                            pensionAdminCacheConnector: PensionAdminCacheConnector
                                           ) extends UserAnswersCacheConnector {
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
@@ -37,85 +34,25 @@ class MicroserviceCacheConnector @Inject()(
                                                 ec: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
-    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
-      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
-        (dataExistInAdmin, dataExistInScheme) match {
-          case (true, false) =>
-            pa.save(cacheId, id, value)
-          case (false, true) =>
-            ps.save(cacheId, id, value)
-          case (false, false) =>
-            pa.save(cacheId, id, value)
-          case _ =>
-            Future.failed(
-              new HttpException("Mongo Data cannot exist in both pensions scheme and pension administrator", Status.BAD_REQUEST))
-        }
-      }
-    }
-  }
-
-  private def doLogicAndReturnResult[T](cacheId: String, blockForScheme: () => Future[T],
-                                        blockForAdmin: () => Future[T], returnDefault: T)(implicit
-                                                                                          ec: ExecutionContext,
-                                                                                          hc: HeaderCarrier
-                                       ): Future[T] = {
-    isDataExistInScheme(cacheId).flatMap { dataExistInScheme =>
-      isDataExistInAdmin(cacheId).flatMap { dataExistInAdmin =>
-        (dataExistInAdmin, dataExistInScheme) match {
-          case (true, false) =>
-            blockForAdmin()
-          case (false, true) =>
-            blockForScheme()
-          case (false, false) =>
-            blockForAdmin()
-          case _ =>
-            Future.successful(returnDefault)
-        }
-      }
-    }
+    pensionAdminCacheConnector.save(cacheId, id, value)
   }
 
   override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                               (implicit
                                                ec: ExecutionContext,
                                                hc: HeaderCarrier
-                                              ): Future[JsValue] = {
-    doLogicAndReturnResult[JsValue](cacheId, () => ps.remove(cacheId, id), () => pa.remove(cacheId, id), Json.obj())
-  }
+                                              ): Future[JsValue] =
+    pensionAdminCacheConnector.remove(cacheId, id)
 
   override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    doLogicAndReturnResult[Result](cacheId, () => ps.removeAll(cacheId), () => pa.removeAll(cacheId), Ok)
+    pensionAdminCacheConnector.removeAll(cacheId)
   }
 
   override def fetch(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
-    doLogicAndReturnResult[Option[JsValue]](cacheId, () => ps.fetch(cacheId), () => pa.fetch(cacheId), None)
+    pensionAdminCacheConnector.fetch(cacheId)
   }
 
   override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
-    doLogicAndReturnResult[JsValue](cacheId, () => ps.upsert(cacheId, value), () => pa.upsert(cacheId, value), Json.obj())
-  }
-
-  private def isDataExistInScheme(cacheId: String)(implicit
-                                                   ec: ExecutionContext,
-                                                   hc: HeaderCarrier
-  ): Future[Boolean] = {
-    ps.fetch(cacheId).map {
-      case None =>
-        false
-      case Some(_) =>
-        true
-    }
-  }
-
-  private def isDataExistInAdmin(cacheId: String)(implicit
-                                                  ec: ExecutionContext,
-                                                  hc: HeaderCarrier
-  ): Future[Boolean] = {
-    pa.fetch(cacheId).map {
-      case None =>
-        false
-      case Some(_) =>
-        true
-    }
+    pensionAdminCacheConnector.upsert(cacheId, value)
   }
 }
