@@ -29,6 +29,8 @@ trait FeatureSwitchConnector {
   def toggleOff(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 
   def reset(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+
+  def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]]
 }
 
 class PensionsSchemeFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig) extends FeatureSwitchConnector {
@@ -67,6 +69,16 @@ class PensionsSchemeFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appCo
         Future.successful(false)
     }
   }
+
+  override def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]] = {
+    val url = appConfig.pensionsSchemeUrl + s"/pensions-scheme/test-only/get/$name"
+
+    http.GET(url).map { value =>
+      val currentValue = value.json.as[Boolean]
+      Option(currentValue)
+    }.recoverWith {
+      case _ =>
+        Future.successful(None)
+    }
+  }
 }
-
-
