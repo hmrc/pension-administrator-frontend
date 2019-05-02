@@ -21,6 +21,7 @@ import java.time.LocalDate
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.company.AddCompanyDirectorsControllerSpec.{johnDoePerson, maxDirectors}
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
@@ -54,7 +55,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val getRelevantData = dataRetrievalAction(partners: _*)
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
     }
 
     "redirect to the next page when no partners exist and the user submits" in {
@@ -77,7 +78,8 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
     "return a Bad Request and errors when less than maximum partners exist and invalid data is submitted" in {
       val partners = Seq.fill(maxPartners - 1)(johnDoe)
-      val partnerAsPerson = Seq.fill(maxPartners - 1)(johnDoePerson)
+      val partnerAsPerson = (0 until maxPartners - 1).map( index => johnDoePerson(index))
+
       val getRelevantData = dataRetrievalAction(partners: _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
@@ -122,7 +124,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
     "populate the view with partners when they exist" in {
       val partners = Seq(johnDoe, joeBloggs)
-      val partnersAsPerson = Seq(johnDoePerson, joeBloggsPerson)
+      val partnersAsPerson = Seq(johnDoePerson(0), joeBloggsPerson)
       val getRelevantData = dataRetrievalAction(partners: _*)
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
@@ -134,7 +136,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       val getRelevantData = dataRetrievalAction(partners: _*)
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -206,7 +208,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(index, NormalMode).url
 
   // scalastyle:off magic.number
-  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private def johnDoePerson(index:Int) = Person(index, "John Doe", deleteLink(index), editLink(index), isDeleted = false, isComplete = true)
   private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
 
   private val maxPartners = frontendAppConfig.maxPartners

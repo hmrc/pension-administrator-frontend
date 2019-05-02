@@ -58,10 +58,9 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
   }
 
+
   def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
-    val directors = allDirectors
-    directors.filterNot(_.isDeleted).map { director =>
-      val index = directors.indexOf(director)
+    val directors = for ((director, index) <- allDirectors.zipWithIndex) yield {
       val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
       val editUrl = if (isComplete) {
         routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
@@ -79,6 +78,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         director.isNew
       )
     }
+    directors.filterNot(_.isDeleted)
   }
 
   def directorsCount: Int = {
@@ -91,10 +91,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
-    val partners = allPartners
-    partners.filterNot(_.isDeleted).map { partner =>
-      val index = partners.indexOf(partner)
-
+    val partners = for ((partner, index) <- allPartners.zipWithIndex) yield {
       val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
       val editUrl = if (isComplete) {
         controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
@@ -112,6 +109,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         partner.isNew
       )
     }
+    partners.filterNot(_.isDeleted)
   }
 
   def partnersCount: Int = {
