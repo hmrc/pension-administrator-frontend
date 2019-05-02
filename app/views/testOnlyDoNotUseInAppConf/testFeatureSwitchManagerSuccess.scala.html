@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.routes._
+@import models.Mode
 
-object Toggles {
-  val isDeregistrationEnabled: String = "enable-deregistration"
-  val isVariationsEnabled: String = "is-variations-enabled"
-}
+@(title:String, h2:String, p1:String, switches:Map[String,String])(implicit request: Request[_])
+
+<h1>@title</h1>
+
+<p>@p1</p>
+
+<h2>@h2</h2>
+
+<table>
+ @switches.map{switch=>
+  <tr>
+   <td>@switch._1</td>
+   <td> : </td>
+   <td>@switch._2</td>
+  </tr>
+ }
+</table>
+
