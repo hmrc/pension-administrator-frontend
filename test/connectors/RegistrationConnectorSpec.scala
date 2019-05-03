@@ -40,8 +40,7 @@ class RegistrationConnectorSpec()
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
-        "metrics.enabled" -> false,
-        "features.is-iv-enabled" -> true
+        "metrics.enabled" -> false
       )
       .build()
 
@@ -233,8 +232,7 @@ class RegistrationConnectorSpec()
       .configure(
         portConfigKey -> server.port().toString,
         "auditing.enabled" -> false,
-        "metrics.enabled" -> false,
-        "features.is-iv-enabled" -> false
+        "metrics.enabled" -> false
       ).build()
 
     val injector = appWithIvDisabled.injector
