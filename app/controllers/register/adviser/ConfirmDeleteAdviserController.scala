@@ -59,8 +59,9 @@ class ConfirmDeleteAdviserController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      AdviserNameId.retrieve.right.map { name =>
-        Future.successful(Ok(confirmDelete(appConfig, formProvider(name), viewModel(name), mode)))
+      request.userAnswers.get(AdviserNameId) match {
+        case Some(name) => Future.successful(Ok(confirmDelete(appConfig, formProvider(name), viewModel(name), mode)))
+        case _ => Future.successful(Redirect(controllers.register.adviser.routes.AdviserAlreadyDeletedController.onPageLoad()))
       }
   }
 
