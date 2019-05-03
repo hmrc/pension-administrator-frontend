@@ -61,24 +61,30 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
   def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
     val directors = for ((director, index) <- allDirectors.zipWithIndex) yield {
-      val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
-      val editUrl = if (isComplete) {
-        routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
+      if (director.isDeleted) {
+        Seq.empty
       } else {
-        routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
-      }
+        val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
+        val editUrl = if (isComplete) {
+          routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
+        } else {
+          routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
+        }
 
-      Person(
-        index,
-        director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
-        editUrl,
-        director.isDeleted,
-        isComplete,
-        director.isNew
-      )
+        Seq(
+          Person(
+            index,
+            director.fullName,
+            routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
+            editUrl,
+            director.isDeleted,
+            isComplete,
+            director.isNew
+          )
+        )
+      }
     }
-    directors.filterNot(_.isDeleted)
+    directors.flatten
   }
 
   def directorsCount: Int = {
@@ -92,24 +98,30 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
   def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
     val partners = for ((partner, index) <- allPartners.zipWithIndex) yield {
-      val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
-      val editUrl = if (isComplete) {
-        controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+      if (partner.isDeleted) {
+        Seq.empty
       } else {
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
-      }
+        val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+        val editUrl = if (isComplete) {
+          controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+        } else {
+          controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
+        }
 
-      Person(
-        index,
-        partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
-        editUrl,
-        partner.isDeleted,
-        isComplete,
-        partner.isNew
-      )
+        Seq(
+          Person(
+            index,
+            partner.fullName,
+            controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
+            editUrl,
+            partner.isDeleted,
+            isComplete,
+            partner.isNew
+          )
+        )
+      }
     }
-    partners.filterNot(_.isDeleted)
+    partners.flatten
   }
 
   def partnersCount: Int = {
@@ -140,7 +152,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
-  def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value:Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+  def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value: Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
 
     @tailrec
     def setRec[II <: TypedIdentifier[Boolean]](localIds: List[II], result: JsResult[UserAnswers])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
@@ -221,6 +233,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         case _ =>
           true
       }
+
     isAdviserIncomplete | incompleteDetails
   }
 
