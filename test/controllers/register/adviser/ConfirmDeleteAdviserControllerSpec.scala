@@ -62,11 +62,11 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
       contentAsString(result) mustBe viewAsString()
     }
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+    "redirect to AlreadyDeleted for a GET if no existing data is found" in {
+      val result = controller(getEmptyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.register.adviser.routes.AdviserAlreadyDeletedController.onPageLoad().url)
     }
 
     "don't remove the adviser information, don't set the change flag when in NormalMode and user answers no, to confirm delete" in {

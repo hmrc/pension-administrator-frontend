@@ -904,3 +904,6 @@ cannotMakeChanges.title = Changes cannot be made
 cannotMakeChanges.heading = Changes cannot be made
 cannotMakeChanges.p1 = You cannot make any changes to scheme administrator details at the moment.
 cannotMakeChanges.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
+
+adviser.alreadyDeleted.title = The person with working knowledge of pensions has been deleted
+adviser.alreadyDeleted.heading = The person with working knowledge of pensions has been deleted
