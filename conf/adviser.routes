@@ -31,4 +31,4 @@ POST       /:mode/who-has-working-knowledge    controllers.register.adviser.Advi
 GET        /delete-adviser                     controllers.register.adviser.ConfirmDeleteAdviserController.onPageLoad(mode: Mode = UpdateMode)
 POST       /delete-adviser                     controllers.register.adviser.ConfirmDeleteAdviserController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /already-deleted                     controllers.register.adviser.AdviserAlreadyDeletedController.onPageLoad(mode: Mode = UpdateMode)
+GET        /person-already-deleted             controllers.register.adviser.AdviserAlreadyDeletedController.onPageLoad(mode: Mode = UpdateMode)
