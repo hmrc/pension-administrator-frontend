@@ -88,14 +88,6 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
   }
-
-  val navigatorDisabled = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, fakeFeatureSwitchManagerService(false))
-  s"${navigatorDisabled.getClass.getSimpleName} when toggle is off" must {
-    appRunning()
-    behave like nonMatchingNavigator(navigatorDisabled)
-    behave like navigatorWithRoutes(navigatorDisabled, FakeUserAnswersCacheConnector, routesWithIVDisabled(), dataDescriber)
-  }
-
 }
 
 object RegisterNavigatorSpec extends OptionValues {

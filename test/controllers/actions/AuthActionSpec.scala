@@ -176,24 +176,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "called for Company user when Manual IV Disabled" must {
-
-      "return OK" when {
-        "user is in UK and wants to register as Individual" in {
-          val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
-          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
-
-          val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig,
-            fakeFeatureSwitchManagerService(false), fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector, fakeMinimalPsaConnector())
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(fakeRequest)
-          status(result) mustBe OK
-        }
-      }
-    }
-
-    "called for Company user when Manual IV Enabled" must {
-
+    "called for Company user" must {
       "redirect to Manual IV " when {
         "they want to register as Individual" in {
           val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)

@@ -23,10 +23,9 @@ import identifiers.register._
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import javax.inject.Inject
-import models.{Mode, NormalMode, UpdateMode}
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
+import models.{Mode, NormalMode}
 import utils.{Navigator, UserAnswers}
-import utils.Toggles.IsManualIVEnabled
 
 class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
                                   appConfig: FrontendAppConfig,
@@ -36,11 +35,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
     case RegisterAsBusinessId =>
-      if (fs.get(IsManualIVEnabled)) {
-        individualOrOganisationRoutes(from.userAnswers)
-      } else {
-        individualOrOganisationRoutesToggleOff(from.userAnswers)
-      }
+      individualOrOganisationRoutes(from.userAnswers)
     case BusinessTypeId => businessTypeRoutes(from.userAnswers)
     case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
@@ -82,11 +77,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
       case Some(false) =>
         NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
       case Some(true) =>
-        if (fs.get(IsManualIVEnabled)) {
-          NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
-        } else {
-          NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
-        }
+        NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
@@ -101,24 +92,10 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         case (Some(false), Some(NonUKBusinessType.BusinessPartnership), _, Some(_)) =>
           controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
         case (Some(true), _, _, _) =>
-          if (fs.get(IsManualIVEnabled)) {
-            controllers.register.routes.RegisterAsBusinessController.onPageLoad()
-          } else {
-            controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
-          }
+          controllers.register.routes.RegisterAsBusinessController.onPageLoad()
         case _ => controllers.routes.SessionExpiredController.onPageLoad()
       }
     )
-
-  private def individualOrOganisationRoutesToggleOff(userAnswers: UserAnswers): Option[NavigateTo] = {
-    userAnswers.get(RegisterAsBusinessId) match {
-      case Some(false) =>
-        NavigateTo.dontSave(controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode))
-      case Some(true) =>
-        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
-      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
-  }
 
   private def individualOrOganisationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     (userAnswers.get(AreYouInUKId), userAnswers.get(RegisterAsBusinessId)) match {
