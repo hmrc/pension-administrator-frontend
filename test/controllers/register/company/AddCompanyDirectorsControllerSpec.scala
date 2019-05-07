@@ -53,7 +53,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val getRelevantData = dataRetrievalAction(directors: _*)
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
     }
 
     "redirect to the next page when no directors exist and the user submits" in {
@@ -76,7 +76,8 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
       val directors = Seq.fill(maxDirectors - 1)(johnDoe)
-      val directorAsPerson = Seq.fill(maxDirectors - 1)(johnDoePerson)
+      val directorAsPerson = (0 until maxDirectors - 1).map( index => johnDoePerson(index))
+
       val getRelevantData = dataRetrievalAction(directors: _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
@@ -121,7 +122,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
     "populate the view with directors when they exist" in {
       val directors = Seq(johnDoe, joeBloggs)
-      val directorsAsPerson = Seq(johnDoePerson, joeBloggsPerson)
+      val directorsAsPerson = Seq(johnDoePerson(0), joeBloggsPerson)
       val getRelevantData = dataRetrievalAction(directors: _*)
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
@@ -133,7 +134,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val getRelevantData = dataRetrievalAction(directors: _*)
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson))
+      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -195,7 +196,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   private def editLink(index: Int) = controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(NormalMode, index).url
 
   // scalastyle:off magic.number
-  private val johnDoePerson = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
+  private def johnDoePerson(index:Int) = Person(index, "John Doe", deleteLink(index), editLink(index), isDeleted = false, isComplete = true)
   private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
 
   private val maxDirectors = frontendAppConfig.maxDirectors

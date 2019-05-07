@@ -58,27 +58,33 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
   }
 
-  def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
-    val directors = allDirectors
-    directors.filterNot(_.isDeleted).map { director =>
-      val index = directors.indexOf(director)
-      val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
-      val editUrl = if (isComplete) {
-        routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
-      } else {
-        routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
-      }
 
-      Person(
-        index,
-        director.fullName,
-        routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
-        editUrl,
-        director.isDeleted,
-        isComplete,
-        director.isNew
-      )
+  def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
+    val directors = for ((director, index) <- allDirectors.zipWithIndex) yield {
+      if (director.isDeleted) {
+        Seq.empty
+      } else {
+        val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
+        val editUrl = if (isComplete) {
+          routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
+        } else {
+          routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
+        }
+
+        Seq(
+          Person(
+            index,
+            director.fullName,
+            routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url,
+            editUrl,
+            director.isDeleted,
+            isComplete,
+            director.isNew
+          )
+        )
+      }
     }
+    directors.flatten
   }
 
   def directorsCount: Int = {
@@ -91,27 +97,31 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
-    val partners = allPartners
-    partners.filterNot(_.isDeleted).map { partner =>
-      val index = partners.indexOf(partner)
-
-      val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
-      val editUrl = if (isComplete) {
-        controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+    val partners = for ((partner, index) <- allPartners.zipWithIndex) yield {
+      if (partner.isDeleted) {
+        Seq.empty
       } else {
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
-      }
+        val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+        val editUrl = if (isComplete) {
+          controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+        } else {
+          controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
+        }
 
-      Person(
-        index,
-        partner.fullName,
-        controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
-        editUrl,
-        partner.isDeleted,
-        isComplete,
-        partner.isNew
-      )
+        Seq(
+          Person(
+            index,
+            partner.fullName,
+            controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
+            editUrl,
+            partner.isDeleted,
+            isComplete,
+            partner.isNew
+          )
+        )
+      }
     }
+    partners.flatten
   }
 
   def partnersCount: Int = {
@@ -142,7 +152,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
-  def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value:Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
+  def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value: Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
 
     @tailrec
     def setRec[II <: TypedIdentifier[Boolean]](localIds: List[II], result: JsResult[UserAnswers])(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
@@ -223,6 +233,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         case _ =>
           true
       }
+
     isAdviserIncomplete | incompleteDetails
   }
 
