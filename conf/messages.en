@@ -900,9 +900,9 @@ incompleteChanges.title = You have not completed your pension administrator chan
 incompleteChanges.heading = You have not completed your pension administrator changes
 incompleteChanges.p1 = You are missing details
 
-cannotMakeChanges.title = Changes cannot be made
-cannotMakeChanges.heading = Changes cannot be made
-cannotMakeChanges.p1 = You cannot make any changes to scheme administrator details at the moment.
+cannotMakeChanges.title = Details cannot be changed
+cannotMakeChanges.heading = Details cannot be changed
+cannotMakeChanges.p1 = You cannot make any changes to {0} details at the moment.
 cannotMakeChanges.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
 
 adviser.alreadyDeleted.title = The person with working knowledge of pensions has been deleted

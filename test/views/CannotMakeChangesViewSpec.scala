@@ -32,8 +32,13 @@ class CannotMakeChangesViewSpec extends ViewBehaviours {
 
     appRunning()
 
-    behave like normalPage(createView, messageKeyPrefix, "p1", "p2")
+    behave like normalPage(createView, messageKeyPrefix, "p2")
 
     behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
+
+    "have the correct P1" in {
+      val doc = asDocument(createView())
+      assertContainsText(doc, messages(s"$messageKeyPrefix.p1", "Mark Wright"))
+    }
   }
 }
