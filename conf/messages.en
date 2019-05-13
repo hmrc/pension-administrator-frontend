@@ -902,7 +902,7 @@ incompleteChanges.p1 = You are missing details
 
 cannotMakeChanges.title = Details cannot be changed
 cannotMakeChanges.heading = Details cannot be changed
-cannotMakeChanges.p1 = You cannot make any changes to {0} details at the moment.
+cannotMakeChanges.p1 = You cannot make any changes to {0}’s details at the moment.
 cannotMakeChanges.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
 
 adviser.alreadyDeleted.title = The person with working knowledge of pensions has been deleted
