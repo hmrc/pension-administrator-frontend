@@ -82,7 +82,7 @@ object PartnerContactDetailsControllerSpec extends OptionValues {
 
   val viewModel = ContactDetailsViewModel(
     routes.PartnerContactDetailsController.onSubmit(NormalMode, firstIndex),
-    Message("partnership.partner.contactDetails.title"), Message("partnership.partner.contactDetails.heading"), None, Some(partnershipName),
+    Message("partnership.partner.contactDetails.title"), Message("partnership.partner.contactDetails.heading"), None,
     psaName = None
   )
 

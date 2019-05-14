@@ -49,7 +49,6 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     postCall = Call("GET", "www.example.com"),
     title = Message("individual.same.contact.address.title"),
     heading = Message("individual.same.contact.address.heading"),
-    secondaryHeader = None,
     hint = Some(Message("individual.same.contact.address.hint")),
     address = testAddress,
     psaName = "Test name",

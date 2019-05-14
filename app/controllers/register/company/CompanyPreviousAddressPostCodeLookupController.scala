@@ -68,7 +68,6 @@ object CompanyPreviousAddressPostCodeLookupController {
     routes.CompanyPreviousAddressController.onPageLoad(mode),
     Message("companyPreviousAddressPostCodeLookup.title"),
     Message("companyPreviousAddressPostCodeLookup.heading"),
-    None,
     Message("companyPreviousAddressPostCodeLookup.lede"),
     Message("companyPreviousAddressPostCodeLookup.enterPostcode"),
     Some(Message("companyPreviousAddressPostCodeLookup.enterPostcode.link")),

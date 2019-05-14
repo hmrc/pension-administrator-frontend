@@ -222,7 +222,6 @@ object AddressListControllerSpec {
       addresses,
       Message("title text"),
       Message("heading text"),
-      Some(Message("sub-heading text")),
       Message("select an address text"),
       Message("select an address link text")
     )

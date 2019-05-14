@@ -39,8 +39,7 @@ class PartnershipContactDetailsControllerSpec extends ControllerSpecBase {
     postCall = routes.PartnershipContactDetailsController.onSubmit(NormalMode),
     title = Message("partnershipContactDetails.title"),
     heading = Message("partnershipContactDetails.heading"),
-    body = Some(Message("contactDetails.body")),
-    None
+    body = Some(Message("contactDetails.body"))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

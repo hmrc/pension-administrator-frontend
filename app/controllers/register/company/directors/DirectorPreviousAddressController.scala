@@ -58,7 +58,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val vm = addressViewModel(mode, index)
-      post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, context(vm),
+      post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, "Company Director Previous Address",
         DirectorPreviousAddressPostCodeLookupId(index))
   }
 
@@ -68,14 +68,6 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
       countryOptions.options,
       Message("directorPreviousAddress.title"),
       Message("directorPreviousAddress.heading"),
-      None,
       psaName = psaName()
     )
-
-  private def context(viewModel: ManualAddressViewModel): String = {
-    viewModel.secondaryHeader match {
-      case Some(name) => s"Company Director Previous Address: $name"
-      case _ => "Company Director Previous Address"
-    }
-  }
 }

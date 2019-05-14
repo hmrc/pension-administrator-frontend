@@ -64,7 +64,6 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
           addresses = addresses,
           Message("common.previousAddressList.title"),
           Message("common.previousAddressList.heading"),
-          None,
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link"),
           psaName = psaName()

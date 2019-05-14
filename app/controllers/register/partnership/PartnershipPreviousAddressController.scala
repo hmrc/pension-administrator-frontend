@@ -59,7 +59,6 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
     title = Message("common.previousAddress.title"),
     heading = Message("common.previousAddress.heading"),
     hint = Some(Message("common.previousAddress.lede")),
-    secondaryHeader = None,
     psaName = psaName()
   )
 

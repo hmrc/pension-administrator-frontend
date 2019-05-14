@@ -46,7 +46,6 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     entities = entities,
     maxLimit = maxPartners,
     entityType = entityType,
-    subHeading = None,
     psaName = Some("test psa")
   )
 

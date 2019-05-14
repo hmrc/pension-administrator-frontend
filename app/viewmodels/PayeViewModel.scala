@@ -22,6 +22,5 @@ case class PayeViewModel(
                           postCall: Call,
                           title: Message,
                           heading: Message,
-                          hint: Option[Message] = None,
-                          subHeading: Option[Message] = None
+                          hint: Option[Message] = None
                         )

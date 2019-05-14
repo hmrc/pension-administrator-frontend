@@ -88,8 +88,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       routes.DirectorPreviousAddressController.onSubmit(NormalMode, index),
       countryOptions.options,
       Message("directorPreviousAddress.title"),
-      Message("directorPreviousAddress.heading"),
-      Some(Message(directorName))
+      Message("directorPreviousAddress.heading")
     )
 
   private def viewAsString(form: Form[_] = form) =

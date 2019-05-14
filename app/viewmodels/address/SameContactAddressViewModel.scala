@@ -24,7 +24,6 @@ case class SameContactAddressViewModel(
                                         postCall: Call,
                                         title: Message,
                                         heading: Message,
-                                        secondaryHeader: Option[Message],
                                         hint: Option[Message] = None,
                                         address: TolerantAddress,
                                         psaName: String,

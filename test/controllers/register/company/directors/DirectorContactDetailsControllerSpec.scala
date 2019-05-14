@@ -49,8 +49,7 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
     postCall = routes.DirectorContactDetailsController.onSubmit(mode, index),
     title = Message("directorContactDetails.title"),
     heading = Message("directorContactDetails.heading"),
-    body = Some(Message("contactDetails.body")),
-    subHeading = Some(directorName)
+    body = Some(Message("contactDetails.body"))
   )
 
   private val validData: JsObject = Json.obj(

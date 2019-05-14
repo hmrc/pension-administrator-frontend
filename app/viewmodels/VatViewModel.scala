@@ -22,6 +22,5 @@ case class VatViewModel(
                          postCall: Call,
                          title: Message,
                          heading: Message,
-                         hint: Message,
-                         subHeading: Option[Message] = None
+                         hint: Message
                        )

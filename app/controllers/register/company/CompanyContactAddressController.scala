@@ -57,7 +57,6 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
           countryOptions.options,
           Message("companyContactAddress.title"),
           Message("companyContactAddress.heading", businessDetails.companyName),
-          None,
           Some(Message("companyContactAddress.lede", businessDetails.companyName)),
           psaName = psaName()
         )

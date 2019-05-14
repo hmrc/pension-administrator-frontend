@@ -188,7 +188,6 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
       addresses,
       Message("common.previousAddressList.title"),
       Message("common.previousAddressList.heading"),
-      None,
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

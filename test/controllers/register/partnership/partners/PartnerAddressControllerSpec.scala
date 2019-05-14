@@ -212,8 +212,7 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
     routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
     Message("partnerAddress.title"),
-    Message("partnerAddress.heading"),
-    Some(Message(jonathanDoe.fullName))
+    Message("partnerAddress.heading")
   )
 
   private def viewAsString(form: Form[_] = form) =

@@ -62,7 +62,6 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     title = Message(title),
     heading = Message(heading),
     hint = Some(Message(hint)),
-    secondaryHeader = None,
     psaName = psaName()
   )
 

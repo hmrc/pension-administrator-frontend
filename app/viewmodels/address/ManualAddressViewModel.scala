@@ -25,7 +25,6 @@ case class ManualAddressViewModel(
                                    countryOptions: Seq[InputOption],
                                    title: Message,
                                    heading: Message,
-                                   secondaryHeader: Option[Message],
                                    hint: Option[Message] = None,
                                    psaName: Option[String] = None
                                  ) {

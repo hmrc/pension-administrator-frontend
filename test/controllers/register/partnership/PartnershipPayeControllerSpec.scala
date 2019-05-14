@@ -74,8 +74,7 @@ object PartnershipPayeControllerSpec extends ControllerSpecBase {
     postCall = routes.PartnershipPayeController.onSubmit(mode),
     title = Message("partnershipPaye.title"),
     heading = Message("partnershipPaye.heading"),
-    hint = Some("common.paye.hint"),
-    subHeading = None
+    hint = Some("common.paye.hint")
   )
 
   val formProvider = new PayeFormProvider()

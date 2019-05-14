@@ -33,8 +33,7 @@ class PayeViewSpec extends ViewBehaviours {
     postCall = routes.PartnershipPayeController.onSubmit(NormalMode),
     title = Message("partnershipPaye.title"),
     heading = Message("partnershipPaye.heading"),
-    hint = Some("common.paye.hint"),
-    subHeading = None
+    hint = Some("common.paye.hint")
   )
 
   private def createView = () => paye(frontendAppConfig, form, viewmodel)(fakeRequest, messages)

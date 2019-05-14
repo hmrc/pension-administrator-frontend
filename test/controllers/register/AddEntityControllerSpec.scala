@@ -89,8 +89,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
     heading = "heading",
     entities = entities,
     maxLimit = 10,
-    entityType = "partners",
-    subHeading = None
+    entityType = "partners"
   )
 
   "get" must {

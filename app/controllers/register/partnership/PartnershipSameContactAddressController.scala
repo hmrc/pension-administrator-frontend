@@ -56,7 +56,6 @@ class PartnershipSameContactAddressController @Inject()(
       title = Message("partnership.sameContactAddress.title"),
       heading = Message("partnership.sameContactAddress.heading").withArgs(details.companyName),
       hint = None,
-      secondaryHeader = None,
       address = address,
       psaName = details.companyName,
       mode = mode

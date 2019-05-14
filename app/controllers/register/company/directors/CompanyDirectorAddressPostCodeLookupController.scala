@@ -53,35 +53,25 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map{ vm =>
-        get(vm, mode)
-      }
+        get(viewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(
-        viewModel =>
-          post(CompanyDirectorAddressPostCodeLookupId(index), viewModel, mode)
-      )
+          post(CompanyDirectorAddressPostCodeLookupId(index), viewModel(mode, index), mode)
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], PostcodeLookupViewModel] = {
-    DirectorDetailsId(index).retrieve.right.map {
-      director =>
+  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel =
         PostcodeLookupViewModel(
           routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode, index),
           routes.DirectorAddressController.onPageLoad(mode, index),
           Message("companyDirectorAddressPostCodeLookup.title"),
           Message("companyDirectorAddressPostCodeLookup.heading"),
-          Some(Message(director.fullName)),
           Message("companyDirectorAddressPostCodeLookup.body"),
           Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
           Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
           Message("companyDirectorAddressPostCodeLookup.postcode"),
           psaName = psaName()
         )
-    }
-  }
 
 }

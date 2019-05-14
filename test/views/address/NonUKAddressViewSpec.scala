@@ -37,7 +37,6 @@ class NonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     countryOptions,
     Message("companyRegisteredNonUKAddress.title"),
     Message("companyRegisteredNonUKAddress.heading", companyName),
-    None,
     Some(Message("companyRegisteredNonUKAddress.hintText"))
   )
 

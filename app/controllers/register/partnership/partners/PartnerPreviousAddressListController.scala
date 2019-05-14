@@ -56,22 +56,18 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
   }
 
   private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    PartnerPreviousAddressPostCodeLookupId(index).retrieve.right.flatMap {
+    PartnerPreviousAddressPostCodeLookupId(index).retrieve.right.map {
       addresses =>
-        PartnerDetailsId(index).retrieve.right.map {
-          partner =>
             AddressListViewModel(
               postCall = routes.PartnerPreviousAddressListController.onSubmit(mode, index),
               manualInputCall = routes.PartnerPreviousAddressController.onPageLoad(mode, index),
               addresses = addresses,
               Message("common.previousAddressList.title"),
               Message("common.previousAddressList.heading"),
-              Some(Message(partner.fullName)),
               Message("common.selectAddress.text"),
               Message("common.selectAddress.link"),
               psaName = psaName()
             )
-        }
     }.left.map(_ => Future.successful(Redirect(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index))))
   }
 

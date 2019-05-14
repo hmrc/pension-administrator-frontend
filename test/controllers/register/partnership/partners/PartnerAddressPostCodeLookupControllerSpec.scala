@@ -66,11 +66,6 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
         contentAsString(result) mustBe viewAsString()
       }
 
-      "redirect to Session Expired page when the partner name is not present" in {
-        val result = controller(getEmptyData).onPageLoad(NormalMode, firstIndex)(fakeRequest)
-        status(result) mustBe SEE_OTHER
-      }
-
       "not populate the view even when the question has previously been answered" in {
         val validData = requiredData ++ Json.obj(
           PartnerAddressPostCodeLookupId.toString -> Seq(fakeAddress(testPostCode))
@@ -140,11 +135,6 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(boundForm)
       }
-
-      "redirect to Session Expired page when the partner name is not present" in {
-        val result = controller(getEmptyData).onSubmit(NormalMode, firstIndex)(postRequest)
-        status(result) mustBe SEE_OTHER
-      }
     }
   }
 }
@@ -171,7 +161,6 @@ object PartnerAddressPostCodeLookupControllerSpec extends MockitoSugar {
     routes.PartnerAddressController.onPageLoad(NormalMode, index),
     Message("partnerAddressPostCodeLookup.title"),
     Message("partnerAddressPostCodeLookup.heading"),
-    Some(Message(fooBar.fullName)),
     Message("partnerAddressPostCodeLookup.body"),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link")),

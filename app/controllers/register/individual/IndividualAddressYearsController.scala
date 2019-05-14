@@ -54,7 +54,6 @@ class IndividualAddressYearsController @Inject()(
               title = Message(questionText, details.fullName),
               heading = Message(questionText, details.fullName),
               legend = Message(questionText, details.fullName),
-              None,
               psaName = psaName()
             )
         }

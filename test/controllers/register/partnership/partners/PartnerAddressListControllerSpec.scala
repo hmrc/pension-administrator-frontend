@@ -185,7 +185,6 @@ object PartnerAddressListControllerSpec {
       addresses = addresses,
       Message("common.selectAddress.title"),
       Message("common.selectAddress.heading"),
-      Some(Message(partner.fullName)),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

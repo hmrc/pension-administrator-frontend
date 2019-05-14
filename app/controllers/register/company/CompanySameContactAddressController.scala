@@ -65,7 +65,6 @@ class CompanySameContactAddressController @Inject()(
               title = Message(title),
               heading = Message(heading).withArgs(details.companyName),
               hint = Some(Message(hint).withArgs(details.companyName)),
-              secondaryHeader = None,
               address = address,
               psaName = details.companyName,
               mode = mode

@@ -86,7 +86,6 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       addresses = addresses,
       Message("common.selectAddress.title"),
       Message("common.selectAddress.heading"),
-      Some(Message(director.fullName)),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

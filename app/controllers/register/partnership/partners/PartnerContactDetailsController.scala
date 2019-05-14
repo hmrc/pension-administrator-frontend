@@ -23,6 +23,7 @@ import controllers.{ContactDetailsController, Retrievals}
 import forms.ContactDetailsFormProvider
 import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerDetailsId}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -42,28 +43,23 @@ class PartnerContactDetailsController @Inject()(
                                                  formProvider: ContactDetailsFormProvider
                                                ) extends ContactDetailsController with Retrievals {
 
-  def viewModel(mode: Mode, index: Index) = Retrieval {
-    implicit request =>
-      PartnerDetailsId(index).retrieve.right.map { details =>
-        ContactDetailsViewModel(
+  def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
+    ContactDetailsViewModel(
           routes.PartnerContactDetailsController.onSubmit(mode, index),
           Message("partnership.partner.contactDetails.title"),
           Message("partnership.partner.contactDetails.heading"),
           None,
-          Some(details.fullName),
           psaName = psaName()
         )
-      }
-  }
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map(vm => get(PartnerContactDetailsId(index), formProvider(), vm, mode))
+      get(PartnerContactDetailsId(index), formProvider(), viewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).retrieve.right.map(vm => post(PartnerContactDetailsId(index), mode, formProvider(), vm))
+      post(PartnerContactDetailsId(index), mode, formProvider(), viewModel(mode, index))
   }
 
 }

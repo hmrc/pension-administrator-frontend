@@ -62,7 +62,6 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
-    secondaryHeader = None,
     hint = Some("hint"),
     address = testAddress(line2),
     psaName = "Test name",

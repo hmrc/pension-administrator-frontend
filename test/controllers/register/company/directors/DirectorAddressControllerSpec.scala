@@ -101,8 +101,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
     routes.DirectorAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
     Message("directorAddress.title"),
-    Message("directorAddress.heading"),
-    Some(Message(jonathanDoe.fullName))
+    Message("directorAddress.heading")
   )
 
   private def viewAsString(form: Form[_] = form) =

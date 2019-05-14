@@ -50,8 +50,7 @@ class PartnershipPayeController @Inject()(
       postCall = routes.PartnershipPayeController.onSubmit(mode),
       title = Message("partnershipPaye.title"),
       heading = Message("partnershipPaye.heading"),
-      hint = Some("common.paye.hint"),
-      subHeading = None
+      hint = Some("common.paye.hint")
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -55,7 +55,6 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
           routes.PartnershipContactAddressController.onPageLoad(mode),
           Message("partnershipContactAddressPostCodeLookup.title"),
           Message("partnershipContactAddressPostCodeLookup.heading").withArgs(details.companyName),
-          None,
           Message("partnershipContactAddressPostCodeLookup.lede").withArgs(details.companyName),
           Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
           Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),

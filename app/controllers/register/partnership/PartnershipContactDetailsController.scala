@@ -47,7 +47,6 @@ class PartnershipContactDetailsController @Inject()(
     title = Message("partnershipContactDetails.title"),
     heading = Message("partnershipContactDetails.heading"),
     body = Some(Message("contactDetails.body")),
-    None,
     psaName = psaName()
   )
 

@@ -67,7 +67,6 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
     countryOptions.options,
     Message("companyContactAddress.title"),
     Message("companyContactAddress.heading", companyName),
-    None,
     Some(Message("companyContactAddress.lede", companyName)),
     psaName = Some("Test Company Name")
   )

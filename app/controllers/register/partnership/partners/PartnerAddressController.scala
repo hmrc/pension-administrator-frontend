@@ -55,7 +55,6 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
     countryOptions.options,
     Message("partnerAddress.title"),
     Message("partnerAddress.heading"),
-    None,
     psaName = psaName()
   )
 
@@ -67,15 +66,8 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val vm = addressViewModel(mode, index)
-      post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, context(vm),
+      post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, "Partnership Partner Address",
         PartnerAddressPostCodeLookupId(index))
-  }
-
-  private def context(viewModel: ManualAddressViewModel): String = {
-    viewModel.secondaryHeader match {
-      case Some(name) => s"Partnership Partner Address: $name"
-      case _ => "Partnership Partner Address"
-    }
   }
 
 }

@@ -56,7 +56,6 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
     postCall,
     Message("individual.same.contact.address.title"),
     Message("company.same.contact.address.heading").withArgs(companyName),
-    None,
     Some(Message("company.same.contact.address.hint").withArgs(companyName)),
     address,
     "Test name",

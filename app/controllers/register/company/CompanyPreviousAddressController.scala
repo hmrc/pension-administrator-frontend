@@ -54,7 +54,6 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
     countryOptions.options,
     Message("companyPreviousAddress.title"),
     Message("companyPreviousAddress.heading"),
-    None,
     psaName = psaName()
   )
 
