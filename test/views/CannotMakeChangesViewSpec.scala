@@ -24,9 +24,10 @@ import views.html.cannotMakeChanges
 class CannotMakeChangesViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "cannotMakeChanges"
+  private val administratorName = "Mark Wright"
 
   private def createView: () => HtmlFormat.Appendable = () =>
-    cannotMakeChanges(frontendAppConfig, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
+    cannotMakeChanges(frontendAppConfig, Some(administratorName), UpdateMode)(fakeRequest, messages)
 
   "cannotMakeChanges view" must {
 
@@ -38,7 +39,7 @@ class CannotMakeChangesViewSpec extends ViewBehaviours {
 
     "have the correct P1" in {
       val doc = asDocument(createView())
-      assertContainsText(doc, messages(s"$messageKeyPrefix.p1", "Mark Wright"))
+      assertContainsText(doc, messages(s"$messageKeyPrefix.p1", administratorName))
     }
   }
 }
