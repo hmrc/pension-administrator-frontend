@@ -31,10 +31,9 @@
             headingKey=messages("cannotMakeChanges.heading")
         )
 
-        <p>@messages("cannotMakeChanges.p1")</p>
-        <p>@messages("cannotMakeChanges.p2")</p>
-
         @psaNameOpt.map{ psaName =>
+            <p>@messages("cannotMakeChanges.p1", psaName)</p>
+            <p>@messages("cannotMakeChanges.p2")</p>
             @components.return_link(psaName, mode)
         }
 }
