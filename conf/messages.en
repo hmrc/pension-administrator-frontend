@@ -7,7 +7,7 @@ address.line.2 = Address Line 2
 address.line.3 = Address Line 3 (optional)
 address.line.4 = Address Line 4 (optional)
 
-address.postcode = Postal code
+address.postcode = Postcode
 address.country = Country
 address.country.select = Select a country
 address.country.hint = Enter text and then choose from the list
@@ -232,13 +232,13 @@ companyPreviousAddressPostCodeLookup.title = Previous address of the company
 companyPreviousAddressPostCodeLookup.heading = Previous address of the company
 companyPreviousAddressPostCodeLookup.lede = This is usually the registered business address but you can enter any address you have for this company.
 companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
-companyPreviousAddressPostCodeLookup.postalCode = Postal code
+companyPreviousAddressPostCodeLookup.postalCode = Postcode
 companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 companyContactAddressPostCodeLookup.title = What is the contact address?
 companyContactAddressPostCodeLookup.heading = What is {0}’s contact address?
-companyContactAddressPostCodeLookup.lede = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+companyContactAddressPostCodeLookup.lede = This should be an address that HMRC can use to contact {0}.
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -507,30 +507,30 @@ exitToGovUK = Exit to Gov.UK
 
 individual.same.contact.address.title = Is this your contact address?
 individual.same.contact.address.heading = Is this your contact address?
-individual.same.contact.address.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individual.same.contact.address.hint = This should be an address that HMRC can use to contact you.
 individual.same.contact.address.error = Select yes if these details are correct
 
 company.same.contact.address.title = Is this registered address the same as your correspondence address?
 company.same.contact.address.heading = Is this {0}’s contact address?
-company.same.contact.address.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+company.same.contact.address.hint = This should be an address that HMRC can use to contact {0}.
 
 individualContactAddressPostCodeLookup.title = What is the contact address
 individualContactAddressPostCodeLookup.heading = What is your contact address?
-individualContactAddressPostCodeLookup.hint = This can be any address that HMRC can use to contact you. You might receive letters from HMRC when you are a PSA.
+individualContactAddressPostCodeLookup.hint = This should be an address that HMRC can use to contact you.
 individualContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
 individualContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualContactAddressPostCodeLookup.formLabel = Postcode
 
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
-common.contactAddress.lede = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
+common.contactAddress.lede = This should be an address that HMRC can use to contact you.
 
 company.contactAddressList.title = Select the contact address
 company.contactAddressList.heading = Select {0}’s contact address
 
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
-companyContactAddress.lede = This can be any address that can be used to contact {0}. The PSA might receive letters from HMRC.
+companyContactAddress.lede = This should be an address that HMRC can use to contact {0}.
 
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
@@ -572,13 +572,13 @@ confirmPartnershipDetails.error.required = Select yes if these details are corre
 
 partnershipContactAddressPostCodeLookup.title = What is the contact address?
 partnershipContactAddressPostCodeLookup.heading = What is {0}’s contact address?
-partnershipContactAddressPostCodeLookup.lede = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+partnershipContactAddressPostCodeLookup.lede = This should be an address that HMRC can use to contact {0}.
 partnershipContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
 partnershipContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 partnership.contactAddress.title = What is the contact address?
 partnership.contactAddress.heading = What is {0}’s contact address?
-partnership.contactAddress.hint = This can be any address that HMRC can use to contact {0}. The PSA might receive letters from HMRC.
+partnership.contactAddress.hint = This should be an address that HMRC can use to contact {0}.
 
 partnership.partner.contactDetails.title = Enter the partner’s contact details
 partnership.partner.contactDetails.heading = Enter the partner’s contact details
