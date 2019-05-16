@@ -53,7 +53,6 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
     postCall = routes.IndividualConfirmPreviousAddressController.onSubmit(),
     title = Message("confirmPreviousAddress.title"),
     heading = Message("confirmPreviousAddress.heading", psa),
-    secondaryHeader = None,
     hint = None,
     address = testAddress,
     psaName = psa,

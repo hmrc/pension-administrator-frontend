@@ -54,31 +54,20 @@ class PartnerAddressYearsController @Inject()(
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        viewmodel(mode, index).right.map {
-          viewModel =>
-            get(PartnerAddressYearsId(index), form, viewModel, mode)
-        }
+            get(PartnerAddressYearsId(index), form, viewmodel(mode, index), mode)
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, index).right.map {
-        viewModel =>
-          post(PartnerAddressYearsId(index), mode, form, viewModel)
-      }
+          post(PartnerAddressYearsId(index), mode, form, viewmodel(mode, index))
   }
 
-  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressYearsViewModel] = {
-    PartnerDetailsId(index).retrieve.right.map {
-      partner =>
+  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
         AddressYearsViewModel(
           postCall = routes.PartnerAddressYearsController.onSubmit(mode, index),
           title = Message("partnerAddressYears.title"),
           heading = Message("partnerAddressYears.heading"),
           legend = Message("partnerAddressYears.heading"),
-          Some(Message(partner.fullName)),
           psaName = psaName()
         )
-    }
-  }
 }

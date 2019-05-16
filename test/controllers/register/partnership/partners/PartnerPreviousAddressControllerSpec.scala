@@ -89,7 +89,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       countryOptions.options,
       Message("partnerPreviousAddress.title"),
       Message("partnerPreviousAddress.heading"),
-      Some(Message(partnerName)),
       Some(Message("partnerPreviousAddress.hint"))
     )
 

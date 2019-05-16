@@ -79,7 +79,6 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
     Message("common.adviser.address.title"),
     Message("common.adviser.address.heading"),
-    Some(Message("common.adviser.secondary.heading")),
     Message("adviserAddressPostCodeLookup.hint"),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
     Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),

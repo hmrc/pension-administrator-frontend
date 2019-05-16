@@ -62,7 +62,6 @@ class IndividualContactAddressController @Inject()(
     title = Message(title),
     heading = Message(heading),
     hint = Some(Message(hint)),
-    secondaryHeader = None,
     psaName = psaName()
   )
 

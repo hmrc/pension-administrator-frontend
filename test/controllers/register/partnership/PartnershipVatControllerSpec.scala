@@ -75,8 +75,7 @@ object PartnershipVatControllerSpec extends PartnershipVatControllerSpec {
     routes.PartnershipVatController.onSubmit(NormalMode),
     Message("partnershipVat.title"),
     Message("partnershipVat.heading"),
-    Message("common.vat.hint"),
-    None
+    Message("common.vat.hint")
   )
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)

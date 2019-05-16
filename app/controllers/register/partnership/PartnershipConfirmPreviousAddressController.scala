@@ -56,7 +56,6 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
               title = Message(title),
               heading = Message(heading, details.companyName),
               hint = None,
-              secondaryHeader = None,
               address = address,
               psaName = details.companyName,
               mode = mode

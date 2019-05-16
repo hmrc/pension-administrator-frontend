@@ -44,8 +44,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
     postCall = routes.IndividualAddressYearsController.onSubmit(NormalMode),
     title = Message(questionText, name),
     heading = Message(questionText, name),
-    legend = Message(questionText, name),
-    Some(Message("common.individual.secondary.heading"))
+    legend = Message(questionText, name)
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =

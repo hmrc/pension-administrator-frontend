@@ -25,6 +25,5 @@ case class EntityViewModel(
                             entities: Seq[Person],
                             maxLimit: Int,
                             entityType: String,
-                            subHeading: Option[Message],
                             psaName: Option[String] = None
                           )

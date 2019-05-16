@@ -53,7 +53,6 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading").withArgs(partnershipDetails.companyName),
-    secondaryHeader = None,
     hint = Some(Message(s"$messagePrefix.hint").withArgs(partnershipDetails.companyName))
   )
 

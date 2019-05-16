@@ -64,7 +64,6 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
           addresses = addresses,
           Message("company.contactAddressList.title"),
           Message("company.contactAddressList.heading").withArgs(details.companyName),
-          None,
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )

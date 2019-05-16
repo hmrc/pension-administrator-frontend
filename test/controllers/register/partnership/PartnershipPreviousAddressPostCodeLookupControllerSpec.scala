@@ -122,7 +122,6 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
     Message("common.previousAddress.title"),
     Message("common.previousAddress.heading"),
-    None,
     Message("common.previousAddress.lede"),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),

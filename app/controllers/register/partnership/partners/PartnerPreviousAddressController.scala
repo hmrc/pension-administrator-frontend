@@ -58,7 +58,8 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val vm = addressViewModel(mode, index)
-      post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode, context(vm),
+      post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode,
+        "Partnership Partner Previous Address",
         PartnerPreviousAddressPostCodeLookupId(index))
   }
 
@@ -68,16 +69,8 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
       countryOptions.options,
       Message("partnerPreviousAddress.title"),
       Message("partnerPreviousAddress.heading"),
-      None,
       Some(Message("partnerPreviousAddress.hint")),
       psaName = psaName()
     )
-
-  private def context(viewModel: ManualAddressViewModel): String = {
-    viewModel.secondaryHeader match {
-      case Some(name) => s"Partnership Partner Previous Address: $name"
-      case _ => "Partnership Partner Previous Address"
-    }
-  }
 
 }

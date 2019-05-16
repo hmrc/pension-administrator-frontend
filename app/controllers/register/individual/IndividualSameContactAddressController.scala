@@ -63,7 +63,6 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
               title = Message(title),
               heading = Message(heading),
               hint = Some(Message(hint)),
-              secondaryHeader = None,
               address = address,
               psaName = individual.fullName,
               mode = mode

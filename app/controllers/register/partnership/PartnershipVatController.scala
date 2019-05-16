@@ -47,8 +47,7 @@ class PartnershipVatController @Inject()(
     postCall = routes.PartnershipVatController.onSubmit(mode),
     title = Message("partnershipVat.title"),
     heading = Message("partnershipVat.heading"),
-    hint = Message("common.vat.hint"),
-    subHeading = None
+    hint = Message("common.vat.hint")
   )
 
   private val form = formProvider()

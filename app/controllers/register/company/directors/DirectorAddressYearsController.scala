@@ -53,32 +53,21 @@ class DirectorAddressYearsController @Inject()(
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        viewmodel(mode, index).right.map {
-          viewModel =>
-            get(DirectorAddressYearsId(index), form, viewModel, mode)
-        }
+            get(DirectorAddressYearsId(index), form, viewmodel(mode, index), mode)
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, index).right.map {
-        viewModel =>
-          post(DirectorAddressYearsId(index), mode, form, viewModel)
-      }
+          post(DirectorAddressYearsId(index), mode, form, viewmodel(mode, index))
   }
 
-  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressYearsViewModel] = {
-    DirectorDetailsId(index).retrieve.right.map {
-      director =>
+  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
         AddressYearsViewModel(
           postCall = routes.DirectorAddressYearsController.onSubmit(mode, index),
           title = Message("directorAddressYears.title"),
           heading = Message("directorAddressYears.heading"),
           legend = Message("directorAddressYears.heading"),
-          Some(Message(director.fullName)),
           psaName = psaName()
         )
-    }
-  }
 
 }

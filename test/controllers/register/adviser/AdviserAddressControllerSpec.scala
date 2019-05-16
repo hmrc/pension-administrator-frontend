@@ -164,8 +164,7 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
     postCall = routes.AdviserAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message("common.adviser.address.title"),
-    heading = Message("common.adviser.address.heading"),
-    secondaryHeader = None
+    heading = Message("common.adviser.address.heading")
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()

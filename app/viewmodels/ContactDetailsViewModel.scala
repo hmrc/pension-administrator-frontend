@@ -23,6 +23,5 @@ case class ContactDetailsViewModel(
                                     title: Message,
                                     heading: Message,
                                     body: Option[Message] = None,
-                                    subHeading: Option[Message] = None,
                                     psaName: Option[String] = None
                                   )

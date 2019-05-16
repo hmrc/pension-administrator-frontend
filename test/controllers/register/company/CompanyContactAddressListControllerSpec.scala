@@ -125,7 +125,6 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
       addresses,
       Message("company.contactAddressList.title"),
       Message("company.contactAddressList.heading").withArgs("test company"),
-      None,
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

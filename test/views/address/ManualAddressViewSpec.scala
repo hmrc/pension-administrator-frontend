@@ -38,7 +38,6 @@ class ManualAddressViewSpec extends QuestionViewBehaviours[Address] {
     countryOptions,
     Message("common.manual.address.title"),
     Message("common.manual.address.heading"),
-    None,
     psaName = Some("test psa name")
   )
 

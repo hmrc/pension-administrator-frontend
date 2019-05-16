@@ -86,7 +86,6 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
       addresses = addresses,
       Message("common.previousAddressList.title"),
       Message("common.previousAddressList.heading"),
-      Some(Message(partner.fullName)),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

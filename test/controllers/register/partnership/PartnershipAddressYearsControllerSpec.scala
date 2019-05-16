@@ -75,8 +75,7 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
     PartnershipAddressYearsController.onSubmit(NormalMode),
     Message("partnership.addressYears.title"),
     Message("partnership.addressYears.heading").withArgs(partnershipName),
-    Message("partnership.addressYears.heading").withArgs(partnershipName),
-    None
+    Message("partnership.addressYears.heading").withArgs(partnershipName)
   )
 
   val form = new AddressYearsFormProvider()("error.required")

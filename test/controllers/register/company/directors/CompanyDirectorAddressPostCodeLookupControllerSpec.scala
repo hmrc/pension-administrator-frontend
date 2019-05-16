@@ -79,7 +79,6 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
     routes.DirectorAddressController.onPageLoad(NormalMode, index),
     Message("companyDirectorAddressPostCodeLookup.title"),
     Message("companyDirectorAddressPostCodeLookup.heading"),
-    Some(Message(directorName)),
     Message("companyDirectorAddressPostCodeLookup.body"),
     Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
     Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
@@ -112,12 +111,6 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-    }
-
-    "return redirect to the Session Expired page when the directors name isnt present" in {
-      val result = controller(getEmptyData).onPageLoad(NormalMode, index)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
     }
 
     "not populate the view on a GET when the question has previously been answered" in {

@@ -64,7 +64,6 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
           addresses = addresses,
           Message("common.selectAddress.title"),
           Message("common.selectAddress.heading"),
-          Some(Message("common.adviser.secondary.heading")),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link"),
           psaName = psaName()

@@ -74,7 +74,6 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
       routes.IndividualContactAddressController.onPageLoad(mode),
       Message("individualContactAddressPostCodeLookup.title"),
       Message("individualContactAddressPostCodeLookup.heading"),
-      None,
       Message("individualContactAddressPostCodeLookup.hint"),
       Message("individualContactAddressPostCodeLookup.enterPostcode"),
       Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),

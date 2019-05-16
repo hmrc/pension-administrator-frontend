@@ -34,8 +34,7 @@ class VatViewSpec extends ViewBehaviours {
     postCall = Call("GET", "/"),
     title = Message("partnershipVat.title"),
     heading = Message("partnershipVat.heading"),
-    hint = Message("partnershipVat.hint"),
-    subHeading = None
+    hint = Message("partnershipVat.hint")
   )
 
   def createView: () => HtmlFormat.Appendable = () =>

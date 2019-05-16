@@ -66,7 +66,6 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
           addresses = addresses,
           Message("common.contactAddressList.title"),
           Message("common.contactAddressList.heading"),
-          None,
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link"),
           psaName = psaName()

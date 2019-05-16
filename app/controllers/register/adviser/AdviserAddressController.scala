@@ -56,7 +56,6 @@ class AdviserAddressController @Inject()(
     countryOptions.options,
     Message("common.adviser.address.title"),
     Message("common.adviser.address.heading"),
-    Some(Message("common.adviser.secondary.heading")),
     psaName = psaName()
   )
 

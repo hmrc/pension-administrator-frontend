@@ -55,7 +55,6 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
               title = Message(title),
               heading = Message(heading, details.fullName),
               hint = None,
-              secondaryHeader = None,
               address = address,
               psaName = details.fullName,
               mode = mode

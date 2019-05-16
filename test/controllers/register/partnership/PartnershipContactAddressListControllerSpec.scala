@@ -97,8 +97,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
   val viewModel = AddressListViewModel(
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
-    addresses,
-    subHeading = Some(testName)
+    addresses
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(

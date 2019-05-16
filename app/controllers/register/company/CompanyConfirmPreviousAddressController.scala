@@ -58,7 +58,6 @@ class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
               title = Message(title),
               heading = Message(heading, details.companyName),
               hint = None,
-              secondaryHeader = None,
               address = address,
               psaName = details.companyName,
               mode = mode

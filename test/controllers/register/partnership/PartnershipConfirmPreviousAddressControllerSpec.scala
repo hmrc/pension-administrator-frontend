@@ -50,7 +50,6 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
     postCall = routes.PartnershipConfirmPreviousAddressController.onSubmit(),
     title = Message("confirmPreviousAddress.title"),
     heading = Message("confirmPreviousAddress.heading", psa),
-    secondaryHeader = None,
     hint = None,
     address = testAddress,
     psaName = psa,

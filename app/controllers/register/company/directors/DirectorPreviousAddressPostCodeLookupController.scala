@@ -53,35 +53,25 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map{ vm =>
-        get(vm, mode)
-      }
+        get(viewModel(mode, index), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(
-        viewModel =>
-          post(DirectorPreviousAddressPostCodeLookupId(index), viewModel, mode)
-      )
+          post(DirectorPreviousAddressPostCodeLookupId(index), viewModel(mode, index), mode)
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], PostcodeLookupViewModel] = {
-    DirectorDetailsId(index).retrieve.right.map {
-      director =>
+  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel =
         PostcodeLookupViewModel(
           routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
           routes.DirectorPreviousAddressController.onPageLoad(mode, index),
           Message("directorPreviousAddressPostCodeLookup.title"),
           Message("directorPreviousAddressPostCodeLookup.heading"),
-          Some(Message(director.fullName)),
           Message("directorPreviousAddressPostCodeLookup.text"),
           Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
           Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
           Message("directorPreviousAddressPostCodeLookup.input.text"),
           psaName()
         )
-    }
-  }
 
 }

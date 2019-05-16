@@ -49,7 +49,6 @@ class PartnershipContactAddressListController @Inject()(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
-        subHeading = Some(details.companyName),
         psaName = psaName()
       )
     }

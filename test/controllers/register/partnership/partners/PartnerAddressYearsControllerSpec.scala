@@ -77,7 +77,6 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       title = Message("partnerAddressYears.title"),
       heading = Message("partnerAddressYears.heading"),
       legend = Message("partnerAddressYears.heading"),
-      Some(Message(partnerName)),
       psaName = None
     )
 

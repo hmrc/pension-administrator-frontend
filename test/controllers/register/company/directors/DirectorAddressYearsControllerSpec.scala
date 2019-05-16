@@ -78,8 +78,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
       postCall = routes.DirectorAddressYearsController.onSubmit(NormalMode, index),
       title = Message("directorAddressYears.title"),
       heading = Message("directorAddressYears.heading"),
-      legend = Message("directorAddressYears.heading"),
-      Some(Message(directorName))
+      legend = Message("directorAddressYears.heading")
     )
 
   private def viewAsString(form: Form[_] = form) =

@@ -149,7 +149,6 @@ object AdviserAddressListControllerSpec extends ControllerSpecBase {
       addresses,
       Message("common.selectAddress.title"),
       Message("common.selectAddress.heading"),
-      Some(Message("common.adviser.secondary.heading")),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )
