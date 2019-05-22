@@ -55,12 +55,11 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
                      viewModel: ManualAddressViewModel,
                      mode: Mode
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    val preparedForm = request.userAnswers.get(id) match {
-      case None => request.userAnswers.get(selectedId) match {
-        case Some(value) => form.fill(value.toAddress)
-        case None => form
-      }
-      case Some(value) => form.fill(value)
+
+    val preparedForm = (request.userAnswers.get(selectedId), request.userAnswers.get(id)) match {
+      case (Some(value), _) => form.fill(value.toAddress)
+      case (_, Some(value)) => form.fill(value)
+      case _ => form
     }
     Future.successful(Ok(manualAddress(appConfig, preparedForm, viewModel, mode)))
   }

@@ -206,6 +206,56 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
       }
 
+      "data is retrieved AND there is a selected address it chooses selected address" in {
+
+        running(_.overrides(
+          bind[CountryOptions].to[FakeCountryOptions],
+          bind[Navigator].to(FakeNavigator),
+          bind[AuditService].to[StubSuccessfulAuditService]
+        )) {
+          app =>
+
+            val testAddressRetrieved = Address(
+              "address line 1",
+              "address line 2",
+              Some("test town"),
+              Some("test county"),
+              Some("test post code"), "GB"
+            )
+
+
+            val testAddressSelected = TolerantAddress(
+              Some("address line 1"),
+              Some("address line 2"),
+              None,
+              None,
+              Some("test post code"),
+              Some("GB")
+            )
+
+            val userAnswers = UserAnswers()
+              .set(fakeAddressListId)(testAddressSelected)
+              .asOpt.value
+              .set(fakeAddressId)(testAddressRetrieved)
+              .asOpt.value
+
+            val request = FakeRequest()
+
+            val appConfig = app.injector.instanceOf[FrontendAppConfig]
+            val formProvider = app.injector.instanceOf[AddressFormProvider]
+            val messages = app.injector.instanceOf[MessagesApi].preferred(request)
+            val controller = app.injector.instanceOf[TestController]
+            val form = formProvider().fill(testAddressSelected.toAddress)
+
+            val result = controller.onPageLoad(viewModel, userAnswers)
+
+            status(result) mustEqual OK
+            contentAsString(result) mustEqual manualAddress(appConfig, form, viewModel, NormalMode)(request, messages).toString
+
+        }
+
+      }
+
     }
   }
 
