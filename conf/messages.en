@@ -492,9 +492,11 @@ confirmation.whatYouNeedToKnow.newPSA.detail = You can now {0}. As a Pension Sch
 confirmation.whatYouNeedToKnow.schemeLink = register a new pension scheme
 confirmation.email = You have been sent a confirmation email.
 
-duplicateRegistration.title =  You cannot register as a scheme administrator using these details.
-duplicateRegistration.heading =  You cannot register as a scheme administrator using these details.
-duplicateRegistration.body = {0} has already been registered as a scheme administrator.
+duplicateRegistration.title = A different Government Gateway account has already been used to register you as a scheme administrator
+duplicateRegistration.heading = A different Government Gateway account has already been used to register you as a scheme administrator
+duplicateRegistration.p1 = To access your scheme administrator details, you will need to log in with the Government Gateway user ID and password that were used when you were registered.
+duplicateRegistration.p2 = The user ID and password you need will be from another Government Gateway account you created.
+duplicateRegistration.p3 = Check any confirmation emails, which were sent from (HMRC email address), to see which user ID and password you need to use.
 
 individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = Your date of birth

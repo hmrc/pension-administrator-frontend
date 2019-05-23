@@ -28,10 +28,8 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
   private val viewHtml = duplicateRegistration(companyName, frontendAppConfig)(fakeRequest, messages)
 
   "DuplicateRegistration view" must {
-    behave like normalPage(() => viewHtml, messageKeyPrefix)
+    behave like normalPage(() => viewHtml, messageKeyPrefix, "p1", "p2", "p3")
 
-    "display the correct body text including company name" in {
-      assertContainsText(asDocument(viewHtml), messages("duplicateRegistration.body", companyName))
-    }
+    behave like pageWithContinueButton(() => viewHtml, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }
 }

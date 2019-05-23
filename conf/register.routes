@@ -28,7 +28,7 @@ POST       /declaration                                 controllers.register.Dec
 GET        /confirmation                                controllers.register.ConfirmationController.onPageLoad(mode: Mode = NormalMode)
 POST       /confirmation                                controllers.register.ConfirmationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /duplicate-registration                      controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = NormalMode)
+GET        /different-government-gateway-used           controllers.register.DuplicateRegistrationController.onPageLoad(mode: Mode = NormalMode)
 
 GET        /unable-to-send-details                      controllers.register.SubmissionInvalidController.onPageLoad(mode: Mode = NormalMode)
 
