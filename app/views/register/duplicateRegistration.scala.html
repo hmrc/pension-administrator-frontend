@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 
-@(companyName: String, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("duplicateRegistration.title"),

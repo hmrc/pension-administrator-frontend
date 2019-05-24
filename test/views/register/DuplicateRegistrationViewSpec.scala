@@ -21,11 +21,9 @@ import views.html.register.duplicateRegistration
 
 class DuplicateRegistrationViewSpec extends ViewBehaviours {
 
-  private val companyName = "test company name"
-
   private val messageKeyPrefix = "duplicateRegistration"
 
-  private val viewHtml = duplicateRegistration(companyName, frontendAppConfig)(fakeRequest, messages)
+  private val viewHtml = duplicateRegistration(frontendAppConfig)(fakeRequest, messages)
 
   "DuplicateRegistration view" must {
     behave like normalPage(() => viewHtml, messageKeyPrefix, "p1", "p2", "p3")

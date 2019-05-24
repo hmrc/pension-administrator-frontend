@@ -28,24 +28,19 @@ class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
 
   private val companyName = "test company name"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new DuplicateRegistrationController(frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(),
-      dataRetrievalAction, new DataRequiredActionImpl)
+  def controller() = new DuplicateRegistrationController(
+    frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(), getEmptyData)
 
-  private def viewAsString() = duplicateRegistration(companyName, frontendAppConfig)(fakeRequest, messages).toString
+  private def viewAsString() = duplicateRegistration(frontendAppConfig)(fakeRequest, messages).toString
 
   private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {
     val data = Json.obj(fields: _*)
     new FakeDataRetrievalAction(Some(data))
   }
 
-  private val retrievalAction = dataRetrievalAction(
-    BusinessDetailsId.toString -> BusinessDetails(companyName, None)
-  )
-
   "DuplicateRegistration Controller" must {
     "return OK and the correct view for a GET with the correct company name displayed" in {
-      val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
