@@ -14,27 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+@(
+messageKey: String = "",
+href: String,
+id: String
+)(implicit messages: Messages)
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("submissionInvalid.title"),
-    appConfig = appConfig,
-    bodyClasses = None
-) {
-
-    @components.heading(messages("submissionInvalid.heading"))
-
-    <p>@messages("submissionInvalid.body1")</p>
-
-    <p>@Html(messages("submissionInvalid.body2"))</p>
-
-    @components.link(
-    "exitToGovUK",
-     appConfig.govUkUrl,
-    "go-to-gov-uk"
-    )
-
-}
+<div class="section">
+    <a id="@id" href="@href">@messages(messageKey)</a>
+</div>

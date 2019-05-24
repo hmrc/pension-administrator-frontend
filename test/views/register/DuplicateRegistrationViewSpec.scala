@@ -28,6 +28,6 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
   "DuplicateRegistration view" must {
     behave like normalPage(() => viewHtml, messageKeyPrefix, "p1", "p2", "p3")
 
-    behave like pageWithContinueButton(() => viewHtml, frontendAppConfig.govUkUrl, "go-to-gov-uk")
+    behave like pageWithExitToGovUKLink(() => viewHtml, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }
 }

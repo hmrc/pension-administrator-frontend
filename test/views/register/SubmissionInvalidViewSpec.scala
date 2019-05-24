@@ -28,7 +28,7 @@ class SubmissionInvalidViewSpec extends ViewBehaviours {
   "SubmissionInvalid view" must {
     behave like normalPage(createView, messageKeyPrefix, "body1", "body2")
 
-    behave like pageWithContinueButton(createView, frontendAppConfig.govUkUrl, "go-to-gov-uk")
+    behave like pageWithExitToGovUKLink(createView, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }
 
 }
