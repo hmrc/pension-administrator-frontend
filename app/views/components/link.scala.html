@@ -14,19 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@(
+messageKey: String = "",
+href: String,
+id: String
+)(implicit messages: Messages)
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("duplicateRegistration.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
-
-    @components.heading(messages("duplicateRegistration.heading"))
-
-    <p id="p1">@messages("duplicateRegistration.p1")</p>
-    <p id="p2">@messages("duplicateRegistration.p2")</p>
-
-    @components.link("exitToGovUK", appConfig.govUkUrl, "go-to-gov-uk")
-}
+<div class="section">
+    <a id="@id" href="@href">@messages(messageKey)</a>
+</div>

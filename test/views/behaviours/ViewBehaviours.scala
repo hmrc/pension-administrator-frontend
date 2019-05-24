@@ -117,6 +117,13 @@ trait ViewBehaviours extends ViewSpecBase {
     }
   }
 
+  def pageWithExitToGovUKLink(view: () => HtmlFormat.Appendable, url: String, id: String): Unit = {
+    "behave like a page with a exit to gov.uk link" in {
+      val doc = asDocument(view())
+      assertLink(doc, id, url)
+    }
+  }
+
   def pageWithReturnLink(view: () => HtmlFormat.Appendable, url: String): Unit = {
     "behave like a page with a return link" in {
       val doc = asDocument(view())
