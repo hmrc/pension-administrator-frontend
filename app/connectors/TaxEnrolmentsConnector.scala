@@ -16,13 +16,16 @@
 
 package connectors
 
+import audit.{AuditService, PSAEnrolmentEvent}
 import com.google.inject.{ImplementedBy, Singleton}
 import config.FrontendAppConfig
 import javax.inject.Inject
 import models.register.KnownFacts
+import models.requests.DataRequest
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.RetryHelper
@@ -34,27 +37,31 @@ import scala.util.{Failure, Try}
 trait TaxEnrolmentsConnector {
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
+           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse]
 
 }
 
 @Singleton
-class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient, config: FrontendAppConfig) extends TaxEnrolmentsConnector with RetryHelper{
+class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
+                                           config: FrontendAppConfig,
+                                           auditService: AuditService) extends TaxEnrolmentsConnector with RetryHelper{
 
   def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
   override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-                    (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+                    (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = {
     retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts), config)
   } andThen {
     logExceptions(knownFacts)
   }
 
   private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)
-                              (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+                              (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext,
+                               request: DataRequest[AnyContent]):Future[HttpResponse] = {
 
     http.PUT(url, knownFacts) flatMap {
       case response if response.status equals NO_CONTENT =>
+        auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
         Future.successful(response)
       case response =>
         Future.failed(new HttpException(response.body, response.status))
