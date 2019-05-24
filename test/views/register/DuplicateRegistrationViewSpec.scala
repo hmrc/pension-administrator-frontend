@@ -23,10 +23,10 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "duplicateRegistration"
 
-  private val viewHtml = duplicateRegistration(frontendAppConfig)(fakeRequest, messages)
+  private def viewHtml = duplicateRegistration(frontendAppConfig)(fakeRequest, messages)
 
   "DuplicateRegistration view" must {
-    behave like normalPage(() => viewHtml, messageKeyPrefix, "p1", "p2", "p3")
+    behave like normalPage(() => viewHtml, messageKeyPrefix, "p1", "p2")
 
     behave like pageWithExitToGovUKLink(() => viewHtml, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }

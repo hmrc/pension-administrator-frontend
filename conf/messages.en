@@ -496,7 +496,6 @@ duplicateRegistration.title = A different Government Gateway account has already
 duplicateRegistration.heading = A different Government Gateway account has already been used to register you as a scheme administrator
 duplicateRegistration.p1 = To access your scheme administrator details, you will need to log in with the Government Gateway user ID and password that were used when you were registered.
 duplicateRegistration.p2 = The user ID and password you need will be from another Government Gateway account you created.
-duplicateRegistration.p3 = Check any confirmation emails, which were sent from (HMRC email address), to see which user ID and password you need to use.
 
 individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = Your date of birth
