@@ -150,8 +150,8 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "redirect to IV if they have confidence level less than 200" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val redirectUrl = s"${frontendAppConfig.ivUpliftUrl}?origin=PODS&" +
-          s"completionURL=${URLEncoder.encode(frontendAppConfig.ukJourneyContinueUrl, "UTF-8")}&" +
-          s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
+          s"completionURL=${frontendAppConfig.ukJourneyContinueUrl}&" +
+          s"failureURL=${s"${frontendAppConfig.loginContinueUrl}/unauthorised"}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
           fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
