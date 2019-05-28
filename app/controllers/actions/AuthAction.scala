@@ -182,8 +182,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   private def ivUpliftUrl: String = {
     s"${config.ivUpliftUrl}?origin=PODS&" +
-      s"completionURL=${config.ukJourneyContinueUrl}&" +
-      s"failureURL=${s"${config.loginContinueUrl}/unauthorised"}" +
+      s"completionURL=${URLEncoder.encode(config.ukJourneyContinueUrl, "UTF-8")}&" +
+      s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
       s"&confidenceLevel=${ConfidenceLevel.L200.level}"
   }
 
