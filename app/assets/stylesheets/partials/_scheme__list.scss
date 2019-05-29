@@ -6,16 +6,12 @@ p.status { margin-bottom: 0;}
   font-weight: 700;
   padding: 0 10px;
   position: relative;
-  top: -1px;
+  top: 6px;
   text-align: center;
-  width: 80px;
   margin-right: 20px;
   line-height: initial;
 }
 
-.cya-status.status{
-  vertical-align:top
-}
 .not-started {
   text-transform: uppercase;
   border-color: #6f777b;
