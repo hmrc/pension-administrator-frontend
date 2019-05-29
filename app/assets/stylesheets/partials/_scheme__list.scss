@@ -6,10 +6,13 @@ p.status { margin-bottom: 0;}
   font-weight: 700;
   padding: 0 10px;
   position: relative;
-  top: 6px;
   text-align: center;
   margin-right: 20px;
   line-height: initial;
+}
+
+.cya-questions-long > * > * {
+    vertical-align: middle;
 }
 
 .not-started {
