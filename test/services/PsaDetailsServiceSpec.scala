@@ -37,10 +37,8 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
-import utils.testhelpers.PsaSubscriptionBuilder.{psaSubscriptionCompany, psaSubscriptionIndividual}
 import utils.testhelpers.ViewPsaDetailsBuilder.{companyWithChangeLinks, individualWithChangeLinks, partnershipWithChangeLinks}
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
@@ -59,41 +57,11 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
   private val mode = UpdateMode
 
-  "PsaDetailsService" must {
-    "when variations and dergistration are disabled" when {
-      "return the correct PSA individual view model" in {
-        fs.change(isVariationsEnabled, false)
-        fs.change(isDeregistrationEnabled, false)
-        when(mockSubscriptionConnector.getSubscriptionModel(any())(any(), any()))
-          .thenReturn(Future.successful(psaSubscriptionIndividual))
-
-        val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
-
-        whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(individualSuperSections, "Stephen Wood", false, false)
-        }
-
-      }
-
-      "return the correct PSA company view model" in {
-
-        when(mockSubscriptionConnector.getSubscriptionModel(any())(any(), any()))
-          .thenReturn(Future.successful(psaSubscriptionCompany))
-
-
-        val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
-        whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(organisationSuperSections, "Test company name", false, false)
-        }
-      }
-    }
 
     "when variations and deregistration are enabled" when {
 
       "return the correct PSA individual view model with correct can de register flag and existing current address id" in {
         val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress
-        fs.change(isVariationsEnabled, true)
-        fs.change(isDeregistrationEnabled, true)
 
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(individualUserAnswers))
@@ -154,7 +122,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       }
 
       "call psa subscription details to fetch data if no data is available in user answers" in {
-        fs.change(isVariationsEnabled, true)
         reset(mockUserAnswersConnector, mockSubscriptionConnector)
         when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
         when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
@@ -169,7 +136,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       }
 
       "remove the existing data and call psa subscription details to fetch data if data for index is available in user answers" in {
-        fs.change(isVariationsEnabled, true)
         reset(mockUserAnswersConnector, mockSubscriptionConnector)
         when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
         when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
@@ -185,7 +151,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       }
 
       "populate all the variations change flags when getUserAnswers is called when no user answers data" in {
-        fs.change(isVariationsEnabled, true)
         reset(mockUserAnswersConnector, mockSubscriptionConnector)
 
         when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
@@ -208,8 +173,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           ).foreach(userAnswers.get(_) mustBe Some(false))
         }
       }
-
-    }
   }
 }
 
