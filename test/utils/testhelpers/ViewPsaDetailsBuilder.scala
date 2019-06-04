@@ -55,8 +55,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.nino", Seq("AA999999A"), false, None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
-    AnswerRow("Has Stephen Wood been at their address for more than 12 months?", Seq("No"), false,
-      None),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
         Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
@@ -80,8 +78,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
       None),
     AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
-    AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false,
-      None),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
@@ -121,8 +117,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
       None),
     AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
-    AnswerRow("Has Test partnership name been at their address for more than 12 months?", Seq("No"), false,
-      None),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))

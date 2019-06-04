@@ -96,11 +96,6 @@ object PsaDetailsHelperSpec extends SpecBase {
   private val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
     addressAnswer(psaSubscriptionIndividual.previousAddress.get, countryOptions), false, None)
 
-  private def previousAddressExists(name: String) = AnswerRow(
-    Message("moreThan12Months.label", name).resolve,
-    Seq(messages(s"sameAddress.label.true")), false, None
-  )
-
   private def phoneNumber(label: String) = AnswerRow(label, Seq("0044-09876542312"), false, None)
 
   private def emailAddress(label: String) = AnswerRow(label, Seq("aaa@aa.com"), false, None)
@@ -141,7 +136,6 @@ object PsaDetailsHelperSpec extends SpecBase {
     individualDateOfBirth,
     individualNino,
     psaAddress("cya.label.address"),
-    previousAddressExists("Stephen Wood"),
     psaPreviousAddress,
     emailAddress("email.label"),
     phoneNumber("phone.label")
@@ -153,7 +147,6 @@ object PsaDetailsHelperSpec extends SpecBase {
     crn,
     utr,
     psaAddress("company.address.label"),
-    previousAddressExists("Test company name"),
     psaPreviousAddress,
     emailAddress("company.email.label"),
     phoneNumber("company.phone.label")
@@ -164,7 +157,6 @@ object PsaDetailsHelperSpec extends SpecBase {
     payeNumber,
     utr,
     psaAddress("partnership.address.label"),
-    previousAddressExists("Test partnership name"),
     psaPreviousAddress,
     emailAddress("partnership.email.label"),
     phoneNumber("partnership.phone.label")

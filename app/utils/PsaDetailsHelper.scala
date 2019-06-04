@@ -19,7 +19,7 @@ package utils
 import models.PsaSubscription.{CorrespondenceAddress, DirectorOrPartner, PsaSubscription}
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection, Message, SuperSection}
+import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
 class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptions)(implicit messages: Messages) {
 
@@ -33,7 +33,6 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
         individualDateOfBirth,
         individualNino,
         psaAddress("cya.label.address"),
-        previousAddressExists(psaDetails.individual map (_.fullName)),
         psaPreviousAddress,
         emailAddress("email.label"),
         phoneNumber("phone.label")
@@ -57,7 +56,6 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
             crn,
             utr,
             psaAddress(s"$messageKeyPrefix.address.label"),
-            previousAddressExists(psaDetails.organisationOrPartner map (_.name)),
             psaPreviousAddress,
             emailAddress(s"$messageKeyPrefix.email.label"),
             phoneNumber(s"$messageKeyPrefix.phone.label")
@@ -154,13 +152,6 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
   =
     Some(AnswerRow(labelKey, addressAnswer(psaDetails.address, countryOptions), false, None))
-
-  private def previousAddressExists(name: Option[String]): Option[AnswerRow]
-
-  = Some(AnswerRow(
-    Message("moreThan12Months.label", name.getOrElse("")).resolve,
-    Seq(messages(s"sameAddress.label.${psaDetails.isSameAddressForLast12Months}")), false, None
-  ))
 
   private def psaPreviousAddress: Option[AnswerRow]
 
