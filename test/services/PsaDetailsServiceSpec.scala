@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.FeatureSwitchManagementServiceTestImpl
 import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
@@ -179,11 +178,9 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
 
   val configuration = injector.instanceOf[Configuration]
-  val fs = new FeatureSwitchManagementServiceTestImpl(configuration, environment)
   val mockSubscriptionConnector = mock[SubscriptionConnector]
   val mockDeRegistrationConnector = mock[DeRegistrationConnector]
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
   val mockUserAnswersConnector = mock[UserAnswersCacheConnector]
 
   object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
@@ -197,7 +194,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
   }
 
   def service(cacheConnector: UserAnswersCacheConnector = LocalFakeUserAnswersCacheConnector): PsaDetailServiceImpl = new PsaDetailServiceImpl(
-    fs,
     messagesApi,
     mockSubscriptionConnector,
     countryOptions,

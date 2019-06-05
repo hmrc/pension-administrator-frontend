@@ -17,7 +17,6 @@
 package services
 
 import com.google.inject.ImplementedBy
-import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
@@ -46,7 +45,6 @@ trait PsaDetailsService {
 }
 
 class PsaDetailServiceImpl @Inject()(
-                                      fs: FeatureSwitchManagementService,
                                       override val messagesApi: MessagesApi,
                                       subscriptionConnector: SubscriptionConnector,
                                       countryOptions: CountryOptions,
