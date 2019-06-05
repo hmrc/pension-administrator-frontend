@@ -17,6 +17,5 @@
 package utils
 
 object Toggles {
-  val isDeregistrationEnabled: String = "enable-deregistration"
-  val isVariationsEnabled: String = "is-variations-enabled"
+
 }
