@@ -46,7 +46,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         individualDateOfBirth,
         individualNino,
         individualAddress,
-        individualPreviousAddressExists,
         individualPreviousAddress,
         individualEmailAddress,
         individualPhoneNumber
@@ -67,7 +66,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
             crn,
             companyUtr,
             companyAddress,
-            companyPreviousAddressExists,
             companyPreviousAddress,
             companyEmailAddress,
             companyPhoneNumber
@@ -89,7 +87,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
             crn,
             partnershipUtr,
             partnershipAddress,
-            partnershipPreviousAddressExists,
             partnershipPreviousAddress,
             partnershipEmailAddress,
             partnershipPhoneNumber
@@ -155,13 +152,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
-  private def individualPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
-    Message("moreThan12Months.label", userAnswers.get(IndividualDetailsId) map (_.fullName) getOrElse "").resolve,
-    Seq(messages(addressYearsAnswer(userAnswers, IndividualAddressYearsId)))
-    , answerIsMessageKey = false, None
-  ))
-
-
   private def individualPreviousAddress: Option[AnswerRow] = {
     (userAnswers.get(IndividualAddressYearsId), userAnswers.get(IndividualPreviousAddressId)) match {
       case (Some(UnderAYear), None) =>
@@ -204,13 +194,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     AnswerRow("company.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
-
-  private def companyPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
-    Message("moreThan12Months.label", userAnswers.get(BusinessDetailsId) map (_.companyName) getOrElse "").resolve,
-    Seq(messages(addressYearsAnswer(userAnswers, CompanyAddressYearsId)))
-    , answerIsMessageKey = false, None
-  ))
-
 
   private def companyPreviousAddress: Option[AnswerRow] = {
     (userAnswers.get(CompanyAddressYearsId), userAnswers.get(CompanyPreviousAddressId)) match {
@@ -341,12 +324,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     AnswerRow("partnership.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
-
-  private def partnershipPreviousAddressExists: Option[AnswerRow] = Some(AnswerRow(
-    Message("moreThan12Months.label", userAnswers.get(PartnershipDetailsId) map (_.companyName) getOrElse "").resolve,
-    Seq(messages(addressYearsAnswer(userAnswers, PartnershipAddressYearsId)))
-    , answerIsMessageKey = false, None
-  ))
 
   private def partnershipPreviousAddress: Option[AnswerRow] = {
     (userAnswers.get(PartnershipAddressYearsId), userAnswers.get(PartnershipPreviousAddressId)) match {
