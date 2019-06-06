@@ -17,14 +17,13 @@
 package services
 
 import com.google.inject.ImplementedBy
-import config.FeatureSwitchManagementService
 import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
-import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipDetailsId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
+import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -33,9 +32,8 @@ import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.Toggles.{isDeregistrationEnabled, isVariationsEnabled}
 import utils.countryOptions.CountryOptions
-import utils.{PsaDetailsHelper, UserAnswers, ViewPsaDetailsHelper}
+import utils.{UserAnswers, ViewPsaDetailsHelper}
 import viewmodels.PsaViewDetailsViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +45,6 @@ trait PsaDetailsService {
 }
 
 class PsaDetailServiceImpl @Inject()(
-                                      fs: FeatureSwitchManagementService,
                                       override val messagesApi: MessagesApi,
                                       subscriptionConnector: SubscriptionConnector,
                                       countryOptions: CountryOptions,
@@ -58,13 +55,8 @@ class PsaDetailServiceImpl @Inject()(
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)(
     implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
 
-    if (fs.get(isVariationsEnabled)) {
-      retrievePsaDataFromUserAnswers(psaId, mode)
-    } else {
-      canStopBeingAPsa(psaId).flatMap { canDeregister =>
-        retrievePsaDataFromModel(psaId, canDeregister)
-      }
-    }
+    retrievePsaDataFromUserAnswers(psaId, mode)
+
   }
 
   def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
@@ -183,32 +175,6 @@ class PsaDetailServiceImpl @Inject()(
   }
 
   private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    if (fs.get(isDeregistrationEnabled)) {
-      deRegistrationConnector.canDeRegister(psaId)
-    } else {
-      Future.successful(false)
-    }
-  }
-
-  private def retrievePsaDataFromModel(psaId: String, canDeRegister: Boolean)(
-    implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaViewDetailsViewModel] = {
-    subscriptionConnector.getSubscriptionModel(psaId).map { response =>
-      response.organisationOrPartner match {
-        case None =>
-          PsaViewDetailsViewModel(
-            new PsaDetailsHelper(response, countryOptions).individualSections,
-            response.individual.map(_.fullName).getOrElse(""),
-            isUserAnswerUpdated = false,
-            canDeRegister
-          )
-        case _ =>
-          PsaViewDetailsViewModel(
-            new PsaDetailsHelper(response, countryOptions).organisationSections,
-            response.organisationOrPartner.map(_.name).getOrElse(""),
-            isUserAnswerUpdated = false,
-            canDeRegister
-          )
-      }
-    }
+    deRegistrationConnector.canDeRegister(psaId)
   }
 }
