@@ -77,7 +77,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
 
 
-      "Return OK and interact correctly with min details connector" when {
+      "Return OK and do not redirect to iv uplift" when {
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
           fakeUserAnswersConnector, fakeIVConnector)
 
@@ -86,6 +86,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         "coming from duplicate registration" in {
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.DuplicateRegistrationController.onPageLoad().url))
           status(result) mustBe OK
+          redirectLocation(result) mustBe None
         }
       }
 
