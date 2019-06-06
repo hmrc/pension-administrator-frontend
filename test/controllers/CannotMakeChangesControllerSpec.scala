@@ -51,7 +51,7 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
 object CannotMakeChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, false, None, isPSASuspended = Some(false))
+  private val psaUser = PSAUser(UserType.Individual, None, false, None)
 
   private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))

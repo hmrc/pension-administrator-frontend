@@ -20,12 +20,10 @@ import java.net.URLEncoder
 
 import base.SpecBase
 import config.FeatureSwitchManagementService
-import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector, MinimalPsaConnector}
+import connectors.{FakeUserAnswersCacheConnector, IdentityVerificationConnector}
 import controllers.routes
 import identifiers.JourneyId
 import models._
-import org.mockito.Matchers
-import org.mockito.Mockito.{when, _}
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Controller
@@ -50,7 +48,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -64,7 +62,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val enrolmentPP = Enrolments(Set(Enrolment("HMRC-PP-ORG", Seq(EnrolmentIdentifier("PPID", psaId)), "")))
         val retrievalResult = authRetrievals(enrolments = enrolmentPP)
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -80,36 +78,20 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
 
       "Return OK and interact correctly with min details connector" when {
-        val mockMinimalPsaConnector = mock[MinimalPsaConnector] //fakeMinimalPsaConnector()
-        when(mockMinimalPsaConnector.isPsaSuspended(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(false))
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersConnector, fakeIVConnector, mockMinimalPsaConnector)
+          fakeUserAnswersConnector, fakeIVConnector)
 
         def controller = new Harness(authAction)
-
-        "coming from confirmation" in {
-          val authAction = new FullAuthenticationExcludingSuspendedCheck(fakeAuthConnector(retrievalResult),
-            frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersConnector, fakeIVConnector, mockMinimalPsaConnector)
-
-          def controller = new Harness(authAction)
-
-          val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.ConfirmationController.onPageLoad().url))
-          status(result) mustBe OK
-          verify(mockMinimalPsaConnector, times(0)).isPsaSuspended(Matchers.any())(Matchers.any(), Matchers.any())
-        }
 
         "coming from duplicate registration" in {
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.DuplicateRegistrationController.onPageLoad().url))
           status(result) mustBe OK
-          verify(mockMinimalPsaConnector, times(1)).isPsaSuspended(Matchers.any())(Matchers.any(), Matchers.any())
         }
       }
 
       "return OK" when {
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersConnector, fakeIVConnector)
 
         def controller = new Harness(authAction)
 
@@ -122,9 +104,8 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
         "coming from change page when user is suspended" in {
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector(true))
-
-          def controller = new Harness(authAction)
+            fakeUserAnswersConnector, fakeIVConnector)
+          def controller = new Harness(authAction, new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(isSuspended = true)))
 
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.VariationDeclarationController.onPageLoad().url))
           status(result) mustBe SEE_OTHER
@@ -140,7 +121,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val retrievalResult = authRetrievals(ConfidenceLevel.L200, AffinityGroup.Individual)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersConnector, fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -154,7 +135,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           s"failureURL=${URLEncoder.encode(s"${frontendAppConfig.loginContinueUrl}/unauthorised", "UTF-8")}" +
           s"&confidenceLevel=${ConfidenceLevel.L200.level}"
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -168,7 +149,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "return OK if they have confidence level less than 200 and they have not answered if they are UK/NON-UK" in {
         val retrievalResult = authRetrievals(ConfidenceLevel.L100, AffinityGroup.Individual)
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(Json.obj()), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(Json.obj()), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -183,7 +164,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
 
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector, fakeMinimalPsaConnector())
+            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector)
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -199,7 +180,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val fakeUserAnswers = fakeUserAnswersCacheConnector(userAnswersData)
 
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswers, fakeIVConnector, fakeMinimalPsaConnector())
+            fakeUserAnswers, fakeIVConnector)
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(fakeRequest)
           status(result) mustBe OK
@@ -212,7 +193,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val fakeUserAnswers = fakeUserAnswersCacheConnector(userAnswersData)
 
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswers, fakeIVConnector, fakeMinimalPsaConnector())
+            fakeUserAnswers, fakeIVConnector)
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest("", s"/url?journeyId=$journeyId"))
           status(result) mustBe OK
@@ -225,7 +206,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
 
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersCacheConnector(Json.obj("areYouInUK" -> false)), fakeIVConnector, fakeMinimalPsaConnector())
+            fakeUserAnswersCacheConnector(Json.obj("areYouInUK" -> false)), fakeIVConnector)
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(fakeRequest)
           status(result) mustBe OK
@@ -236,7 +217,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> true)
 
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector, fakeMinimalPsaConnector())
+            fakeUserAnswersCacheConnector(userAnswersData), fakeIVConnector)
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(fakeRequest)
           status(result) mustBe OK
@@ -247,7 +228,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Organisation)
 
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe OK
@@ -257,7 +238,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user hasn't logged in" must {
       "redirect the user to log in " in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new MissingBearerToken)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -268,7 +249,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user's session has expired" must {
       "redirect the user to log in " in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new BearerTokenExpired)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -279,7 +260,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user doesn't have sufficient enrolments" must {
       "redirect the user to the unauthorised page" in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new InsufficientEnrolments)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -297,7 +278,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         )
         val retrievalResult = authRetrievals(enrolments = enrolmentsPSA)
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
@@ -308,7 +289,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user doesn't have sufficient confidence level" must {
       "redirect the user to the unauthorised page" in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new InsufficientConfidenceLevel)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -319,7 +300,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user used an unaccepted auth provider" must {
       "redirect the user to the unauthorised page" in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedAuthProvider)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -330,7 +311,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user has an unsupported affinity group" must {
       "redirect the user to the unauthorised page" in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedAffinityGroup)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -341,7 +322,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "the user has an unsupported credential role" must {
       "redirect the user to the Unauthorised Assistant page" in {
         val authAction = new FullAuthentication(fakeAuthConnector(Future.failed(new UnsupportedCredentialRole)),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
@@ -355,7 +336,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val retrievalResult = authRetrievals(ConfidenceLevel.L50, AffinityGroup.Individual)
         val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
         val authAction = new AuthenticationWithNoConfidence(fakeAuthConnector(retrievalResult),
-          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersConnector, fakeIVConnector, fakeMinimalPsaConnector())
+          frontendAppConfig, fakeFeatureSwitchManagerService(), fakeUserAnswersConnector, fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -369,7 +350,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val retrievalResult = authRetrievals(affinityGroup = AffinityGroup.Agent)
 
         val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig, fakeFeatureSwitchManagerService(),
-          fakeUserAnswersCacheConnector(), fakeIVConnector, fakeMinimalPsaConnector())
+          fakeUserAnswersCacheConnector(), fakeIVConnector)
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(fakeRequest)
@@ -431,15 +412,8 @@ object AuthActionSpec {
     enrolments)
   )
 
-  class Harness(authAction: AuthAction, allowAccess: AllowAccessActionProvider = new AllowAccessActionProviderImpl()) extends Controller {
+  class Harness(authAction: AuthAction, allowAccess: AllowAccessActionProvider = new AllowAccessActionProviderImpl(FakeMinimalPsaConnector())) extends Controller {
     def onPageLoad(mode: Mode = NormalMode) = (authAction andThen allowAccess(mode)) { _ => Ok }
   }
-
-  private def fakeMinimalPsaConnector(isSuspended: Boolean = false): MinimalPsaConnector = {
-    new MinimalPsaConnector {
-      override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-        Future.successful(isSuspended)
-      }
-    }
-  }
+  
 }

@@ -17,18 +17,21 @@
 package controllers.actions
 
 import base.SpecBase
+import connectors.MinimalPsaConnector
 import models._
 import models.requests.AuthenticatedRequest
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.ExecutionContext.Implicits.global
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
-  class TestAllowAccessAction(mode: Mode) extends AllowAccessAction(mode) {
+  class TestAllowAccessAction(mode: Mode, isSuspended: Boolean = false) extends AllowAccessAction(mode, FakeMinimalPsaConnector(isSuspended)) {
     override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = super.filter(request)
   }
 
@@ -108,9 +111,9 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "redirect to intercept pages for suspended user with enrolment and UpdateMode" in {
 
-      val action = new TestAllowAccessAction(UpdateMode)
+      val action = new TestAllowAccessAction(UpdateMode, isSuspended = true)
 
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"), Some(true))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
 

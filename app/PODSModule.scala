@@ -30,12 +30,10 @@ class PODSModule extends AbstractModule {
 
     bind(classOf[AuthAction])
       .to(classOf[FullAuthentication])
+
     bind(classOf[AuthAction])
       .annotatedWith(classOf[AuthenticationWithLowConfidence])
       .to(classOf[AuthenticationWithNoConfidence])
-    bind(classOf[AuthAction])
-      .annotatedWith(classOf[AuthenticationExcludingSuspendedCheck])
-      .to(classOf[FullAuthenticationExcludingSuspendedCheck])
 
     bind(classOf[Navigator])
       .annotatedWith(classOf[Register])

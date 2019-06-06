@@ -26,14 +26,13 @@ import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.AuthenticationExcludingSuspendedCheck
 import views.html.register.confirmation
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
-                                       @AuthenticationExcludingSuspendedCheck authenticate: AuthAction,
+                                       authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
@@ -48,7 +47,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate) {
+  def onSubmit(mode:Mode): Action[AnyContent] = authenticate {
     _ => Redirect(controllers.routes.LogoutController.onPageLoad())
   }
 

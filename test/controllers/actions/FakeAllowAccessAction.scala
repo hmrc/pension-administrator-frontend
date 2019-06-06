@@ -19,10 +19,11 @@ package controllers.actions
 import models.requests.AuthenticatedRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-class FakeAllowAccessAction(mode: Mode) extends AllowAccessAction(mode) {
+class FakeAllowAccessAction(mode: Mode) extends AllowAccessAction(mode, FakeMinimalPsaConnector()) {
   override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = Future.successful(None)
 }
 
