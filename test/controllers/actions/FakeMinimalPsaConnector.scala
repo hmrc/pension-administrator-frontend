@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package controllers.actions
 
-import models.UserType.UserType
+import connectors.MinimalPsaConnector
+import uk.gov.hmrc.http.HeaderCarrier
 
-case class PSAUser(userType: UserType,
-                   nino: Option[String],
-                   isExistingPSA: Boolean,
-                   existingPSAId: Option[String],
-                   alreadyEnrolledPsaId: Option[String] = None
-                  )
+import scala.concurrent.{ExecutionContext, Future}
 
-object UserType extends Enumeration {
-  type UserType = Value
-  val Individual, Organisation = Value
+case class FakeMinimalPsaConnector(isSuspended: Boolean = false) extends MinimalPsaConnector {
+  override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+    Future.successful(isSuspended)
+  }
 }

@@ -16,25 +16,41 @@
 
 package controllers.actions
 
+import com.google.inject.Inject
+import connectors.MinimalPsaConnector
 import models._
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{ActionFilter, Request, Result}
 import play.api.mvc.Results._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class AllowAccessAction(mode:Mode) extends ActionFilter[AuthenticatedRequest]{
+class AllowAccessAction(
+                         mode: Mode,
+                         minimalPsaConnector: MinimalPsaConnector
+                       )(implicit ec: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
-
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     (request.user.alreadyEnrolledPsaId, mode) match {
-      case (None, NormalMode | CheckMode) =>  Future.successful(None)
-      case (Some(_), UpdateMode | CheckUpdateMode) if request.user.isPSASuspended.getOrElse(false) =>
-        Future.successful(Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad())))
-      case (Some(_), UpdateMode | CheckUpdateMode) =>  Future.successful(None)
-      case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>  Future.successful(None)
-      case (Some(_), NormalMode | CheckMode) =>  Future.successful(Some(Redirect(controllers.routes.InterceptPSAController.onPageLoad())))
-      case _ =>  Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+      case (None, NormalMode | CheckMode) =>
+        Future.successful(None)
+      case (Some(psaId), UpdateMode | CheckUpdateMode) =>
+        minimalPsaConnector.isPsaSuspended(psaId).map{ isSuspended =>
+          if(isSuspended) {
+            Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+          } else {
+            None
+          }
+        }
+      case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>
+        Future.successful(None)
+      case (Some(_), NormalMode | CheckMode) =>
+        Future.successful(Some(Redirect(controllers.routes.InterceptPSAController.onPageLoad())))
+      case _ =>
+        Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
     }
   }
 
@@ -45,12 +61,13 @@ class AllowAccessAction(mode:Mode) extends ActionFilter[AuthenticatedRequest]{
   }
 }
 
-class AllowAccessActionProviderImpl extends AllowAccessActionProvider{
-  def apply(mode:Mode): AllowAccessAction = {
-    new AllowAccessAction(mode)
+class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector)(implicit ec: ExecutionContext)
+  extends AllowAccessActionProvider {
+  def apply(mode: Mode): AllowAccessAction = {
+    new AllowAccessAction(mode, minimalPsaConnector)
   }
 }
 
-trait AllowAccessActionProvider{
-  def apply(mode:Mode) : AllowAccessAction
+trait AllowAccessActionProvider {
+  def apply(mode: Mode): AllowAccessAction
 }
