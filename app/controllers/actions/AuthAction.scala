@@ -16,8 +16,6 @@
 
 package controllers.actions
 
-import java.net.URLEncoder
-
 import com.google.inject.Inject
 import config.{FeatureSwitchManagementService, FrontendAppConfig}
 import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
@@ -54,11 +52,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
-        Retrievals.nino and
         Retrievals.allEnrolments) {
-      case Some(id) ~ cl ~ Some(affinityGroup) ~ nino ~ enrolments =>
+      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments =>
         redirectToInterceptPages(enrolments, affinityGroup).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, nino, enrolments))
+          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, None, enrolments))
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
         } { result => Future.successful(result) }
       case _ =>
@@ -74,8 +71,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     getData(AreYouInUKId, authRequest.externalId).flatMap {
       case _ if alreadyEnrolledInPODS(enrolments) =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
-      case Some(true) if affinityGroup == Individual && !allowedIndividual(cl) =>
-        Future.successful(Redirect(ivUpliftUrl))
       case Some(true) if affinityGroup == Organisation =>
         doManualIVAndRetrieveNino(authRequest, enrolments, block)
       case _ =>
@@ -142,11 +137,15 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   private def redirectToInterceptPages[A](enrolments: Enrolments, affinityGroup: AffinityGroup): Option[Result] = {
     if (isPSP(enrolments) && !isPSA(enrolments)) {
       Some(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
-    } else if (affinityGroup == Agent) {
-      Some(Redirect(routes.AgentCannotRegisterController.onPageLoad()))
-    }
-    else {
-      None
+    } else {
+      affinityGroup match {
+        case Agent =>
+          Some(Redirect(routes.AgentCannotRegisterController.onPageLoad()))
+        case Individual if !alreadyEnrolledInPODS(enrolments) =>
+          Some(Redirect(routes.UseOrganisationCredentialsController.onPageLoad()))
+        case _ =>
+          None
+      }
     }
   }
 
@@ -175,16 +174,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     case _: UnauthorizedException =>
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
-
-  private def ivUpliftUrl: String = {
-    s"${config.ivUpliftUrl}?origin=PODS&" +
-      s"completionURL=${URLEncoder.encode(config.ukJourneyContinueUrl, "UTF-8")}&" +
-      s"failureURL=${URLEncoder.encode(s"${config.loginContinueUrl}/unauthorised", "UTF-8")}" +
-      s"&confidenceLevel=${ConfidenceLevel.L200.level}"
-  }
-
-  private def allowedIndividual(confidenceLevel: ConfidenceLevel): Boolean =
-    confidenceLevel.compare(ConfidenceLevel.L200) >= 0
 
   private def existingPSA(enrolments: Enrolments): Option[String] =
     enrolments.getEnrolment("HMRC-PSA-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
@@ -218,23 +207,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   protected def getPSAId(enrolments: Enrolments): String =
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
       .getOrElse(throw new RuntimeException("PSA ID missing"))
-}
-
-class AuthenticationWithNoConfidence @Inject()(override val authConnector: AuthConnector,
-                                               config: FrontendAppConfig,
-                                               fs: FeatureSwitchManagementService,
-                                               userAnswersCacheConnector: UserAnswersCacheConnector,
-                                               identityVerificationConnector: IdentityVerificationConnector
-                                              )(implicit ec: ExecutionContext) extends
-  FullAuthentication(authConnector, config, fs, userAnswersCacheConnector, identityVerificationConnector)
-
-  with AuthorisedFunctions {
-
-  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                                  block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier): Future[Result] =
-    savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
 }
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

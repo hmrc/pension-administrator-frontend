@@ -27,3 +27,5 @@ GET        /registered-psa-details                      controllers.PsaDetailsCo
 GET        /cannot-register                             controllers.AgentCannotRegisterController.onPageLoad
 
 GET        /cannot-make-changes                         controllers.CannotMakeChangesController.onPageLoad
+
+GET        /use-organisation-cred                       controllers.UseOrganisationCredentialsController.onPageLoad

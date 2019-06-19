@@ -908,3 +908,14 @@ cannotMakeChanges.p2 = You need to phone Pension Scheme Services on 0300 123 107
 
 adviser.alreadyDeleted.title = The person with working knowledge of pensions has been deleted
 adviser.alreadyDeleted.heading = The person with working knowledge of pensions has been deleted
+
+useOrganisationCredentials.title = You need to use an organisation’s Government Gateway account to register as a scheme administrator
+useOrganisationCredentials.heading = You need to use an organisation’s Government Gateway account to register as a scheme administrator
+useOrganisationCredentials.p1 = You are trying to register as a scheme administrator using a Government Gateway account that was created for an individual.
+useOrganisationCredentials.p2 = To register, you need to {0} that was created for an organisation.
+useOrganisationCredentials.p2.link = log in with a Government Gateway account
+useOrganisationCredentials.p3 = If you do not have a Government Gateway account for an organisation, you should {0}.
+useOrganisationCredentials.p3.link = create one first
+pensionSchemePractitioner.explanation = Only pension scheme administrators can use this digital service at the moment. HMRC will let your company know when practitioners can use this service.
+pensionSchemePractitioner.continue = You should continue to use the {0}.
+pensionSchemePractitioner.link = Pension Schemes Online service

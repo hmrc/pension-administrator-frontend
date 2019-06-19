@@ -43,7 +43,6 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-  lazy val ivUpliftUrl: String = loadConfig("urls.ivUpliftUrl")
   lazy val manualIvUrl: String = loadConfig("urls.manualIvUrl")
 
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
@@ -133,4 +132,5 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   lazy val minimalPsaDetailsUrl: String = s"${baseUrl("pension-administrator")}${
     runModeConfiguration.underlying.getString("urls.pension-administrator.minimalPsaDetails")}"
+
 }
