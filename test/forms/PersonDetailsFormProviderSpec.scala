@@ -30,7 +30,7 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
   val form = new PersonDetailsFormProvider()()
 
   // scalastyle:off magic.number
-  private val johnDoe = PersonDetails("John Doherty", None, "Doe", LocalDate.of(1862, 6, 9))
+  private val johnDoe = PersonDetails("John Doherty", None, "Doe", LocalDate.of(1947, 6, 9))
   // scalastyle:on magic.number
 
   ".firstName" must {
@@ -75,7 +75,7 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
         "lastName" -> "Doe",
         "dateOfBirth.day" -> "9",
         "dateOfBirth.month" -> "6",
-        "dateOfBirth.year" -> "1862"
+        "dateOfBirth.year" -> "1901"
       ),
       "John",
       (model: PersonDetails) => model.firstName
@@ -119,7 +119,7 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
         "lastName" -> "Doe",
         "dateOfBirth.day" -> "9",
         "dateOfBirth.month" -> "6",
-        "dateOfBirth.year" -> "1862"
+        "dateOfBirth.year" -> "1902"
       ),
       (model: PersonDetails) => model.middleName
     )
@@ -168,7 +168,7 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
         "lastName" -> " Doe  ",
         "dateOfBirth.day" -> "9",
         "dateOfBirth.month" -> "6",
-        "dateOfBirth.year" -> "1862"
+        "dateOfBirth.year" -> "1952"
       ),
       "Doe",
       (model: PersonDetails) => model.lastName
@@ -234,6 +234,17 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
       ).errors shouldBe Seq(FormError(fieldName, "common.error.dateOfBirth.future"))
     }
 
+    "not accept a year before 1900" in {
+      form.bind(
+        Map(
+          "firstName" -> johnDoe.firstName,
+          "lastName" -> johnDoe.lastName,
+          "dateOfBirth.day" -> "1",
+          "dateOfBirth.month" -> "1",
+          "dateOfBirth.year" -> "1899"
+        )
+      ).errors shouldBe Seq(FormError(fieldName, "common.error.dateOfBirth.past"))
+    }
   }
 
   "PersonDetailsFormProvider" must {
