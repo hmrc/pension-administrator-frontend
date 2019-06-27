@@ -19,7 +19,7 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
-import identifiers.register.PAInDeclarationJourneyId
+import identifiers.register.{AreYouInUKId, PAInDeclarationJourneyId}
 import identifiers.register.adviser._
 import models.requests.IdentifiedRequest
 import models._
@@ -51,12 +51,13 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, false, None, false),
     (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), false,  Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserDetailsId, adviserUpdatedWithAddressOnly, haveMoreChangesPage, false,  Some(checkYourAnswersPage(UpdateMode)), false),
-    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, None, false),
-    (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, None, false),
+    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), false, Some(adviserAddressListPage(UpdateMode)), false),
+    (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), false, Some(adviserAddressPage(UpdateMode)), false),
     (AdviserAddressId, emptyAnswers, haveMoreChangesPage, false, Some(checkYourAnswersPage(UpdateMode)), false),
     (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), false, None, false),
     (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, false, None, false),
-    (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage, false, None, false)
+    (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage, false, None, false),
+    (invalidIdForNavigator, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false)
   )
 
   navigator.getClass.getSimpleName must {
@@ -66,6 +67,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object AdviserNavigatorSpec extends OptionValues {
+  private val invalidIdForNavigator = AreYouInUKId
   private val address = Address("line 1", "line 2", Some("line 3"), Some("line 4"), None, "UK")
   private val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(true).asOpt.get
   private val adviserUpdatedWithAddressOnly = UserAnswers(Json.obj())
@@ -80,6 +82,7 @@ object AdviserNavigatorSpec extends OptionValues {
   private def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
   private  def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
+  private val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
   private val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
   private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
