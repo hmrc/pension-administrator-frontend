@@ -41,6 +41,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AreYouInUKId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (AreYouInUKId, uk, ukIndividualDetailsPage, false, None, false),
     (AreYouInUKId, nonUk, nonUkIndividualNamePage, false, Some(nonUkIndividualAddressPage), false),
+    (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage, false, Some(nonUkIndividualNamePage), false),
 
     (IndividualDetailsCorrectId, detailsCorrect, whatYouWillNeedPage, false, None, false),
     (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, false, None, false),
@@ -56,6 +57,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
 
     (IndividualDateOfBirthId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
+    (IndividualDateOfBirthId, uk, checkYourAnswersPage, false, None, false),
     (IndividualDateOfBirthId, nonUk, whatYouWillNeedPage, false, Some(checkYourAnswersPage), true),
     (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
 
@@ -197,10 +199,8 @@ object IndividualNavigatorSpec extends OptionValues {
     .set(AreYouInUKId)(false).asOpt.value
     .set(IndividualDetailsId)(TolerantIndividual(Some("first"), None, Some("last"))).asOpt.value
 
-
-  private val uk2 = UserAnswers(Json.obj())
-    .set(AreYouInUKId)(true).asOpt.value
-
+  private val nonUkNoIndividualDetails = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(false).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().nonUkIndividualAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkIndividualAddress(address("GB"))
