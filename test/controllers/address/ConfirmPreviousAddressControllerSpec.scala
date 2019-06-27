@@ -16,6 +16,7 @@
 
 package controllers.address
 
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -27,10 +28,7 @@ import models._
 import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -46,29 +44,9 @@ import views.html.address.sameContactAddress
 import scala.concurrent.Future
 
 
-class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
+class ConfirmPreviousAddressControllerSpec extends SpecBase {
 
   import ConfirmPreviousAddressControllerSpec._
-
-  def testAddress(line2: Option[String]) = TolerantAddress(
-    Some("address line 1"),
-    line2,
-    Some("test town"),
-    Some("test county"),
-    Some("test post code"), Some("GB")
-  )
-
-  def viewmodel(line2: Option[String] = Some("address line 2")) = SameContactAddressViewModel(
-    postCall = Call("GET", "www.example.com"),
-    title = "title",
-    heading = "heading",
-    hint = Some("hint"),
-    address = testAddress(line2),
-    psaName = "Test name",
-    mode = NormalMode
-  )
-
-  def errorMessage(implicit messages: Messages) = Message("confirmPreviousAddress.error", "Test name").resolve
 
   "get" must {
 
@@ -117,9 +95,8 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
     }
   }
 
-  "post" must {
-
-    "return a redirect when the submitted data is valid and the data is changed" in {
+  private def controllerPostWithValue(v: String): Unit = {
+    s"return a redirect when the submitted data is valid and the data is changed with value $v" in {
 
       import play.api.inject._
 
@@ -139,7 +116,7 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
-            "value" -> "true"
+            "value" -> v
           )
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(false).asOpt.value, request)
@@ -148,6 +125,13 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
           redirectLocation(result).value mustEqual "www.example.com"
       }
     }
+  }
+
+  "post" should {
+
+    behave like controllerPostWithValue("true")
+
+    behave like controllerPostWithValue("false")
 
     "return a redirect and save the data when the there is no existing data" in {
 
@@ -211,7 +195,7 @@ class ConfirmPreviousAddressControllerSpec extends WordSpec with MustMatchers wi
 }
 
 
-object ConfirmPreviousAddressControllerSpec {
+object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
   object FakeIdentifier extends TypedIdentifier[Boolean]
 
@@ -237,5 +221,26 @@ object ConfirmPreviousAddressControllerSpec {
 
 
   }
+
+  private def testAddress(line2: Option[String]) = TolerantAddress(
+    Some("address line 1"),
+    line2,
+    Some("test town"),
+    Some("test county"),
+    Some("test post code"), Some("GB")
+  )
+
+  private def viewmodel(line2: Option[String] = Some("address line 2")) = SameContactAddressViewModel(
+    postCall = Call("GET", "www.example.com"),
+    title = "title",
+    heading = "heading",
+    hint = Some("hint"),
+    address = testAddress(line2),
+    psaName = "Test name",
+    mode = NormalMode
+  )
+
+  private def errorMessage(implicit messages: Messages): String = Message("confirmPreviousAddress.error", "Test name").resolve
+
 
 }
