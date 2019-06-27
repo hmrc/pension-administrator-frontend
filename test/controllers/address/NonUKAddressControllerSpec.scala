@@ -166,7 +166,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
   "post" must {
 
       behave like controllerPostWithCountry("ES")
-    
+
       behave like controllerPostWithCountry("GB")
 
       "return BAD_REQUEST with view on invalid data request" in {

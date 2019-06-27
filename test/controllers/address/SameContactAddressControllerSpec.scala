@@ -145,9 +145,8 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     }
   }
 
-  "post" must {
-
-    "return a redirect when the submitted data is valid and the data is changed" in {
+  def controllerPostDataChange(v:Boolean):Unit = {
+    s"return a redirect when the submitted data is valid and the data is changed to $v" in {
 
       import play.api.inject._
 
@@ -167,15 +166,22 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
-            "value" -> "true"
+            "value" -> (if(v) "true" else "false")
           )
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(false).asOpt.value, request)
+          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(!v).asOpt.value, request)
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
       }
     }
+  }
+
+  "post" must {
+
+    behave like controllerPostDataChange(true)
+
+    behave like controllerPostDataChange(false)
 
     "return a redirect and save the data when the there is no existing data" in {
 
