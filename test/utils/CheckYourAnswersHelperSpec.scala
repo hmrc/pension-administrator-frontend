@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import base.SpecBase
-import identifiers.register.company.{CompanyDetailsId, MoreThanTenDirectorsId}
+import identifiers.register.company.{CompanyDetailsId, CompanyRegistrationNumberId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
 import models.register.company.CompanyDetails
 import models._
@@ -34,7 +34,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
   private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   case class TestScenario(userAnswersJson: JsObject, expectedResult: Seq[AnswerRow], name: Option[String] = None) {
-    def describe(descr: String): String = name.map(x=>descr + s" ($x)").getOrElse(descr)
+    def describe(descr: String): String = name.map(x => descr + s" ($x)").getOrElse(descr)
   }
 
   def cyaHelperMethod(codeToTest: CheckYourAnswersHelper => Seq[AnswerRow],
@@ -203,13 +203,67 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(MoreThanTenDirectorsId.toString -> true),
-          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel",Seq("site.yes"),true,Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
+          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.yes"), true, Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
           Some("user answered yes")
         ),
         TestScenario(
           Json.obj(MoreThanTenDirectorsId.toString -> false),
-          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel",Seq("site.no"),true,Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
+          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.no"), true, Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
           Some("user answered no")
+        )
+      )
+    )
+  }
+
+  "vatRegistrationNumber" should {
+    behave like cyaHelperMethod(_.vatRegistrationNumber.toSeq,
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(Some("vat"), None)
+          ),
+          Seq(
+            AnswerRow("companyDetails.vatRegistrationNumber.checkYourAnswersLabel",
+              Seq("vat"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-details")))
+          )
+        )
+      )
+    )
+  }
+
+  "payeEmployerReferenceNumber" should {
+    behave like cyaHelperMethod(_.payeEmployerReferenceNumber.toSeq,
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, Some("paye"))
+          ),
+          Seq(
+            AnswerRow("companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel",
+              Seq("paye"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-details")))
+          )
+        )
+      )
+    )
+  }
+
+  "companyRegistrationNumber" should {
+    behave like cyaHelperMethod(_.companyRegistrationNumber.toSeq,
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyRegistrationNumberId.toString -> "crn"
+          ),
+          Seq(
+            AnswerRow("companyRegistrationNumber.checkYourAnswersLabel",
+              Seq("crn"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-registration-number")))
+          )
         )
       )
     )
