@@ -82,7 +82,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
 
     (IndividualContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (IndividualContactDetailsId, uk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (IndividualContactDetailsId, uk, individualDateOfBirthPage, true, Some(checkYourAnswersPage), true),
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 

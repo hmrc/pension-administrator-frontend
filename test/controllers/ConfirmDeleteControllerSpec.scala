@@ -24,6 +24,7 @@ import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
 import models.requests.DataRequest
 import org.scalatest.mockito.MockitoSugar
@@ -52,7 +53,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val person = PersonDetails("First", None, "Last", LocalDate.now())
 
-  implicit val request: DataRequest[AnyContent] = DataRequest(
+  val requestDirectors: DataRequest[AnyContent] = DataRequest(
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
     ), "cacheId", PSAUser(UserType.Individual, None, false, None),
@@ -60,6 +61,13 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       MoreThanTenDirectorsId.toString -> true))
   )
 
+  val requestPartners: DataRequest[AnyContent] = DataRequest(
+    FakeRequest().withFormUrlEncodedBody(
+      "value" -> "true"
+    ), "cacheId", PSAUser(UserType.Individual, None, false, None),
+    UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerDetailsId.toString -> person)),
+      MoreThanTenDirectorsId.toString -> true))
+  )
 
 
   val viewModel = ConfirmDeleteViewModel(
@@ -94,17 +102,8 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
 
-  "ConfirmDelete Controller" must {
-
-    "return OK and the correct view for a GET" in {
-
-      val result = controller().get(viewModel, false, FakeNavigator.desiredRoute, NormalMode)(request)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "redirect to already deleted view for a GET if the director was already deleted" in {
+  private def controllerWithPost(descr:String, request: DataRequest[AnyContent], id:TypedIdentifier[PersonDetails]): Unit = {
+    s"redirect to already deleted view for a GET if the $descr was already deleted" in {
 
       val result = controller().get(viewModel, true, FakeNavigator.desiredRoute, NormalMode)(request)
 
@@ -113,28 +112,45 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
     }
 
-    "redirect to directors list on removal of director" in {
+    s"redirect to ${descr}s list on removal of $descr" in {
 
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
+      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
     }
 
-    "set the isDelete flag to true for the selected director on submission of POST request" in {
+    s"set the isDelete flag to true for the selected $descr on submission of POST request" in {
 
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, NormalMode)
+      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(DirectorDetailsId(0), person.copy(isDeleted = true))
+      FakeUserAnswersCacheConnector.verify(id, person.copy(isDeleted = true))
     }
 
-    "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
-      val result = controller().post(viewModel, DirectorDetailsId(0), FakeNavigator.desiredRoute, UpdateMode)
+    s"set the morethanten change flag to true where the morethanten flag was already true and a $descr is deleted" in {
+      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, UpdateMode)(request)
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
       FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
     }
+  }
+
+  "ConfirmDelete Controller" must {
+
+    "return OK and the correct view for a GET" in {
+
+      val result = controller().get(viewModel, false, FakeNavigator.desiredRoute, NormalMode)(requestDirectors)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
+    }
+
+    behave like controllerWithPost("director", requestDirectors, DirectorDetailsId(0))
+
+    behave like controllerWithPost("partner", requestPartners, PartnerDetailsId(0))
+
+
   }
 
 }
