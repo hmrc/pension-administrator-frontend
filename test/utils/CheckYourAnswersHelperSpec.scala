@@ -316,4 +316,50 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
+  "directorAddress" should {
+    behave like cyaHelperMethod(_.directorAddress(0, NormalMode),
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, None),
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorAddressId.toString ->
+                  Address("addr1","addr2",Some("addr3"),Some("addr4"), Some("pcode"), "GB")
+              )
+            )
+          ),
+          Seq(
+            AnswerRow("cya.label.address",
+              Seq("addr1","addr2","addr3","addr4","pcode", "Country of GB"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-address-manual"))))
+        )
+      )
+    )
+  }
+
+  "directorPreviousAddress" should {
+    behave like cyaHelperMethod(_.directorPreviousAddress(0, NormalMode),
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, None),
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorPreviousAddressId.toString ->
+                  Address("addr1","addr2",Some("addr3"),Some("addr4"), Some("pcode"), "GB")
+              )
+            )
+          ),
+          Seq(
+            AnswerRow("directorPreviousAddress.checkYourAnswersLabel",
+              Seq("addr1","addr2","addr3","addr4","pcode", "Country of GB"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-previous-address-manual"))))
+        )
+      )
+    )
+  }
+
 }
