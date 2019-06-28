@@ -21,9 +21,9 @@ import java.time.format.DateTimeFormatter
 
 import base.SpecBase
 import identifiers.register.company.CompanyDetailsId
-import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId, DirectorUniqueTaxReferenceId}
+import identifiers.register.company.directors._
 import models.register.company.CompanyDetails
-import models.{NormalMode, PersonDetails, TolerantAddress, UniqueTaxReference}
+import models._
 import play.api.libs.json.{JsObject, Json}
 import viewmodels.{AnswerRow, Link}
 
@@ -33,8 +33,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
   private val localDate = LocalDate.parse("28/06/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
   private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  case class TestScenario(userAnswersJson: JsObject, expectedResult: Seq[AnswerRow], name:Option[String] = None) {
-    def describe(descr:String):String = name.map(_ + s" ($descr)").getOrElse(descr)
+  case class TestScenario(userAnswersJson: JsObject, expectedResult: Seq[AnswerRow], name: Option[String] = None) {
+    def describe(descr: String): String = name.map(_ + s" ($descr)").getOrElse(descr)
   }
 
   def cyaHelperMethod(codeToTest: CheckYourAnswersHelper => Seq[AnswerRow],
@@ -52,6 +52,17 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       codeToTest(genCYAHelper(UserAnswers())) mustBe Seq()
     }
   }
+
+  def yesNoExpectedResult(row1Label: String, row1Answer: String, row2Label: String, row2Answer: String, changeLink: String): Seq[AnswerRow] =
+    Seq(
+      AnswerRow(row1Label,
+        Seq(row1Answer),
+        answerIsMessageKey = true,
+        Some(Link(s"/register-as-pension-scheme-administrator/register/company/directors/1/change/$changeLink"))),
+      AnswerRow(row2Label,
+        Seq(row2Answer),
+        answerIsMessageKey = true,
+        Some(Link(s"/register-as-pension-scheme-administrator/register/company/directors/1/change/$changeLink"))))
 
   "directorContactDetails" should {
     behave like cyaHelperMethod(_.directorDetails(0, NormalMode),
@@ -80,18 +91,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
-  def yesNoExpectedResult(answer:String, row2label:String, row2answer:String):Seq[AnswerRow] = {
-    Seq(
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel",
-        Seq(answer),
-        answerIsMessageKey = true,
-        Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/unique-taxpayer-reference"))),
-      AnswerRow(row2label,
-        Seq(row2answer),
-        answerIsMessageKey = true,
-        Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/unique-taxpayer-reference"))))
-  }
-
   "directorUniqueTaxReference" should {
     behave like cyaHelperMethod(_.directorUniqueTaxReference(0, NormalMode),
       Seq(
@@ -105,7 +104,11 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               )
             )
           ),
-          yesNoExpectedResult("Yes", "directorUniqueTaxReference.checkYourAnswersLabel.utr", "utr"),
+          yesNoExpectedResult("directorUniqueTaxReference.checkYourAnswersLabel",
+            "Yes",
+            "directorUniqueTaxReference.checkYourAnswersLabel.utr",
+            "utr",
+            "unique-taxpayer-reference"),
           Some("user answered yes")
         ),
         TestScenario(
@@ -118,7 +121,77 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               )
             )
           ),
-          yesNoExpectedResult("No", "directorUniqueTaxReference.checkYourAnswersLabel.reason", reason),
+          yesNoExpectedResult(
+            "directorUniqueTaxReference.checkYourAnswersLabel",
+            "No",
+            "directorUniqueTaxReference.checkYourAnswersLabel.reason",
+            reason,
+            "unique-taxpayer-reference"),
+          Some("user answered no")
+        )
+      )
+    )
+  }
+
+  "directorAddressYears" should {
+    behave like cyaHelperMethod(_.directorAddressYears(0, NormalMode),
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, None),
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorAddressYearsId.toString -> AddressYears.OverAYear.toString
+              )
+            )
+          ),
+          Seq(
+            AnswerRow("directorAddressYears.checkYourAnswersLabel",
+              Seq("common.addressYears.over_a_year"),
+              answerIsMessageKey = true,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/how-long-at-address"))
+            )
+          )
+        )
+      )
+    )
+  }
+
+  "directorNino" should {
+    behave like cyaHelperMethod(_.directorNino(0, NormalMode),
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, None),
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorNinoId.toString ->
+                  Nino.Yes("nino")
+              )
+            )
+          ),
+          yesNoExpectedResult("directorNino.checkYourAnswersLabel",
+            "Yes",
+            "directorNino.checkYourAnswersLabel.nino",
+            "nino",
+            "national-insurance-number"),
+          Some("user answered yes")
+        ),
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, None),
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorNinoId.toString ->
+                  Nino.No(reason)
+              )
+            )
+          ),
+          yesNoExpectedResult("directorNino.checkYourAnswersLabel",
+            "No",
+            "directorNino.checkYourAnswersLabel.reason",
+            reason,
+            "national-insurance-number"),
           Some("user answered no")
         )
       )
