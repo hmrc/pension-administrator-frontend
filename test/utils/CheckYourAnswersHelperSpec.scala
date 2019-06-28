@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import base.SpecBase
-import identifiers.register.company.CompanyDetailsId
+import identifiers.register.company.{CompanyDetailsId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
 import models.register.company.CompanyDetails
 import models._
@@ -34,7 +34,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
   private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   case class TestScenario(userAnswersJson: JsObject, expectedResult: Seq[AnswerRow], name: Option[String] = None) {
-    def describe(descr: String): String = name.map(_ + s" ($descr)").getOrElse(descr)
+    def describe(descr: String): String = name.map(x=>descr + s" ($x)").getOrElse(descr)
   }
 
   def cyaHelperMethod(codeToTest: CheckYourAnswersHelper => Seq[AnswerRow],
@@ -192,6 +192,23 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             "directorNino.checkYourAnswersLabel.reason",
             reason,
             "national-insurance-number"),
+          Some("user answered no")
+        )
+      )
+    )
+  }
+
+  "moreThanTenDirectors" should {
+    behave like cyaHelperMethod(_.moreThanTenDirectors.toSeq,
+      Seq(
+        TestScenario(
+          Json.obj(MoreThanTenDirectorsId.toString -> true),
+          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel",Seq("site.yes"),true,Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
+          Some("user answered yes")
+        ),
+        TestScenario(
+          Json.obj(MoreThanTenDirectorsId.toString -> false),
+          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel",Seq("site.no"),true,Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
           Some("user answered no")
         )
       )
