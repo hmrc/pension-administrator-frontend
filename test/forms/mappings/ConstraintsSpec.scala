@@ -465,4 +465,18 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     behave like regexWithValidAndInvalidExamples(adviserName, validText, invalidText, invalidMsg, adviserNameRegex)
   }
 
+  "notBeforeYear" must {
+
+    "return valid if date is greater than constraint" in {
+
+      notBeforeYear("error.invalid", 1900).apply(LocalDate.now()) shouldBe Valid
+    }
+
+    "return invalid if date is less than constraint" in {
+
+      notBeforeYear("error.invalid", 1900).apply(LocalDate.of(1899,1,1)) shouldBe Invalid("error.invalid")
+    }
+
+  }
+
 }
