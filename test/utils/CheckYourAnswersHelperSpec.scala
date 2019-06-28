@@ -29,10 +29,25 @@ import viewmodels.{AnswerRow, Link}
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
-  "directorContactDetails" should {
+  private val localDate = LocalDate.parse("28/06/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+  private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
+  def cyaHelperMethod(codeToTest: CheckYourAnswersHelper => Seq[AnswerRow], json: JsObject, expectedResult: Seq[AnswerRow]): Unit = {
+    val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+    val genCYAHelper = new CheckYourAnswersHelper(_:UserAnswers, countryOptions)
+
     "respond correctly when user answers data exists" in {
-      val localDate = LocalDate.parse("28/06/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-      val json: JsObject = Json.obj(
+      codeToTest(genCYAHelper(UserAnswers(json))) mustBe expectedResult
+    }
+
+    "respond correctly when user answers data does not exist" in {
+      codeToTest(genCYAHelper(UserAnswers())) mustBe Seq()
+    }
+  }
+
+  "directorContactDetails" should {
+    behave like cyaHelperMethod(_.directorDetails(0, NormalMode),
+      Json.obj(
         CompanyDetailsId.toString -> CompanyDetails(None, None),
         "directors" -> Json.arr(
           Json.obj(
@@ -40,13 +55,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               PersonDetails("test first name", Some("test middle name"), "test last name", localDate)
           )
         )
-      )
-
-      val ua = UserAnswers(json)
-      val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-      val cyah = new CheckYourAnswersHelper(ua, countryOptions)
-      val result = cyah.directorDetails(0, NormalMode)
-      val expectedResult = Seq(
+      ),
+      Seq(
         AnswerRow("cya.label.name",
           Seq("test first name test last name"),
           answerIsMessageKey = false,
@@ -55,18 +65,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           Seq("28 June 2019"),
           answerIsMessageKey = false,
           Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/director-details"))))
-      result mustBe expectedResult
-    }
-
-    "respond correctly when user answers data does not exist" in {
-      val ua = UserAnswers()
-      val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-      val cyah = new CheckYourAnswersHelper(ua, countryOptions)
-      val result = cyah.directorDetails(0, NormalMode)
-      result mustBe Seq()
-    }
+    )
   }
-
 }
-
-
