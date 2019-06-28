@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter
 import base.SpecBase
 import identifiers.register.company.{CompanyDetailsId, CompanyRegistrationNumberId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
+import identifiers.register.individual.IndividualDateOfBirthId
 import models.register.company.CompanyDetails
 import models._
 import play.api.libs.json.{JsObject, Json}
@@ -31,6 +32,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
   private val reason = "don't have one"
   private val localDate = LocalDate.parse("28/06/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+  private val displayDate = "28 June 2019"
   private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   case class TestScenario(userAnswersJson: JsObject, expectedResult: Seq[AnswerRow], name: Option[String] = None) {
@@ -64,7 +66,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         answerIsMessageKey = true,
         Some(Link(s"/register-as-pension-scheme-administrator/register/company/directors/1/change/$changeLink"))))
 
-  "directorContactDetails" should {
+  "directorDetails" should {
     behave like cyaHelperMethod(_.directorDetails(0, NormalMode),
       Seq(
         TestScenario(
@@ -83,7 +85,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               answerIsMessageKey = false,
               Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/director-details"))),
             AnswerRow("cya.label.dob",
-              Seq("28 June 2019"),
+              Seq(displayDate),
               answerIsMessageKey = false,
               Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/director-details"))))
         )
@@ -264,6 +266,51 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               answerIsMessageKey = false,
               Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-registration-number")))
           )
+        )
+      )
+    )
+  }
+
+  "individualDateOfBirth" should {
+    behave like cyaHelperMethod(_.individualDateOfBirth.toSeq,
+      Seq(
+        TestScenario(
+          Json.obj(
+            IndividualDateOfBirthId.toString -> localDate
+          ),
+          Seq(
+            AnswerRow("cya.label.dob",
+              Seq(displayDate),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/your-date-of-birth")))
+          )
+        )
+      )
+    )
+  }
+
+  "directorContactDetails" should {
+    behave like cyaHelperMethod(_.directorContactDetails(0, NormalMode),
+      Seq(
+        TestScenario(
+          Json.obj(
+            CompanyDetailsId.toString -> CompanyDetails(None, None),
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorContactDetailsId.toString ->
+                  ContactDetails("email", "phone")
+              )
+            )
+          ),
+          Seq(
+            AnswerRow("contactDetails.email",
+              Seq("email"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-contact-details"))),
+            AnswerRow("contactDetails.phone",
+              Seq("phone"),
+              answerIsMessageKey = false,
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-contact-details"))))
         )
       )
     )

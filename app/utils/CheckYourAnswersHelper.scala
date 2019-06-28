@@ -95,15 +95,11 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   }
 
   def companyDirectorAddressPostCodeLookup(index: Int): Option[AnswerRow] = {
-    val xx = userAnswers.get(identifiers.register.company.directors.CompanyDirectorAddressPostCodeLookupId(index)) map {
+    userAnswers.get(identifiers.register.company.directors.CompanyDirectorAddressPostCodeLookupId(index)) map {
       x =>
         AnswerRow("companyDirectorAddressPostCodeLookup.checkYourAnswersLabel", Seq(s"$x"), false,
           Link(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(CheckMode, index).url))
     }
-    println( "\n>>>" + xx)
-    println( "\n>>>" + userAnswers)
-
-    xx
   }
 
   def directorPreviousAddressPostCodeLookup(index: Int, mode: Mode): Option[AnswerRow] =
