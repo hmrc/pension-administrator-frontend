@@ -21,9 +21,9 @@ import java.time.format.DateTimeFormatter
 
 import base.SpecBase
 import identifiers.register.company.CompanyDetailsId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorDetailsId, DirectorUniqueTaxReferenceId}
 import models.register.company.CompanyDetails
-import models.{NormalMode, PersonDetails}
+import models.{NormalMode, PersonDetails, TolerantAddress, UniqueTaxReference}
 import play.api.libs.json.{JsObject, Json}
 import viewmodels.{AnswerRow, Link}
 
@@ -34,7 +34,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
 
   def cyaHelperMethod(codeToTest: CheckYourAnswersHelper => Seq[AnswerRow], json: JsObject, expectedResult: Seq[AnswerRow]): Unit = {
     val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-    val genCYAHelper = new CheckYourAnswersHelper(_:UserAnswers, countryOptions)
+    val genCYAHelper = new CheckYourAnswersHelper(_: UserAnswers, countryOptions)
 
     "respond correctly when user answers data exists" in {
       codeToTest(genCYAHelper(UserAnswers(json))) mustBe expectedResult
@@ -67,4 +67,28 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/director-details"))))
     )
   }
+
+  "directorUniqueTaxReference" should {
+    behave like cyaHelperMethod(_.directorUniqueTaxReference(0, NormalMode),
+      Json.obj(
+        CompanyDetailsId.toString -> CompanyDetails(None, None),
+        "directors" -> Json.arr(
+          Json.obj(
+            DirectorUniqueTaxReferenceId.toString ->
+              UniqueTaxReference.Yes("utr")
+          )
+        )
+      ),
+      Seq(
+        AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel",
+          Seq("Yes"),
+          answerIsMessageKey = true,
+          Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/unique-taxpayer-reference"))),
+        AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.utr",
+          Seq("utr"),
+          answerIsMessageKey = true,
+          Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/unique-taxpayer-reference"))))
+    )
+  }
+
 }
