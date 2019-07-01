@@ -57,7 +57,11 @@ class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
             )
           ),
       "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
-        .verifying(nonFutureDate("common.error.dateOfBirth.future"))
+        .verifying(firstError(
+          nonFutureDate("common.error.dateOfBirth.future"),
+          notBeforeYear("common.error.dateOfBirth.past", PersonDetailsFormProvider.startYear)
+        )
+          )
     )(PersonDetails.applyDelete)(PersonDetails.unapplyDelete)
   )
 
@@ -67,4 +71,5 @@ object PersonDetailsFormProvider {
   val firstNameLength: Int = 35
   val middleNameLength: Int = 35
   val lastNameLength: Int = 35
+  val startYear: Int = 1900
 }

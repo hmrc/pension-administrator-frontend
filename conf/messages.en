@@ -125,6 +125,7 @@ common.adviser.address.title = Pension adviser’s address
 common.error.dateOfBirth.required = Enter the date of birth
 common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
+common.error.dateOfBirth.past = The date of birth must be after 1900
 common.dateOfBirth = Date of birth
 common.dateOfBirth.hint = For example 30 9 1990
 common.vat = VAT Registration number
