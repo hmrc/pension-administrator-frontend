@@ -222,20 +222,20 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
   }
 
-  private def testAddress(line2: Option[String]) = TolerantAddress(
+  private def testAddress = TolerantAddress(
     Some("address line 1"),
-    line2,
+    Some("address line 2"),
     Some("test town"),
     Some("test county"),
     Some("test post code"), Some("GB")
   )
 
-  private def viewmodel(line2: Option[String] = Some("address line 2")) = SameContactAddressViewModel(
+  private def viewmodel() = SameContactAddressViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
     hint = Some("hint"),
-    address = testAddress(line2),
+    address = testAddress,
     psaName = "Test name",
     mode = NormalMode
   )
