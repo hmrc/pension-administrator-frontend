@@ -126,9 +126,8 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
     }
   }
 
-  "post" must {
-
-    "redirect to the postCall on valid data request" which {
+  def controllerPostWithCountry(country:String):Unit = {
+    s"redirect to the postCall on valid data request for country $country" which {
       "will save address and registration info to answers" in {
 
         val onwardRoute = Call("GET", "/")
@@ -148,19 +147,27 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val result = controller.onSubmit(viewModel, UserAnswers(), FakeRequest().withFormUrlEncodedBody(
               ("addressLine1", "value 1"),
               ("addressLine2", "value 2"),
-              "country" -> "ES")
+              "country" -> country)
             )
 
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).get mustEqual onwardRoute.url
 
-            val address = Address("value 1", "value 2", None, None, None, "ES")
+            val address = Address("value 1", "value 2", None, None, None, country)
 
             FakeUserAnswersCacheConnector.verify(fakeAddressId, address.toTolerantAddress)
             FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
         }
 
       }
+    }
+  }
+
+  "post" must {
+
+      behave like controllerPostWithCountry("ES")
+
+      behave like controllerPostWithCountry("GB")
 
       "return BAD_REQUEST with view on invalid data request" in {
 
@@ -188,7 +195,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
       }
 
     }
-  }
+
 
 }
 

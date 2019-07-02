@@ -51,11 +51,14 @@ class AddressEventSpec extends FlatSpec with Matchers {
     actual shouldBe expected
   }
 
-  it should "return a LookupChanged Address Event when there is no previous address and address and selected differ" in {
+  it should "return a LookupChanged Address Event when there is no previous address and address and selected differ and details should be correct" in {
     val expected = Some(AddressEvent(externalId, AddressAction.LookupChanged, context, address1))
     val actual = AddressEvent.addressEntryEvent(externalId, address1, None, Some(tolerant(address2)), context)
 
     actual shouldBe expected
+
+    actual.map(_.details) shouldBe expected.map(_.details)
+
   }
 
   it should "return a LookupChanged Address Event when address has changed and address and selected differ" in {

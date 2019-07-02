@@ -55,7 +55,7 @@ trait MoreThanTenController extends FrontendController with I18nSupport with Var
         val hasAnswerChanged = request.userAnswers.get(viewModel.id) match {
           case None => true
           case Some(false) => value
-          case _ => false
+          case Some(true) => !value
         }
 
         if (hasAnswerChanged) {

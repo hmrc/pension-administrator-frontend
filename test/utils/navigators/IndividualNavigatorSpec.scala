@@ -38,8 +38,10 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
 
+    (AreYouInUKId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (AreYouInUKId, uk, ukIndividualDetailsPage, false, None, false),
     (AreYouInUKId, nonUk, nonUkIndividualNamePage, false, Some(nonUkIndividualAddressPage), false),
+    (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage, false, Some(nonUkIndividualNamePage), false),
 
     (IndividualDetailsCorrectId, detailsCorrect, whatYouWillNeedPage, false, None, false),
     (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, false, None, false),
@@ -54,6 +56,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
 
+    (IndividualDateOfBirthId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
+    (IndividualDateOfBirthId, uk, checkYourAnswersPage, false, None, false),
     (IndividualDateOfBirthId, nonUk, whatYouWillNeedPage, false, Some(checkYourAnswersPage), true),
     (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
 
@@ -78,6 +82,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
 
     (IndividualContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (IndividualContactDetailsId, uk, individualDateOfBirthPage, true, Some(checkYourAnswersPage), true),
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
@@ -89,12 +94,14 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, false, None, false),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress, true, None, true),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges, false, None, false),
     (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousAddressPage(UpdateMode), false, None, false),
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), false, None, false),
     (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
-    (IndividualContactDetailsId, nonUk, anyMoreChanges, false, None, true)
+    (IndividualContactDetailsId, nonUk, anyMoreChanges, false, None, true),
+    (invalidIdForNavigator, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), true)
   )
 
 
@@ -111,6 +118,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object IndividualNavigatorSpec extends OptionValues {
+
+  private lazy val invalidIdForNavigator = AreYouInUKId
 
   lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
 
@@ -187,9 +196,13 @@ object IndividualNavigatorSpec extends OptionValues {
 
   private val uk = UserAnswers(Json.obj())
     .set(AreYouInUKId)(true).asOpt.value
+
   private val nonUk = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
     .set(IndividualDetailsId)(TolerantIndividual(Some("first"), None, Some("last"))).asOpt.value
+
+  private val nonUkNoIndividualDetails = UserAnswers(Json.obj())
+    .set(AreYouInUKId)(false).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().nonUkIndividualAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkIndividualAddress(address("GB"))

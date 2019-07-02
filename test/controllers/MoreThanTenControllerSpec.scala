@@ -105,8 +105,30 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       fixture.dataCacheConnector.verify(MoreThanTenDirectorsOrPartnersChangedId, true)
     }
 
-  }
+    "save the user answer and update the change flag if gone from yes to no" in {
+      val before = Json.obj(
+        MoreThanTenDirectorsId.toString -> true
+      )
+      val fixture = testFixture(this)
+      val request = testRequest(answers = UserAnswers(before), moreThanTen = Some(false.toString))
 
+      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), Duration.Inf)
+      fixture.dataCacheConnector.verify(MoreThanTenDirectorsId, false)
+      fixture.dataCacheConnector.verify(MoreThanTenDirectorsOrPartnersChangedId, true)
+    }
+
+    "save the user answer and do not update the change flag if gone from yes to yes (i.e. no change)" in {
+      val before = Json.obj(
+        MoreThanTenDirectorsId.toString -> true
+      )
+      val fixture = testFixture(this)
+      val request = testRequest(answers = UserAnswers(before), moreThanTen = Some(true.toString))
+
+      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), Duration.Inf)
+      fixture.dataCacheConnector.verify(MoreThanTenDirectorsId, true)
+      fixture.dataCacheConnector.verifyNot(MoreThanTenDirectorsOrPartnersChangedId)
+    }
+  }
 }
 
 object MoreThanTenControllerSpec {
