@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.Mode
 import play.api.i18n.MessagesApi
 import utils.Navigator
-import utils.annotations.{AuthenticationWithLowConfidence, Register}
+import utils.annotations.Register
 import viewmodels.{AreYouInUKViewModel, Message}
 
 class BusinessTypeAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
@@ -32,7 +32,7 @@ class BusinessTypeAreYouInUKController @Inject()(override val appConfig: Fronten
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
                                                  override val allowAccess: AllowAccessActionProvider,
-                                                 @AuthenticationWithLowConfidence override val authenticate: AuthAction,
+                                                 override val authenticate: AuthAction,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
                                                  override val formProvider: AreYouInUKFormProvider

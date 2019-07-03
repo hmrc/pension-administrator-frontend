@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.{AuthenticationWithLowConfidence, Register}
+import utils.annotations.Register
 import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
 
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegisterAsBusinessController @Inject()(
   appConfig: FrontendAppConfig,
   override val messagesApi: MessagesApi,
-  @AuthenticationWithLowConfidence authenticate: AuthAction,
+  authenticate: AuthAction,
   allowAccess: AllowAccessActionProvider,
   getData: DataRetrievalAction,
   requireData: DataRequiredAction,
