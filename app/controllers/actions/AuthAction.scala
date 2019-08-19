@@ -39,7 +39,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
-                                   fs: FeatureSwitchManagementService,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
                                    ivConnector: IdentityVerificationConnector
                                   )
@@ -210,3 +209,19 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 }
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
+
+class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,
+                                       config: FrontendAppConfig,
+                                       userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       identityVerificationConnector: IdentityVerificationConnector
+                                      )(implicit ec: ExecutionContext) extends
+  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector)
+
+  with AuthorisedFunctions {
+
+  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
+                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                  block: AuthenticatedRequest[A] => Future[Result])
+                                 (implicit hc: HeaderCarrier): Future[Result] =
+    savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+}
