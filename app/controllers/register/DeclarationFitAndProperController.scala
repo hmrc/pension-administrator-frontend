@@ -34,7 +34,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
@@ -101,9 +101,9 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
             } yield {
               Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
             }) recoverWith {
-              case _: InvalidPayloadException =>
+              case _: BadRequestException =>
                 Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
-              case _: InvalidBusinessPartnerException =>
+              case ex: Upstream4xxResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
                 Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
               case _ =>
                 Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))

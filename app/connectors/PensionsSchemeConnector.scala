@@ -22,7 +22,7 @@ import models.register.PsaSubscriptionResponse
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.UserAnswers
 
@@ -33,8 +33,8 @@ import scala.util.{Failure, Try}
 trait PensionsSchemeConnector {
 
   def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse]
-  def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 
+  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 }
 
 @Singleton
@@ -53,52 +53,29 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
         case JsError(errors) => throw JsResultException(errors)
       }
     } andThen {
-      logExceptions()
-    } recoverWith {
-      translateExceptions()
+      handleExceptions()
     }
-
   }
 
-  def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  private def handleExceptions[A](): PartialFunction[Try[A], Throwable] = {
+    case Failure(ex: Upstream4xxResponse) if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
+      Logger.warn("Unable to register PSA", ex)
+      ex
+
+    case Failure(ex: Throwable) =>
+      Logger.error("Unable to register PSA", ex)
+      ex
+  }
+
+  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     val url = config.updatePsaUrl(psaId)
 
     http.POST(url, answers.json).map { response =>
       require(response.status == Status.OK)
     } andThen {
-      logExceptions()
-    } recoverWith {
-      translateExceptions()
+      case Failure(ex: Throwable) =>
+        Logger.error("Unable to submit PSA Variations", ex)
+        ex
     }
   }
-
-  private def translateExceptions[A](): PartialFunction[Throwable, Future[A]] = {
-    case ex: BadRequestException
-      if ex.message.contains("INVALID_PAYLOAD")
-    => Future.failed(InvalidPayloadException())
-    case ex: BadRequestException
-      if ex.message.contains("INVALID_CORRELATION_ID")
-    => Future.failed(InvalidCorrelationIdException())
-    case ex@Upstream4xxResponse(_, Status.FORBIDDEN, _, _)
-      if ex.message.contains("INVALID_BUSINESS_PARTNER")
-    => Future.failed(InvalidBusinessPartnerException())
-    case ex@Upstream4xxResponse(_, Status.CONFLICT, _, _)
-      if ex.message.contains("DUPLICATE_SUBMISSION")
-    => Future.failed(DuplicateSubmissionException())
-  }
-
-  private def logExceptions[A](): PartialFunction[Try[A], Unit] = {
-    case Failure(t: Throwable) => Logger.error("Unable to register PSA", t)
-  }
-
 }
-
-sealed trait RegisterPsaException extends Exception
-
-case class InvalidPayloadException() extends RegisterPsaException
-
-case class InvalidCorrelationIdException() extends RegisterPsaException
-
-case class InvalidBusinessPartnerException() extends RegisterPsaException
-
-case class DuplicateSubmissionException() extends RegisterPsaException
