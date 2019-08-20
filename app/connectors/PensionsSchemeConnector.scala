@@ -52,16 +52,13 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
         case JsSuccess(value, _) => value
         case JsError(errors) => throw JsResultException(errors)
       }
-    } andThen {
-      handleExceptions()
-    }
+    } andThen handleExceptions()
   }
 
   private def handleExceptions[A](): PartialFunction[Try[A], Throwable] = {
     case Failure(ex: Upstream4xxResponse) if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
       Logger.warn("Unable to register PSA", ex)
       ex
-
     case Failure(ex: Throwable) =>
       Logger.error("Unable to register PSA", ex)
       ex
