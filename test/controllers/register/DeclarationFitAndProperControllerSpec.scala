@@ -39,7 +39,7 @@ import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse, BadRequestException}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
 
@@ -176,7 +176,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
-        val result = controller(pensionsSchemeConnector = duplicateRegistrationPensionsSchemeConnector).onSubmit(NormalMode)(validRequest)
+        val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
+          Future.failed(Upstream4xxResponse(message = "INVALID_BUSINESS_PARTNER", upstreamResponseCode = FORBIDDEN, reportAs = FORBIDDEN))))
+          .onSubmit(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
@@ -184,7 +186,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
       "redirect to Submission Invalid" when {
         "response is BAD_REQUEST from downstream" in {
-          val result = controller(pensionsSchemeConnector = submissionInvalidPensionsSchemeConnector).onSubmit(NormalMode)(validRequest)
+          val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
+            Future.failed(new BadRequestException("INVALID_PAYLOAD"))))
+            .onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
@@ -215,29 +219,13 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
     Set(KnownFact("NINO", "test-nino")
     )))
 
-  private val fakePensionsSchemeConnector = new PensionsSchemeConnector {
-    override def registerPsa
-    (answers: UserAnswers)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
-      Future.successful(validPsaResponse)
-    }
-    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
-  }
+  private def fakePensionsSchemeConnector(response: Future[PsaSubscriptionResponse] = Future.successful(validPsaResponse)): PensionsSchemeConnector =
+    new PensionsSchemeConnector {
 
-  private val duplicateRegistrationPensionsSchemeConnector = new PensionsSchemeConnector {
     override def registerPsa
     (answers: UserAnswers)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
-      Future.failed(InvalidBusinessPartnerException())
-    }
-    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
-  }
-
-  private val submissionInvalidPensionsSchemeConnector = new PensionsSchemeConnector {
-    override def registerPsa
-    (answers: UserAnswers)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
-      Future.failed(InvalidPayloadException())
+      response
     }
     override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
   }
@@ -265,7 +253,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
-                          pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector,
+                          pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector(),
                           knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
                           enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
                         ) =

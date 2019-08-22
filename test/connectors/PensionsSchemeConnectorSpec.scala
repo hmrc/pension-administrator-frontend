@@ -118,81 +118,21 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
   }
 
-  it should "throw InvalidPayloadException for a 400 INVALID_PAYLOAD response" in {
-
-    server.stubFor(
-      post(urlEqualTo(registerPsaUrl))
-        .willReturn(
-          badRequest
-            .withHeader("Content-Type", "application/json")
-            .withBody(invalidPayloadResponse)
-        )
-    )
-
-    val connector = injector.instanceOf[PensionsSchemeConnector]
-
-    recoverToSucceededIf[InvalidPayloadException] {
-      connector.registerPsa(userAnswers)
-    }
-
-  }
-
-  it should "throw InvalidCorrelationIdException for a 400 INVALID_CORRELATION_ID response" in {
-
-    server.stubFor(
-      post(urlEqualTo(registerPsaUrl))
-        .willReturn(
-          badRequest
-            .withHeader("Content-Type", "application/json")
-            .withBody(invalidCorrelationIdResponse)
-        )
-    )
-
-    val connector = injector.instanceOf[PensionsSchemeConnector]
-
-    recoverToSucceededIf[InvalidCorrelationIdException] {
-      connector.registerPsa(userAnswers)
-    }
-
-  }
-
-  it should "throw InvalidBusinessPartnerException for a 403 INVALID_BUSINESS_PARTNER response" in {
-
-    server.stubFor(
-      post(urlEqualTo(registerPsaUrl))
-        .willReturn(
-          forbidden
-            .withHeader("Content-Type", "application/json")
-            .withBody(invalidBusinessPartnerResponse)
-        )
-    )
-
-    val connector = injector.instanceOf[PensionsSchemeConnector]
-
-    recoverToSucceededIf[InvalidBusinessPartnerException] {
-      connector.registerPsa(userAnswers)
-    }
-
-  }
-
-  it should "throw DuplicateSubmissionException for a 409 DUPLICATE_SUBMISSION response" in {
+  it should "propagate exceptions" in {
 
     server.stubFor(
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
           aResponse()
-            .withStatus(Status.CONFLICT)
-            .withHeader("Content-Type", "application/json")
-            .withBody(duplicateSubmissionResponse)
+            .withStatus(Status.BAD_REQUEST)
         )
     )
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    recoverToSucceededIf[DuplicateSubmissionException] {
+    recoverToSucceededIf[BadRequestException] {
       connector.registerPsa(userAnswers)
     }
-
   }
 
   "updatePsa" should "return without exceptions for a valid request/response" in {
@@ -238,7 +178,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
         .willReturn(
-          aResponse.withStatus(404)
+          aResponse.withStatus(Status.NOT_FOUND)
         )
     )
 
@@ -254,7 +194,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
         .willReturn(
-          aResponse.withStatus(400)
+          aResponse.withStatus(Status.BAD_REQUEST)
         )
     )
 
@@ -270,7 +210,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
         .willReturn(
-          aResponse.withStatus(500)
+          aResponse.withStatus(Status.INTERNAL_SERVER_ERROR)
         )
     )
 

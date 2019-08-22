@@ -74,9 +74,6 @@ class IndividualDetailsCorrectController @Inject()(
                 _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
               } yield {
-                if(request.user.userType==UserType.Organisation){
-                  Logger.warn("Organisation user after successful manual IV uplift")
-                }
                 Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
               }
             case _ =>
