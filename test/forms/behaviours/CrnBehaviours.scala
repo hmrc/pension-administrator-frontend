@@ -34,7 +34,7 @@ trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints
       behave like fieldThatBindsValidData(
         form,
         fieldName,
-        " 12345678 "
+        " 1234 5678 "
       )
 
       behave like mandatoryField(
