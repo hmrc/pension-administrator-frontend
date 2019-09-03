@@ -35,7 +35,7 @@ trait NinoMapping extends Mappings with Transforms {
       "nino" -> mandatoryIfTrue(
         "nino.hasNino",
         text(requiredNinoKey)
-          .transform(ninoTransform, noTransform)
+          .transform(noSpaceWithUpperCaseTransform, noTransform)
           .verifying(validNino(invalidNinoKey))
       ),
       "reason" -> mandatoryIfFalse(

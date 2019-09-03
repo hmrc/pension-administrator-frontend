@@ -22,7 +22,7 @@ trait CrnMapping extends Mappings with Transforms {
 
   def crnMapping(keyCrnRequired: String, keyCrnInvalid: String): Mapping[String] = {
     text(keyCrnRequired)
-      .transform(standardTextTransform, noTransform)
+      .transform(noSpaceWithUpperCaseTransform, noTransform)
       .verifying(companyRegistrationNumber(keyCrnInvalid))
   }
 
