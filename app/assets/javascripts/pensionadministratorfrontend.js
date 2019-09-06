@@ -20,6 +20,12 @@ $(document).ready(function() {
     window.history.back();
   })
 
+  $("#declarationFitAndProperId").submit(function() {
+        $(this).submit(function() {
+          return false;
+        });
+        return true;
+  });
 
     if(document.querySelectorAll('select').length > 0){
         var graphUrl = '/register-as-pension-scheme-administrator/assets/javascripts/autocomplete/location-autocomplete-graph.json'
