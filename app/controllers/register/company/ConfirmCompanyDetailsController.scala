@@ -112,7 +112,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                (implicit request: DataRequest[AnyContent]) = {
     (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
       case businessDetails ~ businessType =>
-        val organisation = Organisation(businessDetails.companyName, businessType)
+        val organisation = Organisation(businessDetails.companyName.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
         val legalStatus = RegistrationLegalStatus.LimitedCompany
         registrationConnector.registerWithIdOrganisation(businessDetails.utrOrException, organisation, legalStatus).flatMap {
           registration =>
