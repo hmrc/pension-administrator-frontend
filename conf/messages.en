@@ -89,6 +89,7 @@ site.return.govuk = Return to GOV.UK
 site.return.psa_details = Return to {0}’s details
 site.not_entered = Not entered
 site.exit = Exit to GOV.UK
+site.error = Error:
 
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
@@ -917,3 +918,4 @@ useOrganisationCredentials.p2 = To register, you need to {0} that was created fo
 useOrganisationCredentials.p2.link = log in with a Government Gateway account
 useOrganisationCredentials.p3 = If you do not have a Government Gateway account for an organisation, you should {0}.
 useOrganisationCredentials.p3.link = create one first
+

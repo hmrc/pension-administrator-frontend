@@ -35,10 +35,12 @@ hint: Option[String] = None
         }
 
         @if(field("day").errors.nonEmpty || field("month").errors.nonEmpty || field("year").errors.nonEmpty){
-        <span class="error-notification" id="error-message-date">@messages("error.invalid_date")</span>
+        <span class="error-notification" id="error-message-date">
+            <span class="visually-hidden">@messages("site.error")</span> @messages("error.invalid_date")</span>
         } else {
         @field.errors.map { error =>
-        <span class="error-notification" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+        <span class="error-notification" id="error-message-@{field.id}-input">
+            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
         }
         }
 
