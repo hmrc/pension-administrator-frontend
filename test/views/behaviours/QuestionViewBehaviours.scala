@@ -40,7 +40,8 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     val field: Field = form.apply(fieldName)
 
     text match {
-      case Some(s) => assertRenderedByIdWithText(doc, field.id, s)
+      case Some(s) =>
+        assertRenderedByIdWithText(doc, field.id, s)
       case _ => assertRenderedById(doc, field.id)
     }
   }
@@ -55,7 +56,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     assertFieldExists(
       createView,
       "error-message-date",
-      Some(messages("error.invalid_date")),
+      Some(messages("site.error") + " " + messages("error.invalid_date")),
       Some(FormError(s"$fieldName.$datePart", "error-text"))
     )
   }
@@ -165,7 +166,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
       assertFieldExists(
         createView,
         s"error-message-$fieldName-input",
-        Some("dummy-error-message-key"),
+        Some(messages("site.error") + " " + messages("dummy-error-message-key")),
         Some(FormError(fieldName, "dummy-error-message-key"))
       )
     }
