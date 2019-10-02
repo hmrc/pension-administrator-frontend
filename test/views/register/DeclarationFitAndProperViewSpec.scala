@@ -44,7 +44,7 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
     "show an error in the value field's label when rendered with an error" in {
       val doc = asDocument(createViewUsingForm(form.withError(error)))
       val errorSpan = doc.getElementsByClass("error-notification").first
-      errorSpan.text mustBe messages(errorMessage)
+      errorSpan.text mustBe s"${messages("site.error")} ${messages(errorMessage)}"
     }
 
     "display the declaration" in {

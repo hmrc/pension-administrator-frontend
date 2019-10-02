@@ -54,7 +54,9 @@
                         <span class="visually-hidden">@messages("common.declaration.legend")</span>
 
                         @form("agree").errors.map { error =>
-                            <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
+                            <span class="error-notification" id="error-message-agree-input">
+                                <span class="visually-hidden">@messages("site.error")</span>
+                                @messages(error.message, error.args: _*)</span>
                         }
                     </legend>
                     <div class="multiple-choice">

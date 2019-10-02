@@ -203,7 +203,7 @@ trait ViewSpecBase extends SpecBase {
       )
   }
 
-  def assertLink(doc: Document, linkId: String, url: String): Assertion = {
+  def assertLink(doc: Document, linkId: String, url: => String): Assertion = {
     val link = doc.select(s"a[id=$linkId]")
     assert(link.size() == 1, s"\n\nLink $linkId is not displayed")
     val href = link.attr("href")
