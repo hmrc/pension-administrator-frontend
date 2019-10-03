@@ -35,7 +35,6 @@ trait Transforms {
     }
 
   def noSpaceWithUpperCaseTransform(value: String): String = {
-    //strip(value).toUpperCase
     toUpperCaseAlphaOnly(strip(value))
   }
 
