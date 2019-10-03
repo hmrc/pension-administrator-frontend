@@ -36,7 +36,7 @@ trait UtrMapping extends Mappings with Transforms {
       "utr" -> mandatoryIfTrue(
         "utr.hasUtr",
         text(requiredUtrKey)
-          .transform(standardTextTransform, noTransform)
+          .transform(strip, noTransform)
           .verifying(
             firstError(
               maxLength(UtrMapping.utrMaxLength, utrLengthKey),
