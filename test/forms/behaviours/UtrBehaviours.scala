@@ -75,7 +75,7 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
 
     "remove spaces" in {
       val actual = testForm.bind(Map("utr.utr" -> "  123 456 7890 "))
-      actual.errors.isEmpty shouldBe true
+      actual.errors shouldBe empty
     }
 
     behave like formWithRegex(testForm, valid, invalid)

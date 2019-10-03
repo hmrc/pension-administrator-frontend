@@ -37,7 +37,7 @@ POST       /registered-in-uk                            controllers.register.Bus
 GET        /:mode/registered-in-uk                      controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode)
 POST       /:mode/registered-in-uk                      controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
 
-GET        /register-as-business                        controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
+GET        /register-as-business                forms.mappings.UtrMappingSpec        controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
 POST       /register-as-business                        controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
 
 GET        /details-updated                             controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
