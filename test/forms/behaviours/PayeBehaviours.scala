@@ -19,6 +19,7 @@ package forms.behaviours
 import forms.FormSpec
 import forms.mappings.{PayeMapping, RegexBehaviourSpec}
 import models.Paye
+import models.Paye.Yes
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.{Form, FormError}
 
@@ -73,6 +74,12 @@ class PayeBehaviours extends FormSpec with PayeMapping with RegexBehaviourSpec {
     )
 
     behave like formWithRegex(testForm, valid, invalid)
+
+    "Remove spaces and convert to upper case" in {
+      val result = testForm.bind(Map("paye.hasPaye" -> "true", "paye.paye" -> " 123/ab5 6 7 89 "))
+      result.errors shouldBe empty
+      result.value shouldBe Some(Yes("123AB56789"))
+    }
   }
 
 }
