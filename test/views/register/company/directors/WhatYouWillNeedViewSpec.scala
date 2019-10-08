@@ -16,7 +16,6 @@
 
 package views.register.company.directors
 
-import play.api.mvc.Call
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.whatYouWillNeed
 
@@ -24,7 +23,7 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "whatYouWillNeed.directors"
 
-  private def createView = () => whatYouWillNeed(frontendAppConfig, Call("",""))(fakeRequest, messages)
+  private def createView = () => whatYouWillNeed(frontendAppConfig, controllers.routes.IndexController.onPageLoad())(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPage(createView, messageKeyPrefix,

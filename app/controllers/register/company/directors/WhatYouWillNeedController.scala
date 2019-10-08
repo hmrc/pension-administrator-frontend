@@ -35,7 +35,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = authenticate.async {
     implicit request =>
-      val href = Call("", "")
+      val href = controllers.routes.IndexController.onPageLoad()
       Future.successful(Ok(whatYouWillNeed(appConfig, href)))
   }
 }

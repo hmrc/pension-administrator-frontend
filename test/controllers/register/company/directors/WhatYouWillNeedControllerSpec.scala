@@ -19,7 +19,6 @@ package controllers.register.company.directors
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
-import play.api.mvc.Call
 import play.api.test.Helpers._
 import views.html.register.company.directors.whatYouWillNeed
 
@@ -32,7 +31,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       FakeAuthAction
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig, Call("",""))(fakeRequest, messages).toString
+  private def viewAsString() = whatYouWillNeed(frontendAppConfig, controllers.routes.IndexController.onPageLoad())(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
