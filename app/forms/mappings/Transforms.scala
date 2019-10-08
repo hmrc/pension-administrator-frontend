@@ -28,12 +28,18 @@ trait Transforms {
     value.trim
   }
 
+  def toUpperCaseAlphaOnly(value: String): String =
+    value.map {
+      case c if ('a' to 'z').contains(c) => c.toUpper
+      case c                                    => c
+    }
+
   def noSpaceWithUpperCaseTransform(value: String): String = {
-    strip(value).toUpperCase
+    toUpperCaseAlphaOnly(strip(value))
   }
 
   def payeTransform(value: String): String = {
-    value.replaceAll("[\\\\/]", "").trim
+    noSpaceWithUpperCaseTransform(value).replaceAll("[\\\\/]", "").trim
   }
 
   protected def strip(value: String): String = {

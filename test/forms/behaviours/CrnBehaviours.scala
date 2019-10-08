@@ -50,6 +50,12 @@ trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints
         FormError(fieldName, keyCrnInvalid, Seq(crnRegex))
       )
 
+      "Remove spaces and convert to upper case" in {
+        val result = form.bind(Map(fieldName -> " 12 3a5 6 78 "))
+        result.errors shouldBe empty
+        result.value shouldBe Some("123A5678")
+      }
+
     }
 
   }

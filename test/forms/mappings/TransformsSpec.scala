@@ -36,4 +36,15 @@ class TransformsSpec extends WordSpec with MustMatchers with TableDrivenProperty
     }
   }
 
+  "toUpperCaseAlphaOnly" must {
+    "convert Alpha to uppercase" in {
+      val actual = toUpperCaseAlphaOnly("abcdef")
+      actual mustBe "ABCDEF"
+    }
+    "convert Alpha to uppercase not control character" in {
+      val actual = toUpperCaseAlphaOnly("""abcÿdef""")
+      actual mustBe """ABCÿDEF"""
+    }
+  }
+
 }

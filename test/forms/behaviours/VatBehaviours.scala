@@ -41,7 +41,7 @@ trait VatBehaviours extends FormSpec with Generators with PropertyChecks with Co
         result.errors shouldBe Seq(FormError("vat.vat", requiredVatKey))
       }
 
-      Seq("AB123490", "AO111111B", "ORA12345C", "AB0202020", "AB040404E").foreach { vat =>
+      Seq("AB123490", "AO111111B", "ORA12345C", "AB0202020", "AB040404e").foreach { vat =>
         s"fail to bind when VAT $vat is invalid" in {
           val result = testForm.bind(Map("vat.hasVat" -> "true", "vat.vat" -> vat))
           result.errors shouldBe Seq(FormError("vat.vat", invalidVatKey, Seq(vatRegex)))
@@ -55,7 +55,7 @@ trait VatBehaviours extends FormSpec with Generators with PropertyChecks with Co
         }
       }
 
-      Seq("9 9 9 9 9 9 9 9 9 ", "999999999").foreach {
+      Seq(" 9 9 9 9 9 9 9 9 9 ", "999999999").foreach {
         validVat =>
           s"successfully bind when yes is selected and valid VAT $validVat is provided" in {
             val form = testForm.bind(Map("vat.hasVat" -> "true", "vat.vat" -> validVat))
