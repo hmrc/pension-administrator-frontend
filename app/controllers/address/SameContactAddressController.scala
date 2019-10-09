@@ -35,6 +35,7 @@ import scala.concurrent.Future
 
 trait SameContactAddressController extends FrontendController with Retrievals with I18nSupport {
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+
   protected def appConfig: FrontendAppConfig
 
   protected def dataCacheConnector: UserAnswersCacheConnector
@@ -69,35 +70,26 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
     form.bindFromRequest().fold(
       formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
       value => {
-        val hasAnswerChanged = existingValue match {
-          case None => true
-          case Some(existing) => existing != value
-        }
-        if (hasAnswerChanged) {
-          if (value) {
-            dataCacheConnector.save(request.externalId, id, value).flatMap {
-              _ =>
-                getResolvedAddress(viewModel.address) match {
-                  case None =>
-                    dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
-                      cacheMap =>
-                        Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
-                    }
-                  case Some(address) =>
-                    dataCacheConnector.save(request.externalId, contactId, address).map {
-                      cacheMap =>
-                        Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
-                    }
-                }
-            }
-          } else {
-            dataCacheConnector.save(request.externalId, id, value).map {
-              cacheMap =>
-                Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
-            }
+        if (value) {
+          dataCacheConnector.save(request.externalId, id, value).flatMap { _ =>
+              getResolvedAddress(viewModel.address) match {
+                case None =>
+                  dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
+                    cacheMap =>
+                      Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+                  }
+                case Some(address) =>
+                  dataCacheConnector.save(request.externalId, contactId, address).map {
+                    cacheMap =>
+                      Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+                  }
+              }
           }
         } else {
-          Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))
+          dataCacheConnector.save(request.externalId, id, value).map {
+            cacheMap =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+          }
         }
       }
     )
