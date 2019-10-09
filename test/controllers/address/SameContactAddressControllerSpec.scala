@@ -217,8 +217,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
       }
     }
 
-    "return a redirect and don't save the data when the data is not changed" in {
-
+    "return a redirect and save the data when the there is existing data and the data is not changed" in {
       import play.api.inject._
 
       val cacheConnector = mock[UserAnswersCacheConnector]
@@ -230,6 +229,13 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswers)))
       )) {
         app =>
+          when(cacheConnector.save[Boolean, FakeIdentifier.type](
+            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          when(cacheConnector.save[Address, ContactAddressIdentifier.type](
+            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
@@ -239,10 +245,9 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, never()).save(any(), any(), any())(any(), any(), any())
+          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
       }
     }
-
 
     "return a redirect when the submitted data is valid and address does not have line 2" in {
 
