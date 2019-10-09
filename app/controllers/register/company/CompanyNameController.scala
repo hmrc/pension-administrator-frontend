@@ -21,16 +21,15 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.CompanyNameFormProvider
-import forms.register.company.CompanyDetailsFormProvider
-import identifiers.register.company.{CompanyDetailsId, CompanyNameId}
+import identifiers.register.company.CompanyNameId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
-import views.html.register.company.{companyDetails, companyName}
+import utils.{Navigator, UserAnswers}
+import views.html.register.company.companyName
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -20,16 +20,13 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.CompanyNameFormProvider
-import forms.register.company.CompanyDetailsFormProvider
-import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.{CompanyDetailsId, CompanyNameId}
+import identifiers.register.company.CompanyNameId
 import models.NormalMode
-import models.register.company.CompanyDetails
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.{companyDetails, companyName}
+import views.html.register.company.companyName
 
 class CompanyNameControllerSpec extends ControllerSpecBase {
 
