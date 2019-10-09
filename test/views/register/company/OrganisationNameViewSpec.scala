@@ -24,14 +24,14 @@ import viewmodels.{OrganisationNameViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
 import views.html.organisationName
 
-class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
+class OrganisationNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
 
-  private val messageKeyPrefix = "companyName"
+  private val messageKeyPrefix = "companyNameNonUk"
 
   private lazy val viewModel =
     OrganisationNameViewModel(
-      title = "companyName.title",
-      heading = Message("companyName.heading"),
+      title = "companyNameNonUk.title",
+      heading = Message("companyNameNonUk.heading"),
       postCall = Call("POST", "http://www.test.com")
     )
 
@@ -65,7 +65,7 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url,
       "companyName")
 
-    behave like pageWithLabel(createViewUsingForm, "companyName", messages("companyName.heading"))
+    behave like pageWithLabel(createViewUsingForm, "companyName", messages("companyNameNonUk.heading"))
 
 
   }

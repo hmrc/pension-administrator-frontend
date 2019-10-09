@@ -42,8 +42,8 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
   private def companyNameViewModel(mode: Mode) =
     OrganisationNameViewModel(
       routes.CompanyRegisteredNameController.onSubmit(mode),
-      Message("companyName.title"),
-      Message("companyName.heading")
+      Message("companyNameNonUk.title"),
+      Message("companyNameNonUk.heading")
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

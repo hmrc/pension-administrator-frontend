@@ -52,8 +52,8 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
 
   def viewmodel = OrganisationNameViewModel(
     postCall = controllers.register.company.routes.CompanyRegisteredNameController.onSubmit(NormalMode),
-    title = "companyName.title",
-    heading = "companyName.heading"
+    title = "companyNameNonUk.title",
+    heading = "companyNameNonUk.heading"
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
