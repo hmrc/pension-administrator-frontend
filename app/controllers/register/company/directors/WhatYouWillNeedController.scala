@@ -30,10 +30,11 @@ import scala.concurrent.Future
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
+                                          val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction
                                          ) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = authenticate.async {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode)).async {
     implicit request =>
       val href = controllers.routes.IndexController.onPageLoad()
       Future.successful(Ok(whatYouWillNeed(appConfig, href)))
