@@ -49,7 +49,7 @@ class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessTypeId.retrieve.right.map { businessType =>
-        get(CompanyUTRId, orgType(businessType), href(mode))
+        get(CompanyUTRId, toString(businessType), href(mode))
       }
   }
 
@@ -57,11 +57,11 @@ class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
     implicit request =>
 
             BusinessTypeId.retrieve.right.map { businessType =>
-              post(CompanyUTRId, orgType(businessType), href(mode), mode)
+              post(CompanyUTRId, toString(businessType), href(mode), mode)
             }
   }
 
   def href(mode: Mode): Call = routes.CompanyUTRController.onSubmit(mode)
-  def orgType(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
+  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
 
 }

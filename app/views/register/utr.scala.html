@@ -19,10 +19,10 @@
 @import models.Mode
 @import utils.FormHelpers
 
-@(appConfig: FrontendAppConfig, form: Form[_], orgType: String, href: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("utr.title", orgType),
+    title = messages("utr.title", businessType),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -30,7 +30,7 @@
 
        @components.error_summary(form.errors)
 
-       @components.heading(messages("utr.heading", orgType))
+       @components.heading(messages("utr.heading", businessType))
 
        <p>@messages("utr.p1")</p>
        <p>@messages("utr.p2")</p>
@@ -38,7 +38,7 @@
 
        @components.input_text(
            field = form("value"),
-           label = messages("utr.heading", orgType),
+           label = messages("utr.heading", businessType),
            labelClass = Some("visually-hidden")
        )
 

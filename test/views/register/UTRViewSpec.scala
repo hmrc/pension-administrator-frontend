@@ -27,23 +27,23 @@ class UTRViewSpec extends QuestionViewBehaviours[String] {
   val form: Form[String] = new UTRFormProvider()()
 
   private val messageKeyPrefix = "utr"
-  private val orgType = "limited company"
+  private val businessType = "limited company"
   private val onwardUrl = controllers.routes.IndexController.onPageLoad()
 
-  private def createView = () => utr(frontendAppConfig, form, orgType, onwardUrl)(fakeRequest, messages)
+  private def createView = () => utr(frontendAppConfig, form, businessType, onwardUrl)(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = utr(frontendAppConfig, form, orgType, onwardUrl)(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]) = utr(frontendAppConfig, form, businessType, onwardUrl)(fakeRequest, messages)
 
   "UTR view" must {
     
     "display the correct browser title" in {
       val doc = asDocument(createView())
-      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title", orgType)  + " - " + messagesApi("pension.scheme.administrator.title"))
+      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title", businessType)  + " - " + messagesApi("pension.scheme.administrator.title"))
     }
 
     "display the correct page header" in {
       val doc = asDocument(createView())
-      assertPageTitleEqualsMessage(doc, Message(s"$messageKeyPrefix.heading", orgType))
+      assertPageTitleEqualsMessage(doc, Message(s"$messageKeyPrefix.heading", businessType))
     }
 
 
