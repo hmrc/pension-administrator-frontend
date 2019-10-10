@@ -370,7 +370,6 @@ whatYouWillNeed.main.body.item2 = the phone number and email address of a contac
 whatYouWillNeed.main.body.item3 = the details of all the directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
 whatYouWillNeed.main.body.hint = The information you enter will be saved as you progress. If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
 
-
 individualDetailsCorrect.title = Are your details correct?
 individualDetailsCorrect.heading = Are your details correct?
 individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
