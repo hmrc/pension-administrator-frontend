@@ -403,8 +403,8 @@ individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or i
 individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 
-businessType.title = What is your business type?
-businessType.heading = What is your business type?
+businessType.title = What type of business do you want to register?
+businessType.heading = What type of business do you want to register?
 businessType.limitedCompany = Limited company
 businessType.businessPartnership = Business partnership
 businessType.limitedPartnership = Limited partnership
@@ -777,8 +777,8 @@ adviser-delete-link-additionalText = If you delete {0}, you will need to give th
 director.supersection.header = Director details
 partner.supersection.header = Partner details
 
-areYouInUK.title = Country of work
-areYouInUK.heading = Is the business registered in the UK?
+areYouInUK.title = Is the company registered in the UK?
+areYouInUK.heading = Is the company registered in the UK?
 areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
@@ -803,8 +803,8 @@ outsideEuEea.heading = You cannot register {0} as a PSA
 outsideEuEea.currentCountry.text = This is because {0} was registered in {1} and outside of the European Union and European Economic Area.
 outsideEuEea.body = Only {0} registered inside the European Union and European Economic Area can register as a PSA.
 
-registerAsBusiness.title = Who do you want to register as the scheme administrator?
-registerAsBusiness.heading = Who do you want to register as the scheme administrator?
+registerAsBusiness.title = What do you want to register as the scheme administrator?
+registerAsBusiness.heading = What do you want to register as the scheme administrator?
 registerAsBusiness.error.required = You must make a selection
 registerAsBusiness.no.label = Yourself as an individual
 registerAsBusiness.yes.label = Company or partnership

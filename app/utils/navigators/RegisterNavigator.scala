@@ -33,9 +33,25 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
                                  ) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
+    case AreYouInUKId =>
+
+
+
+      countryOfRegistrationRoutes(from.userAnswers)
+
     case RegisterAsBusinessId =>
-      individualOrOganisationRoutes(from.userAnswers)
+      from.userAnswers.get(RegisterAsBusinessId) match {
+        case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        case Some(true) =>
+          NavigateTo.dontSave(controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode))
+        case _ =>
+          NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+      }
+
+
+
+//    case RegisterAsBusinessId =>
+//      individualOrOganisationRoutes(from.userAnswers)
     case BusinessTypeId => businessTypeRoutes(from.userAnswers)
     case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
@@ -75,9 +91,11 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def countryOfRegistrationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(AreYouInUKId) match {
       case Some(false) =>
-        NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
+        //NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
       case Some(true) =>
-        NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+        //NavigateTo.dontSave(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
       case _ =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
