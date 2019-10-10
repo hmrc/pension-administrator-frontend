@@ -67,3 +67,6 @@ GET        /:index/already-deleted                              controllers.regi
 
 GET        /:index/is-this-previous-address                   controllers.register.company.directors.DirectorConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
 POST       /:index/is-this-previous-address                   controllers.register.company.directors.DirectorConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
+
+GET        /:index/what-you-will-need                   controllers.register.company.directors.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode, index: Index)
+GET        /:index/what-you-will-need                   controllers.register.company.directors.WhatYouWillNeedController.onPageLoad(mode: Mode = UpdateMode, index: Index)
