@@ -21,9 +21,11 @@ import views.html.register.company.directors.whatYouWillNeed
 
 class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "whatYouWillNeed.directors"
+  private def call = controllers.routes.IndexController.onPageLoad()
 
-  private def createView = () => whatYouWillNeed(frontendAppConfig, controllers.routes.IndexController.onPageLoad())(fakeRequest, messages)
+  private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
+
+  private def createView = () => whatYouWillNeed(frontendAppConfig, call)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPage(createView, messageKeyPrefix,
@@ -32,6 +34,14 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
       "body.item5", "body.item6", "body.item7", "body.item8")
 
     behave like pageWithSubmitButton(createView)
+
+    "have anchor element with correct target and content" in {
+      asDocument(createView()) must haveLinkWithUrlAndContent(
+        linkId = "submit",
+        url = call.url,
+        expectedContent = messages("site.continue")
+      )
+    }
   }
 
 }
