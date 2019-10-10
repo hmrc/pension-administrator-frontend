@@ -20,8 +20,10 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.CompanyNameFormProvider
+import identifiers.register.BusinessTypeId
 import identifiers.register.company.CompanyNameId
 import models.NormalMode
+import models.register.BusinessType
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -34,8 +36,14 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new CompanyNameFormProvider()
   private val form = formProvider()
+  private val businessType = "limited company"
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private val dataRetrievalAction: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(BusinessTypeId.toString -> BusinessType.LimitedCompany.toString
+    )))
+
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction) =
     new CompanyNameController(
       frontendAppConfig,
       messagesApi,
@@ -48,7 +56,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form) = companyName(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = companyName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages).toString
 
   "CompanyName Controller" must {
 
@@ -61,7 +69,8 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val companyName = "test name"
-      val validData = Json.obj(CompanyNameId.toString -> companyName)
+      val validData = Json.obj(BusinessTypeId.toString -> BusinessType.LimitedCompany.toString,
+        CompanyNameId.toString -> companyName)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)

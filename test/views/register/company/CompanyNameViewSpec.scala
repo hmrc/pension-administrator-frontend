@@ -19,22 +19,32 @@ package views.register.company
 import forms.CompanyNameFormProvider
 import models.NormalMode
 import play.api.data.Form
+import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.company.companyName
 
 class CompanyNameViewSpec extends QuestionViewBehaviours[String] {
 
   private val messageKeyPrefix = "companyName"
+  private val businessType = "limited company"
 
   val form = new CompanyNameFormProvider()()
 
-  private def createView = () => companyName(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView = () => companyName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => companyName(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => companyName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
 
   "Company Name view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    "display the correct browser title" in {
+      val doc = asDocument(createView())
+      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title", businessType)  + " - " + messagesApi("pension.scheme.administrator.title"))
+    }
+
+    "display the correct page header" in {
+      val doc = asDocument(createView())
+      assertPageTitleEqualsMessage(doc, Message(s"$messageKeyPrefix.heading", businessType))
+    }
 
     behave like pageWithSubmitButton(createView)
 
