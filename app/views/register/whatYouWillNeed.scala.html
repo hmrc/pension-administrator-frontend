@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("whatYouWillNeed.main.title"),
@@ -26,7 +26,7 @@
 
     @components.heading(messages("whatYouWillNeed.main.heading"))
 
-    @components.paragraph_text(messages("whatYouWillNeed.body.text"))
+    @components.paragraph_text(messages("whatYouWillNeed.main.body.text"))
 
     <ul class="list list-bullet">
         <li>@messages("whatYouWillNeed.main.body.item1")</li>
@@ -34,10 +34,10 @@
         <li>@messages("whatYouWillNeed.main.body.item3")</li>
     </ul>
 
-    <div class="panel panel-border-wide"><p>@messages("whatYouWillNeed.main.body.hint")</p></div>
+    <div id="hintText" class="panel panel-border-wide"><p>@messages("whatYouWillNeed.main.body.hint")</p></div>
 
     <div class="section">
-        @components.submit_button("site.continue")
+        @components.button_link("site.continue", href.url, "submit")
     </div>
 
 
