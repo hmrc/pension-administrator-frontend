@@ -273,6 +273,18 @@ directorDetails.title = Company director
 directorDetails.heading = Company director
 directorDetails.checkYourAnswersLabel = Company director
 
+whatYouWillNeed.directorsOrPartners.title = What you will need
+whatYouWillNeed.directorsOrPartners.heading = Directors
+whatYouWillNeed.directorsOrPartners.body.text = For every director associated with the company you’re registering, you will need to tell us each director’s:
+whatYouWillNeed.directorsOrPartners.body.item1 = name
+whatYouWillNeed.directorsOrPartners.body.item2 = date of birth
+whatYouWillNeed.directorsOrPartners.body.item3 = National Insurance number, or reason why they do not have one
+whatYouWillNeed.directorsOrPartners.body.item4 = Unique Taxpayer Reference (UTR), or reason why they do not have one
+whatYouWillNeed.directorsOrPartners.body.item5 = current address
+whatYouWillNeed.directorsOrPartners.body.item6 = previous address if they have been at their current address for less than 1 year
+whatYouWillNeed.directorsOrPartners.body.item7 = contact email address
+whatYouWillNeed.directorsOrPartners.body.item8 = contact phone number
+
 partnerDetails.title = Partner
 partnerDetails.heading = Partner
 
