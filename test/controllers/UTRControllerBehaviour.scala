@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.ControllerSpecBase
 import forms.UTRFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -27,7 +26,7 @@ import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
-import views.html.register.utr
+import views.html.utr
 
 trait UTRControllerBehaviour {
   this: ControllerSpecBase =>

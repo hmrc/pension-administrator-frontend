@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.Variations
 import controllers.actions.AllowAccessActionProvider
-import forms.{PersonDetailsFormProvider, UTRFormProvider}
+import forms.UTRFormProvider
 import identifiers.TypedIdentifier
+import models.Mode
 import models.requests.DataRequest
-import models.{Mode, PersonDetails}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.register.utr
+import views.html.utr
 
 import scala.concurrent.Future
 
-trait UTRController extends FrontendController with I18nSupport with Variations {
+trait UTRController extends FrontendController with I18nSupport {
+
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
   protected val allowAccess: AllowAccessActionProvider
-
-  override implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 
   def appConfig: FrontendAppConfig
 

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.register
+package views
 
 import forms.UTRFormProvider
 import play.api.data.Form
 import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
-import views.html.register.utr
+import views.html.utr
 
 class UTRViewSpec extends QuestionViewBehaviours[String] {
 
