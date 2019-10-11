@@ -55,45 +55,43 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (DeclarationFitAndProperId, emptyAnswers, confirmation, false, None, false),
 
 
-
-        (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
-        (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
-
+    (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
 
 
-        (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, isCompanyRegisteredInUKPage, false, None, false),
-        (RegisterAsBusinessId, registerAsBusinessIdIndividual, isIndividualBasedInUKPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, isCompanyRegisteredInUKPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdIndividual, isIndividualBasedInUKPage, false, None, false),
 
 
 
 
 
-//    (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
-//    (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
-//    (AreYouInUKId, notInUkCompanyCheckMode, registerAsBusiness, false, Some(nonUkCompanyAddress), false),
-//    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, registerAsBusiness, false, Some(registerAsBusiness), false),
-//    (AreYouInUKId, notInUkPartnershipCheckMode, registerAsBusiness, false, Some(nonUkPartnershipAddress), false),
+    //    (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
+    //    (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
+    //    (AreYouInUKId, notInUkCompanyCheckMode, registerAsBusiness, false, Some(nonUkCompanyAddress), false),
+    //    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, registerAsBusiness, false, Some(registerAsBusiness), false),
+    //    (AreYouInUKId, notInUkPartnershipCheckMode, registerAsBusiness, false, Some(nonUkPartnershipAddress), false),
 
-//    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessType, false, None, false),
-//    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualName, false, None, false),
-//    (RegisterAsBusinessId, ukBusiness, ukBusinessType, false, None, false),
-//    (RegisterAsBusinessId, ukIndividual, ukIndividualDetailsCorrect, false, None, false),
+    //    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessType, false, None, false),
+    //    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualName, false, None, false),
+    //    (RegisterAsBusinessId, ukBusiness, ukBusinessType, false, None, false),
+    //    (RegisterAsBusinessId, ukIndividual, ukIndividualDetailsCorrect, false, None, false),
 
     (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, false, None, false),
     (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, false, None, false)
   )
 
-//  def routesWithIVDisabled(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-//    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-//    (AreYouInUKId, inUk, ukBusinessType, false, Some(ukBusinessType), false),
-//    (AreYouInUKId, notInUk, registerAsBusiness, false, Some(registerAsBusiness), false),
-//    (AreYouInUKId, notInUkCompanyCheckMode, registerAsBusiness, false, Some(nonUkCompanyAddress), false),
-//    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, registerAsBusiness, false, Some(registerAsBusiness), false),
-//    (AreYouInUKId, notInUkPartnershipCheckMode, registerAsBusiness, false, Some(nonUkPartnershipAddress), false),
-//
-//    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessType, false, None, false),
-//    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualName, false, None, false)
-//  )
+  //  def routesWithIVDisabled(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+  //    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+  //    (AreYouInUKId, inUk, ukBusinessType, false, Some(ukBusinessType), false),
+  //    (AreYouInUKId, notInUk, registerAsBusiness, false, Some(registerAsBusiness), false),
+  //    (AreYouInUKId, notInUkCompanyCheckMode, registerAsBusiness, false, Some(nonUkCompanyAddress), false),
+  //    (AreYouInUKId, notInUkCompanyCheckModeNoBusinessTypeId, registerAsBusiness, false, Some(registerAsBusiness), false),
+  //    (AreYouInUKId, notInUkPartnershipCheckMode, registerAsBusiness, false, Some(nonUkPartnershipAddress), false),
+  //
+  //    (RegisterAsBusinessId, nonUkBusiness, nonUkBusinessType, false, None, false),
+  //    (RegisterAsBusinessId, nonUkIndividual, nonUkIndividualName, false, None, false)
+  //  )
 
   //scalastyle:on line.size.limit
   val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, fakeFeatureSwitchManagerService())
@@ -132,8 +130,8 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val nonUkPartnershipRegisteredName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
   lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
-  val isCompanyRegisteredInUKPage = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
-  val isIndividualBasedInUKPage = controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode)
+  private val isCompanyRegisteredInUKPage = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
+  private val isIndividualBasedInUKPage = controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode)
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
@@ -182,7 +180,6 @@ object RegisterNavigatorSpec extends OptionValues {
   val nonUkPartnership: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
 
-
   //
 
   val registerAsBusinessIdCompanyOrPartnership: UserAnswers = UserAnswers()
@@ -190,8 +187,6 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val registerAsBusinessIdIndividual: UserAnswers = UserAnswers()
     .set(RegisterAsBusinessId)(false).asOpt.value
-
-
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
