@@ -45,7 +45,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         case Some(true) =>
           NavigateTo.dontSave(controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode))
         case _ =>
-          NavigateTo.dontSave(routes.IndividualDetailsCorrectController.onPageLoad(NormalMode))
+          NavigateTo.dontSave(routes.IndividualAreYouInUKController.onPageLoad(NormalMode))
       }
 
 
