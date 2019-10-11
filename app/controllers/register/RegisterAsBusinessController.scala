@@ -50,7 +50,7 @@ class RegisterAsBusinessController @Inject()(
 
       val preparedForm = request.userAnswers match {
         case None => form
-        case Some(ua) => ua.get(RegisterAsBusinessId).fold(form)(v => form.fill(v))
+        case Some(ua) => ua.get(RegisterAsBusinessId).fold(form)(form.fill)
       }
 
       Ok(registerAsBusiness(appConfig, preparedForm))
