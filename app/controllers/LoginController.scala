@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import models.{NormalMode, UserType}
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -36,10 +36,6 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>
-//      request.user.userType match {
-//        case UserType.Individual => Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode))
-//        case UserType.Organisation => Redirect(controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode))
-//      }
       Redirect(controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode))
   }
 }
