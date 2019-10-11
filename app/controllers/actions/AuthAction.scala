@@ -122,6 +122,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
+        println( "\n>>>>>>>>>>>>>>>HERE!!")
         ivConnector.startRegisterOrganisationAsIndividual(
           config.ukJourneyContinueUrl,
           s"${config.loginContinueUrl}/unauthorised"
