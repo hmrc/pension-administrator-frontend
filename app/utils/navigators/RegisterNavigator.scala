@@ -33,12 +33,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
                                  ) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AreYouInUKId =>
-
-
-
-      countryOfRegistrationRoutes(from.userAnswers)
-
+    case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
     case RegisterAsBusinessId =>
       from.userAnswers.get(RegisterAsBusinessId) match {
         case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
@@ -47,11 +42,6 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         case _ =>
           NavigateTo.dontSave(routes.IndividualAreYouInUKController.onPageLoad(NormalMode))
       }
-
-
-
-//    case RegisterAsBusinessId =>
-//      individualOrOganisationRoutes(from.userAnswers)
     case BusinessTypeId => businessTypeRoutes(from.userAnswers)
     case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
     case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))

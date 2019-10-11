@@ -59,6 +59,7 @@ trait AreYouInUKController extends FrontendController with I18nSupport {
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
+      println("\n>>>")
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors, viewmodel(mode)))),

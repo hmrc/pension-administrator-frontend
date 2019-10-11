@@ -61,6 +61,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 
 
+        (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, isCompanyRegisteredInUKPage, false, None, false),
+        (RegisterAsBusinessId, registerAsBusinessIdIndividual, isIndividualBasedInUKPage, false, None, false),
 
 
 
@@ -130,6 +132,9 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val nonUkPartnershipRegisteredName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
   lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
+  val isCompanyRegisteredInUKPage = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
+  val isIndividualBasedInUKPage = controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode)
+
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
   val haveAnAdviser: UserAnswers = UserAnswers(Json.obj())
@@ -175,6 +180,18 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val nonUkCompany: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
   val nonUkPartnership: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
+
+
+
+  //
+
+  val registerAsBusinessIdCompanyOrPartnership: UserAnswers = UserAnswers()
+    .set(RegisterAsBusinessId)(true).asOpt.value
+
+  val registerAsBusinessIdIndividual: UserAnswers = UserAnswers()
+    .set(RegisterAsBusinessId)(false).asOpt.value
+
+
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
