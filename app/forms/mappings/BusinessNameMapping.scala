@@ -14,10 +14,28 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms.mappings
 
-import identifiers.TypedIdentifier
+import play.api.data.Mapping
 
-case object CompanyNameId extends TypedIdentifier[String] {
-  override def toString: String = "companyName"
+trait BusinessNameMapping extends Mappings with Transforms {
+
+  def nameMapping(keyNameRequired: String, keyNameInvalid: String, keyNameMaxLength: String): Mapping[String] = {
+    text(keyNameRequired)
+      .transform(standardTextTransform, noTransform)
+      .verifying(
+        firstError(
+          maxLength(
+            BusinessNameMapping.maxLength,
+            keyNameMaxLength
+          ),
+          businessName(keyNameInvalid)
+        )
+      )
+  }
+
+}
+
+object BusinessNameMapping {
+  val maxLength = 105
 }

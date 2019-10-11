@@ -17,27 +17,27 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
-@import controllers.register.company.routes._
+@import controllers.register.routes._
 @import models.Mode
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, businessType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("companyName.title", businessType),
+title = messages("businessName.title", businessType),
 appConfig = appConfig,
 bodyClasses = None) {
 
-    @helpers.form(action = CompanyNameController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = BusinessNameController.onSubmit(mode), 'autoComplete -> "off") {
 
     @components.error_summary(form.errors)
 
-    @components.heading(messages("companyName.heading", businessType))
+    @components.heading(messages("businessName.heading", businessType))
 
     <p>@messages("companyName.p1")</p>
 
     @components.input_text(
         field = form("value"),
-        label = messages("companyName.heading"),
+        label = messages("businessName.heading"),
         labelClass = Some("visually-hidden")
     )
 

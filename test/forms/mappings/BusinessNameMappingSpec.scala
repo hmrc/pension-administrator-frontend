@@ -20,27 +20,27 @@ import forms.behaviours.StringFieldBehaviours
 import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class CompanyNameMappingSpec extends StringFieldBehaviours with CompanyNameMapping {
+class BusinessNameMappingSpec extends StringFieldBehaviours with BusinessNameMapping {
 
   private val requiredKey = "common.radio.error.required"
-  private val companyNameLengthKey = "common.error.vat.length"
-  private val invalidCompanyNameKey = "common.error.vat.invalid"
+  private val businessNameLengthKey = "common.error.vat.length"
+  private val invalidBusinessNameKey = "common.error.vat.invalid"
 
-  "CompanyNameMapping " should {
+  "BusinessNameMapping " should {
     val mapping = nameMapping(
       requiredKey,
-      invalidCompanyNameKey,
-      companyNameLengthKey
+      invalidBusinessNameKey,
+      businessNameLengthKey
     )
     val fieldName = "value"
 
     val form: Form[String] = Form("value" -> mapping)
 
-    "behave like a mapping with a company name field" should {
+    "behave like a mapping with a business name field" should {
       behave like fieldThatBindsValidData(
         form,
         fieldName,
-        RegexpGen.from(companyNameRegex)
+        RegexpGen.from(businessNameRegex)
       )
 
       behave like mandatoryField(
@@ -51,22 +51,22 @@ class CompanyNameMappingSpec extends StringFieldBehaviours with CompanyNameMappi
 
       behave like formWithTransform(
         form,
-        Map(fieldName -> " test company name "),
-        "test company name"
+        Map(fieldName -> " test business name "),
+        "test business name"
       )
 
       behave like fieldWithMaxLength(
         form,
         fieldName,
-        maxLength = CompanyNameMapping.maxLength,
-        lengthError = FormError(fieldName, companyNameLengthKey, Seq(CompanyNameMapping.maxLength))
+        maxLength = BusinessNameMapping.maxLength,
+        lengthError = FormError(fieldName, businessNameLengthKey, Seq(BusinessNameMapping.maxLength))
       )
 
       behave like fieldWithRegex(
         form,
         fieldName,
         "[invalid]",
-        FormError(fieldName, invalidCompanyNameKey, Seq(companyNameRegex))
+        FormError(fieldName, invalidBusinessNameKey, Seq(businessNameRegex))
       )
     }
 

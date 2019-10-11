@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package views.register.company
+package views.register
 
-import forms.CompanyNameFormProvider
+import forms.BusinessNameFormProvider
 import models.NormalMode
 import play.api.data.Form
 import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
-import views.html.register.company.companyName
+import views.html.register.businessName
 
-class CompanyNameViewSpec extends QuestionViewBehaviours[String] {
+class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
 
-  private val messageKeyPrefix = "companyName"
+  private val messageKeyPrefix = "businessName"
   private val businessType = "limited company"
 
-  val form = new CompanyNameFormProvider()()
+  val form = new BusinessNameFormProvider()()
 
-  private def createView = () => companyName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
+  private def createView = () => businessName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => companyName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => businessName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
 
   "Company Name view" must {
 
@@ -51,7 +51,7 @@ class CompanyNameViewSpec extends QuestionViewBehaviours[String] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.company.routes.CompanyNameController.onSubmit(NormalMode).url,
+      controllers.register.routes.BusinessNameController.onSubmit(NormalMode).url,
       "value")
 
   }

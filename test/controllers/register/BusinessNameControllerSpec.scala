@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.CompanyNameFormProvider
-import identifiers.register.BusinessTypeId
-import identifiers.register.company.CompanyNameId
+import forms.BusinessNameFormProvider
+import identifiers.register.{BusinessNameId, BusinessTypeId}
 import models.NormalMode
 import models.register.BusinessType
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.companyName
+import views.html.register.businessName
 
-class CompanyNameControllerSpec extends ControllerSpecBase {
+class BusinessNameControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new CompanyNameFormProvider()
+  private val formProvider = new BusinessNameFormProvider()
   private val form = formProvider()
   private val businessType = "limited company"
 
@@ -44,7 +43,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
 
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction) =
-    new CompanyNameController(
+    new BusinessNameController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -56,7 +55,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewAsString(form: Form[_] = form) = companyName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = businessName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages).toString
 
   "CompanyName Controller" must {
 
@@ -70,7 +69,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
       val companyName = "test name"
       val validData = Json.obj(BusinessTypeId.toString -> BusinessType.LimitedCompany.toString,
-        CompanyNameId.toString -> companyName)
+        BusinessNameId.toString -> companyName)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -89,7 +88,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-      FakeUserAnswersCacheConnector.verify(CompanyNameId, "value 1")
+      FakeUserAnswersCacheConnector.verify(BusinessNameId, "value 1")
 
     }
 

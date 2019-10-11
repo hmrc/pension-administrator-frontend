@@ -13,11 +13,6 @@ POST       /contact-details                             controllers.register.com
 GET        /:mode/contact-details                      controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode)
 POST       /:mode/contact-details                      controllers.register.company.ContactDetailsController.onSubmit(mode: Mode)
 
-GET        /company-name                                controllers.register.company.CompanyNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /company-name                                controllers.register.company.CompanyNameController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/company-name                          controllers.register.company.CompanyNameController.onPageLoad(mode: Mode)
-POST       /:mode/company-name                          controllers.register.company.CompanyNameController.onSubmit(mode: Mode)
-
 GET        /company-details                             controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /company-details                             controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/company-details                      controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode)

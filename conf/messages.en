@@ -929,9 +929,9 @@ useOrganisationCredentials.p2.link = log in with a Government Gateway account
 useOrganisationCredentials.p3 = If you do not have a Government Gateway account for an organisation, you should {0}.
 useOrganisationCredentials.p3.link = create one first
 
-companyName.title = What is the name of the {0} you want to register?
-companyName.heading = What is the name of the {0} you want to register?
-companyName.p1 = This is the name registered with Companies House.
-companyName.error.required = Enter a company name
-companyName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
-companyName.error.length = Company name must be 105 characters or fewer
+businessName.title = What is the name of the {0} you want to register?
+businessName.heading = What is the name of the {0} you want to register?
+businessName.p1 = This is the name registered with Companies House.
+businessName.error.required = Enter a company name
+businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
+businessName.error.length = Company name must be 105 characters or fewer

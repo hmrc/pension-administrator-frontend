@@ -58,3 +58,8 @@ GET        /declare-after-changing-details              controllers.register.Var
 POST       /declare-after-changing-details              controllers.register.VariationDeclarationController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /incomplete-changes                          controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)
+
+GET        /company-name                                controllers.register.BusinessNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /company-name                                controllers.register.BusinessNameController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/company-name                          controllers.register.BusinessNameController.onPageLoad(mode: Mode)
+POST       /:mode/company-name                          controllers.register.BusinessNameController.onSubmit(mode: Mode)

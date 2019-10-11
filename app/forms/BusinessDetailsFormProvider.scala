@@ -30,7 +30,7 @@ class BusinessDetailsFormProvider(isUK: Boolean) extends Mappings with Transform
             model.companyNameMaxLength,
             model.companyNameLengthMsg
           ),
-          companyName(model.companyNameInvalidMsg)
+          businessName(model.companyNameInvalidMsg)
         )
       )
     Form(
