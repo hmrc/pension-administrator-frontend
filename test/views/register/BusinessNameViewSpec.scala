@@ -27,12 +27,13 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
 
   private val messageKeyPrefix = "businessName"
   private val businessType = "limited company"
+  private val href = controllers.routes.IndexController.onPageLoad()
 
   val form = new BusinessNameFormProvider()()
 
-  private def createView = () => businessName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
+  private def createView = () => businessName(frontendAppConfig, form, NormalMode, businessType, href)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => businessName(frontendAppConfig, form, NormalMode, businessType)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => businessName(frontendAppConfig, form, NormalMode, businessType, href)(fakeRequest, messages)
 
   "Company Name view" must {
 
@@ -51,7 +52,7 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.routes.BusinessNameController.onSubmit(NormalMode).url,
+      href.url,
       "value")
 
   }

@@ -20,20 +20,20 @@
 @import controllers.register.routes._
 @import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, businessType: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = messages("businessName.title", businessType),
 appConfig = appConfig,
 bodyClasses = None) {
 
-    @helpers.form(action = BusinessNameController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = href, 'autoComplete -> "off") {
 
     @components.error_summary(form.errors)
 
     @components.heading(messages("businessName.heading", businessType))
 
-    <p>@messages("companyName.p1")</p>
+    <p>@messages("businessName.p1")</p>
 
     @components.input_text(
         field = form("value"),

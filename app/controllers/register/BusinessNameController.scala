@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -26,34 +25,35 @@ import identifiers.register.{BusinessNameId, BusinessTypeId}
 import models.Mode
 import models.register.BusinessType
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, Call}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import views.html.register.businessName
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class BusinessNameController @Inject()(appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       dataCacheConnector: UserAnswersCacheConnector,
-                                       @RegisterCompany navigator: Navigator,
-                                       authenticate: AuthAction,
-                                       allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: BusinessNameFormProvider
-                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+trait BusinessNameController extends FrontendController with I18nSupport with Retrievals {
 
-  private val form = formProvider()
+  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+
+  def appConfig: FrontendAppConfig
+  def cacheConnector: UserAnswersCacheConnector
+  def navigator: Navigator
+  def authenticate: AuthAction
+  def allowAccess: AllowAccessActionProvider
+  def getData: DataRetrievalAction
+  def requireData: DataRequiredAction
+  def href: Mode => Call
+
+  private val form = new BusinessNameFormProvider()()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
   implicit request =>
-  val prepareForm = request.userAnswers.get(BusinessNameId).fold(form)(v => form.fill(v))
+  val prepareForm = request.userAnswers.get(BusinessNameId).fold(form)(form.fill)
     BusinessTypeId.retrieve.right.map { businessType =>
-      Future.successful(Ok(businessName(appConfig, prepareForm, mode, toString(businessType))))
+      Future.successful(Ok(businessName(appConfig, prepareForm, mode, toString(businessType), href(mode))))
     }
 
 }
@@ -63,10 +63,10 @@ class BusinessNameController @Inject()(appConfig: FrontendAppConfig,
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           BusinessTypeId.retrieve.right.map { businessType =>
-            Future.successful(BadRequest(businessName(appConfig, formWithErrors, mode, toString(businessType))))
+            Future.successful(BadRequest(businessName(appConfig, formWithErrors, mode, toString(businessType), href(mode))))
           },
         value =>
-          dataCacheConnector.save(request.externalId, BusinessNameId, value).map(cacheMap =>
+          cacheConnector.save(request.externalId, BusinessNameId, value).map(cacheMap =>
             Redirect(navigator.nextPage(BusinessNameId, mode, UserAnswers(cacheMap))))
       )
   }
