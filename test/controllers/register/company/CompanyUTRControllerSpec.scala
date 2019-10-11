@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers.register.company
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.{ControllerSpecBase, UTRControllerBehaviour}
+import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import identifiers.register.BusinessUTRId
+import controllers.register.UTRControllerBehaviour
+import identifiers.register.company.CompanyUTRId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
@@ -27,16 +28,16 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{SEE_OTHER, redirectLocation, status, _}
 import utils.{FakeNavigator, Navigator, UserAnswers}
 
-class BusinessUTRControllerSpec extends ControllerSpecBase with UTRControllerBehaviour {
+class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBehaviour {
 
-  import BusinessUTRControllerSpec._
+  import CompanyUTRControllerSpec._
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
 
   "CompanyUTRController" must {
 
-    behave like utrController(BusinessUTRId, createController(this, getEmptyData))
+    behave like utrController(CompanyUTRId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = testController(this, dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
@@ -57,19 +58,19 @@ class BusinessUTRControllerSpec extends ControllerSpecBase with UTRControllerBeh
 
 }
 
-object BusinessUTRControllerSpec {
+object CompanyUTRControllerSpec {
 
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
-                    ): BusinessUTRController =
+                    ): CompanyUTRController =
     createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
                         base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: UserAnswersCacheConnector, nav: Navigator): BusinessUTRController =
-    new BusinessUTRController(
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): CompanyUTRController =
+    new CompanyUTRController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
       cacheConnector = connector,

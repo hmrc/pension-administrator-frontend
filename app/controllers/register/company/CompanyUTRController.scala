@@ -14,36 +14,42 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.{Retrievals, UTRController}
-import identifiers.register.{BusinessTypeId, BusinessUTRId}
+import controllers.register.UTRController
+import forms.UTRFormProvider
+import identifiers.register.BusinessTypeId
+import identifiers.register.company.CompanyUTRId
 import javax.inject.Inject
 import models.Mode
 import models.register.BusinessType
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import utils.Navigator
-import utils.annotations.Register
+import utils.annotations.RegisterCompany
 import viewmodels.Message
 
-class BusinessUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
-                                      override val cacheConnector: UserAnswersCacheConnector,
-                                      @Register override val navigator: Navigator,
-                                      authenticate: AuthAction,
-                                      override val allowAccess: AllowAccessActionProvider,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction
+import scala.concurrent.ExecutionContext
+
+class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
+                                     override val messagesApi: MessagesApi,
+                                     override val cacheConnector: UserAnswersCacheConnector,
+                                     @RegisterCompany override val navigator: Navigator,
+                                     authenticate: AuthAction,
+                                     override val allowAccess: AllowAccessActionProvider,
+                                     getData: DataRetrievalAction,
+                                     requireData: DataRequiredAction
                                     ) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessTypeId.retrieve.right.map { businessType =>
-        get(BusinessUTRId, toString(businessType), href(mode))
+        get(CompanyUTRId, toString(businessType), href(mode))
       }
   }
 
@@ -51,11 +57,11 @@ class BusinessUTRController @Inject()(override val appConfig: FrontendAppConfig,
     implicit request =>
 
             BusinessTypeId.retrieve.right.map { businessType =>
-              post(BusinessUTRId, toString(businessType), href(mode), mode)
+              post(CompanyUTRId, toString(businessType), href(mode), mode)
             }
   }
 
-  def href(mode: Mode): Call = routes.BusinessUTRController.onSubmit(mode)
+  def href(mode: Mode): Call = routes.CompanyUTRController.onSubmit(mode)
   def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
 
 }

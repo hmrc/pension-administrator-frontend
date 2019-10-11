@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package identifiers.register
+package identifiers.register.company
 
-import identifiers.TypedIdentifier
+import identifiers._
+import models.Address
+import utils.checkyouranswers.AddressCYA
+import utils.countryOptions.CountryOptions
 
-case object BusinessUTRId extends TypedIdentifier[String] {
+case object CompanyUTRId extends TypedIdentifier[String] {
   self =>
 
   override def toString: String = "utr"
