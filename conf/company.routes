@@ -112,3 +112,8 @@ GET        /unique-taxpayer-reference                   controllers.register.com
 POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/unique-taxpayer-reference             controllers.register.company.CompanyUTRController.onPageLoad(mode: Mode)
 POST       /:mode/unique-taxpayer-reference             controllers.register.company.CompanyUTRController.onSubmit(mode: Mode)
+
+GET        /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/confirm-company-name               controllers.register.company.CompanyIsRegisteredNameController.onPageLoad(mode: Mode)
+POST       /:mode/confirm-company-name               controllers.register.company.CompanyIsRegisteredNameController.onSubmit(mode: Mode)
