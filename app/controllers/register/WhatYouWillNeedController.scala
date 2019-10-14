@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.register
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import models.NormalMode
+import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.annotations.AuthWithNoIV
+import utils.Navigator
+import utils.annotations.RegisterCompany
+import views.html.register.whatYouWillNeed
 
 import scala.concurrent.ExecutionContext
 
-class LoginController @Inject()(appConfig: FrontendAppConfig,
-                                override val messagesApi: MessagesApi,
-                                dataCacheConnector: UserAnswersCacheConnector,
-                                @AuthWithNoIV authenticate: AuthAction
-                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
-
-  def onPageLoad: Action[AnyContent] = authenticate {
+class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          @RegisterCompany navigator: Navigator,
+                                          authenticate: AuthAction
+                                         )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+  def onPageLoad(mode: Mode): Action[AnyContent] = authenticate {
     implicit request =>
-      Redirect(controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+      val href = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+      Ok(whatYouWillNeed(appConfig, href))
   }
 }

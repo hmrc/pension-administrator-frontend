@@ -102,7 +102,6 @@ object RegisterAsBusinessControllerSpec {
       authAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl(),
       cache,
       navigator
     )
