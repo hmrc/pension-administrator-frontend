@@ -48,7 +48,7 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
       postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(mode),
       title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
       heading = Message("hasCompanyNumber.heading", companyName),
-      hint = Some(Message("hasCompanyNumber.p1"))
+      hint = Some(Message("hasCompanyNumber.hint"))
     )
 
   private def form(companyName: String) = formProvider("companyRegistrationNumber.error.required", companyName)

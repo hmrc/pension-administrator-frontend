@@ -319,7 +319,7 @@ companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, o
 companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 hasCompanyNumber.heading = Does {0} have a company number?
-hasCompanyNumber.p1 = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
+hasCompanyNumber.hint = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
 
 theCompany = the company
 

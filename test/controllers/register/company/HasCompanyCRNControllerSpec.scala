@@ -43,7 +43,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode),
       title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
       heading = Message("hasCompanyNumber.heading", companyName),
-      hint = Some(Message("hasCompanyNumber.p1"))
+      hint = Some(Message("hasCompanyNumber.hint"))
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
