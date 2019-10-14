@@ -931,3 +931,6 @@ useOrganisationCredentials.p2.link = log in with a Government Gateway account
 useOrganisationCredentials.p3 = If you do not have a Government Gateway account for an organisation, you should {0}.
 useOrganisationCredentials.p3.link = create one first
 
+isRegisteredName.company.error = Select yes if this is the registered name of the company
+isRegisteredName.company.title = Is {0} the registered name of the company?
+isRegisteredName.company.heading = Is {0} the registered name of the company?

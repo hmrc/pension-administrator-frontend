@@ -97,3 +97,8 @@ GET        /outside-eu-eea                              controllers.register.com
 
 GET         /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+
+GET        /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/confirm-company-name               controllers.register.company.CompanyIsRegisteredNameController.onPageLoad(mode: Mode)
+POST       /:mode/confirm-company-name               controllers.register.company.CompanyIsRegisteredNameController.onSubmit(mode: Mode)
