@@ -195,11 +195,10 @@ businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference numb
 businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot be more than 10 characters
 businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
-companyRegistrationNumber.title = What is the company’s registration number?
-companyRegistrationNumber.heading = What is the company’s registration number?
+companyRegistrationNumber.heading = What is {0}’s company number?
 companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = This is an 8 character registration number given by Companies House when the company was first registered.
+companyRegistrationNumber.hint = For example, 01234567
 companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
@@ -334,6 +333,8 @@ directorUniqueTaxReference.number.hint = A Unique Taxpayer Reference number is 1
 directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
 directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
+
+theCompany = the company
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address

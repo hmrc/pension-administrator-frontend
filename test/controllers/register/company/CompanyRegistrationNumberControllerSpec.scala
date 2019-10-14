@@ -20,8 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyRegistrationNumberFormProvider
-import identifiers.register.company.CompanyRegistrationNumberId
-import models.NormalMode
+import identifiers.register.company.{BusinessDetailsId, CompanyRegistrationNumberId}
+import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.mvc.Call
@@ -31,12 +31,14 @@ import views.html.register.company.companyRegistrationNumber
 
 class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
+  private val companyName = "Test Company Name"
+
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new CompanyRegistrationNumberFormProvider()
   val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegistrationNumberController(
       frontendAppConfig,
       messagesApi,
@@ -52,7 +54,8 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String = companyRegistrationNumber(
     frontendAppConfig,
     form,
-    NormalMode
+    NormalMode,
+    companyName
   )(fakeRequest, messages).toString
 
   val testAnswer = "AB123456"
@@ -67,7 +70,11 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyRegistrationNumberId.toString -> JsString(testAnswer))
+      val validData = Json.obj(
+        BusinessDetailsId.toString ->
+          BusinessDetails("Test Company Name", Some("Test UTR")),
+        CompanyRegistrationNumberId.toString -> JsString(testAnswer)
+      )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
