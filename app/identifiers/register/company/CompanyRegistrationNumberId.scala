@@ -17,7 +17,26 @@
 package identifiers.register.company
 
 import identifiers._
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
+import viewmodels.{AnswerRow, Link}
 
 case object CompanyRegistrationNumberId extends TypedIdentifier[String] {
+  self =>
   override def toString: String = "companyRegistrationNumber"
+
+  implicit def cya(implicit userAnswers: UserAnswers, messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersCompany[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "companyRegistrationNumber.heading")
+
+      private def hiddenLabel(index: Int, ua: UserAnswers): String =
+        dynamicMessage(ua, "messages__visuallyhidden__dynamic_hasCrn")
+
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
+
 }

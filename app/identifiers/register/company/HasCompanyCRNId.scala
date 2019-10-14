@@ -37,7 +37,7 @@ case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
         dynamicMessage(ua, "messages__visuallyhidden__dynamic_hasCrn")
 
 
-      override def row(id: HasCompanyCRNId.this.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         BooleanCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
     }
 
