@@ -46,12 +46,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
 
     (CompanyDetailsId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (CompanyDetailsId, limitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
+    (CompanyDetailsId, limitedCompany, companyRegistrationNumberPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
 
-    (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage, false, None, false),
-    (HasCompanyCRNId, hasCRN(false), checkYourAnswersPage, false, None, false),
+    (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(NormalMode), false, Some(companyRegistrationNumberPage(CheckMode)), false),
+    (HasCompanyCRNId, hasCRN(false), checkYourAnswersPage, false, Some(checkYourAnswersPage), false),
 
     (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
 
@@ -130,7 +130,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
 
-  private def companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
+  private def companyRegistrationNumberPage(mode: Mode) = routes.CompanyRegistrationNumberController.onPageLoad(mode)
 
   private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
 

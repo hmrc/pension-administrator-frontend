@@ -18,6 +18,7 @@ package identifiers.register.company
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
+import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
 import viewmodels.{AnswerRow, Link}
@@ -36,9 +37,15 @@ case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
         dynamicMessage(ua, "messages__visuallyhidden__dynamic_hasCrn")
 
 
-      override def row(id: HasCompanyCRNId.this.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        println( "\n>>>>>FFF")
+      override def row(id: HasCompanyCRNId.this.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         BooleanCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
-      }
     }
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(false) =>
+        userAnswers.removeAllOf(List(CompanyRegistrationNumberId))
+      case _ => JsSuccess(userAnswers)
+    }
+  }
 }
