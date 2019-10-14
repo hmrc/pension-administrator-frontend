@@ -20,10 +20,12 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.AreYouInUKId
+import identifiers.register.{AreYouInUKId, BusinessTypeId}
 import identifiers.register.company._
 import models.InternationalRegion._
 import models._
+import models.register.BusinessType
+import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
@@ -39,6 +41,24 @@ class RegisterCompanyNavigator @Inject()(
       regionBasedNameNavigation(from.userAnswers)
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+
+    case CompanyDetailsId =>
+      from.userAnswers.get(BusinessTypeId)
+      match {
+        case Some(BusinessType.UnlimitedCompany) =>
+          NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
+        case Some(BusinessType.LimitedCompany) =>
+          NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+    case HasCompanyCRNId =>
+      from.userAnswers.get(HasCompanyCRNId)
+      match {
+        case Some(true) => NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+        case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
+        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      }
+
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
     case CompanySameContactAddressId =>
@@ -59,8 +79,8 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
     case ContactDetailsId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
-    case CompanyDetailsId =>
-      NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+//    case CompanyDetailsId =>
+//      NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>

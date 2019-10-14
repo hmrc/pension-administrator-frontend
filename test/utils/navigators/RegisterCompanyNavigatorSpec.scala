@@ -19,10 +19,12 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
+import identifiers.register.BusinessTypeId
 import identifiers.{Identifier, LastPageId}
 import identifiers.register.company._
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import models._
+import models.register.BusinessType
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
@@ -43,7 +45,18 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessDetailsId, uk, confirmCompanyDetailsPage, false, None, false),
     (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
 
+    (CompanyDetailsId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (CompanyDetailsId, limitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
+
+    //CompanyDetailsId
+//    (ConfirmCompanyAddressId, unlimitedCompany, hasCRNPage(NormalMode), false, None, false),
+//
+//    (ConfirmCompanyAddressId, limitedCompany, companyRegistrationNumberPage, false, None, false),
+
     (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
+
+    (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage, false, None, false),
+    (HasCompanyCRNId, hasCRN(false), checkYourAnswersPage, false, None, false),
 
     (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
 
@@ -68,7 +81,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (ContactDetailsId, uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
     (ContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
-    (CompanyDetailsId, emptyAnswers, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
 
     (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
@@ -118,6 +130,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+
+  private def hasCRNPage(mode: Mode) = routes.HasCompanyCRNController.onPageLoad(mode)
 
   private def companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
 
@@ -172,5 +186,13 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
+  val unlimitedCompany: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.UnlimitedCompany).asOpt.value
+  val limitedCompany: UserAnswers = UserAnswers(Json.obj())
+    .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
+  def hasCRN(b:Boolean): UserAnswers = UserAnswers(Json.obj())
+    .set(HasCompanyCRNId)(b).asOpt.value
+
   private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value
+
 }
