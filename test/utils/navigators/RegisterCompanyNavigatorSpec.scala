@@ -48,11 +48,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyDetailsId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (CompanyDetailsId, limitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
 
-    //CompanyDetailsId
-//    (ConfirmCompanyAddressId, unlimitedCompany, hasCRNPage(NormalMode), false, None, false),
-//
-//    (ConfirmCompanyAddressId, limitedCompany, companyRegistrationNumberPage, false, None, false),
-
     (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
 
     (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage, false, None, false),

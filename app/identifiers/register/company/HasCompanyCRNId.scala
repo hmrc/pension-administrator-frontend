@@ -17,8 +17,28 @@
 package identifiers.register.company
 
 import identifiers.TypedIdentifier
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
+import viewmodels.{AnswerRow, Link}
 
 
 case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
+  self =>
   override def toString: String = "hasCrn"
+
+  implicit def cya(implicit userAnswers: UserAnswers, messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersCompany[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "hasCompanyNumber.heading")
+
+      private def hiddenLabel(index: Int, ua: UserAnswers): String =
+        dynamicMessage(ua, "messages__visuallyhidden__dynamic_hasCrn")
+
+
+      override def row(id: HasCompanyCRNId.this.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        println( "\n>>>>>FFF")
+        BooleanCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
+    }
 }

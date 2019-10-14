@@ -25,7 +25,7 @@ import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
@@ -48,11 +48,14 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
+      implicit val ua: UserAnswers = request.userAnswers
+
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
           ++ Seq(
           CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten
       )
