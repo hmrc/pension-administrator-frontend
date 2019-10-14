@@ -17,15 +17,7 @@
 package identifiers.register
 
 import identifiers._
-import identifiers.register.adviser._
-import identifiers.register.company._
-import identifiers.register.company.directors.DirectorId
-import identifiers.register.individual._
-import identifiers.register.partnership._
-import identifiers.register.partnership.partners.PartnerId
-import play.api.libs.json.JsResult
-import utils.UserAnswers
 
-case object BusinessNameId extends TypedIdentifier[Boolean] {
+case object BusinessNameId extends TypedIdentifier[String] {
   override def toString: String = "businessName"
 }
