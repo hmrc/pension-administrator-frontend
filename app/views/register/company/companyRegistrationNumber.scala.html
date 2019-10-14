@@ -19,10 +19,10 @@
 @import controllers.register.company.routes._
 @import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, companyName:String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("companyRegistrationNumber.title"),
+    title = messages("companyRegistrationNumber.heading", messages("theCompany")),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -30,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("companyRegistrationNumber.heading"))
+        @components.heading(messages("companyRegistrationNumber.heading", companyName))
 
         @components.input_text(
           field = form("value"),
