@@ -24,7 +24,7 @@ import play.api.data.{Form, FormError}
 
 class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
 
-  def formWithUtr(
+  def formWithUniqueTaxpayerReference(
                    testForm: Form[UniqueTaxReference],
                    keyRequired: String,
                    keyUtrRequired: String,
@@ -77,6 +77,38 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
       val actual = testForm.bind(Map(
         "utr.hasUtr" -> "true",
         "utr.utr" -> "  123 456 7890 "))
+      actual.errors shouldBe empty
+    }
+
+    behave like formWithRegex(testForm, valid, invalid)
+  }
+
+  def formWithUtr(
+                   testForm: Form[String],
+                   keyUtrRequired: String,
+                   keyUtrLength: String
+                 ): Unit = {
+
+    "fail to bind when form is empty" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors shouldBe Seq(FormError("utr", keyUtrRequired))
+    }
+
+    val valid = Table(
+      "data",
+      Map("utr" -> " 1234567890 ")
+    )
+
+    val invalid = Table(
+      "data",
+      Map("utr" -> "123456789"),
+      Map("utr" -> "12345678901"),
+      Map("utr" -> "A234567890")
+    )
+
+    "remove spaces" in {
+      val actual = testForm.bind(Map(
+        "utr" -> "  123 456 7890 "))
       actual.errors shouldBe empty
     }
 

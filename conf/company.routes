@@ -107,3 +107,8 @@ GET        /uk-company-name                                controllers.register.
 POST       /uk-company-name                                controllers.register.company.CompanyNameController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/uk-company-name                          controllers.register.company.CompanyNameController.onPageLoad(mode: Mode)
 POST       /:mode/uk-company-name                          controllers.register.company.CompanyNameController.onSubmit(mode: Mode)
+
+GET        /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onPageLoad(mode: Mode = NormalMode)
+POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/unique-taxpayer-reference             controllers.register.company.CompanyUTRController.onPageLoad(mode: Mode)
+POST       /:mode/unique-taxpayer-reference             controllers.register.company.CompanyUTRController.onSubmit(mode: Mode)

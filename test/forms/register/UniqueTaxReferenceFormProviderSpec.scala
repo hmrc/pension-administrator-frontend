@@ -24,7 +24,7 @@ class UniqueTaxReferenceFormProviderSpec extends UtrBehaviours {
   val formProvider = new UniqueTaxReferenceFormProvider().apply("directorUniqueTaxReference.error.required", "directorUniqueTaxReference.error.reason.required")
 
   "UniqueTaxReference form provider" must {
-    behave like formWithUtr(
+    behave like formWithUniqueTaxpayerReference(
       formProvider,
       keyRequired = "directorUniqueTaxReference.error.required",
       keyUtrRequired = "common.error.utr.required",
