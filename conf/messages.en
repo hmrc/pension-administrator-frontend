@@ -800,11 +800,8 @@ areYouInUK.heading = Is the company registered in the UK?
 areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
-companyName.title = What is the company’s name?
-companyName.heading = What is the company’s name?
-companyName.error.required = Enter the registered company name
-companyName.error.length = The name cannot be more than 105 characters
-companyName.error.invalid = Enter a valid registered company name
+companyNameNonUk.title = What is the company’s name?
+companyNameNonUk.heading = What is the company’s name?
 
 areYouInUKIndividual.title = Are you based in the UK?
 areYouInUKIndividual.heading = Are you based in the UK?
@@ -935,6 +932,7 @@ cannotMakeChanges.p1 = You cannot make any changes to {0}’s details at the mom
 cannotMakeChanges.p2 = You need to phone Pension Scheme Services on 0300 123 1079.
 
 adviser.alreadyDeleted.title = The person with working knowledge of pensions has been deleted
+adviser.alreadyDeleted.title = The person with working knowledge of pensions has been deleted
 adviser.alreadyDeleted.heading = The person with working knowledge of pensions has been deleted
 
 useOrganisationCredentials.title = You need to use an organisation’s Government Gateway account
@@ -945,3 +943,9 @@ useOrganisationCredentials.p2.link = log in with a Government Gateway account
 useOrganisationCredentials.p3 = If you do not have a Government Gateway account for an organisation, you should {0}.
 useOrganisationCredentials.p3.link = create one first
 
+businessName.title = What is the name of the {0} you want to register?
+businessName.heading = What is the name of the {0} you want to register?
+businessName.p1 = This is the name registered with Companies House.
+businessName.error.required = Enter a company name
+businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
+businessName.error.length = Company name must be 105 characters or fewer

@@ -102,3 +102,8 @@ GET        /company-number                              controllers.register.com
 POST       /company-number                              controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/company-number                        controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
 POST       /:mode/company-number                        controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
+
+GET        /uk-company-name                                controllers.register.company.CompanyNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /uk-company-name                                controllers.register.company.CompanyNameController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/uk-company-name                          controllers.register.company.CompanyNameController.onPageLoad(mode: Mode)
+POST       /:mode/uk-company-name                          controllers.register.company.CompanyNameController.onSubmit(mode: Mode)

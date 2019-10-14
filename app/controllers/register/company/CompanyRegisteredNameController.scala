@@ -42,8 +42,8 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
   private def companyNameViewModel(mode: Mode) =
     OrganisationNameViewModel(
       routes.CompanyRegisteredNameController.onSubmit(mode),
-      Message("companyName.title"),
-      Message("companyName.heading")
+      Message("companyNameNonUk.title"),
+      Message("companyNameNonUk.heading")
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -59,9 +59,9 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
   override protected val formModel: BusinessDetailsFormModel =
     BusinessDetailsFormModel(
       companyNameMaxLength = 105,
-      companyNameRequiredMsg = "companyName.error.required",
-      companyNameLengthMsg = "companyName.error.length",
-      companyNameInvalidMsg = "companyName.error.invalid",
+      companyNameRequiredMsg = "businessDetails.error.companyName.required",
+      companyNameLengthMsg = "businessDetails.error.companyName.length",
+      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
       utrMaxLength = 10,
       utrRequiredMsg = None,
       utrLengthMsg = "businessDetails.error.utr.length",
