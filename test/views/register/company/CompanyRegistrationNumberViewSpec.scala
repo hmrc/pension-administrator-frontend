@@ -24,16 +24,27 @@ import views.html.register.company.companyRegistrationNumber
 
 class CompanyRegistrationNumberViewSpec extends StringViewBehaviours {
 
-  val messageKeyPrefix = "companyRegistrationNumber"
+  private val companyName = "name"
+
+  private val messageKeyPrefix = "companyRegistrationNumber"
 
   val form = new CompanyRegistrationNumberFormProvider()()
 
-  def createView = () => companyRegistrationNumber(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView = () => companyRegistrationNumber(frontendAppConfig, form, NormalMode, companyName)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[String]) => companyRegistrationNumber(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[String]) => companyRegistrationNumber(frontendAppConfig, form, NormalMode, companyName)(fakeRequest, messages)
 
   "CompanyRegistrationNumber view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    normalPageWithNoPageTitleCheck(createView, messageKeyPrefix)
+
+    "behave like a normal page" when {
+      "rendered" must {
+        "display the correct page title" in {
+          val doc = asDocument(createView())
+          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", companyName)
+        }
+      }
+    }
 
     behave like stringPage(
       createViewUsingForm,

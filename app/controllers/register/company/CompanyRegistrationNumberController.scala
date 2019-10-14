@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.company.CompanyRegistrationNumberFormProvider
-import identifiers.register.company.CompanyRegistrationNumberId
+import identifiers.register.company.{BusinessDetailsId, CompanyDetailsId, CompanyRegistrationNumberId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.RegisterCompany
 import utils.{Navigator, UserAnswers}
+import viewmodels.Message
 import views.html.register.company.companyRegistrationNumber
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,14 +54,16 @@ class CompanyRegistrationNumberController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(companyRegistrationNumber(appConfig, preparedForm, mode))
+      Ok(companyRegistrationNumber(appConfig, preparedForm, mode,
+        request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyRegistrationNumber(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(companyRegistrationNumber(appConfig, formWithErrors, mode,
+            request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany"))(_.companyName)))),
         value =>
           dataCacheConnector.save(request.externalId, CompanyRegistrationNumberId, value).map(cacheMap =>
             Redirect(navigator.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(cacheMap))))

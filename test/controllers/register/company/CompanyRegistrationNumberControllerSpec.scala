@@ -31,6 +31,8 @@ import views.html.register.company.companyRegistrationNumber
 
 class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
+  private val companyName = "name"
+
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new CompanyRegistrationNumberFormProvider()
@@ -52,7 +54,8 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String = companyRegistrationNumber(
     frontendAppConfig,
     form,
-    NormalMode
+    NormalMode,
+    companyName
   )(fakeRequest, messages).toString
 
   val testAnswer = "AB123456"
