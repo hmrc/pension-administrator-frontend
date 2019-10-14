@@ -46,12 +46,12 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(mode),
-      title = Message("messages__hasCRN", Message("messages__theCompany").resolve),
-      heading = Message("messages__hasCRN", companyName),
-      hint = Some(Message("messages__hasCompanyNumber__p1"))
+      title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
+      heading = Message("hasCompanyNumber.heading", companyName),
+      hint = Some(Message("hasCompanyNumber.p1"))
     )
 
-  private def form(companyName: String) = formProvider("messages__hasCompanyNumber__error__required", companyName)
+  private def form(companyName: String) = formProvider("companyRegistrationNumber.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

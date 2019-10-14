@@ -17,22 +17,8 @@
 package identifiers.register.company
 
 import identifiers.TypedIdentifier
-import play.api.libs.json.JsPath
 
 
 case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
-
   override def toString: String = "hasCrn"
-
-
-  //  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
-//    value match {
-//      case Some(true) =>
-//        userAnswers.remove(CompanyNoCRNReasonId(this)
-//      case Some(false) =>
-//        userAnswers.remove(CompanyEnterCRNId(this))
-//      case _ =>
-//        super.cleanup(value, userAnswers)
-//    }
-//  }
 }

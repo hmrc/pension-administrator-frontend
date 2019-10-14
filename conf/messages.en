@@ -318,6 +318,11 @@ companyDirectorAddressPostCodeLookup.postcode = Postcode
 companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0}
 companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
+hasCompanyNumber.heading = Does {0} have a company number?
+hasCompanyNumber.p1 = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
+
+theCompany = the company
+
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
