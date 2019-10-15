@@ -51,7 +51,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
       hint = None
     )
 
-  private def form(companyName: String) = formProvider("messages__hasCompanyVat__error__required", companyName)
+  private def form(companyName: String) = formProvider("hasCompanyVAT.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

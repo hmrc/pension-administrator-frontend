@@ -36,7 +36,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
   private val companyName = "Test Company Name"
   private val formProvider = new HasVATFormProvider()
-  private val form = formProvider("common.error.vat.required", companyName)
+  private val form = formProvider("hasCompanyVAT.error.required", companyName)
 
   private def viewModel =
     CommonFormWithHintViewModel(
