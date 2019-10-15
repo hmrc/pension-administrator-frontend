@@ -19,29 +19,37 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.CompanyRegistrationNumberFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyRegistrationNumberId}
+import forms.HasCRNFormProvider
+import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
-import play.api.libs.json.{JsString, _}
+import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.register.company.enterNumber
+import views.html.hasReferenceNumber
 
-class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
-
-  private val companyName = "Test Company Name"
+class HasCompanyCRNControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new CompanyRegistrationNumberFormProvider()
-  val form = formProvider()
+  private val companyName = "Test Company Name"
+  private val formProvider = new HasCRNFormProvider()
+  private val form = formProvider("companyRegistrationNumber.error.required", companyName)
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new CompanyRegistrationNumberController(
-      frontendAppConfig,
+  private def viewModel =
+    CommonFormWithHintViewModel(
+      postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode),
+      title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
+      heading = Message("hasCompanyNumber.heading", companyName),
+      mode = NormalMode,
+      hint = Some(Message("hasCompanyNumber.hint")),
+      entityName = companyName
+    )
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+    new HasCompanyCRNController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -52,24 +60,10 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewModel: CommonFormWithHintViewModel =
-    CommonFormWithHintViewModel(
-      postCall = routes.CompanyRegistrationNumberController.onSubmit(NormalMode),
-      title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
-      heading = Message("companyRegistrationNumber.heading", companyName),
-      mode = NormalMode,
-      entityName = companyName
-    )
+  private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
+    hasReferenceNumber(appConfig(isHubEnabled = false), form, mode, companyName, viewModel)(fakeRequest, messages).toString
 
-  def viewAsString(form: Form[_] = form): String = enterNumber(
-    frontendAppConfig,
-    form,
-    viewModel
-  )(fakeRequest, messages).toString
-
-  val testAnswer = "AB123456"
-
-  "CompanyRegistrationNumber Controller" must {
+  "HasCompanyCRNController Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -82,17 +76,17 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        CompanyRegistrationNumberId.toString -> JsString(testAnswer)
+        HasCompanyCRNId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
+      contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -101,8 +95,8 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -118,7 +112,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

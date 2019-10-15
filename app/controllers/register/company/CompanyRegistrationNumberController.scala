@@ -19,51 +19,52 @@ package controllers.register.company
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
+import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider
-import identifiers.register.company.CompanyRegistrationNumberId
+import identifiers.register.company.{BusinessDetailsId, CompanyRegistrationNumberId}
 import javax.inject.Inject
 import models.Mode
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.requests.DataRequest
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
-import views.html.register.company.companyRegistrationNumber
-
-import scala.concurrent.{ExecutionContext, Future}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 
 class CompanyRegistrationNumberController @Inject()(
-                                                     appConfig: FrontendAppConfig,
+                                                     val appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
-                                                     dataCacheConnector: UserAnswersCacheConnector,
-                                                     @RegisterCompany navigator: Navigator,
+                                                     val cacheConnector: UserAnswersCacheConnector,
+                                                     @RegisterCompany val navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: CompanyRegistrationNumberFormProvider
-                                                   )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                                   ) extends EnterNumberController {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
+    CommonFormWithHintViewModel(
+      postCall = routes.CompanyRegistrationNumberController.onSubmit(mode),
+      title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
+      heading = Message("companyRegistrationNumber.heading", entityName),
+      mode = mode,
+      entityName = entityName
+    )
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CompanyRegistrationNumberId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(companyRegistrationNumber(appConfig, preparedForm, mode))
+      get(CompanyRegistrationNumberId, form, viewModel(mode, entityName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(companyRegistrationNumber(appConfig, formWithErrors, mode))),
-        value =>
-          dataCacheConnector.save(request.externalId, CompanyRegistrationNumberId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(cacheMap))))
-      )
+      post(CompanyRegistrationNumberId, mode, form, viewModel(mode, entityName))
   }
+
 }

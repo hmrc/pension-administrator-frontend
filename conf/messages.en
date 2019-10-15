@@ -73,7 +73,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.save_and_continue = Save and Continue
+site.save_and_continue = Save and continue
 site.service_name = Register as a pension scheme administrator
 pension.scheme.administrator.title = Register as a pension scheme administrator - GOV.UK
 site.textarea.char_limit = (Limit is {0} characters)
@@ -196,11 +196,10 @@ businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference numb
 businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot be more than 10 characters
 businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
-companyRegistrationNumber.title = What is the company’s registration number?
-companyRegistrationNumber.heading = What is the company’s registration number?
+companyRegistrationNumber.heading = What is {0}’s company number?
 companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = This is an 8 character registration number given by Companies House when the company was first registered.
+companyRegistrationNumber.hint = For example, 01234567
 companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
@@ -319,6 +318,12 @@ companyDirectorAddressPostCodeLookup.postcode = Postcode
 companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, or {0}
 companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
+hasCompanyNumber.heading = Does {0} have a company number?
+hasCompanyNumber.hint = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
+
+hasCompanyVAT.heading = Is {0} registered for VAT?
+hasCompanyVAT.error.required = Select yes if {0} is registered for VAT
+
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
@@ -330,6 +335,8 @@ directorUniqueTaxReference.number.hint = A Unique Taxpayer Reference number is 1
 directorUniqueTaxReference.reason.text = Tell us why the director does not have a UTR
 directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
+
+theCompany = the company
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address
@@ -375,6 +382,14 @@ whatYouWillNeed.company.body.item1 = the company name, address, previous address
 whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
 whatYouWillNeed.company.body.item3 = the details of all the directors in the company
 
+whatYouWillNeed.main.title = What you will need
+whatYouWillNeed.main.heading = What you will need
+whatYouWillNeed.main.body.text = To register a business as a pension scheme administrator, you will need:
+whatYouWillNeed.main.body.item1 = the business name, address, previous address, VAT and PAYE references of the business you’re registering
+whatYouWillNeed.main.body.item2 = the phone number and email address of a contactable person within the business
+whatYouWillNeed.main.body.item3 = the details of all the directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
+whatYouWillNeed.main.body.hint = The information you enter will be saved as you progress. If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
+
 individualDetailsCorrect.title = Are your details correct?
 individualDetailsCorrect.heading = Are your details correct?
 individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
@@ -408,8 +423,8 @@ individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or i
 individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 
-businessType.title = What is your business type?
-businessType.heading = What is your business type?
+businessType.title = What type of business do you want to register?
+businessType.heading = What type of business do you want to register?
 businessType.limitedCompany = Limited company
 businessType.businessPartnership = Business partnership
 businessType.limitedPartnership = Limited partnership
@@ -782,8 +797,8 @@ adviser-delete-link-additionalText = If you delete {0}, you will need to give th
 director.supersection.header = Director details
 partner.supersection.header = Partner details
 
-areYouInUK.title = Country of work
-areYouInUK.heading = Is the business registered in the UK?
+areYouInUK.title = Is the company registered in the UK?
+areYouInUK.heading = Is the company registered in the UK?
 areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
@@ -808,8 +823,8 @@ outsideEuEea.heading = You cannot register {0} as a PSA
 outsideEuEea.currentCountry.text = This is because {0} was registered in {1} and outside of the European Union and European Economic Area.
 outsideEuEea.body = Only {0} registered inside the European Union and European Economic Area can register as a PSA.
 
-registerAsBusiness.title = Who do you want to register as the scheme administrator?
-registerAsBusiness.heading = Who do you want to register as the scheme administrator?
+registerAsBusiness.title = What do you want to register as the scheme administrator?
+registerAsBusiness.heading = What do you want to register as the scheme administrator?
 registerAsBusiness.error.required = You must make a selection
 registerAsBusiness.no.label = Yourself as an individual
 registerAsBusiness.yes.label = Company or partnership

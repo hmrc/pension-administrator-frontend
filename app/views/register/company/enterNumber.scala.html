@@ -18,25 +18,32 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
 @import models.Mode
+@import viewmodels.CommonFormWithHintViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(
+        appConfig: FrontendAppConfig,
+        form: Form[_],
+        viewModel: CommonFormWithHintViewModel
+)(
+        implicit request: Request[_], messages: Messages
+)
 
 @main_template(
-    title = messages("companyRegistrationNumber.title"),
+    title = viewModel.title,
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = controllers.register.company.routes.CompanyRegistrationNumberController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("companyRegistrationNumber.heading"))
+        @components.heading(viewModel.heading)
 
         @components.input_text(
-          field = form("value"),
-          label = messages("companyRegistrationNumber.heading"),
-          labelClass=Some("visually-hidden"),
-          hint = Some(messages("companyRegistrationNumber.hint"))
+            field = form("value"),
+            label = viewModel.heading,
+            labelClass = Some("visually-hidden"),
+            hint = viewModel.hint
         )
 
         <div class="section">

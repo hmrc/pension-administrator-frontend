@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.MessagesApi
 import utils.Navigator
-import utils.annotations.Individual
+import utils.annotations.{AuthWithNoIV, Individual}
 import viewmodels.{AreYouInUKViewModel, Message}
 
 class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
@@ -33,7 +33,7 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                @Individual override val navigator: Navigator,
                                                override val allowAccess: AllowAccessActionProvider,
-                                               override val authenticate: AuthAction,
+                                               @AuthWithNoIV override val authenticate: AuthAction,
                                                override val getData: DataRetrievalAction,
                                                override val requireData: DataRequiredAction,
                                                override val formProvider: AreYouInUKFormProvider

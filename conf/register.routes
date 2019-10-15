@@ -58,3 +58,6 @@ GET        /declare-after-changing-details              controllers.register.Var
 POST       /declare-after-changing-details              controllers.register.VariationDeclarationController.onSubmit(mode: Mode = UpdateMode)
 
 GET        /incomplete-changes                          controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)
+
+GET        /what-you-will-need                          controllers.register.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
+GET        /what-you-will-need                          controllers.register.WhatYouWillNeedController.onPageLoad(mode: Mode = UpdateMode)

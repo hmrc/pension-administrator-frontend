@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
-import identifiers.register.RegisterAsBusinessId
+import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,26 +39,25 @@ class RegisterAsBusinessController @Inject()(
                                               @AuthWithNoIV authenticate: AuthAction,
                                               allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
                                               cache: UserAnswersCacheConnector,
                                               @Register navigator: Navigator
 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData ) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(RegisterAsBusinessId) match {
+      val preparedForm = request.userAnswers match {
         case None => form
-        case Some(value) => form.fill(value)
+        case Some(ua) => ua.get(RegisterAsBusinessId).fold(form)(form.fill)
       }
 
       Ok(registerAsBusiness(appConfig, preparedForm))
 
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request=>
 
       form.bindFromRequest().fold(
