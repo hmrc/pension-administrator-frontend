@@ -21,7 +21,7 @@ import forms.BusinessNameFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.{BusinessNameId, BusinessTypeId}
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
@@ -35,12 +35,12 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
 
 
   def businessNameController[I <: TypedIdentifier[String]](answers: UserAnswers,
-                                                           createController: (UserAnswers) => BusinessNameController
+                                                           createController: UserAnswers => BusinessNameController
                                                           ): Unit = {
     "CompanyName Controller" must {
 
       "return OK and the correct view for a GET" in {
-        val result = createController(answers).onPageLoad(NormalMode)(fakeRequest)
+        val result = createController(answers).onPageLoad(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(testForm(), answers)
@@ -49,7 +49,7 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
       "populate the view correctly on a GET when the question has previously been answered" in {
         val userAnswers = answers.set(BusinessNameId)(businessname).asOpt.value
 
-        val result = createController(userAnswers).onPageLoad(NormalMode)(fakeRequest)
+        val result = createController(userAnswers).onPageLoad(fakeRequest)
 
         contentAsString(result) mustBe viewAsString(form.fill(businessname), answers)
       }
@@ -57,7 +57,7 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
       "redirect to the next page when valid data is submitted" in {
         val postRequest = testRequest(name = Some(businessname))
 
-        val result = createController(answers).onSubmit(NormalMode)(postRequest)
+        val result = createController(answers).onSubmit()(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -68,14 +68,14 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
         val postRequest = testRequest(name = Some("test ** invalid"))
         val boundForm = testForm().bindFromRequest()(postRequest)
 
-        val result = createController(answers).onSubmit(NormalMode)(postRequest)
+        val result = createController(answers).onSubmit()(postRequest)
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) mustBe viewAsString(boundForm, answers)
       }
 
       "redirect to Session Expired for a GET if no existing data is found" in {
-        val result = createController(UserAnswers()).onPageLoad(NormalMode)(fakeRequest)
+        val result = createController(UserAnswers()).onPageLoad(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -113,7 +113,7 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Organisation, None, false, None),
+      user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
       userAnswers = answers
     )
 
@@ -124,6 +124,6 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
 
   def viewAsString(form: Form[_],
                    answers: UserAnswers, href: Call = onwardRoute): String =
-    businessName(frontendAppConfig, form, NormalMode, businessType(answers), href)(fakeRequest, messages).toString()
+    businessName(frontendAppConfig, form, businessType(answers), href)(fakeRequest, messages).toString()
 
 }

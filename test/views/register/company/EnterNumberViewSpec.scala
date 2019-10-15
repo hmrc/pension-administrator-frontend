@@ -16,13 +16,15 @@
 
 package views.register.company
 
+import controllers.register.company.routes._
 import forms.register.company.CompanyRegistrationNumberFormProvider
-import models.NormalMode
+import models.{Mode, NormalMode}
 import play.api.data.Form
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.StringViewBehaviours
-import views.html.register.company.companyRegistrationNumber
+import views.html.register.company.enterNumber
 
-class CompanyRegistrationNumberViewSpec extends StringViewBehaviours {
+class EnterNumberViewSpec extends StringViewBehaviours {
 
   private val companyName = "name"
 
@@ -30,9 +32,19 @@ class CompanyRegistrationNumberViewSpec extends StringViewBehaviours {
 
   val form = new CompanyRegistrationNumberFormProvider()()
 
-  private def createView = () => companyRegistrationNumber(frontendAppConfig, form, NormalMode, companyName)(fakeRequest, messages)
+  private def viewModel(mode: Mode) = CommonFormWithHintViewModel(
+    postCall = CompanyRegistrationNumberController.onSubmit(NormalMode),
+    title = Message(s"$messageKeyPrefix.heading"),
+    heading = Message(s"$messageKeyPrefix.heading", companyName),
+    mode = mode,
+    hint = Some(Message(s"$messageKeyPrefix.hint")),
+    entityName = companyName
 
-  private def createViewUsingForm = (form: Form[String]) => companyRegistrationNumber(frontendAppConfig, form, NormalMode, companyName)(fakeRequest, messages)
+  )
+
+  private def createView = () => enterNumber(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages)
+
+  private def createViewUsingForm = (form: Form[String]) => enterNumber(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages)
 
   "CompanyRegistrationNumber view" must {
     normalPageWithNoPageTitleCheck(createView, messageKeyPrefix)
@@ -47,10 +59,11 @@ class CompanyRegistrationNumberViewSpec extends StringViewBehaviours {
     }
 
     behave like stringPage(
-      createViewUsingForm,
-      messageKeyPrefix,
-      controllers.register.company.routes.CompanyRegistrationNumberController.onSubmit(NormalMode).url,
-      Some(s"$messageKeyPrefix.hint")
+      createView = createViewUsingForm,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = controllers.register.company.routes.CompanyRegistrationNumberController.onSubmit(NormalMode).url,
+      expectedHintKey = Some(s"$messageKeyPrefix.hint"),
+      labelArgs = Some(companyName)
     )
   }
 }
