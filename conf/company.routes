@@ -107,3 +107,8 @@ GET         /is-vat-registered                             controllers.register.
 POST        /is-vat-registered                             controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
 POST        /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
+
+GET         /vat-registration-number                       controllers.register.company.CompanyVATNumberController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.company.CompanyVATNumberController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.company.CompanyVATNumberController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.company.CompanyVATNumberController.onSubmit(mode: Mode)

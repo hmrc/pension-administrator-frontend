@@ -49,8 +49,8 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasCompanyVATController.onSubmit(mode),
-      title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyVAT.heading", entityName),
+      title = Message("hasVAT.heading", Message("theCompany").resolve),
+      heading = Message("hasVAT.heading", entityName),
       mode = mode,
       hint = None,
       entityName = entityName
@@ -60,7 +60,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
     request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
 
   private def form(companyName: String): Form[Boolean] =
-    formProvider("hasCompanyVAT.error.required", companyName)
+    formProvider("hasVAT.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

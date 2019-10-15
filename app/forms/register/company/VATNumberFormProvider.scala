@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(text: String)
-<p>@text</p>
+package forms.register.company
+
+import forms.FormErrorHelper
+import forms.mappings.VatMappingString
+import javax.inject.Inject
+import play.api.data.Form
+
+class VATNumberFormProvider @Inject() extends FormErrorHelper with VatMappingString {
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> vatMapping(
+        "common.error.vat.required",
+        "common.error.vat.invalid"
+      )
+    )
+
+}
