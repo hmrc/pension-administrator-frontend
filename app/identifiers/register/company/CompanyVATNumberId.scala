@@ -19,5 +19,5 @@ package identifiers.register.company
 import identifiers._
 
 case object CompanyVATNumberId extends TypedIdentifier[String] {
-  override def toString: String = "companyVatNumber"
+  override def toString: String = "companyVat"
 }
