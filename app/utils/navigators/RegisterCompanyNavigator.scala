@@ -42,7 +42,7 @@ class RegisterCompanyNavigator @Inject()(
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case CompanyDetailsId => companyDetailsNavigation(from.userAnswers)
-    case HasCompanyCRNId => hasCompanyCRNNavigation(from.userAnswers)
+    case HasCompanyCRNId => hasCompanyCRNNavigation(from.userAnswers, NormalMode)
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
     case CompanySameContactAddressId =>
@@ -97,11 +97,13 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
-    case HasCompanyCRNId => from.userAnswers.get(HasCompanyCRNId) match {
-      case Some(true) => NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(mode))
-      case Some(false) => checkYourAnswers
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
+    case HasCompanyCRNId =>
+      hasCompanyCRNNavigation(from.userAnswers, mode)
+//      from.userAnswers.get(HasCompanyCRNId) match {
+//      case Some(true) => NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(mode))
+//      case Some(false) => checkYourAnswers
+//      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+//    }
     case _ => None
   }
 
@@ -211,10 +213,10 @@ class RegisterCompanyNavigator @Inject()(
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
-  private def hasCompanyCRNNavigation(answers:UserAnswers):Option[NavigateTo] = {
+  private def hasCompanyCRNNavigation(answers:UserAnswers, mode:Mode):Option[NavigateTo] = {
     answers.get(HasCompanyCRNId)
     match {
-      case Some(true) => NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+      case Some(true) => NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(mode))
       case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
