@@ -20,7 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import forms.HasCRNFormProvider
+import controllers.register.company.routes._
+import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import javax.inject.Inject
 import models.Mode
@@ -31,7 +32,6 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.company.routes._
 
 import scala.concurrent.ExecutionContext
 
@@ -43,7 +43,7 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: HasCRNFormProvider
+                                        formProvider: HasReferenceNumberFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =

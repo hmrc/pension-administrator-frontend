@@ -39,7 +39,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new EnterPAYEFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(companyName)
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

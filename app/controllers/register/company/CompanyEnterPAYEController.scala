@@ -46,7 +46,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
                                            formProvider: EnterPAYEFormProvider
                                           )(implicit val ec: ExecutionContext) extends EnterPAYEController {
 
-  protected def form: Form[String] = formProvider()
+  protected def form(companyName: String): Form[String] = formProvider(companyName)
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -63,11 +63,11 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(EnterPAYEId, form, viewModel(mode, entityName))
+      get(EnterPAYEId, form(entityName), viewModel(mode, entityName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(EnterPAYEId, mode, form, viewModel(mode, entityName))
+      post(EnterPAYEId, mode, form(entityName), viewModel(mode, entityName))
   }
 }

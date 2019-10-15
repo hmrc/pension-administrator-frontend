@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.routes._
-import forms.HasVATFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
 import javax.inject.Inject
 import models.Mode
@@ -43,7 +43,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: HasVATFormProvider
+                                        formProvider: HasReferenceNumberFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =

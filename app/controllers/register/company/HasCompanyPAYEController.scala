@@ -25,6 +25,7 @@ import identifiers.register.HasPAYEId
 import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -56,21 +57,18 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
 
   private def form(companyName: String) = formProvider("hasCompanyPaye.error.required", companyName)
 
+  private def companyName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessDetailsId.retrieve.right.map { details =>
-          val companyName = details.companyName
-          get(HasPAYEId, form(companyName), viewModel(mode, companyName))
-        }
+        get(HasPAYEId, form(companyName), viewModel(mode, companyName))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessDetailsId.retrieve.right.map { details =>
-          val companyName = details.companyName
-          post(HasPAYEId, mode, form(companyName), viewModel(mode, companyName))
-        }
+        post(HasPAYEId, mode, form(companyName), viewModel(mode, companyName))
     }
 }

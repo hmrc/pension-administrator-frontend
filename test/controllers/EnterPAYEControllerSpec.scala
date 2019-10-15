@@ -111,7 +111,7 @@ object EnterPAYEControllerSpec extends ControllerSpecBase {
 
   private val companyName = "Test Company Name"
   private val formProvider = new EnterPAYEFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(companyName)
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -132,13 +132,13 @@ object EnterPAYEControllerSpec extends ControllerSpecBase {
                                   formProvider: EnterPAYEFormProvider
                                 )(implicit val ec: ExecutionContext) extends EnterPAYEController {
 
-    def onPageLoad(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
+    def onPageLoad(viewModel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
+      get(FakeIdentifier, form, viewModel)(DataRequest(FakeRequest(), "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    def onSubmit(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, CheckUpdateMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
+    def onSubmit(viewModel: CommonFormWithHintViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
+      post(FakeIdentifier, NormalMode, form, viewModel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
   }

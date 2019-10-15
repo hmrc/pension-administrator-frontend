@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.HasVATFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
@@ -35,7 +35,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val companyName = "Test Company Name"
-  private val formProvider = new HasVATFormProvider()
+  private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("hasCompanyVAT.error.required", companyName)
 
   private def viewModel =

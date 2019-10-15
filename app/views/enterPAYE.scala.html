@@ -39,9 +39,7 @@
 
         @components.heading(viewModel.heading)
 
-        @viewModel.entityName.map { name =>
-            <p>@messages("enterPAYE.p1", name)</p>
-        }
+        <p>@messages("enterPAYE.p1", viewModel.entityName)</p>
 
         @components.input_text(
             field = form("value"),
