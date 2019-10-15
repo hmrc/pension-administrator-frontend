@@ -17,43 +17,43 @@
 package views.register
 
 import controllers.register.company.routes
-import forms.register.company.VATNumberFormProvider
+import forms.register.company.EnterVATFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
-import views.html.register.vatNumber
+import views.html.register.enterVAT
 
-class VatNumberViewSpec extends QuestionViewBehaviours[String] {
+class EnterVATViewSpec extends QuestionViewBehaviours[String] {
 
-  val messageKeyPrefix = "VATNumber"
+  val messageKeyPrefix = "enterVAT"
 
   private val name = "Test Name"
 
-  val form = new VATNumberFormProvider()()
+  val form = new EnterVATFormProvider()()
 
-  private val postCall: Call = routes.CompanyVATNumberController.onSubmit(NormalMode)
+  private val postCall: Call = routes.EnterVATController.onSubmit(NormalMode)
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = postCall,
-      title = Message("VATNumber.title", Message("theCompany").resolve),
-      heading = Message("VATNumber.heading", name),
+      title = Message(s"$messageKeyPrefix.title", Message("theCompany").resolve),
+      heading = Message(s"$messageKeyPrefix.heading", name),
       mode = NormalMode,
       entityName = name
     )
 
   def createView: () => HtmlFormat.Appendable = () =>
-    vatNumber(
+    enterVAT(
       frontendAppConfig,
       form,
       viewModel
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    vatNumber(
+    enterVAT(
       frontendAppConfig,
       form,
       viewModel

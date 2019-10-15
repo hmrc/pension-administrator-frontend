@@ -19,30 +19,38 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.VATNumberFormProvider
-import identifiers.register.VATNumberId
+import forms.HasVATFormProvider
+import identifiers.register.HasVATId
 import identifiers.register.company.BusinessDetailsId
-import models.{BusinessDetails, NormalMode}
+import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.register.vatNumber
+import views.html.hasReferenceNumber
 
-class CompanyVATNumberControllerSpec extends ControllerSpecBase {
-
-  private val companyName = "Test Company Name"
+class HasVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val formProvider = new VATNumberFormProvider()
-  val form: Form[String] = formProvider()
+  private val companyName = "Test Company Name"
+  private val formProvider = new HasVATFormProvider()
+  private val form = formProvider("hasVAT.error.required", companyName)
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new CompanyVATNumberController(
-      frontendAppConfig,
+  private def viewModel =
+    CommonFormWithHintViewModel(
+      postCall = controllers.register.company.routes.HasVATController.onSubmit(NormalMode),
+      title = Message("hasVAT.heading", Message("theCompany").resolve),
+      heading = Message("hasVAT.heading", companyName),
+      mode = NormalMode,
+      hint = None,
+      entityName = companyName
+    )
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+    new HasVATController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -53,24 +61,10 @@ class CompanyVATNumberControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  private def viewModel: CommonFormWithHintViewModel =
-    CommonFormWithHintViewModel(
-      postCall = routes.CompanyVATNumberController.onSubmit(NormalMode),
-      title = Message("VATNumber.title", Message("theCompany").resolve),
-      heading = Message("VATNumber.heading", companyName),
-      mode = NormalMode,
-      entityName = companyName
-    )
+  private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
+    hasReferenceNumber(appConfig(isHubEnabled = false), form, mode, companyName, viewModel)(fakeRequest, messages).toString
 
-  def viewAsString(form: Form[_] = form): String = vatNumber(
-    frontendAppConfig,
-    form,
-    viewModel
-  )(fakeRequest, messages).toString
-
-  val testAnswer = "123456789"
-
-  "CompanyVATNumber Controller" must {
+  "HasCompanyVATController Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -83,17 +77,17 @@ class CompanyVATNumberControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        VATNumberId.toString -> JsString(testAnswer)
+        HasVATId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(testAnswer))
+      contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -102,8 +96,8 @@ class CompanyVATNumberControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -119,7 +113,7 @@ class CompanyVATNumberControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

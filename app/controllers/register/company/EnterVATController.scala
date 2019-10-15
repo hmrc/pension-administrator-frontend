@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
-import forms.register.company.VATNumberFormProvider
-import identifiers.register.VATNumberId
+import forms.register.company.EnterVATFormProvider
+import identifiers.register.EnterVATId
 import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
@@ -34,24 +34,24 @@ import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.ExecutionContext
 
-class CompanyVATNumberController @Inject()(val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
-                                           val cacheConnector: UserAnswersCacheConnector,
-                                           @RegisterCompany val navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           allowAccess: AllowAccessActionProvider,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: VATNumberFormProvider
+class EnterVATController @Inject()(val appConfig: FrontendAppConfig,
+                                   override val messagesApi: MessagesApi,
+                                   val cacheConnector: UserAnswersCacheConnector,
+                                   @RegisterCompany val navigator: Navigator,
+                                   authenticate: AuthAction,
+                                   allowAccess: AllowAccessActionProvider,
+                                   getData: DataRetrievalAction,
+                                   requireData: DataRequiredAction,
+                                   formProvider: EnterVATFormProvider
                                           )(implicit val ec: ExecutionContext) extends VATNumberController {
 
   private val form = formProvider()
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = routes.CompanyVATNumberController.onSubmit(mode),
-      title = Message("VATNumber.title", Message("theCompany").resolve),
-      heading = Message("VATNumber.heading", entityName),
+      postCall = routes.EnterVATController.onSubmit(mode),
+      title = Message("enterVAT.title", Message("theCompany").resolve),
+      heading = Message("enterVAT.heading", entityName),
       mode = mode,
       entityName = entityName
     )
@@ -61,12 +61,12 @@ class CompanyVATNumberController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(VATNumberId, form, viewModel(mode, entityName))
+      get(EnterVATId, form, viewModel(mode, entityName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(VATNumberId, mode, form, viewModel(mode, entityName))
+      post(EnterVATId, mode, form, viewModel(mode, entityName))
   }
 
 }

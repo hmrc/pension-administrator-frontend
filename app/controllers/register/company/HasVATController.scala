@@ -36,20 +36,20 @@ import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.ExecutionContext
 
-class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        override val dataCacheConnector: UserAnswersCacheConnector,
-                                        @RegisterCompany override val navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        allowAccess: AllowAccessActionProvider,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: HasVATFormProvider
+class HasVATController @Inject()(override val appConfig: FrontendAppConfig,
+                                 override val messagesApi: MessagesApi,
+                                 override val dataCacheConnector: UserAnswersCacheConnector,
+                                 @RegisterCompany override val navigator: Navigator,
+                                 authenticate: AuthAction,
+                                 allowAccess: AllowAccessActionProvider,
+                                 getData: DataRetrievalAction,
+                                 requireData: DataRequiredAction,
+                                 formProvider: HasVATFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasCompanyVATController.onSubmit(mode),
+      postCall = HasVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("theCompany").resolve),
       heading = Message("hasVAT.heading", entityName),
       mode = mode,
