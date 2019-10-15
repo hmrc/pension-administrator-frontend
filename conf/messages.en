@@ -322,8 +322,6 @@ hasCompanyNumber.hint = You can find this on the company’s certificate of inco
 
 hasCompanyVAT.heading = Does {0} have a VAT number?
 
-theCompany = the company
-
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.

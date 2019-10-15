@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasCRNFormProvider
-import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
+import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
@@ -74,7 +74,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        HasCompanyVATId.toString -> true
+        HasCompanyCRNId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
