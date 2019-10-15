@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import forms.HasCRNFormProvider
-import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
+import controllers.register.company.routes._
+import forms.HasVATFormProvider
+import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -31,11 +32,10 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.company.routes._
 
 import scala.concurrent.ExecutionContext
 
-class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfig,
+class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @RegisterCompany override val navigator: Navigator,
@@ -43,16 +43,16 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: HasCRNFormProvider
+                                        formProvider: HasVATFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasCompanyCRNController.onSubmit(mode),
-      title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyNumber.heading", entityName),
+      postCall = HasCompanyVATController.onSubmit(mode),
+      title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
+      heading = Message("hasCompanyVAT.heading", entityName),
       mode = mode,
-      hint = Some(Message("hasCompanyNumber.hint")),
+      hint = None,
       entityName = entityName
     )
 
@@ -60,17 +60,18 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
     request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
 
   private def form(companyName: String): Form[Boolean] =
-    formProvider("companyRegistrationNumber.error.required", companyName)
+    formProvider("hasCompanyVAT.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(HasCompanyCRNId, form(companyName), viewModel(mode, companyName))
+        get(HasCompanyVATId, form(companyName), viewModel(mode, companyName))
+
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        post(HasCompanyCRNId, mode, form(companyName), viewModel(mode, companyName))
+        post(HasCompanyVATId, mode, form(companyName), viewModel(mode, companyName))
     }
 }

@@ -21,13 +21,14 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.company.{BusinessDetailsId, CompanyRegistrationNumberId}
-import models.{BusinessDetails, NormalMode}
+import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
-import views.html.register.company.companyRegistrationNumber
+import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.register.company.enterNumber
 
 class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
@@ -51,11 +52,19 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       formProvider
     )
 
-  def viewAsString(form: Form[_] = form): String = companyRegistrationNumber(
+  private def viewModel: CommonFormWithHintViewModel =
+    CommonFormWithHintViewModel(
+      postCall = routes.CompanyRegistrationNumberController.onSubmit(NormalMode),
+      title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
+      heading = Message("companyRegistrationNumber.heading", companyName),
+      mode = NormalMode,
+      entityName = companyName
+    )
+
+  def viewAsString(form: Form[_] = form): String = enterNumber(
     frontendAppConfig,
     form,
-    NormalMode,
-    companyName
+    viewModel
   )(fakeRequest, messages).toString
 
   val testAnswer = "AB123456"

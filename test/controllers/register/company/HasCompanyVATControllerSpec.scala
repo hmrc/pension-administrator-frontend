@@ -19,8 +19,8 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.HasCRNFormProvider
-import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
+import forms.HasVATFormProvider
+import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
@@ -30,26 +30,26 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasCompanyCRNControllerSpec extends ControllerSpecBase {
+class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val companyName = "Test Company Name"
-  private val formProvider = new HasCRNFormProvider()
-  private val form = formProvider("companyRegistrationNumber.error.required", companyName)
+  private val formProvider = new HasVATFormProvider()
+  private val form = formProvider("hasCompanyVAT.error.required", companyName)
 
   private def viewModel =
     CommonFormWithHintViewModel(
-      postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode),
-      title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyNumber.heading", companyName),
+      postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(NormalMode),
+      title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
+      heading = Message("hasCompanyVAT.heading", companyName),
       mode = NormalMode,
-      hint = Some(Message("hasCompanyNumber.hint")),
+      hint = None,
       entityName = companyName
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasCompanyCRNController(frontendAppConfig,
+    new HasCompanyVATController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -63,7 +63,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
     hasReferenceNumber(appConfig(isHubEnabled = false), form, mode, companyName, viewModel)(fakeRequest, messages).toString
 
-  "HasCompanyCRNController Controller" must {
+  "HasCompanyVATController Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -76,7 +76,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        HasCompanyCRNId.toString -> true
+        HasCompanyVATId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 

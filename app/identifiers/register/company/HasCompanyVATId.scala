@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register.company
 
-import models.Mode
-import play.api.mvc.Call
+import identifiers.TypedIdentifier
 
-case class CommonFormWithHintViewModel(
-                                        postCall: Call,
-                                        title: Message,
-                                        heading: Message,
-                                        hint: Option[Message] = None,
-                                        formFieldName: Option[String] = None,
-                                        mode: Mode,
-                                        entityName: String
-                                      )
+
+case object HasCompanyVATId extends TypedIdentifier[Boolean] {
+  override def toString: String = "hasVat"
+}
