@@ -40,8 +40,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (BusinessTypeId, unlimitedCompany, businessDetailsPage, false, None, false),
-    (BusinessTypeId, limitedCompany, businessDetailsPage, false, None, false),
+    (BusinessTypeId, unlimitedCompany, companyUTRPage, false, None, false),
+    (BusinessTypeId, limitedCompany, companyUTRPage, false, None, false),
     (BusinessTypeId, businessPartnership, partnershipBusinessDetails, false, None, false),
     (BusinessTypeId, limitedPartnership, partnershipBusinessDetails, false, None, false),
     (BusinessTypeId, limitedLiabilityPartnership, partnershipBusinessDetails, false, None, false),
@@ -84,7 +84,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
-  lazy val businessDetailsPage: Call = controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad()
+  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
   lazy val partnershipBusinessDetails: Call = controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()

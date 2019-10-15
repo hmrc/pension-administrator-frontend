@@ -18,8 +18,10 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
 import identifiers.register.company._
 import models._
+import models.register.BusinessType
 import models.register.company.CompanyDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -37,14 +39,16 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "on a GET request for Company Details section " must {
 
       "render the view correctly for the company name and utr" in {
-        val rows = Seq(answerRow("businessDetails.companyName", Seq("Test Company Name")),
-          answerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq("Test UTR")))
+        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
+          answerRow("utr.checkYourAnswersLabel", Seq("Test UTR")))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails("Test Company Name", Some("Test UTR"))
-        )
+          BusinessTypeId.toString -> BusinessType.LimitedCompany.toString,
+          BusinessNameId.toString -> "Test Company Name",
+          BusinessUTRId.toString -> "Test UTR")
+
         testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
       }
 

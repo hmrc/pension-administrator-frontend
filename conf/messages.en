@@ -163,6 +163,9 @@ cya.label.name = Name
 cya.label.address = Address
 cya.label.dob = Date of birth
 cya.label.address.years = Address years
+cya.label.companyName = Company name
+cya.label.partnershipName = Partnership name
+utr.checkYourAnswersLabel = Unique Taxpayer Reference
 
 contactDetails.title = Enter contact details
 contactDetails.heading = Enter contact details

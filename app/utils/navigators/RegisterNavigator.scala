@@ -48,9 +48,9 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def businessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
       case Some(BusinessType.LimitedCompany) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
       case Some(BusinessType.LimitedLiabilityPartnership) =>
         NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
       case Some(BusinessType.LimitedPartnership) =>

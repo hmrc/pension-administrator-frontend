@@ -22,6 +22,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.SameContactAddressController
 import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import javax.inject.{Inject, Singleton}
 import models.Mode
@@ -58,15 +59,15 @@ class CompanySameContactAddressController @Inject()(
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (CompanyAddressId and BusinessDetailsId).retrieve.right.map {
-          case address ~ details =>
+        (CompanyAddressId and BusinessNameId).retrieve.right.map {
+          case address ~ name =>
             SameContactAddressViewModel(
               postCall(mode),
               title = Message(title),
-              heading = Message(heading).withArgs(details.companyName),
-              hint = Some(Message(hint).withArgs(details.companyName)),
+              heading = Message(heading).withArgs(name),
+              hint = Some(Message(hint).withArgs(name)),
               address = address,
-              psaName = details.companyName,
+              psaName = name,
               mode = mode
             )
         }

@@ -45,6 +45,10 @@ package object utils {
       answers.set(identifiers.register.AreYouInUKId)(answer).asOpt.value
     }
 
+    def isRegisteredName(answer: Boolean): UserAnswers = {
+      answers.set(identifiers.register.IsRegisteredNameId)(answer).asOpt.value
+    }
+
     // Individual PSA Contact
     def individualContactAddress(address: Address): UserAnswers = {
       answers.set(IndividualContactAddressId)(address).asOpt.value

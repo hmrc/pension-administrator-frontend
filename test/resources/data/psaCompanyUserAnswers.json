@@ -1,122 +1,41 @@
 {
-  "index": "",
-  "areYouInUK": true,
-  "businessType": "limitedCompany",
-  "businessDetails": {
-    "companyName": "Test company name",
-    "uniqueTaxReferenceNumber": "1234567890"
-  },
+  "businessType": "businessPartnership",
+  "businessName": "MyPartnership",
+  "utr": "0987654321",
   "companyAddressId": {
-    "addressLine1": "100 SuttonStreet",
-    "addressLine2": "Wokingham",
-    "addressLine3": "Surrey",
-    "addressLine4": "London",
-    "postalCode": "DH14EJ",
-    "countryCode": "GB"
+    "addressLine1": "Some Other Building",
+    "addressLine2": "2 Some Street",
+    "addressLine3": "Some Village",
+    "addressLine4": "Some Town",
+    "postalCode": "ZZ1 1ZZ",
+    "countryCode": "UK"
   },
   "registrationInfo": {
     "legalStatus": "Limited Company",
-    "sapNumber": "1234567890",
+    "sapNumber": "test-sap-number",
     "noIdentifier": false,
     "customerType": "UK",
     "idType": "UTR",
-    "idNumber": "121414151"
-  },
-  "lastPage": {
-    "method": "GET",
-    "url": "/register-as-pension-scheme-administrator/register/declaration"
-  },
-  "companySameContactAddressId": true,
-  "companyContactAddress": {
-    "addressLine1": "Telford1",
-    "addressLine2": "Telford2",
-    "addressLine3": "Telford3",
-    "addressLine4": "Telford4",
-    "postcode": "TF3 4ER",
-    "country": "Country of GB"
-  },
-  "companyAddressYears": "under_a_year",
-  "companyAddressList": {
-    "addressLine1": "Flat 3",
-    "addressLine2": "7 Other Place",
-    "addressLine3": "Some District",
-    "addressLine4": "Somerset",
+    "idNumber": "0987654321"
+  }
+} was not equal to {
+  "businessType": "limitedCompany",
+  "businessName": "MyCompany",
+  "utr": "1234567890",
+  "companyAddressId": {
+    "addressLine1": "Some Building",
+    "addressLine2": "1 Some Street",
+    "addressLine3": "Some Village",
+    "addressLine4": "Some Town",
     "postalCode": "ZZ1 1ZZ",
-    "countryCode": "GB"
+    "countryCode": "UK"
   },
-  "companyPreviousAddress": {
-    "addressLine1": "London1",
-    "addressLine2": "London2",
-    "addressLine3": "London3",
-    "addressLine4": "London4",
-    "postcode": "LN12 4DC",
-    "country": "Country of GB"
-  },
-  "contactDetails": {
-    "email": "aaa@aa.com",
-    "phone": "0044-09876542312"
-  },
-  "companyDetails": {
-    "vatRegistrationNumber": "12345678",
-    "payeEmployerReferenceNumber": "9876543210"
-  },
-  "companyRegistrationNumber": "121414151",
-  "directors": [
-    {
-      "directorDetails": {
-        "firstName": "Director",
-        "middleName": "number",
-        "lastName": "one",
-        "dateOfBirth": "1950-03-29",
-        "isDeleted": false
-      },
-      "directorNino": {
-        "hasNino": true,
-        "nino": "AA999999A"
-      },
-      "directorUtr": {
-        "hasUtr": true,
-        "utr": "1234567892"
-      },
-      "companyDirectorAddressList": {
-        "addressLine1": "Flat 2",
-        "addressLine2": "7 Other Place",
-        "addressLine3": "Some District",
-        "addressLine4": "Somerset",
-        "postalCode": "ZZ1 1ZZ",
-        "countryCode": "GB"
-      },
-      "directorAddress": {
-        "addressLine1": "Telford1",
-        "addressLine2": "Telford2",
-        "addressLine3": "Telford3",
-        "addressLine4": "Telford4",
-        "postcode": "TF3 4ER",
-        "country": "Country of GB"
-      },
-      "directorAddressYears": "under_a_year",
-      "directorPreviousAddressList": {
-        "addressLine1": "London1",
-        "addressLine2": "London2",
-        "addressLine3": "London3",
-        "addressLine4": "London4",
-        "postcode": "LN12 4DC",
-        "country": "Country of GB"
-      },
-      "directorPreviousAddress": {
-        "addressLine1": "London1",
-        "addressLine2": "London2",
-        "addressLine3": "London3",
-        "addressLine4": "London4",
-        "postcode": "LN12 4DC",
-        "country": "Country of GB"
-      },
-      "directorContactDetails": {
-        "email": "abc@hmrc.gsi.gov.uk",
-        "phone": "0044-09876542312"
-      },
-      "isDirectorComplete": true
-    }
-  ],
-  "declarationWorkingKnowledge" : false
+  "registrationInfo": {
+    "legalStatus": "Limited Company",
+    "sapNumber": "test-sap-number",
+    "noIdentifier": false,
+    "customerType": "UK",
+    "idType": "UTR",
+    "idNumber": "1234567890"
+  }
 }

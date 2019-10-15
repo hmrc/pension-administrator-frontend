@@ -17,7 +17,27 @@
 package identifiers.register
 
 import identifiers.TypedIdentifier
+import models.register.BusinessType._
+import play.api.libs.json.Reads
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, StringCYA}
+import viewmodels.{AnswerRow, Link}
 
 case object BusinessNameId extends TypedIdentifier[String] {
+  self =>
   override def toString: String = "businessName"
+
+  implicit def cya: CheckYourAnswers[self.type] =
+      new CheckYourAnswers[self.type] {
+
+        override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+          StringCYA(Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
+
+  private def label(userAnswers: UserAnswers): String =
+    userAnswers.get(BusinessTypeId) match {
+    case Some(LimitedCompany) | Some(UnlimitedCompany) => "cya.label.companyName"
+    case _ => "cya.label.partnershipName"
+  }
+
 }

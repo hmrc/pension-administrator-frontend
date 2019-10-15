@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.AreYouInUKId
+import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, IsRegisteredNameId}
 import identifiers.register.company._
 import models.InternationalRegion._
 import models._
@@ -35,8 +35,12 @@ class RegisterCompanyNavigator @Inject()(
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessDetailsId =>
-      regionBasedNameNavigation(from.userAnswers)
+    case BusinessUTRId => NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
+    case BusinessNameId => regionBasedNameNavigation(from.userAnswers)
+      NavigateTo.dontSave(routes.CompanyIsRegisteredNameController.onPageLoad())
+    case IsRegisteredNameId =>  registeredNameRoutes(from.userAnswers)
+    case BusinessDetailsId =>  regionBasedNameNavigation(from.userAnswers)
+
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
@@ -181,7 +185,6 @@ class RegisterCompanyNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -192,5 +195,10 @@ class RegisterCompanyNavigator @Inject()(
       case Some(true) => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+  }
+
+  def registeredNameRoutes(answers: UserAnswers) = answers.get(IsRegisteredNameId) match {
+    case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+    case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
   }
 }
