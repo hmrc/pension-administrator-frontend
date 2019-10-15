@@ -103,7 +103,7 @@ POST        /company-number                                controllers.register.
 GET         /:mode/company-number                          controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
 POST        /:mode/company-number                          controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
 
-GET         /vat-number                                    controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /vat-number                                    controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/vat-number                              controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
-POST        /:mode/vat-number                              controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
+GET         /is-vat-registered                             controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                             controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
