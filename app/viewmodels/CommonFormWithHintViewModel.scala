@@ -16,12 +16,15 @@
 
 package viewmodels
 
+import models.Mode
 import play.api.mvc.Call
 
 case class CommonFormWithHintViewModel(
-                         postCall: Call,
-                         title: Message,
-                         heading: Message,
-                         hint: Option[Message] = None,
-                         formFieldName:Option[String] = None
-                       )
+                                        postCall: Call,
+                                        title: Message,
+                                        heading: Message,
+                                        hint: Option[Message] = None,
+                                        formFieldName: Option[String] = None,
+                                        mode: Mode,
+                                        entityName: String
+                                      )

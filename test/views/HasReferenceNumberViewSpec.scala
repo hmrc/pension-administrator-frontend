@@ -30,19 +30,24 @@ import views.html.hasReferenceNumber
 class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
   private val messageKeyPrefix = "testPrefix"
   private val psaName = "psa"
+
   private def pageTitle = Message(s"$messageKeyPrefix.title")
 
+  private val companyName = "Test Company Name"
 
-  private def viewModel = CommonFormWithHintViewModel(
-    Call("GET","url"),
+  private def viewModel(mode: Mode) = CommonFormWithHintViewModel(
+    Call("GET", "url"),
     title = pageTitle,
     heading = Message(s"$messageKeyPrefix.heading"),
-    hint = Some(Message(s"$messageKeyPrefix.hint"))
+    mode = mode,
+    hint = Some(Message(s"$messageKeyPrefix.hint")),
+    entityName = companyName
+
   )
 
   private class HasXFormProvider @Inject() extends Mappings {
 
-    def apply(errorKey : String, name : String)(implicit messages: Messages): Form[Boolean] =
+    def apply(errorKey: String, name: String)(implicit messages: Messages): Form[Boolean] =
       Form(
         "value" -> boolean(Message(errorKey, name).resolve)
       )
@@ -51,11 +56,11 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
   val form = new HasXFormProvider()("required", "name")
   private val postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode)
 
-  private def createView(mode:Mode = NormalMode): () => HtmlFormat.Appendable = () =>
-    hasReferenceNumber(frontendAppConfig, form, mode, psaName, viewModel)(fakeRequest, messages)
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    hasReferenceNumber(frontendAppConfig, form, mode, psaName, viewModel(mode))(fakeRequest, messages)
 
   private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    hasReferenceNumber(frontendAppConfig, form, NormalMode, psaName, viewModel)(fakeRequest, messages)
+    hasReferenceNumber(frontendAppConfig, form, NormalMode, psaName, viewModel(NormalMode))(fakeRequest, messages)
 
   "HasReferenceNumber view" must {
 
