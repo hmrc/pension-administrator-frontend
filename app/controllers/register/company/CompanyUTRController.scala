@@ -25,7 +25,7 @@ import forms.UTRFormProvider
 import identifiers.register.BusinessTypeId
 import identifiers.register.company.CompanyUTRId
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, NormalMode}
 import models.register.BusinessType
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,22 +46,22 @@ class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                      requireData: DataRequiredAction
                                     ) extends UTRController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessTypeId.retrieve.right.map { businessType =>
-        get(CompanyUTRId, toString(businessType), href(mode))
+        get(CompanyUTRId, toString(businessType), href)
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
             BusinessTypeId.retrieve.right.map { businessType =>
-              post(CompanyUTRId, toString(businessType), href(mode), mode)
+              post(CompanyUTRId, toString(businessType), href, NormalMode)
             }
   }
 
-  def href(mode: Mode): Call = routes.CompanyUTRController.onSubmit(mode)
+  def href: Call = routes.CompanyUTRController.onSubmit
   def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
 
 }
