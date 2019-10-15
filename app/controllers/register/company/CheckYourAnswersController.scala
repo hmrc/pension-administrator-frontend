@@ -25,7 +25,7 @@ import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
@@ -53,6 +53,7 @@ class CheckYourAnswersController @Inject()(
         BusinessDetailsId.row(None)
           ++ Seq(
           CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten
       )

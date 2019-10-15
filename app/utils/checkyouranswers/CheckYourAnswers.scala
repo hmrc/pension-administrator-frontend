@@ -17,9 +17,11 @@
 package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
+import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import models._
 import models.register.adviser.AdviserDetails
 import models.register.company.CompanyDetails
+import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
 import utils.{DateHelper, UserAnswers}
@@ -29,6 +31,15 @@ import scala.language.implicitConversions
 
 trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
   def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow]
+}
+
+trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  private def companyName(ua:UserAnswers)(implicit messages:Messages):String =
+    ua.get(BusinessDetailsId).fold(messages("theCompany"))(_.companyName)
+
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages) =
+    messages(messageKey, companyName(ua))
+
 }
 
 object CheckYourAnswers {
@@ -329,3 +340,4 @@ case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = Non
     }
   }
 }
+
