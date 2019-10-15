@@ -23,6 +23,7 @@ import views.ViewSpecBase
 
 trait ViewBehaviours extends ViewSpecBase {
 
+  // TODO: This should be looked at - it IS doing a page title check!
   def normalPageWithoutPageTitleCheck(view: () => HtmlFormat.Appendable,
                                       messageKeyPrefix: String,
                                       expectedGuidanceKeys: String*) = {
@@ -39,6 +40,27 @@ trait ViewBehaviours extends ViewSpecBase {
         "display the correct browser title" in {
           val doc = asDocument(view())
           assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title")  + " - " + messagesApi("pension.scheme.administrator.title"))
+        }
+
+        "display the correct guidance" in {
+          val doc = asDocument(view())
+          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+        }
+      }
+    }
+  }
+
+  def normalPageWithNoPageTitleCheck(view: () => HtmlFormat.Appendable,
+                                      messageKeyPrefix: String,
+                                      expectedGuidanceKeys: String*) = {
+
+    "behave like a normal page" when {
+      "rendered" must {
+        "have the correct banner title" in {
+          val doc = asDocument(view())
+          val nav = doc.getElementById("proposition-menu")
+          val span = nav.children.first
+          span.text mustBe messagesApi("site.service_name")
         }
 
         "display the correct guidance" in {
@@ -75,7 +97,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
     "behave like a normal page" when {
       "rendered" must {
-        "display the correct page title" in {
+        "display the correct heading" in {
           val doc = asDocument(view())
           assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
         }
