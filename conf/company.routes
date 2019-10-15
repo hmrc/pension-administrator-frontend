@@ -98,7 +98,5 @@ GET        /outside-eu-eea                              controllers.register.com
 GET         /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                   controllers.register.company.CompanyConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
-GET        /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onPageLoad(mode: Mode = NormalMode)
-POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/unique-taxpayer-reference             controllers.register.company.CompanyUTRController.onPageLoad(mode: Mode)
-POST       /:mode/unique-taxpayer-reference             controllers.register.company.CompanyUTRController.onSubmit(mode: Mode)
+GET        /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onPageLoad
+POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit

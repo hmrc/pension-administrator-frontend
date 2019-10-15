@@ -20,10 +20,10 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Variations
 import controllers.actions.AllowAccessActionProvider
-import forms.{PersonDetailsFormProvider, UTRFormProvider}
+import forms.UTRFormProvider
 import identifiers.TypedIdentifier
+import models.Mode
 import models.requests.DataRequest
-import models.{Mode, PersonDetails}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Call, Result}

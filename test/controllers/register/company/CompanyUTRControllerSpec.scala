@@ -40,7 +40,7 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
     behave like utrController(CompanyUTRId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -48,7 +48,7 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"))
-      val result = testController(this, dontGetAnyData).onSubmit(NormalMode)(postRequest)
+      val result = testController(this, dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
