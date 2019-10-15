@@ -27,7 +27,7 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.register.company.vatNumber
+import views.html.register.vatNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 

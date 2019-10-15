@@ -323,6 +323,7 @@ hasCompanyNumber.hint = You can find this on the company’s certificate of inco
 hasVAT.heading = Is {0} registered for VAT?
 hasVAT.error.required = Select yes if {0} is registered for VAT
 
+VATNumber.title = What is the VAT registration number for {0}?
 VATNumber.heading = What is the VAT registration number for {0}?
 VATNumber.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for .
 

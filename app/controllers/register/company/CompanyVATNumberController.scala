@@ -21,7 +21,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.company.VATNumberFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyVATNumberId}
+import identifiers.register.VATNumberId
+import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -49,7 +50,7 @@ class CompanyVATNumberController @Inject()(val appConfig: FrontendAppConfig,
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyVATNumberController.onSubmit(mode),
-      title = Message("VATNumber.heading", Message("theCompany").resolve),
+      title = Message("VATNumber.title", Message("theCompany").resolve),
       heading = Message("VATNumber.heading", entityName),
       mode = mode,
       entityName = entityName
@@ -60,12 +61,12 @@ class CompanyVATNumberController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(CompanyVATNumberId, form, viewModel(mode, entityName))
+      get(VATNumberId, form, viewModel(mode, entityName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyVATNumberId, mode, form, viewModel(mode, entityName))
+      post(VATNumberId, mode, form, viewModel(mode, entityName))
   }
 
 }

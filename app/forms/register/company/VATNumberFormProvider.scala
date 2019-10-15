@@ -26,8 +26,8 @@ class VATNumberFormProvider @Inject() extends FormErrorHelper with VatMappingStr
   def apply(): Form[String] =
     Form(
       "value" -> vatMapping(
-        "common.error.vat.required",
-        "common.error.vat.invalid"
+        "common.error.vat.invalid",
+        "common.error.vat.required"
       )
     )
 

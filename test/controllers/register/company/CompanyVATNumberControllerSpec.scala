@@ -20,7 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.VATNumberFormProvider
-import identifiers.register.company.{BusinessDetailsId, CompanyVATNumberId}
+import identifiers.register.VATNumberId
+import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
@@ -28,7 +29,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.register.company.vatNumber
+import views.html.register.vatNumber
 
 class CompanyVATNumberControllerSpec extends ControllerSpecBase {
 
@@ -55,7 +56,7 @@ class CompanyVATNumberControllerSpec extends ControllerSpecBase {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyVATNumberController.onSubmit(NormalMode),
-      title = Message("VATNumber.heading", Message("theCompany").resolve),
+      title = Message("VATNumber.title", Message("theCompany").resolve),
       heading = Message("VATNumber.heading", companyName),
       mode = NormalMode,
       entityName = companyName
@@ -82,7 +83,7 @@ class CompanyVATNumberControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        CompanyVATNumberId.toString -> JsString(testAnswer)
+        VATNumberId.toString -> JsString(testAnswer)
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 

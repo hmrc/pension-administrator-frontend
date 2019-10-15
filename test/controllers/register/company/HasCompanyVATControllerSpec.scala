@@ -20,7 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasVATFormProvider
-import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
+import identifiers.register.HasVATId
+import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
@@ -76,7 +77,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        HasCompanyVATId.toString -> true
+        HasVATId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package identifiers.register
 
-import identifiers._
+import identifiers.TypedIdentifier
 
-case object CompanyVATNumberId extends TypedIdentifier[String] {
-  override def toString: String = "companyVat"
+case object HasVATId extends TypedIdentifier[Boolean] {
+  override def toString: String = "hasVat"
 }
