@@ -41,7 +41,6 @@ class RegisterCompanyNavigator @Inject()(
       regionBasedNameNavigation(from.userAnswers)
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-
     case CompanyDetailsId =>
       from.userAnswers.get(BusinessTypeId)
       match {
@@ -79,8 +78,6 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
     case ContactDetailsId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
-//    case CompanyDetailsId =>
-//      NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
