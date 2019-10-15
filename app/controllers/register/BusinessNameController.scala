@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.BusinessNameFormProvider
 import identifiers.register.{BusinessNameId, BusinessTypeId}
-import models.Mode
+import models.{Mode, NormalMode}
 import models.register.BusinessType
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -45,29 +45,29 @@ trait BusinessNameController extends FrontendController with I18nSupport with Re
   def allowAccess: AllowAccessActionProvider
   def getData: DataRetrievalAction
   def requireData: DataRequiredAction
-  def href: Mode => Call
+  def href: Call
 
   private val form = new BusinessNameFormProvider()()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
   implicit request =>
   val prepareForm = request.userAnswers.get(BusinessNameId).fold(form)(form.fill)
     BusinessTypeId.retrieve.right.map { businessType =>
-      Future.successful(Ok(businessName(appConfig, prepareForm, mode, toString(businessType), href(mode))))
+      Future.successful(Ok(businessName(appConfig, prepareForm, toString(businessType), href)))
     }
 
 }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           BusinessTypeId.retrieve.right.map { businessType =>
-            Future.successful(BadRequest(businessName(appConfig, formWithErrors, mode, toString(businessType), href(mode))))
+            Future.successful(BadRequest(businessName(appConfig, formWithErrors, toString(businessType), href)))
           },
         value =>
           cacheConnector.save(request.externalId, BusinessNameId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(BusinessNameId, mode, UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(BusinessNameId, NormalMode, UserAnswers(cacheMap))))
       )
   }
 

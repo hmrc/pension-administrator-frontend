@@ -51,7 +51,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
       new FakeDataRetrievalAction(Some(userAnswers.json)),
       new DataRequiredActionImpl()
     ){
-      override def href: Mode => Call = _ => onwardRoute
+      override def href: Call = onwardRoute
     }
 
   "CompanyUTRController" must {

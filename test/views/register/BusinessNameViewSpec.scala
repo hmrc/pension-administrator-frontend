@@ -31,9 +31,9 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new BusinessNameFormProvider()()
 
-  private def createView = () => businessName(frontendAppConfig, form, NormalMode, businessType, href)(fakeRequest, messages)
+  private def createView = () => businessName(frontendAppConfig, form, businessType, href)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => businessName(frontendAppConfig, form, NormalMode, businessType, href)(fakeRequest, messages)
+  private def createViewUsingForm = (form: Form[_]) => businessName(frontendAppConfig, form, businessType, href)(fakeRequest, messages)
 
   "Company Name view" must {
 

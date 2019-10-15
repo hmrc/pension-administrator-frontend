@@ -38,5 +38,5 @@ class CompanyNameController @Inject()(
                                        override val requireData: DataRequiredAction
                                      ) extends BusinessNameController {
 
-  def href: Mode => Call = routes.CompanyNameController.onSubmit _
+  def href: Call = routes.CompanyNameController.onSubmit()
 }
