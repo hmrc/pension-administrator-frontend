@@ -48,8 +48,6 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
-      implicit val ua: UserAnswers = request.userAnswers
-
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
