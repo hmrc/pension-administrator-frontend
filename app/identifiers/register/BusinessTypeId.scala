@@ -17,8 +17,20 @@
 package identifiers.register
 
 import identifiers._
+import identifiers.register.company.HasCompanyCRNId
 import models.register.BusinessType
+import play.api.libs.json.{JsResult, JsSuccess}
+import utils.UserAnswers
 
 case object BusinessTypeId extends TypedIdentifier[BusinessType] {
   override def toString: String = "businessType"
+
+  override def cleanup(value: Option[BusinessType], userAnswers: UserAnswers): JsResult[UserAnswers] = {
+    value match {
+      case Some(BusinessType.LimitedCompany) =>
+        userAnswers.removeAllOf(List(HasCompanyCRNId))
+      case _ => JsSuccess(userAnswers)
+    }
+  }
+
 }

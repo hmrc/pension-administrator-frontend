@@ -41,23 +41,8 @@ class RegisterCompanyNavigator @Inject()(
       regionBasedNameNavigation(from.userAnswers)
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-    case CompanyDetailsId =>
-      from.userAnswers.get(BusinessTypeId)
-      match {
-        case Some(BusinessType.UnlimitedCompany) =>
-          NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
-        case Some(BusinessType.LimitedCompany) =>
-          NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-    case HasCompanyCRNId =>
-      from.userAnswers.get(HasCompanyCRNId)
-      match {
-        case Some(true) => NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-        case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-      }
-
+    case CompanyDetailsId => companyDetailsNavigation(from.userAnswers)
+    case HasCompanyCRNId => hasCompanyCRNNavigation(from.userAnswers)
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
     case CompanySameContactAddressId =>
@@ -212,6 +197,25 @@ class RegisterCompanyNavigator @Inject()(
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case Some(true) => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def companyDetailsNavigation(answers:UserAnswers):Option[NavigateTo] = {
+    answers.get(BusinessTypeId)
+    match {
+      case Some(BusinessType.UnlimitedCompany) =>
+        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
+      case Some(BusinessType.LimitedCompany) =>
+        NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+  private def hasCompanyCRNNavigation(answers:UserAnswers):Option[NavigateTo] = {
+    answers.get(HasCompanyCRNId)
+    match {
+      case Some(true) => NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+      case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }

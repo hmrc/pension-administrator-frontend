@@ -30,12 +30,6 @@ import scala.util.Failure
 
 abstract class Navigator {
 
-  protected def navigateOrSessionExpired[A](answers: UserAnswers,
-                                            id: => TypedIdentifier[A],
-                                            destination: A => Call)(implicit reads: Reads[A]): Option[NavigateTo] =
-    NavigateTo.dontSave(answers.get(id).fold(controllers.routes.SessionExpiredController.onPageLoad())(destination(_)))
-
-
   protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def routeMap(from: NavigateFrom): Option[NavigateTo]
