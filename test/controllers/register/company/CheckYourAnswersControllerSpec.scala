@@ -301,15 +301,6 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
-
-
-    def writeToDesktop(content: String, fileName: String): Unit = {
-      import java.io._
-      val pw = new PrintWriter(new File(s"/home/grant/Desktop/$fileName"))
-      pw.write(content)
-      pw.close()
-    }
-
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
     val expectedResult = check_your_answers(

@@ -99,11 +99,6 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case HasCompanyCRNId =>
       hasCompanyCRNNavigation(from.userAnswers, mode)
-//      from.userAnswers.get(HasCompanyCRNId) match {
-//      case Some(true) => NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(mode))
-//      case Some(false) => checkYourAnswers
-//      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-//    }
     case _ => None
   }
 
