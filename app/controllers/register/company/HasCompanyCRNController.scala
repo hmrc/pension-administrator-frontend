@@ -24,13 +24,16 @@ import forms.HasCRNFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import controllers.register.company.routes._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
@@ -41,35 +44,33 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: HasCRNFormProvider
-                                          )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
-  private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(mode),
+      postCall = HasCompanyCRNController.onSubmit(mode),
       title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyNumber.heading", companyName),
-      hint = Some(Message("hasCompanyNumber.hint"))
+      heading = Message("hasCompanyNumber.heading", entityName),
+      mode = mode,
+      hint = Some(Message("hasCompanyNumber.hint")),
+      entityName = entityName
     )
 
-  private def form(companyName: String) = formProvider("companyRegistrationNumber.error.required", companyName)
+  private def companyName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+
+  private def form(companyName: String): Form[Boolean] =
+    formProvider("companyRegistrationNumber.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        request.userAnswers.get(BusinessDetailsId) match {
-          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-          case Some(bd) =>
-            get(HasCompanyCRNId, form(bd.companyName), viewModel(mode, bd.companyName), mode, bd.companyName)
-        }
+        get(HasCompanyCRNId, form(companyName), viewModel(mode, companyName))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        request.userAnswers.get(BusinessDetailsId) match {
-          case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-          case Some(bd) =>
-            post(HasCompanyCRNId, mode, form(bd.companyName), viewModel(mode, bd.companyName), bd.companyName)
-        }
+        post(HasCompanyCRNId, mode, form(companyName), viewModel(mode, companyName))
     }
 }

@@ -25,6 +25,8 @@ import forms.HasVATFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -44,31 +46,32 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
                                         formProvider: HasVATFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
-  private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasCompanyVATController.onSubmit(mode),
       title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyVAT.heading", companyName),
-      hint = None
+      heading = Message("hasCompanyVAT.heading", entityName),
+      mode = mode,
+      hint = None,
+      entityName = entityName
     )
 
-  private def form(companyName: String) = formProvider("hasCompanyVAT.error.required", companyName)
+  private def companyName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+
+  private def form(companyName: String): Form[Boolean] =
+    formProvider("hasCompanyVAT.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessDetailsId.retrieve.right.map {
-          bd =>
-            get(HasCompanyVATId, form(bd.companyName), viewModel(mode, bd.companyName), mode, bd.companyName)
-        }
+        get(HasCompanyVATId, form(companyName), viewModel(mode, companyName))
+
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        BusinessDetailsId.retrieve.right.map {
-          bd =>
-            post(HasCompanyVATId, mode, form(bd.companyName), viewModel(mode, bd.companyName), bd.companyName)
-        }
+        post(HasCompanyVATId, mode, form(companyName), viewModel(mode, companyName))
     }
 }

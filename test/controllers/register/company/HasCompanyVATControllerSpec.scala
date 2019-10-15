@@ -43,7 +43,9 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(NormalMode),
       title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
       heading = Message("hasCompanyVAT.heading", companyName),
-      hint = None
+      mode = NormalMode,
+      hint = None,
+      entityName = companyName
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
