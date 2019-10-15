@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
+import controllers.register.company.routes._
 import forms.HasVATFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
 import javax.inject.Inject
@@ -30,7 +31,7 @@ import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
@@ -45,7 +46,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(mode),
+      postCall = HasCompanyVATController.onSubmit(mode),
       title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
       heading = Message("hasCompanyVAT.heading", companyName),
       hint = None
@@ -56,10 +57,8 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        request.userAnswers.get(BusinessDetailsId) match {
-          case None =>
-            Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-          case Some(bd) =>
+        BusinessDetailsId.retrieve.right.map {
+          bd =>
             get(HasCompanyVATId, form(bd.companyName), viewModel(mode, bd.companyName), mode, bd.companyName)
         }
     }
@@ -67,10 +66,8 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        request.userAnswers.get(BusinessDetailsId) match {
-          case None =>
-            Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-          case Some(bd) =>
+        BusinessDetailsId.retrieve.right.map {
+          bd =>
             post(HasCompanyVATId, mode, form(bd.companyName), viewModel(mode, bd.companyName), bd.companyName)
         }
     }
