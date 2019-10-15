@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms
 
-import models.Mode
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-case class CommonFormWithHintViewModel(
-                                        postCall: Call,
-                                        title: Message,
-                                        heading: Message,
-                                        hint: Option[Message] = None,
-                                        formFieldName: Option[String] = None,
-                                        mode: Mode,
-                                        entityName: String
-                                      )
+class HasVATFormProvider @Inject() extends Mappings {
+
+  def apply(errorKey : String, name : String)(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(Message(errorKey, name).resolve)
+    )
+}
