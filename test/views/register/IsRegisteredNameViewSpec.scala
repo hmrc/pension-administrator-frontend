@@ -35,7 +35,7 @@ class IsRegisteredNameViewSpec extends ViewBehaviours with YesNoViewBehaviours {
   private def viewmodel(mode: Mode) =
     CommonFormViewModel(
       mode,
-      postCall = controllers.register.company.routes.CompanyIsRegisteredNameController.onSubmit(mode),
+      postCall = controllers.register.company.routes.CompanyIsRegisteredNameController.onSubmit(),
       title = Message("isRegisteredName.company.title"),
       heading = Message("isRegisteredName.company.heading")
     )

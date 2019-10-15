@@ -103,7 +103,5 @@ POST       /company-number                              controllers.register.com
 GET        /:mode/company-number                        controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
 POST       /:mode/company-number                        controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
 
-GET        /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/confirm-company-name               controllers.register.company.CompanyIsRegisteredNameController.onPageLoad(mode: Mode)
-POST       /:mode/confirm-company-name               controllers.register.company.CompanyIsRegisteredNameController.onSubmit(mode: Mode)
+GET        /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
+POST       /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onSubmit

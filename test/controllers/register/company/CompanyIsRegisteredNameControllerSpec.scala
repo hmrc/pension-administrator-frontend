@@ -18,10 +18,10 @@ package controllers.register.company
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
-import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour, PersonDetailsControllerBehaviour}
+import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
 import forms.register.IsRegisteredNameFormProvider
 import models.requests.DataRequest
-import models.{Mode, NormalMode, PSAUser, UserType}
+import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,10 +37,10 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
 
   "CompanyIsRegisteredNameController" must {
 
-    behave like isRegisteredNameController(viewModel(NormalMode), createController(this, getEmptyData))
+    behave like isRegisteredNameController(viewModel, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+      val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -48,7 +48,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
-      val result = testController(this, dontGetAnyData).onSubmit(NormalMode)(postRequest)
+      val result = testController(this, dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -60,9 +60,9 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
 
 object CompanyIsRegisteredNameControllerSpec {
 
-  def viewModel(mode: Mode) = CommonFormViewModel(
-    mode,
-    routes.CompanyIsRegisteredNameController.onSubmit(mode),
+  def viewModel = CommonFormViewModel(
+    NormalMode,
+    routes.CompanyIsRegisteredNameController.onSubmit(),
     Message("isRegisteredName.company.title", name),
     Message("isRegisteredName.company.heading", name)
   )

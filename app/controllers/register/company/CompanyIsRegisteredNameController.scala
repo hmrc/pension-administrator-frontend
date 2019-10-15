@@ -24,7 +24,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.register.IsRegisteredNameController
 import forms.register.IsRegisteredNameFormProvider
 import identifiers.register.BusinessNameId
-import models.Mode
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -44,23 +44,23 @@ class CompanyIsRegisteredNameController @Inject()(override val appConfig: Fronte
 
   val form: Form[Boolean] = formProvider("isRegisteredName.company.error")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map(get(_))
+      viewmodel.retrieve.right.map(get(_))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map(post(_))
+      viewmodel.retrieve.right.map(post(_))
   }
 
-  def viewmodel(mode: Mode): Retrieval[CommonFormViewModel] = Retrieval {
+  def viewmodel: Retrieval[CommonFormViewModel] = Retrieval {
     implicit request =>
     BusinessNameId.retrieve.right.map {
       name =>
         CommonFormViewModel(
-          mode,
-          routes.CompanyIsRegisteredNameController.onSubmit(mode),
+          NormalMode,
+          routes.CompanyIsRegisteredNameController.onSubmit,
           Message("isRegisteredName.company.title", name),
           Message("isRegisteredName.company.heading", name)
         )
