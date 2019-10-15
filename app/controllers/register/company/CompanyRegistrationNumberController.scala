@@ -31,6 +31,8 @@ import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
+import scala.concurrent.ExecutionContext
+
 class CompanyRegistrationNumberController @Inject()(
                                                      val appConfig: FrontendAppConfig,
                                                      override val messagesApi: MessagesApi,
@@ -41,7 +43,7 @@ class CompanyRegistrationNumberController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: CompanyRegistrationNumberFormProvider
-                                                   ) extends EnterNumberController {
+                                                   )(implicit val ec: ExecutionContext) extends EnterNumberController {
 
   private val form = formProvider()
 

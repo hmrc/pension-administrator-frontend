@@ -323,6 +323,17 @@ hasCompanyNumber.hint = You can find this on the company’s certificate of inco
 hasCompanyVAT.heading = Is {0} registered for VAT?
 hasCompanyVAT.error.required = Select yes if {0} is registered for VAT
 
+hasCompanyPaye.heading = Does {0} have an employer PAYE reference?
+hasCompanyPaye.hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
+hasCompanyPaye.error.required = Select whether the company has an employer PAYE number
+
+enterPAYE.heading = What is {0}’s employer PAYE reference?
+enterPAYE.hint = For example, 123/AB456
+enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more then one.
+enterPAYE.error.invalid = Enter a valid employer PAYE reference
+enterPAYE.error.length = The employer PAYE reference cannot be more than 16 characters
+enterPAYE.error.required = Enter an employer PAYE reference
+
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
