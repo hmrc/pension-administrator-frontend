@@ -16,21 +16,11 @@
 
 package forms.mappings
 
-import play.api.data.{Forms, Mapping}
+import play.api.data.Mapping
 
 trait VatMappingString extends Mappings with Transforms {
 
-  def vatMapping(keyVatLength: String, keyVatInvalid: String): Mapping[String] = {
-    Forms.text
-      .transform(vatRegistrationNumberTransform, noTransform)
-      .verifying(
-        firstError(
-          maxLength(VatMapping.maxVatLength, keyVatLength),
-          vatRegistrationNumber(keyVatInvalid))
-      )
-  }
-
-  def vatStringMapping(keyVatRequired: String, keyVatLength: String, keyVatInvalid: String): Mapping[String] = {
+  def vatMapping(keyVatRequired: String, keyVatLength: String, keyVatInvalid: String): Mapping[String] = {
     text(keyVatRequired)
       .transform(vatRegistrationNumberTransform, noTransform)
       .verifying(

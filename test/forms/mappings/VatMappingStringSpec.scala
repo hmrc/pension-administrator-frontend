@@ -17,20 +17,19 @@
 package forms.mappings
 
 import forms.behaviours.VatBehavioursString
-import play.api.data.Forms._
-import play.api.data.{Form, Mapping}
+import play.api.data.Form
 
 class VatMappingStringSpec extends VatBehavioursString {
 
   case class VatTestModel(vat: String)
 
-  "VatMapping String" must {
+  "VatMapping" must {
     val fieldName = "value"
     val requiredKey = "error.required"
     val lengthKey = "error.length"
     val invalidKey = "error.invalid"
     val form = Form(
-      fieldName -> vatStringMapping(
+      fieldName -> vatMapping(
         "error.required",
         "error.length",
         "error.invalid"
@@ -43,28 +42,6 @@ class VatMappingStringSpec extends VatBehavioursString {
       lengthKey,
       invalidKey
     )
-  }
-
-  "VatMapping" should {
-    val fieldName = "vat"
-    val keyVatLength = "companyDetails.error.vatRegistrationNumber.length"
-    val keyVatInvalid = "companyDetails.error.vatRegistrationNumber.invalid"
-
-    val fieldMapping: Mapping[String] = vatMapping(keyVatLength, keyVatInvalid)
-
-    val form: Form[VatTestModel] = Form(
-      mapping(
-        fieldName -> fieldMapping
-      )(VatTestModel.apply)(VatTestModel.unapply)
-    )
-
-    behave like formWithVatField(
-      form,
-      fieldName,
-      keyVatLength,
-      keyVatInvalid
-    )
-
   }
 
   "vatRegistrationNumberTransform" must {
