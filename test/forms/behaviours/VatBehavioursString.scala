@@ -55,4 +55,48 @@ trait VatBehavioursString extends FormSpec with StringFieldBehaviours with Const
     }
   }
 
+  def formWithVatNumberField(
+                           form: Form[String],
+                           fieldName: String,
+                           keyVatRequired: String,
+                           keyVatLength: String,
+                           keyVatInvalid: String
+                         ): Unit = {
+
+    "behave like a form with a VAT number" should {
+
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        RegexpGen.from(vatRegex)
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, keyVatRequired)
+      )
+
+      behave like fieldWithMaxLength(
+        form,
+        fieldName,
+        maxLength = VatMappingString.maxVatLength,
+        lengthError = FormError(fieldName, keyVatLength, Seq(VatMappingString.maxVatLength))
+      )
+
+      behave like fieldWithRegex(
+        form,
+        fieldName,
+        "12345678A",
+        FormError(fieldName, keyVatInvalid, Seq(vatRegex))
+      )
+
+      behave like formWithTransform(
+        form,
+        Map(fieldName -> "GB123456789"),
+        "123456789"
+      )
+    }
+  }
+
 }

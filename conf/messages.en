@@ -329,6 +329,9 @@ enterVAT.title = What is {0}’s VAT registration number?
 enterVAT.heading = What is {0}’s VAT registration number?
 enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for.
 enterVAT.visuallyHidden.text = {0}’s VAT registration number
+enterVAT.error.invalid = Enter {0}’s VAT registration number in the correct format
+enterVAT.error.length = Enter {0}’s VAT registration number using 9 characters or less
+enterVAT.error.required = Enter a VAT registration number
 
 hasPAYE.heading = Does {0} have an employer PAYE reference?
 hasPAYE.hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
