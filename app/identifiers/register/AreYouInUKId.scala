@@ -37,7 +37,8 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
           removePartnershipData).flatMap(
           removeDeclarationData).flatMap(
           _.removeAllOf(List(IndividualDetailsCorrectId, IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId,
-            BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId, CompanyDetailsId,
+            BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId,
+            HasPAYEId, EnterPAYEId, HasVATId, EnterVATId,
             ConfirmPartnershipDetailsId, PartnershipVatId, PartnershipPayeId
           ))
         )

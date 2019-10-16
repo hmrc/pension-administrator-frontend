@@ -103,8 +103,6 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case ContactDetailsId =>
       checkYourAnswers
-    case CompanyDetailsId =>
-      checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
     case HasCompanyCRNId =>

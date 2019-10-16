@@ -17,10 +17,9 @@
 package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
-import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
+import identifiers.register.company.BusinessDetailsId
 import models._
 import models.register.adviser.AdviserDetails
-import models.register.company.CompanyDetails
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
@@ -47,8 +46,6 @@ object CheckYourAnswers {
   implicit def personDetails[I <: TypedIdentifier[PersonDetails]](implicit r: Reads[PersonDetails]): CheckYourAnswers[I] = PersonDetailsCYA()()
 
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
-
-  implicit def companyDetails[I <: TypedIdentifier[CompanyDetails]](implicit r: Reads[CompanyDetails]): CheckYourAnswers[I] = CompanyDetailsCYA()()
 
   implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
 
@@ -287,39 +284,6 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None)
               answerIsMessageKey = false,
               changeUrl
             ))
-        } getOrElse Seq.empty[AnswerRow]
-    }
-}
-
-case class CompanyDetailsCYA[I <: TypedIdentifier[CompanyDetails]](
-                                                                    vatLabel: String = "companyDetails.vatRegistrationNumber.checkYourAnswersLabel",
-                                                                    payeLabel: String = "companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel"
-                                                                  ) {
-  def apply()(implicit r: Reads[CompanyDetails]): CheckYourAnswers[I] =
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map { companyDetails =>
-
-          val vat = companyDetails.vatRegistrationNumber.map { vatRegNo =>
-            Seq(AnswerRow(
-              vatLabel,
-              Seq(vatRegNo),
-              false,
-              Link(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
-            ))
-          } getOrElse Seq.empty[AnswerRow]
-
-          val paye = companyDetails.payeEmployerReferenceNumber.map { payeRefNo =>
-            Seq(AnswerRow(
-              payeLabel,
-              Seq(payeRefNo),
-              false,
-              Link(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
-            ))
-          } getOrElse Seq.empty[AnswerRow]
-
-          vat ++ paye
-
         } getOrElse Seq.empty[AnswerRow]
     }
 }

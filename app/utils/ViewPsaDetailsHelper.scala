@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.VariationWorkingKnowledgeId
+import identifiers.register.{EnterPAYEId, EnterVATId, VariationWorkingKnowledgeId}
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
@@ -175,15 +175,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   //Company PSA
-  private def companyVatNumber: Option[AnswerRow] = userAnswers.get(CompanyDetailsId) flatMap (_.vatRegistrationNumber map { vat =>
+  private def companyVatNumber: Option[AnswerRow] = userAnswers.get(EnterVATId) map { vat =>
     AnswerRow("vat.label", Seq(vat), answerIsMessageKey = false,
       None)
-  })
+  }
 
-  private def companyPayeNumber: Option[AnswerRow] = userAnswers.get(CompanyDetailsId) flatMap (_.payeEmployerReferenceNumber map { paye =>
+  private def companyPayeNumber: Option[AnswerRow] = userAnswers.get(EnterPAYEId) map { paye =>
     AnswerRow("paye.label", Seq(paye), answerIsMessageKey = false,
       None)
-  })
+  }
 
   private def crn: Option[AnswerRow] = userAnswers.get(CompanyRegistrationNumberId) map { crn =>
     AnswerRow("crn.label", Seq(crn), answerIsMessageKey = false,

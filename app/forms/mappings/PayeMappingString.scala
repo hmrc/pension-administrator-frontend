@@ -20,16 +20,6 @@ import play.api.data.{Forms, Mapping}
 
 trait PayeMappingString extends Mappings with Transforms {
 
-  def payeMapping(keyPayeLength: String, keyPayeInvalid: String): Mapping[String] = {
-    Forms.text.
-      transform(payeTransform, noTransform).
-      verifying(
-        firstError(
-          maxLength(PayeMappingString.maxPayeLength, keyPayeLength),
-          payeEmployerReferenceNumber(keyPayeInvalid))
-      )
-  }
-
   def payeMappingString(requiredPayeKey: String, keyPayeLength: String, keyPayeInvalid: String): Mapping[String] = {
     text(requiredPayeKey).
       transform(payeTransform, noTransform).

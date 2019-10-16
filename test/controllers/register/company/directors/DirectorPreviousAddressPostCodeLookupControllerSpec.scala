@@ -22,9 +22,7 @@ import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
-import models.register.company.CompanyDetails
 import models.{PersonDetails, _}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
@@ -96,7 +94,6 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
   )
 
   private val validData = Json.obj(
-    CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->

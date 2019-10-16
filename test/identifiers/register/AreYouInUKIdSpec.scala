@@ -27,7 +27,6 @@ import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
 import models.register.adviser.AdviserDetails
-import models.register.company.CompanyDetails
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
@@ -57,7 +56,10 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyPreviousAddressId) mustNot be(defined)
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(ContactDetailsId) mustNot be(defined)
-        result.get(CompanyDetailsId) mustNot be(defined)
+        result.get(HasVATId) mustNot be(defined)
+        result.get(HasPAYEId) mustNot be(defined)
+        result.get(EnterVATId) mustNot be(defined)
+        result.get(EnterPAYEId) mustNot be(defined)
         result.get(CompanyRegistrationNumberId) mustNot be(defined)
         result.get(DirectorDetailsId(0)) mustNot be(defined)
         result.get(DirectorDetailsId(1)) mustNot be(defined)
@@ -105,10 +107,6 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
         result.get(AdviserAddressListId) mustNot be(defined)
         result.get(AdviserAddressId) mustNot be(defined)
-      }
-
-      "not remove the data for uk company details" in {
-        result.get(CompanyDetailsId) must be(defined)
       }
     }
 
@@ -215,7 +213,10 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(PartnershipPreviousAddressListId) mustNot be(defined)
         result.get(PartnershipContactDetailsId) mustNot be(defined)
-        result.get(CompanyDetailsId) mustNot be(defined)
+        result.get(HasVATId) mustNot be(defined)
+        result.get(EnterVATId) mustNot be(defined)
+        result.get(HasPAYEId) mustNot be(defined)
+        result.get(EnterPAYEId) mustNot be(defined)
         result.get(PartnershipVatId) mustNot be(defined)
         result.get(PartnershipPayeId) mustNot be(defined)
         result.get(PartnerDetailsId(0)) mustNot be(defined)
@@ -246,7 +247,10 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(PartnershipPreviousAddressListId) mustNot be(defined)
         result.get(PartnershipContactDetailsId) mustNot be(defined)
-        result.get(CompanyDetailsId) mustNot be(defined)
+        result.get(HasVATId) mustNot be(defined)
+        result.get(EnterVATId) mustNot be(defined)
+        result.get(HasPAYEId) mustNot be(defined)
+        result.get(EnterPAYEId) mustNot be(defined)
         result.get(PartnershipVatId) mustNot be(defined)
         result.get(PartnershipPayeId) mustNot be(defined)
         result.get(PartnerDetailsId(0)) mustNot be(defined)
@@ -348,8 +352,14 @@ object AreYouInUKIdSpec extends OptionValues {
     .flatMap(setCommonCompanyData)
     .flatMap(_.set(BusinessTypeId)(BusinessType.LimitedCompany))
     .flatMap(_.set(ConfirmCompanyAddressId)(tolerantAddress))
-    .flatMap(_.set(CompanyDetailsId)(CompanyDetails(None, None)))
     .flatMap(_.set(CompanyRegistrationNumberId)("test reg no"))
+    .flatMap(_.set(RegisterAsBusinessId)(true))
+    .flatMap(_.set(HasVATId)(true))
+    .flatMap(_.set(EnterVATId)("test-vat"))
+    .flatMap(_.set(HasPAYEId)(true))
+    .flatMap(_.set(EnterPAYEId)("test-paye"))
+    .flatMap(_.set(RegisterAsBusinessId)(true))
+    .flatMap(_.set(RegisterAsBusinessId)(true))
     .flatMap(_.set(RegisterAsBusinessId)(true))
     .asOpt.value
 
@@ -359,7 +369,6 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(RegisterAsBusinessId)(true))
       .flatMap(_.set(CompanyAddressId)(tolerantAddress))
       .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company))
-    .flatMap(_.set(CompanyDetailsId)(CompanyDetails(None, None)))
     .asOpt.value
 
   val individualAnswersForYes: UserAnswers = UserAnswers(Json.obj())

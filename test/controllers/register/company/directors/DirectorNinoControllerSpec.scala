@@ -23,9 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorNinoId}
-import models.register.company.CompanyDetails
 import models._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -46,7 +44,6 @@ class DirectorNinoControllerSpec extends ControllerSpecBase {
 
 
   val validData: JsObject = Json.obj(
-    CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->

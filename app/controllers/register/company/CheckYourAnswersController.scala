@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
           ++ Seq(
-          CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          //CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
           HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten

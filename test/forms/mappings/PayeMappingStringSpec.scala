@@ -22,22 +22,6 @@ import play.api.data.{Form, Mapping}
 class PayeMappingStringSpec extends PayeStringBehaviours {
 
   "Paye mapping" should {
-    val fieldName = "paye"
-    val keyPayeLength = "companyDetails.error.payeEmployerReferenceNumber.length"
-    val keyPayeInvalid = "companyDetails.error.payeEmployerReferenceNumber.invalid"
-
-    val mapping: Mapping[String] = payeMapping(keyPayeLength, keyPayeInvalid)
-    val form: Form[String] = Form(fieldName -> mapping)
-
-    behave like formWithPayeField(
-      form,
-      fieldName,
-      keyPayeLength,
-      keyPayeInvalid
-    )
-  }
-
-  "Paye string mapping" should {
     val fieldName = "value"
     val keyPayeRequired = "enterPAYE.error.required"
     val keyPayeLength = "enterPAYE.error.length"
