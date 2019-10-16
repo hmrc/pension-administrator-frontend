@@ -19,42 +19,35 @@
 @import utils.FormHelpers
 @import models.Mode
 @import models.ContactDetails
-@import viewmodels.ContactDetailsViewModel
+@import viewmodels.CommonFormWithHintViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: ContactDetailsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = viewmodel.title,
+    title = viewModel.title,
     appConfig = appConfig,
     bodyClasses = None
 ) {
 
-    @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages(viewmodel.heading).toString)
+        @components.heading(messages(viewModel.heading).toString)
 
-        @viewmodel.body.map{ body =>
-            @components.paragraph_text(messages(body))
-        }
+        @components.paragraph_text(messages("email.body"))
 
         @components.input_text(
-            field = form("emailAddress"),
+            field = form("value"),
             label = messages("contactDetails.email"),
-            inputClass = Some("form-control-3-4")
+            inputClass = Some("form-control-3-4"),
+            labelClass = Some("visually-hidden")
         )
 
-        @components.input_text(
-            field = form("phoneNumber"),
-            label = messages("contactDetails.phone"),
-            inputClass = Some("form-control-3-4")
-        )
         <div class="section">
             @components.submit_button("site.save_and_continue")
         </div>
-        @viewmodel.psaName.map{ psaName =>
-            @components.return_link(psaName, mode)
-        }
+
+        @components.return_link(viewModel.entityName, viewModel.mode)
     }
 }

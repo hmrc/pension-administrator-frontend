@@ -40,16 +40,11 @@
         }
 
         @components.input_text(
-            field = form("emailAddress"),
-            label = messages("contactDetails.email"),
-            inputClass = Some("form-control-3-4")
-        )
-
-        @components.input_text(
             field = form("phoneNumber"),
             label = messages("contactDetails.phone"),
             inputClass = Some("form-control-3-4")
         )
+
         <div class="section">
             @components.submit_button("site.save_and_continue")
         </div>
