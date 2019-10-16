@@ -68,7 +68,7 @@ class RegisterCompanyNavigator @Inject()(
     case EnterPAYEId =>
       NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
     case HasVATId if hasVat(from.userAnswers) =>
-      NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
+      NavigateTo.save(routes.CompanyEnterVATController.onPageLoad(NormalMode))
     case HasVATId =>
       vatNavigation(from.userAnswers)
     case EnterVATId =>
@@ -103,7 +103,17 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case ContactDetailsId =>
       checkYourAnswers
-    case CompanyDetailsId =>
+    case HasPAYEId if hasPaye(from.userAnswers)=>
+      NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(CheckMode))
+    case HasPAYEId =>
+      checkYourAnswers
+    case EnterPAYEId =>
+      checkYourAnswers
+    case HasVATId if hasVat(from.userAnswers) =>
+      NavigateTo.save(routes.CompanyEnterVATController.onPageLoad(CheckMode))
+    case HasVATId =>
+      checkYourAnswers
+    case EnterVATId =>
       checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
@@ -214,11 +224,10 @@ class RegisterCompanyNavigator @Inject()(
   private def vatNavigation(answers:UserAnswers):Option[NavigateTo] = {
     answers.get(BusinessTypeId)
     match {
-      case Some(BusinessType.UnlimitedCompany) =>
-        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
       case Some(BusinessType.LimitedCompany) =>
         NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ =>
+        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
     }
   }
   private def hasCompanyCRNNavigation(answers:UserAnswers, mode:Mode):Option[NavigateTo] = {

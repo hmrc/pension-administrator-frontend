@@ -19,6 +19,7 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
+import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
 import identifiers.register.company._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
@@ -52,7 +53,10 @@ class CheckYourAnswersController @Inject()(
         Some("company.checkYourAnswers.company.details.heading"),
         BusinessDetailsId.row(None)
           ++ Seq(
-          CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          HasPAYEId.row(Some(Link(routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
+          EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),
+          HasVATId.row(Some(Link(routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
+          EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url))),
           HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten
