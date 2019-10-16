@@ -35,7 +35,7 @@ class VatMappingStringSpec extends VatBehavioursString {
         "error.invalid"
       )
     )
-    behave like formWithVatNumberField(
+    behave like formWithVatField(
       form,
       fieldName,
       requiredKey,

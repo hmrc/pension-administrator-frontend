@@ -30,7 +30,7 @@ class PayeMappingStringSpec extends PayeStringBehaviours {
     val mapping: Mapping[String] = payeMapping(keyPayeRequired, keyPayeLength, keyPayeInvalid)
     val form: Form[String] = Form(fieldName -> mapping)
 
-    behave like formWithMandatoryPayeField(
+    behave like formWithPayeField(
       form,
       fieldName,
       keyPayeRequired,
