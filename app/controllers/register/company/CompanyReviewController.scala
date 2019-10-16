@@ -19,6 +19,7 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{BusinessDetailsId, CompanyReviewId}
 import javax.inject.Inject
 import models.{Mode, NormalMode}
@@ -42,9 +43,9 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessDetailsId.retrieve.right.map { businessDetails =>
+      BusinessNameId.retrieve.right.map { businessName =>
         val directors = request.userAnswers.allDirectorsAfterDelete(mode).map(_.name)
-        Future.successful(Ok(companyReview(appConfig, businessDetails.companyName, directors)))
+        Future.successful(Ok(companyReview(appConfig, businessName, directors)))
       }
   }
 
