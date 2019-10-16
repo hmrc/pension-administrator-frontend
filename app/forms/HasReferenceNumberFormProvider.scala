@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms
 
-import identifiers.TypedIdentifier
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
+class HasReferenceNumberFormProvider @Inject() extends Mappings {
 
-case object HasCompanyVATId extends TypedIdentifier[Boolean] {
-  override def toString: String = "hasVat"
+  def apply(errorKey : String, name : String)(implicit messages: Messages): Form[Boolean] =
+    Form(
+      "value" -> boolean(Message(errorKey, name).resolve)
+    )
 }

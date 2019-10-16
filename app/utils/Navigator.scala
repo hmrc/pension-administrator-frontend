@@ -17,10 +17,11 @@
 package utils
 
 import connectors.UserAnswersCacheConnector
-import identifiers.{Identifier, LastPageId}
+import identifiers.{Identifier, LastPageId, TypedIdentifier}
 import models.requests.IdentifiedRequest
 import models._
 import play.api.Logger
+import play.api.libs.json.Reads
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 

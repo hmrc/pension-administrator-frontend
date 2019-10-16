@@ -28,7 +28,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
   val form: Form[A]
 
   private def assertFieldExists(
-                                 createView: (Form[A]) => HtmlFormat.Appendable,
+                                 createView: Form[A] => HtmlFormat.Appendable,
                                  fieldName: String,
                                  text: Option[String] = None,
                                  error: Option[FormError] = None): Unit = {
@@ -46,13 +46,13 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
   }
 
-  private def assertLabelExists(createView: (Form[A]) => HtmlFormat.Appendable, forElement: String, text: String): Unit = {
+  private def assertLabelExists(createView: Form[A] => HtmlFormat.Appendable, forElement: String, text: String): Unit = {
     val doc = asDocument(createView(form))
     val field: Field = form.apply(forElement)
     assertRenderedByForWithText(doc, field.id, text)
   }
 
-  private def assertDatePartErrorExists(createView: (Form[A]) => HtmlFormat.Appendable, fieldName: String, datePart: String): Unit = {
+  private def assertDatePartErrorExists(createView: Form[A] => HtmlFormat.Appendable, fieldName: String, datePart: String): Unit = {
     assertFieldExists(
       createView,
       "error-message-date",
@@ -61,7 +61,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     )
   }
 
-  def pageWithTextFields(createView: (Form[A]) => HtmlFormat.Appendable,
+  def pageWithTextFields(createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
                          expectedFormAction: String,
                          fields: String*): Unit = {
@@ -98,7 +98,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
   }
 
-  def pageWithLabel(createView: (Form[A]) => HtmlFormat.Appendable,
+  def pageWithLabel(createView: Form[A] => HtmlFormat.Appendable,
                     forElement: String,
                     expectedText: String,
                     expectedHintText: Option[String] = None): Unit = {
@@ -110,7 +110,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   // scalastyle:off method.length
   def pageWithDateField(
-                         createView: (Form[A]) => HtmlFormat.Appendable,
+                         createView: Form[A] => HtmlFormat.Appendable,
                          fieldName: String,
                          label: String,
                          hint: Option[String]): Unit = {
