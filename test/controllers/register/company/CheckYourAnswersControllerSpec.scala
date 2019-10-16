@@ -68,7 +68,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for paye number" in {
         val rows = Seq(answerRow("businessDetails.companyName", Seq("Test Company Name")),
-          answerRow(Message("hasCompanyPaye.heading", companyName), Seq("site.yes"), answerIsMessageKey = true,
+          answerRow(Message("hasPAYE.heading", companyName), Seq("site.yes"), answerIsMessageKey = true,
           Some(Link(controllers.register.company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
           answerRow(Message("enterPAYE.heading", companyName), Seq("Test Paye"), answerIsMessageKey = false,
             Some(Link(controllers.register.company.routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))))

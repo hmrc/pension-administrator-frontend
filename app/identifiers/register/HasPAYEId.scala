@@ -30,10 +30,10 @@ case object HasPAYEId extends TypedIdentifier[Boolean] {
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, messageKey = "hasCompanyPaye.heading")
+        dynamicMessage(ua, messageKey = "hasPAYE.heading")
 
       private def hiddenLabel(index: Int, ua: UserAnswers): String =
-        dynamicMessage(ua, messageKey = "hasCompanyPaye.visuallyHidden.text")
+        dynamicMessage(ua, messageKey = "hasPAYE.visuallyHidden.text")
 
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
