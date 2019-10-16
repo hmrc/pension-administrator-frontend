@@ -433,7 +433,7 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
 
     val invalidMsg = "Invalid text"
 
-    behave like regexWithValidAndInvalidExamples(companyName, validText, invalidText, invalidMsg, companyNameRegex)
+    behave like regexWithValidAndInvalidExamples(businessName, validText, invalidText, invalidMsg, businessNameRegex)
   }
 
   "adviserName" must {

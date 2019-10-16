@@ -16,18 +16,18 @@
 
 package forms
 
-import forms.mappings.CompanyNameMapping
+import forms.mappings.BusinessNameMapping
 import javax.inject.Inject
 import play.api.data.Form
 
-class CompanyNameFormProvider @Inject() extends CompanyNameMapping {
+class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
 
   def apply(): Form[String] =
     Form(
       "value" -> nameMapping(
-        "companyName.error.required",
-        "companyName.error.invalid",
-        "companyName.error.length"
+        "businessName.error.required",
+        "businessName.error.invalid",
+        "businessName.error.length"
       )
     )
 

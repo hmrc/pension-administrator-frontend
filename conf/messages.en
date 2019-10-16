@@ -817,11 +817,8 @@ areYouInUK.heading = Is the company registered in the UK?
 areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
-companyName.title = What is the company’s name?
-companyName.heading = What is the company’s name?
-companyName.error.required = Enter the registered company name
-companyName.error.length = The name cannot be more than 105 characters
-companyName.error.invalid = Enter a valid registered company name
+companyNameNonUk.title = What is the company’s name?
+companyNameNonUk.heading = What is the company’s name?
 
 areYouInUKIndividual.title = Are you based in the UK?
 areYouInUKIndividual.heading = Are you based in the UK?
@@ -967,3 +964,14 @@ utr.heading = What is the Unique Taxpayer Reference (UTR) of the {0} you want to
 utr.p1 = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 utr.p2 = If the UTR is 13 numbers, only enter the last 10.
 utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
+
+businessName.title = What is the name of the {0} you want to register?
+businessName.heading = What is the name of the {0} you want to register?
+businessName.p1 = This is the name registered with Companies House.
+businessName.error.required = Enter a company name
+businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
+businessName.error.length = Company name must be 105 characters or fewer
+
+isRegisteredName.company.error = Select yes if this is the registered name of the company
+isRegisteredName.company.title = Is this the registered name of the company?
+isRegisteredName.company.heading = Is {0} the registered name of the company?
