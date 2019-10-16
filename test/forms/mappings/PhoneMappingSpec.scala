@@ -16,10 +16,10 @@
 
 package forms.mappings
 
-import forms.behaviours.PhoneNumberBehaviours
+import forms.behaviours.PhoneBehaviours
 import play.api.data.{Form, Mapping}
 
-class PhoneNumberMappingSpec extends PhoneNumberBehaviours {
+class PhoneMappingSpec extends PhoneBehaviours {
 
   "Phone number mapping" should {
     val fieldName = "phoneNumber"
@@ -30,7 +30,7 @@ class PhoneNumberMappingSpec extends PhoneNumberBehaviours {
     val mapping: Mapping[String] = phoneNumberMapping(keyPhoneNumberRequired, keyPhoneNumberLength, keyPhoneNumberInvalid)
     val form: Form[String] = Form(fieldName -> mapping)
 
-    behave like formWithPhoneNumberField(
+    behave like formWithPhoneField(
       form,
       fieldName,
       keyPhoneNumberRequired,
