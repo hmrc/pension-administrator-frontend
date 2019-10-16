@@ -31,14 +31,14 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.register.enterVAT
 
-class VATNumberControllerSpec extends ControllerSpecBase {
+class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 
   private val companyName = "Test Company Name"
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new EnterVATFormProvider()
-  val form: Form[String] = formProvider()
+  val form: Form[String] = formProvider(companyName)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyEnterVATController(
