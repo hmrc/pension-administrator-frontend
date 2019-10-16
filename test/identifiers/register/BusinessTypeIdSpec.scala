@@ -16,21 +16,19 @@
 
 package identifiers.register
 
-import identifiers._
-import identifiers.register.company.HasCompanyCRNId
+
+import identifiers.register.company._
 import models.register.BusinessType
-import play.api.libs.json.{JsResult, JsSuccess}
-import utils.UserAnswers
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import play.api.libs.json.Json
+import utils.{Enumerable, UserAnswers}
 
-case object BusinessTypeId extends TypedIdentifier[BusinessType] {
-  override def toString: String = "businessType"
-
-  override def cleanup(value: Option[BusinessType], userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    value match {
-      case Some(BusinessType.LimitedCompany) =>
-        userAnswers.removeAllOf(List(HasCompanyCRNId))
-      case _ => JsSuccess(userAnswers)
+class BusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+  "BusinessTypeId" must {
+    "remove the has company CRN id when the business type is changed to LTD company" in {
+      val ua = UserAnswers(Json.obj(HasCompanyCRNId.toString -> true))
+      val result = BusinessTypeId.cleanup(Some(BusinessType.LimitedCompany), ua).asOpt.value
+      result.get(HasCompanyCRNId) mustBe None
     }
   }
-
 }

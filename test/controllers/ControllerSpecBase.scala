@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.RegistrationConnectorSpec.{nino, sapNumber}
-import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
+import controllers.actions._
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
@@ -28,8 +28,10 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import utils.UserAnswers
+import play.api.inject.bind
 
 trait ControllerSpecBase extends SpecBase {
 
@@ -85,5 +87,11 @@ trait ControllerSpecBase extends SpecBase {
         )
       )
     )
+  )
+
+  def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] = Seq(
+    bind[AuthAction].toInstance(FakeAuthAction),
+    bind[AllowAccessActionProvider].toInstance(FakeAllowAccessProvider()),
+    bind[DataRetrievalAction].toInstance(dataRetrievalAction)
   )
 }
