@@ -147,6 +147,7 @@ common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
+common.error.utr.exactLength = Unique Taxpayer Reference (UTR) must be 10 numbers
 common.declaration.legend = Check this box if you agree to the declaration
 
 unauthorised.title = You can’t access this service with this account
@@ -957,6 +958,12 @@ useOrganisationCredentials.p2 = To register, you need to {0} that was created fo
 useOrganisationCredentials.p2.link = log in with a Government Gateway account
 useOrganisationCredentials.p3 = If you do not have a Government Gateway account for an organisation, you should {0}.
 useOrganisationCredentials.p3.link = create one first
+
+utr.title = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
+utr.heading = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
+utr.p1 = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+utr.p2 = If the UTR is 13 numbers, only enter the last 10.
+utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
 
 businessName.title = What is the name of the {0} you want to register?
 businessName.heading = What is the name of the {0} you want to register?

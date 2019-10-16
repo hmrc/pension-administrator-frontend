@@ -111,6 +111,9 @@ POST        /:mode/is-vat-registered                       controllers.register.
 GET        /company-name                                controllers.register.company.CompanyNameController.onPageLoad
 POST       /company-name                                controllers.register.company.CompanyNameController.onSubmit
 
+GET        /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onPageLoad
+POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit
+
 GET         /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
 POST        /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode)
