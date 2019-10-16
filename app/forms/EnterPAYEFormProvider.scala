@@ -16,16 +16,20 @@
 
 package forms
 
-import forms.mappings.Mappings
+import forms.mappings.PayeMappingString
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
 
-class HasVATFormProvider @Inject() extends Mappings {
+class EnterPAYEFormProvider @Inject() extends PayeMappingString {
 
-  def apply(errorKey : String, name : String)(implicit messages: Messages): Form[Boolean] =
+  def apply(name : String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> boolean(Message(errorKey, name).resolve)
+      "value" -> payeMappingString(
+        requiredPayeKey = "enterPAYE.error.required",
+        keyPayeLength = Message("enterPAYE.error.length", name),
+        keyPayeInvalid = Message("enterPAYE.error.invalid", name)
+      )
     )
 }

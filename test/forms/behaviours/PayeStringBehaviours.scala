@@ -52,4 +52,47 @@ trait PayeStringBehaviours extends FormSpec with StringFieldBehaviours with Cons
     }
   }
 
+  def formWithMandatoryPayeField(
+                         form: Form[String],
+                         fieldName: String,
+                         keyPayeRequired: String,
+                         keyPayeLength: String,
+                         keyPayeInvalid: String): Unit = {
+
+    "behave like a form with a paye field" should {
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, keyPayeRequired)
+      )
+
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        RegexpGen.from(payeRegex)
+      )
+
+      behave like fieldWithMaxLength(
+        form,
+        fieldName,
+        maxLength = PayeMapping.maxPayeLength,
+        lengthError = FormError(fieldName, keyPayeLength, Seq(PayeMapping.maxPayeLength))
+      )
+
+      behave like fieldWithRegex(
+        form,
+        fieldName,
+        invalidString = "A1_",
+        FormError(fieldName, keyPayeInvalid, Seq(payeRegex))
+      )
+
+      behave like formWithTransform(
+        form,
+        Map(fieldName -> " 123 ab456 "),
+        expectedData = "123AB456"
+      )
+    }
+  }
+
 }

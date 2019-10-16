@@ -27,13 +27,13 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.register.company.enterNumber
+import views.html.register.enterVAT
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait EnterNumberController extends FrontendController with I18nSupport {
+trait VATNumberController extends FrontendController with I18nSupport {
 
-  protected implicit def ec : ExecutionContext
+  implicit def ec: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -49,7 +49,7 @@ trait EnterNumberController extends FrontendController with I18nSupport {
       case Some(value) => form.fill(value)
     }
 
-    Future.successful(Ok(enterNumber(appConfig, preparedForm, viewModel)))
+    Future.successful(Ok(enterVAT(appConfig, preparedForm, viewModel)))
   }
 
   def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
@@ -57,7 +57,7 @@ trait EnterNumberController extends FrontendController with I18nSupport {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(enterNumber(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(enterVAT(appConfig, formWithErrors, viewModel))),
       value =>
         cacheConnector.save(request.externalId, id, value).map(
           cacheMap =>
