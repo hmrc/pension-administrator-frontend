@@ -16,7 +16,7 @@
 
 package identifiers.register
 
-import identifiers._
+import identifiers.TypedIdentifier
 
 case object EnterVATId extends TypedIdentifier[String] {
   override def toString: String = "vat"

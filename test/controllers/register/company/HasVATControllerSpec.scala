@@ -20,7 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.company.{BusinessDetailsId, HasCompanyVATId}
+import identifiers.register.HasVATId
+import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
@@ -30,26 +31,26 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasCompanyVATControllerSpec extends ControllerSpecBase {
+class HasVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val companyName = "Test Company Name"
   private val formProvider = new HasReferenceNumberFormProvider()
-  private val form = formProvider("hasCompanyVAT.error.required", companyName)
+  private val form = formProvider("hasVAT.error.required", companyName)
 
   private def viewModel =
     CommonFormWithHintViewModel(
-      postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(NormalMode),
-      title = Message("hasCompanyVAT.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyVAT.heading", companyName),
+      postCall = controllers.register.company.routes.HasVATController.onSubmit(NormalMode),
+      title = Message("hasVAT.heading", Message("theCompany").resolve),
+      heading = Message("hasVAT.heading", companyName),
       mode = NormalMode,
       hint = None,
       entityName = companyName
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasCompanyVATController(frontendAppConfig,
+    new HasVATController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -76,7 +77,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       val validData = Json.obj(
         BusinessDetailsId.toString ->
           BusinessDetails("Test Company Name", Some("Test UTR")),
-        HasCompanyVATId.toString -> true
+        HasVATId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
