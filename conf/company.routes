@@ -122,3 +122,7 @@ GET         /paye-reference                                controllers.register.
 POST        /paye-reference                                controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/paye-reference                          controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode)
 POST        /:mode/paye-reference                          controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode)
+
+
+GET        /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
+POST       /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onSubmit
