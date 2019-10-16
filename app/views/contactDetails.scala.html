@@ -33,7 +33,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages(viewmodel.heading).toString)
+        @components.heading(messages(viewmodel.heading))
 
         @viewmodel.body.map{ body =>
             @components.paragraph_text(messages(body))

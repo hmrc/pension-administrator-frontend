@@ -129,9 +129,14 @@ POST        /:mode/paye-reference                          controllers.register.
 GET         /confirm-company-name                          controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
 POST        /confirm-company-name                          controllers.register.company.CompanyIsRegisteredNameController.onSubmit
 
-GET         /email                                         controllers.register.company.EmailController.onPageLoad(mode: Mode = NormalMode)
-POST        /email                                         controllers.register.company.EmailController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/email                                   controllers.register.company.EmailController.onPageLoad(mode: Mode)
-POST        /:mode/email                                   controllers.register.company.EmailController.onSubmit(mode: Mode)
+GET         /contact-email-address                         controllers.register.company.EmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /contact-email-address                         controllers.register.company.EmailController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/contact-email-address                   controllers.register.company.EmailController.onPageLoad(mode: Mode)
+POST        /:mode/contact-email-address                   controllers.register.company.EmailController.onSubmit(mode: Mode)
+
+GET         /contact-phone-number                          controllers.register.company.PhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /contact-phone-number                          controllers.register.company.PhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/contact-phone-number                    controllers.register.company.PhoneController.onPageLoad(mode: Mode)
+POST        /:mode/contact-phone-number                    controllers.register.company.PhoneController.onSubmit(mode: Mode)
 
 

@@ -19,8 +19,8 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.EmailFormProvider
-import identifiers.register.EmailId
+import forms.PhoneFormProvider
+import identifiers.register.PhoneId
 import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
@@ -29,28 +29,28 @@ import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.email
+import views.html.phone
 
-class EmailControllerSpec extends ControllerSpecBase {
+class PhoneControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new EmailFormProvider()
+  private val formProvider = new PhoneFormProvider()
   private val form = formProvider()
 
   private val companyName = "Test Company Name"
 
   private def viewModel(mode: Mode = NormalMode) =
     CommonFormWithHintViewModel(
-      postCall = routes.EmailController.onSubmit(mode),
-      title = Message("email.title", Message("theCompany").resolve),
-      heading = Message("email.title", companyName),
+      postCall = routes.PhoneController.onSubmit(mode),
+      title = Message("phone.title", Message("theCompany").resolve),
+      heading = Message("phone.title", companyName),
       mode = mode,
       entityName = companyName
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new controllers.register.company.EmailController(
+    new controllers.register.company.PhoneController(
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       messagesApi,
@@ -63,9 +63,9 @@ class EmailControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form): String =
-    email(frontendAppConfig, form, viewModel())(fakeRequest, messages).toString
+    phone(frontendAppConfig, form, viewModel())(fakeRequest, messages).toString
 
-  "Email Controller" must {
+  "Phone Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -75,7 +75,7 @@ class EmailControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        EmailId.toString -> "test@test.com",
+        PhoneId.toString -> "1234567890",
         BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None)
       )
 
@@ -83,11 +83,11 @@ class EmailControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill("test@test.com"))
+      contentAsString(result) mustBe viewAsString(form.fill("1234567890"))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "test@test.com")
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "1234567890")
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
@@ -113,7 +113,7 @@ class EmailControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("emailAddress", "value 1"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("phoneAddress", "value 1"))
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER

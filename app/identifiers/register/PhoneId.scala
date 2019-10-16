@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers.register
 
-import forms.mappings.EmailMapping
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers.TypedIdentifier
 
-class EmailFormProvider @Inject() extends EmailMapping {
-
-  def apply(): Form[String] = Form(
-    "value" -> emailMapping(
-      "contactDetails.error.email.required",
-      "contactDetails.error.email.length",
-      "contactDetails.error.email.invalid"
-    )
-  )
+case object PhoneId extends TypedIdentifier[String] {
+  override def toString: String = "phone"
 }
