@@ -14,46 +14,28 @@
  * limitations under the License.
  */
 
-package forms.register.adviser
+package forms
 
-import forms.behaviours.{EmailBehaviours, PhoneBehaviours, StringFieldBehaviours}
-import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
+import forms.behaviours.{EmailBehaviours, StringFieldBehaviours}
+import forms.mappings.Constraints
 
-class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneBehaviours {
+class EmailFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with Constraints {
 
-  val form = new AdviserDetailsFormProvider()()
+  val form = new EmailFormProvider()
 
-  ".email" must {
+  "emailAddress" must {
 
-    val fieldName = "email"
+    val fieldName = "value"
     val keyEmailRequired = "contactDetails.error.email.required"
     val keyEmailLength = "contactDetails.error.email.length"
     val keyEmailInvalid = "contactDetails.error.email.invalid"
 
     behave like formWithEmailField(
-      form,
+      form(),
       fieldName,
       keyEmailRequired,
       keyEmailLength,
       keyEmailInvalid
     )
-
-  }
-
-  ".phoneNumber" must {
-    val fieldName = "phone"
-    val keyPhoneNumberRequired = "contactDetails.error.phone.required"
-    val keyPhoneNumberLength = "contactDetails.error.phone.length"
-    val keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
-
-    behave like formWithPhoneField(
-      form,
-      fieldName,
-      keyPhoneNumberRequired,
-      keyPhoneNumberLength,
-      keyPhoneNumberInvalid
-    )
-
   }
 }
