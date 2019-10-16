@@ -27,13 +27,13 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.register.company.enterNumber
+import views.html.enterPAYE
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait EnterNumberController extends FrontendController with I18nSupport {
+trait EnterPAYEController extends FrontendController with I18nSupport {
 
-  protected implicit def ec : ExecutionContext
+  protected implicit def ec: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -43,21 +43,15 @@ trait EnterNumberController extends FrontendController with I18nSupport {
 
   def get(id: TypedIdentifier[String], form: Form[String], viewModel: CommonFormWithHintViewModel)
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
-    val preparedForm = request.userAnswers.get(id) match {
-      case None => form
-      case Some(value) => form.fill(value)
-    }
-
-    Future.successful(Ok(enterNumber(appConfig, preparedForm, viewModel)))
+    val preparedForm = request.userAnswers.get(id).map(form.fill).getOrElse(form)
+    Future.successful(Ok(enterPAYE(appConfig, preparedForm, viewModel)))
   }
 
   def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(enterNumber(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(enterPAYE(appConfig, formWithErrors, viewModel))),
       value =>
         cacheConnector.save(request.externalId, id, value).map(
           cacheMap =>

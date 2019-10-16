@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers.register
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
+import identifiers._
 
-class HasCRNFormProvider @Inject() extends Mappings {
-
-  def apply(errorKey : String, name : String)(implicit messages: Messages): Form[Boolean] =
-    Form(
-      "value" -> boolean(Message(errorKey, name).resolve)
-    )
+case object EnterPAYEId extends TypedIdentifier[String] {
+  override def toString: String = "paye"
 }

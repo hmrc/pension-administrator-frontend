@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
 
-class HasVATFormProvider @Inject() extends Mappings {
+class HasReferenceNumberFormProvider @Inject() extends Mappings {
 
   def apply(errorKey : String, name : String)(implicit messages: Messages): Form[Boolean] =
     Form(

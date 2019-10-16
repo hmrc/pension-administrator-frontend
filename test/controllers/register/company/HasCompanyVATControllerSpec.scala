@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.HasVATFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasVATId
 import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, Mode, NormalMode}
@@ -31,17 +31,17 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasVATControllerSpec extends ControllerSpecBase {
+class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val companyName = "Test Company Name"
-  private val formProvider = new HasVATFormProvider()
+  private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("hasVAT.error.required", companyName)
 
   private def viewModel =
     CommonFormWithHintViewModel(
-      postCall = controllers.register.company.routes.HasVATController.onSubmit(NormalMode),
+      postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(NormalMode),
       title = Message("hasVAT.heading", Message("theCompany").resolve),
       heading = Message("hasVAT.heading", companyName),
       mode = NormalMode,
@@ -50,7 +50,7 @@ class HasVATControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasVATController(frontendAppConfig,
+    new HasCompanyVATController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
