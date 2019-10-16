@@ -32,13 +32,13 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait IsRegisteredNameController extends FrontendController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  override implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  protected implicit def ec : ExecutionContext
 
   def appConfig: FrontendAppConfig
 
