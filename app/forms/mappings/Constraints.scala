@@ -41,7 +41,7 @@ trait Constraints {
   protected val nameRegex = """^[a-zA-Z &`\-\'\.^]{1,35}$"""
   protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
   protected val addressLineRegex = """^[A-Za-z0-9 &!'‘’\"“”(),./\u2014\u2013\u2010\u002d]{1,35}$"""
-  protected val companyNameRegex = """^[a-zA-Z0-9- '&\\/]{1,105}$"""
+  protected val businessNameRegex = """^[a-zA-Z0-9- '&\\/]{1,105}$"""
   protected val adviserNameRegex = """^[a-zA-Z &?*()\u005F\u00C0-\u00FF '‘’\u2014\u2013\u2010\u002d]{1,107}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
@@ -135,7 +135,7 @@ trait Constraints {
 
   protected def safeText(errorKey: String): Constraint[String] = regexp(safeTextRegex, errorKey)
 
-  protected def companyName(errorKey: String): Constraint[String] = regexp(companyNameRegex, errorKey)
+  protected def businessName(errorKey: String): Constraint[String] = regexp(businessNameRegex, errorKey)
 
   protected def adviserName(errorKey: String): Constraint[String] = regexp(adviserNameRegex, errorKey)
 

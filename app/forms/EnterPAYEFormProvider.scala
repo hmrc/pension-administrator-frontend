@@ -16,19 +16,20 @@
 
 package forms
 
-import forms.mappings.CompanyNameMapping
+import forms.mappings.PayeMappingString
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-class CompanyNameFormProvider @Inject() extends CompanyNameMapping {
+class EnterPAYEFormProvider @Inject() extends PayeMappingString {
 
-  def apply(): Form[String] =
+  def apply(name : String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> nameMapping(
-        "companyName.error.required",
-        "companyName.error.invalid",
-        "companyName.error.length"
+      "value" -> payeMappingString(
+        requiredPayeKey = "enterPAYE.error.required",
+        keyPayeLength = Message("enterPAYE.error.length", name),
+        keyPayeInvalid = Message("enterPAYE.error.invalid", name)
       )
     )
-
 }

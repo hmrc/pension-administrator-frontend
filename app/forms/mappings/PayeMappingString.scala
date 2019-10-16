@@ -30,6 +30,15 @@ trait PayeMappingString extends Mappings with Transforms {
       )
   }
 
+  def payeMappingString(requiredPayeKey: String, keyPayeLength: String, keyPayeInvalid: String): Mapping[String] = {
+    text(requiredPayeKey).
+      transform(payeTransform, noTransform).
+      verifying(
+        firstError(
+          maxLength(PayeMappingString.maxPayeLength, keyPayeLength),
+          payeEmployerReferenceNumber(keyPayeInvalid))
+      )
+  }
 }
 
 object PayeMappingString {

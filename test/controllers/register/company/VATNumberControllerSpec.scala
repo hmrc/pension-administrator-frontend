@@ -41,7 +41,7 @@ class VATNumberControllerSpec extends ControllerSpecBase {
   val form: Form[String] = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new EnterVATController(
+    new CompanyEnterVATController(
       frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
@@ -55,7 +55,7 @@ class VATNumberControllerSpec extends ControllerSpecBase {
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = routes.EnterVATController.onSubmit(NormalMode),
+      postCall = routes.CompanyEnterVATController.onSubmit(NormalMode),
       title = Message("enterVAT.title", Message("theCompany").resolve),
       heading = Message("enterVAT.heading", companyName),
       mode = NormalMode,

@@ -20,8 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import controllers.register.company.routes._
-import forms.HasVATFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasVATId
 import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
@@ -33,23 +32,24 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import controllers.register.company.routes.HasCompanyVATController
 
 import scala.concurrent.ExecutionContext
 
-class HasVATController @Inject()(override val appConfig: FrontendAppConfig,
-                                 override val messagesApi: MessagesApi,
-                                 override val dataCacheConnector: UserAnswersCacheConnector,
-                                 @RegisterCompany override val navigator: Navigator,
-                                 authenticate: AuthAction,
-                                 allowAccess: AllowAccessActionProvider,
-                                 getData: DataRetrievalAction,
-                                 requireData: DataRequiredAction,
-                                 formProvider: HasVATFormProvider
+class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
+                                        override val messagesApi: MessagesApi,
+                                        override val dataCacheConnector: UserAnswersCacheConnector,
+                                        @RegisterCompany override val navigator: Navigator,
+                                        authenticate: AuthAction,
+                                        allowAccess: AllowAccessActionProvider,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        formProvider: HasReferenceNumberFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasVATController.onSubmit(mode),
+      postCall = HasCompanyVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("theCompany").resolve),
       heading = Message("hasVAT.heading", entityName),
       mode = mode,

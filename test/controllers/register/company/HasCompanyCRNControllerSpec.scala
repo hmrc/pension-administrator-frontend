@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.HasCRNFormProvider
+import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
@@ -35,7 +35,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val companyName = "Test Company Name"
-  private val formProvider = new HasCRNFormProvider()
+  private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("companyRegistrationNumber.error.required", companyName)
 
   private def viewModel =

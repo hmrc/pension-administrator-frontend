@@ -34,7 +34,7 @@ class EnterVATViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new EnterVATFormProvider()()
 
-  private val postCall: Call = routes.EnterVATController.onSubmit(NormalMode)
+  private val postCall: Call = routes.CompanyEnterVATController.onSubmit(NormalMode)
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

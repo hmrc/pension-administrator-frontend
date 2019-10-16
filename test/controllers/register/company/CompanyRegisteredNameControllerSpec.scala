@@ -36,9 +36,9 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
 
   val businessDetailsFormModel = BusinessDetailsFormModel(
     companyNameMaxLength = 105,
-    companyNameRequiredMsg = "companyName.error.required",
-    companyNameLengthMsg = "companyName.error.length",
-    companyNameInvalidMsg = "companyName.error.invalid",
+    companyNameRequiredMsg = "businessDetails.error.companyName.required",
+    companyNameLengthMsg = "businessDetails.error.companyName.length",
+    companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
     utrMaxLength = 10,
     utrRequiredMsg = None,
     utrLengthMsg = "businessDetails.error.utr.length",
@@ -52,8 +52,8 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
 
   def viewmodel = OrganisationNameViewModel(
     postCall = controllers.register.company.routes.CompanyRegisteredNameController.onSubmit(NormalMode),
-    title = "companyName.title",
-    heading = "companyName.heading"
+    title = "companyNameNonUk.title",
+    heading = "companyNameNonUk.heading"
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

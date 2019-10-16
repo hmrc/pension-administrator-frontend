@@ -84,10 +84,10 @@ POST        /select-contact-address                        controllers.register.
 GET         /:mode/select-contact-address                  controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode)
 POST        /:mode/select-contact-address                  controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode)
 
-GET         /company-name                                  controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /company-name                                  controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/company-name                            controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode)
-POST        /:mode/company-name                            controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode)
+GET        /non-uk-company-name                                controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /non-uk-company-name                                controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/non-uk-company-name                         controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode)
+POST       /:mode/non-uk-company-name                         controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode)
 
 
 GET         /enter-registered-address                      controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
@@ -103,15 +103,31 @@ POST        /does-company-have-company-number              controllers.register.
 GET         /:mode/does-company-have-company-number        controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
 POST        /:mode/does-company-have-company-number        controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
 
-GET         /is-vat-registered                             controllers.register.company.HasVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /is-vat-registered                             controllers.register.company.HasVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/is-vat-registered                       controllers.register.company.HasVATController.onPageLoad(mode: Mode)
-POST        /:mode/is-vat-registered                       controllers.register.company.HasVATController.onSubmit(mode: Mode)
+GET         /is-vat-registered                             controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                             controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
 
-GET         /vat-registration-number                       controllers.register.company.EnterVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /vat-registration-number                       controllers.register.company.EnterVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/vat-registration-number                 controllers.register.company.EnterVATController.onPageLoad(mode: Mode)
-POST        /:mode/vat-registration-number                 controllers.register.company.EnterVATController.onSubmit(mode: Mode)
+GET        /company-name                                controllers.register.company.CompanyNameController.onPageLoad
+POST       /company-name                                controllers.register.company.CompanyNameController.onSubmit
+
+GET         /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode)
+
+GET         /have-paye-reference                           controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST        /have-paye-reference                           controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/have-paye-reference                     controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode)
+POST        /:mode/have-paye-reference                     controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode)
+
+GET         /paye-reference                                controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST        /paye-reference                                controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/paye-reference                          controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode)
+POST        /:mode/paye-reference                          controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode)
+
+GET        /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
+POST       /confirm-company-name                      controllers.register.company.CompanyIsRegisteredNameController.onSubmit
 
 GET         /email                                         controllers.register.company.EmailController.onPageLoad(mode: Mode = NormalMode)
 POST        /email                                         controllers.register.company.EmailController.onSubmit(mode: Mode = NormalMode)
