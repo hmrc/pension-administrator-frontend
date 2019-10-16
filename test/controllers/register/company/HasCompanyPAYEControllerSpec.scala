@@ -37,15 +37,15 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
   private val companyName = "test company"
   private val formProvider = new HasReferenceNumberFormProvider()
-  private val form = formProvider("hasCompanyPaye.error.required", companyName)
+  private val form = formProvider("hasPAYE.error.required", companyName)
 
   private def viewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(NormalMode),
-      title = Message("hasCompanyPaye.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyPaye.heading", companyName),
+      title = Message("hasPAYE.heading", Message("theCompany").resolve),
+      heading = Message("hasPAYE.heading", companyName),
       mode = NormalMode,
-      hint = Some(Message("hasCompanyPaye.hint")),
+      hint = Some(Message("hasPAYE.hint")),
       entityName = companyName
     )
 

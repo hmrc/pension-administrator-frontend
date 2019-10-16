@@ -320,12 +320,19 @@ companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manu
 hasCompanyNumber.heading = Does {0} have a company number?
 hasCompanyNumber.hint = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
 
-hasCompanyVAT.heading = Is {0} registered for VAT?
-hasCompanyVAT.error.required = Select yes if {0} is registered for VAT
+hasVAT.heading = Is {0} registered for VAT?
+hasVAT.error.required = Select yes if {0} is registered for VAT
+hasVAT.visuallyHidden.text = whether {0} has a VAT
 
-hasCompanyPaye.heading = Does {0} have an employer PAYE reference?
-hasCompanyPaye.hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
-hasCompanyPaye.error.required = Select yes if {0} has an employer PAYE reference
+enterVAT.title = What is {0}’s VAT registration number?
+enterVAT.heading = What is {0}’s VAT registration number?
+enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for.
+enterVAT.visuallyHidden.text = {0}’s VAT registration number
+
+hasPAYE.heading = Does {0} have an employer PAYE reference?
+hasPAYE.hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
+hasPAYE.error.required = Select yes if {0} has an employer PAYE reference
+hasPAYE.visuallyHidden.text = whether {0} has an employer PAYE reference
 
 enterPAYE.heading = What is {0}’s employer PAYE reference?
 enterPAYE.hint = For example, 123/AB456
@@ -333,6 +340,7 @@ enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more then 
 enterPAYE.error.invalid = Enter {0}’s employer PAYE reference in the correct format
 enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characters or less
 enterPAYE.error.required = Enter an employer PAYE reference
+enterPAYE.visuallyHidden.text = {0}’s employer PAYE reference
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?

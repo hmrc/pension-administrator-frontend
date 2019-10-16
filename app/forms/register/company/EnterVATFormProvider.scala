@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms.register.company
 
-import identifiers.TypedIdentifier
+import forms.FormErrorHelper
+import forms.mappings.VatMappingString
+import javax.inject.Inject
+import play.api.data.Form
 
+class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingString {
 
-case object HasCompanyVATId extends TypedIdentifier[Boolean] {
-  override def toString: String = "hasVat"
+  def apply(): Form[String] =
+    Form(
+      "value" -> vatMapping(
+        "common.error.vat.invalid",
+        "common.error.vat.required"
+      )
+    )
+
 }

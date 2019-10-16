@@ -40,7 +40,7 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
 
   "DeclarationWorkingKnowledge view (variations)" must {
 
-    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix, "p1")
+    behave like normalPageWithPageTitleCheck(createView, messageKeyPrefix, "p1")
 
     "display the correct page heading" in {
       val doc = asDocument(createView())

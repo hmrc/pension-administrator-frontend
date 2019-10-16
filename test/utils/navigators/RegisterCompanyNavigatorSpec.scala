@@ -73,12 +73,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (ContactDetailsId, uk, hasPayePage, true, Some(checkYourAnswersPage), true),
     (ContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
-    (HasPAYEId, hasPAYEYes, payePage, true, Some(payePage), true),
+    (HasPAYEId, hasPAYEYes, payePage(), true, Some(payePage(CheckMode)), true),
     (HasPAYEId, hasPAYENo, hasVatPage, true, Some(checkYourAnswersPage), true),
 
     (EnterPAYEId, emptyAnswers, hasVatPage, true, Some(checkYourAnswersPage), true),
 
-    (HasVATId, hasVATYes, vatPage, true, Some(vatPage), true),
+    (HasVATId, hasVATYes, vatPage(), true, Some(vatPage(CheckMode)), true),
     (HasVATId, hasVATNoForLimitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
     (HasVATId, hasVATNoForUnLimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
@@ -141,9 +141,9 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def hasVatPage = routes.HasCompanyVATController.onPageLoad(NormalMode)
 
-  private def payePage = routes.CompanyEnterPAYEController.onPageLoad(NormalMode)
+  private def payePage(mode: Mode = NormalMode) = routes.CompanyEnterPAYEController.onPageLoad(mode)
 
-  private def vatPage = routes.CompanyEnterPAYEController.onPageLoad(NormalMode)
+  private def vatPage(mode: Mode = NormalMode) = routes.CompanyEnterVATController.onPageLoad(mode)
 
   private def companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
 
@@ -190,12 +190,12 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val hasPAYEYes = UserAnswers().set(HasPAYEId)(value = true).asOpt.value
   private val hasPAYENo = UserAnswers().set(HasPAYEId)(value = false).asOpt.value
 
-  private val hasVATYes = UserAnswers().set(HasPAYEId)(value = true).asOpt.value
+  private val hasVATYes = UserAnswers().set(HasVATId)(value = true).asOpt.value
   private val hasVATNoForLimitedCompany = UserAnswers().set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
-    _.set(HasPAYEId)(value = false)).asOpt.value
+    _.set(HasVATId)(value = false)).asOpt.value
 
   private val hasVATNoForUnLimitedCompany = UserAnswers().set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
-    _.set(HasPAYEId)(value = false)).asOpt.value
+    _.set(HasVATId)(value = false)).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().nonUkCompanyAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
