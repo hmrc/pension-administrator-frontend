@@ -32,7 +32,7 @@ class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
 
   override val form = new AdviserDetailsFormProvider()()
 
-  private def createView(mode: Mode = NormalMode, adviserName: Option[String]=adviserName) = () =>
+  private def createView(mode: Mode = NormalMode, adviserName: Option[String] = adviserName) = () =>
     adviserDetails(frontendAppConfig, form, mode, adviserName, Some(psaName))(fakeRequest, messages)
 
   private def createViewUsingForm = (form: Form[_]) =>
@@ -42,7 +42,10 @@ class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
     appRunning()
 
     behave like normalPageWithDynamicTitle(
-      createView(), messageKeyPrefix, Message("adviserDetails.heading", adviserName))
+      createView(),
+      messageKeyPrefix,
+      adviserName.get
+    )
 
     behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
@@ -54,6 +57,9 @@ class AdviserDetailsViewSpec extends QuestionViewBehaviours[AdviserDetails] {
     appRunning()
 
     behave like normalPageWithDynamicTitle(
-      createView(adviserName = None), messageKeyPrefix, Message("adviserDetails.generic.heading"))
+      createView(adviserName = None),
+      messageKeyPrefix,
+      adviserName.get
+    )
   }
-  }
+}

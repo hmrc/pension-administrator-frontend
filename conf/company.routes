@@ -108,6 +108,11 @@ POST        /is-vat-registered                             controllers.register.
 GET         /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
 POST        /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
 
+GET         /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode)
+
 GET         /have-paye-reference                           controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode = NormalMode)
 POST        /have-paye-reference                           controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/have-paye-reference                     controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode)

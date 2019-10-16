@@ -19,8 +19,8 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.EnterPAYEController
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.register.EnterPAYEController
 import forms.EnterPAYEFormProvider
 import identifiers.register.EnterPAYEId
 import identifiers.register.company.BusinessDetailsId
