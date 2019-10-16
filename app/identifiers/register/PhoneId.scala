@@ -17,7 +17,21 @@
 package identifiers.register
 
 import identifiers.TypedIdentifier
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
+import viewmodels.{AnswerRow, Link}
 
 case object PhoneId extends TypedIdentifier[String] {
+  self =>
   override def toString: String = "phone"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersCompany[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "phone.title")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
 }

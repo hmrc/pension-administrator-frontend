@@ -19,7 +19,7 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.BusinessTypeId
+import identifiers.register.{BusinessTypeId, EmailId, PhoneId}
 import identifiers.{Identifier, LastPageId}
 import identifiers.register.company._
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
@@ -72,10 +72,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
-
-    (ContactDetailsId, uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
-    (ContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-
+    (EmailId, emptyAnswers, phone(NormalMode), true, Some(checkYourAnswersPage), true),
+    (PhoneId, uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
@@ -103,8 +102,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
 
-    (ContactDetailsId, uk, anyMoreChanges, false, None, true),
-    (ContactDetailsId, nonUk, anyMoreChanges, false, None, true)
+    (EmailId, emptyAnswers, anyMoreChanges, false, None, true),
+    (PhoneId, uk, anyMoreChanges, false, None, true),
+    (PhoneId, nonUk, anyMoreChanges, false, None, true)
   )
 
   navigator.getClass.getSimpleName must {
@@ -134,7 +134,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
 
-  private def contactDetailsPage(mode: Mode) = routes.ContactDetailsController.onPageLoad(mode)
+  private def contactDetailsPage(mode: Mode) = routes.EmailController.onPageLoad(mode)
 
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
 
@@ -159,6 +159,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def reconsiderAreYouInUk = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
+
+  private def phone(mode: Mode): Call = routes.PhoneController.onPageLoad(mode)
 
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value

@@ -18,6 +18,7 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.{EmailId, PhoneId}
 import identifiers.register.company._
 import models._
 import models.register.company.CompanyDetails
@@ -124,7 +125,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val retrievalAction = dataRetrievalAction(
           CompanyAddressId.toString -> address
         )
-        testRenderedView(companyDetails +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
       }
 
       "render the view correctly for company same contact address" in {
@@ -136,7 +137,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val retrievalAction = dataRetrievalAction(
           CompanySameContactAddressId.toString -> true
         )
-        testRenderedView(companyDetails +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
       }
 
       "render the view correctly for the company contact address" in {
@@ -153,7 +154,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val retrievalAction = dataRetrievalAction(
           CompanyContactAddressId.toString -> address
         )
-        testRenderedView(companyDetails +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
       }
 
       "render the view correctly for the company address years" in {
@@ -167,7 +168,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val retrievalAction = dataRetrievalAction(
           CompanyAddressYearsId.toString -> addressYears.toString
         )
-        testRenderedView(companyDetails +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
       }
 
       "render the view correctly for the company previous address" in {
@@ -192,7 +193,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val retrievalAction = dataRetrievalAction(
           CompanyPreviousAddressId.toString -> address
         )
-        testRenderedView(companyDetails +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
       }
     }
 
@@ -200,20 +201,34 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for email and phone" in {
         val rows = Seq(
-          answerRow("contactDetails.email.checkYourAnswersLabel",
-            Seq("test email"), false,
-            Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url))),
-          answerRow("contactDetails.phone.checkYourAnswersLabel",
-            Seq("test phone"), false,
-            Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(CheckMode).url)))
+          answerRow(
+            label = messages("email.title", "Test company"),
+            answer = Seq("test@email"),
+            changeUrl = Some(Link(controllers.register.company.routes.EmailController.onPageLoad(CheckMode).url))
+          ),
+          answerRow(
+            label = messages("phone.title", "Test company"),
+            answer = Seq("1234567890"),
+            changeUrl = Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(CheckMode).url))
+          )
         )
 
         val sections = answerSections(Some(contactDetailsHeading), rows)
 
         val retrievalAction = dataRetrievalAction(
-          ContactDetailsId.toString -> ContactDetails("test email", "test phone")
+          BusinessDetailsId.toString -> BusinessDetails("Test company", None),
+          PhoneId.toString -> "1234567890",
+          EmailId.toString -> "test@email"
         )
-        testRenderedView(Seq(companyDetails, companyContactDetails) ++ sections, retrievalAction)
+
+        testRenderedView(
+          sections = Seq(
+            companyDetails(
+              row = Seq(answerRow(label = "businessDetails.companyName", answer = Seq("Test company")))
+            ),
+            companyContactDetails
+          ) ++ sections, dataRetrievalAction = retrievalAction
+        )
       }
     }
 
@@ -267,10 +282,11 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Some("company.checkYourAnswers.company.contact.details.heading"),
     Seq.empty
   )
-  private val companyDetails = AnswerSection(
+  private def companyDetails(row: Seq[AnswerRow] = Seq.empty) = AnswerSection(
     Some("company.checkYourAnswers.company.details.heading"),
-    Seq.empty
+    row
   )
+
   private val contactDetails = AnswerSection(
     Some(contactDetailsHeading),
     Seq.empty
@@ -300,16 +316,33 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     new FakeDataRetrievalAction(Some(data))
   }
 
+
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
+
+    def writeToDesktop(content:String, fileName:String):Unit = {
+      import java.io._
+      val pw = new PrintWriter(new File( s"/Users/vinnicombe/Desktop/$fileName" ))
+      pw.write(content)
+      pw.close()
+    }
+
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
+
+    writeToDesktop(contentAsString(result), "act.html")
+
     val expectedResult = check_your_answers(
-      frontendAppConfig,
-      sections,
-      call,
-      None,
-      NormalMode
+        frontendAppConfig,
+        sections,
+        call,
+        None,
+        NormalMode
     )(fakeRequest, messages).toString()
+
+    writeToDesktop(expectedResult, "exp.html")
+
     contentAsString(result) mustBe expectedResult
   }
+
+
 }

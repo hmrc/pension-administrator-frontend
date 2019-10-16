@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.{AreYouInUKId, BusinessTypeId}
+import identifiers.register.{AreYouInUKId, BusinessTypeId, EmailId, PhoneId}
 import identifiers.register.company._
 import models.InternationalRegion._
 import models._
@@ -60,8 +60,10 @@ class RegisterCompanyNavigator @Inject()(
     case CompanyAddressListId =>
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
     case CompanyPreviousAddressId =>
-      NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
-    case ContactDetailsId =>
+      NavigateTo.save(routes.EmailController.onPageLoad(NormalMode))
+    case EmailId =>
+      NavigateTo.save(routes.PhoneController.onPageLoad(NormalMode))
+    case PhoneId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
@@ -91,7 +93,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
     case CompanyPreviousAddressId =>
       checkYourAnswers
-    case ContactDetailsId =>
+    case EmailId =>
+      checkYourAnswers
+    case PhoneId =>
       checkYourAnswers
     case CompanyDetailsId =>
       checkYourAnswers
@@ -111,14 +115,17 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(UpdateMode))
     case CompanyAddressYearsId =>
       companyAddressYearsUpdateIdRoutes(from.userAnswers)
-    case CompanyConfirmPreviousAddressId => confirmPreviousAddressRoutes(from.userAnswers)
+    case CompanyConfirmPreviousAddressId =>
+      confirmPreviousAddressRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>
       NavigateTo.save(routes.CompanyAddressListController.onPageLoad(UpdateMode))
     case CompanyAddressListId =>
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
     case CompanyPreviousAddressId =>
       anyMoreChanges
-    case ContactDetailsId =>
+    case EmailId =>
+      anyMoreChanges
+    case PhoneId =>
       anyMoreChanges
   }
 
@@ -133,7 +140,7 @@ class RegisterCompanyNavigator @Inject()(
     (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
       case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
       case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
+      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.EmailController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
