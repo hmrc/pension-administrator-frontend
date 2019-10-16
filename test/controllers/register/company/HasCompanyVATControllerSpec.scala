@@ -31,7 +31,7 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasVATControllerSpec extends ControllerSpecBase {
+class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -41,7 +41,7 @@ class HasVATControllerSpec extends ControllerSpecBase {
 
   private def viewModel =
     CommonFormWithHintViewModel(
-      postCall = controllers.register.company.routes.HasVATController.onSubmit(NormalMode),
+      postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(NormalMode),
       title = Message("hasVAT.heading", Message("theCompany").resolve),
       heading = Message("hasVAT.heading", companyName),
       mode = NormalMode,
@@ -50,7 +50,7 @@ class HasVATControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasVATController(frontendAppConfig,
+    new HasCompanyVATController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector

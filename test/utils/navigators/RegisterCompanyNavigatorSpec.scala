@@ -146,7 +146,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def companyRegistrationNumberPage(mode: Mode) = routes.CompanyRegistrationNumberController.onPageLoad(mode)
   private def hasPayePage = routes.HasCompanyPAYEController.onPageLoad(NormalMode)
 
-  private def hasVatPage = routes.HasVATController.onPageLoad(NormalMode)
+  private def hasVatPage = routes.HasCompanyVATController.onPageLoad(NormalMode)
 
   private def payePage = routes.CompanyEnterPAYEController.onPageLoad(NormalMode)
 

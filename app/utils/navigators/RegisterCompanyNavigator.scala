@@ -64,9 +64,9 @@ class RegisterCompanyNavigator @Inject()(
     case HasPAYEId if hasPaye(from.userAnswers)=>
       NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
     case HasPAYEId =>
-      NavigateTo.save(routes.HasVATController.onPageLoad(NormalMode))
+      NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
     case EnterPAYEId =>
-      NavigateTo.save(routes.HasVATController.onPageLoad(NormalMode))
+      NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
     case HasVATId if hasVat(from.userAnswers) =>
       NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
     case HasVATId =>
