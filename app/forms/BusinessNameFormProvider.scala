@@ -16,25 +16,19 @@
 
 package forms
 
-import forms.mappings.UtrMapping
+import forms.mappings.BusinessNameMapping
 import javax.inject.Inject
-import models.UniqueTaxReference
 import play.api.data.Form
 
-class UniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with UtrMapping {
+class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
 
-  def apply(requiredKey: String, requiredReasonKey: String): Form[UniqueTaxReference] = {
-    val mapping = uniqueTaxReferenceMapping(
-      requiredKey = requiredKey,
-      requiredUtrKey = "common.error.utr.required",
-      utrLengthKey = "common.error.utr.length",
-      utrInvalidKey = "common.error.utr.invalid",
-      requiredReasonKey = requiredReasonKey,
-      reasonLengthKey = "common.error.utr.reason.length"
-    )
-
+  def apply(): Form[String] =
     Form(
-      "utr" -> mapping
+      "value" -> nameMapping(
+        "businessName.error.required",
+        "businessName.error.invalid",
+        "businessName.error.length"
+      )
     )
-  }
+
 }

@@ -23,13 +23,23 @@ import uk.gov.voa.play.form.ConditionalMappings.{mandatoryIfFalse, mandatoryIfTr
 
 trait UtrMapping extends Mappings with Transforms {
 
-  protected def utrMapping(requiredKey: String,
-                           requiredUtrKey: String,
-                           utrLengthKey: String,
-                           utrInvalidKey: String,
-                           requiredReasonKey: String,
-                           reasonLengthKey: String,
-                           reasonInvalidKey: String = "common.error.reason.invalid"):
+  def utrMapping(requiredKey: String = "common.error.utr.required",
+                 lengthKey: String = "common.error.utr.exactLength"
+                ): Mapping[String] = {
+    text(requiredKey)
+    .transform(strip, noTransform)
+    .verifying(
+      uniqueTaxReference(lengthKey)
+    )
+  }
+
+  protected def uniqueTaxReferenceMapping(requiredKey: String,
+                                          requiredUtrKey: String,
+                                          utrLengthKey: String,
+                                          utrInvalidKey: String,
+                                          requiredReasonKey: String,
+                                          reasonLengthKey: String,
+                                          reasonInvalidKey: String = "common.error.reason.invalid"):
   Mapping[UniqueTaxReference] = {
 
     tuple("hasUtr" -> boolean(requiredKey),
