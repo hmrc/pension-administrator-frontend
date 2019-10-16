@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package identifiers.register.company
 
-import play.api.data.Mapping
+import identifiers._
+import models.Address
+import utils.checkyouranswers.AddressCYA
+import utils.countryOptions.CountryOptions
 
-trait CompanyNameMapping extends Mappings with Transforms {
+case object CompanyUTRId extends TypedIdentifier[String] {
+  self =>
 
-  def nameMapping(keyNameRequired: String, keyNameInvalid: String, keyNameMaxLength: String): Mapping[String] = {
-    text(keyNameRequired)
-      .transform(standardTextTransform, noTransform)
-      .verifying(
-        firstError(
-          maxLength(
-            CompanyNameMapping.maxLength,
-            keyNameMaxLength
-          ),
-          companyName(keyNameInvalid)
-        )
-      )
-  }
-
-}
-
-object CompanyNameMapping {
-  val maxLength = 105
+  override def toString: String = "utr"
 }

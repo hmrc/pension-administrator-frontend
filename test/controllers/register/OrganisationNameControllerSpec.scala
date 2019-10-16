@@ -20,7 +20,7 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, CompanyNameFormProvider}
+import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, BusinessNameFormProvider}
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
@@ -193,9 +193,9 @@ object OrganisationNameControllerSpec extends OptionValues {
   object FakeIdentifier extends TypedIdentifier[BusinessDetails]
   val businessDetailsFormModel = BusinessDetailsFormModel(
     companyNameMaxLength = 105,
-    companyNameRequiredMsg = "companyName.error.required",
-    companyNameLengthMsg = "companyName.error.length",
-    companyNameInvalidMsg = "companyName.error.invalid",
+    companyNameRequiredMsg = "businessDetails.error.companyName.required",
+    companyNameLengthMsg = "businessDetails.error.companyName.length",
+    companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
     utrMaxLength = 10,
     utrRequiredMsg = None,
     utrLengthMsg = "businessDetails.error.utr.length",
@@ -207,7 +207,7 @@ object OrganisationNameControllerSpec extends OptionValues {
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: CompanyNameFormProvider
+                                  formProvider: BusinessNameFormProvider
                                 ) extends OrganisationNameController {
 
     def onPageLoad(viewmodel: OrganisationNameViewModel, answers: UserAnswers): Future[Result] = {

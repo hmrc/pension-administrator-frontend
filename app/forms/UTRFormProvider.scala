@@ -16,19 +16,11 @@
 
 package forms
 
-import forms.mappings.CompanyNameMapping
+import forms.mappings.UtrMapping
 import javax.inject.Inject
+import models.UniqueTaxReference
 import play.api.data.Form
 
-class CompanyNameFormProvider @Inject() extends CompanyNameMapping {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> nameMapping(
-        "companyName.error.required",
-        "companyName.error.invalid",
-        "companyName.error.length"
-      )
-    )
-
+class UTRFormProvider @Inject() extends FormErrorHelper with UtrMapping {
+  def apply(): Form[String] = Form("value" -> utrMapping())
 }
