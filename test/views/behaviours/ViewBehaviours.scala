@@ -24,9 +24,9 @@ import views.ViewSpecBase
 trait ViewBehaviours extends ViewSpecBase {
 
   // TODO: This should be looked at - it IS doing a page title check!
-  def normalPageWithoutPageTitleCheck(view: () => HtmlFormat.Appendable,
-                                      messageKeyPrefix: String,
-                                      expectedGuidanceKeys: String*) = {
+  def normalPageWithPageTitleCheck(view: () => HtmlFormat.Appendable,
+                                   messageKeyPrefix: String,
+                                   expectedGuidanceKeys: String*): Unit = {
 
     "behave like a normal page" when {
       "rendered" must {
@@ -73,17 +73,17 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def normalPageWithDynamicTitle(view: () => HtmlFormat.Appendable,
                                  messageKeyPrefix: String,
-                                 heading: String,
-                                 expectedGuidanceKeys: String*) = {
+                                 dynamicContent: String,
+                                 expectedGuidanceKeys: String*): Unit = {
 
     "behave like a normal page" when {
       "rendered" must {
 
-        normalPageWithoutPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
+        normalPageWithNoPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
 
-        "display the correct guidance" in {
+        "display the correct dynamic title" in {
           val doc = asDocument(view())
-          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+          assertContainsText(doc, messages(s"$messageKeyPrefix.title", dynamicContent))
         }
       }
     }
@@ -93,7 +93,7 @@ trait ViewBehaviours extends ViewSpecBase {
                  messageKeyPrefix: String,
                  expectedGuidanceKeys: String*) = {
 
-    normalPageWithoutPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
+    normalPageWithPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
 
     "behave like a normal page" when {
       "rendered" must {

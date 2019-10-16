@@ -320,8 +320,12 @@ companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manu
 hasCompanyNumber.heading = Does {0} have a company number?
 hasCompanyNumber.hint = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
 
-hasCompanyVAT.heading = Is {0} registered for VAT?
-hasCompanyVAT.error.required = Select yes if {0} is registered for VAT
+hasVAT.heading = Is {0} registered for VAT?
+hasVAT.error.required = Select yes if {0} is registered for VAT
+
+enterVAT.title = What is the VAT registration number for {0}?
+enterVAT.heading = What is the VAT registration number for {0}?
+enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for.
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?

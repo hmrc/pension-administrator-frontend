@@ -103,7 +103,12 @@ POST       /does-company-have-company-number            controllers.register.com
 GET        /:mode/does-company-have-company-number      controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
 POST       /:mode/does-company-have-company-number      controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
 
-GET         /is-vat-registered                             controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /is-vat-registered                             controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
-POST        /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
+GET         /is-vat-registered                             controllers.register.company.HasVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                             controllers.register.company.HasVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                       controllers.register.company.HasVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                       controllers.register.company.HasVATController.onSubmit(mode: Mode)
+
+GET         /vat-registration-number                       controllers.register.company.EnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.company.EnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.company.EnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.company.EnterVATController.onSubmit(mode: Mode)
