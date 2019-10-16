@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package forms
+package forms.mappings
 
-import forms.mappings.CompanyNameMapping
-import javax.inject.Inject
-import play.api.data.Form
+import play.api.data.Mapping
 
-class CompanyNameFormProvider @Inject() extends CompanyNameMapping {
+trait BusinessNameMapping extends Mappings with Transforms {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> nameMapping(
-        "companyName.error.required",
-        "companyName.error.invalid",
-        "companyName.error.length"
+  def nameMapping(keyNameRequired: String, keyNameInvalid: String, keyNameMaxLength: String): Mapping[String] = {
+    text(keyNameRequired)
+      .transform(standardTextTransform, noTransform)
+      .verifying(
+        firstError(
+          maxLength(
+            BusinessNameMapping.maxLength,
+            keyNameMaxLength
+          ),
+          businessName(keyNameInvalid)
+        )
       )
-    )
+  }
 
+}
+
+object BusinessNameMapping {
+  val maxLength = 105
 }
