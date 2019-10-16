@@ -34,6 +34,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   import CheckYourAnswersControllerSpec._
 
+
   "CheckYourAnswers Controller" when {
 
     "on a GET request for Company Details section " must {
@@ -67,13 +68,35 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
 
       "render the view correctly for company registration number" in {
-        val rows = Seq(answerRow("companyRegistrationNumber.checkYourAnswersLabel", Seq("test reg no"), false,
-          Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))))
+        val rows = Seq(
+          answerRow(
+            messages("companyRegistrationNumber.heading", "bla ltd"), Seq("test reg no"), false,
+            Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
+          )
+        )
 
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
+          BusinessDetailsId.toString -> BusinessDetails("bla ltd", None),
           CompanyRegistrationNumberId.toString -> "test reg no"
+        )
+        testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
+      }
+
+      "render the view correctly for has company number" in {
+        val rows = Seq(
+          answerRow(
+            messages("hasCompanyNumber.heading", "bla ltd"), Seq("site.yes"), true,
+            Some(Link(controllers.register.company.routes.HasCompanyCRNController.onPageLoad(CheckMode).url))
+          )
+        )
+
+        val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
+
+        val retrievalAction = dataRetrievalAction(
+          BusinessDetailsId.toString -> BusinessDetails("bla ltd", None),
+          HasCompanyCRNId.toString -> true
         )
         testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
       }
@@ -282,13 +305,13 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
-    contentAsString(result) mustBe
-      check_your_answers(
-        frontendAppConfig,
-        sections,
-        call,
-        None,
-        NormalMode
-      )(fakeRequest, messages).toString()
+    val expectedResult = check_your_answers(
+      frontendAppConfig,
+      sections,
+      call,
+      None,
+      NormalMode
+    )(fakeRequest, messages).toString()
+    contentAsString(result) mustBe expectedResult
   }
 }

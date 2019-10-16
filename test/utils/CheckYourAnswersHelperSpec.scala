@@ -264,7 +264,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             AnswerRow("companyRegistrationNumber.checkYourAnswersLabel",
               Seq("crn"),
               answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-registration-number")))
+              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-number")))
           )
         )
       )

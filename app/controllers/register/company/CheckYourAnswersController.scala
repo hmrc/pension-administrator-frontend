@@ -19,8 +19,8 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessUTRId}
 import identifiers.register.company._
+import identifiers.register.{BusinessNameId, BusinessUTRId}
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,6 +55,7 @@ class CheckYourAnswersController @Inject()(
           BusinessUTRId.row(None)
           ++ Seq(
           CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten
       )

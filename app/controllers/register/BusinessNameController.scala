@@ -32,11 +32,11 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import views.html.register.businessName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BusinessNameController extends FrontendController with I18nSupport with Retrievals {
 
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  protected implicit def ec : ExecutionContext
 
   def appConfig: FrontendAppConfig
   def cacheConnector: UserAnswersCacheConnector

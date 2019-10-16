@@ -36,7 +36,7 @@ class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Bo
 
   "DeclarationFitAndProper (variations) view" must {
     appRunning()
-    behave like normalPageWithoutPageTitleCheck(createView, messageKeyPrefix)
+    behave like normalPageWithPageTitleCheck(createView, messageKeyPrefix)
 
     behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
 

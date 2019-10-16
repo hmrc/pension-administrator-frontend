@@ -27,6 +27,8 @@ import play.api.mvc.Call
 import utils.Navigator
 import utils.annotations.RegisterCompany
 
+import scala.concurrent.ExecutionContext
+
 class CompanyNameController @Inject()(
                                        override val appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
@@ -36,7 +38,7 @@ class CompanyNameController @Inject()(
                                        override val allowAccess: AllowAccessActionProvider,
                                        override val getData: DataRetrievalAction,
                                        override val requireData: DataRequiredAction
-                                     ) extends BusinessNameController {
+                                     )(implicit val ec: ExecutionContext) extends BusinessNameController {
 
   def href: Call = routes.CompanyNameController.onSubmit()
 }

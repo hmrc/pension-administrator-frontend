@@ -24,6 +24,7 @@ import identifiers.register.company._
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models.{BusinessDetails, _}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -35,7 +36,11 @@ import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
+class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
+
+  override protected def beforeEach(): Unit = {
+    FakeUserAnswersCacheConnector.reset()
+  }
 
   import ConfirmCompanyDetailsControllerSpec._
 
@@ -80,7 +85,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "data is saved on page load" in {
-      FakeUserAnswersCacheConnector.reset()
       val dataCacheConnector = FakeUserAnswersCacheConnector
 
       val expectedJson =
@@ -90,9 +94,9 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
           .asOpt
           .value
           .json
+      val result = controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
 
-      controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
-
+      status(result) mustBe OK
       dataCacheConnector.lastUpsert.value mustBe expectedJson
     }
 

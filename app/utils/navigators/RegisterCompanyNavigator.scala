@@ -20,10 +20,11 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, IsRegisteredNameId}
 import identifiers.register.company._
+import identifiers.register._
 import models.InternationalRegion._
 import models._
+import models.register.BusinessType
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
@@ -43,6 +44,8 @@ class RegisterCompanyNavigator @Inject()(
 
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+    case CompanyDetailsId => companyDetailsNavigation(from.userAnswers)
+    case HasCompanyCRNId => hasCompanyCRNNavigation(from.userAnswers, NormalMode)
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
     case CompanySameContactAddressId =>
@@ -63,8 +66,6 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
     case ContactDetailsId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
-    case CompanyDetailsId =>
-      NavigateTo.save(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
@@ -99,6 +100,8 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
+    case HasCompanyCRNId =>
+      hasCompanyCRNNavigation(from.userAnswers, mode)
     case _ => None
   }
 
@@ -193,6 +196,25 @@ class RegisterCompanyNavigator @Inject()(
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case Some(true) => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def companyDetailsNavigation(answers:UserAnswers):Option[NavigateTo] = {
+    answers.get(BusinessTypeId)
+    match {
+      case Some(BusinessType.UnlimitedCompany) =>
+        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
+      case Some(BusinessType.LimitedCompany) =>
+        NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+  private def hasCompanyCRNNavigation(answers:UserAnswers, mode:Mode):Option[NavigateTo] = {
+    answers.get(HasCompanyCRNId)
+    match {
+      case Some(true) => NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(mode))
+      case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }

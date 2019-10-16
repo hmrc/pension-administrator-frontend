@@ -18,7 +18,6 @@ package identifiers.register
 
 import identifiers.TypedIdentifier
 import models.register.BusinessType._
-import play.api.libs.json.Reads
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, StringCYA}
 import viewmodels.{AnswerRow, Link}
