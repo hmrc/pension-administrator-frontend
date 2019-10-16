@@ -205,21 +205,11 @@ companyRegistrationNumber.error.invalid = Enter a company registration number us
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
 common.vatRegistrationNumber.checkYourAnswersLabel = VAT registration number
 
-companyDetails.title = Company details
-companyDetails.heading = Company details
 companyDetails.companyName = Company name
-companyDetails.vatRegistrationNumber = VAT registration number (optional)
-companyDetails.payeEmployerReferenceNumber = PAYE employer reference number (optional)
 companyDetails.checkYourAnswersLabel = Name
-companyDetails.vatRegistrationNumber.checkYourAnswersLabel = VAT registration number
-companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel = PAYE employer reference number
 companyDetails.error.companyName.required = Please give an answer for Company name
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
-companyDetails.error.vatRegistrationNumber.length = The VAT Registration number cannot be more than 9 characters
-companyDetails.error.vatRegistrationNumber.invalid = Enter a valid VAT Registration number
-companyDetails.error.payeEmployerReferenceNumber.length = The PAYE number cannot be more than 16 characters
-companyDetails.error.payeEmployerReferenceNumber.invalid = Enter a valid PAYE number
 
 companyAddressYears.title = How long has the company been at this address?
 companyAddressYears.heading = How long has the company been at this address?
