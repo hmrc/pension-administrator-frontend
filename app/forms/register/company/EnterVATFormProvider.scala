@@ -20,14 +20,17 @@ import forms.FormErrorHelper
 import forms.mappings.VatMappingString
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
 class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingString {
 
-  def apply(): Form[String] =
+  def apply(name: String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> vatMapping(
-        "common.error.vat.invalid",
-        "common.error.vat.required"
+      "value" -> vatStringMapping(
+        keyVatRequired = "enterVAT.error.required",
+        keyVatLength = Message("enterVAT.error.length", name),
+        keyVatInvalid = Message("enterVAT.error.invalid", name)
       )
     )
 

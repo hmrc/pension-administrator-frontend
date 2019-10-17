@@ -48,14 +48,14 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(mode),
-      title = Message("hasCompanyPaye.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyPaye.heading", companyName),
+      title = Message("hasPAYE.heading", Message("theCompany").resolve),
+      heading = Message("hasPAYE.heading", companyName),
       mode = mode,
-      hint = Some(Message("hasCompanyPaye.hint")),
+      hint = Some(Message("hasPAYE.hint")),
       entityName = companyName
     )
 
-  private def form(companyName: String) = formProvider("hasCompanyPaye.error.required", companyName)
+  private def form(companyName: String) = formProvider("hasPAYE.error.required", companyName)
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
