@@ -17,7 +17,7 @@
 package controllers
 
 import identifiers.TypedIdentifier
-import identifiers.register.RegistrationInfoId
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
@@ -115,7 +115,7 @@ trait Retrievals {
     legalStatus match {
       case Some(Individual) => request.userAnswers.get(IndividualDetailsId).map(_.fullName)
 
-      case Some(LimitedCompany) => request.userAnswers.get(BusinessDetailsId).map(_.companyName)
+      case Some(LimitedCompany) => request.userAnswers.get(BusinessNameId)
 
       case Some(Partnership) => request.userAnswers.get(PartnershipDetailsId).map(_.companyName)
 

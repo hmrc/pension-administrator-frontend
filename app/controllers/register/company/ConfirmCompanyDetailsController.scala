@@ -22,8 +22,8 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.company.{BusinessDetailsId, ConfirmCompanyAddressId}
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.company.ConfirmCompanyAddressId
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import javax.inject.Inject
 import models._
 import models.requests.DataRequest
@@ -58,65 +58,73 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyDetails(mode) { case (_, registration) =>
-        dataCacheConnector.remove(request.externalId, ConfirmCompanyAddressId)
-        Future.successful(
-          Ok(
-            confirmCompanyDetails(
-              appConfig,
-              form,
-              registration.response.address,
-              registration.response.organisation.organisationName,
-              countryOptions
-            )
-          )
-        )
+      getCompanyDetails(mode) { registration =>
+        upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
+          upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
+            upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+              dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
+
+                Future.successful(
+                  Ok(
+                    confirmCompanyDetails(
+                      appConfig,
+                      form,
+                      registration.response.address,
+                      registration.response.organisation.organisationName,
+                      countryOptions
+                    )
+                  )
+                )
+              }
+            }
+          }
+        }
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyDetails(mode) { case (companyDetails, registration) =>
+
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(
-              BadRequest(
-                confirmCompanyDetails(
-                  appConfig,
-                  formWithErrors,
-                  registration.response.address,
-                  registration.response.organisation.organisationName,
-                  countryOptions
+            (BusinessNameId and ConfirmCompanyAddressId).retrieve.right.map {
+              case name ~ address =>
+                Future.successful(
+                  BadRequest(
+                    confirmCompanyDetails(
+                      appConfig,
+                      formWithErrors,
+                      address,
+                      name,
+                      countryOptions
+                    )
+                  )
                 )
-              )
-            ),
+            },
           {
             case true =>
-              upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
-                upsert(userAnswers, BusinessDetailsId)(companyDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
-                  upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                    dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
-                      Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, userAnswers))
-                    }
-                  }
-                }
+              Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers)))
+            case false =>
+
+
+              val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
+              dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+                Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
               }
-            case false => Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
           }
         )
-      }
   }
 
   private def getCompanyDetails(mode: Mode)
-                               (fn: (BusinessDetails, OrganizationRegistration) => Future[Result])
+                               (fn: OrganizationRegistration => Future[Result])
                                (implicit request: DataRequest[AnyContent]) = {
-    (BusinessDetailsId and BusinessTypeId).retrieve.right.map {
-      case businessDetails ~ businessType =>
-        val organisation = Organisation(businessDetails.companyName.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
+    (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
+      case businessName ~ utr ~ businessType =>
+        val organisation = Organisation(businessName.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
         val legalStatus = RegistrationLegalStatus.LimitedCompany
-        registrationConnector.registerWithIdOrganisation(businessDetails.utrOrException, organisation, legalStatus).flatMap {
+        registrationConnector.registerWithIdOrganisation(utr, organisation, legalStatus).flatMap {
           registration =>
-            fn(businessDetails, registration)
+            fn(registration)
         } recoverWith {
           case _: NotFoundException =>
             Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))

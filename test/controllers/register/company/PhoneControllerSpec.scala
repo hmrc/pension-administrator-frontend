@@ -20,9 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.PhoneFormProvider
-import identifiers.register.PhoneId
-import identifiers.register.company.BusinessDetailsId
-import models.{BusinessDetails, Mode, NormalMode}
+import identifiers.register.{BusinessNameId, PhoneId}
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -76,7 +75,7 @@ class PhoneControllerSpec extends ControllerSpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
         PhoneId.toString -> "1234567890",
-        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None)
+        BusinessNameId.toString -> "Test Company Name"
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

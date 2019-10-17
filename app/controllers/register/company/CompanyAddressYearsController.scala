@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId, CompanyContactAddressId}
+import identifiers.register.company.{CompanyAddressYearsId, CompanyContactAddressId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form

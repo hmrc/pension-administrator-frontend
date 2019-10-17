@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.BusinessNameId
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import models.{BusinessDetails, NormalMode, PersonDetails}
@@ -41,8 +42,8 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
   )
 
   val validData: JsObject = Json.obj(
-    BusinessDetailsId.toString ->
-      BusinessDetails(companyName, Some("test utr")),
+    BusinessNameId.toString ->
+      companyName,
     "directors" -> Json.arr(director("a"), director("b"), director("c"), director("d", true))
   )
 

@@ -64,7 +64,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
     "on a GET" must {
       "return OK and the correct view for a GET" in {
         running(
-          _.overrides(modules(UserAnswers().businessDetails.dataRetrievalAction): _*)
+          _.overrides(modules(UserAnswers().businessName.dataRetrievalAction): _*)
         ) {
           app =>
             val controller = app.injector.instanceOf[CompanyEnterPAYEController]
@@ -91,7 +91,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
     "on a POST" must {
       "return a redirect when the submitted data is valid" in {
-        running(_.overrides(modules(UserAnswers().businessDetails.dataRetrievalAction) ++
+        running(_.overrides(modules(UserAnswers().businessName.dataRetrievalAction) ++
           Seq[GuiceableModule](bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
           bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))) : _*
         )) {

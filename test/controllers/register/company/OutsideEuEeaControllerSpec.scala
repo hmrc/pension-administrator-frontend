@@ -18,6 +18,7 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import models.{Address, BusinessDetails, NormalMode}
 import play.api.libs.json.Json
@@ -43,8 +44,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
   def validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
-      BusinessDetailsId.toString ->
-        BusinessDetails(organisationName, None),
+      BusinessNameId.toString -> organisationName,
       CompanyAddressId.toString -> Address(
         "value 1",
         "value 2",

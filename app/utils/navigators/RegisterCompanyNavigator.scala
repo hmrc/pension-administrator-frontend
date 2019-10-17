@@ -36,8 +36,10 @@ class RegisterCompanyNavigator @Inject()(
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessDetailsId =>
-      regionBasedNameNavigation(from.userAnswers)
+    case BusinessUTRId => NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
+    case BusinessNameId => regionBasedNameNavigation(from.userAnswers)
+    case IsRegisteredNameId =>  registeredNameRoutes(from.userAnswers)
+
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case HasCompanyCRNId => hasCompanyCRNNavigation(from.userAnswers, NormalMode)
@@ -208,7 +210,7 @@ class RegisterCompanyNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+      case Some(true) => NavigateTo.dontSave(routes.CompanyIsRegisteredNameController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -237,5 +239,10 @@ class RegisterCompanyNavigator @Inject()(
       case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+  }
+
+  def registeredNameRoutes(answers: UserAnswers) = answers.get(IsRegisteredNameId) match {
+    case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+    case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
   }
 }

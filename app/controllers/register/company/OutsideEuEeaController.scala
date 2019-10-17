@@ -19,7 +19,8 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.BusinessNameId
+import identifiers.register.company.CompanyAddressId
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,9 +43,9 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
-      (BusinessDetailsId and CompanyAddressId).retrieve.right.map {
-        case details ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, countryOptions.getCountryNameFromCode(address.toAddress), "companies")))
+      (BusinessNameId and CompanyAddressId).retrieve.right.map {
+        case name ~ address =>
+          Future.successful(Ok(outsideEuEea(appConfig, name, countryOptions.getCountryNameFromCode(address.toAddress), "companies")))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

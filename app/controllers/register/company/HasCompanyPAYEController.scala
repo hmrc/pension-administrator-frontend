@@ -21,8 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.HasPAYEId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.{BusinessNameId, HasPAYEId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -58,7 +57,7 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
   private def form(companyName: String) = formProvider("hasPAYE.error.required", companyName)
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

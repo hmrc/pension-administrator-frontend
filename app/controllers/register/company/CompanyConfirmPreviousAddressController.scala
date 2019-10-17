@@ -20,11 +20,10 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
-import forms.address.ConfirmPreviousAddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import javax.inject.Inject
 import models.Mode
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -51,15 +50,15 @@ class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        (BusinessDetailsId and ExistingCurrentAddressId).retrieve.right.map {
-          case details ~ address =>
+        (BusinessNameId and ExistingCurrentAddressId).retrieve.right.map {
+          case name ~ address =>
             SameContactAddressViewModel(
               postCall(),
               title = Message(title),
-              heading = Message(heading, details.companyName),
+              heading = Message(heading, name),
               hint = None,
               address = address,
-              psaName = details.companyName,
+              psaName = name,
               mode = mode
             )
         }

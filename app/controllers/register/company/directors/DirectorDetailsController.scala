@@ -18,8 +18,8 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{PersonDetailsController, Retrievals}
 import controllers.actions._
+import controllers.{PersonDetailsController, Retrievals}
 import identifiers.register.company.directors.DirectorDetailsId
 import javax.inject.Inject
 import models.requests.DataRequest

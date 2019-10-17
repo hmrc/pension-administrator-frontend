@@ -23,6 +23,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -51,13 +52,13 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
 
   private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = Retrieval(
     implicit request =>
-      BusinessDetailsId.retrieve.right.map { businessDetails =>
+      BusinessNameId.retrieve.right.map { companyName =>
         ManualAddressViewModel(
           routes.CompanyContactAddressController.onSubmit(mode),
           countryOptions.options,
           Message("companyContactAddress.title"),
-          Message("companyContactAddress.heading", businessDetails.companyName),
-          Some(Message("companyContactAddress.lede", businessDetails.companyName)),
+          Message("companyContactAddress.heading", companyName),
+          Some(Message("companyContactAddress.lede", companyName)),
           psaName = psaName()
         )
       }

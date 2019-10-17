@@ -21,7 +21,6 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.BusinessNameController
 import javax.inject.Inject
-import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.Call
 import utils.Navigator
