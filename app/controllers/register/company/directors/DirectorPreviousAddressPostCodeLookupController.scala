@@ -23,18 +23,16 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
+import identifiers.register.company.directors.DirectorPreviousAddressPostCodeLookupId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
-
-import scala.concurrent.Future
 
 class DirectorPreviousAddressPostCodeLookupController @Inject()(
                                                                  override val appConfig: FrontendAppConfig,

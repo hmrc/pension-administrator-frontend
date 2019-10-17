@@ -24,7 +24,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressPostCodeLookupId}
+import identifiers.register.company.CompanyContactAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi

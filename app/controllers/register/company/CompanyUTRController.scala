@@ -21,19 +21,15 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.UTRController
-import forms.UTRFormProvider
 import identifiers.register.{BusinessTypeId, BusinessUTRId}
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.NormalMode
 import models.register.BusinessType
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
-
-import scala.concurrent.ExecutionContext
 
 class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,

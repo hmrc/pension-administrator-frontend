@@ -20,16 +20,15 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.{NameCleansing, OrganisationNameController}
-import forms.{BusinessDetailsFormModel, BusinessNameFormProvider}
+import controllers.register.NameCleansing
+import forms.BusinessNameFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.BusinessDetailsId
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
+import utils.{Navigator, UserAnswers}
 import viewmodels.{Message, OrganisationNameViewModel}
 import views.html.nonUkBusinessName
 

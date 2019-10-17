@@ -18,8 +18,8 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{MoreThanTenController, Retrievals}
 import controllers.actions._
+import controllers.{MoreThanTenController, Retrievals}
 import identifiers.register.company.MoreThanTenDirectorsId
 import javax.inject.Inject
 import models.Mode

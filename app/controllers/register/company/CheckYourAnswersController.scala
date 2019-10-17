@@ -20,16 +20,16 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.company._
-import identifiers.register.{BusinessNameId, BusinessUTRId}
+import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Enumerable, Navigator}
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.{Enumerable, Navigator}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -54,7 +54,10 @@ class CheckYourAnswersController @Inject()(
         BusinessNameId.row(None)(request, implicitly) ++
           BusinessUTRId.row(None)
           ++ Seq(
-          CompanyDetailsId.row(Some(Link(routes.CompanyDetailsController.onPageLoad(CheckMode).url))),
+          HasPAYEId.row(Some(Link(routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
+          EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),
+          HasVATId.row(Some(Link(routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
+          EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url))),
           HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
         ).flatten

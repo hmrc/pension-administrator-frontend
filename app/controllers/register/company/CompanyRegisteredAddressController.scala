@@ -23,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
+import identifiers.register.company.CompanyAddressId
 import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form

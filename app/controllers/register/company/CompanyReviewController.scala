@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyReviewId}
+import identifiers.register.company.CompanyReviewId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}

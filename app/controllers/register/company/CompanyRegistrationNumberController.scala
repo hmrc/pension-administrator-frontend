@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyRegistrationNumberId}
+import identifiers.register.company.CompanyRegistrationNumberId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest

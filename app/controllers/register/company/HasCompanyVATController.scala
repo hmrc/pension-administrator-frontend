@@ -20,9 +20,9 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
+import controllers.register.company.routes.HasCompanyVATController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.{BusinessNameId, HasVATId}
-import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -32,7 +32,6 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.company.routes.HasCompanyVATController
 
 import scala.concurrent.ExecutionContext
 

@@ -22,7 +22,6 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.register.VATNumberController
 import forms.register.company.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
-import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -45,7 +44,7 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           formProvider: EnterVATFormProvider
                                           )(implicit val ec: ExecutionContext) extends VATNumberController {
 
-  private val form = formProvider()
+  private def form(companyName: String) = formProvider(companyName)
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -61,12 +60,11 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(EnterVATId, form, viewModel(mode, entityName))
+      get(EnterVATId, form(entityName), viewModel(mode, entityName))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(EnterVATId, mode, form, viewModel(mode, entityName))
+      post(EnterVATId, mode, form(entityName), viewModel(mode, entityName))
   }
-
 }
