@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register._
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipDetailsId
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
@@ -125,12 +125,12 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val notInUkCompanyCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
+    .set(BusinessNameId)("test company name").asOpt.value
     .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
 
   val notInUkCompanyCheckModeNoBusinessTypeId: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
+    .set(BusinessNameId)("test company name").asOpt.value
 
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
