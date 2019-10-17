@@ -47,7 +47,7 @@ trait Variations extends FrontendController {
     CompanyContactAddressId -> CompanyContactAddressChangedId,
     CompanyPreviousAddressId -> CompanyPreviousAddressChangedId,
     EmailId("contactDetails") -> CompanyContactDetailsChangedId,
-    PhoneId -> CompanyContactDetailsChangedId,
+    PhoneId("contactDetails") -> CompanyContactDetailsChangedId,
     PartnershipContactAddressId -> PartnershipContactAddressChangedId,
     PartnershipPreviousAddressId -> PartnershipPreviousAddressChangedId,
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId,

@@ -75,7 +75,7 @@ class EmailControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        EmailId.toString -> "test@test.com",
+        "contactDetails." + EmailId.toString -> "test@test.com",
         BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None)
       )
 

@@ -74,7 +74,7 @@ class CheckYourAnswersController @Inject()(
         headingKey = Some("common.checkYourAnswers.contact.details.heading"),
         rows = Seq(
           EmailId("contactDetails").row(Some(Link(routes.EmailController.onPageLoad(CheckMode).url))),
-          PhoneId.row(Some(Link(routes.PhoneController.onPageLoad(CheckMode).url)))
+          PhoneId("contactDetails").row(Some(Link(routes.PhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 

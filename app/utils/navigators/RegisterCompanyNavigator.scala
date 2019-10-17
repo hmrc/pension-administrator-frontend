@@ -63,7 +63,7 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.EmailController.onPageLoad(NormalMode))
     case EmailId("contactDetails") =>
       NavigateTo.save(routes.PhoneController.onPageLoad(NormalMode))
-    case PhoneId =>
+    case PhoneId("contactDetails") =>
       regionBasedContactDetailsRoutes(from.userAnswers)
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
@@ -95,7 +95,7 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case EmailId("contactDetails") =>
       checkYourAnswers
-    case PhoneId =>
+    case PhoneId("contactDetails") =>
       checkYourAnswers
     case CompanyDetailsId =>
       checkYourAnswers
@@ -125,7 +125,7 @@ class RegisterCompanyNavigator @Inject()(
       anyMoreChanges
     case EmailId("contactDetails") =>
       anyMoreChanges
-    case PhoneId =>
+    case PhoneId("contactDetails") =>
       anyMoreChanges
   }
 

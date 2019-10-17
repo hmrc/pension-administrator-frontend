@@ -72,9 +72,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (EmailId, emptyAnswers, phone(NormalMode), true, Some(checkYourAnswersPage), true),
-    (PhoneId, uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
-    (PhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (EmailId("contactDetails"), emptyAnswers, phone(NormalMode), true, Some(checkYourAnswersPage), true),
+    (PhoneId("contactDetails"), uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PhoneId("contactDetails"), nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
@@ -102,9 +102,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
 
-    (EmailId, emptyAnswers, anyMoreChanges, false, None, true),
-    (PhoneId, uk, anyMoreChanges, false, None, true),
-    (PhoneId, nonUk, anyMoreChanges, false, None, true)
+    (EmailId("contactDetails"), emptyAnswers, anyMoreChanges, false, None, true),
+    (PhoneId("contactDetails"), uk, anyMoreChanges, false, None, true),
+    (PhoneId("contactDetails"), nonUk, anyMoreChanges, false, None, true)
   )
 
   navigator.getClass.getSimpleName must {

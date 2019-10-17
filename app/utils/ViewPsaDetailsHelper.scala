@@ -212,7 +212,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.company.routes.EmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(PhoneId) map { phone =>
+  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(PhoneId("contactDetails")) map { phone =>
     AnswerRow("company.phone.label", Seq(phone), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(UpdateMode).url)))
   }

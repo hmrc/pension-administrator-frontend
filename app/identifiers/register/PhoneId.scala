@@ -18,13 +18,14 @@ package identifiers.register
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
+import play.api.libs.json.JsPath
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
 import viewmodels.{AnswerRow, Link}
 
-case object PhoneId extends TypedIdentifier[String] {
+case class PhoneId(pathVariable: String)  extends TypedIdentifier[String] {
   self =>
-  override def toString: String = "phone"
+  override def path: JsPath = JsPath \ pathVariable \ PhoneId.toString
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {
@@ -35,3 +36,8 @@ case object PhoneId extends TypedIdentifier[String] {
         StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
     }
 }
+
+object PhoneId {
+  override def toString: String = "phone"
+}
+
