@@ -207,7 +207,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(EmailId) map { email =>
+  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(EmailId("contactDetails")) map { email =>
     AnswerRow("company.email.label", Seq(email), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.EmailController.onPageLoad(UpdateMode).url)))
   }

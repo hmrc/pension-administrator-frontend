@@ -53,7 +53,7 @@ class EmailController @Inject()(@RegisterCompany val navigator: Navigator,
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val filledForm =
-          request.userAnswers.get(EmailId).map(form.fill).getOrElse(form)
+          request.userAnswers.get(EmailId("contactDetails")).map(form.fill).getOrElse(form)
 
         Future.successful(Ok(email(appConfig, filledForm, viewModel(mode))))
     }
@@ -64,10 +64,10 @@ class EmailController @Inject()(@RegisterCompany val navigator: Navigator,
         formWithErrors =>
           Future.successful(BadRequest(email(appConfig, formWithErrors, viewModel(mode)))),
         contactDetails => {
-          cacheConnector.save(request.externalId, EmailId, contactDetails).flatMap {
+          cacheConnector.save(request.externalId, EmailId("contactDetails"), contactDetails).flatMap {
             answers =>
-              saveChangeFlag(mode, EmailId).map { _ =>
-                Redirect(navigator.nextPage(EmailId, mode, UserAnswers(answers)))
+              saveChangeFlag(mode, EmailId("contactDetails")).map { _ =>
+                Redirect(navigator.nextPage(EmailId("contactDetails"), mode, UserAnswers(answers)))
               }
           }
         }
