@@ -22,6 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
+import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import models.Mode
 import models.requests.DataRequest
@@ -56,14 +57,14 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    (BusinessDetailsId and CompanyContactAddressPostCodeLookupId).retrieve.right.map {
-      case details ~ addresses =>
+    (BusinessNameId and CompanyContactAddressPostCodeLookupId).retrieve.right.map {
+      case name ~ addresses =>
         AddressListViewModel(
           postCall = routes.CompanyContactAddressListController.onSubmit(mode),
           manualInputCall = routes.CompanyContactAddressController.onPageLoad(mode),
           addresses = addresses,
           Message("company.contactAddressList.title"),
-          Message("company.contactAddressList.heading").withArgs(details.companyName),
+          Message("company.contactAddressList.heading").withArgs(name),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )
