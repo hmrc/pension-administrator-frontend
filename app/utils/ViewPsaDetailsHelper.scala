@@ -17,13 +17,13 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.VariationWorkingKnowledgeId
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
+import identifiers.register.{EmailId, PhoneId, VariationWorkingKnowledgeId}
 import models.AddressYears.UnderAYear
 import models._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -207,14 +207,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
-    AnswerRow("company.email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(EmailId) map { email =>
+    AnswerRow("company.email.label", Seq(email), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.routes.EmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(ContactDetailsId) map { details =>
-    AnswerRow("company.phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(PhoneId) map { phone =>
+    AnswerRow("company.phone.label", Seq(phone), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>

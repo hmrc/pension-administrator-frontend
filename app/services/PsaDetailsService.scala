@@ -90,7 +90,8 @@ class PsaDetailServiceImpl @Inject()(
       }
     }
 
-  private val changeFlagIds = List(IndividualAddressChangedId,
+  private val changeFlagIds = List(
+    IndividualAddressChangedId,
     IndividualPreviousAddressChangedId,
     IndividualContactDetailsChangedId,
     CompanyContactAddressChangedId,

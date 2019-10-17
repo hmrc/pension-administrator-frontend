@@ -52,10 +52,8 @@
     "postcode": "LN12 4DC",
     "country": "Country of GB"
   },
-  "contactDetails": {
-    "email": "aaa@aa.com",
-    "phone": "0044-09876542312"
-  },
+  "email": "aaa@aa.com",
+  "phone": "0044-09876542312",
   "companyDetails": {
     "vatRegistrationNumber": "12345678",
     "payeEmployerReferenceNumber": "9876543210"
@@ -118,5 +116,5 @@
       "isDirectorComplete": true
     }
   ],
-  "declarationWorkingKnowledge" : false
+  "declarationWorkingKnowledge": false
 }
