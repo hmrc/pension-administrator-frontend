@@ -20,7 +20,7 @@ import identifiers._
 import play.api.libs.json.JsPath
 
 case object CompanyContactDetailsChangedId extends TypedIdentifier[Boolean] {
-  override def path: JsPath = JsPath \ CompanyContactDetailsChangedId.toString
+  override def path: JsPath = JsPath \ "contactDetails" \ CompanyContactDetailsChangedId.toString
 
   override def toString: String = "isChanged"
 }

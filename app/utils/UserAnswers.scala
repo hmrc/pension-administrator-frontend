@@ -35,8 +35,6 @@ import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
-    val x = get[A](id.path)
-    println(s"\n\n\n\n$id - ${id.path} - $x\n\n\n\n")
     get[A](id.path)
   }
 
