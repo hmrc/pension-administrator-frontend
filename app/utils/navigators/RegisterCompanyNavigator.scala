@@ -38,9 +38,7 @@ class RegisterCompanyNavigator @Inject()(
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
     case BusinessUTRId => NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
     case BusinessNameId => regionBasedNameNavigation(from.userAnswers)
-      NavigateTo.dontSave(routes.CompanyIsRegisteredNameController.onPageLoad())
     case IsRegisteredNameId =>  registeredNameRoutes(from.userAnswers)
-    case BusinessDetailsId =>  regionBasedNameNavigation(from.userAnswers)
 
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
@@ -188,6 +186,7 @@ class RegisterCompanyNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
+      case Some(true) => NavigateTo.dontSave(routes.CompanyIsRegisteredNameController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }

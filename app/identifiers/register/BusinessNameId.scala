@@ -36,7 +36,8 @@ case object BusinessNameId extends TypedIdentifier[String] {
   private def label(userAnswers: UserAnswers): String =
     userAnswers.get(BusinessTypeId) match {
     case Some(LimitedCompany) | Some(UnlimitedCompany) => "cya.label.companyName"
-    case _ => "cya.label.partnershipName"
+    case Some(LimitedLiabilityPartnership) | Some(LimitedPartnership) | Some(BusinessPartnership) => "cya.label.partnershipName"
+    case _ => "cya.label.companyName"
   }
 
 }

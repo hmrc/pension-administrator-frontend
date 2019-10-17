@@ -43,10 +43,10 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save (NM)", "Next Page (Check Mode)", "Save (CM)"),
     (BusinessUTRId, emptyAnswers, companyNamePage, false, None, false),
-    (BusinessNameId, emptyAnswers, companyIsRegisteredNamePage, false, None, false),
+    (BusinessNameId, uk, companyIsRegisteredNamePage, false, None, false),
+    (BusinessNameId, nonUk, nonUkAddress, false, None, false),
     (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage, false, None, false),
     (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
-    (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
 
     (CompanyDetailsId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (CompanyDetailsId, limitedCompany, companyRegistrationNumberPage(NormalMode), true, Some(checkYourAnswersPage), true),

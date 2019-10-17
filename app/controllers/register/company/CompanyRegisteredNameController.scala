@@ -20,24 +20,33 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.OrganisationNameController
-import forms.BusinessDetailsFormModel
+import controllers.register.{NameCleansing, OrganisationNameController}
+import forms.{BusinessDetailsFormModel, BusinessNameFormProvider}
+import identifiers.register.BusinessNameId
 import identifiers.register.company.BusinessDetailsId
-import models.Mode
-import play.api.i18n.MessagesApi
+import models.{Mode, NormalMode}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.Navigator
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
 import viewmodels.{Message, OrganisationNameViewModel}
+import views.html.nonUkBusinessName
 
-class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
+import scala.concurrent.{ExecutionContext, Future}
+
+class CompanyRegisteredNameController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
-                                                @RegisterCompany override val navigator: Navigator,
+                                                @RegisterCompany navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
+                                                cacheConnector: UserAnswersCacheConnector,
+                                                formProvider: BusinessNameFormProvider
+                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with NameCleansing {
+
+  val form = formProvider()
 
   private def companyNameViewModel(mode: Mode) =
     OrganisationNameViewModel(
@@ -48,23 +57,25 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(BusinessDetailsId, companyNameViewModel(mode))
+      val filledForm =
+        request.userAnswers.get(BusinessNameId).map(form.fill).getOrElse(form)
+
+      Future.successful(Ok(nonUkBusinessName(appConfig, filledForm, companyNameViewModel(mode))))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(BusinessDetailsId, companyNameViewModel(mode))
+      cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "companyName", form) match {
+        case Left(futureResult) => futureResult
+        case Right(f) => f.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(nonUkBusinessName(appConfig, formWithErrors, companyNameViewModel(mode)))),
+          companyName =>
+            cacheConnector.save(request.externalId, BusinessNameId, companyName).map {
+              answers =>
+                Redirect(navigator.nextPage(BusinessNameId, NormalMode, UserAnswers(answers)))
+            }
+        )
+      }
   }
-
-  override protected val formModel: BusinessDetailsFormModel =
-    BusinessDetailsFormModel(
-      companyNameMaxLength = 105,
-      companyNameRequiredMsg = "businessDetails.error.companyName.required",
-      companyNameLengthMsg = "businessDetails.error.companyName.length",
-      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
-      utrMaxLength = 10,
-      utrRequiredMsg = None,
-      utrLengthMsg = "businessDetails.error.utr.length",
-      utrInvalidMsg = "businessDetails.error.utr.invalid"
-    )
 }
