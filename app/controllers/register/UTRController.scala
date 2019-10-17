@@ -31,13 +31,13 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.register.utr
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait UTRController extends FrontendController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  override implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  protected implicit def ec : ExecutionContext
 
   def appConfig: FrontendAppConfig
 

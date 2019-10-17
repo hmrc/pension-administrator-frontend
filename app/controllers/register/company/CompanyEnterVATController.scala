@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.company.EnterVATFormProvider
-import identifiers.register.EnterVATId
+import identifiers.register.{BusinessNameId, EnterVATId}
 import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
@@ -57,7 +57,7 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

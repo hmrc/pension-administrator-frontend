@@ -65,7 +65,7 @@ class CompanyRegisteredNameController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "companyName", form) match {
+      cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "value", form) match {
         case Left(futureResult) => futureResult
         case Right(f) => f.fold(
           formWithErrors =>

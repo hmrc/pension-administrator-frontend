@@ -22,6 +22,7 @@ import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import javax.inject.Inject
 import models.Mode
@@ -57,7 +58,7 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
     )
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   private def form(companyName: String): Form[Boolean] =
     formProvider("companyRegistrationNumber.error.required", companyName)

@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.EnterVATFormProvider
-import identifiers.register.EnterVATId
+import identifiers.register.{BusinessNameId, EnterVATId}
 import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
@@ -81,8 +81,7 @@ class VATNumberControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        BusinessDetailsId.toString ->
-          BusinessDetails("Test Company Name", Some("Test UTR")),
+        BusinessNameId.toString -> "Test Company Name",
         EnterVATId.toString -> JsString(testAnswer)
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

@@ -22,7 +22,7 @@ import identifiers.register.company.directors.{CompanyDirectorAddressListId, Dir
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
 import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
-import identifiers.register.{RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
+import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
 import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
@@ -148,6 +148,10 @@ package object utils {
 
     def businessDetails: UserAnswers = {
       answers.set(BusinessDetailsId)(BusinessDetails("test company", Some("1111111111"))).asOpt.value
+    }
+
+    def businessName: UserAnswers = {
+      answers.set(BusinessNameId)("test company").asOpt.value
     }
 
     def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {

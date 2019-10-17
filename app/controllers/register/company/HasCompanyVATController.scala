@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.HasVATId
+import identifiers.register.{BusinessNameId, HasVATId}
 import identifiers.register.company.BusinessDetailsId
 import javax.inject.Inject
 import models.Mode
@@ -58,7 +58,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
     )
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   private def form(companyName: String): Form[Boolean] =
     formProvider("hasVAT.error.required", companyName)
