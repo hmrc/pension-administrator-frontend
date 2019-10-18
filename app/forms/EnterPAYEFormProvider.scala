@@ -26,7 +26,7 @@ class EnterPAYEFormProvider @Inject() extends PayeMappingString {
 
   def apply(name : String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> payeMappingString(
+      "value" -> payeMapping(
         requiredPayeKey = "enterPAYE.error.required",
         keyPayeLength = Message("enterPAYE.error.length", name),
         keyPayeInvalid = Message("enterPAYE.error.invalid", name)

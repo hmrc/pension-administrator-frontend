@@ -65,7 +65,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   )
 
   //scalastyle:on line.size.limit
-  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, fakeFeatureSwitchManagerService())
+  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
   s"${navigator.getClass.getSimpleName} when toggle is on" must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
@@ -74,13 +74,6 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object RegisterNavigatorSpec extends OptionValues {
-  def fakeFeatureSwitchManagerService(isIvEnabled: Boolean = true): FeatureSwitchManagementService = new FeatureSwitchManagementService {
-    override def change(name: String, newValue: Boolean): Boolean = ???
-
-    override def get(name: String): Boolean = isIvEnabled
-
-    override def reset(name: String): Unit = ???
-  }
 
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()

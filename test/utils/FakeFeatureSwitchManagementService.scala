@@ -18,8 +18,8 @@ package utils
 
 import config.FeatureSwitchManagementService
 
-class FakeFeatureSwitchManagementService(enabledV2: Boolean) extends FeatureSwitchManagementService {
-  override def get(name: String): Boolean = enabledV2
+class FakeFeatureSwitchManagementService(enableToggle: Boolean) extends FeatureSwitchManagementService {
+  override def get(name: String): Boolean = enableToggle
   override def change(name: String, newValue: Boolean): Boolean = ???
   override def reset(name: String): Unit = ???
 }

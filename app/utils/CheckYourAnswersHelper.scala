@@ -178,28 +178,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
       Link(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(CheckMode).url))
   }
 
-  def vatRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) flatMap { x =>
-    x.vatRegistrationNumber map { vatRegNo =>
-      AnswerRow(
-        "companyDetails.vatRegistrationNumber.checkYourAnswersLabel",
-        Seq(vatRegNo),
-        false,
-        Link(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
-      )
-    }
-  }
-
-  def payeEmployerReferenceNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyDetailsId) flatMap { x =>
-    x.payeEmployerReferenceNumber map { payeRefNo =>
-      AnswerRow(
-        "companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel",
-        Seq(payeRefNo),
-        false,
-        Link(controllers.register.company.routes.CompanyDetailsController.onPageLoad(CheckMode).url)
-      )
-    }
-  }
-
   def companyRegistrationNumber: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyRegistrationNumberId) map {
     x => AnswerRow("companyRegistrationNumber.checkYourAnswersLabel", Seq(s"$x"), false,
       Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))

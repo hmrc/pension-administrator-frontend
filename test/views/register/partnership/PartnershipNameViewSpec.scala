@@ -62,7 +62,7 @@ class PartnershipNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.company.routes.CompanyDetailsController.onSubmit(NormalMode).url,
+      "",
       "companyName")
 
     behave like pageWithLabel(createViewUsingForm, "companyName", messages("partnershipName.heading"))

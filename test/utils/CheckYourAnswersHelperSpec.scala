@@ -20,10 +20,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import base.SpecBase
-import identifiers.register.company.{CompanyDetailsId, CompanyRegistrationNumberId, MoreThanTenDirectorsId}
 import identifiers.register.company.directors._
+import identifiers.register.company.{CompanyRegistrationNumberId, MoreThanTenDirectorsId}
 import identifiers.register.individual.IndividualDateOfBirthId
-import models.register.company.CompanyDetails
 import models._
 import play.api.libs.json.{JsObject, Json}
 import viewmodels.{AnswerRow, Link}
@@ -71,7 +70,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorDetailsId.toString ->
@@ -98,7 +96,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorUniqueTaxReferenceId.toString ->
@@ -115,7 +112,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         ),
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorUniqueTaxReferenceId.toString ->
@@ -140,7 +136,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorAddressYearsId.toString -> AddressYears.OverAYear.toString
@@ -164,7 +159,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorNinoId.toString ->
@@ -181,7 +175,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         ),
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorNinoId.toString ->
@@ -212,42 +205,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
           Json.obj(MoreThanTenDirectorsId.toString -> false),
           Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.no"), true, Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
           Some("user answered no")
-        )
-      )
-    )
-  }
-
-  "vatRegistrationNumber" should {
-    behave like cyaHelperMethod(_.vatRegistrationNumber.toSeq,
-      Seq(
-        TestScenario(
-          Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(Some("vat"), None)
-          ),
-          Seq(
-            AnswerRow("companyDetails.vatRegistrationNumber.checkYourAnswersLabel",
-              Seq("vat"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-details")))
-          )
-        )
-      )
-    )
-  }
-
-  "payeEmployerReferenceNumber" should {
-    behave like cyaHelperMethod(_.payeEmployerReferenceNumber.toSeq,
-      Seq(
-        TestScenario(
-          Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, Some("paye"))
-          ),
-          Seq(
-            AnswerRow("companyDetails.payeEmployerReferenceNumber.checkYourAnswersLabel",
-              Seq("paye"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-details")))
-          )
         )
       )
     )
@@ -294,7 +251,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorContactDetailsId.toString ->
@@ -321,7 +277,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorAddressId.toString ->
@@ -344,7 +299,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(
-            CompanyDetailsId.toString -> CompanyDetails(None, None),
             "directors" -> Json.arr(
               Json.obj(
                 DirectorPreviousAddressId.toString ->

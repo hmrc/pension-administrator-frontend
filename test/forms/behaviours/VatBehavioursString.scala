@@ -23,39 +23,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait VatBehavioursString extends FormSpec with StringFieldBehaviours with Constraints with VatMappingString {
 
-  def formWithVatField[A](
-                           form: Form[A],
-                           fieldName: String,
-                           keyVatLength: String,
-                           keyVatInvalid: String
-                         ): Unit = {
-
-    "behave like a form with a VAT number" should {
-
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        RegexpGen.from(vatRegex)
-      )
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = VatMappingString.maxVatLength,
-        lengthError = FormError(fieldName, keyVatLength, Seq(VatMappingString.maxVatLength))
-      )
-
-      behave like fieldWithRegex(
-        form,
-        fieldName,
-        "12345678A",
-        FormError(fieldName, keyVatInvalid, Seq(vatRegex))
-      )
-
-    }
-  }
-
-  def formWithVatNumberField(
+  def formWithVatField(
                            form: Form[String],
                            fieldName: String,
                            keyVatRequired: String,

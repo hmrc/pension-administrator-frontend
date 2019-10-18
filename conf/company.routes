@@ -10,11 +10,6 @@ POST        /contact-details                               controllers.register.
 GET         /:mode/contact-details                         controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode)
 POST        /:mode/contact-details                         controllers.register.company.ContactDetailsController.onSubmit(mode: Mode)
 
-GET         /company-details                               controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST        /company-details                               controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/company-details                         controllers.register.company.CompanyDetailsController.onPageLoad(mode: Mode)
-POST        /:mode/company-details                         controllers.register.company.CompanyDetailsController.onSubmit(mode: Mode)
-
 GET         /company-previous-address-manual               controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /company-previous-address-manual               controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/company-previous-address-manual         controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
