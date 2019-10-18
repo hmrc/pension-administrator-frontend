@@ -40,8 +40,7 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
     AreYouInUKViewModel(mode,
       postCall = routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
-      heading = Message("areYouInUKIndividual.heading"),
-      secondaryLabel=Some(Message("areYouInUKIndividual.hint"))
+      heading = Message("areYouInUKIndividual.heading")
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
