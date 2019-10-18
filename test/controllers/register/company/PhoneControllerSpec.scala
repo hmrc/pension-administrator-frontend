@@ -75,8 +75,8 @@ class PhoneControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        PhoneId.toString -> "1234567890",
-        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None)
+        "contactDetails" -> Json.obj("phone" -> "1234567890"),
+          BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

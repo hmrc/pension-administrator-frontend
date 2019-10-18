@@ -23,21 +23,20 @@ import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
 import viewmodels.{AnswerRow, Link}
 
-case class PhoneId(pathVariable: String)  extends TypedIdentifier[String] {
-  self =>
+case class PhoneId(pathVariable: String) extends TypedIdentifier[String] {
   override def path: JsPath = JsPath \ pathVariable \ PhoneId.toString
-
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
-      private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "phone.title")
-
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
-    }
 }
 
 object PhoneId {
   override def toString: String = "phone"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[PhoneId] =
+    new CheckYourAnswersCompany[PhoneId] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "phone.title")
+
+      override def row(id: PhoneId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA[PhoneId](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
 }
 

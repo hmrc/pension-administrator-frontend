@@ -24,20 +24,20 @@ import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, String
 import viewmodels.{AnswerRow, Link}
 
 case class EmailId(pathVariable: String) extends TypedIdentifier[String] {
-  self =>
   override def path: JsPath = JsPath \ pathVariable \ EmailId.toString
-
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
-      private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "email.title")
-
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
-    }
 
 }
 
 object EmailId {
   override def toString: String = "email"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[EmailId] =
+    new CheckYourAnswersCompany[EmailId] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "email.title")
+
+      override def row(id: EmailId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        StringCYA[EmailId](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
+    }
 }

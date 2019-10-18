@@ -200,6 +200,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "on a GET request for Contact Details section " must {
 
       "render the view correctly for email and phone" in {
+
+
         val rows = Seq(
           answerRow(
             label = messages("email.title", "Test company"),
@@ -217,8 +219,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         val retrievalAction = dataRetrievalAction(
           BusinessDetailsId.toString -> BusinessDetails("Test company", None),
-          PhoneId.toString -> "1234567890",
-          EmailId.toString -> "test@email"
+          "contactDetails" -> Json.obj(
+            PhoneId.toString -> "1234567890",
+            EmailId.toString -> "test@email"
+          )
         )
 
         testRenderedView(
@@ -282,6 +286,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Some("company.checkYourAnswers.company.contact.details.heading"),
     Seq.empty
   )
+
   private def companyDetails(row: Seq[AnswerRow] = Seq.empty) = AnswerSection(
     Some("company.checkYourAnswers.company.details.heading"),
     row
@@ -319,27 +324,27 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
 
-    def writeToDesktop(content:String, fileName:String):Unit = {
+    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+    def writeToDesktop(content: String, fileName: String): Unit = {
       import java.io._
-      val pw = new PrintWriter(new File( s"/Users/vinnicombe/Desktop/$fileName" ))
+      val pw = new PrintWriter(new File(s"/home/grant/Desktop/$fileName"))
       pw.write(content)
       pw.close()
     }
 
-    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+    val expectedResult = check_your_answers(
+      frontendAppConfig,
+      sections,
+      call,
+      None,
+      NormalMode
+    )(fakeRequest, messages).toString()
+    writeToDesktop(contentAsString(result), "act.html")
+    writeToDesktop(expectedResult, "exp.html")
+
     status(result) mustBe OK
 
-    writeToDesktop(contentAsString(result), "act.html")
-
-    val expectedResult = check_your_answers(
-        frontendAppConfig,
-        sections,
-        call,
-        None,
-        NormalMode
-    )(fakeRequest, messages).toString()
-
-    writeToDesktop(expectedResult, "exp.html")
 
     contentAsString(result) mustBe expectedResult
   }
