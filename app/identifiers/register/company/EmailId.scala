@@ -18,33 +18,28 @@ package identifiers.register.company
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.JsPath
 import utils.UserAnswers
-import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
-
-case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
+case object EmailId extends TypedIdentifier[String] {
   self =>
-  override def toString: String = "hasCrn"
+
+  override def path: JsPath = JsPath \ "contactDetails" \ EmailId.toString
+
+  override def toString: String = "email"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "hasCompanyNumber.heading")
+        dynamicMessage(ua, "email.title")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "hasCompanyNumber.visuallyHidden.text")
+        dynamicMessage(ua, "email.visuallyHidden.text")
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
     }
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    value match {
-      case Some(false) =>
-        userAnswers.removeAllOf(List(CompanyRegistrationNumberId))
-      case _ => JsSuccess(userAnswers)
-    }
-  }
 }

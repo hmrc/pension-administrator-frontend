@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.PhoneFormProvider
-import identifiers.register.{BusinessNameId, PhoneId}
+import identifiers.register.BusinessNameId
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -74,7 +74,7 @@ class PhoneControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        PhoneId.toString -> "1234567890",
+        "contactDetails" -> Json.obj("phone" -> "1234567890"),
         BusinessNameId.toString -> "Test Company Name"
       )
 

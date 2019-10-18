@@ -186,9 +186,11 @@ contactDetails.error.phone.length = The telephone number cannot be more than 24 
 contactDetails.error.phone.invalid = The telephone number can only contain numbers
 
 email.title = What is {0}’s email address?
+email.visuallyHidden.text = {0}’s email address
 contact.body = We will only use this to contact about pension scheme administration.
 
 phone.title = What is {0}’s phone number?
+phone.visuallyHidden.text = {0}’s phone number
 
 businessDetails.title = What are your business details?
 businessDetails.heading = What are your business details?

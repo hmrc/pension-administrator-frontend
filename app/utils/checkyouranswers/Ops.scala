@@ -31,7 +31,8 @@ trait Ops[A] {
 object Ops {
   implicit def toOps[I <: TypedIdentifier.PathDependent](id: I)(implicit ev: CheckYourAnswers[I]): Ops[id.Data] =
     new Ops[id.Data] {
-      override def row(changeUrl: Option[Link])(implicit request: DataRequest[AnyContent], reads: Reads[id.Data]): Seq[AnswerRow] =
+      override def row(changeUrl: Option[Link])(implicit request: DataRequest[AnyContent], reads: Reads[id.Data]): Seq[AnswerRow] = {
         ev.row(id)(changeUrl, request.userAnswers)
+      }
     }
 }
