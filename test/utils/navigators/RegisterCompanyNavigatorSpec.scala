@@ -73,7 +73,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
 
-    (CompanyAddressYearsId, addressYearsOverAYear, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (CompanyAddressYearsId, addressYearsUnderAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
     (CompanyAddressYearsId, addressYearsUnderAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
@@ -156,8 +156,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
 
   private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
-
-  private def contactDetailsPage(mode: Mode) = routes.ContactDetailsController.onPageLoad(mode)
 
   private def paPostCodePage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
 
