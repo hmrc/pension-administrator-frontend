@@ -54,13 +54,13 @@ class CheckYourAnswersController @Inject()(
         BusinessNameId.row(None)(request, implicitly) ++
           BusinessUTRId.row(None)
           ++ Seq(
+          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
+          CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))),
           HasPAYEId.row(Some(Link(routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
           EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),
           HasVATId.row(Some(Link(routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
-          EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url))),
-          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
-          CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
-        ).flatten
+          EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url)))
+           ).flatten
       )
 
       val companyContactDetails = AnswerSection(

@@ -48,12 +48,21 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage, false, None, false),
     (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
 
-    (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
+    (ConfirmCompanyAddressId, confirmAddressTrueLimitedCompany, companyRegistrationNumberPage(NormalMode), false, None, false),
+    (ConfirmCompanyAddressId, confirmAddressTrueUnlimitedCompany, hasCRNPage(NormalMode), false, None, false),
 
     (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(NormalMode), false, Some(companyRegistrationNumberPage(CheckMode)), false),
-    (HasCompanyCRNId, hasCRN(false), checkYourAnswersPage, false, Some(checkYourAnswersPage), false),
+    (HasCompanyCRNId, hasCRN(false), hasPayePage, false, Some(checkYourAnswersPage), false),
+    (CompanyRegistrationNumberId, emptyAnswers, hasPayePage, true, Some(checkYourAnswersPage), true),
 
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false),
+    (HasPAYEId, hasPAYEYes, payePage(), true, Some(payePage(CheckMode)), true),
+    (HasPAYEId, hasPAYENo, hasVatPage, true, Some(checkYourAnswersPage), true),
+    (EnterPAYEId, emptyAnswers, hasVatPage, true, Some(checkYourAnswersPage), true),
+
+    (HasVATId, hasVATYes, vatPage(), true, Some(vatPage(CheckMode)), true),
+    (HasVATId, hasVATNo, sameContactAddress(NormalMode), true, Some(checkYourAnswersPage), true),
+
+    (EnterVATId, emptyAnswers, sameContactAddress(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
     (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode), true, Some(contactAddressPostCode(CheckMode)), true),
@@ -73,22 +82,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
-    (ContactDetailsId, uk, hasPayePage, true, Some(checkYourAnswersPage), true),
-    (ContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-
-    (HasPAYEId, hasPAYEYes, payePage(), true, Some(payePage(CheckMode)), true),
-    (HasPAYEId, hasPAYENo, hasVatPage, true, Some(checkYourAnswersPage), true),
-
-    (EnterPAYEId, emptyAnswers, hasVatPage, true, Some(checkYourAnswersPage), true),
-
-    (HasVATId, hasVATYes, vatPage(), true, Some(vatPage(CheckMode)), true),
-    (HasVATId, hasVATNoForLimitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
-    (HasVATId, hasVATNoForUnLimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
-
-    (EnterVATId, limitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
-    (EnterVATId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
-
-    (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (ContactDetailsId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, addCompanyDirectors(NormalMode), true, None, false),
 
@@ -96,7 +90,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
     (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
-    (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
+    (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false),
+
+    (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), true, None, false)
   )
 
   private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
@@ -200,11 +196,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val hasPAYENo = UserAnswers().set(HasPAYEId)(value = false).asOpt.value
 
   private val hasVATYes = UserAnswers().set(HasVATId)(value = true).asOpt.value
-  private val hasVATNoForLimitedCompany = UserAnswers().set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
-    _.set(HasVATId)(value = false)).asOpt.value
-
-  private val hasVATNoForUnLimitedCompany = UserAnswers().set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
-    _.set(HasVATId)(value = false)).asOpt.value
+  private val hasVATNo = UserAnswers().set(HasVATId)(value = false).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().nonUkCompanyAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
@@ -224,6 +216,9 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   def hasCRN(b:Boolean): UserAnswers = UserAnswers(Json.obj())
     .set(HasCompanyCRNId)(b).asOpt.value
 
-  private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value
+  private val confirmAddressTrueLimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
+    _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
+  private val confirmAddressTrueUnlimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
+    _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
 
 }
