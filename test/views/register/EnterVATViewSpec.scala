@@ -32,7 +32,7 @@ class EnterVATViewSpec extends QuestionViewBehaviours[String] {
 
   private val name = "Test Name"
 
-  val form = new EnterVATFormProvider()()
+  val form = new EnterVATFormProvider()(name)
 
   private val postCall: Call = routes.CompanyEnterVATController.onSubmit(NormalMode)
 

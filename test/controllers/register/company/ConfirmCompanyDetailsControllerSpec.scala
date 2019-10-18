@@ -21,9 +21,10 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.company._
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models.{BusinessDetails, _}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -35,17 +36,23 @@ import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
+class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
+
+  override protected def beforeEach(): Unit = {
+    FakeUserAnswersCacheConnector.reset()
+  }
 
   import ConfirmCompanyDetailsControllerSpec._
 
   "CompanyAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
+
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+
     }
 
     "correctly map the Business Type to Organisation Type for the call to API4" in {
@@ -54,7 +61,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
 
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        BusinessDetailsId.toString -> BusinessDetails(companyName, Some(validBusinessPartnershipUtr))
+        BusinessNameId.toString -> companyName,
+        BusinessUTRId.toString -> validBusinessPartnershipUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -66,7 +74,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         BusinessTypeId.toString -> LimitedCompany.toString,
-        BusinessDetailsId.toString -> BusinessDetails("MyCo", Some(invalidUtr))
+        BusinessNameId.toString -> companyName,
+        BusinessUTRId.toString -> invalidUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -75,52 +84,42 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyNotFoundController.onPageLoad().url)
     }
 
-    "data is removed on page load" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+    "data is saved on page load" in {
+      val dataCacheConnector = FakeUserAnswersCacheConnector
 
-      controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
+      val expectedJson =
+        UserAnswers(data)
+          .set(ConfirmCompanyAddressId)(testLimitedCompanyAddress)
+          .flatMap(_.set(RegistrationInfoId)(regInfo))
+          .asOpt
+          .value
+          .json
+      val result = controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
 
-      FakeUserAnswersCacheConnector.verifyRemoved(ConfirmCompanyAddressId)
+      status(result) mustBe OK
+      dataCacheConnector.lastUpsert.value mustBe expectedJson
     }
 
     "valid data is submitted" when {
-      "yes" which {
-        "upsert address, organisation name from api response and save company name to PSA Name cache" in {
-          val dataCacheConnector = FakeUserAnswersCacheConnector
-
-          val info = RegistrationInfo(
-            RegistrationLegalStatus.LimitedCompany,
-            sapNumber,
-            false,
-            RegistrationCustomerType.UK,
-            Some(RegistrationIdType.UTR),
-            Some(validLimitedCompanyUtr)
-          )
-
-          val expectedJson =
-            UserAnswers(data)
-              .set(ConfirmCompanyAddressId)(testLimitedCompanyAddress)
-              .flatMap(_.set(RegistrationInfoId)(info))
-              .asOpt
-              .value
-              .json
-
+      "yes must redirect to next page" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(NormalMode)(postRequest)
+          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          dataCacheConnector.lastUpsert.value mustBe expectedJson
+
         }
-      }
-      "no" in {
+
+      "no must remove saved data from address and registration info ids" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+        val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
+        FakeUserAnswersCacheConnector.verifyNot(ConfirmCompanyAddressId)
+        FakeUserAnswersCacheConnector.verifyNot(RegistrationInfoId)
       }
     }
 
@@ -198,6 +197,20 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
+  private val validLimitedCompanyUtr = "1234567890"
+  private val validBusinessPartnershipUtr = "0987654321"
+  private val invalidUtr = "INVALID"
+  private val sapNumber = "test-sap-number"
+
+  val regInfo: RegistrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany,
+    sapNumber,
+    false,
+    RegistrationCustomerType.UK,
+    Some(RegistrationIdType.UTR),
+    Some(validLimitedCompanyUtr)
+  )
+
   private val testLimitedCompanyAddress = TolerantAddress(
     Some("Some Building"),
     Some("1 Some Street"),
@@ -216,20 +229,24 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
     Some("UK")
   )
 
-  private val validLimitedCompanyUtr = "1234567890"
-  private val validBusinessPartnershipUtr = "0987654321"
-  private val invalidUtr = "INVALID"
-  private val sapNumber = "test-sap-number"
-
-  val companyDetails = BusinessDetails("MyCompany", Some(validLimitedCompanyUtr))
+  val companyName = "MyCompany"
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
   private val data = Json.obj(
     BusinessTypeId.toString -> LimitedCompany.toString,
-    BusinessDetailsId.toString -> companyDetails
+    BusinessNameId.toString -> companyName,
+    BusinessUTRId.toString -> validLimitedCompanyUtr
+  )
+
+  private val dataForPost = Json.obj(
+    BusinessTypeId.toString -> LimitedCompany.toString,
+    BusinessNameId.toString -> companyName,
+    ConfirmCompanyAddressId.toString -> testLimitedCompanyAddress,
+    RegistrationInfoId.toString -> regInfo
   )
 
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+  val dataRetrievalActionForPost = new FakeDataRetrievalAction(Some(dataForPost))
 
   val formProvider = new CompanyAddressFormProvider
 
@@ -280,7 +297,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
       countryOptions
     )
 
-  private def viewAsString(companyName: String = companyDetails.companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
+  private def viewAsString(companyName: String = companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
     confirmCompanyDetails(frontendAppConfig, form, address, companyName, countryOptions)(fakeRequest, messages).toString
 
 }

@@ -17,6 +17,7 @@
 package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{BusinessDetailsId, HasCompanyCRNId}
 import models._
 import models.register.adviser.AdviserDetails
@@ -35,7 +36,7 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 
 trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   private def companyName(ua:UserAnswers)(implicit messages:Messages):String =
-    ua.get(BusinessDetailsId).fold(messages("theCompany"))(_.companyName)
+    ua.get(BusinessNameId).getOrElse(messages("theCompany"))
 
   protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages) =
     messages(messageKey, companyName(ua))

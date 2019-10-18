@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
 import controllers.register.DeclarationFitAndProperControllerSpec.{contactDetails, mockEmailConnector}
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.RegistrationInfoId
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import identifiers.register.partnership.PartnershipContactAddressId
 import models._
@@ -93,7 +93,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        BusinessDetailsId.toString -> BusinessDetails("Test Company Name", None),
+        BusinessNameId.toString -> "Test Company Name",
         CompanyAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 

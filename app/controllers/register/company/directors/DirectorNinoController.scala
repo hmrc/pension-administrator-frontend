@@ -18,8 +18,8 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import forms.register.company.directors.DirectorNinoFormProvider
 import identifiers.register.company.directors.DirectorNinoId
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import utils.annotations.CompanyDirector
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.company.directors.directorNino
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DirectorNinoController @Inject()(
                                         appConfig: FrontendAppConfig,

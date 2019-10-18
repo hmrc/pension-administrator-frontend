@@ -24,7 +24,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.register.IsRegisteredNameController
 import forms.register.IsRegisteredNameFormProvider
 import identifiers.register.BusinessNameId
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
