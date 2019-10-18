@@ -21,3 +21,5 @@ import identifiers.TypedIdentifier
 case object DeclarationFitAndProperId extends TypedIdentifier[Boolean] {
   override def toString: String = "declarationFitAndProper"
 }
+
+

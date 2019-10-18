@@ -28,8 +28,7 @@ import models.{Mode, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                  appConfig: FrontendAppConfig,
-                                  fs: FeatureSwitchManagementService
+                                  appConfig: FrontendAppConfig
                                  ) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
@@ -48,9 +47,9 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def businessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
       case Some(BusinessType.LimitedCompany) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
       case Some(BusinessType.LimitedLiabilityPartnership) =>
         NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
       case Some(BusinessType.LimitedPartnership) =>
@@ -84,7 +83,7 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
   private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Option[NavigateTo] =
     NavigateTo.dontSave(
-      (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessDetailsId), userAnswers.get(PartnershipDetailsId)) match {
+      (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessNameId), userAnswers.get(PartnershipDetailsId)) match {
         case (Some(false), None, _, _) => controllers.register.routes.RegisterAsBusinessController.onPageLoad()
         case (Some(false), Some(NonUKBusinessType.Company), Some(_), _) =>
           controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()

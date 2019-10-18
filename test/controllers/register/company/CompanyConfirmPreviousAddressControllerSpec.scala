@@ -20,6 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{BusinessDetailsId, CompanyConfirmPreviousAddressId}
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualConfirmPreviousAddressId, IndividualDetailsId}
 import models._
@@ -85,7 +86,7 @@ class CompanyConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(BusinessDetailsId)(BusinessDetails("Test company name", None)).flatMap(_.set(
+    .set(BusinessNameId)("Test company name").flatMap(_.set(
     ExistingCurrentAddressId)(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))

@@ -26,18 +26,17 @@
 @main_template(
     title = viewmodel.title,
     appConfig = appConfig,
-    bodyClasses = None) {
+    bodyClasses = None
+) {
 
     @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
-        @components.heading(
-            headingKey=messages(viewmodel.heading).toString
-        )
+        @components.heading(messages(viewmodel.heading))
 
         @viewmodel.body.map{ body =>
-            <p>@messages(body)</p>
+            @components.paragraph_text(messages(body))
         }
 
         @components.input_text(

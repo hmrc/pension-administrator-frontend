@@ -56,7 +56,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
   private val mode = UpdateMode
 
-    "when variations and deregistration are enabled" when {
+
+    "retrievePsaDataAndGenerateViewModel" must {
 
       "return the correct PSA individual view model with correct can de register flag and existing current address id" in {
         val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress

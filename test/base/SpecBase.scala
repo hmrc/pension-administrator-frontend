@@ -30,13 +30,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
   override lazy val app = new GuiceApplicationBuilder()
     .build()
 
-  def appConfig(isHubEnabled:Boolean): FrontendAppConfig = {
-    val app = new GuiceApplicationBuilder()
-      .configure("features.enable-hub-v2" -> isHubEnabled)
-      .build()
-    app.injector.instanceOf[FrontendAppConfig]
-  }
-
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]

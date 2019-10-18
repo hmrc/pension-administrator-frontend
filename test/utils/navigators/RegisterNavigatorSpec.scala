@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register._
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipDetailsId
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
@@ -40,8 +40,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   //scalastyle:off line.size.limit
   def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (BusinessTypeId, unlimitedCompany, businessDetailsPage, false, None, false),
-    (BusinessTypeId, limitedCompany, businessDetailsPage, false, None, false),
+    (BusinessTypeId, unlimitedCompany, companyUTRPage, false, None, false),
+    (BusinessTypeId, limitedCompany, companyUTRPage, false, None, false),
     (BusinessTypeId, businessPartnership, partnershipBusinessDetails, false, None, false),
     (BusinessTypeId, limitedPartnership, partnershipBusinessDetails, false, None, false),
     (BusinessTypeId, limitedLiabilityPartnership, partnershipBusinessDetails, false, None, false),
@@ -65,7 +65,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   )
 
   //scalastyle:on line.size.limit
-  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, fakeFeatureSwitchManagerService())
+  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
   s"${navigator.getClass.getSimpleName} when toggle is on" must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
@@ -74,17 +74,10 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object RegisterNavigatorSpec extends OptionValues {
-  def fakeFeatureSwitchManagerService(isIvEnabled: Boolean = true): FeatureSwitchManagementService = new FeatureSwitchManagementService {
-    override def change(name: String, newValue: Boolean): Boolean = ???
-
-    override def get(name: String): Boolean = isIvEnabled
-
-    override def reset(name: String): Unit = ???
-  }
 
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
-  lazy val businessDetailsPage: Call = controllers.register.company.routes.CompanyBusinessDetailsController.onPageLoad()
+  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
   lazy val partnershipBusinessDetails: Call = controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
@@ -125,12 +118,12 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val notInUkCompanyCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
+    .set(BusinessNameId)("test company name").asOpt.value
     .set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
 
   val notInUkCompanyCheckModeNoBusinessTypeId: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(BusinessDetailsId)(BusinessDetails("test company name", Some("1234567890"))).asOpt.value
+    .set(BusinessNameId)("test company name").asOpt.value
 
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)

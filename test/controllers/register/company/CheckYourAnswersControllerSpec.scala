@@ -18,9 +18,11 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
 import identifiers.register.company._
 import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
 import models._
+import models.register.BusinessType
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
@@ -38,19 +40,21 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "on a GET request for Company Details section " must {
 
       "render the view correctly for the company name and utr" in {
-        val rows = Seq(answerRow("businessDetails.companyName", Seq("Test Company Name")),
-          answerRow("companyUniqueTaxReference.checkYourAnswersLabel", Seq("Test UTR")))
+        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
+          answerRow("utr.checkYourAnswersLabel", Seq("Test UTR")))
 
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails("Test Company Name", Some("Test UTR"))
-        )
+          BusinessTypeId.toString -> BusinessType.LimitedCompany.toString,
+          BusinessNameId.toString -> "Test Company Name",
+          BusinessUTRId.toString -> "Test UTR")
+
         testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
       }
 
       "render the view correctly for vat registration number" in {
-        val rows = Seq(answerRow("businessDetails.companyName", Seq("Test Company Name")),
+        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
           answerRow(label = Message("hasVAT.heading", companyName), Seq("site.yes"), answerIsMessageKey = true,
           Some(Link(controllers.register.company.routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
           answerRow(label = Message("enterVAT.heading", companyName), Seq("Test Vat"), answerIsMessageKey = false,
@@ -59,7 +63,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails(companyName, None),
+          BusinessNameId.toString -> companyName,
           HasVATId.toString -> true,
           EnterVATId.toString -> "Test Vat"
         )
@@ -67,7 +71,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
 
       "render the view correctly for paye number" in {
-        val rows = Seq(answerRow("businessDetails.companyName", Seq("Test Company Name")),
+        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
           answerRow(Message("hasPAYE.heading", companyName), Seq("site.yes"), answerIsMessageKey = true,
           Some(Link(controllers.register.company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
           answerRow(Message("enterPAYE.heading", companyName), Seq("Test Paye"), answerIsMessageKey = false,
@@ -76,7 +80,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails(companyName, None),
+          BusinessNameId.toString -> companyName,
           HasPAYEId.toString -> true,
           EnterPAYEId.toString -> "Test Paye"
         )
@@ -85,7 +89,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for company registration number" in {
         val rows = Seq(
-          answerRow("businessDetails.companyName", Seq("bla ltd")),
+          answerRow("cya.label.companyName", Seq("bla ltd")),
           answerRow(
             messages("companyRegistrationNumber.heading", "bla ltd"), Seq("test reg no"), false,
             Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
@@ -95,7 +99,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails("bla ltd", None),
+          BusinessNameId.toString -> "bla ltd",
           CompanyRegistrationNumberId.toString -> "test reg no"
         )
         testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
@@ -103,7 +107,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for has company number" in {
         val rows = Seq(
-          answerRow("businessDetails.companyName", Seq("bla ltd")),
+          answerRow("cya.label.companyName", Seq("bla ltd")),
           answerRow(
             messages("hasCompanyNumber.heading", "bla ltd"), Seq("site.yes"), true,
             Some(Link(controllers.register.company.routes.HasCompanyCRNController.onPageLoad(CheckMode).url))
@@ -113,7 +117,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessDetailsId.toString -> BusinessDetails("bla ltd", None),
+          BusinessNameId.toString -> "bla ltd",
           HasCompanyCRNId.toString -> true
         )
         testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)

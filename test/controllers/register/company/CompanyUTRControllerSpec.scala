@@ -20,7 +20,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.register.UTRControllerBehaviour
-import identifiers.register.company.CompanyUTRId
+import identifiers.register.BusinessUTRId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
@@ -37,7 +37,7 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
 
   "CompanyUTRController" must {
 
-    behave like utrController(CompanyUTRId, createController(this, getEmptyData))
+    behave like utrController(BusinessUTRId, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)

@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasVATId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.BusinessNameId
 import models.{BusinessDetails, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
@@ -62,7 +62,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
-    hasReferenceNumber(appConfig(isHubEnabled = false), form, mode, companyName, viewModel)(fakeRequest, messages).toString
+    hasReferenceNumber(frontendAppConfig, form, mode, companyName, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyVATController Controller" must {
 
@@ -75,8 +75,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        BusinessDetailsId.toString ->
-          BusinessDetails("Test Company Name", Some("Test UTR")),
+        BusinessNameId.toString -> "Test Company Name",
         HasVATId.toString -> true
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

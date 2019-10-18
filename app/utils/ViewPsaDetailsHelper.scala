@@ -17,13 +17,13 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.{EnterPAYEId, EnterVATId, VariationWorkingKnowledgeId}
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
+import identifiers.register.{BusinessUTRId, EnterPAYEId, EnterVATId, VariationWorkingKnowledgeId}
 import models.AddressYears.UnderAYear
 import models._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -217,9 +217,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.company.routes.ContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>
+  private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
     AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false, None)
-  })
+  }
 
   //Directors
   private def directorDob(index: Int): Option[AnswerRow] = userAnswers.get(DirectorDetailsId(index)) map { details =>

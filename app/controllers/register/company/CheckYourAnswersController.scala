@@ -19,17 +19,17 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
 import identifiers.register.company._
+import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.{Enumerable, Navigator}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -44,14 +44,15 @@ class CheckYourAnswersController @Inject()(
                                             @RegisterCompany navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             implicit val countryOptions: CountryOptions
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
       val companyDetails = AnswerSection(
         Some("company.checkYourAnswers.company.details.heading"),
-        BusinessDetailsId.row(None)
+        BusinessNameId.row(None)(request, implicitly) ++
+          BusinessUTRId.row(None)
           ++ Seq(
           HasPAYEId.row(Some(Link(routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
           EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),

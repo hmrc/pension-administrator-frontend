@@ -16,11 +16,11 @@
 
 package forms.register.adviser
 
-import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
+import forms.behaviours.{EmailBehaviours, PhoneBehaviours, StringFieldBehaviours}
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours {
+class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneBehaviours {
 
   val form = new AdviserDetailsFormProvider()()
 
@@ -47,7 +47,7 @@ class AdviserDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
     val keyPhoneNumberLength = "contactDetails.error.phone.length"
     val keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
 
-    behave like formWithPhoneNumberField(
+    behave like formWithPhoneField(
       form,
       fieldName,
       keyPhoneNumberRequired,

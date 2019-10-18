@@ -2,10 +2,8 @@
   "index": "",
   "areYouInUK": true,
   "businessType": "limitedCompany",
-  "businessDetails": {
-    "companyName": "Test company name",
-    "uniqueTaxReferenceNumber": "1234567890"
-  },
+  "businessName": "Test company name",
+   "utr": "1234567890",
   "companyAddressId": {
     "addressLine1": "100 SuttonStreet",
     "addressLine2": "Wokingham",

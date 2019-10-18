@@ -21,7 +21,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register.company._
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
-import identifiers.register._
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, EnterPAYEId, EnterVATId, HasPAYEId, HasVATId, IsRegisteredNameId}
 import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
@@ -42,8 +42,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save (NM)", "Next Page (Check Mode)", "Save (CM)"),
-    (BusinessDetailsId, uk, confirmCompanyDetailsPage, false, None, false),
-    (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
+    (BusinessUTRId, emptyAnswers, companyNamePage, false, None, false),
+    (BusinessNameId, uk, companyIsRegisteredNamePage, false, None, false),
+    (BusinessNameId, nonUk, nonUkAddress, false, None, false),
+    (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage, false, None, false),
+    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
 
     (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
 
@@ -130,6 +133,10 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
+  private def companyNamePage = routes.CompanyNameController.onPageLoad()
+  private def companyUTRPage = routes.CompanyUTRController.onPageLoad()
+  private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
+
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
@@ -175,6 +182,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
+  private def companyUpdate = routes.CompanyUpdateDetailsController.onPageLoad()
+
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYearUk = UserAnswers(Json.obj()).areYouInUk(true)
@@ -203,6 +212,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+  protected val isRegisteredNameTrue: UserAnswers = UserAnswers().isRegisteredName(true)
+  protected val isRegisteredNameFalse: UserAnswers = UserAnswers().isRegisteredName(false)
 
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 

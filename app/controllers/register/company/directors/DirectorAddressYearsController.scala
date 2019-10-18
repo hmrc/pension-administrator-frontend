@@ -22,19 +22,17 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
+import identifiers.register.company.directors.DirectorAddressYearsId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
-
-import scala.concurrent.Future
 
 class DirectorAddressYearsController @Inject()(
                                                 @CompanyDirector override val navigator: Navigator,
