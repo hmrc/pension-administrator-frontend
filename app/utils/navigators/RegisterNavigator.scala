@@ -28,8 +28,7 @@ import models.{Mode, NormalMode}
 import utils.{Navigator, UserAnswers}
 
 class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                  appConfig: FrontendAppConfig,
-                                  fs: FeatureSwitchManagementService
+                                  appConfig: FrontendAppConfig
                                  ) extends Navigator {
 
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {

@@ -206,7 +206,7 @@ class RegistrationConnectorSpec()
 
   }
 
-  "registerWithIdIndividual" should "return the individual and address given a valid NINO when manual Iv is enabled" in {
+  "registerWithIdIndividual" should "return the individual and address given a valid NINO" in {
     val postRequestBody = Json.obj("nino" -> "test-nino")
     server.stubFor(
       post(urlEqualTo(individualPath))

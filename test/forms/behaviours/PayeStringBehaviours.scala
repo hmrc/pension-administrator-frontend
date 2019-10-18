@@ -24,35 +24,6 @@ import wolfendale.scalacheck.regexp.RegexpGen
 trait PayeStringBehaviours extends FormSpec with StringFieldBehaviours with Constraints with PayeMappingString {
 
   def formWithPayeField(
-                         form: Form[_],
-                         fieldName: String,
-                         keyPayeLength: String,
-                         keyPayeInvalid: String): Unit = {
-
-    "behave like a form with a paye field" should {
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        RegexpGen.from(payeRegex)
-      )
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = PayeMapping.maxPayeLength,
-        lengthError = FormError(fieldName, keyPayeLength, Seq(PayeMapping.maxPayeLength))
-      )
-
-      behave like fieldWithRegex(
-        form,
-        fieldName,
-        "A1_",
-        FormError(fieldName, keyPayeInvalid, Seq(payeRegex))
-      )
-    }
-  }
-
-  def formWithMandatoryPayeField(
                          form: Form[String],
                          fieldName: String,
                          keyPayeRequired: String,

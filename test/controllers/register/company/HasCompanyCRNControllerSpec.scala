@@ -62,7 +62,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
-    hasReferenceNumber(appConfig(isHubEnabled = false), form, mode, companyName, viewModel)(fakeRequest, messages).toString
+    hasReferenceNumber(frontendAppConfig, form, mode, companyName, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyCRNController Controller" must {
 

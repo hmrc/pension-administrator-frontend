@@ -27,7 +27,7 @@ class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingStri
 
   def apply(name: String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> vatStringMapping(
+      "value" -> vatMapping(
         keyVatRequired = "enterVAT.error.required",
         keyVatLength = Message("enterVAT.error.length", name),
         keyVatInvalid = Message("enterVAT.error.invalid", name)

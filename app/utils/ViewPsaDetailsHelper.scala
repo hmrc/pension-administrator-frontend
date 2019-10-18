@@ -17,13 +17,13 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.{BusinessUTRId, VariationWorkingKnowledgeId}
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
+import identifiers.register.{BusinessUTRId, EnterPAYEId, EnterVATId, VariationWorkingKnowledgeId}
 import models.AddressYears.UnderAYear
 import models._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -175,15 +175,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   //Company PSA
-  private def companyVatNumber: Option[AnswerRow] = userAnswers.get(CompanyDetailsId) flatMap (_.vatRegistrationNumber map { vat =>
+  private def companyVatNumber: Option[AnswerRow] = userAnswers.get(EnterVATId) map { vat =>
     AnswerRow("vat.label", Seq(vat), answerIsMessageKey = false,
       None)
-  })
+  }
 
-  private def companyPayeNumber: Option[AnswerRow] = userAnswers.get(CompanyDetailsId) flatMap (_.payeEmployerReferenceNumber map { paye =>
+  private def companyPayeNumber: Option[AnswerRow] = userAnswers.get(EnterPAYEId) map { paye =>
     AnswerRow("paye.label", Seq(paye), answerIsMessageKey = false,
       None)
-  })
+  }
 
   private def crn: Option[AnswerRow] = userAnswers.get(CompanyRegistrationNumberId) map { crn =>
     AnswerRow("crn.label", Seq(crn), answerIsMessageKey = false,

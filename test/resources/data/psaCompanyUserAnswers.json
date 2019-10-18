@@ -54,10 +54,8 @@
     "email": "aaa@aa.com",
     "phone": "0044-09876542312"
   },
-  "companyDetails": {
-    "vatRegistrationNumber": "12345678",
-    "payeEmployerReferenceNumber": "9876543210"
-  },
+  "vat": "12345678",
+  "paye":  "9876543210",
   "companyRegistrationNumber": "121414151",
   "directors": [
     {

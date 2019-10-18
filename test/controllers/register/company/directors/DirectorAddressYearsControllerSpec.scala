@@ -23,9 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.CompanyDetailsId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
-import models.register.company.CompanyDetails
 import models._
 import play.api.data.Form
 import play.api.libs.json._
@@ -45,7 +43,6 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
   private val directorName = "test first name test middle name test last name"
 
   private val validData = Json.obj(
-    CompanyDetailsId.toString -> CompanyDetails(None, None),
     "directors" -> Json.arr(
       Json.obj(
         DirectorDetailsId.toString ->

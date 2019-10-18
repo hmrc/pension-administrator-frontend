@@ -105,9 +105,9 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   )
 
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, appConfig(isHubEnabled = false))
+  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, appConfig(isHubEnabled = false), countryOptions)
+  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, countryOptions)
 
   navigator.getClass.getSimpleName must {
     appRunning()
