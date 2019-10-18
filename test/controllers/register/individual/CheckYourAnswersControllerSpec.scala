@@ -99,7 +99,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 Message("individualAddressYears.title", "Joe Bloggs").resolve,
                 Seq(s"common.addressYears.${addressYears.toString}"),
                 answerIsMessageKey = true,
-                Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
+                Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url),
+                None
               )
             )
           )
@@ -139,13 +140,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 "contactDetails.email.checkYourAnswersLabel",
                 Seq(contactDetails.email),
                 answerIsMessageKey = false,
-                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
+                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url),
+                None
               ),
               AnswerRow(
                 "contactDetails.phone.checkYourAnswersLabel",
                 Seq(contactDetails.phone),
                 answerIsMessageKey = false,
-                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
+                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url),
+                None
               )
             )
           )

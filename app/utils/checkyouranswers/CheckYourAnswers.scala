@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
 import utils.{DateHelper, UserAnswers}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 import scala.language.implicitConversions
 
@@ -33,11 +33,9 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 }
 
 trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  private def companyName(ua:UserAnswers)(implicit messages:Messages):String =
-    ua.get(BusinessNameId).getOrElse(messages("theCompany"))
 
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages) =
-    messages(messageKey, companyName(ua))
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
+    ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
 
 }
 
@@ -272,7 +270,7 @@ case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
   }
 }
 
-case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None) {
+case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
   def apply()(implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -282,13 +280,14 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None)
               label getOrElse s"${id.toString}.checkYourAnswersLabel",
               Seq(string),
               answerIsMessageKey = false,
-              changeUrl
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
             ))
         } getOrElse Seq.empty[AnswerRow]
     }
 }
 
-case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None) {
+case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
   implicit def apply()(implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -298,7 +297,8 @@ case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = Non
               label getOrElse s"${id.toString}.checkYourAnswersLabel",
               Seq(if (flag) "site.yes" else "site.no"),
               answerIsMessageKey = true,
-              changeUrl
+              changeUrl,
+              hiddenLabel
             ))
         } getOrElse Seq.empty[AnswerRow]
     }

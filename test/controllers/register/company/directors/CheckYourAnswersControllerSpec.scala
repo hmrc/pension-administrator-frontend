@@ -58,13 +58,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "cya.label.name",
       Seq("test first name test last name"),
       answerIsMessageKey = false,
-      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
+      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url),
+      None
     ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
       answerIsMessageKey = false,
-      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url)
+      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url),
+      None
     ))
 
   def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(NormalMode, 0)

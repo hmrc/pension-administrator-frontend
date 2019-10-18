@@ -33,8 +33,13 @@ object Message {
 
   case class Resolvable(key: String, args: Seq[Any]) extends Message {
 
-    override def resolve(implicit messages: Messages): String =
-      messages(key, args: _*)
+    override def resolve(implicit messages: Messages): String = {
+      val transformedArgs = args.map {
+        case r@Resolvable(_,_) => r.resolve
+        case x => x
+      }
+      messages(key, transformedArgs: _*)
+    }
 
     override def withArgs(args: Any*): Message =
       copy(args = args)

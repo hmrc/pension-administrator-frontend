@@ -205,7 +205,7 @@ businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot b
 businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
 companyRegistrationNumber.heading = What is {0}’s company number?
-companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
+companyRegistrationNumber.visuallyHidden.text = {0}’s company number
 companyRegistrationNumber.error.required = Enter the Company Registration number
 companyRegistrationNumber.hint = For example, 01234567
 companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
@@ -317,11 +317,12 @@ companyDirectorAddressPostCodeLookup.enterPostcode = Enter the postcode below, o
 companyDirectorAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 hasCompanyNumber.heading = Does {0} have a company number?
+hasCompanyNumber.visuallyHidden.text = whether {0} has a company number
 hasCompanyNumber.hint = You can find this on the company’s certificate of incorporation or on any official letters from Companies House.
 
 hasVAT.heading = Is {0} registered for VAT?
 hasVAT.error.required = Select yes if {0} is registered for VAT
-hasVAT.visuallyHidden.text = whether {0} has a VAT
+hasVAT.visuallyHidden.text = whether {0} is registered for VAT
 
 enterVAT.title = What is {0}’s VAT registration number?
 enterVAT.heading = What is {0}’s VAT registration number?

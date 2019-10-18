@@ -20,7 +20,7 @@ import identifiers._
 import play.api.i18n.Messages
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 case object EnterPAYEId extends TypedIdentifier[String] {
   self =>
@@ -31,11 +31,11 @@ case object EnterPAYEId extends TypedIdentifier[String] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, messageKey = "enterPAYE.heading")
 
-      private def hiddenLabel(index: Int, ua: UserAnswers): String =
+      private def hiddenLabel(ua: UserAnswers): Message =
         dynamicMessage(ua, messageKey = "enterPAYE.visuallyHidden.text")
 
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
     }
 }
