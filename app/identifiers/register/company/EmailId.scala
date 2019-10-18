@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package identifiers.register
+package identifiers.register.company
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
@@ -23,20 +23,20 @@ import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
 import viewmodels.{AnswerRow, Link}
 
-case class PhoneId(pathVariable: String) extends TypedIdentifier[String] {
-  override def path: JsPath = JsPath \ pathVariable \ PhoneId.toString
-}
+case object EmailId extends TypedIdentifier[String] {
+  self =>
 
-object PhoneId {
-  override def toString: String = "phone"
+  override def path: JsPath = JsPath \ "contactDetails" \ EmailId.toString
 
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[PhoneId] =
-    new CheckYourAnswersCompany[PhoneId] {
+  override def toString: String = "email"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersCompany[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "phone.title")
+        dynamicMessage(ua, "email.title")
 
-      override def row(id: PhoneId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[PhoneId](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
     }
 }
-

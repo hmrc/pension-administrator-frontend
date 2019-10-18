@@ -20,7 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.PhoneFormProvider
-import identifiers.register.{BusinessNameId, PhoneId}
+import identifiers.register.BusinessNameId
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json

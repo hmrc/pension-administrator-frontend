@@ -19,9 +19,9 @@ package utils.navigators
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.{BusinessTypeId, EmailId, PhoneId}
+import identifiers.register.BusinessTypeId
 import identifiers.{Identifier, LastPageId}
-import identifiers.register.company._
+import identifiers.register.company.{PhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, EnterPAYEId, EnterVATId, HasPAYEId, HasVATId, IsRegisteredNameId}
 import identifiers.{Identifier, LastPageId}
@@ -74,9 +74,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (EmailId("contactDetails"), emptyAnswers, phone(NormalMode), true, Some(checkYourAnswersPage), true),
-    (PhoneId("contactDetails"), uk, hasPayePage, true, Some(checkYourAnswersPage), true),
-    (PhoneId("contactDetails"), nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (EmailId, emptyAnswers, phone(NormalMode), true, Some(checkYourAnswersPage), true),
+    (PhoneId, uk, hasPayePage, true, Some(checkYourAnswersPage), true),
+    (PhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (HasPAYEId, hasPAYEYes, payePage(), true, Some(payePage(CheckMode)), true),
     (HasPAYEId, hasPAYENo, hasVatPage, true, Some(checkYourAnswersPage), true),
@@ -117,9 +117,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
 
-    (EmailId("contactDetails"), emptyAnswers, anyMoreChanges, false, None, true),
-    (PhoneId("contactDetails"), uk, anyMoreChanges, false, None, true),
-    (PhoneId("contactDetails"), nonUk, anyMoreChanges, false, None, true)
+    (EmailId, emptyAnswers, anyMoreChanges, false, None, true),
+    (PhoneId, uk, anyMoreChanges, false, None, true),
+    (PhoneId, nonUk, anyMoreChanges, false, None, true)
   )
 
   navigator.getClass.getSimpleName must {

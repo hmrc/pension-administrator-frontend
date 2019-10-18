@@ -20,8 +20,8 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.{AreYouInUKId, BusinessTypeId, EmailId, PhoneId}
-import identifiers.register.company._
+import identifiers.register.{AreYouInUKId, BusinessTypeId}
+import identifiers.register.company.{PhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
 import models._
@@ -62,9 +62,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
     case CompanyPreviousAddressId =>
       NavigateTo.save(routes.EmailController.onPageLoad(NormalMode))
-    case EmailId("contactDetails") =>
+    case EmailId =>
       NavigateTo.save(routes.PhoneController.onPageLoad(NormalMode))
-    case PhoneId("contactDetails") =>
+    case PhoneId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
     case HasPAYEId if hasPaye(from.userAnswers)=>
       NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
@@ -106,9 +106,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
     case CompanyPreviousAddressId =>
       checkYourAnswers
-    case EmailId("contactDetails") =>
+    case EmailId =>
       checkYourAnswers
-    case PhoneId("contactDetails") =>
+    case PhoneId =>
       checkYourAnswers
     case HasPAYEId if hasPaye(from.userAnswers)=>
       NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(CheckMode))
@@ -146,9 +146,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
     case CompanyPreviousAddressId =>
       anyMoreChanges
-    case EmailId("contactDetails") =>
+    case EmailId =>
       anyMoreChanges
-    case PhoneId("contactDetails") =>
+    case PhoneId =>
       anyMoreChanges
   }
 

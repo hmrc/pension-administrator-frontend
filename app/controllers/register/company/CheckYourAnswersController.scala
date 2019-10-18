@@ -19,8 +19,7 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.{EmailId, PhoneId}
-import identifiers.register.company._
+import identifiers.register.company.{PhoneId, _}
 import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
@@ -78,8 +77,8 @@ class CheckYourAnswersController @Inject()(
       val contactDetails = AnswerSection(
         headingKey = Some("common.checkYourAnswers.contact.details.heading"),
         rows = Seq(
-          EmailId("contactDetails").row(Some(Link(routes.EmailController.onPageLoad(CheckMode).url))),
-          PhoneId("contactDetails").row(Some(Link(routes.PhoneController.onPageLoad(CheckMode).url)))
+          EmailId.row(Some(Link(routes.EmailController.onPageLoad(CheckMode).url))),
+          PhoneId.row(Some(Link(routes.PhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 

@@ -21,7 +21,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.PhoneFormProvider
-import identifiers.register.{BusinessNameId, PhoneId}
+import identifiers.register.BusinessNameId
+import identifiers.register.company.PhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -52,7 +53,7 @@ class PhoneController @Inject()(@RegisterCompany val navigator: Navigator,
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val filledForm =
-          request.userAnswers.get(PhoneId("contactDetails")).map(form.fill).getOrElse(form)
+          request.userAnswers.get(PhoneId).map(form.fill).getOrElse(form)
 
         Future.successful(Ok(phone(appConfig, filledForm, viewModel(mode))))
     }
@@ -63,10 +64,10 @@ class PhoneController @Inject()(@RegisterCompany val navigator: Navigator,
         formWithErrors =>
           Future.successful(BadRequest(phone(appConfig, formWithErrors, viewModel(mode)))),
         contactDetails => {
-          cacheConnector.save(request.externalId, PhoneId("contactDetails"), contactDetails).flatMap {
+          cacheConnector.save(request.externalId, PhoneId, contactDetails).flatMap {
             answers =>
-              saveChangeFlag(mode, PhoneId("contactDetails")).map { _ =>
-                Redirect(navigator.nextPage(PhoneId("contactDetails"), mode, UserAnswers(answers)))
+              saveChangeFlag(mode, PhoneId).map { _ =>
+                Redirect(navigator.nextPage(PhoneId, mode, UserAnswers(answers)))
               }
           }
         }

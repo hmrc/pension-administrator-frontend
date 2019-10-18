@@ -18,9 +18,8 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.{EmailId, PhoneId}
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
-import identifiers.register.company._
+import identifiers.register.company.{PhoneId, _}
 import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
 import models._
 import models.register.BusinessType
@@ -351,13 +350,6 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-    def writeToDesktop(content: String, fileName: String): Unit = {
-      import java.io._
-      val pw = new PrintWriter(new File(s"/home/grant/Desktop/$fileName"))
-      pw.write(content)
-      pw.close()
-    }
-
     val expectedResult = check_your_answers(
       frontendAppConfig,
       sections,
@@ -365,14 +357,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       None,
       NormalMode
     )(fakeRequest, messages).toString()
-    writeToDesktop(contentAsString(result), "act.html")
-    writeToDesktop(expectedResult, "exp.html")
 
     status(result) mustBe OK
 
-
     contentAsString(result) mustBe expectedResult
   }
-
-
 }
