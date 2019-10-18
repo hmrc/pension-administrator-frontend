@@ -21,6 +21,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
 import models.{BusinessDetails, NormalMode, TolerantAddress}
 import play.api.Application
@@ -49,7 +50,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     CompanyAddressId.toString -> address,
-    BusinessDetailsId.toString -> BusinessDetails(companyName, Some("UTR"))
+    BusinessNameId.toString -> companyName
   )))
 
   val viewModel = SameContactAddressViewModel(

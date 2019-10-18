@@ -147,6 +147,7 @@ common.error.utr.required = Enter the Unique Tax Reference number
 common.error.utr.invalid = The UTR must be ten digits
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
+common.error.utr.exactLength = Unique Taxpayer Reference (UTR) must be 10 numbers
 common.declaration.legend = Check this box if you agree to the declaration
 
 unauthorised.title = You can’t access this service with this account
@@ -162,6 +163,9 @@ cya.label.name = Name
 cya.label.address = Address
 cya.label.dob = Date of birth
 cya.label.address.years = Address years
+cya.label.companyName = Company name
+cya.label.partnershipName = Partnership name
+utr.checkYourAnswersLabel = Unique Taxpayer Reference
 
 contactDetails.title = Enter contact details
 contactDetails.heading = Enter contact details
@@ -327,14 +331,20 @@ hasCompanyNumber.hint = You can find this on the company’s certificate of inco
 
 hasVAT.heading = Is {0} registered for VAT?
 hasVAT.error.required = Select yes if {0} is registered for VAT
+hasVAT.visuallyHidden.text = whether {0} has a VAT
 
-enterVAT.title = What is the VAT registration number for {0}?
-enterVAT.heading = What is the VAT registration number for {0}?
+enterVAT.title = What is {0}’s VAT registration number?
+enterVAT.heading = What is {0}’s VAT registration number?
 enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for.
+enterVAT.visuallyHidden.text = {0}’s VAT registration number
+enterVAT.error.invalid = Enter {0}’s VAT registration number in the correct format
+enterVAT.error.length = Enter {0}’s VAT registration number using 9 characters or less
+enterVAT.error.required = Enter a VAT registration number
 
-hasCompanyPaye.heading = Does {0} have an employer PAYE reference?
-hasCompanyPaye.hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
-hasCompanyPaye.error.required = Select yes if {0} has an employer PAYE reference
+hasPAYE.heading = Does {0} have an employer PAYE reference?
+hasPAYE.hint = This is a 3 digit tax office number, a forward slash, and a tax office employer reference, like 123/AB456. It may be called ‘Employer PAYE reference’ or ‘PAYE reference’. It will be on letters from HMRC about PAYE.
+hasPAYE.error.required = Select yes if {0} has an employer PAYE reference
+hasPAYE.visuallyHidden.text = whether {0} has an employer PAYE reference
 
 enterPAYE.heading = What is {0}’s employer PAYE reference?
 enterPAYE.hint = For example, 123/AB456
@@ -342,6 +352,7 @@ enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more then 
 enterPAYE.error.invalid = Enter {0}’s employer PAYE reference in the correct format
 enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characters or less
 enterPAYE.error.required = Enter an employer PAYE reference
+enterPAYE.visuallyHidden.text = {0}’s employer PAYE reference
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
@@ -969,6 +980,12 @@ businessName.p1 = This is the name registered with Companies House.
 businessName.error.required = Enter a company name
 businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
 businessName.error.length = Company name must be 105 characters or fewer
+
+utr.title = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
+utr.heading = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
+utr.p1 = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+utr.p2 = If the UTR is 13 numbers, only enter the last 10.
+utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
 
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?

@@ -37,15 +37,15 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
   private val companyName = "test company"
   private val formProvider = new HasReferenceNumberFormProvider()
-  private val form = formProvider("hasCompanyPaye.error.required", companyName)
+  private val form = formProvider("hasPAYE.error.required", companyName)
 
   private def viewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(NormalMode),
-      title = Message("hasCompanyPaye.heading", Message("theCompany").resolve),
-      heading = Message("hasCompanyPaye.heading", companyName),
+      title = Message("hasPAYE.heading", Message("theCompany").resolve),
+      heading = Message("hasPAYE.heading", companyName),
       mode = NormalMode,
-      hint = Some(Message("hasCompanyPaye.hint")),
+      hint = Some(Message("hasPAYE.hint")),
       entityName = companyName
     )
 
@@ -55,7 +55,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {
       "return OK and the correct view" in {
-        running(_.overrides(modules(UserAnswers().businessDetails.dataRetrievalAction): _*)) {
+        running(_.overrides(modules(UserAnswers().businessName.dataRetrievalAction): _*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -65,7 +65,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = UserAnswers().businessDetails.set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
+        val validData = UserAnswers().businessName.set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
         running(_.overrides(modules(validData): _*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
@@ -88,7 +88,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
     "on a POST" must {
       "redirect to the next page when valid data is submitted" in {
         running(_.overrides(
-          modules(UserAnswers().businessDetails.dataRetrievalAction) ++
+          modules(UserAnswers().businessName.dataRetrievalAction) ++
             Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
               bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
           app =>
@@ -102,7 +102,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
-        running(_.overrides(modules(UserAnswers().businessDetails.dataRetrievalAction): _*)) {
+        running(_.overrides(modules(UserAnswers().businessName.dataRetrievalAction): _*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val boundForm = form.bind(Map("value" -> "invalid value"))

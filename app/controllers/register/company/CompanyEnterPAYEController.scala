@@ -22,8 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.EnterPAYEController
 import forms.EnterPAYEFormProvider
-import identifiers.register.EnterPAYEId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.{BusinessNameId, EnterPAYEId}
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -59,7 +58,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

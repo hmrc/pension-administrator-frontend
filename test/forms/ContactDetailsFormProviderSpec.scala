@@ -16,10 +16,10 @@
 
 package forms
 
-import forms.behaviours.{EmailBehaviours, PhoneNumberBehaviours, StringFieldBehaviours}
+import forms.behaviours.{EmailBehaviours, PhoneBehaviours, StringFieldBehaviours}
 import forms.mappings.Constraints
 
-class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneNumberBehaviours with Constraints {
+class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBehaviours with PhoneBehaviours with Constraints {
 
   val form = new ContactDetailsFormProvider()
 
@@ -46,7 +46,7 @@ class ContactDetailsFormProviderSpec extends StringFieldBehaviours with EmailBeh
     val keyPhoneNumberLength = "contactDetails.error.phone.length"
     val keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
 
-    behave like formWithPhoneNumberField(
+    behave like formWithPhoneField(
       form(),
       fieldName,
       keyPhoneNumberRequired,

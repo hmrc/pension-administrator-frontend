@@ -30,6 +30,16 @@ trait VatMappingString extends Mappings with Transforms {
       )
   }
 
+  def vatStringMapping(keyVatRequired: String, keyVatLength: String, keyVatInvalid: String): Mapping[String] = {
+    text(keyVatRequired)
+      .transform(vatRegistrationNumberTransform, noTransform)
+      .verifying(
+        firstError(
+          maxLength(VatMapping.maxVatLength, keyVatLength),
+          vatRegistrationNumber(keyVatInvalid))
+      )
+  }
+
   protected def vatRegistrationNumberTransform(value: String): String = {
     strip(value).replaceAll("^[gG][bB]", "")
   }

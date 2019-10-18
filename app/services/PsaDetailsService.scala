@@ -23,7 +23,7 @@ import identifiers.register.company.{BusinessDetailsId, CompanyContactAddressCha
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipDetailsId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
-import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
+import identifiers.register.{BusinessNameId, DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -127,7 +127,7 @@ class PsaDetailServiceImpl @Inject()(
 
       case Some(LimitedCompany) => (
         viewPsaDetailsHelper.companySections,
-        userAnswers.get(BusinessDetailsId).map(_.companyName).getOrElse(""))
+        userAnswers.get(BusinessNameId).getOrElse(""))
 
       case Some(Partnership) => (
         viewPsaDetailsHelper.partnershipSections,

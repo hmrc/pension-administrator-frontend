@@ -22,10 +22,10 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register.{AreYouInUKId, BusinessTypeId, EmailId, PhoneId}
 import identifiers.register.company._
+import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
 import models._
 import models.register.BusinessType
-import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
@@ -37,11 +37,12 @@ class RegisterCompanyNavigator @Inject()(
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessDetailsId =>
-      regionBasedNameNavigation(from.userAnswers)
+    case BusinessUTRId => NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
+    case BusinessNameId => regionBasedNameNavigation(from.userAnswers)
+    case IsRegisteredNameId =>  registeredNameRoutes(from.userAnswers)
+
     case ConfirmCompanyAddressId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-    case CompanyDetailsId => companyDetailsNavigation(from.userAnswers)
     case HasCompanyCRNId => hasCompanyCRNNavigation(from.userAnswers, NormalMode)
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
@@ -65,6 +66,18 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.PhoneController.onPageLoad(NormalMode))
     case PhoneId("contactDetails") =>
       regionBasedContactDetailsRoutes(from.userAnswers)
+    case HasPAYEId if hasPaye(from.userAnswers)=>
+      NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId =>
+      NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
+    case EnterPAYEId =>
+      NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
+    case HasVATId if hasVat(from.userAnswers) =>
+      NavigateTo.save(routes.CompanyEnterVATController.onPageLoad(NormalMode))
+    case HasVATId =>
+      vatNavigation(from.userAnswers)
+    case EnterVATId =>
+      vatNavigation(from.userAnswers)
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
@@ -97,7 +110,17 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case PhoneId("contactDetails") =>
       checkYourAnswers
-    case CompanyDetailsId =>
+    case HasPAYEId if hasPaye(from.userAnswers)=>
+      NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(CheckMode))
+    case HasPAYEId =>
+      checkYourAnswers
+    case EnterPAYEId =>
+      checkYourAnswers
+    case HasVATId if hasVat(from.userAnswers) =>
+      NavigateTo.save(routes.CompanyEnterVATController.onPageLoad(CheckMode))
+    case HasVATId =>
+      checkYourAnswers
+    case EnterVATId =>
       checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
@@ -133,6 +156,9 @@ class RegisterCompanyNavigator @Inject()(
 
   private def checkYourAnswers: Option[NavigateTo] =
     NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
+
+  private def hasPaye(answers: UserAnswers): Boolean = answers.get(HasPAYEId).getOrElse(false)
+  private def hasVat(answers: UserAnswers): Boolean = answers.get(HasVATId).getOrElse(false)
 
   private def anyMoreChanges: Option[NavigateTo] = NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
 
@@ -192,7 +218,7 @@ class RegisterCompanyNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+      case Some(true) => NavigateTo.dontSave(routes.CompanyIsRegisteredNameController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -200,19 +226,18 @@ class RegisterCompanyNavigator @Inject()(
   private def regionBasedContactDetailsRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case Some(true) => NavigateTo.save(routes.CompanyDetailsController.onPageLoad(NormalMode))
+      case Some(true) => NavigateTo.save(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
-  private def companyDetailsNavigation(answers:UserAnswers):Option[NavigateTo] = {
+  private def vatNavigation(answers:UserAnswers):Option[NavigateTo] = {
     answers.get(BusinessTypeId)
     match {
-      case Some(BusinessType.UnlimitedCompany) =>
-        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
       case Some(BusinessType.LimitedCompany) =>
         NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ =>
+        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
     }
   }
   private def hasCompanyCRNNavigation(answers:UserAnswers, mode:Mode):Option[NavigateTo] = {
@@ -222,5 +247,10 @@ class RegisterCompanyNavigator @Inject()(
       case Some(false) => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
+  }
+
+  def registeredNameRoutes(answers: UserAnswers) = answers.get(IsRegisteredNameId) match {
+    case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+    case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
   }
 }

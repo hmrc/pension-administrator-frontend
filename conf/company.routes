@@ -1,12 +1,9 @@
 ->          /directors                                     directors.Routes
 
-GET         /business-details                              controllers.register.company.CompanyBusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST        /business-details                              controllers.register.company.CompanyBusinessDetailsController.onSubmit(mode: Mode = NormalMode)
-
-GET         /company-number                                controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
-POST        /company-number                                controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/company-number                          controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode)
-POST        /:mode/company-number                          controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode)
+GET        /company-number                              controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
+POST       /company-number                              controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/company-number                        controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode)
+POST       /:mode/company-number                        controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode)
 
 GET         /contact-details                               controllers.register.company.ContactDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-details                               controllers.register.company.ContactDetailsController.onSubmit(mode: Mode = NormalMode)
@@ -111,6 +108,9 @@ POST        /:mode/is-vat-registered                       controllers.register.
 GET         /company-name                                  controllers.register.company.CompanyNameController.onPageLoad
 POST        /company-name                                  controllers.register.company.CompanyNameController.onSubmit
 
+GET        /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onPageLoad
+POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit
+
 GET         /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
 POST        /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode)
@@ -139,4 +139,8 @@ POST        /contact-phone-number                          controllers.register.
 GET         /:mode/contact-phone-number                    controllers.register.company.PhoneController.onPageLoad(mode: Mode)
 POST        /:mode/contact-phone-number                    controllers.register.company.PhoneController.onSubmit(mode: Mode)
 
+GET        /company-name                                controllers.register.company.CompanyNameController.onPageLoad
+POST       /company-name                                controllers.register.company.CompanyNameController.onSubmit
 
+GET        /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onPageLoad
+POST       /unique-taxpayer-reference                   controllers.register.company.CompanyUTRController.onSubmit

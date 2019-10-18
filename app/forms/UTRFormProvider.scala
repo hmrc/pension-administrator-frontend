@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package forms
 
-import forms.FormErrorHelper
-import forms.mappings.VatMappingString
+import forms.mappings.UtrMapping
 import javax.inject.Inject
+import models.UniqueTaxReference
 import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
 
-class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingString {
-
-  def apply(name: String)(implicit messages: Messages): Form[String] =
-    Form(
-      "value" -> vatStringMapping(
-        keyVatRequired = "enterVAT.error.required",
-        keyVatLength = Message("enterVAT.error.length", name),
-        keyVatInvalid = Message("enterVAT.error.invalid", name)
-      )
-    )
-
+class UTRFormProvider @Inject() extends FormErrorHelper with UtrMapping {
+  def apply(): Form[String] = Form("value" -> utrMapping())
 }

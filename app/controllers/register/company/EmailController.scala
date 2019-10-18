@@ -21,8 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.EmailFormProvider
-import identifiers.register.EmailId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.{BusinessNameId, EmailId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -75,7 +74,7 @@ class EmailController @Inject()(@RegisterCompany val navigator: Navigator,
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

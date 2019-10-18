@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.RegistrationConnectorSpec.{nino, sapNumber}
 import controllers.actions._
-import identifiers.register.RegistrationInfoId
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
@@ -49,14 +49,12 @@ trait ControllerSpecBase extends SpecBase {
     Json.obj(
       RegistrationInfoId.toString -> RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None),
-      BusinessDetailsId.toString ->
-        BusinessDetails("Test Company Name", Some("Test UTR"))
-    )))
+      BusinessNameId.toString -> "Test Company Name")
+    ))
 
   def getDirector: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
-      BusinessDetailsId.toString ->
-        BusinessDetails("Test Company Name", Some("Test UTR")),
+      BusinessNameId.toString -> "Test Company Name",
       "directors" -> Json.arr(
         Json.obj(
           DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())

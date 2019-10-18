@@ -21,8 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.PhoneFormProvider
-import identifiers.register.PhoneId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.{BusinessNameId, PhoneId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -75,7 +74,7 @@ class PhoneController @Inject()(@RegisterCompany val navigator: Navigator,
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessDetailsId).fold(Message("theCompany").resolve)(_.companyName)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

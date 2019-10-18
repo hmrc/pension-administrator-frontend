@@ -17,6 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
+import identifiers.register.{BusinessUTRId, VariationWorkingKnowledgeId}
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
@@ -217,9 +218,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>
+  private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
     AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false, None)
-  })
+  }
 
   //Directors
   private def directorDob(index: Int): Option[AnswerRow] = userAnswers.get(DirectorDetailsId(index)) map { details =>

@@ -22,8 +22,8 @@ import play.api.data.Form
 
 class UtrMappingSpec extends UtrBehaviours {
 
-  "A form with a UTR" should {
-    val mapping = utrMapping(
+  "A form with a UniqueTaxReference" should {
+    val mapping = uniqueTaxReferenceMapping(
       requiredKey = "directorUniqueTaxReference.error.required",
       requiredUtrKey = "common.error.utr.required",
       utrLengthKey = "common.error.utr.length",
@@ -34,13 +34,25 @@ class UtrMappingSpec extends UtrBehaviours {
 
     val testForm: Form[UniqueTaxReference] = Form("utr" -> mapping)
 
-    behave like formWithUtr(
+    behave like formWithUniqueTaxpayerReference(
       testForm,
       keyRequired = "directorUniqueTaxReference.error.required",
       keyUtrRequired = "common.error.utr.required",
       keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
       keyUtrLength = "common.error.utr.length",
       keyReasonLength = "common.error.utr.reason.length"
+    )
+  }
+
+  "A form with a UTR" should {
+    val mapping = utrMapping()
+
+    val testForm: Form[String] = Form("utr" -> mapping)
+
+    behave like formWithUtr(
+      testForm,
+      keyUtrRequired = "common.error.utr.required",
+      keyUtrLength = "common.error.utr.length"
     )
   }
 

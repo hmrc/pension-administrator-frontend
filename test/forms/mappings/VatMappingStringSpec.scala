@@ -24,6 +24,27 @@ class VatMappingStringSpec extends VatBehavioursString {
 
   case class VatTestModel(vat: String)
 
+  "VatMapping String" must {
+    val fieldName = "value"
+    val requiredKey = "error.required"
+    val lengthKey = "error.length"
+    val invalidKey = "error.invalid"
+    val form = Form(
+      fieldName -> vatStringMapping(
+        "error.required",
+        "error.length",
+        "error.invalid"
+      )
+    )
+    behave like formWithVatNumberField(
+      form,
+      fieldName,
+      requiredKey,
+      lengthKey,
+      invalidKey
+    )
+  }
+
   "VatMapping" should {
     val fieldName = "vat"
     val keyVatLength = "companyDetails.error.vatRegistrationNumber.length"

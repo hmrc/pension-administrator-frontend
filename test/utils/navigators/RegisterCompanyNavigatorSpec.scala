@@ -23,14 +23,16 @@ import identifiers.register.{BusinessTypeId, EmailId, PhoneId}
 import identifiers.{Identifier, LastPageId}
 import identifiers.register.company._
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, EnterPAYEId, EnterVATId, HasPAYEId, HasVATId, IsRegisteredNameId}
+import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
 import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -42,11 +44,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save (NM)", "Next Page (Check Mode)", "Save (CM)"),
-    (BusinessDetailsId, uk, confirmCompanyDetailsPage, false, None, false),
-    (BusinessDetailsId, nonUk, nonUkAddress, false, None, false),
-
-    (CompanyDetailsId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (CompanyDetailsId, limitedCompany, companyRegistrationNumberPage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (BusinessUTRId, emptyAnswers, companyNamePage, false, None, false),
+    (BusinessNameId, uk, companyIsRegisteredNamePage, false, None, false),
+    (BusinessNameId, nonUk, nonUkAddress, false, None, false),
+    (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage, false, None, false),
+    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
 
     (ConfirmCompanyAddressId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
 
@@ -73,8 +75,21 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, contactDetailsPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (EmailId("contactDetails"), emptyAnswers, phone(NormalMode), true, Some(checkYourAnswersPage), true),
-    (PhoneId("contactDetails"), uk, companyDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PhoneId("contactDetails"), uk, hasPayePage, true, Some(checkYourAnswersPage), true),
     (PhoneId("contactDetails"), nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+
+    (HasPAYEId, hasPAYEYes, payePage(), true, Some(payePage(CheckMode)), true),
+    (HasPAYEId, hasPAYENo, hasVatPage, true, Some(checkYourAnswersPage), true),
+
+    (EnterPAYEId, emptyAnswers, hasVatPage, true, Some(checkYourAnswersPage), true),
+
+    (HasVATId, hasVATYes, vatPage(), true, Some(vatPage(CheckMode)), true),
+    (HasVATId, hasVATNoForLimitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
+    (HasVATId, hasVATNoForUnLimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
+
+    (EnterVATId, limitedCompany, companyRegistrationNumberPage, true, Some(checkYourAnswersPage), true),
+    (EnterVATId, unlimitedCompany, hasCRNPage(NormalMode), true, Some(checkYourAnswersPage), true),
+
 
     (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
@@ -122,6 +137,10 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
+  private def companyNamePage = routes.CompanyNameController.onPageLoad()
+  private def companyUTRPage = routes.CompanyUTRController.onPageLoad()
+  private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
+
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
@@ -131,6 +150,15 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def companyDetailsPage = routes.CompanyDetailsController.onPageLoad(NormalMode)
 
   private def companyRegistrationNumberPage(mode: Mode) = routes.CompanyRegistrationNumberController.onPageLoad(mode)
+  private def hasPayePage = routes.HasCompanyPAYEController.onPageLoad(NormalMode)
+
+  private def hasVatPage = routes.HasCompanyVATController.onPageLoad(NormalMode)
+
+  private def payePage(mode: Mode = NormalMode) = routes.CompanyEnterPAYEController.onPageLoad(mode)
+
+  private def vatPage(mode: Mode = NormalMode) = routes.CompanyEnterVATController.onPageLoad(mode)
+
+  private def companyRegistrationNumberPage = routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
 
   private def companyAddressYearsPage(mode: Mode) = routes.CompanyAddressYearsController.onPageLoad(mode)
 
@@ -160,6 +188,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
+  private def companyUpdate = routes.CompanyUpdateDetailsController.onPageLoad()
+
   private def phone(mode: Mode): Call = routes.PhoneController.onPageLoad(mode)
 
   private val addressYearsOverAYear = UserAnswers(Json.obj())
@@ -174,12 +204,24 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private lazy val lastPage = UserAnswers(Json.obj())
     .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
 
+  private val hasPAYEYes = UserAnswers().set(HasPAYEId)(value = true).asOpt.value
+  private val hasPAYENo = UserAnswers().set(HasPAYEId)(value = false).asOpt.value
+
+  private val hasVATYes = UserAnswers().set(HasVATId)(value = true).asOpt.value
+  private val hasVATNoForLimitedCompany = UserAnswers().set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
+    _.set(HasVATId)(value = false)).asOpt.value
+
+  private val hasVATNoForUnLimitedCompany = UserAnswers().set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
+    _.set(HasVATId)(value = false)).asOpt.value
+
   private val nonUkEuAddress = UserAnswers().nonUkCompanyAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
   private val nonUkNonEuAddress = UserAnswers().nonUkCompanyAddress(address("AF"))
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+  protected val isRegisteredNameTrue: UserAnswers = UserAnswers().isRegisteredName(true)
+  protected val isRegisteredNameFalse: UserAnswers = UserAnswers().isRegisteredName(false)
 
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 

@@ -24,7 +24,7 @@ import play.api.data.Form
 class UniqueTaxReferenceFormProvider @Inject() extends FormErrorHelper with UtrMapping {
 
   def apply(requiredKey: String, requiredReasonKey: String): Form[UniqueTaxReference] = {
-    val mapping = utrMapping(
+    val mapping = uniqueTaxReferenceMapping(
       requiredKey = requiredKey,
       requiredUtrKey = "common.error.utr.required",
       utrLengthKey = "common.error.utr.length",
