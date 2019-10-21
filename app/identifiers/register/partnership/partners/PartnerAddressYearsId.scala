@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
 import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers, CheckYourAnswersPartner}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class PartnerAddressYearsId(index: Int) extends TypedIdentifier[AddressYears] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerAddressYearsId.toString
@@ -51,11 +51,11 @@ object PartnerAddressYearsId {
         dynamicMessage(ua, "addressYears.heading", index)
 
 
-      private def hiddenLabel(index: Int, ua: UserAnswers): String =
+      private def hiddenLabel(index: Int, ua: UserAnswers): Message =
         dynamicMessage(ua, "addressYears.visuallyHidden.text", index)
 
       override def row(id: PartnerAddressYearsId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        AddressYearsCYA(label(id.index, userAnswers))()
+        AddressYearsCYA(label(id.index, userAnswers), Some(hiddenLabel(id.index, userAnswers)))()
           .row(id)(changeUrl, userAnswers)
     }
   }
