@@ -71,7 +71,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode), true, Some(contactAddressList(CheckMode)), true),
     (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
-    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
+    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (CompanyAddressYearsId, addressYearsUnderAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
