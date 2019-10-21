@@ -53,6 +53,7 @@ class CompanyRegistrationNumberController @Inject()(
       postCall = routes.CompanyRegistrationNumberController.onSubmit(mode),
       title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
       heading = Message("companyRegistrationNumber.heading", entityName),
+      hint = Some(Message("companyRegistrationNumber.hint")),
       mode = mode,
       entityName = entityName
     )

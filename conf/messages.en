@@ -210,7 +210,7 @@ businessDetails.error.companyName.length = The name cannot be more than 105 char
 companyRegistrationNumber.heading = What is {0}’s company number?
 companyRegistrationNumber.checkYourAnswersLabel = What is the company’s registration number?
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = For example, 01234567
+companyRegistrationNumber.hint = For example, 01234567 or AB123456
 companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR

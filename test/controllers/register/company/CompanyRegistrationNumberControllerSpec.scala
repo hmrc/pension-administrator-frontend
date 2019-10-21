@@ -58,6 +58,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       postCall = routes.CompanyRegistrationNumberController.onSubmit(NormalMode),
       title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
       heading = Message("companyRegistrationNumber.heading", companyName),
+      hint = Some(Message("companyRegistrationNumber.hint")),
       mode = NormalMode,
       entityName = companyName
     )
