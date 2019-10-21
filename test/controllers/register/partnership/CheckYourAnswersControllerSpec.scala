@@ -157,7 +157,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             Message("addressYears.heading", Message("thePartnership").resolve),
             Seq(s"common.addressYears.${addressYears.toString}"),
             answerIsMessageKey = true,
-            Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))
+            Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
+              visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("thePartnership").resolve))
           ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
@@ -294,8 +295,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Seq(section)
   }
 
-  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, changeUrl)
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None,
+                        visuallyHiddenLabel: Option[Message]= None): AnswerRow = {
+    AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
   private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {

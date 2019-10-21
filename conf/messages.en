@@ -187,7 +187,7 @@ contactDetails.error.phone.invalid = The telephone number can only contain numbe
 
 email.title = What is {0}’s email address?
 email.visuallyHidden.text = {0}’s email address
-contact.body = We will only use this to contact about pension scheme administration.
+contact.body = We will only use this to contact {0} about pension scheme administration.
 
 phone.title = What is {0}’s phone number?
 phone.visuallyHidden.text = {0}’s phone number
