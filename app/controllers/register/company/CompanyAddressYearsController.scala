@@ -21,6 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressYearsId, CompanyContactAddressId}
 import javax.inject.Inject
 import models.Mode
@@ -52,21 +53,21 @@ class CompanyAddressYearsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      CompanyContactAddressId.retrieve.right.map { address =>
+      BusinessNameId.retrieve.right.map { name =>
         val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {
           case None => form
           case Some(value) => form.fill(value)
         }
-        Future.successful(Ok(companyAddressYears(appConfig, address.toTolerantAddress, preparedForm, mode, countryOptions, psaName())))
+        Future.successful(Ok(companyAddressYears(appConfig, preparedForm, mode, countryOptions, name)))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      CompanyContactAddressId.retrieve.right.map { address =>
+      BusinessNameId.retrieve.right.map { name =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyAddressYears(appConfig, address.toTolerantAddress, formWithErrors, mode, countryOptions, psaName()))),
+            Future.successful(BadRequest(companyAddressYears(appConfig, formWithErrors, mode, countryOptions, name))),
           value =>
             dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
               Redirect(navigator.nextPage(CompanyAddressYearsId, mode, UserAnswers(cacheMap))))

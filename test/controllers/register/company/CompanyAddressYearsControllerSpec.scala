@@ -20,6 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId, CompanyContactAddressId}
 import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
@@ -38,14 +39,9 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   val form = formProvider("companyAddressYears.error.required")
 
   lazy val countryOptions = new CountryOptions(environment, frontendAppConfig)
+  val companyName = "test company name"
 
-  val address = TolerantAddress(
-    Some("add1"), Some("add2"),
-    None, None,
-    Some("NE11NE"), Some("GB")
-  )
-
-  val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyContactAddressId.toString -> address.toAddress)))
+  val validData = new FakeDataRetrievalAction(Some(Json.obj(BusinessNameId.toString -> companyName)))
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new CompanyAddressYearsController(
@@ -64,11 +60,10 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String =
     companyAddressYears(
       frontendAppConfig,
-      address,
       form,
       NormalMode,
       countryOptions,
-      None
+      companyName
     )(fakeRequest, messages).toString
 
   "CompanyAddressYears Controller" must {
@@ -82,7 +77,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        CompanyContactAddressId.toString -> address.toAddress,
+        BusinessNameId.toString -> companyName,
         CompanyAddressYearsId.toString -> JsString(AddressYears.values.head.toString)
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

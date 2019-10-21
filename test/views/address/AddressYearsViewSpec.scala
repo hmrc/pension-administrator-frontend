@@ -21,6 +21,7 @@ import models.{AddressYears, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
+import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.behaviours.ViewBehaviours
 import views.html.address.addressYears
@@ -33,8 +34,8 @@ class AddressYearsViewSpec extends ViewBehaviours {
   val name = "Name"
   val viewmodel = AddressYearsViewModel(
     postCall = Call("GET", "www.example.com"),
-    title = s"How long has the company been at this address?",
-    heading = "How long has the company been at this address?",
+    title = Message("companyAddressYears.title"),
+    heading = "companyAddressYears.heading",
     legend = "legend",
     psaName = Some("test psa")
   )

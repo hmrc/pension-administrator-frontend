@@ -20,6 +20,7 @@ import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import org.mockito.Matchers
@@ -42,7 +43,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyPreviousAddressPostCodeLookupController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -60,7 +61,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     postcodeLookup(
       frontendAppConfig,
       form,
-      CompanyPreviousAddressPostCodeLookupController.viewModel(NormalMode),
+      CompanyPreviousAddressPostCodeLookupController.viewModel(NormalMode, companyName),
       NormalMode
     )(fakeRequest, messages).toString()
 
@@ -74,6 +75,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   )
 
   private val testAnswer = "AB12 1AB"
+  private val companyName = "Test Company Name"
 
   "CompanyPreviousAddressPostCodeLookup Controller" must {
 
@@ -86,6 +88,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
     "not populate the view on a GET when the question has previously been answered" in {
       val validData = Json.obj(
+        BusinessNameId.toString -> companyName,
         CompanyPreviousAddressPostCodeLookupId.toString -> Seq(fakeAddress(testAnswer))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

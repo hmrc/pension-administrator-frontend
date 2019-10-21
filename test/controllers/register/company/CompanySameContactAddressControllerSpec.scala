@@ -55,9 +55,9 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
 
   val viewModel = SameContactAddressViewModel(
     postCall,
-    Message("individual.same.contact.address.title"),
+    Message("company.same.contact.address.title"),
     Message("company.same.contact.address.heading").withArgs(companyName),
-    Some(Message("company.same.contact.address.hint").withArgs(companyName)),
+    None,
     address,
     "Test name",
     NormalMode

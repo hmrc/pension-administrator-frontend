@@ -19,8 +19,8 @@
 
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
-@openLink1 = {<a id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
-@openLink2 = {<a id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
+@openLink1 = {<a id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
+@openLink2 = {<a id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
 @closeLink = {</a>}
 
 @main_template(
@@ -29,8 +29,13 @@
     bodyClasses = None) {
 
     @components.heading(messages("companyUpdateDetails.heading"))
+    <p>
+        @messages("companyUpdateDetails.p1")
+    </p>
+    <ul class="list list-bullet">
+        <li>@Html(Message("companyUpdateDetails.item1").withArgs(openLink1, closeLink))</li>
+        <li>@Html(Message("companyUpdateDetails.item2").withArgs(openLink2, closeLink))</li>
+    </ul>
 
-
-    <p>@Html(Message("companyUpdateDetails.text").withArgs(openLink1, closeLink, openLink2, closeLink))</p>
 
 }

@@ -71,7 +71,6 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       routes.PartnerPreviousAddressController.onPageLoad(NormalMode, index),
       Message("partnerPreviousAddressPostCodeLookup.title"),
       Message("partnerPreviousAddressPostCodeLookup.heading"),
-      Message("partnerPreviousAddressPostCodeLookup.text"),
       Message("partnerPreviousAddressPostCodeLookup.enterPostcode"),
       Some(Message("partnerPreviousAddressPostCodeLookup.enterPostcode.link")),
       Message("partnerPreviousAddressPostCodeLookup.input.text")

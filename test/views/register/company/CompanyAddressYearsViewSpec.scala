@@ -21,6 +21,7 @@ import models._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.countryOptions.CountryOptions
+import viewmodels.Message
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyAddressYears
 
@@ -28,30 +29,30 @@ class CompanyAddressYearsViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "companyAddressYears"
 
-  val address = TolerantAddress(
-    Some("add1"), Some("add2"),
-    None, None,
-    Some("NE11NE"), Some("GB")
-  )
+  val companyName = "test company name"
 
   val form = new AddressYearsFormProvider()("companyAddressYears.error.required")
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
   def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
-    companyAddressYears(frontendAppConfig, address, form, mode, countryOptions, Some("test-psa"))(fakeRequest, messages)
+    companyAddressYears(frontendAppConfig, form, mode, countryOptions, companyName)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
     companyAddressYears(
       frontendAppConfig,
-      address,
       form,
       NormalMode,
       countryOptions,
-      None
+      companyName
     )(fakeRequest, messages)
 
   "CompanyAddressYears view" must {
-    behave like normalPage(createView(), messageKeyPrefix)
+
+    behave like normalPageWithDynamicTitle(
+      view = createView(),
+      messageKeyPrefix = messageKeyPrefix,
+      dynamicContent = companyName
+    )
 
     behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }

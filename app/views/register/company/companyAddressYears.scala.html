@@ -21,7 +21,7 @@
 @import models.AddressYears
 @import utils.countryOptions.CountryOptions
 
-@(appConfig: FrontendAppConfig, address: TolerantAddress, form: Form[_], mode: Mode, countryOptions: CountryOptions, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, countryOptions: CountryOptions, psaName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("companyAddressYears.title"),
@@ -32,13 +32,11 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("companyAddressYears.heading"))
-
-        @components.tolerant_address("companyAddress", address, countryOptions)
+        @components.heading(messages("companyAddressYears.heading", psaName))
 
         @components.input_radio(
             field = form("value"),
-            legend = messages("companyAddressYears.heading"),
+            legend = messages("companyAddressYears.heading", psaName),
             legendClass = Some("visually-hidden"),
             inputs = AddressYears.options
         )
@@ -46,9 +44,7 @@
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>
-
-        @psaNameOpt.map { psaName =>
             @components.return_link(psaName, mode)
-        }
+
     }
 }

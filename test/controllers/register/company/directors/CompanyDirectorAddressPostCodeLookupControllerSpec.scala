@@ -79,7 +79,6 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
     routes.DirectorAddressController.onPageLoad(NormalMode, index),
     Message("companyDirectorAddressPostCodeLookup.title"),
     Message("companyDirectorAddressPostCodeLookup.heading"),
-    Message("companyDirectorAddressPostCodeLookup.body"),
     Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
     Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
     Message("companyDirectorAddressPostCodeLookup.postcode")

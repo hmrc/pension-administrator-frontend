@@ -65,7 +65,6 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
           routes.DirectorAddressController.onPageLoad(mode, index),
           Message("companyDirectorAddressPostCodeLookup.title"),
           Message("companyDirectorAddressPostCodeLookup.heading"),
-          Message("companyDirectorAddressPostCodeLookup.body"),
           Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
           Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
           Message("companyDirectorAddressPostCodeLookup.postcode"),
