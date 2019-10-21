@@ -221,10 +221,6 @@ companyDetails.error.companyName.required = Please give an answer for Company na
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
 
-companyAddressYears.heading = Has {0} used this contact address for at least 1 year?
-companyAddressYears.checkYourAnswersLabel = How long has the company been at this address?
-companyAddressYears.error.required = You must make a selection
-
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
 companyPreviousAddress.checkYourAnswersLabel = {0}’s previous address
@@ -622,9 +618,6 @@ whatYouWillNeed.partnership.body.item1 = your partnership name, address and prev
 whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
 whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address
 
-partnership.addressYears.title = Has this been partnership’s contact address for more than 12 months?
-partnership.addressYears.heading = Has this been {0}’s contact address for more than 12 months?
-
 confirmPartnershipDetails.title = Are these details correct?
 confirmPartnershipDetails.heading = Are these details correct?
 confirmPartnershipDetails.error.required = Select yes if these details are correct
@@ -737,11 +730,6 @@ partnerAddress.heading = Partner’s address
 partnerAddressPostCodeLookup.title = Partner’s address
 partnerAddressPostCodeLookup.heading = Partner’s address
 partnerAddressPostCodeLookup.body = This is usually the partner’s residential address.
-
-partnerAddressYears.title = How long has the partner lived at this address?
-partnerAddressYears.heading = How long has the partner lived at this address?
-partnerAddressYears.checkYourAnswersLabel = How long has the partner lived at this address?
-partnerAddressYears.error.required = Select how long the partner has been at the current address
 
 partnerPreviousAddressPostCodeLookup.title = Partner’s previous address
 partnerPreviousAddressPostCodeLookup.heading = Partner’s previous address
