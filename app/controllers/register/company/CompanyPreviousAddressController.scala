@@ -23,6 +23,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -49,23 +50,28 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyPreviousAddressController.onSubmit(mode),
     countryOptions.options,
     Message("companyPreviousAddress.title"),
-    Message("companyPreviousAddress.heading"),
+    Message("companyPreviousAddress.heading", name),
+    Some(Message("companyContactAddress.lede", name)),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode), mode)
+      BusinessNameId.retrieve.right.map{ name =>
+          get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name), mode)
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode), mode, "Company Previous Address",
-        CompanyPreviousAddressPostCodeLookupId)
+      BusinessNameId.retrieve.right.map { name =>
+        post(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name), mode, "Company Previous Address",
+          CompanyPreviousAddressPostCodeLookupId)
+      }
   }
 
 }

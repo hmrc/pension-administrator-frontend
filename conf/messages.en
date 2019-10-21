@@ -102,6 +102,7 @@ common.error.nino.invalid = Enter a valid National Insurance number in the forma
 common.error.reason.invalid = The reason contains invalid characters
 common.previousAddressList.title = Select the previous address
 common.previousAddressList.heading = Select the previous address
+previousAddressList.heading = Select the previous contact address for {0}
 common.previousAddress.checkyouranswers = Previous address
 common.previousAddressList.error.required = Select an address
 common.contactAddressList.title = Select your contact address
@@ -119,7 +120,7 @@ common.manual.address.title = Address
 common.manual.address.heading = Address
 common.manual.address.checkyouranswers = Address
 common.firstname = First name
-common.postcodeLookup.enterPostcode = Enter the postcode below, or {0}
+common.postcodeLookup.enterPostcode = You can {0}
 common.postcodeLookup.enterPostcode.link = enter the address manually
 common.adviser.address.heading = Pension adviser’s address
 common.adviser.address.title = Pension adviser’s address
@@ -209,7 +210,7 @@ businessDetails.error.companyName.length = The name cannot be more than 105 char
 companyRegistrationNumber.heading = What is {0}’s company number?
 companyRegistrationNumber.visuallyHidden.text = {0}’s company number
 companyRegistrationNumber.error.required = Enter the Company Registration number
-companyRegistrationNumber.hint = For example, 01234567
+companyRegistrationNumber.hint = For example, 01234567 or AB123456
 companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
@@ -226,17 +227,16 @@ companyPreviousAddress.heading = Previous Address of the Company
 companyPreviousAddress.checkYourAnswersLabel = {0}’s previous address
 companyPreviousAddress.visuallyHidden.text = {0}’s previous address
 
-companyPreviousAddressPostCodeLookup.title = Previous address of the company
-companyPreviousAddressPostCodeLookup.heading = Previous address of the company
+companyPreviousAddressPostCodeLookup.title = What was the previous contact address for the company?
+companyPreviousAddressPostCodeLookup.heading = What was the previous contact address for {0} ?
 companyPreviousAddressPostCodeLookup.lede = This is usually the registered business address but you can enter any address you have for this company.
 companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
 companyPreviousAddressPostCodeLookup.postalCode = Postcode
-companyPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+companyPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-companyContactAddressPostCodeLookup.title = What is the contact address?
-companyContactAddressPostCodeLookup.heading = What is {0}’s contact address?
-companyContactAddressPostCodeLookup.lede = This should be an address that HMRC can use to contact {0}.
+companyContactAddressPostCodeLookup.title = Which address can we use to contact the company?
+companyContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -393,8 +393,8 @@ directorContactDetails.checkYourAnswersLabel = Director’s contact details
 directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
-confirmCompanyAddress.title = Are these details correct?
-confirmCompanyAddress.heading = Company details
+confirmCompanyAddress.title = Is this the registered address for the company?
+confirmCompanyAddress.heading = Is this the registered address for {0}?
 
 whatYouWillNeed.title = What you’ll need
 whatYouWillNeed.heading = What you’ll need
@@ -466,9 +466,11 @@ companyAddress.heading = Company address
 companyAddress.error.required = You must make a selection
 companyAddress.checkYourAnswersLabel = Address
 
-companyUpdateDetails.title = You need to update your details before registering
-companyUpdateDetails.heading = You need to update your details before registering
-companyUpdateDetails.text = If you are a company or a limited liability partnership that is registered with companies house you need to inform {0}Companies House{1} and {2}HMRC{1}
+companyUpdateDetails.title = You need to update the company՚s details before registering
+companyUpdateDetails.heading = You need to update the company՚s details before registering
+companyUpdateDetails.p1 = You need to tell:
+companyUpdateDetails.item1 = {0}HMRC about changes to your business{1}, like changing the business address
+companyUpdateDetails.item2 = {0}Companies House{1} if it's a limited company or Limited Liability Partnership (LLP)
 
 companyNotFound.title = Business details not found
 companyNotFound.heading = Business details not found
@@ -564,9 +566,8 @@ individual.same.contact.address.heading = Is this your contact address?
 individual.same.contact.address.hint = This should be an address that HMRC can use to contact you.
 individual.same.contact.address.error = Select yes if these details are correct
 
-company.same.contact.address.title = Is this registered address the same as your correspondence address?
-company.same.contact.address.heading = Is this {0}’s contact address?
-company.same.contact.address.hint = This should be an address that HMRC can use to contact {0}.
+company.same.contact.address.title = Can HMRC use this address to contact the company?
+company.same.contact.address.heading = Can HMRC use this address to contact {0}?
 
 individualContactAddressPostCodeLookup.title = What is the contact address
 individualContactAddressPostCodeLookup.heading = What is your contact address?
@@ -579,12 +580,12 @@ common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This should be an address that HMRC can use to contact you.
 
-company.contactAddressList.title = Select the contact address
-company.contactAddressList.heading = Select {0}’s contact address
+company.contactAddressList.title = Select the contact address for the company
+company.contactAddressList.heading = Select the contact address for {0}
 
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
-companyContactAddress.lede = This should be an address that HMRC can use to contact {0}.
+companyContactAddress.lede = You can change any part of the address if you need to.
 companyContactAddress.visuallyHidden.text = {0}’s contact address
 
 cya.label.individual.contact.address = Contact Address

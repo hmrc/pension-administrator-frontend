@@ -22,8 +22,9 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import identifiers.register.company.CompanyPreviousAddressId
-import models.{Address, NormalMode, TolerantAddress}
+import models.{Address, NormalMode, RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, TolerantAddress}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -44,8 +45,9 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
   val formProvider = new AddressFormProvider(countryOptions)
   val form = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
+  val companyName = "Test Company Name"
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyPreviousAddressController(
       frontendAppConfig,
       messagesApi,
@@ -64,8 +66,9 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     routes.CompanyPreviousAddressController.onSubmit(NormalMode),
     countryOptions.options,
     Message("companyPreviousAddress.title"),
-    Message("companyPreviousAddress.heading"),
-    None
+    Message("companyPreviousAddress.heading", companyName),
+    Some(Message("companyContactAddress.lede", companyName)),
+    Some(companyName)
   )
 
   private def viewAsString(form: Form[_] = form) =
@@ -86,7 +89,11 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(CompanyPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
+      val validData = Json.obj(
+        RegistrationInfoId.toString -> RegistrationInfo(
+          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None),
+        BusinessNameId.toString -> companyName,
+        CompanyPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
