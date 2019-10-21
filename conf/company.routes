@@ -5,10 +5,10 @@ POST       /company-number                              controllers.register.com
 GET        /:mode/company-number                        controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode)
 POST       /:mode/company-number                        controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode)
 
-GET         /company-previous-address-manual               controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /company-previous-address-manual               controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/company-previous-address-manual         controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
-POST        /:mode/company-previous-address-manual         controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode)
+GET         /confirm-previous-address-correct               controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /confirm-previous-address-correct               controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/confirm-previous-address-correct         controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
+POST        /:mode/confirm-previous-address-correct         controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode)
 
 GET         /contact-address-1-year                        controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-address-1-year                        controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
@@ -20,10 +20,10 @@ POST         /previous-contact-address                     controllers.register.
 GET         /:mode/previous-contact-address                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
 POST        /:mode/previous-contact-address                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET         /company-previous-address-results              controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = NormalMode)
-POST        /company-previous-address-results              controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/company-previous-address-results        controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode)
-POST        /:mode/company-previous-address-results        controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode)
+GET         /select-previous-contact-address              controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST        /select-previous-contact-address              controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/select-previous-contact-address        controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode)
+POST        /:mode/select-previous-contact-address        controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode)
 
 GET         /check-your-answers                            controllers.register.company.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST        /check-your-answers                            controllers.register.company.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
@@ -61,10 +61,10 @@ POST        /use-as-contact-address                        controllers.register.
 GET         /:mode/use-as-contact-address                  controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode)
 POST        /:mode/use-as-contact-address                  controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode)
 
-GET         /enter-contact-address                         controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /enter-contact-address                         controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/enter-contact-address                   controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode)
-POST        /:mode/enter-contact-address                   controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode)
+GET         /confirm-address-correct                         controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /confirm-address-correct                         controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/confirm-address-correct                   controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/confirm-address-correct                   controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode)
 
 GET         /select-contact-address                        controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-contact-address                        controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)

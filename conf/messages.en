@@ -227,8 +227,8 @@ companyAddressYears.heading = Has {0} used this contact address for at least 1 y
 companyAddressYears.checkYourAnswersLabel = How long has the company been at this address?
 companyAddressYears.error.required = You must make a selection
 
-companyPreviousAddress.title = Previous Address of the Company
-companyPreviousAddress.heading = Previous Address of the Company
+companyPreviousAddress.title = What is the company’s previous address?
+companyPreviousAddress.heading = What is {0}’s previous address?
 companyPreviousAddress.checkYourAnswersLabel = Previous address
 
 companyPreviousAddressPostCodeLookup.title = What was the previous contact address for the company?
@@ -584,7 +584,7 @@ company.contactAddressList.heading = Select the contact address for {0}
 
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
-companyContactAddress.lede = This should be an address that HMRC can use to contact {0}.
+companyContactAddress.lede = You can change any part of the address if you need to.
 
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
