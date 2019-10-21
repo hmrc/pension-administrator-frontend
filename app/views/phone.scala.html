@@ -35,7 +35,7 @@
 
         @components.heading(messages(viewModel.heading))
 
-        @components.paragraph_text(messages("contact.body"))
+        @components.paragraph_text(messages("contact.body", viewModel.entityName))
 
         @components.input_text(
             field = form("value"),

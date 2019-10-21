@@ -21,7 +21,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.PhoneFormProvider
-import identifiers.register.{BusinessNameId, PhoneId}
+import identifiers.register.BusinessNameId
+import identifiers.register.company.PhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest

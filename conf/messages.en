@@ -189,7 +189,7 @@ contactDetails.error.phone.length = The telephone number cannot be more than 24 
 contactDetails.error.phone.invalid = The telephone number can only contain numbers
 
 email.title = What is {0}’s email address?
-contact.body = We will only use this to contact about pension scheme administration.
+contact.body = We will only use this to contact {0} about pension scheme administration.
 
 phone.title = What is {0}’s phone number?
 
