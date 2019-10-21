@@ -83,7 +83,7 @@ class RegisterCompanyNavigator @Inject()(
     case PhoneId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
-      NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
+      directorRoutes(from.userAnswers, NormalMode)
     case CompanyReviewId =>
       NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case CompanyAddressId =>
@@ -257,4 +257,11 @@ class RegisterCompanyNavigator @Inject()(
       case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
       case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
     }
+
+  private def directorRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
+    if (answers.allDirectorsAfterDelete(mode).isEmpty)
+      NavigateTo.dontSave(controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad())
+      else
+      NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(mode))
+
 }

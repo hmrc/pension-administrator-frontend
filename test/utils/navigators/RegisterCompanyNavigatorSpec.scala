@@ -16,12 +16,15 @@
 
 package utils.navigators
 
+import java.time.LocalDate
+
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register.company.{PhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import identifiers.register._
+import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
@@ -86,7 +89,8 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PhoneId, uk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (PhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
-    (CheckYourAnswersId, emptyAnswers, addCompanyDirectors(NormalMode), true, None, false),
+    (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage, true, None, false),
+    (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode), true, None, false),
 
     (CompanyReviewId, emptyAnswers, declarationPage, true, None, false),
 
@@ -141,6 +145,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+
+  private def whatYouWillNeedDirectorPage = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad()
 
   private def hasCRNPage(mode: Mode) = routes.HasCompanyCRNController.onPageLoad(mode)
 
@@ -216,6 +222,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
     .set(BusinessTypeId)(BusinessType.UnlimitedCompany).asOpt.value
   val limitedCompany: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
+  val hasDirector: UserAnswers = UserAnswers(Json.obj())
+    .set(DirectorDetailsId(0))(PersonDetails("first", None, "last", LocalDate.now)).asOpt.value
   def hasCRN(b:Boolean): UserAnswers = UserAnswers(Json.obj())
     .set(HasCompanyCRNId)(b).asOpt.value
 

@@ -16,12 +16,13 @@
 
 package views.register.company.directors
 
+import models.NormalMode
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.whatYouWillNeed
 
 class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
-  private def call = controllers.routes.IndexController.onPageLoad()
+  private def call = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, 0)
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 
