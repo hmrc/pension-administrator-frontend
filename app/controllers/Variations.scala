@@ -30,7 +30,7 @@ import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{SectionComplete, UserAnswers}
+import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,7 +46,8 @@ trait Variations extends FrontendController {
     IndividualContactDetailsId -> IndividualContactDetailsChangedId,
     CompanyContactAddressId -> CompanyContactAddressChangedId,
     CompanyPreviousAddressId -> CompanyPreviousAddressChangedId,
-    ContactDetailsId -> CompanyContactDetailsChangedId,
+    EmailId -> CompanyContactDetailsChangedId,
+    PhoneId -> CompanyContactDetailsChangedId,
     PartnershipContactAddressId -> PartnershipContactAddressChangedId,
     PartnershipPreviousAddressId -> PartnershipPreviousAddressChangedId,
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId,
