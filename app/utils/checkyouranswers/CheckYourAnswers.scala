@@ -280,9 +280,9 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None)
           string =>
             Seq(AnswerRow(
               label getOrElse s"${id.toString}.checkYourAnswersLabel",
-              Seq(string),
+              answer = Seq(string),
               answerIsMessageKey = false,
-              changeUrl
+              changeUrl = changeUrl
             ))
         } getOrElse Seq.empty[AnswerRow]
     }

@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.company._
+import identifiers.register.company.{PhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
 import models._
@@ -36,17 +36,21 @@ class RegisterCompanyNavigator @Inject()(
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case BusinessUTRId => NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
-    case BusinessNameId => regionBasedNameNavigation(from.userAnswers)
-    case IsRegisteredNameId =>  registeredNameRoutes(from.userAnswers)
-
-    case ConfirmCompanyAddressId => crnNavigation(from.userAnswers)
+    case BusinessUTRId =>
+      NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
+    case BusinessNameId =>
+      regionBasedNameNavigation(from.userAnswers)
+    case IsRegisteredNameId =>
+      registeredNameRoutes(from.userAnswers)
+    case ConfirmCompanyAddressId =>
+      crnNavigation(from.userAnswers)
     case HasCompanyCRNId if hasCrn(from.userAnswers) =>
       NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-    case HasCompanyCRNId  => NavigateTo.dontSave(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
+    case HasCompanyCRNId =>
+      NavigateTo.dontSave(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
     case CompanyRegistrationNumberId =>
       NavigateTo.save(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
-    case HasPAYEId if hasPaye(from.userAnswers)=>
+    case HasPAYEId if hasPaye(from.userAnswers) =>
       NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
     case HasPAYEId =>
       NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
@@ -73,10 +77,11 @@ class RegisterCompanyNavigator @Inject()(
     case CompanyAddressListId =>
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
     case CompanyPreviousAddressId =>
-      NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
-    case ContactDetailsId =>
-      checkYourAnswers
-
+      NavigateTo.save(routes.EmailController.onPageLoad(NormalMode))
+    case EmailId =>
+      NavigateTo.save(routes.PhoneController.onPageLoad(NormalMode))
+    case PhoneId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
       NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(NormalMode))
     case CompanyReviewId =>
@@ -91,11 +96,11 @@ class RegisterCompanyNavigator @Inject()(
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case HasCompanyCRNId if hasCrn(from.userAnswers) =>
       NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode))
-    case HasCompanyCRNId  =>
+    case HasCompanyCRNId =>
       checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
-    case HasPAYEId if hasPaye(from.userAnswers)=>
+    case HasPAYEId if hasPaye(from.userAnswers) =>
       NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(CheckMode))
     case HasPAYEId =>
       checkYourAnswers
@@ -123,7 +128,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
     case CompanyPreviousAddressId =>
       checkYourAnswers
-    case ContactDetailsId =>
+    case EmailId =>
+      checkYourAnswers
+    case PhoneId =>
       checkYourAnswers
     case _ => None
   }
@@ -137,14 +144,17 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(UpdateMode))
     case CompanyAddressYearsId =>
       companyAddressYearsUpdateIdRoutes(from.userAnswers)
-    case CompanyConfirmPreviousAddressId => confirmPreviousAddressRoutes(from.userAnswers)
+    case CompanyConfirmPreviousAddressId =>
+      confirmPreviousAddressRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>
       NavigateTo.save(routes.CompanyAddressListController.onPageLoad(UpdateMode))
     case CompanyAddressListId =>
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
     case CompanyPreviousAddressId =>
       anyMoreChanges
-    case ContactDetailsId =>
+    case EmailId =>
+      anyMoreChanges
+    case PhoneId =>
       anyMoreChanges
   }
 
@@ -154,7 +164,9 @@ class RegisterCompanyNavigator @Inject()(
     NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
 
   private def hasPaye(answers: UserAnswers): Boolean = answers.get(HasPAYEId).getOrElse(false)
+
   private def hasCrn(answers: UserAnswers): Boolean = answers.get(HasCompanyCRNId).getOrElse(false)
+
   private def hasVat(answers: UserAnswers): Boolean = answers.get(HasVATId).getOrElse(false)
 
   private def anyMoreChanges: Option[NavigateTo] = NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
@@ -163,7 +175,7 @@ class RegisterCompanyNavigator @Inject()(
     (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
       case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
       case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.ContactDetailsController.onPageLoad(NormalMode))
+      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.EmailController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -220,7 +232,7 @@ class RegisterCompanyNavigator @Inject()(
     }
   }
 
-  private def crnNavigation(answers:UserAnswers):Option[NavigateTo] = {
+  private def crnNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(BusinessTypeId)
     match {
       case Some(BusinessType.LimitedCompany) =>
@@ -230,7 +242,7 @@ class RegisterCompanyNavigator @Inject()(
     }
   }
 
-  private def hasCrnNoNav(answers:UserAnswers):Option[NavigateTo] = {
+  private def hasCrnNoNav(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(BusinessTypeId)
     match {
       case Some(BusinessType.LimitedCompany) =>
@@ -240,8 +252,9 @@ class RegisterCompanyNavigator @Inject()(
     }
   }
 
-  def registeredNameRoutes(answers: UserAnswers) = answers.get(IsRegisteredNameId) match {
-    case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
-    case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
-  }
+  private def registeredNameRoutes(answers: UserAnswers): Option[NavigateTo] =
+    answers.get(IsRegisteredNameId) match {
+      case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
+      case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
+    }
 }

@@ -21,7 +21,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.EmailFormProvider
-import identifiers.register.{BusinessNameId, EmailId}
+import identifiers.register.BusinessNameId
+import identifiers.register.company.EmailId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
