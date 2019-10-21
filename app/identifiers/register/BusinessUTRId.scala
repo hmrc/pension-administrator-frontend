@@ -17,9 +17,25 @@
 package identifiers.register
 
 import identifiers.TypedIdentifier
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, StringCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case object BusinessUTRId extends TypedIdentifier[String] {
   self =>
 
   override def toString: String = "utr"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswers[self.type] {
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA(Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
+
+  private def label(userAnswers: UserAnswers)(implicit messages: Messages): String =
+    userAnswers.get(BusinessTypeId).map(businessType => Message("utr.heading",
+      Message(s"businessType.${businessType.toString}").resolve.toLowerCase()).resolve).getOrElse(
+      Message("utr.heading", Message("theCompany").resolve).resolve)
 }

@@ -18,6 +18,9 @@ package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
+import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
+import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
 import models.register.adviser.AdviserDetails
 import play.api.i18n.Messages
@@ -33,10 +36,23 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 }
 
 trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-
   protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
     ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
+}
 
+trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages): Message =
+    ua.get(PartnershipDetailsId).map(name => Message(messageKey, name.companyName)).getOrElse(Message(messageKey, Message("thePartnership")))
+}
+
+trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+}
+
+trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+    ua.get(DirectorDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
 }
 
 object CheckYourAnswers {
@@ -142,16 +158,17 @@ object CheckYourAnswers {
 
 }
 
-case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address") {
+case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None) {
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers) = {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map { address =>
           Seq(AnswerRow(
             label,
             address.lines(countryOptions),
-            false,
-            changeUrl
+            answerIsMessageKey = false,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
           ))
         } getOrElse Seq.empty[AnswerRow]
       }
@@ -201,16 +218,18 @@ case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: Stri
   }
 }
 
-case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years") {
+case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years",
+                                                               hiddenLabel: Option[Message] = None) {
   def apply()(implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers) =
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map(addressYears =>
           Seq(AnswerRow(
             label,
             Seq(s"common.addressYears.$addressYears"),
-            true,
-            changeUrl
+            answerIsMessageKey = true,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
           ))) getOrElse Seq.empty[AnswerRow]
     }
   }

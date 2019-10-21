@@ -16,114 +16,85 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import base.CSRFRequest
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.company.routes.CompanyAddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.{CompanyAddressId, CompanyAddressYearsId, CompanyContactAddressId}
-import models.{AddressYears, NormalMode, TolerantAddress}
-import play.api.data.Form
-import play.api.libs.json.{JsString, _}
-import play.api.mvc.Call
+import identifiers.register.{BusinessNameId, BusinessUTRId}
+import models.{AddressYears, NormalMode}
+import play.api.Application
+import play.api.http.Writeable
+import play.api.inject.bind
+import play.api.mvc.{Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.FakeNavigator
-import utils.countryOptions.CountryOptions
-import views.html.register.company.companyAddressYears
+import utils.annotations.RegisterCompany
+import utils.{FakeNavigator, Navigator, UserAnswers}
+import viewmodels.Message
+import viewmodels.address.AddressYearsViewModel
+import views.html.address.addressYears
 
-class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+class CompanyAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequest {
 
-  val formProvider = new AddressYearsFormProvider()
-  val form = formProvider("companyAddressYears.error.required")
+  import CompanyAddressYearsControllerSpec._
 
-  lazy val countryOptions = new CountryOptions(environment, frontendAppConfig)
-
-  val address = TolerantAddress(
-    Some("add1"), Some("add2"),
-    None, None,
-    Some("NE11NE"), Some("GB")
-  )
-
-  val validData = new FakeDataRetrievalAction(Some(Json.obj(CompanyContactAddressId.toString -> address.toAddress)))
-
-  def controller(dataRetrievalAction: DataRetrievalAction = validData) =
-    new CompanyAddressYearsController(
-      frontendAppConfig,
-      messagesApi,
-      FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      FakeAllowAccessProvider(),
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      formProvider,
-      countryOptions
+  "render the view correctly on a GET request" in {
+    requestResult(
+      implicit app => addToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode))),
+      (request, result) => {
+        status(result) mustBe OK
+        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+      }
     )
+  }
 
-  def viewAsString(form: Form[_] = form): String =
-    companyAddressYears(
-      frontendAppConfig,
-      address,
-      form,
-      NormalMode,
-      countryOptions,
-      None
-    )(fakeRequest, messages).toString
-
-  "CompanyAddressYears Controller" must {
-
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(
-        CompanyContactAddressId.toString -> address.toAddress,
-        CompanyAddressYearsId.toString -> JsString(AddressYears.values.head.toString)
-      )
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(AddressYears.values.head))
-    }
-
-    "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
-
-      val result = controller().onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val result = controller().onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(boundForm)
-    }
-
-    "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", AddressYears.options.head.value))
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
+  "redirect to the next page on a POST request" in {
+    requestResult(
+      implicit App => addToken(FakeRequest(CompanyAddressYearsController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)),
+      (_, result) => {
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+      }
+    )
   }
 }
+object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {
+
+  val companyName = "Test Company Name"
+
+  val dataRetrieval: DataRetrievalAction = UserAnswers()
+    .set(BusinessNameId)(companyName).flatMap(_.set(BusinessUTRId)("Test UTR")).asOpt.value
+    .dataRetrievalAction
+
+  val viewModel = AddressYearsViewModel(
+    CompanyAddressYearsController.onSubmit(NormalMode),
+    title = Message("addressYears.heading", Message("theCompany").resolve),
+    heading = Message("addressYears.heading", companyName),
+    legend = Message("addressYears.heading", companyName)
+  )
+
+  val form = new AddressYearsFormProvider()(companyName)
+
+  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
+                              (implicit writeable: Writeable[T]): Unit = {
+    running(_.overrides(
+      bind[AuthAction].to(FakeAuthAction),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
+      bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+    )) {
+      app =>
+        val req = request(app)
+        val result = route[T](app, req).value
+        test(req, result)
+    }
+  }
+
+}
+

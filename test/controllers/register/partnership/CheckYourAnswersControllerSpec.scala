@@ -23,7 +23,7 @@ import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeCountryOptions, FakeNavigator}
-import viewmodels.{AnswerRow, AnswerSection, Link}
+import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -152,10 +152,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders the address years" in {
           val addressYears = AddressYears.OverAYear
-          val rows = Seq(answerRow(
-            "checkyouranswers.partnership.address.years",
+          val rows = Seq(
+            answerRow(
+            Message("addressYears.heading", Message("thePartnership").resolve),
             Seq(s"common.addressYears.${addressYears.toString}"),
-            true,
+            answerIsMessageKey = true,
             Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))
           ))
 

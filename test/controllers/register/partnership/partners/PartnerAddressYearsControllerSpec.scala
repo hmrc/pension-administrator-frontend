@@ -74,9 +74,9 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
   private lazy val viewModel =
     AddressYearsViewModel(
       postCall = routes.PartnerAddressYearsController.onSubmit(NormalMode, index),
-      title = Message("partnerAddressYears.title"),
-      heading = Message("partnerAddressYears.heading"),
-      legend = Message("partnerAddressYears.heading"),
+      title = Message("addressYears.heading", Message("thePartner").resolve),
+      heading = Message("addressYears.heading", partnerName),
+      legend = Message("addressYears.heading", partnerName),
       psaName = None
     )
 

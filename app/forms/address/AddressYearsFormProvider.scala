@@ -25,9 +25,9 @@ import viewmodels.Message
 
 class AddressYearsFormProvider @Inject() extends Mappings {
 
-  def apply(requiredError: Message)(implicit messages: Messages): Form[AddressYears] =
+  def apply(name: String)(implicit messages: Messages): Form[AddressYears] =
     Form(
-      "value" -> enumerable[AddressYears](requiredError)
+      "value" -> enumerable[AddressYears](Message("error.addressYears.required").withArgs(name))
     )
 }
 

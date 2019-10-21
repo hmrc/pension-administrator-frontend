@@ -49,34 +49,19 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
-      val companyDetails = AnswerSection(
-        Some("company.checkYourAnswers.company.details.heading"),
+      val companyDetails = AnswerSection(None,
         BusinessNameId.row(None)(request, implicitly) ++
           BusinessUTRId.row(None)
           ++ Seq(
+          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
+          CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))),
           HasPAYEId.row(Some(Link(routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
           EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),
           HasVATId.row(Some(Link(routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
           EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url))),
-          HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
-          CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)))
-        ).flatten
-      )
-
-      val companyContactDetails = AnswerSection(
-        Some("company.checkYourAnswers.company.contact.details.heading"),
-        Seq(
-          CompanyAddressId.row(None),
-          CompanySameContactAddressId.row(Some(Link(routes.CompanySameContactAddressController.onPageLoad(CheckMode).url))),
-          CompanyContactAddressId.row(None),
+          CompanyContactAddressId.row(Some(Link(routes.CompanyContactAddressController.onPageLoad(CheckMode).url))),
           CompanyAddressYearsId.row(Some(Link(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))),
-          CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)))
-        ).flatten
-      )
-
-      val contactDetails = AnswerSection(
-        headingKey = Some("common.checkYourAnswers.contact.details.heading"),
-        rows = Seq(
+          CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))),
           EmailId.row(Some(Link(routes.EmailController.onPageLoad(CheckMode).url))),
           PhoneId.row(Some(Link(routes.PhoneController.onPageLoad(CheckMode).url)))
         ).flatten
@@ -84,7 +69,7 @@ class CheckYourAnswersController @Inject()(
 
       Ok(check_your_answers(
         appConfig,
-        Seq(companyDetails, companyContactDetails, contactDetails),
+        Seq(companyDetails),
         controllers.register.company.routes.CheckYourAnswersController.onSubmit(),
         None, mode
       ))

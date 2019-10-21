@@ -22,11 +22,12 @@
         legendClass: Option[String] = None,
         hint: Option[String] = None,
         trackGa: Boolean = false,
-        inputs: Seq[InputOption]
+        inputs: Seq[InputOption],
+        fieldsetClass: Option[String] = None
 )(implicit messages: Messages)
 
 <div class="form-group @if(field.hasErrors){form-field--error}">
-    <fieldset id="@{field.id}">
+    <fieldset class="form-group @fieldsetClass" id="@{field.id}">
         <legend>
             <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
             @if(hint.nonEmpty){
