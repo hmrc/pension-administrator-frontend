@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers.register.company.directors
 
-import forms.mappings.PhoneNumberMapping
-import javax.inject.Inject
-import play.api.data.Form
+import identifiers.TypedIdentifier
+import play.api.libs.json.JsPath
 
-class PhoneFormProvider @Inject() extends PhoneNumberMapping {
+case class DirectorEmailId(index: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = JsPath \ "directors" \ index \ "directorContactDetails" \ DirectorEmailId.toString
+}
 
-  def apply(): Form[String] = Form(
-    "value" -> phoneNumberMapping(
-      keyPhoneNumberRequired = "contactDetails.error.phone.required",
-      keyPhoneNumberLength = "contactDetails.error.phone.length",
-      keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
-    )
-  )
-
+object DirectorEmailId {
+  override lazy val toString: String = "email"
 }

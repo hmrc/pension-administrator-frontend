@@ -19,59 +19,41 @@ package controllers.register.company
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.{Retrievals, Variations}
+import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.PhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.phone
 
-import scala.concurrent.Future
-
-class PhoneController @Inject()(@RegisterCompany val navigator: Navigator,
-                                val appConfig: FrontendAppConfig,
-                                val messagesApi: MessagesApi,
-                                val cacheConnector: UserAnswersCacheConnector,
-                                authenticate: AuthAction,
-                                val allowAccess: AllowAccessActionProvider,
-                                getData: DataRetrievalAction,
-                                requireData: DataRequiredAction,
-                                formProvider: PhoneFormProvider
-                               ) extends FrontendController with I18nSupport with Retrievals with Variations {
+class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
+                                       val appConfig: FrontendAppConfig,
+                                       val messagesApi: MessagesApi,
+                                       val cacheConnector: UserAnswersCacheConnector,
+                                       authenticate: AuthAction,
+                                       val allowAccess: AllowAccessActionProvider,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       formProvider: PhoneFormProvider
+                                      ) extends PhoneController {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        val filledForm =
-          request.userAnswers.get(PhoneId).map(form.fill).getOrElse(form)
-
-        Future.successful(Ok(phone(appConfig, filledForm, viewModel(mode))))
+        get(PhoneId, form, viewModel(mode))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(phone(appConfig, formWithErrors, viewModel(mode)))),
-        contactDetails => {
-          cacheConnector.save(request.externalId, PhoneId, contactDetails).flatMap {
-            answers =>
-              saveChangeFlag(mode, PhoneId).map { _ =>
-                Redirect(navigator.nextPage(PhoneId, mode, UserAnswers(answers)))
-              }
-          }
-        }
-      )
+      post(PhoneId, mode, form, viewModel(mode))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
@@ -79,7 +61,7 @@ class PhoneController @Inject()(@RegisterCompany val navigator: Navigator,
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = routes.PhoneController.onSubmit(mode),
+      postCall = routes.CompanyPhoneController.onSubmit(mode),
       title = Message("phone.title", Message("theCompany").resolve),
       heading = Message("phone.title", entityName),
       mode = mode,

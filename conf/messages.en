@@ -179,11 +179,11 @@ contactDetails.body = We will use this information to contact you about your sch
 contactDetails.email.checkYourAnswersLabel = Email address
 contactDetails.phone.checkYourAnswersLabel = Phone number
 contactDetails.error.email.required = Enter an email address
-contactDetails.error.email.invalid = Enter a valid email address
-contactDetails.error.email.length = The email address cannot be more than 132 characters
+contactDetails.error.email.invalid = Enter an email address in the correct format, like name@example.com
+contactDetails.error.email.length = Enter an email address using 132 characters or less
 contactDetails.error.phone.required = Enter a phone number
-contactDetails.error.phone.length = The telephone number cannot be more than 24 characters
-contactDetails.error.phone.invalid = The telephone number can only contain numbers
+contactDetails.error.phone.length =  Enter a phone number using 24 characters or less
+contactDetails.error.phone.invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 
 email.title = What is {0}’s email address?
 contact.body = We will only use this to contact {0} about pension scheme administration.
@@ -357,6 +357,7 @@ directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 
 theCompany = the company
+theDirector = the director
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address

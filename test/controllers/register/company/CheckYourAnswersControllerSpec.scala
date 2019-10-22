@@ -229,12 +229,12 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           answerRow(
             label = messages("email.title", "Test Company Name"),
             answer = Seq("test@email"),
-            changeUrl = Some(Link(controllers.register.company.routes.EmailController.onPageLoad(CheckMode).url))
+            changeUrl = Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(CheckMode).url))
           ),
           answerRow(
             label = messages("phone.title", "Test Company Name"),
             answer = Seq("1234567890"),
-            changeUrl = Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(CheckMode).url))
+            changeUrl = Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(CheckMode).url))
           )
         )
 
