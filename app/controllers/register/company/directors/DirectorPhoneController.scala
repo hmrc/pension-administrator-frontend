@@ -21,18 +21,17 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
-import identifiers.register.BusinessNameId
-import identifiers.register.company.directors.DirectorPhoneId
+import identifiers.register.company.directors.{DirectorDetailsId, DirectorPhoneId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{CompanyDirector, RegisterCompany}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
-class DirectorPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
+class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigator,
                                         val appConfig: FrontendAppConfig,
                                         val messagesApi: MessagesApi,
                                         val cacheConnector: UserAnswersCacheConnector,
@@ -57,7 +56,7 @@ class DirectorPhoneController @Inject()(@RegisterCompany val navigator: Navigato
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

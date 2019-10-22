@@ -65,7 +65,8 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorPreviousAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.DirectorPreviousAddressListController.onPageLoad(mode, index))
     case DirectorPreviousAddressListId(index) => NavigateTo.save(routes.DirectorPreviousAddressController.onPageLoad(mode, index))
     case DirectorPreviousAddressId(index) => previousAddressRoutes(index, from.userAnswers, mode)
-    case DirectorContactDetailsId(index) => contactDetailsRoutes(index, from.userAnswers, mode)
+    case DirectorEmailId(index) => emailRoutes(index, from.userAnswers, mode)
+    case DirectorPhoneId(index) => phoneRoutes(index, from.userAnswers, mode)
     case CheckYourAnswersId => NavigateTo.save(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode))
     case _ => sessionExpired
   }
@@ -78,7 +79,10 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers, journeyMode(mode))
     case DirectorPreviousAddressId(index) => checkYourAnswers(index, journeyMode(mode))
-    case DirectorContactDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
+    case DirectorEmailId(index) =>
+      println("\n\n\n mode: "+mode)
+      checkYourAnswers(index, journeyMode(mode))
+    case DirectorPhoneId(index) => checkYourAnswers(index, journeyMode(mode))
     case _ => commonMap(from, mode)
   }
 
@@ -100,6 +104,15 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     }
   }
 
+  private def emailRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    mode match {
+      case NormalMode => NavigateTo.save(routes.DirectorPhoneController.onPageLoad(mode, index))
+      case UpdateMode => redirectBasedOnIsNew(answers, index,
+        routes.DirectorPhoneController.onPageLoad(mode, index), anyMoreChangesPage)
+      case _ => sessionExpired
+    }
+  }
+
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] =
     answers.get(DirectorConfirmPreviousAddressId(index)) match {
       case Some(true) => anyMoreChanges
@@ -110,7 +123,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def directorAddressYearsRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     (answers.get(DirectorAddressYearsId(index)), mode) match {
       case (Some(AddressYears.UnderAYear), NormalMode) => NavigateTo.save(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, index))
-      case (Some(AddressYears.OverAYear), NormalMode) => NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(mode, index))
+      case (Some(AddressYears.OverAYear), NormalMode) => NavigateTo.save(routes.DirectorEmailController.onPageLoad(mode, index))
       case (Some(AddressYears.UnderAYear), UpdateMode) => redirectBasedOnIsNew(
         answers,
         index,
@@ -119,13 +132,13 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
       case (Some(AddressYears.OverAYear), UpdateMode) => redirectBasedOnIsNew(
         answers,
         index,
-        routes.DirectorContactDetailsController.onPageLoad(mode, index),
+        routes.DirectorEmailController.onPageLoad(mode, index),
         anyMoreChangesPage)
       case _ => sessionExpired
     }
   }
 
-  private def contactDetailsRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+  private def phoneRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     mode match {
       case NormalMode => checkYourAnswers(index, mode)
       case UpdateMode => redirectBasedOnIsNew(answers, index, checkYourAnswersPage(index, mode), anyMoreChangesPage)
@@ -142,12 +155,12 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   private def previousAddressRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     mode match {
       case NormalMode =>
-        NavigateTo.save(routes.DirectorContactDetailsController.onPageLoad(mode, index))
+        NavigateTo.save(routes.DirectorEmailController.onPageLoad(mode, index))
       case UpdateMode =>
         redirectBasedOnIsNew(
           answers,
           index,
-          routes.DirectorContactDetailsController.onPageLoad(mode, index),
+          routes.DirectorEmailController.onPageLoad(mode, index),
           anyMoreChangesPage
         )
       case _ => sessionExpired

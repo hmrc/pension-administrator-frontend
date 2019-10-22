@@ -18,7 +18,7 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser._
 import identifiers.register.company._
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
+import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
 import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
@@ -26,6 +26,7 @@ import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationI
 import models._
 import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
+import views.html.phone
 
 
 package object utils {
@@ -111,6 +112,18 @@ package object utils {
     // Company director
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value
+    }
+
+    def directorPhone(index: Int, phone: String): UserAnswers = {
+      answers.set(DirectorPhoneId(index))(phone).asOpt.value
+    }
+
+    def directorDetails(index: Int, details: PersonDetails): UserAnswers = {
+      answers.set(DirectorDetailsId(index))(details).asOpt.value
+    }
+
+    def directorEmail(index: Int, email: String): UserAnswers = {
+      answers.set(DirectorEmailId(index))(email).asOpt.value
     }
 
     def companyDirectorAddressList(index: Int, address: TolerantAddress): UserAnswers = {

@@ -21,55 +21,118 @@ import java.time.LocalDate
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.TypedIdentifier
+import controllers.behaviours.ControllerWithSessionExpiryBehaviours
+import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController}
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.IsDirectorCompleteId
-import models.requests.DataRequest
-import models.{CheckMode, Index, NormalMode, UpdateMode}
-import play.api.mvc.AnyContent
+import models._
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection, Link}
+import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
+import models.Mode.checkMode
+import models.Mode._
+import play.api.mvc.Call
 
-import scala.concurrent.{ExecutionContext, Future}
+class CheckYourAnswersControllerSpec extends ControllerWithSessionExpiryBehaviours {
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase {
+  import CheckYourAnswersControllerSpec._
 
-  val index = Index(0)
-  val companyName = "Test Company Name"
-  val directorName = "test first name test middle name test last name"
-  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+  "CheckYourAnswers Controller" when {
 
-  object FakeSectionComplete extends SectionComplete with FakeUserAnswersCacheConnector {
+    "on a GET" must {
 
-    override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
-                            (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
-      save("cacheId", id, true) map UserAnswers
+      Seq(NormalMode, UpdateMode).foreach { mode =>
+        s"render the view correctly for name and dob in ${jsLiteral.to(mode)}" in {
+          val retrievalAction = UserAnswers().directorDetails(index, directorDetails).dataRetrievalAction
+          val rows = Seq(
+            AnswerRow(
+              "cya.label.name",
+              Seq("Test Name"),
+              answerIsMessageKey = false,
+              Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url),
+              None
+            ),
+            AnswerRow(
+              "cya.label.dob",
+              Seq(DateHelper.formatDate(LocalDate.now)),
+              answerIsMessageKey = false,
+              Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url),
+              None
+            ))
+
+          val sections = Seq(AnswerSection(None, rows))
+
+          testRenderedView(
+            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
+          )
+        }
+
+        s"render the view correctly for email and phone in ${jsLiteral.to(mode)}" in {
+          val retrievalAction = UserAnswers().directorEmail(index, email).directorPhone(index, phone).dataRetrievalAction
+          val rows = Seq(
+            answerRow(
+              label = messages("email.title", defaultDirectorName),
+              answer = Seq(email),
+              changeUrl = Some(Link(DirectorEmailController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(
+              label = messages("phone.title", defaultDirectorName),
+              answer = Seq(phone),
+              changeUrl = Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultDirectorName))
+            )
+          )
+
+          val sections = Seq(AnswerSection(None, rows))
+
+          testRenderedView(
+            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
+          )
+        }
+      }
     }
 
+    "on a POST" must {
+      "mark director as complete on submit" in {
+        FakeUserAnswersCacheConnector.reset()
+        val result = controller().onSubmit(NormalMode, index)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        FakeSectionComplete.verify(IsDirectorCompleteId(index), value = true)
+        FakeUserAnswersCacheConnector.verifyNot(DirectorsOrPartnersChangedId)
+      }
+
+      "save the change flag for UpdateMode on submit" in {
+        val result = controller().onSubmit(UpdateMode, index)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, value = true)
+      }
+    }
+
+    behave like controllerWithSessionExpiry(controller(dontGetAnyData).onPageLoad(NormalMode, index),
+      controller(dontGetAnyData).onSubmit(NormalMode, index))
   }
+}
 
-  def answersDD: Seq[AnswerRow] = Seq(
-    AnswerRow(
-      "cya.label.name",
-      Seq("test first name test last name"),
-      answerIsMessageKey = false,
-      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url),
-      None
-    ),
-    AnswerRow(
-      "cya.label.dob",
-      Seq(DateHelper.formatDate(LocalDate.now)),
-      answerIsMessageKey = false,
-      Link(routes.DirectorDetailsController.onPageLoad(CheckMode, index).url),
-      None
-    ))
+object CheckYourAnswersControllerSpec extends ControllerSpecBase {
+  private val email = "test@test.com"
+  private val phone = "1234"
+  private val index = Index(0)
+  private val directorDetails = PersonDetails("Test", None, "Name", LocalDate.now)
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+  private val defaultDirectorName = Message("theDirector").resolve
 
-  def call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(NormalMode, 0)
+  private def call(mode: Mode): Call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)
+
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
+                        changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
+    AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
+  }
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
@@ -85,49 +148,17 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector
     )
 
-  def viewAsString(): String = check_your_answers(
-    frontendAppConfig,
-    Seq(
-      AnswerSection(Some("directorCheckYourAnswers.directorDetails.heading"), answersDD),
-      AnswerSection(Some("directorCheckYourAnswers.contactDetails.heading"), Seq.empty)
-    ),
-    call,
-    None,
-    NormalMode
-  )(fakeRequest, messages).toString
+  private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction, mode: Mode = NormalMode): Unit = {
+    val result = controller(dataRetrievalAction).onPageLoad(mode, index)(fakeRequest)
+    val expectedResult = check_your_answers(
+      frontendAppConfig,
+      sections,
+      call(mode),
+      None,
+      mode
+    )(fakeRequest, messages).toString()
 
-  "CheckYourAnswers Controller" must {
-
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode, index)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "redirect to Session Expired page" when {
-      "no existing data is found" in {
-        val result = controller(dontGetAnyData).onPageLoad(NormalMode, index)(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-    }
-
-    "mark director as complete on submit" in {
-      FakeUserAnswersCacheConnector.reset()
-      val result = controller().onSubmit(NormalMode, index)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      FakeSectionComplete.verify(IsDirectorCompleteId(index), true)
-      FakeUserAnswersCacheConnector.verifyNot(DirectorsOrPartnersChangedId)
-    }
-
-    "save the change flag for UpdateMode on submit" in {
-      val result = controller().onSubmit(UpdateMode, index)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
-    }
+    status(result) mustBe OK
+    contentAsString(result) mustBe expectedResult
   }
 }
