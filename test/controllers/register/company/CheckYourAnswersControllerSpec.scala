@@ -198,13 +198,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           answerRow(
             label = messages("email.title", defaultCompany),
             answer = Seq("test@email"),
-            changeUrl = Some(Link(controllers.register.company.routes.EmailController.onPageLoad(CheckMode).url)),
+            changeUrl = Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(CheckMode).url)),
             visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultCompany))
           ),
           answerRow(
             label = messages("phone.title", defaultCompany),
             answer = Seq("1234567890"),
-            changeUrl = Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(CheckMode).url)),
+            changeUrl = Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(CheckMode).url)),
             visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultCompany))
           )
         )

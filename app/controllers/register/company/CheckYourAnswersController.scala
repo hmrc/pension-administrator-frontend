@@ -62,8 +62,8 @@ class CheckYourAnswersController @Inject()(
           CompanyContactAddressId.row(Some(Link(routes.CompanyContactAddressController.onPageLoad(CheckMode).url))),
           CompanyAddressYearsId.row(Some(Link(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))),
           CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))),
-          EmailId.row(Some(Link(routes.EmailController.onPageLoad(CheckMode).url))),
-          PhoneId.row(Some(Link(routes.PhoneController.onPageLoad(CheckMode).url)))
+          EmailId.row(Some(Link(routes.CompanyEmailController.onPageLoad(CheckMode).url))),
+          PhoneId.row(Some(Link(routes.CompanyPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 

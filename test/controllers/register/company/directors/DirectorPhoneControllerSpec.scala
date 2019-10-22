@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package controllers.register.company.directors
 
-import forms.mappings.PhoneNumberMapping
-import javax.inject.Inject
-import play.api.data.Form
+import controllers.behaviours.ControllerWithSessionExpiryBehaviours
+import models.NormalMode
+import play.api.test.Helpers._
 
-class PhoneFormProvider @Inject() extends PhoneNumberMapping {
+class DirectorPhoneControllerSpec extends ControllerWithSessionExpiryBehaviours {
 
-  def apply(): Form[String] = Form(
-    "value" -> phoneNumberMapping(
-      keyPhoneNumberRequired = "contactDetails.error.phone.required",
-      keyPhoneNumberLength = "contactDetails.error.phone.length",
-      keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
-    )
-  )
-
+  "DirectorPhoneController" must {
+    running(
+      _.overrides(modules(dontGetAnyData): _*)
+    ) {
+      app =>
+        val controller = app.injector.instanceOf[DirectorPhoneController]
+        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode, index = 0),
+          controller.onSubmit(NormalMode, index = 0))
+    }
+  }
 }
