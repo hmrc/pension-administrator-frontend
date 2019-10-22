@@ -31,13 +31,13 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.personName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait PersonNameController extends FrontendController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  override implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  protected implicit def ec : ExecutionContext
 
   def appConfig: FrontendAppConfig
 
