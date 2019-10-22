@@ -114,7 +114,6 @@ object DirectorNavigatorSpec extends OptionValues {
   def directorNinoPage(mode: Mode) = routes.DirectorNinoController.onPageLoad(mode, 0)
   def directorUniqueTaxReferencePage(mode: Mode) = routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, 0)
   def directorAddressYearsPage(mode: Mode) = routes.DirectorAddressYearsController.onPageLoad(mode, 0)
-  def directorContactDetailsPage(mode: Mode) = routes.DirectorContactDetailsController.onPageLoad(mode, 0)
   def directorPhonePage(mode: Mode) = routes.DirectorPhoneController.onPageLoad(mode, 0)
   def directorEmailPage(mode: Mode) = routes.DirectorEmailController.onPageLoad(mode, 0)
   def addDirectorsPage(mode: Mode) = controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode)

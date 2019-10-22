@@ -48,11 +48,6 @@ POST       /:index/directors-previous-address-manual            controllers.regi
 GET        /:index/:mode/directors-previous-address-manual     controllers.register.company.directors.DirectorPreviousAddressController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/directors-previous-address-manual     controllers.register.company.directors.DirectorPreviousAddressController.onSubmit(mode: Mode, index: Index)
 
-GET        /:index/directors-contact-details                    controllers.register.company.directors.DirectorContactDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/directors-contact-details                    controllers.register.company.directors.DirectorContactDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/:mode/directors-contact-details             controllers.register.company.directors.DirectorContactDetailsController.onPageLoad(mode: Mode, index: Index)
-POST       /:index/:mode/directors-contact-details             controllers.register.company.directors.DirectorContactDetailsController.onSubmit(mode: Mode, index: Index)
-
 GET        /:index/contact-email-address                        controllers.register.company.directors.DirectorEmailController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/contact-email-address                        controllers.register.company.directors.DirectorEmailController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/contact-email-address                  controllers.register.company.directors.DirectorEmailController.onPageLoad(mode: Mode, index: Index)
