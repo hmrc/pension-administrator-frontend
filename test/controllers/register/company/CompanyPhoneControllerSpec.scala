@@ -16,38 +16,20 @@
 
 package controllers.register.company
 
-import controllers.ControllerSpecBase
+import controllers.behaviours.ControllerWithSessionExpiryBehaviours
 import models.NormalMode
 import play.api.test.Helpers._
 
-class CompanyPhoneControllerSpec extends ControllerSpecBase {
+class CompanyPhoneControllerSpec extends ControllerWithSessionExpiryBehaviours {
 
   "CompanyPhoneController" must {
-
-    "redirect to Session Expired for a GET if no existing data is found" in {
-      running(
-        _.overrides(modules(dontGetAnyData): _*)
-      ) {
-        app =>
-          val controller = app.injector.instanceOf[CompanyPhoneController]
-          val result = controller.onPageLoad(NormalMode)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-    }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-      running(
-        _.overrides(modules(dontGetAnyData): _*)
-      ) {
-        app =>
-          val controller = app.injector.instanceOf[CompanyPhoneController]
-          val result = controller.onSubmit(NormalMode)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
+    running(
+      _.overrides(modules(dontGetAnyData): _*)
+    ) {
+      app =>
+        val controller = app.injector.instanceOf[CompanyPhoneController]
+        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode),
+          controller.onSubmit(NormalMode))
     }
   }
 }

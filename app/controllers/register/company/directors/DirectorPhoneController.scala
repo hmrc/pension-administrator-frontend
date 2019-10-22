@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.PhoneId
+import identifiers.register.company.directors.DirectorPhoneId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -48,12 +48,12 @@ class DirectorPhoneController @Inject()(@RegisterCompany val navigator: Navigato
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(PhoneId, form, viewModel(mode, index, entityName(index)))
+        get(DirectorPhoneId(index), form, viewModel(mode, index, entityName(index)))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PhoneId, mode, form, viewModel(mode, index, entityName(index)))
+      post(DirectorPhoneId(index), mode, form, viewModel(mode, index, entityName(index)))
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

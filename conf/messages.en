@@ -357,6 +357,7 @@ directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 
 theCompany = the company
+theDirector = the director
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address

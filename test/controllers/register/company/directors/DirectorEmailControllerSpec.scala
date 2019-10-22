@@ -16,38 +16,20 @@
 
 package controllers.register.company.directors
 
-import controllers.ControllerSpecBase
+import controllers.behaviours.ControllerWithSessionExpiryBehaviours
 import models.NormalMode
 import play.api.test.Helpers._
 
-class DirectorEmailControllerSpec extends ControllerSpecBase {
+class DirectorEmailControllerSpec extends ControllerWithSessionExpiryBehaviours {
 
   "DirectorEmail Controller" must {
-
-    "redirect to Session Expired for a GET if no existing data is found" in {
-      running(
-        _.overrides(modules(dontGetAnyData): _*)
-      ) {
-        app =>
-          val controller = app.injector.instanceOf[DirectorEmailController]
-          val result = controller.onPageLoad(NormalMode, index = 0)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-    }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-      running(
-        _.overrides(modules(dontGetAnyData): _*)
-      ) {
-        app =>
-          val controller = app.injector.instanceOf[DirectorEmailController]
-          val result = controller.onSubmit(NormalMode, index = 0)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
+    running(
+      _.overrides(modules(dontGetAnyData): _*)
+    ) {
+      app =>
+        val controller = app.injector.instanceOf[DirectorEmailController]
+        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode, index = 0),
+          controller.onSubmit(NormalMode, index = 0))
     }
   }
 }
