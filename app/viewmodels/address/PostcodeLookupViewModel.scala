@@ -24,7 +24,6 @@ case class PostcodeLookupViewModel(
                                     manualInputCall: Call,
                                     title: Message,
                                     heading: Message,
-                                    hint: Message,
                                     enterPostcode: Message,
                                     enterPostCodeLink: Option[Message],
                                     formLabel: Message,

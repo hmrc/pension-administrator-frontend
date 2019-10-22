@@ -70,7 +70,6 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index),
       Message("directorPreviousAddressPostCodeLookup.title"),
       Message("directorPreviousAddressPostCodeLookup.heading"),
-      Message("directorPreviousAddressPostCodeLookup.text"),
       Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
       Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
       Message("directorPreviousAddressPostCodeLookup.input.text")

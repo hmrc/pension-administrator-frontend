@@ -61,7 +61,11 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     )(fakeRequest, messages)
 
   "CompanyAddress view" must {
-    behave like normalPage(createView(), messageKeyPrefix)
+    behave like normalPageWithDynamicTitle(
+      view = createView(),
+      messageKeyPrefix = messageKeyPrefix,
+      dynamicContent =  "MyCo"
+    )
 
     behave like pageWithAddress(address => createView(address)(), "companyAddress")
 

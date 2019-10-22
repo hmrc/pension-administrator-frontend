@@ -53,7 +53,6 @@ class AdviserAddressPostCodeLookupController @Inject()(
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
     Message("common.adviser.address.title"),
     Message("common.adviser.address.heading"),
-    Message("adviserAddressPostCodeLookup.hint"),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
     Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
     Message("adviserAddressPostCodeLookup.formLabel"),

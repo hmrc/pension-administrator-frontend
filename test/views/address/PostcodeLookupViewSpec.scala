@@ -35,7 +35,6 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     Call("POST", "www.example.com"),
     "test.title",
     "test.heading",
-    "test.hint",
     "test.enter-postcode",
     Some("test.enter-postcode-link"),
     "test.form-label",
@@ -61,11 +60,6 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
   "PostcodeLookup view" must {
     appRunning()
     behave like normalPage(createView(), messageKeyPrefix)
-
-    "render the hint" in {
-      val doc = asDocument(createView()())
-      assertContainsText(doc, viewModel.hint.resolve)
-    }
 
     behave like stringPage(createViewUsingForm, messageKeyPrefix, "www.example.com", None, "form-label")
 

@@ -52,9 +52,8 @@ class CompanySameContactAddressController @Inject()(
   val form: Form[Boolean] = formProvider()
 
   private[controllers] val postCall = CompanySameContactAddressController.onSubmit _
-  private[controllers] val title: Message = "individual.same.contact.address.title"
+  private[controllers] val title: Message = "company.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
-  private[controllers] val hint: Message = "company.same.contact.address.hint"
 
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
@@ -65,7 +64,7 @@ class CompanySameContactAddressController @Inject()(
               postCall(mode),
               title = Message(title),
               heading = Message(heading).withArgs(name),
-              hint = Some(Message(hint).withArgs(name)),
+              hint = None,
               address = address,
               psaName = name,
               mode = mode
