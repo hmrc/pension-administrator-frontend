@@ -19,25 +19,25 @@ package controllers
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
-import forms.PersonDetailsFormProvider
+import forms.PersonNameFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Mode, PersonDetails}
+import models.{Mode, PersonName}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import viewmodels.PersonDetailsViewModel
-import views.html.personDetails
+import viewmodels.CommonFormWithHintViewModel
+import views.html.personName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait PersonDetailsController extends FrontendController with I18nSupport with Variations {
+trait PersonNameController extends FrontendController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  override implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  protected implicit def ec : ExecutionContext
 
   def appConfig: FrontendAppConfig
 
@@ -45,11 +45,11 @@ trait PersonDetailsController extends FrontendController with I18nSupport with V
 
   def navigator: Navigator
 
-  private val form = new PersonDetailsFormProvider()()
+  private val form = new PersonNameFormProvider()()
 
-  def get[I <: TypedIdentifier[PersonDetails]](
-                                                id: I, viewModel:
-  PersonDetailsViewModel, mode: Mode
+  def get[I <: TypedIdentifier[PersonName]](
+                                             id: I, viewModel: CommonFormWithHintViewModel,
+                                             mode: Mode
                                               )(implicit request: DataRequest[AnyContent]): Result = {
 
     val preparedForm = request.userAnswers.get(id) match {
@@ -57,22 +57,22 @@ trait PersonDetailsController extends FrontendController with I18nSupport with V
       case Some(value) => form.fill(value)
     }
 
-    Ok(personDetails(appConfig, preparedForm, viewModel, mode))
+    Ok(personName(appConfig, preparedForm, viewModel, mode))
 
   }
 
-  def post[I <: TypedIdentifier[PersonDetails]](
+  def post[I <: TypedIdentifier[PersonName]](
                                                  id: I,
-                                                 viewModel: PersonDetailsViewModel,
+                                                 viewModel: CommonFormWithHintViewModel,
                                                  mode: Mode
                                                )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(personDetails(appConfig, formWithErrors, viewModel, mode))),
+        Future.successful(BadRequest(personName(appConfig, formWithErrors, viewModel, mode))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
-          setNewFlagPerson(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>
+          setNewFlag(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(updatedUserAnswers)))
           }
         }
