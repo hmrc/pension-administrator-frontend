@@ -53,6 +53,16 @@ POST       /:index/directors-contact-details                    controllers.regi
 GET        /:index/:mode/directors-contact-details             controllers.register.company.directors.DirectorContactDetailsController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/directors-contact-details             controllers.register.company.directors.DirectorContactDetailsController.onSubmit(mode: Mode, index: Index)
 
+GET        /:index/contact-email-address                        controllers.register.company.directors.DirectorEmailController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/contact-email-address                        controllers.register.company.directors.DirectorEmailController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/contact-email-address                  controllers.register.company.directors.DirectorEmailController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/contact-email-address                  controllers.register.company.directors.DirectorEmailController.onSubmit(mode: Mode, index: Index)
+
+GET        /:index/contact-phone-number                        controllers.register.company.directors.DirectorPhoneController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/contact-phone-number                        controllers.register.company.directors.DirectorPhoneController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/contact-phone-number                  controllers.register.company.directors.DirectorPhoneController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/contact-phone-number                  controllers.register.company.directors.DirectorPhoneController.onSubmit(mode: Mode, index: Index)
+
 GET        /:index/directors-address-results                    controllers.register.company.directors.CompanyDirectorAddressListController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-address-results                    controllers.register.company.directors.CompanyDirectorAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/directors-address-results             controllers.register.company.directors.CompanyDirectorAddressListController.onPageLoad(mode: Mode, index: Index)

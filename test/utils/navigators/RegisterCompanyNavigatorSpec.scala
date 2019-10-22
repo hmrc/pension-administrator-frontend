@@ -126,8 +126,8 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
-  private def emailPage(mode: Mode): Call = routes.EmailController.onPageLoad(mode)
-  private def phonePage(mode: Mode): Call = routes.PhoneController.onPageLoad(mode)
+  private def emailPage(mode: Mode): Call = routes.CompanyEmailController.onPageLoad(mode)
+  private def phonePage(mode: Mode): Call = routes.CompanyPhoneController.onPageLoad(mode)
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
