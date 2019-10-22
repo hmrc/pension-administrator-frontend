@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
 import views.html.register.company.directors.whatYouWillNeed
@@ -28,16 +28,17 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
     new WhatYouWillNeedController(
       frontendAppConfig,
       messagesApi,
-      FakeAllowAccessProvider(),
-      FakeAuthAction
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig, controllers.routes.IndexController.onPageLoad())(fakeRequest, messages).toString
+  private def viewAsString() = whatYouWillNeed(frontendAppConfig, routes.DirectorDetailsController.onPageLoad(NormalMode, 0))(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode, 0)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
