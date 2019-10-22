@@ -18,7 +18,7 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser._
 import identifiers.register.company._
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
+import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId, DirectorNameId, DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
 import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
@@ -109,6 +109,10 @@ package object utils {
     }
 
     // Company director
+    def directorName(index: Int = 0, name: PersonName = PersonName("first", "last")): UserAnswers = {
+      answers.set(DirectorNameId(index))(name).asOpt.value
+    }
+
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value
     }

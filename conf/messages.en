@@ -979,3 +979,6 @@ utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?
 isRegisteredName.company.heading = Is {0} the registered name of the company?
+
+directorDob.title = What is the director’s date of birth?
+dob.heading = What is the date of birth for {0}?
