@@ -36,10 +36,11 @@
         @components.input_date(
             field = form("value"),
             label = messages("common.dateOfBirth"),
+            legendClass = "visually-hidden",
             hint = Some(messages("common.dateOfBirth.hint"))
         )
         <div class="subsection">
-            @components.submit_button()
+            @components.submit_button("site.save_and_continue")
         </div>
 
         @components.return_link(viewModel.entityName, viewModel.mode)

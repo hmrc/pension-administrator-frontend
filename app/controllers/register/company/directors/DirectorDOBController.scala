@@ -20,7 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{DOBController, Retrievals}
-import identifiers.register.company.directors.DirectorDOBId
+import identifiers.register.BusinessNameId
+import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -29,6 +30,8 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
+
+import scala.concurrent.Future
 
 class DirectorDOBController @Inject()(
                                            val appConfig: FrontendAppConfig,
@@ -41,28 +44,37 @@ class DirectorDOBController @Inject()(
                                            requireData: DataRequiredAction
                                          ) extends DOBController with Retrievals{
 
-  private[directors] def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
+  private[directors] def viewModel(mode: Mode,
+                                   index: Index,
+                                   psaName: String,
+                                   directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorDOBController.onSubmit(mode, index),
       title = "directorDob.title",
-      heading = Message("dob.heading"),
+      heading = Message("dob.heading", directorName),
       None,
       None,
       mode,
-      psaName().get
+      psaName
     )
 
   private[directors] def id(index: Index): DirectorDOBId =
     DirectorDOBId(index)
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(id(index), viewModel(mode, index))
+      (BusinessNameId and DirectorNameId(index)).retrieve.right.map {
+        case psaName ~ directorName =>
+          Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName)))
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(id(index), viewModel(mode, index))
+      (BusinessNameId and DirectorNameId(index)).retrieve.right.map {
+        case psaName ~ directorName =>
+          post(id(index), viewModel(mode, index, psaName, directorName.fullName))
+      }
   }
 
 }

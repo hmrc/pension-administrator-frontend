@@ -23,7 +23,6 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.DOBFormProvider
 import identifiers.TypedIdentifier
-import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
