@@ -343,6 +343,16 @@ enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characte
 enterPAYE.error.required = Enter an employer PAYE reference
 enterPAYE.visuallyHidden.text = {0}’s employer PAYE reference
 
+hasNINO.heading = Does {0} have a National Insurance number?
+hasNINO.error.required = Select yes if {0} has a National Insurance number
+hasNINO.visuallyHidden.text = whether {0} has a National Insurance number
+
+enterNINO.heading = What is {0}’s National Insurance number?
+enterNINO.hint = For example, QQ 12 34 56 C
+enterNINO.error.invalid = Enter {0}’s National Insurance number in the correct format
+enterNINO.error.required = Enter a National Insurance number
+enterNINO.visuallyHidden.text = {0}’s National Insurance number
+
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.

@@ -20,9 +20,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.HasVATId
-import identifiers.register.BusinessNameId
-import models.{BusinessDetails, Mode, NormalMode}
+import identifiers.register.{BusinessNameId, HasVATId}
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -62,7 +61,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
-    hasReferenceNumber(frontendAppConfig, form, mode, companyName, viewModel)(fakeRequest, messages).toString
+    hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyVATController Controller" must {
 

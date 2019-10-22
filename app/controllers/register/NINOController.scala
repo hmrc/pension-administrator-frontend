@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.Mode
 import models.requests.DataRequest
@@ -27,36 +28,40 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.hasReferenceNumber
+import views.html.register.enterNINO
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait HasReferenceNumberController extends FrontendController with Retrievals with I18nSupport {
+trait NINOController extends FrontendController with Retrievals with I18nSupport with Variations {
 
-  protected implicit def ec : ExecutionContext
+  protected implicit def ec: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
-  protected val dataCacheConnector: UserAnswersCacheConnector
+  protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
-  def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewModel: CommonFormWithHintViewModel)
+  def get(id: TypedIdentifier[String], form: Form[String], viewmodel: CommonFormWithHintViewModel)
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    val preparedForm =
-      request.userAnswers.get(id).map(form.fill).getOrElse(form)
-    Future.successful(Ok(hasReferenceNumber(appConfig, preparedForm, viewModel)))
+
+    val preparedForm = request.userAnswers.get(id).map(form.fill).getOrElse(form)
+
+    Future.successful(Ok(enterNINO(appConfig, preparedForm, viewmodel)))
   }
 
-  def post(id: TypedIdentifier[Boolean], mode: Mode, form: Form[Boolean], viewModel: CommonFormWithHintViewModel)
+  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewmodel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(hasReferenceNumber(appConfig, formWithErrors, viewModel))),
-      value => {
-        dataCacheConnector.save(request.externalId, id, value).map{cacheMap =>
-          Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))}
-      }
+        Future.successful(BadRequest(enterNINO(appConfig, formWithErrors, viewmodel))),
+      value =>
+        cacheConnector.save(request.externalId, id, value).flatMap(
+          cacheMap =>
+            saveChangeFlag(mode, id).map { _ =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+            }
+        )
     )
   }
 }

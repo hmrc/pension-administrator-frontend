@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.EnterVATFormProvider
+import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
 import identifiers.register.company.BusinessDetailsId
 import models.{BusinessDetails, NormalMode}

@@ -17,7 +17,7 @@
 package views.register
 
 import controllers.register.company.routes
-import forms.register.company.EnterVATFormProvider
+import forms.register.EnterVATFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.Call
