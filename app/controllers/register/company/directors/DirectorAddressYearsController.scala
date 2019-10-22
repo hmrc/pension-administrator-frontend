@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
+import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
@@ -62,7 +62,7 @@ class DirectorAddressYearsController @Inject()(
   }
 
   private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector").resolve)
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector").resolve)
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(

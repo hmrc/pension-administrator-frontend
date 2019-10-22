@@ -18,7 +18,7 @@ package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
@@ -52,7 +52,7 @@ trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckY
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
-    ua.get(DirectorDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+    ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
 }
 
 object CheckYourAnswers {

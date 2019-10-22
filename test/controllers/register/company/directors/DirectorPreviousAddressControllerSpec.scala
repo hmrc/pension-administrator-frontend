@@ -24,7 +24,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -50,14 +50,14 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
   private val validData = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString ->
+        DirectorNameId.toString ->
           PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorPreviousAddressId.toString ->
           address
 
       ),
       Json.obj(
-        DirectorDetailsId.toString ->
+        DirectorNameId.toString ->
           PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )

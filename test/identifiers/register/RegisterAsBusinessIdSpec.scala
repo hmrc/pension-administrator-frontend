@@ -18,9 +18,8 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.tolerantAddress
 import identifiers.register.company._
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerDetailsId
@@ -76,8 +75,8 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
       }
 
       "remove the data for directors " in {
-        result.get(DirectorDetailsId(0)) mustNot be(defined)
-        result.get(DirectorDetailsId(1)) mustNot be(defined)
+        result.get(DirectorNameId(0)) mustNot be(defined)
+        result.get(DirectorNameId(1)) mustNot be(defined)
       }
 
       "not remove the data for individuals" in {
@@ -181,6 +180,7 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val address = Address("line 1", "line 2", None, None, None, "GB")
   val contactDetails = ContactDetails("s@s.com", "999")
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+  val personName = PersonName("test first", "test last")
 
   val answersCompany: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(true)
@@ -196,8 +196,8 @@ object RegisterAsBusinessIdSpec extends OptionValues {
       .flatMap(_.set(CompanyPreviousAddressId)(address))
       .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(ContactDetailsId)(contactDetails))
-      .flatMap(_.set(DirectorDetailsId(0))(personDetails))
-      .flatMap(_.set(DirectorDetailsId(1))(personDetails))
+      .flatMap(_.set(DirectorNameId(0))(personName))
+      .flatMap(_.set(DirectorNameId(1))(personName))
       .flatMap(_.set(MoreThanTenDirectorsId)(true))
       .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))
     )

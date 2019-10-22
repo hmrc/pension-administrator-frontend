@@ -23,7 +23,7 @@ import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.EmailId
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorEmailId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorEmailId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -58,7 +58,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

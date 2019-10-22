@@ -54,7 +54,8 @@ class CheckYourAnswersController @Inject()(
       val answersSection = Seq(
         AnswerSection(
           Some("directorCheckYourAnswers.directorDetails.heading"),
-          checkYourAnswerHelper.directorDetails(index.id, mode) ++
+          checkYourAnswerHelper.directorName(index.id, mode) ++
+          checkYourAnswerHelper.directorDob(index.id, mode) ++
             checkYourAnswerHelper.directorNino(index.id, mode) ++
             checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode)
         ),

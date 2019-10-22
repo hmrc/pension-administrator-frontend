@@ -22,13 +22,17 @@ import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
 import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import viewmodels.{ConfirmDeleteViewModel, Message}
+import views.html.confirmDelete
+
+import scala.concurrent.Future
 
 class ConfirmDeleteDirectorController @Inject()(
                                                  val appConfig: FrontendAppConfig,
@@ -41,7 +45,7 @@ class ConfirmDeleteDirectorController @Inject()(
                                                  formProvider: ConfirmDeleteFormProvider
                                                ) extends ConfirmDeleteController with Retrievals {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   private def vm(index: Index, name: String, mode:Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
@@ -55,15 +59,15 @@ class ConfirmDeleteDirectorController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      DirectorDetailsId(index).retrieve.right.map { details =>
+      DirectorNameId(index).retrieve.right.map { details =>
         get(vm(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
       }
   }
 
   def onSubmit(mode:Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      DirectorDetailsId(index).retrieve.right.map { details =>
-        post(vm(index, details.fullName, mode), DirectorDetailsId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)
+      DirectorNameId(index).retrieve.right.map { details =>
+        post(vm(index, details.fullName, mode), DirectorNameId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)
       }
   }
 

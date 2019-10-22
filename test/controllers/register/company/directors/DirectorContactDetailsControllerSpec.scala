@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ContactDetailsFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorDetailsId}
+import identifiers.register.company.directors.{DirectorContactDetailsId, DirectorNameId}
 import models._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -53,13 +53,13 @@ class DirectorContactDetailsControllerSpec extends ControllerSpecBase {
   private val validData: JsObject = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString ->
+        DirectorNameId.toString ->
           PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorContactDetailsId.toString ->
           contactDetailsModel
       ),
       Json.obj(
-        DirectorDetailsId.toString ->
+        DirectorNameId.toString ->
           PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )

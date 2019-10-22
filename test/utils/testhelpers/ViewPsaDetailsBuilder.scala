@@ -192,7 +192,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
 
   val directorsSuperSection =SuperSection(Some("director.supersection.header"),
     Seq(AnswerSection(
-      Some("Director number one"),
+      Some("Director one"),
       directorsSeqAnswers
     )),
     Some(AddLink(
