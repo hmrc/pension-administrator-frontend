@@ -53,6 +53,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
   //noinspection ScalaStyle
   private def commonMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
+
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers, mode)
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
     case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
