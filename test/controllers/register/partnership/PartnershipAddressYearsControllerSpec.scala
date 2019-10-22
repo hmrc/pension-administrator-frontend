@@ -73,9 +73,9 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
 
   val viewModel = AddressYearsViewModel(
     PartnershipAddressYearsController.onSubmit(NormalMode),
-    Message("partnership.addressYears.title"),
-    Message("partnership.addressYears.heading").withArgs(partnershipName),
-    Message("partnership.addressYears.heading").withArgs(partnershipName)
+    Message("addressYears.heading", Message("thePartnership").resolve),
+    Message("addressYears.heading").withArgs(partnershipName),
+    Message("addressYears.heading").withArgs(partnershipName)
   )
 
   val form = new AddressYearsFormProvider()("error.required")

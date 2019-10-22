@@ -18,13 +18,16 @@ package utils.checkyouranswers
 
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
+import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.partnership.PartnershipDetailsId
+import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
 import models.register.adviser.AdviserDetails
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
 import utils.{DateHelper, UserAnswers}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 import scala.language.implicitConversions
 
@@ -33,12 +36,23 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 }
 
 trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  private def companyName(ua:UserAnswers)(implicit messages:Messages):String =
-    ua.get(BusinessNameId).getOrElse(messages("theCompany"))
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
+    ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
+}
 
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages) =
-    messages(messageKey, companyName(ua))
+trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages): Message =
+    ua.get(PartnershipDetailsId).map(name => Message(messageKey, name.companyName)).getOrElse(Message(messageKey, Message("thePartnership")))
+}
 
+trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+}
+
+trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+    ua.get(DirectorDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
 }
 
 object CheckYourAnswers {
@@ -144,16 +158,17 @@ object CheckYourAnswers {
 
 }
 
-case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address") {
+case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None) {
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers) = {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map { address =>
           Seq(AnswerRow(
             label,
             address.lines(countryOptions),
-            false,
-            changeUrl
+            answerIsMessageKey = false,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
           ))
         } getOrElse Seq.empty[AnswerRow]
       }
@@ -203,16 +218,18 @@ case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: Stri
   }
 }
 
-case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years") {
+case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years",
+                                                               hiddenLabel: Option[Message] = None) {
   def apply()(implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers) =
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(id).map(addressYears =>
           Seq(AnswerRow(
             label,
             Seq(s"common.addressYears.$addressYears"),
-            true,
-            changeUrl
+            answerIsMessageKey = true,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
           ))) getOrElse Seq.empty[AnswerRow]
     }
   }
@@ -272,7 +289,7 @@ case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
   }
 }
 
-case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None) {
+case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
   def apply()(implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -282,13 +299,14 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None)
               label getOrElse s"${id.toString}.checkYourAnswersLabel",
               answer = Seq(string),
               answerIsMessageKey = false,
-              changeUrl = changeUrl
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
             ))
         } getOrElse Seq.empty[AnswerRow]
     }
 }
 
-case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None) {
+case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
   implicit def apply()(implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -298,7 +316,8 @@ case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = Non
               label getOrElse s"${id.toString}.checkYourAnswersLabel",
               Seq(if (flag) "site.yes" else "site.no"),
               answerIsMessageKey = true,
-              changeUrl
+              changeUrl,
+              hiddenLabel
             ))
         } getOrElse Seq.empty[AnswerRow]
     }

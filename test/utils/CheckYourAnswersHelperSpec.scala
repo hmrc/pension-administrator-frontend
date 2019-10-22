@@ -210,24 +210,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
-  "companyRegistrationNumber" should {
-    behave like cyaHelperMethod(_.companyRegistrationNumber.toSeq,
-      Seq(
-        TestScenario(
-          Json.obj(
-            CompanyRegistrationNumberId.toString -> "crn"
-          ),
-          Seq(
-            AnswerRow("companyRegistrationNumber.checkYourAnswersLabel",
-              Seq("crn"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-number")))
-          )
-        )
-      )
-    )
-  }
-
   "individualDateOfBirth" should {
     behave like cyaHelperMethod(_.individualDateOfBirth.toSeq,
       Seq(

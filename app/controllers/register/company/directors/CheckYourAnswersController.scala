@@ -18,17 +18,18 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.actions._
 import controllers.{Retrievals, Variations}
-import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
+import controllers.actions._
+import identifiers.register.company.directors.{CheckYourAnswersId, DirectorAddressYearsId, IsDirectorCompleteId}
 import javax.inject.Inject
-import models._
+import models.{CheckMode, Mode, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
-import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
-import viewmodels.AnswerSection
+import utils.checkyouranswers.Ops._
+import utils.{CheckYourAnswersFactory, Enumerable, Navigator, SectionComplete}
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +45,8 @@ class CheckYourAnswersController @Inject()(
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             sectionComplete: SectionComplete,
                                             override val cacheConnector: UserAnswersCacheConnector
-                                          )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
+                                          )(implicit ec: ExecutionContext) extends FrontendController
+  with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -59,7 +61,7 @@ class CheckYourAnswersController @Inject()(
         AnswerSection(
           Some("directorCheckYourAnswers.contactDetails.heading"),
           checkYourAnswerHelper.directorAddress(index.id, mode) ++
-            checkYourAnswerHelper.directorAddressYears(index.id, mode) ++
+            DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url))) ++
             checkYourAnswerHelper.directorPreviousAddress(index.id, mode) ++
             checkYourAnswerHelper.directorContactDetails(index.id, mode)
         ))

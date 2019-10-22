@@ -38,11 +38,12 @@
       field = form("value"),
       legend = viewmodel.legend,
       legendClass = Some("visually-hidden"),
-      inputs = viewmodel.inputs
+      inputs = viewmodel.inputs,
+      fieldsetClass = Some("inline")
     )
 
     <div class="subsection">
-        @components.submit_button()
+        @components.submit_button(submitMessageKey = "site.save_and_continue")
     </div>
     @viewmodel.psaName.map { psaName =>
         @components.return_link(psaName, mode)

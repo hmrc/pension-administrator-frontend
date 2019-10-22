@@ -119,7 +119,7 @@ class RegisterCompanyNavigator @Inject()(
     case CompanyContactAddressListId =>
       NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(CheckMode))
     case CompanyContactAddressId =>
-      NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(CheckMode))
+      checkYourAnswers
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>

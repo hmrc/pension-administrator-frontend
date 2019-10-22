@@ -232,7 +232,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }
@@ -242,7 +242,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }
@@ -363,7 +363,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }
@@ -373,7 +373,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }

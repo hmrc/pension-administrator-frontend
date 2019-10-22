@@ -25,6 +25,7 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
@@ -45,33 +46,27 @@ class PartnershipAddressYearsController @Inject()(
                                                  ) extends AddressYearsController with Retrievals {
 
 
-  private def viewModel(mode: Mode) =
-    Retrieval {
-      implicit request =>
-        PartnershipDetailsId.retrieve.right.map { details =>
-          AddressYearsViewModel(
-            routes.PartnershipAddressYearsController.onSubmit(mode),
-            Message("partnership.addressYears.title"),
-            Message("partnership.addressYears.heading").withArgs(details.companyName),
-            Message("partnership.addressYears.heading").withArgs(details.companyName),
-            psaName = psaName()
-          )
-        }
-    }
+  private def viewModel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =
+    AddressYearsViewModel(
+      routes.PartnershipAddressYearsController.onSubmit(mode),
+      Message("addressYears.heading", Message("thePartnership").resolve),
+      Message("addressYears.heading").withArgs(partnershipName),
+      Message("addressYears.heading").withArgs(partnershipName),
+      psaName = psaName()
+    )
 
-  val form = formProvider("error.addressYears.required")
+  def form(partnershipName: String) = formProvider(partnershipName)
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(Message("theCompany").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map {
-        get(PartnershipAddressYearsId, form, _, mode)
-      }
+      get(PartnershipAddressYearsId, form(entityName), viewModel(mode, entityName), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map {
-        post(PartnershipAddressYearsId, mode, form, _)
-      }
+      post(PartnershipAddressYearsId, mode, form(entityName), viewModel(mode, entityName))
   }
 }

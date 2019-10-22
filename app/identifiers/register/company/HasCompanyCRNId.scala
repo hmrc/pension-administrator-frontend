@@ -21,7 +21,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 
 case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
@@ -33,12 +33,11 @@ case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "hasCompanyNumber.heading")
 
-      private def hiddenLabel(index: Int, ua: UserAnswers): String =
-        dynamicMessage(ua, "messages__visuallyhidden__dynamic_hasCrn")
-
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "hasCompanyNumber.visuallyHidden.text")
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
     }
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {

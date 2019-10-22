@@ -32,7 +32,7 @@ trait CheckYourAnswersBehaviours extends ViewSpecBase {
           val answer1 = "test-answer-1"
           val answer2 = "test-answer-2"
 
-          val answerRow = AnswerRow("test-label", Seq(answer1, answer2), answerIsMessageKey = false, Link("http//:google.com"))
+          val answerRow = AnswerRow("test-label", Seq(answer1, answer2), answerIsMessageKey = false, Link("http//:google.com"), None)
 
           val section = AnswerSection(
             Some(headingKey),
@@ -53,7 +53,7 @@ trait CheckYourAnswersBehaviours extends ViewSpecBase {
         "correctly display an AnswerSection where answerIsMessageKey is true" in {
           val headingKey = "test-headingKey"
 
-          val answerRow = AnswerRow("test-label", Seq("date.day"), answerIsMessageKey = true, Link("http//:google.com"))
+          val answerRow = AnswerRow("test-label", Seq("date.day"), answerIsMessageKey = true, Link("http//:google.com"), None)
 
           val section = AnswerSection(
             Some(headingKey),
@@ -72,7 +72,8 @@ trait CheckYourAnswersBehaviours extends ViewSpecBase {
             "test-relevance-row-label",
             Seq("test-relevance-row-answer"),
             answerIsMessageKey = false,
-            Link("test-relevance-row-url")
+            Link("test-relevance-row-url"),
+            None
           )
 
           val answerRow = RepeaterAnswerRow(
@@ -99,7 +100,7 @@ trait CheckYourAnswersBehaviours extends ViewSpecBase {
         }
 
         "display the correct number of answers" in {
-          val answerRow = AnswerRow("test-label", Seq("test-answer"), answerIsMessageKey = true, Link("test-change-url"))
+          val answerRow = AnswerRow("test-label", Seq("test-answer"), answerIsMessageKey = true, Link("test-change-url"), None)
 
           val section = AnswerSection(
             Some("test-heading-key"),

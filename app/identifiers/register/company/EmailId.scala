@@ -21,7 +21,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 case object EmailId extends TypedIdentifier[String] {
   self =>
@@ -35,8 +35,11 @@ case object EmailId extends TypedIdentifier[String] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "email.title")
 
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "email.visuallyHidden.text")
+
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
       }
     }
 }

@@ -21,6 +21,7 @@ import controllers.actions._
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
 import identifiers.register.company.{PhoneId, _}
 import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
+import models.RegistrationLegalStatus.LimitedCompany
 import models._
 import models.register.BusinessType
 import play.api.libs.json.Json
@@ -40,158 +41,126 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "on a GET request for Company Details section " must {
 
       "render the view correctly for the company name and utr" in {
-        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
-          answerRow("utr.checkYourAnswersLabel", Seq("Test UTR")))
+        val rows = Seq(answerRow(Message("businessName.heading",
+          Message("businessType.limitedCompany").resolve.toLowerCase()).resolve, Seq("Test Company Name")),
+          answerRow(Message("utr.heading",
+            Message("businessType.limitedCompany").resolve.toLowerCase()).resolve, Seq("Test UTR")))
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
           BusinessTypeId.toString -> BusinessType.LimitedCompany.toString,
           BusinessNameId.toString -> "Test Company Name",
           BusinessUTRId.toString -> "Test UTR")
 
-        testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
 
       "render the view correctly for vat registration number" in {
-        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
-          answerRow(label = Message("hasVAT.heading", companyName), Seq("site.yes"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
-          answerRow(label = Message("enterVAT.heading", companyName), Seq("Test Vat"), answerIsMessageKey = false,
-            Some(Link(controllers.register.company.routes.CompanyEnterVATController.onPageLoad(CheckMode).url))))
+        val rows = Seq(
+          answerRow(label = Message("hasVAT.heading", defaultCompany), Seq("site.yes"), answerIsMessageKey = true,
+          Some(Link(controllers.register.company.routes.HasCompanyVATController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("hasVAT.visuallyHidden.text", defaultCompany))),
+          answerRow(label = Message("enterVAT.heading", defaultCompany), Seq("Test Vat"), answerIsMessageKey = false,
+            Some(Link(controllers.register.company.routes.CompanyEnterVATController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("enterVAT.visuallyHidden.text", defaultCompany))))
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessNameId.toString -> companyName,
           HasVATId.toString -> true,
           EnterVATId.toString -> "Test Vat"
         )
-        testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
 
       "render the view correctly for paye number" in {
-        val rows = Seq(answerRow("cya.label.companyName", Seq("Test Company Name")),
-          answerRow(Message("hasPAYE.heading", companyName), Seq("site.yes"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
-          answerRow(Message("enterPAYE.heading", companyName), Seq("Test Paye"), answerIsMessageKey = false,
-            Some(Link(controllers.register.company.routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))))
+        val rows = Seq(answerRow(Message("hasPAYE.heading", defaultCompany), Seq("site.yes"), answerIsMessageKey = true,
+          Some(Link(controllers.register.company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("hasPAYE.visuallyHidden.text", defaultCompany))),
+          answerRow(Message("enterPAYE.heading", defaultCompany), Seq("Test Paye"), answerIsMessageKey = false,
+            Some(Link(controllers.register.company.routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("enterPAYE.visuallyHidden.text", defaultCompany))))
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessNameId.toString -> companyName,
           HasPAYEId.toString -> true,
           EnterPAYEId.toString -> "Test Paye"
         )
-        testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
 
       "render the view correctly for company registration number" in {
         val rows = Seq(
-          answerRow("cya.label.companyName", Seq("bla ltd")),
           answerRow(
-            messages("companyRegistrationNumber.heading", "bla ltd"), Seq("test reg no"), false,
-            Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))
+            messages("companyRegistrationNumber.heading", defaultCompany), Seq("test reg no"), false,
+            Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("companyRegistrationNumber.visuallyHidden.text", defaultCompany))
           )
         )
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessNameId.toString -> "bla ltd",
           CompanyRegistrationNumberId.toString -> "test reg no"
         )
-        testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
 
       "render the view correctly for has company number" in {
         val rows = Seq(
-          answerRow("cya.label.companyName", Seq("bla ltd")),
           answerRow(
-            messages("hasCompanyNumber.heading", "bla ltd"), Seq("site.yes"), true,
-            Some(Link(controllers.register.company.routes.HasCompanyCRNController.onPageLoad(CheckMode).url))
+            messages("hasCompanyNumber.heading", defaultCompany), Seq("site.yes"), true,
+            Some(Link(controllers.register.company.routes.HasCompanyCRNController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("hasCompanyNumber.visuallyHidden.text", defaultCompany))
           )
         )
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessNameId.toString -> "bla ltd",
           HasCompanyCRNId.toString -> true
         )
-        testRenderedView(sections :+ companyContactDetails :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
     }
 
     "on a GET request for Company Contact Details section " must {
 
-      "render the view correctly for the company address" in {
-        val address = TolerantAddress(
-          Some("address-line-1"),
-          Some("address-line-2"),
-          None,
-          None,
-          Some("post-code"),
-          Some("country")
-        )
-        val rows = Seq(answerRow("companyAddress.checkYourAnswersLabel",
-          Seq(
-            address.addressLine1.value,
-            address.addressLine2.value,
-            address.postcode.value,
-            address.country.value
-          )))
-
-        val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
-
-        val retrievalAction = dataRetrievalAction(
-          CompanyAddressId.toString -> address
-        )
-        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
-      }
-
-      "render the view correctly for company same contact address" in {
-        val rows = Seq(answerRow("cya.label.company.same.contact.address", Seq("Yes"), true,
-          Some(Link(controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url))))
-
-        val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
-
-        val retrievalAction = dataRetrievalAction(
-          CompanySameContactAddressId.toString -> true
-        )
-        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
-      }
-
       "render the view correctly for the company contact address" in {
-        val rows = Seq(answerRow("cya.label.company.contact.address",
+        val rows = Seq(answerRow(Message("cya.label.company.contact.address", defaultCompany),
           Seq(
             address.addressLine1,
             address.addressLine2,
             address.postcode.value,
             address.country
-          )))
+          ),
+          answerIsMessageKey = false,
+          Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)),
+          visuallyHiddenLabel = Some(Message("companyContactAddress.visuallyHidden.text", defaultCompany))))
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
           CompanyContactAddressId.toString -> address
         )
-        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
 
       "render the view correctly for the company address years" in {
         val addressYears = AddressYears.OverAYear
-        val rows = Seq(answerRow("companyAddressYears.checkYourAnswersLabel",
-          Seq(s"common.addressYears.${addressYears.toString}"), true,
-          Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))))
+        val rows = Seq(answerRow(Message("addressYears.heading", Message("theCompany").resolve),
+          Seq(s"common.addressYears.${addressYears.toString}"), answerIsMessageKey = true,
+          Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
+          visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theCompany").resolve))))
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
           CompanyAddressYearsId.toString -> addressYears.toString
         )
-        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
 
       "render the view correctly for the company previous address" in {
@@ -203,45 +172,46 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           Some("post-code"),
           "country"
         )
-        val rows = Seq(answerRow("companyPreviousAddress.checkYourAnswersLabel",
+        val rows = Seq(answerRow(Message("companyPreviousAddress.checkYourAnswersLabel", defaultCompany),
           Seq(
             address.addressLine1,
             address.addressLine2,
             address.postcode.value,
             address.country
-          ), false, Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))))
+          ), answerIsMessageKey = false,
+          Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)),
+          visuallyHiddenLabel = Some(Message("companyPreviousAddress.visuallyHidden.text", defaultCompany))))
 
-        val sections = answerSections(Some("company.checkYourAnswers.company.contact.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
           CompanyPreviousAddressId.toString -> address
         )
-        testRenderedView(companyDetails() +: sections :+ contactDetails, retrievalAction)
+        testRenderedView(sections, retrievalAction)
       }
     }
 
     "on a GET request for Contact Details section " must {
 
       "render the view correctly for email and phone" in {
-
-
         val rows = Seq(
           answerRow(
-            label = messages("email.title", "Test Company Name"),
+            label = messages("email.title", defaultCompany),
             answer = Seq("test@email"),
-            changeUrl = Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(CheckMode).url))
+            changeUrl = Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultCompany))
           ),
           answerRow(
-            label = messages("phone.title", "Test Company Name"),
+            label = messages("phone.title", defaultCompany),
             answer = Seq("1234567890"),
-            changeUrl = Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(CheckMode).url))
+            changeUrl = Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultCompany))
           )
         )
 
-        val sections = answerSections(Some(contactDetailsHeading), rows)
+        val sections = answerSections(None, rows)
 
         val retrievalAction = dataRetrievalAction(
-          BusinessNameId.toString -> "Test Company Name",
           "contactDetails" -> Json.obj(
             PhoneId.toString -> "1234567890",
             EmailId.toString -> "test@email"
@@ -249,12 +219,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         )
 
         testRenderedView(
-          sections = Seq(
-            companyDetails(
-              row = Seq(answerRow(label = "companyDetails.companyName", answer = Seq("Test Company Name")))
-            ),
-            companyContactDetails
-          ) ++ sections, dataRetrievalAction = retrievalAction
+          sections = sections, dataRetrievalAction = retrievalAction
         )
       }
     }
@@ -288,6 +253,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private val companyName = "Test Company Name"
+  private val defaultCompany = Message("theCompany").resolve
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
@@ -306,20 +272,11 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       countryOptions
     )
 
-  private val companyContactDetails = AnswerSection(
-    Some("company.checkYourAnswers.company.contact.details.heading"),
-    Seq.empty
-  )
-
   private def companyDetails(row: Seq[AnswerRow] = Seq.empty) = AnswerSection(
-    Some("company.checkYourAnswers.company.details.heading"),
+    None,
     row
   )
 
-  private val contactDetails = AnswerSection(
-    Some(contactDetailsHeading),
-    Seq.empty
-  )
   private val address = Address(
     "address-line-1",
     "address-line-2",
@@ -336,8 +293,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Seq(section)
   }
 
-  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, changeUrl)
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
+                        changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message]= None): AnswerRow = {
+    AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
   private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {

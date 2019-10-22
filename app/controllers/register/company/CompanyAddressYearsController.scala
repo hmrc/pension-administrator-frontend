@@ -20,59 +20,56 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
+import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{CompanyAddressYearsId, CompanyContactAddressId}
+import identifiers.register.company.CompanyAddressYearsId
 import javax.inject.Inject
-import models.Mode
+import models.requests.DataRequest
+import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.countryOptions.CountryOptions
-import utils.{Enumerable, Navigator, UserAnswers}
-import views.html.register.company.companyAddressYears
-
-import scala.concurrent.{ExecutionContext, Future}
+import viewmodels.Message
+import viewmodels.address.AddressYearsViewModel
 
 class CompanyAddressYearsController @Inject()(
-                                               appConfig: FrontendAppConfig,
+                                               @RegisterCompany override val navigator: Navigator,
+                                               override val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
-                                               dataCacheConnector: UserAnswersCacheConnector,
-                                               @RegisterCompany navigator: Navigator,
+                                               override val cacheConnector: UserAnswersCacheConnector,
+                                               override val allowAccess: AllowAccessActionProvider,
                                                authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: AddressYearsFormProvider,
-                                               countryOptions: CountryOptions
-                                             )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits with Retrievals {
+                                               formProvider: AddressYearsFormProvider
+                                             ) extends AddressYearsController with Retrievals {
 
-  private val form = formProvider("companyAddressYears.error.required")
+  private def form(companyName: String): Form[AddressYears] = formProvider(companyName)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
-        val preparedForm = request.userAnswers.get(CompanyAddressYearsId) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-        Future.successful(Ok(companyAddressYears(appConfig, preparedForm, mode, countryOptions, name)))
-      }
-  }
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
+        get(CompanyAddressYearsId, form(entityName), viewModel(mode, entityName), mode)
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(companyAddressYears(appConfig, formWithErrors, mode, countryOptions, name))),
-          value =>
-            dataCacheConnector.save(request.externalId, CompanyAddressYearsId, value).map(cacheMap =>
-              Redirect(navigator.nextPage(CompanyAddressYearsId, mode, UserAnswers(cacheMap))))
-        )
-      }
+      post(CompanyAddressYearsId, mode, form(entityName), viewModel(mode, entityName))
   }
 
+  private def viewModel(mode: Mode, companyName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {
+    AddressYearsViewModel(
+      postCall = routes.CompanyAddressYearsController.onSubmit(mode),
+      title = Message("addressYears.heading", Message("theCompany").resolve),
+      heading = Message("addressYears.heading", companyName),
+      legend = Message("addressYears.heading", companyName),
+      psaName = psaName()
+    )
+  }
 }

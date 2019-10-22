@@ -28,15 +28,17 @@ import views.html.address.addressYears
 
 class AddressYearsViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "companyAddressYears"
+  val messageKeyPrefix = "addressYears"
 
   val form = new AddressYearsFormProvider()("error")
   val name = "Name"
+  val title = Message("addressYears.heading", Message("theCompany").resolve)
+  val heading = Message("addressYears.heading", name)
   val viewmodel = AddressYearsViewModel(
     postCall = Call("GET", "www.example.com"),
-    title = Message("companyAddressYears.title"),
-    heading = "companyAddressYears.heading",
-    legend = "legend",
+    title = title,
+    heading = heading,
+    legend = heading,
     psaName = Some("test psa")
   )
 
@@ -46,7 +48,7 @@ class AddressYearsViewSpec extends ViewBehaviours {
     addressYears(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages)
 
   "AddressYears view" must {
-    behave like normalPage(createView(), messageKeyPrefix)
+    behave like normalPageWithTitle(createView(), messageKeyPrefix, title, heading)
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
