@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.register
+package views
 
 import controllers.register.company.routes
 import forms.register.EnterVATFormProvider
@@ -24,7 +24,7 @@ import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
-import views.html.register.enterVAT
+import views.html.enterVAT
 
 class EnterVATViewSpec extends QuestionViewBehaviours[String] {
 

@@ -23,6 +23,11 @@ POST       /:index/have-national-insurance-number                    controllers
 GET        /:index/:mode/have-national-insurance-number             controllers.register.company.directors.HasDirectorNINOController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/have-national-insurance-number             controllers.register.company.directors.HasDirectorNINOController.onSubmit(mode: Mode, index: Index)
 
+GET        /:index/why-no-national-insurance-number                    controllers.register.company.directors.DirectorNoNINOReasonController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/why-no-national-insurance-number                    controllers.register.company.directors.DirectorNoNINOReasonController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/why-no-national-insurance-number             controllers.register.company.directors.DirectorNoNINOReasonController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/why-no-national-insurance-number             controllers.register.company.directors.DirectorNoNINOReasonController.onSubmit(mode: Mode, index: Index)
+
 GET        /:index/directors-address                            controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-address                            controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/directors-address                     controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode: Mode, index: Index)

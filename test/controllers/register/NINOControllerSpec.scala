@@ -31,7 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.register.enterNINO
+import views.html.enterNINO
 
 import scala.concurrent.Future
 

@@ -353,6 +353,12 @@ enterNINO.error.invalid = Enter {0}’s National Insurance number in the correct
 enterNINO.error.required = Enter a National Insurance number
 enterNINO.visuallyHidden.text = {0}’s National Insurance number
 
+whyNoNINO.heading = Why does {0} not have a National Insurance number?
+whyNoNINO.error.invalid = Reason must only include letters, numbers and punctuation marks
+whyNoNINO.error.length = Reason must be 160 characters or less
+whyNoNINO.error.required = Enter a reason why {0} does not have a National Insurance number
+whyNoNINO.visuallyHidden.text = the reason why {0} does not have a National Insurance number
+
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.

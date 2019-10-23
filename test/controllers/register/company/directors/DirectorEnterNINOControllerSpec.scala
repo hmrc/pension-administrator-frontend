@@ -16,20 +16,58 @@
 
 package controllers.register.company.directors
 
-import controllers.behaviours.ControllerWithSessionExpiryBehaviours
-import models.NormalMode
-import play.api.test.Helpers._
+import connectors.FakeUserAnswersCacheConnector
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.behaviours.ControllerWithCommonBehaviour
+import forms.register.NINOFormProvider
+import models.{Index, Mode, NormalMode}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import utils.FakeNavigator
+import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterNINO
 
-class DirectorEnterNINOControllerSpec extends ControllerWithSessionExpiryBehaviours {
+class DirectorEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
+
+  import DirectorEnterNINOControllerSpec._
+
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val ninoForm = formProvider(directorName)
+
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterNINOController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+
+  private def enterNINOView(form: Form[_] = ninoForm): String = enterNINO(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorEnterNINOController" must {
-    running(
-      _.overrides(modules(dontGetAnyData): _*)
-    ) {
-      app =>
-        val controller = app.injector.instanceOf[DirectorEnterNINOController]
-        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode, index = 0),
-          controller.onSubmit(NormalMode, index = 0))
-    }
+
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
+      validData = getDirector,
+      viewAsString = enterNINOView,
+      form = ninoForm,
+      request = postRequest
+    )
   }
 }
+
+object DirectorEnterNINOControllerSpec {
+  private val formProvider = new NINOFormProvider()
+  private val index = 0
+  private val directorName = "test first name test middle name test last name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "AB100100A"))
+
+  private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
+    CommonFormWithHintViewModel(
+      postCall = routes.DirectorEnterNINOController.onSubmit(mode, index),
+      title = Message("enterNINO.heading", Message("theDirector").resolve),
+      heading = Message("enterNINO.heading", directorName),
+      mode = mode,
+      entityName = directorName
+    )
+}
+

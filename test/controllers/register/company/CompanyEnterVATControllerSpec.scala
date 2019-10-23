@@ -29,7 +29,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.register.enterVAT
+import views.html.enterVAT
 
 class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 

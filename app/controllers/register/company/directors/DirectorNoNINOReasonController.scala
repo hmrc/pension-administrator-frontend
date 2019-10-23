@@ -18,10 +18,10 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.ReasonController
 import controllers.actions._
-import controllers.register.NINOController
-import forms.register.NINOFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorEnterNINOId}
+import forms.ReasonFormProvider
+import identifiers.register.company.directors.{DirectorDetailsId, DirectorNoNINOReasonId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -31,16 +31,19 @@ import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
-class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navigator,
-                                            val appConfig: FrontendAppConfig,
-                                            val messagesApi: MessagesApi,
-                                            val cacheConnector: UserAnswersCacheConnector,
-                                            authenticate: AuthAction,
-                                            val allowAccess: AllowAccessActionProvider,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            formProvider: NINOFormProvider
-                                           ) extends NINOController {
+import scala.concurrent.ExecutionContext
+
+class DirectorNoNINOReasonController @Inject()(
+                                                @CompanyDirector val navigator: Navigator,
+                                                val appConfig: FrontendAppConfig,
+                                                val messagesApi: MessagesApi,
+                                                val dataCacheConnector: UserAnswersCacheConnector,
+                                                authenticate: AuthAction,
+                                                val allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: ReasonFormProvider
+                                         )(implicit val ec: ExecutionContext) extends ReasonController {
 
   private def form(directorName: String) = formProvider(directorName)
 
@@ -48,13 +51,13 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(DirectorEnterNINOId(index), form(directorName), viewModel(mode, index, directorName))
+        get(DirectorNoNINOReasonId(index), viewModel(mode, index, directorName), form(directorName))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val directorName = entityName(index)
-      post(DirectorEnterNINOId(index), mode, form(directorName), viewModel(mode, index, directorName))
+      post(DirectorNoNINOReasonId(index), mode, viewModel(mode, index, directorName), form(directorName))
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
@@ -62,9 +65,9 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = routes.DirectorEnterNINOController.onSubmit(mode, index),
-      title = Message("enterNINO.heading", Message("theDirector").resolve),
-      heading = Message("enterNINO.heading", directorName),
+      postCall = routes.DirectorNoNINOReasonController.onSubmit(mode, index),
+      title = Message("whyNoNINO.heading", Message("theDirector").resolve),
+      heading = Message("whyNoNINO.heading", directorName),
       mode = mode,
       entityName = directorName
     )
