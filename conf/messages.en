@@ -343,6 +343,10 @@ enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characte
 enterPAYE.error.required = Enter an employer PAYE reference
 enterPAYE.visuallyHidden.text = {0}’s employer PAYE reference
 
+trading.title = Has {0} been trading for at least 1 year?
+trading.error.required = Select yes if {0} has been trading for at least 1 year
+trading.visuallyHidden.text = whether {0} has been trading for at least 1 year
+
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.hint = A UTR is issued by HMRC when you register for Self assessment.
