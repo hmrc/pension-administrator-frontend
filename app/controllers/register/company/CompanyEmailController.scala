@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.EmailId
+import identifiers.register.company.CompanyEmailId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -48,12 +48,12 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(EmailId, form, viewModel(mode))
+        get(CompanyEmailId, form, viewModel(mode))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(EmailId, mode, form, viewModel(mode))
+      post(CompanyEmailId, mode, form, viewModel(mode))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

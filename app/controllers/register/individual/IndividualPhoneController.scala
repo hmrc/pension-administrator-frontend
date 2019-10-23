@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.individual
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -22,17 +22,17 @@ import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.CompanyPhoneId
+import identifiers.register.individual.{IndividualDetailsId, IndividualPhoneId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.Individual
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
-class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
+class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val messagesApi: MessagesApi,
                                        val cacheConnector: UserAnswersCacheConnector,
@@ -48,21 +48,21 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(CompanyPhoneId, form, viewModel(mode))
+        get(IndividualPhoneId, form, viewModel(mode))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyPhoneId, mode, form, viewModel(mode))
+      post(IndividualPhoneId, mode, form, viewModel(mode))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(IndividualDetailsId).fold(Message("theIndividual").resolve)(_.fullName)
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = routes.CompanyPhoneController.onSubmit(mode),
-      title = Message("phone.title", Message("theCompany").resolve),
+      postCall = routes.IndividualPhoneController.onSubmit(mode),
+      title = Message("phone.title", Message("theIndividual").resolve),
       heading = Message("phone.title", entityName),
       mode = mode,
       entityName = entityName

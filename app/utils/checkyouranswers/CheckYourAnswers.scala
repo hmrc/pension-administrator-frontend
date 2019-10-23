@@ -19,6 +19,7 @@ package utils.checkyouranswers
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
@@ -38,6 +39,11 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
     ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
+}
+
+trait CheckYourAnswersIndividual[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
+    ua.get(IndividualDetailsId).map(i => Message(messageKey, i.fullName)).getOrElse(Message(messageKey, Message("theIndividual")))
 }
 
 trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {

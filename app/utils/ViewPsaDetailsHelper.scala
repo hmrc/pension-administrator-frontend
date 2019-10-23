@@ -207,12 +207,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(EmailId) map { email =>
+  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualEmailId) map { email =>
     AnswerRow("company.email.label", Seq(email), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(PhoneId) map { phone =>
+  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(IndividualPhoneId) map { phone =>
     AnswerRow("company.phone.label", Seq(phone), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url)))
   }
