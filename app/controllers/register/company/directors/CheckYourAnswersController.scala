@@ -56,7 +56,9 @@ class CheckYourAnswersController @Inject()(
       val answersSection = Seq(
         AnswerSection(None,
           checkYourAnswerHelper.directorDetails(index.id, mode) ++
-            checkYourAnswerHelper.directorNino(index.id, mode) ++
+            HasDirectorNINOId(index).row(Some(Link(routes.HasDirectorNINOController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorEnterNINOId(index).row(Some(Link(routes.DirectorEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorNoNINOReasonId(index).row(Some(Link(routes.DirectorNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
             checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode) ++
             checkYourAnswerHelper.directorAddress(index.id, mode) ++
             DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++

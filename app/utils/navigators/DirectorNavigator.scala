@@ -56,8 +56,11 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers, mode)
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
-    case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
-    case DirectorNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
+    case DirectorDetailsId(index) => NavigateTo.save(routes.HasDirectorNINOController.onPageLoad(mode, index))
+    case HasDirectorNINOId(index) if hasNino(from.userAnswers, index) => NavigateTo.save(routes.DirectorEnterNINOController.onPageLoad(mode, index))
+    case HasDirectorNINOId(index) => NavigateTo.save(routes.DirectorNoNINOReasonController.onPageLoad(mode, index))
+    case DirectorEnterNINOId(index) => ninoRoutes(index, from.userAnswers, mode)
+    case DirectorNoNINOReasonId(index) => ninoRoutes(index, from.userAnswers, mode)
     case DirectorUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
     case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(mode, index))
     case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(mode, index))
@@ -75,7 +78,10 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case DirectorDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
-    case DirectorNinoId(index) => checkYourAnswers(index, journeyMode(mode))
+    case HasDirectorNINOId(index) if hasNino(from.userAnswers, index) => NavigateTo.save(routes.DirectorEnterNINOController.onPageLoad(journeyMode(mode), index))
+    case HasDirectorNINOId(index) => NavigateTo.save(routes.DirectorNoNINOReasonController.onPageLoad(journeyMode(mode), index))
+    case DirectorEnterNINOId(index) => checkYourAnswers(index, journeyMode(mode))
+    case DirectorNoNINOReasonId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorUniqueTaxReferenceId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers, journeyMode(mode))
@@ -85,6 +91,8 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorPhoneId(index) => checkYourAnswers(index, journeyMode(mode))
     case _ => commonMap(from, mode)
   }
+
+  private def hasNino(answers: UserAnswers, index: Index): Boolean = answers.get(HasDirectorNINOId(index)).getOrElse(false)
 
   private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     mode match {

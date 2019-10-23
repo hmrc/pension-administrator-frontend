@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
-import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController}
+import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController, HasDirectorNINOController, DirectorEnterNINOController, DirectorNoNINOReasonController}
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.IsDirectorCompleteId
 import models._
@@ -61,6 +61,40 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
               Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url),
               None
             ))
+
+          val sections = Seq(AnswerSection(None, rows))
+
+          testRenderedView(
+            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
+          )
+        }
+
+        s"render the view correctly for nino in ${jsLiteral.to(mode)}" in {
+          val nino = "AB100100A"
+          val reason = "test reason"
+          val retrievalAction = UserAnswers().directorHasNINO(index, flag = true).directorEnterNINO(index, nino)
+            .directorNoNINOReason(index, reason).dataRetrievalAction
+          val rows = Seq(
+            answerRow(
+              label = messages("hasNINO.heading", defaultDirectorName),
+              answer = Seq("site.yes"),
+              answerIsMessageKey = true,
+              changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("hasNINO.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(
+              label = messages("enterNINO.heading", defaultDirectorName),
+              answer = Seq(nino),
+              changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("enterNINO.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(
+              label = messages("whyNoNINO.heading", defaultDirectorName),
+              answer = Seq(reason),
+              changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("whyNoNINO.visuallyHidden.text", defaultDirectorName))
+            )
+          )
 
           val sections = Seq(AnswerSection(None, rows))
 

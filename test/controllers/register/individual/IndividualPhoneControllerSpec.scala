@@ -16,20 +16,57 @@
 
 package controllers.register.individual
 
-import controllers.behaviours.ControllerWithSessionExpiryBehaviours
-import models.NormalMode
-import play.api.test.Helpers._
+import connectors.FakeUserAnswersCacheConnector
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.behaviours.ControllerWithCommonBehaviour
+import forms.PhoneFormProvider
+import models.{Mode, NormalMode}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import utils.FakeNavigator
+import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.phone
 
-class IndividualPhoneControllerSpec extends ControllerWithSessionExpiryBehaviours {
+class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
+
+  import IndividualPhoneControllerSpec._
+
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualPhoneController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+
+  private def phoneView(form: Form[_] = phoneForm): String = phone(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "IndividualPhoneController" must {
-    running(
-      _.overrides(modules(dontGetAnyData): _*)
-    ) {
-      app =>
-        val controller = app.injector.instanceOf[IndividualPhoneController]
-        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode),
-          controller.onSubmit(NormalMode))
-    }
+
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode),
+      validData = getIndividual,
+      viewAsString = phoneView,
+      form = phoneForm,
+      request = postRequest
+    )
   }
 }
+
+object IndividualPhoneControllerSpec {
+  private val formProvider = new PhoneFormProvider()
+  private val phoneForm = formProvider()
+  private val individualName = "TestFirstName TestLastName"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
+
+  private def viewModel(mode: Mode)(implicit messages: Messages) =
+    CommonFormWithHintViewModel(
+      postCall = routes.IndividualPhoneController.onSubmit(mode),
+      title = Message("phone.title", Message("theIndividual").resolve),
+      heading = Message("phone.title", individualName),
+      mode = mode,
+      entityName = individualName
+    )
+}
+
