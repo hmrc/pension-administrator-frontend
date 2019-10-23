@@ -17,7 +17,11 @@
 package identifiers.register.company.directors
 
 import identifiers.TypedIdentifier
+import play.api.i18n.Messages
 import play.api.libs.json.JsPath
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, StringCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorPhoneId(index: Int) extends TypedIdentifier[String] {
   override def path: JsPath = JsPath \ "directors" \ index \ "directorContactDetails" \ DirectorPhoneId.toString
@@ -25,6 +29,18 @@ case class DirectorPhoneId(index: Int) extends TypedIdentifier[String] {
 
 object DirectorPhoneId {
   override lazy val toString: String = "phone"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorPhoneId] =
+    new CheckYourAnswersDirector[DirectorPhoneId] {
+      private def label(ua: UserAnswers, index: Int): String =
+        dynamicMessage(ua, "phone.title", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Int): Message =
+        dynamicMessage(ua, "phone.visuallyHidden.text", index)
+
+      override def row(id: DirectorPhoneId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA[DirectorPhoneId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+    }
 }
 
 

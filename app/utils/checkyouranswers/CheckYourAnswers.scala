@@ -47,12 +47,12 @@ trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends Ch
 
 trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
-    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
-    ua.get(DirectorDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+    ua.get(DirectorDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
 object CheckYourAnswers {

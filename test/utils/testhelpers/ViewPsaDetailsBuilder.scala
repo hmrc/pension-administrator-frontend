@@ -102,9 +102,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url))),
+      Some(Link(controllers.register.company.directors.routes.DirectorEmailController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url)))
+      Some(Link(controllers.register.company.directors.routes.DirectorPhoneController.onPageLoad(UpdateMode, 0).url)))
   )
 
 

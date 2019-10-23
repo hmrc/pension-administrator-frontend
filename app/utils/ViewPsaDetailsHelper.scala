@@ -264,14 +264,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
-    AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPhoneId(index)) map { phone =>
+    AnswerRow("phone.label", Seq(phone), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.directors.routes.DirectorPhoneController.onPageLoad(UpdateMode, index).url)))
   }
 
-  private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
-    AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEmailId(index)) map { email =>
+    AnswerRow("email.label", Seq(email), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.directors.routes.DirectorEmailController.onPageLoad(UpdateMode, index).url)))
   }
 
 

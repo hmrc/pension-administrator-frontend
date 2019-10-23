@@ -41,31 +41,32 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   val navigator = new DirectorNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
 
   //scalastyle:off line.size.limit
-  def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+  private def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
     (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorDetailsPage(mode), true, None, true),
     (DirectorDetailsId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CompanyDirectorAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (CompanyDirectorAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (DirectorAddressId(0), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorAddressYearsId(0), addressYearsOverAYear, directorContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorAddressYearsId(0), addressYearsOverAYear, directorEmailPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (DirectorAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), true, Some(paPostCodePage(checkMode(mode))), true),
     (DirectorAddressYearsId(0), emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (DirectorPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), false, Some(paAddressListPage(checkMode(mode))), false),
     (DirectorPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), true, Some(previousAddressPage(checkMode(mode))), true),
-    (DirectorPreviousAddressId(0), defaultAnswers, directorContactDetailsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorContactDetailsId(0), defaultAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorPreviousAddressId(0), defaultAnswers, directorEmailPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorEmailId(0), defaultAnswers, directorPhonePage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorPhoneId(0), defaultAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CheckYourAnswersId, emptyAnswers, addDirectorsPage(mode), true, None, false)
   )
 
-  def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+  private def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
     (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
   )
 
-  def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+  private def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
     (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
     (DirectorNinoId(0), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
@@ -77,15 +78,16 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (DirectorConfirmPreviousAddressId(0), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), false, None, true),
     (DirectorConfirmPreviousAddressId(0), confirmPreviousAddressSame, anyMoreChangesPage, false, None, true),
     (DirectorPreviousAddressId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
-    (DirectorContactDetailsId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true)
+    (DirectorEmailId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorPhoneId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true)
   )
 
-  def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+  private def normalRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
     normalOnlyRoutes ++ routes(NormalMode): _*
   )
 
-  def updateRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+  private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
     updateOnlyRoutes ++ routes(UpdateMode): _*
   )
@@ -112,7 +114,8 @@ object DirectorNavigatorSpec extends OptionValues {
   def directorNinoPage(mode: Mode) = routes.DirectorNinoController.onPageLoad(mode, 0)
   def directorUniqueTaxReferencePage(mode: Mode) = routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, 0)
   def directorAddressYearsPage(mode: Mode) = routes.DirectorAddressYearsController.onPageLoad(mode, 0)
-  def directorContactDetailsPage(mode: Mode) = routes.DirectorContactDetailsController.onPageLoad(mode, 0)
+  def directorPhonePage(mode: Mode) = routes.DirectorPhoneController.onPageLoad(mode, 0)
+  def directorEmailPage(mode: Mode) = routes.DirectorEmailController.onPageLoad(mode, 0)
   def addDirectorsPage(mode: Mode) = controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(mode)
 
   def paPostCodePage(mode: Mode): Call = routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
