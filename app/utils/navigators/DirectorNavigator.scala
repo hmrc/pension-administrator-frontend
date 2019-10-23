@@ -81,7 +81,6 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers, journeyMode(mode))
     case DirectorPreviousAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorEmailId(index) =>
-      println("\n\n\n mode: "+mode)
       checkYourAnswers(index, journeyMode(mode))
     case DirectorPhoneId(index) => checkYourAnswers(index, journeyMode(mode))
     case _ => commonMap(from, mode)
