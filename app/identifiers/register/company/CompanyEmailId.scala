@@ -23,23 +23,23 @@ import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
-case object PhoneId extends TypedIdentifier[String] {
+case object CompanyEmailId extends TypedIdentifier[String] {
   self =>
 
-  override def path: JsPath = JsPath \ "contactDetails" \ PhoneId.toString
+  override def path: JsPath = JsPath \ "contactDetails" \ CompanyEmailId.toString
 
-  override def toString: String = "phone"
+  override def toString: String = "email"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "phone.title")
+        dynamicMessage(ua, "email.title")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "phone.visuallyHidden.text")
+        dynamicMessage(ua, "email.visuallyHidden.text")
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
     }
 }
-

@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package identifiers.register.individual
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
-import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersIndividual, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
-case object EmailId extends TypedIdentifier[String] {
+case object IndividualEmailId extends TypedIdentifier[String] {
   self =>
 
-  override def path: JsPath = JsPath \ "contactDetails" \ EmailId.toString
+  override def path: JsPath = JsPath \ "individualContactDetails" \ IndividualEmailId.toString
 
   override def toString: String = "email"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
+    new CheckYourAnswersIndividual[self.type] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "email.title")
 
