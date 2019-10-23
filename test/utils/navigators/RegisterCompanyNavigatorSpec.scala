@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.company.{PhoneId, _}
+import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import identifiers.register._
 import identifiers.register.company.directors.DirectorDetailsId
@@ -85,9 +85,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
-    (EmailId, emptyAnswers, phonePage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (PhoneId, uk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (PhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (CompanyEmailId, emptyAnswers, phonePage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (CompanyPhoneId, uk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (CompanyPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage, true, None, false),
     (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode), true, None, false),
@@ -116,9 +116,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
 
-    (EmailId, emptyAnswers, anyMoreChanges, false, None, true),
-    (PhoneId, uk, anyMoreChanges, false, None, true),
-    (PhoneId, nonUk, anyMoreChanges, false, None, true)
+    (CompanyEmailId, emptyAnswers, anyMoreChanges, false, None, true),
+    (CompanyPhoneId, uk, anyMoreChanges, false, None, true),
+    (CompanyPhoneId, nonUk, anyMoreChanges, false, None, true)
   )
 
   navigator.getClass.getSimpleName must {

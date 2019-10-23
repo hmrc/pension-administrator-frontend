@@ -82,3 +82,14 @@ GET         /outside-eu-eea                         controllers.register.individ
 
 GET         /is-this-previous-address            controllers.register.individual.IndividualConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address            controllers.register.individual.IndividualConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+
+
+GET         /email-address                         controllers.register.individual.IndividualEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /email-address                         controllers.register.individual.IndividualEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/email-address                   controllers.register.individual.IndividualEmailController.onPageLoad(mode: Mode)
+POST        /:mode/email-address                   controllers.register.individual.IndividualEmailController.onSubmit(mode: Mode)
+
+GET         /phone-number                          controllers.register.individual.IndividualPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /phone-number                          controllers.register.individual.IndividualPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/phone-number                    controllers.register.individual.IndividualPhoneController.onPageLoad(mode: Mode)
+POST        /:mode/phone-number                    controllers.register.individual.IndividualPhoneController.onSubmit(mode: Mode)
