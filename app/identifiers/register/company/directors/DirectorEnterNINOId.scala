@@ -19,13 +19,16 @@ package identifiers.register.company.directors
 import identifiers._
 import models.{Index, ReferenceValue}
 import play.api.i18n.Messages
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, ReferenceValueCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorEnterNINOId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorEnterNINOId.toString
+
+  override def cleanup(value: Option[ReferenceValue], userAnswers: UserAnswers): JsResult[UserAnswers] =
+    userAnswers.remove(DirectorNoNINOReasonId(this.index))
 }
 
 object DirectorEnterNINOId {
