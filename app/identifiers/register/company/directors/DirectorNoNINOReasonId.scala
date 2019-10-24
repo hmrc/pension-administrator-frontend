@@ -28,7 +28,7 @@ case class DirectorNoNINOReasonId(index: Int) extends TypedIdentifier[String] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNoNINOReasonId.toString
 }
 object DirectorNoNINOReasonId {
-  override lazy val toString: String = "reason"
+  override lazy val toString: String = "noNinoReason"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorNoNINOReasonId] =
     new CheckYourAnswersDirector[DirectorNoNINOReasonId] {

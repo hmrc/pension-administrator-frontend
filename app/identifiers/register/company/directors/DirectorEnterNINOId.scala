@@ -17,14 +17,14 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.Index
+import models.{Index, ReferenceValue}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
-import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, StringCYA}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, ReferenceValueCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
-case class DirectorEnterNINOId(index: Int) extends TypedIdentifier[String] {
+case class DirectorEnterNINOId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorEnterNINOId.toString
 }
 
@@ -41,7 +41,8 @@ object DirectorEnterNINOId {
 
 
       override def row(id: DirectorEnterNINOId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[DirectorEnterNINOId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        ReferenceValueCYA[DirectorEnterNINOId](Some(label(userAnswers, id.index)),
+          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
     }
 }
 

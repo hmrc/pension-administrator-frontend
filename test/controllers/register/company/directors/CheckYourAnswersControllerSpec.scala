@@ -51,14 +51,14 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
               "cya.label.name",
               Seq("Test Name"),
               answerIsMessageKey = false,
-              Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url),
+              Some(Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url)),
               None
             ),
             AnswerRow(
               "cya.label.dob",
               Seq(DateHelper.formatDate(LocalDate.now)),
               answerIsMessageKey = false,
-              Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url),
+              Some(Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url)),
               None
             ))
 
@@ -70,7 +70,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
         }
 
         s"render the view correctly for nino in ${jsLiteral.to(mode)}" in {
-          val nino = "AB100100A"
+          val nino = ReferenceValue("AB100100A")
           val reason = "test reason"
           val retrievalAction = UserAnswers().directorHasNINO(index, flag = true).directorEnterNINO(index, nino)
             .directorNoNINOReason(index, reason).dataRetrievalAction
@@ -84,7 +84,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
             ),
             answerRow(
               label = messages("enterNINO.heading", defaultDirectorName),
-              answer = Seq(nino),
+              answer = Seq(nino.value),
               changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(checkMode(mode), index).url)),
               visuallyHiddenLabel = Some(Message("enterNINO.visuallyHidden.text", defaultDirectorName))
             ),

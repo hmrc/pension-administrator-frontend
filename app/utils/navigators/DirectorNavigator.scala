@@ -78,9 +78,11 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case DirectorDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
-    case HasDirectorNINOId(index) if hasNino(from.userAnswers, index) => NavigateTo.save(routes.DirectorEnterNINOController.onPageLoad(journeyMode(mode), index))
-    case HasDirectorNINOId(index) => NavigateTo.save(routes.DirectorNoNINOReasonController.onPageLoad(journeyMode(mode), index))
-    case DirectorEnterNINOId(index) => checkYourAnswers(index, journeyMode(mode))
+    case HasDirectorNINOId(index) if hasNino(from.userAnswers, index) =>
+      NavigateTo.save(routes.DirectorEnterNINOController.onPageLoad(mode, index))
+    case HasDirectorNINOId(index) => NavigateTo.save(routes.DirectorNoNINOReasonController.onPageLoad(mode, index))
+    case DirectorEnterNINOId(index) =>
+      checkYourAnswers(index, journeyMode(mode))
     case DirectorNoNINOReasonId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorUniqueTaxReferenceId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorAddressId(index) => checkYourAnswers(index, journeyMode(mode))

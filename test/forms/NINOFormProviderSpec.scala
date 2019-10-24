@@ -19,6 +19,7 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import forms.register.NINOFormProvider
+import models.ReferenceValue
 import play.api.data.FormError
 import viewmodels.Message
 
@@ -42,12 +43,12 @@ class NINOFormProviderSpec extends FormSpec with StringFieldBehaviours with Cons
     behave like formWithTransform(
       form,
       Map(fieldName -> "ab 1001 00a "),
-      expectedData = "AB100100A"
+      expectedData = ReferenceValue("AB100100A")
     )
 
     "successfully bind for a valid nino" in {
       val res = form.bind(Map(fieldName -> "AB020202A"))
-      res.get shouldEqual "AB020202A"
+      res.get.value shouldEqual "AB020202A"
     }
 
     Seq("DE999999A", "AO111111B", "ORA12345C", "AB0202020", "AB0303030D", "AB040404E").foreach { nino =>

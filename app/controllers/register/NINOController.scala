@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
-import models.Mode
 import models.requests.DataRequest
+import models.{Mode, ReferenceValue}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -42,7 +42,7 @@ trait NINOController extends FrontendController with Retrievals with I18nSupport
 
   protected def navigator: Navigator
 
-  def get(id: TypedIdentifier[String], form: Form[String], viewmodel: CommonFormWithHintViewModel)
+  def get(id: TypedIdentifier[ReferenceValue], form: Form[ReferenceValue], viewmodel: CommonFormWithHintViewModel)
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).map(form.fill).getOrElse(form)
@@ -50,13 +50,13 @@ trait NINOController extends FrontendController with Retrievals with I18nSupport
     Future.successful(Ok(enterNINO(appConfig, preparedForm, viewmodel)))
   }
 
-  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewmodel: CommonFormWithHintViewModel)
+  def post(id: TypedIdentifier[ReferenceValue], mode: Mode, form: Form[ReferenceValue], viewmodel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(enterNINO(appConfig, formWithErrors, viewmodel))),
       value =>
-        cacheConnector.save(request.externalId, id, value).flatMap(
+        cacheConnector.save(request.externalId, id, value.copy(isEditable = true)).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
               Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))

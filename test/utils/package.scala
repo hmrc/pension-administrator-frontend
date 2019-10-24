@@ -130,7 +130,7 @@ package object utils {
       answers.set(HasDirectorNINOId(index))(flag).asOpt.value
     }
 
-    def directorEnterNINO(index: Int, nino: String): UserAnswers = {
+    def directorEnterNINO(index: Int, nino: ReferenceValue): UserAnswers = {
       answers.set(DirectorEnterNINOId(index))(nino).asOpt.value
     }
 

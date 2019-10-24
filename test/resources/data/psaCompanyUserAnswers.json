@@ -66,9 +66,8 @@
         "dateOfBirth": "1950-03-29",
         "isDeleted": false
       },
-      "directorNino": {
-        "hasNino": true,
-        "nino": "AA999999A"
+      "nino": {
+        "value": "AA999999A"
       },
       "directorUtr": {
         "hasUtr": true,

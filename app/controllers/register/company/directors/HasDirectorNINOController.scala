@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.ExecutionContext
@@ -38,7 +38,7 @@ import scala.concurrent.ExecutionContext
 class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           override val dataCacheConnector: UserAnswersCacheConnector,
-                                          @RegisterCompany override val navigator: Navigator,
+                                          @CompanyDirector override val navigator: Navigator,
                                           authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
