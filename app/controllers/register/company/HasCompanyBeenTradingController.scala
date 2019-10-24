@@ -23,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.HasBeenTradingCompanyId
+import identifiers.register.company.HasCompanyBeenTradingId
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -63,7 +63,7 @@ class HasCompanyBeenTradingController @Inject()(override val appConfig: Frontend
       implicit request =>
         BusinessNameId.retrieve.right.map {
           companyName =>
-            get(HasBeenTradingCompanyId, form(companyName), viewModel(mode, companyName))
+            get(HasCompanyBeenTradingId, form(companyName), viewModel(mode, companyName))
         }
     }
 
@@ -72,7 +72,7 @@ class HasCompanyBeenTradingController @Inject()(override val appConfig: Frontend
       implicit request =>
         BusinessNameId.retrieve.right.map {
           companyName =>
-            post(HasBeenTradingCompanyId, mode, form(companyName), viewModel(mode, companyName))
+            post(HasCompanyBeenTradingId, mode, form(companyName), viewModel(mode, companyName))
         }
     }
 }
