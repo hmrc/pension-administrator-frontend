@@ -144,24 +144,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def directorNino(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorNinoId(index)) match {
-    case Some(Nino.Yes(nino)) => Seq(
-      AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${Nino.Yes}"), true,
-        Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(checkMode(mode), index).url)), None),
-      AnswerRow("directorNino.checkYourAnswersLabel.nino", Seq(nino), true,
-        Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(checkMode(mode), index).url)), None)
-    )
-
-    case Some(Nino.No(reason)) => Seq(
-      AnswerRow("directorNino.checkYourAnswersLabel", Seq(s"${Nino.No}"), true,
-        Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(checkMode(mode), index).url)), None),
-      AnswerRow("directorNino.checkYourAnswersLabel.reason", Seq(reason), true,
-        Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(checkMode(mode), index).url)), None)
-    )
-
-    case _ => Nil
-  }
-
   def moreThanTenDirectors: Option[AnswerRow] = userAnswers.get(identifiers.register.company.MoreThanTenDirectorsId) map {
     x => AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq(if (x) "site.yes" else "site.no"), true,
       Some(Link(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(CheckMode).url)), None)
