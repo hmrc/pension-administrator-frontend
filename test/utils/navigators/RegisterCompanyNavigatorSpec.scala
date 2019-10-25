@@ -22,7 +22,7 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register.company.{CompanyPhoneId, _}
-import identifiers.register.partnership.ConfirmPartnershipDetailsId
+import identifiers.register.partnership.ConfirmBusinessNameId
 import identifiers.register._
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.{Identifier, LastPageId}
@@ -139,7 +139,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
   private def companyNamePage = routes.CompanyNameController.onPageLoad()
-  private def companyUTRPage = routes.CompanyUTRController.onPageLoad()
   private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
 
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
@@ -228,8 +227,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
     .set(HasCompanyCRNId)(b).asOpt.value
 
   private val confirmAddressTrueLimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
-    _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
+    _.set(ConfirmBusinessNameId)(true)).asOpt.value
   private val confirmAddressTrueUnlimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
-    _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
+    _.set(ConfirmBusinessNameId)(true)).asOpt.value
 
 }

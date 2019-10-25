@@ -44,7 +44,7 @@ class PartnershipContactAddressListController @Inject()(
                                                        ) extends AddressListController with Retrievals {
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
-    (PartnershipDetailsId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case details ~ addresses =>
+    (BusinessNameId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case details ~ addresses =>
       AddressListViewModel(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),

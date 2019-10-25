@@ -22,7 +22,6 @@ import base.SpecBase
 import controllers.actions._
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
@@ -74,7 +73,7 @@ trait ControllerSpecBase extends SpecBase {
   def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(
       Json.obj(
-        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
+        BusinessNameId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
         "partners" -> Json.arr(
           Json.obj(
             PartnerDetailsId.toString ->

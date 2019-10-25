@@ -39,7 +39,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
           _.removeAllOf(List(IndividualDetailsCorrectId, IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId,
             BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId,
             HasPAYEId, EnterPAYEId, HasVATId, EnterVATId,
-            ConfirmPartnershipDetailsId, PartnershipVatId, PartnershipPayeId
+            ConfirmBusinessNameId, PartnershipVatId, PartnershipPayeId
           ))
         )
       case Some(true) =>
@@ -73,7 +73,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   }
 
   private def removePartnershipData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(PartnershipDetailsId, PartnershipSameContactAddressId,
+    userAnswers.removeAllOf(List(BusinessNameId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))

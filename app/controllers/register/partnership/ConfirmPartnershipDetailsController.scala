@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.partnership.{ConfirmBusinessNameId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import javax.inject.Inject
 import models._
@@ -60,7 +60,7 @@ class ConfirmPartnershipDetailsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       getPartnershipDetails { case (_, registration) =>
-        dataCacheConnector.remove(request.externalId, ConfirmPartnershipDetailsId).flatMap(_ =>
+        dataCacheConnector.remove(request.externalId, ConfirmBusinessNameId).flatMap(_ =>
           dataCacheConnector.remove(request.externalId, PartnershipRegisteredAddressId).map(_ =>
             Ok(confirmPartnershipDetails(appConfig, form, registration.response.organisation.organisationName, registration.response.address, countryOptions))))
       }
@@ -81,10 +81,10 @@ class ConfirmPartnershipDetailsController @Inject()(
           {
             case true =>
               upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
-                upsert(userAnswers, PartnershipDetailsId)(partnershipDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
+                upsert(userAnswers, BusinessNameId)(partnershipDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
                   upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
                     dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
-                      Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, userAnswers))
+                      Redirect(navigator.nextPage(ConfirmBusinessNameId, NormalMode, userAnswers))
                     }
                   }
                 }
@@ -99,7 +99,7 @@ class ConfirmPartnershipDetailsController @Inject()(
   private def getPartnershipDetails(fn: (BusinessDetails, OrganizationRegistration) => Future[Result])
                                    (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
 
-    (PartnershipDetailsId and BusinessTypeId).retrieve.right.map {
+    (BusinessNameId and BusinessTypeId).retrieve.right.map {
       case businessDetails ~ businessType =>
         val organisation = Organisation(businessDetails.companyName.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
         val legalStatus = RegistrationLegalStatus.Partnership

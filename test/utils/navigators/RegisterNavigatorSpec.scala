@@ -23,7 +23,6 @@ import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register._
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.PartnershipDetailsId
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
 import models.{BusinessDetails, NormalMode}
@@ -127,7 +126,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(PartnershipDetailsId)(BusinessDetails("test partnership name", Some("1234567890"))).asOpt.value
+    .set(BusinessNameId)(BusinessDetails("test partnership name", Some("1234567890"))).asOpt.value
     .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
   val nonUkBusiness: UserAnswers = UserAnswers(Json.obj()).areYouInUk(false)

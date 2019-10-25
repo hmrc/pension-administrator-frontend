@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.register.individual.ExistingCurrentAddressId
-import identifiers.register.partnership.{PartnershipConfirmPreviousAddressId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipConfirmPreviousAddressId
 import models._
 import play.api.data.Form
 import play.api.libs.json.JsResult
@@ -85,7 +85,7 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(PartnershipDetailsId)(BusinessDetails("Test partnership name", None)).flatMap(_.set(
+    .set(BusinessNameId)(BusinessDetails("Test partnership name", None)).flatMap(_.set(
     ExistingCurrentAddressId)(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))

@@ -22,7 +22,6 @@ import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerPreviousAddressPostCodeLookupId}
 import models.{PersonDetails, _}
 import org.mockito.Matchers
@@ -94,7 +93,7 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   )
 
   private val validData = Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
+    BusinessNameId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
     "partners" -> Json.arr(
       Json.obj(
         PartnerDetailsId.toString ->

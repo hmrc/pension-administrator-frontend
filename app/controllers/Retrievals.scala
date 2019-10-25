@@ -19,7 +19,6 @@ package controllers
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models.PersonDetails
@@ -115,7 +114,7 @@ trait Retrievals {
 
       case Some(LimitedCompany) => request.userAnswers.get(BusinessNameId)
 
-      case Some(Partnership) => request.userAnswers.get(PartnershipDetailsId).map(_.companyName)
+      case Some(Partnership) => request.userAnswers.get(BusinessNameId).map(_.companyName)
 
       case _ => None
     }

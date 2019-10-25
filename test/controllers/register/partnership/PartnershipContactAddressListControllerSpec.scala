@@ -21,7 +21,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.{PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupId
 import models.{BusinessDetails, NormalMode, TolerantAddress}
 import org.scalatest.MustMatchers
 import play.api.Application
@@ -101,7 +101,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(testName, Some("UTR")),
+    BusinessNameId.toString -> BusinessDetails(testName, Some("UTR")),
     PartnershipContactAddressPostCodeLookupId.toString -> addresses
   )))
 

@@ -23,7 +23,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.partners.PartnerNinoFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId}
 import models._
 import play.api.data.Form
@@ -45,7 +44,7 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
 
 
   val validData: JsObject = Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some("1234567890")),
+    BusinessNameId.toString -> BusinessDetails(partnershipName, Some("1234567890")),
     "partners" -> Json.arr(
       Json.obj(
         PartnerDetailsId.toString ->

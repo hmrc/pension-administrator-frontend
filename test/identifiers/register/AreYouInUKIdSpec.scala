@@ -213,9 +213,9 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
           .asOpt.value
 
       "remove all the uk partnership data " in {
-        result.get(PartnershipDetailsId) mustNot be(defined)
+        result.get(BusinessNameId) mustNot be(defined)
         result.get(BusinessTypeId) mustNot be(defined)
-        result.get(ConfirmPartnershipDetailsId) mustNot be(defined)
+        result.get(ConfirmBusinessNameId) mustNot be(defined)
         result.get(PartnershipSameContactAddressId) mustNot be(defined)
         result.get(PartnershipContactAddressPostCodeLookupId) mustNot be(defined)
         result.get(PartnershipContactAddressListId) mustNot be(defined)
@@ -247,7 +247,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
           .asOpt.value
 
       "remove all the data for non uk partnership" in {
-        result.get(PartnershipDetailsId) mustNot be(defined)
+        result.get(BusinessNameId) mustNot be(defined)
         result.get(BusinessTypeId) mustNot be(defined)
         result.get(PartnershipSameContactAddressId) mustNot be(defined)
         result.get(PartnershipRegisteredAddressId) mustNot be(defined)
@@ -278,7 +278,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
           .asOpt.value
 
       "not remove the data for Business details " in {
-        result.get(PartnershipDetailsId) must be(defined)
+        result.get(BusinessNameId) must be(defined)
       }
 
       "not remove the data for non uk Business type " in {
@@ -340,7 +340,7 @@ object AreYouInUKIdSpec extends OptionValues {
 
   private def setCommonPartnershipData(userAnswers: UserAnswers) = {
     userAnswers.set(PartnershipSameContactAddressId)(false)
-      .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("test company", Some("utr"))))
+      .flatMap(_.set(BusinessNameId)(BusinessDetails("test company", Some("utr"))))
       .flatMap(_.set(BusinessTypeId)(BusinessType.BusinessPartnership))
       .flatMap(_.set(PartnershipContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(PartnershipContactAddressListId)(tolerantAddress))
@@ -400,7 +400,7 @@ object AreYouInUKIdSpec extends OptionValues {
   val partnershipAnswersForYes = UserAnswers(Json.obj())
     .set(AreYouInUKId)(true)
     .flatMap(setCommonPartnershipData)
-    .flatMap(_.set(ConfirmPartnershipDetailsId)(true))
+    .flatMap(_.set(ConfirmBusinessNameId)(true))
     .flatMap(_.set(PartnershipVatId)(Vat.No))
     .flatMap(_.set(PartnershipPayeId)(Paye.No))
     .flatMap(_.set(RegisterAsBusinessId)(true))

@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipContactDetailsId
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
@@ -210,7 +210,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val contactDetails = ContactDetails("test@test.com", "test Phone")
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
-    PartnershipDetailsId.toString -> businessDetails
+    BusinessNameId.toString -> businessDetails
   )
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")

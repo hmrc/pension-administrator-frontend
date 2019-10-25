@@ -20,7 +20,6 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
-import identifiers.register.partnership.PartnershipDetailsId
 import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -81,7 +80,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = Json.obj(PartnershipDetailsId.toString -> testBusinessDetails)
+        val validData = Json.obj(BusinessNameId.toString -> testBusinessDetails)
         val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
         val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)

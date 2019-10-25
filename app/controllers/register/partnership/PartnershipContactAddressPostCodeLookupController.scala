@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.partnership.{PartnershipContactAddressPostCodeLookupId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -49,7 +49,7 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
 
   def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      PartnershipDetailsId.retrieve.right.map { details =>
+      BusinessNameId.retrieve.right.map { details =>
         PostcodeLookupViewModel(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
           routes.PartnershipContactAddressController.onPageLoad(mode),

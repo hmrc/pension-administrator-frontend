@@ -20,7 +20,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
-import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.partnership.{ConfirmBusinessNameId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
@@ -53,7 +53,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some(validBusinessPartnershipUtr))
+        BusinessNameId.toString -> BusinessDetails(partnershipName, Some(validBusinessPartnershipUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -65,7 +65,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(invalidUtr))
+        BusinessNameId.toString -> BusinessDetails("MyPartnership", Some(invalidUtr))
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -79,7 +79,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
       controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
 
-      FakeUserAnswersCacheConnector.verifyRemoved(ConfirmPartnershipDetailsId)
+      FakeUserAnswersCacheConnector.verifyRemoved(ConfirmBusinessNameId)
       FakeUserAnswersCacheConnector.verifyRemoved(PartnershipRegisteredAddressId)
     }
 
@@ -139,7 +139,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
+            BusinessNameId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -170,7 +170,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
+            BusinessNameId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -225,7 +225,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   private val data = Json.obj(
     BusinessTypeId.toString -> BusinessPartnership.toString,
-    PartnershipDetailsId.toString -> partnershipDetails
+    BusinessNameId.toString -> partnershipDetails
   )
 
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))

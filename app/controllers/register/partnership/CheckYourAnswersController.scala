@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(
       val partnershipDetails = AnswerSection(
         Some("checkyouranswers.partnership.details"),
         Seq(
-          PartnershipDetailsId.row(None),
+          BusinessNameId.row(None),
           PartnershipPayeId.row(Some(Link(routes.PartnershipPayeController.onPageLoad(CheckMode).url))),
           PartnershipVatId.row(Some(Link(routes.PartnershipVatController.onPageLoad(CheckMode).url)))
         ).flatten

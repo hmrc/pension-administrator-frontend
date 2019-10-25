@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models.{BusinessDetails, NormalMode, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
@@ -41,7 +40,7 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
   )
 
   val validData: JsObject = Json.obj(
-    PartnershipDetailsId.toString ->
+    BusinessNameId.toString ->
       BusinessDetails(partnershipName, Some("test utr")),
     "partners" -> Json.arr(partner("a"), partner("b"), partner("c"), partner("d", true))
   )

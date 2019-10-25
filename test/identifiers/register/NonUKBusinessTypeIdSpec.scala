@@ -77,7 +77,7 @@ class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValu
       }
 
       "not remove the data for partnership details" in {
-        result.get(PartnershipDetailsId) must be(defined)
+        result.get(BusinessNameId) must be(defined)
       }
     }
   }
@@ -90,7 +90,7 @@ class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValu
           .asOpt.value
 
       "remove the data for partnership details " in {
-        result.get(PartnershipDetailsId) mustNot be(defined)
+        result.get(BusinessNameId) mustNot be(defined)
       }
 
       "remove the data for partnership address " in {
@@ -159,13 +159,13 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
       .flatMap(_.set(DirectorDetailsId(0))(personDetails))
       .flatMap(_.set(DirectorDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenDirectorsId)(true))
-      .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("company name", None)))
+      .flatMap(_.set(BusinessNameId)(BusinessDetails("company name", None)))
     )
     .asOpt.value
 
   val answersPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)
-    .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("company name", None))
+    .flatMap(_.set(BusinessNameId)(BusinessDetails("company name", None))
       .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
       .flatMap(_.set(PartnershipSameContactAddressId)(false))
       .flatMap(_.set(PartnershipContactAddressListId)(tolerantAddress))

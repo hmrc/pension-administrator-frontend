@@ -21,7 +21,6 @@ import connectors.{AddressLookupConnector, UserAnswersCacheConnector, FakeUserAn
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.partnership.PartnershipDetailsId
 import models.{BusinessDetails, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
@@ -97,7 +96,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   )
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some("UTR"))
+    BusinessNameId.toString -> BusinessDetails(partnershipName, Some("UTR"))
   )))
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {

@@ -22,7 +22,6 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerDetailsId}
 import models._
 import play.api.data.Form
@@ -43,7 +42,7 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
   private val partnerName = "test first name test middle name test last name"
 
   private val validData = Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
+    BusinessNameId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
     "partners" -> Json.arr(
       Json.obj(
         PartnerDetailsId.toString ->

@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
+import identifiers.register.{BusinessNameId, BusinessUTRId, IsRegisteredNameId}
 import identifiers.register.partnership._
 import models._
 import org.scalatest.OptionValues
@@ -41,10 +42,13 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
   private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
 
-    (PartnershipDetailsId, uk, confirmPartnershipDetailsPage, false, None, false),
-    (PartnershipDetailsId, nonUk, nonUkAddress, false, None, false),
+    (BusinessUTRId, emptyAnswers, partnershipNamePage, false, None, false),
+    (BusinessNameId, uk, partnershipIsRegisteredNamePage, false, None, false),
+    (BusinessNameId, nonUk, nonUkAddress, false, None, false),
+    (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage, false, None, false),
+    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
 
-    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
+    (ConfirmBusinessNameId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
 
     (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true),
 
@@ -118,6 +122,8 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 
   private def whatYouWillNeedPage: Call = routes.WhatYouWillNeedController.onPageLoad()
+  private def partnershipNamePage = routes.PartnershipNameController.onPageLoad()
+  private def partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad()
 
   private def sameContactAddressPage: Call = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
 
@@ -155,8 +161,13 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
 
+  private def companyUpdate = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
+
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
+  protected val isRegisteredNameTrue: UserAnswers = UserAnswers().isRegisteredName(true)
+  protected val isRegisteredNameFalse: UserAnswers = UserAnswers().isRegisteredName(false)
 
   private val varianceConfirmPreviousAddressYes = UserAnswers().set(PartnershipConfirmPreviousAddressId)(true).asOpt.get
   private val varianceConfirmPreviousAddressNo = UserAnswers().set(PartnershipConfirmPreviousAddressId)(false).asOpt.get
@@ -175,5 +186,5 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
-  private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value
+  private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmBusinessNameId)(true).asOpt.value
 }
