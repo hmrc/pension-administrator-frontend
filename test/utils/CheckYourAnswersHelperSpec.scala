@@ -107,7 +107,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             "Yes",
             "directorUniqueTaxReference.checkYourAnswersLabel.utr",
             "utr",
-            "unique-taxpayer-reference"),
+            "enter-unique-taxpayer-reference"),
           Some("user answered yes")
         ),
         TestScenario(
@@ -124,7 +124,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             "No",
             "directorUniqueTaxReference.checkYourAnswersLabel.reason",
             reason,
-            "unique-taxpayer-reference"),
+            "enter-unique-taxpayer-reference"),
           Some("user answered no")
         )
       )

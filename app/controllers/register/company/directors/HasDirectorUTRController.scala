@@ -20,9 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import controllers.register.company.directors.routes.HasDirectorNINOController
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, HasDirectorNINOId}
+import identifiers.register.company.directors.{DirectorDetailsId, HasDirectorUTRId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -32,27 +31,28 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import controllers.register.company.directors.routes.HasDirectorUTRController
 
 import scala.concurrent.ExecutionContext
 
-class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
-                                          override val dataCacheConnector: UserAnswersCacheConnector,
-                                          @CompanyDirector override val navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: HasReferenceNumberFormProvider
+class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConfig,
+                                         override val messagesApi: MessagesApi,
+                                         override val dataCacheConnector: UserAnswersCacheConnector,
+                                         @CompanyDirector override val navigator: Navigator,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: HasReferenceNumberFormProvider
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasDirectorNINOController.onSubmit(mode, index),
-      title = Message("hasNINO.heading", Message("theDirector").resolve),
-      heading = Message("hasNINO.heading", entityName),
+      postCall = HasDirectorUTRController.onSubmit(mode, index),
+      title = Message("hasUTR.heading", Message("theDirector").resolve),
+      heading = Message("hasUTR.heading", entityName),
       mode = mode,
-      hint = None,
+      hint = Some(Message("utr.p1")),
       entityName = entityName
     )
 
@@ -60,13 +60,13 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
     request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def form(companyName: String): Form[Boolean] =
-    formProvider("hasNINO.error.required", companyName)
+    formProvider("hasUTR.error.required", companyName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(HasDirectorNINOId(index), form(directorName), viewModel(mode, directorName, index))
+        get(HasDirectorUTRId(index), form(directorName), viewModel(mode, directorName, index))
 
     }
 
@@ -74,6 +74,6 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        post(HasDirectorNINOId(index), mode, form(directorName), viewModel(mode, directorName, index))
+        post(HasDirectorUTRId(index), mode, form(directorName), viewModel(mode, directorName, index))
     }
 }
