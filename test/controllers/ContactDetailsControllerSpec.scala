@@ -24,7 +24,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.individual.{IndividualContactDetailsChangedId, IndividualContactDetailsId}
+import identifiers.register.individual.IndividualContactDetailsChangedId
+import identifiers.register.partnership.PartnershipContactDetailsId
 import models.requests.DataRequest
 import models._
 import org.mockito.Matchers.{any, eq => eqTo}
@@ -218,7 +219,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
             ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
           )
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, IndividualContactDetailsId)
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnershipContactDetailsId)
 
           status(result) mustEqual SEE_OTHER
           FakeUserAnswersCacheConnector.verify(IndividualContactDetailsChangedId, true)

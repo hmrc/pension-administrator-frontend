@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.register.company.directors.DirectorAddressId
-import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId, IndividualPreviousAddressId}
 import models.Mode._
 import models._
 import utils.countryOptions.CountryOptions
