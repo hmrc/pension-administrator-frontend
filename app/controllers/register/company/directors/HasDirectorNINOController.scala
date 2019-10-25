@@ -20,9 +20,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import controllers.register.company.directors.routes.HasDirectorNINOController
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, HasDirectorNINOId}
+import identifiers.register.company.directors.{DirectorNameId, HasDirectorNINOId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -57,7 +56,7 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def form(companyName: String): Form[Boolean] =
     formProvider("hasNINO.error.required", companyName)
