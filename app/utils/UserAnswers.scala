@@ -194,13 +194,10 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     setRec(ids, JsSuccess(this))
   }
 
-  def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {
-    if (JsLens.fromPath(id.path).get(json).asOpt.isDefined) {
-      JsLens.fromPath(id.path).remove(json).flatMap(json => id.cleanup(None, UserAnswers(json)))
-    } else {
-      id.cleanup(None, UserAnswers(json))
-    }
-  }
+  def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] =
+    JsLens.fromPath(id.path).get(json).asOpt
+      .fold[JsResult[JsValue]](JsSuccess(json))(_=>JsLens.fromPath(id.path).remove(json))
+      .flatMap( json => id.cleanup(None, UserAnswers(json)))
 
   def removeAllOf[I <: TypedIdentifier.PathDependent](ids: List[I]): JsResult[UserAnswers] = {
 
