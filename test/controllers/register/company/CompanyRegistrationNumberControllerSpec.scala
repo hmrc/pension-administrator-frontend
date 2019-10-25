@@ -21,8 +21,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyRegistrationNumberId}
-import models.{BusinessDetails, Mode, NormalMode}
+import identifiers.register.company.CompanyRegistrationNumberId
+import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.mvc.Call

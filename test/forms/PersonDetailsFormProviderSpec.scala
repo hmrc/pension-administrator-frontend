@@ -36,9 +36,9 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
   ".firstName" must {
 
     val fieldName = "firstName"
-    val requiredKey = "personDetails.error.firstName.required"
-    val lengthKey = "personDetails.error.firstName.length"
-    val invalidKey = "personDetails.error.firstName.invalid"
+    val requiredKey = "personName.error.firstName.required"
+    val lengthKey = "personName.error.firstName.length"
+    val invalidKey = "personName.error.firstName.invalid"
     val maxLength = PersonDetailsFormProvider.firstNameLength
 
     behave like fieldThatBindsValidData(
@@ -129,9 +129,9 @@ class PersonDetailsFormProviderSpec extends StringFieldBehaviours with Constrain
   ".lastName" must {
 
     val fieldName = "lastName"
-    val requiredKey = "personDetails.error.lastName.required"
-    val lengthKey = "personDetails.error.lastName.length"
-    val invalidKey = "personDetails.error.lastName.invalid"
+    val requiredKey = "personName.error.lastName.required"
+    val lengthKey = "personName.error.lastName.length"
+    val invalidKey = "personName.error.lastName.invalid"
     val maxLength = PersonDetailsFormProvider.lastNameLength
 
     behave like fieldThatBindsValidData(

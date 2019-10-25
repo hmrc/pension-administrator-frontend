@@ -16,11 +16,10 @@
 
 package utils.navigators
 
-import config.{FeatureSwitchManagementService, FrontendAppConfig}
+import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.register._
-import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import javax.inject.Inject
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}

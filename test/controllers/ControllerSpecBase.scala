@@ -19,19 +19,17 @@ package controllers
 import java.time.LocalDate
 
 import base.SpecBase
-import connectors.RegistrationConnectorSpec.{nino, sapNumber}
 import controllers.actions._
-import identifiers.register.{BusinessNameId, RegistrationInfoId}
-import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import utils.UserAnswers
-import play.api.inject.bind
 
 trait ControllerSpecBase extends SpecBase {
 
