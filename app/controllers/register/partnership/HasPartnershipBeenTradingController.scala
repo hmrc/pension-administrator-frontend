@@ -14,42 +14,41 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.company.routes._
+import controllers.actions._
+import controllers.register.partnership.routes._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.BusinessNameId
-import identifiers.register.company.HasCompanyBeenTradingId
+import identifiers.register.partnership.{HasPartnershipBeenTradingId, PartnershipDetailsId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.ExecutionContext
 
-class HasCompanyBeenTradingController @Inject()(override val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                override val dataCacheConnector: UserAnswersCacheConnector,
-                                                @RegisterCompany override val navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: HasReferenceNumberFormProvider
-                                               )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+class HasPartnershipBeenTradingController @Inject()(override val appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    override val dataCacheConnector: UserAnswersCacheConnector,
+                                                    @Partnership override val navigator: Navigator,
+                                                    authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: HasReferenceNumberFormProvider
+                                                   )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasCompanyBeenTradingController.onSubmit(mode),
-      title = Message("trading.title", Message("theCompany").resolve),
+      postCall = HasPartnershipBeenTradingController.onSubmit(mode),
+      title = Message("trading.title", Message("thePartnership").resolve),
       heading = Message("trading.title", companyName),
       mode = mode,
       hint = None,
@@ -61,18 +60,19 @@ class HasCompanyBeenTradingController @Inject()(override val appConfig: Frontend
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessNameId.retrieve.right.map {
-          companyName =>
-            get(HasCompanyBeenTradingId, form(companyName), viewModel(mode, companyName))
+        PartnershipDetailsId.retrieve.right.map {
+          details =>
+            get(HasPartnershipBeenTradingId, form(details.companyName), viewModel(mode, details.companyName))
         }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessNameId.retrieve.right.map {
-          companyName =>
-            post(HasCompanyBeenTradingId, mode, form(companyName), viewModel(mode, companyName))
+        PartnershipDetailsId.retrieve.right.map {
+          details =>
+            post(HasPartnershipBeenTradingId, mode, form(details.companyName), viewModel(mode, details.companyName))
         }
     }
+
 }

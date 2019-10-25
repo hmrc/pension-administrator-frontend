@@ -23,11 +23,11 @@ import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
 import viewmodels.{AnswerRow, Link, Message}
 
-case object HasBeenTradingCompanyId extends TypedIdentifier[Boolean] {
+case object HasCompanyBeenTradingId extends TypedIdentifier[Boolean] {
   self =>
-  override def path: JsPath = JsPath \ HasBeenTradingCompanyId.toString
+  override def path: JsPath = JsPath \ HasCompanyBeenTradingId.toString
 
-  override def toString: String = "hasBeenTrading"
+  override def toString: String = "hasCompanyBeenTrading"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {
