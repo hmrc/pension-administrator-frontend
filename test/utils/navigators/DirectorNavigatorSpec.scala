@@ -45,6 +45,8 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
     (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorDetailsPage(mode), true, None, true),
     (DirectorDetailsId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (HasDirectorUTRId(0), hasUtrYes, directorEnterUtrPage(mode), true, Some(directorEnterUtrPage(checkMode(mode))), true),
+    (HasDirectorUTRId(0), hasUtrNo, directorNoUtrReasonPage(mode), true, Some(directorNoUtrReasonPage(checkMode(mode))), true),
     (CompanyDirectorAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (CompanyDirectorAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (DirectorAddressId(0), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -62,7 +64,8 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   private def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
     (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (DirectorUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
   )
 
@@ -71,8 +74,10 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
     (DirectorNinoId(0), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
     (DirectorNinoId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
-    (DirectorUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
-    (DirectorUniqueTaxReferenceId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (DirectorEnterUTRId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorNoUTRReasonId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (DirectorNoUTRReasonId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
     (DirectorAddressYearsId(0), addressYearsOverAYearExistingDirector, anyMoreChangesPage, true, None, true),
     (DirectorAddressYearsId(0), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, true, None, true),
     (DirectorConfirmPreviousAddressId(0), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), false, None, true),
@@ -129,6 +134,8 @@ object DirectorNavigatorSpec extends OptionValues {
   def addressListPage(mode: Mode): Call = routes.CompanyDirectorAddressListController.onPageLoad(mode, 0)
 
   def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, 0)
+  def directorEnterUtrPage(mode: Mode): Call = routes.DirectorEnterUTRController.onPageLoad(mode, 0)
+  def directorNoUtrReasonPage(mode: Mode): Call = routes.DirectorNoUTRReasonController.onPageLoad(mode, 0)
 
   private def director(index: Int) =
     PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0), isNew = true)
@@ -154,7 +161,10 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private val confirmPreviousAddressNotSame = existingDirectorInUpdate(0)
     .set(DirectorConfirmPreviousAddressId(0))(false).asOpt.value
-
+  private val hasUtrYes = defaultAnswers
+    .set(HasDirectorUTRId(0))(value = true).asOpt.value
+  private val hasUtrNo = defaultAnswers
+    .set(HasDirectorUTRId(0))(value = false).asOpt.value
 
   private val addressYearsOverAYearExistingDirector = existingDirectorInUpdate(0)
     .set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value

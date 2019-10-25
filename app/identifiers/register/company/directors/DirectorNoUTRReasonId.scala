@@ -23,7 +23,7 @@ case class DirectorNoUTRReasonId(index: Int) extends TypedIdentifier[String] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNoNINOReasonId.toString
 }
 object DirectorNoUTRReasonId {
-  override lazy val toString: String = "noUTRReason"
+  override lazy val toString: String = "noUtrReason"
 }
 
 
