@@ -88,7 +88,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def directorsCount: Int = {
-    getAll[PersonDetails](DirectorNameId.collectionPath)
+    getAll[PersonName](DirectorNameId.collectionPath)
       .getOrElse(Nil).length
   }
 
