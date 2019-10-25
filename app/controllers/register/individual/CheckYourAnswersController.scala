@@ -20,14 +20,15 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId}
-import models.Mode
+import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId, IndividualEmailId, IndividualPhoneId}
+import models.{CheckMode, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Individual
-import utils.{CheckYourAnswersFactory, Navigator}
-import viewmodels.{AnswerSection, Message}
+import utils.checkyouranswers.Ops._
+import utils.{CheckYourAnswersFactory, Enumerable, Navigator}
+import viewmodels.{AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
@@ -42,7 +43,7 @@ class CheckYourAnswersController @Inject()(
                                             @Individual navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   import CheckYourAnswersController._
 
@@ -57,15 +58,15 @@ class CheckYourAnswersController @Inject()(
       val section = AnswerSection(
         None,
         Seq(
-          helper.individualDetails,
-          helper.individualAddress,
-          helper.individualSameContactAddress,
-          helper.individualContactAddress,
-          helper.individualAddressYears(message),
-          helper.individualPreviousAddress,
-          helper.individualDateOfBirth,
-          helper.individualEmailAddress,
-          helper.individualPhoneNumber
+          helper.individualDetails.toSeq,
+          helper.individualAddress.toSeq,
+          helper.individualSameContactAddress.toSeq,
+          helper.individualContactAddress.toSeq,
+          helper.individualAddressYears(message).toSeq,
+          helper.individualPreviousAddress.toSeq,
+          helper.individualDateOfBirth.toSeq,
+          IndividualEmailId.row(Some(Link(routes.IndividualEmailController.onPageLoad(CheckMode).url))),
+          IndividualPhoneId.row(Some(Link(routes.IndividualPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
       val sections = Seq(section)

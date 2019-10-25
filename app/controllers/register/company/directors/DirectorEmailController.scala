@@ -21,9 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
-import identifiers.register.BusinessNameId
-import identifiers.register.company.EmailId
-import identifiers.register.company.directors.{DirectorNameId, DirectorEmailId}
+import identifiers.register.company.directors.{DirectorEmailId, DirectorNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}

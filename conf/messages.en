@@ -359,6 +359,7 @@ theCompany = the company
 thePartnership = the partnership
 theDirector = the director
 thePartner = the partner
+theIndividual = the individual
 
 directorPreviousAddressPostCodeLookup.title = Director’s previous address
 directorPreviousAddressPostCodeLookup.heading = Director’s previous address
@@ -420,7 +421,7 @@ individualDetailsCorrect.error.required = You must make a selection
 individualDetailsCorrect.name = Name
 individualDetailsCorrect.address = Address
 
-individualAddressYears.title = How long have they been at this address?
+individualAddressYears.title = Has this been your contact address for at least 1 year?
 individualAddressYears.heading = How long has {0} been at this address?
 
 individualPreviousAddress.title = Previous address

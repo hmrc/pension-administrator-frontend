@@ -19,6 +19,7 @@ package utils.checkyouranswers
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
+import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
@@ -40,6 +41,11 @@ trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckY
     ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
 }
 
+trait CheckYourAnswersIndividual[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
+    ua.get(IndividualDetailsId).map(i => Message(messageKey, i.fullName)).getOrElse(Message(messageKey, Message("theIndividual")))
+}
+
 trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages): Message =
     ua.get(PartnershipDetailsId).map(name => Message(messageKey, name.companyName)).getOrElse(Message(messageKey, Message("thePartnership")))
@@ -47,12 +53,12 @@ trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends Ch
 
 trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
-    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
-    ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartnership")))
+    ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
 object CheckYourAnswers {

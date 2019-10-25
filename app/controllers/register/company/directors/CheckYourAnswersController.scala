@@ -18,10 +18,12 @@ package controllers.register.company.directors
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
-import identifiers.register.company.directors.{CheckYourAnswersId, DirectorAddressYearsId, IsDirectorCompleteId}
+import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController}
+import controllers.{Retrievals, Variations}
+import identifiers.register.company.directors._
 import javax.inject.Inject
+import models.Mode.checkMode
 import models.{CheckMode, Mode, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -52,19 +54,16 @@ class CheckYourAnswersController @Inject()(
     implicit request =>
       val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
       val answersSection = Seq(
-        AnswerSection(
-          Some("directorCheckYourAnswers.directorDetails.heading"),
+        AnswerSection(None,
           checkYourAnswerHelper.directorName(index.id, mode) ++
           checkYourAnswerHelper.directorDob(index.id, mode) ++
             checkYourAnswerHelper.directorNino(index.id, mode) ++
-            checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode)
-        ),
-        AnswerSection(
-          Some("directorCheckYourAnswers.contactDetails.heading"),
-          checkYourAnswerHelper.directorAddress(index.id, mode) ++
-            DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(CheckMode, index).url))) ++
+            checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode) ++
+            checkYourAnswerHelper.directorAddress(index.id, mode) ++
+            DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
             checkYourAnswerHelper.directorPreviousAddress(index.id, mode) ++
-            checkYourAnswerHelper.directorContactDetails(index.id, mode)
+            DirectorEmailId(index).row(Some(Link(DirectorEmailController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))
 
       Future.successful(Ok(check_your_answers(

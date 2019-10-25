@@ -209,7 +209,7 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     "companyPreviousAddress" - "directors" + ("directors" -> Json.arr(
     Json.obj(
       DirectorNameId.toString -> PersonName("test first name", "test last name"),
-      DirectorDOBId.toString -> LocalDate.of(2019,10, 22),
+      DirectorDOBId.toString -> LocalDate.of(2019,10, 23),
       DirectorNinoId.toString -> Nino.No("reason"),
       DirectorAddressYearsId.toString -> AddressYears.UnderAYear.toString,
       DirectorUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")

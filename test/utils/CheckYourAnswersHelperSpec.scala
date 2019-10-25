@@ -246,32 +246,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
-  "directorContactDetails" should {
-    behave like cyaHelperMethod(_.directorContactDetails(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorContactDetailsId.toString ->
-                  ContactDetails("email", "phone")
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("contactDetails.email",
-              Seq("email"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-contact-details"))),
-            AnswerRow("contactDetails.phone",
-              Seq("phone"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-contact-details"))))
-        )
-      )
-    )
-  }
-
   "directorAddress" should {
     behave like cyaHelperMethod(_.directorAddress(0, NormalMode),
       Seq(

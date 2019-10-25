@@ -19,7 +19,7 @@ package controllers.register.company
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.{PhoneId, _}
+import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
@@ -62,8 +62,8 @@ class CheckYourAnswersController @Inject()(
           CompanyContactAddressId.row(Some(Link(routes.CompanyContactAddressController.onPageLoad(CheckMode).url))),
           CompanyAddressYearsId.row(Some(Link(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))),
           CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url))),
-          EmailId.row(Some(Link(routes.CompanyEmailController.onPageLoad(CheckMode).url))),
-          PhoneId.row(Some(Link(routes.CompanyPhoneController.onPageLoad(CheckMode).url)))
+          CompanyEmailId.row(Some(Link(routes.CompanyEmailController.onPageLoad(CheckMode).url))),
+          CompanyPhoneId.row(Some(Link(routes.CompanyPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 

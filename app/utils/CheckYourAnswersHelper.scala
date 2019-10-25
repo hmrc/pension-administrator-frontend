@@ -43,20 +43,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
       Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url), None)
   }
 
-  def individualPhoneNumber: Option[AnswerRow] = {
-    userAnswers.get(IndividualContactDetailsId) map { x =>
-      AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false,
-        Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url), None)
-    }
-  }
-
-  def individualEmailAddress: Option[AnswerRow] = {
-    userAnswers.get(IndividualContactDetailsId) map { x =>
-      AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false,
-        Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url), None)
-    }
-  }
-
   def individualPreviousAddress: Option[AnswerRow] = {
     userAnswers.get(IndividualPreviousAddressId) map { x =>
       AnswerRow("individualPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false,
@@ -81,17 +67,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     userAnswers.get(IndividualAddressId) map { x =>
       AnswerRow("individualDetailsCorrect.address", x.lines(countryOptions), false, None)
     }
-  }
-
-  def directorContactDetails(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorContactDetailsId(index)) match {
-    case Some(x) => Seq(
-      AnswerRow("contactDetails.email", Seq(s"${x.email}"), false,
-        Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(checkMode(mode), index).url), None),
-      AnswerRow("contactDetails.phone", Seq(s"${x.phone}"), false,
-        Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(checkMode(mode), index).url), None)
-    )
-
-    case _ => Nil
   }
 
   def companyDirectorAddressPostCodeLookup(index: Int): Option[AnswerRow] = {

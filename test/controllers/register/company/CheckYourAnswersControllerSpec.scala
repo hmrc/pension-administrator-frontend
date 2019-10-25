@@ -19,7 +19,7 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
-import identifiers.register.company.{PhoneId, _}
+import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
 import models.RegistrationLegalStatus.LimitedCompany
 import models._
@@ -213,8 +213,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         val retrievalAction = dataRetrievalAction(
           "contactDetails" -> Json.obj(
-            PhoneId.toString -> "1234567890",
-            EmailId.toString -> "test@email"
+            CompanyPhoneId.toString -> "1234567890",
+            CompanyEmailId.toString -> "test@email"
           )
         )
 
