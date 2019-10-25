@@ -51,8 +51,6 @@ class DOBViewSpec extends QuestionViewBehaviours[PersonDetails] {
 
     behave like normalPageWithNoPageTitleCheck(createView(), messageKeyPrefix)
 
-    behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
-
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
