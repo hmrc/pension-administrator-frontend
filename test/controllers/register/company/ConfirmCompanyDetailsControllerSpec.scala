@@ -22,8 +22,8 @@ import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.company._
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
+import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
-import models.{BusinessDetails, _}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
@@ -138,7 +138,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyCo", Some(validBusinessPartnershipUtr))
+            BusinessNameId.toString -> "MyCo",
+            BusinessUTRId.toString -> validBusinessPartnershipUtr
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -169,7 +170,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyCo", Some(validLimitedCompanyUtr))
+            BusinessNameId.toString -> "MyCo",
+            BusinessUTRId.toString -> validLimitedCompanyUtr
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))

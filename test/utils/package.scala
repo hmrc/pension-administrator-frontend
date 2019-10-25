@@ -159,10 +159,6 @@ package object utils {
       answers.set(VariationWorkingKnowledgeId)(value).asOpt.value
     }
 
-    def businessDetails: UserAnswers = {
-      answers.set(BusinessDetailsId)(BusinessDetails("test company", Some("1111111111"))).asOpt.value
-    }
-
     def businessName: UserAnswers = {
       answers.set(BusinessNameId)("test company").asOpt.value
     }

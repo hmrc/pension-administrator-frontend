@@ -46,7 +46,8 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
       }
 
       "remove the data for business details " in {
-        result.get(BusinessDetailsId) mustNot be(defined)
+        result.get(BusinessNameId) mustNot be(defined)
+        result.get(BusinessUTRId) mustNot be(defined)
       }
 
       "remove the data for company address " in {
@@ -185,7 +186,8 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val answersCompany: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(true)
     .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company)
-      .flatMap(_.set(BusinessDetailsId)(BusinessDetails("company name", None)))
+      .flatMap(_.set(BusinessNameId)("company name"))
+      .flatMap(_.set(BusinessUTRId)("test-utr"))
       .flatMap(_.set(CompanyAddressId)(tolerantAddress))
       .flatMap(_.set(CompanySameContactAddressId)(false))
       .flatMap(_.set(CompanyContactAddressPostCodeLookupId)(Seq(tolerantAddress)))

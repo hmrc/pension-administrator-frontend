@@ -17,15 +17,13 @@
 package controllers
 
 import identifiers.TypedIdentifier
-import identifiers.register.{BusinessNameId, RegistrationInfoId}
-import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
+import models.PersonDetails
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.{PersonDetails, RegistrationLegalStatus, UserType}
-import models.UserType.UserType
 import models.requests.DataRequest
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
