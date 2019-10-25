@@ -98,7 +98,7 @@ object IdentityVerificationConnectorSpec {
       |      "source" : "financial-accounts"
       |    } ],
       |    "numAnswered" : 0,
-      |    "resultCompany" : "Incomplete"
+      |    "result" : "Incomplete"
       |  },
       |  "serviceContract": {
       |    "origin": "tama",
@@ -126,7 +126,7 @@ object IdentityVerificationConnectorSpec {
       |      "source" : "financial-accounts"
       |    } ],
       |    "numAnswered" : 0,
-      |    "resultCompany" : "Incomplete"
+      |    "result" : "Incomplete"
       |  },
       |  "serviceContract": {
       |    "origin": "tama",

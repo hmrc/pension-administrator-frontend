@@ -85,7 +85,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
 
   "get" must {
 
-    "return a successful resultCompany when there is no existing answer" in {
+    "return a successful result when there is no existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -106,7 +106,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
       }
     }
 
-    "return a successful resultCompany when there is an existing answer" in {
+    "return a successful result when there is an existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)

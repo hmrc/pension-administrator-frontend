@@ -149,7 +149,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        //resultCompany.get(IndividualContactDetailsId) mustNot be(defined)
+        //result.get(IndividualContactDetailsId) mustNot be(defined)
       }
     }
 
@@ -158,7 +158,6 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         individualAnswersForNo.set(AreYouInUKId)(true)
           .asOpt.value
 
-      // TODO: PODS-3503
       "remove all the non uk individual data " in {
         result.get(IndividualDetailsId) mustNot be(defined)
         result.get(IndividualDateOfBirthId) mustNot be(defined)
@@ -168,7 +167,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualAddressYearsId) mustNot be(defined)
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        //resultCompany.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
 
       "not remove the data for Individual Details Correct " in {

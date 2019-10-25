@@ -49,7 +49,7 @@ class PhoneControllerSpec extends SpecBase {
 
   "get" must {
 
-    "return a successful resultCompany when there is no existing answer" in {
+    "return a successful result when there is no existing answer" in {
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
       )) {
@@ -63,7 +63,7 @@ class PhoneControllerSpec extends SpecBase {
       }
     }
 
-    "return a successful resultCompany when there is an existing answer" in {
+    "return a successful result when there is an existing answer" in {
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
       )) {

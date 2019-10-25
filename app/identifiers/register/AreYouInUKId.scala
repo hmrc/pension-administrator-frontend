@@ -65,7 +65,8 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     userAnswers.removeAllOf(List(
       IndividualAddressYearsId,
       IndividualPreviousAddressListId, IndividualPreviousAddressId,
-      //IndividualContactDetailsId,
+      IndividualEmailId,
+      IndividualPhoneId,
       IndividualDateOfBirthId,
       IndividualSameContactAddressId,
       IndividualDetailsId, IndividualAddressId, RegistrationInfoId

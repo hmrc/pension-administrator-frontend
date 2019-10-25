@@ -56,7 +56,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
   "get" must {
 
-    "return a successful resultCompany when there is no existing answer" in {
+    "return a successful result when there is no existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -77,7 +77,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
       }
     }
 
-    "return a successful resultCompany when there is an existing answer" in {
+    "return a successful result when there is an existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)

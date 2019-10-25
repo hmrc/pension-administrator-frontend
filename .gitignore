@@ -25,7 +25,7 @@ server.pid
 /.settings
 target
 .target
-test-resultCompany
+test-result
 tmp
 .idea_modules
 bin

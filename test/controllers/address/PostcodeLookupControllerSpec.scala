@@ -94,7 +94,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
   import PostcodeLookupControllerSpec._
 
   "get" must {
-    "return a successful resultCompany" in {
+    "return a successful result" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -152,7 +152,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
     }
 
     "return a bad request" when {
-      "the postcode look fails to return resultCompany" in {
+      "the postcode look fails to return result" in {
 
         val cacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
         val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]

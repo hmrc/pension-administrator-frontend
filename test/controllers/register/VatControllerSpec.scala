@@ -79,7 +79,7 @@ class VatControllerSpec extends WordSpec with MustMatchers with OptionValues wit
 
   "get" must {
 
-    "return a successful resultCompany when there is no existing answer" in {
+    "return a successful result when there is no existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -100,7 +100,7 @@ class VatControllerSpec extends WordSpec with MustMatchers with OptionValues wit
       }
     }
 
-    "return a successful resultCompany when there is an existing answer" in {
+    "return a successful result when there is an existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)

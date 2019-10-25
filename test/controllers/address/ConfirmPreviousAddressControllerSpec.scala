@@ -50,7 +50,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
 
   "get" must {
 
-    "return a successful resultCompany when user has not answered the question previously" in {
+    "return a successful result when user has not answered the question previously" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -69,7 +69,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
       }
     }
 
-    "return a successful resultCompany when user has answered the question previously" in {
+    "return a successful result when user has answered the question previously" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
