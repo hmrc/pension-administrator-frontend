@@ -35,7 +35,8 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
 
 
   def businessNameController[I <: TypedIdentifier[String]](answers: UserAnswers,
-                                                           createController: UserAnswers => BusinessNameController
+                                                           createController: UserAnswers => BusinessNameController,
+                                                           form: Form[String]
                                                           ): Unit = {
     "CompanyName Controller" must {
 
@@ -43,7 +44,7 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
         val result = createController(answers).onPageLoad(fakeRequest)
 
         status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(testForm(), answers)
+        contentAsString(result) mustBe viewAsString(form, answers)
       }
 
       "populate the view correctly on a GET when the question has previously been answered" in {
@@ -66,7 +67,7 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
 
       "return a Bad Request and errors when invalid data is submitted" in {
         val postRequest = testRequest(name = Some("test ** invalid"))
-        val boundForm = testForm().bindFromRequest()(postRequest)
+        val boundForm = form.bindFromRequest()(postRequest)
 
         val result = createController(answers).onSubmit()(postRequest)
 
@@ -88,8 +89,6 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new BusinessNameFormProvider()
-  private val form = formProvider()
   private def businessType(answers: UserAnswers) = answers.get(BusinessTypeId).map {
     businessType =>
     messagesApi(s"businessType.${businessType.toString}").toLowerCase}
@@ -118,9 +117,6 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
     )
 
   }
-
-  def testForm(): Form[String] =
-    new BusinessNameFormProvider()()
 
   def viewAsString(form: Form[_],
                    answers: UserAnswers, href: Call = onwardRoute): String =
