@@ -42,6 +42,9 @@ POST       /partnership-name                            controllers.register.par
 GET        /unique-taxpayer-reference                   controllers.register.partnership.PartnershipUTRController.onPageLoad
 POST       /unique-taxpayer-reference                   controllers.register.partnership.PartnershipUTRController.onSubmit
 
+GET        /confirm-partnership-name                    controllers.register.partnership.PartnershipIsRegisteredNameController.onPageLoad
+POST       /confirm-partnership-name                    controllers.register.partnership.PartnershipIsRegisteredNameController.onSubmit
+
 GET        /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST       /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/previous-address                      controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
