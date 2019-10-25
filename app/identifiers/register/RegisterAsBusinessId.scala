@@ -40,10 +40,14 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
     }
   }
 
+  // TODO: PODS-3503
   private def removeAllIndividual(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(IndividualDetailsId, IndividualAddressId, IndividualDateOfBirthId, IndividualSameContactAddressId,
       IndividualContactAddressListId, IndividualContactAddressId, IndividualAddressYearsId, IndividualPreviousAddressId,
-      IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId, IndividualContactDetailsId))
+      IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId
+//      ,
+//      IndividualContactDetailsId
+    ))
   }
 
   private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],

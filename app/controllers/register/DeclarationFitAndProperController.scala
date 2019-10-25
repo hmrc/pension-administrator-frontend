@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
 import identifiers.register.company.ContactDetailsId
-import identifiers.register.individual.IndividualContactDetailsId
+import identifiers.register.individual.{IndividualContactDetailsId, IndividualEmailId}
 import identifiers.register.partnership.PartnershipContactDetailsId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -114,13 +114,10 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
 
   private def getEmail(answers: UserAnswers): Option[String] = {
     answers.get(RegistrationInfoId).flatMap { registrationInfo =>
-      val id = registrationInfo.legalStatus match {
-        case Individual => IndividualContactDetailsId
-        case LimitedCompany => ContactDetailsId
-        case Partnership => PartnershipContactDetailsId
-      }
-      answers.get(id).map { contactDetails =>
-        contactDetails.email
+      registrationInfo.legalStatus match {
+        case Individual => answers.get(IndividualEmailId)
+        case LimitedCompany => answers.get(ContactDetailsId).map(_.email)
+        case Partnership => answers.get(PartnershipContactDetailsId).map(_.email)
       }
     }
   }

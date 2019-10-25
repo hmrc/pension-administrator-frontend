@@ -163,9 +163,10 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "remove the data for contact details " in {
-        result.get(IndividualContactDetailsId) mustNot be(defined)
-      }
+      // TODO: PODS-3503
+//      "remove the data for contact details " in {
+//        result.get(IndividualContactDetailsId) mustNot be(defined)
+//      }
 
       "not remove the data for non uk business type " in {
         result.get(NonUKBusinessTypeId) must be(defined)
@@ -180,6 +181,8 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
   val address = Address("line 1", "line 2", None, None, None, "GB")
   val contactDetails = ContactDetails("s@s.com", "999")
+  val email = "s@s.com"
+  val phone = "999"
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
 
   val answersCompany: UserAnswers = UserAnswers(Json.obj())
@@ -234,7 +237,8 @@ object RegisterAsBusinessIdSpec extends OptionValues {
       .flatMap(_.set(IndividualPreviousAddressId)(address))
       .flatMap(_.set(IndividualPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(IndividualPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(IndividualContactDetailsId)(contactDetails))
+      .flatMap(_.set(IndividualEmailId)(email))
+      .flatMap(_.set(IndividualPhoneId)(phone))
       .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company))
     )
     .asOpt.value
