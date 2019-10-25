@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.EmailId
+import identifiers.register.company.CompanyEmailId
 import identifiers.register.company.directors.{DirectorDetailsId, DirectorEmailId}
 import javax.inject.Inject
 import models.requests.DataRequest

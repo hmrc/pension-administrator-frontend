@@ -52,8 +52,10 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case IndividualAddressYearsId => addressYearsRoutes(from.userAnswers)
     case IndividualPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
     case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(NormalMode))
-    case IndividualPreviousAddressId => NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
-    case IndividualContactDetailsId => countryBasedContactDetailsNavigation(from.userAnswers)
+    case IndividualPreviousAddressId => NavigateTo.save(routes.IndividualEmailController.onPageLoad(NormalMode))
+    case IndividualEmailId =>
+      NavigateTo.save(routes.IndividualPhoneController.onPageLoad(NormalMode))
+    case IndividualPhoneId => countryBasedContactDetailsNavigation(from.userAnswers)
     case IndividualDateOfBirthId => countryBasedDobNavigation(from.userAnswers)
     case CheckYourAnswersId => NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
@@ -71,7 +73,9 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case IndividualPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualPreviousAddressListController.onPageLoad(CheckMode))
     case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(CheckMode))
     case IndividualPreviousAddressId => checkYourAnswers()
-    case IndividualContactDetailsId => checkYourAnswers()
+    case IndividualEmailId => checkYourAnswers()
+    case IndividualPhoneId => checkYourAnswers()
+
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
@@ -85,7 +89,10 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case IndividualPreviousAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualPreviousAddressListController.onPageLoad(UpdateMode))
     case IndividualPreviousAddressListId => NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(UpdateMode))
     case IndividualPreviousAddressId => anyMoreChanges
-    case IndividualContactDetailsId => anyMoreChanges
+    case IndividualEmailId =>
+      anyMoreChanges
+    case IndividualPhoneId =>
+      anyMoreChanges
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
@@ -108,7 +115,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
       case (Some(AddressYears.UnderAYear), Some(true)) =>
         NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
       case (Some(AddressYears.OverAYear), _) =>
-        NavigateTo.save(routes.IndividualContactDetailsController.onPageLoad(NormalMode))
+        NavigateTo.save(routes.IndividualEmailController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 

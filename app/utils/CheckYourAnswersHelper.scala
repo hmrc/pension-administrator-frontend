@@ -43,20 +43,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
       Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url), None)
   }
 
-  def individualPhoneNumber: Option[AnswerRow] = {
-    userAnswers.get(IndividualContactDetailsId) map { x =>
-      AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false,
-        Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url), None)
-    }
-  }
-
-  def individualEmailAddress: Option[AnswerRow] = {
-    userAnswers.get(IndividualContactDetailsId) map { x =>
-      AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false,
-        Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url), None)
-    }
-  }
-
   def individualPreviousAddress: Option[AnswerRow] = {
     userAnswers.get(IndividualPreviousAddressId) map { x =>
       AnswerRow("individualPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false,
