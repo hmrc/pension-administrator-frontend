@@ -90,8 +90,8 @@ POST       /review                                      controllers.register.par
 
 GET        /outside-eu-eea                              controllers.register.partnership.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /non-uk-partnership-name                            controllers.register.partnership.PartnershipRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /non-uk-partnership-name                            controllers.register.partnership.PartnershipRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET        /non-uk-partnership-name                     controllers.register.partnership.PartnershipRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /non-uk-partnership-name                     controllers.register.partnership.PartnershipRegisteredNameController.onSubmit(mode: Mode = NormalMode)
 
 GET        /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit(mode: Mode = NormalMode)

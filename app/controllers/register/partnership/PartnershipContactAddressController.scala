@@ -23,6 +23,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId}
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -64,11 +65,11 @@ class PartnershipContactAddressController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map {
-        details =>
+        name =>
           get(
             PartnershipContactAddressId,
             PartnershipContactAddressListId,
-            viewmodel(mode, details.companyName),
+            viewmodel(mode, name),
             mode
           )
       }
@@ -77,11 +78,11 @@ class PartnershipContactAddressController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map {
-        details =>
+        name =>
           post(
             PartnershipContactAddressId,
             PartnershipContactAddressListId,
-            viewmodel(mode, details.companyName),
+            viewmodel(mode, name),
             mode,
             context = "Partnership contact address",
             PartnershipContactAddressPostCodeLookupId

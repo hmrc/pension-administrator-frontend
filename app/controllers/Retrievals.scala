@@ -112,9 +112,7 @@ trait Retrievals {
     legalStatus match {
       case Some(Individual) => request.userAnswers.get(IndividualDetailsId).map(_.fullName)
 
-      case Some(LimitedCompany) => request.userAnswers.get(BusinessNameId)
-
-      case Some(Partnership) => request.userAnswers.get(BusinessNameId).map(_.companyName)
+      case Some(LimitedCompany) | Some(Partnership) => request.userAnswers.get(BusinessNameId)
 
       case _ => None
     }

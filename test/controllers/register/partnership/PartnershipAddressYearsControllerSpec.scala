@@ -68,7 +68,7 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
   val partnershipName = "Test Partnership Name"
 
   val dataRetrieval: DataRetrievalAction = UserAnswers()
-    .partnershipDetails(models.BusinessDetails(partnershipName, Some("Test UTR")))
+    .partnershipName(models.BusinessDetails(partnershipName, Some("Test UTR")))
     .dataRetrievalAction
 
   val viewModel = AddressYearsViewModel(

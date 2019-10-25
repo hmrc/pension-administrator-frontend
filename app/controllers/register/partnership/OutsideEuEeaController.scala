@@ -19,6 +19,7 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import javax.inject.Inject
 import models.{Address, Mode}
@@ -43,8 +44,8 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
 
       (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
-        case details ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
+        case name ~ address =>
+          Future.successful(Ok(outsideEuEea(appConfig, name, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

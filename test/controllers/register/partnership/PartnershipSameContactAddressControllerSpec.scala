@@ -47,7 +47,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
   private val partnershipDetails = models.BusinessDetails("Test Partnership Name", Some("1234567890"))
 
   private val requiredData = UserAnswers()
-    .partnershipDetails(partnershipDetails)
+    .partnershipName(partnershipDetails)
     .partnershipRegisteredAddress(testAddress)
     .dataRetrievalAction
 
@@ -95,7 +95,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = UserAnswers()
-        .partnershipDetails(partnershipDetails)
+        .partnershipName(partnershipDetails)
         .partnershipRegisteredAddress(testAddress)
         .partnershipSameContactAddress(areSame = false)
         .dataRetrievalAction

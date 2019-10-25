@@ -22,6 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import javax.inject.Inject
 import models.Mode
@@ -44,7 +45,7 @@ class PartnershipContactAddressListController @Inject()(
                                                        ) extends AddressListController with Retrievals {
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
-    (BusinessNameId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case details ~ addresses =>
+    (BusinessNameId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case name ~ addresses =>
       AddressListViewModel(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),

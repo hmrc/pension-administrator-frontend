@@ -21,7 +21,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
-import identifiers.register.partnership.PartnershipContactAddressListId
+import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactDetailsId, PartnershipPreviousAddressId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId}
 import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
 import models.register.adviser.AdviserDetails
@@ -172,8 +172,8 @@ package object utils {
     }
 
     // Partnership
-    def partnershipDetails(details: models.BusinessDetails): UserAnswers = {
-      answers.set(BusinessNameId)(details).asOpt.value
+    def partnershipName(name: String): UserAnswers = {
+      answers.set(BusinessNameId)(name).asOpt.value
     }
 
     def partnershipContactAddressList(address: TolerantAddress): UserAnswers = {

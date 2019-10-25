@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{ExistingCurrentAddressId, PartnershipConfirmPreviousAddressId, PartnershipPreviousAddressId}
 import javax.inject.Inject
 import models.Mode
@@ -50,14 +51,14 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
     Retrieval(
       implicit request =>
         (BusinessNameId and ExistingCurrentAddressId).retrieve.right.map {
-          case details ~ address =>
+          case name ~ address =>
             SameContactAddressViewModel(
               postCall(),
               title = Message(title),
-              heading = Message(heading, details.companyName),
+              heading = Message(heading, name),
               hint = None,
               address = address,
-              psaName = details.companyName,
+              psaName = name,
               mode = mode
             )
         }
