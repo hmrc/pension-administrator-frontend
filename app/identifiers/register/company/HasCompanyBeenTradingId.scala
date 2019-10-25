@@ -25,9 +25,8 @@ import viewmodels.{AnswerRow, Link, Message}
 
 case object HasCompanyBeenTradingId extends TypedIdentifier[Boolean] {
   self =>
-  override def path: JsPath = JsPath \ HasCompanyBeenTradingId.toString
 
-  override def toString: String = "hasBeenTrading"
+  override def toString: String = "hasCompanyBeenTrading"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {
@@ -43,7 +42,7 @@ case object HasCompanyBeenTradingId extends TypedIdentifier[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
-      case Some(false) =>
+      case Some(true) =>
         userAnswers
           .remove(CompanyPreviousAddressPostCodeLookupId)
           .flatMap(_.remove(CompanyPreviousAddressId))
