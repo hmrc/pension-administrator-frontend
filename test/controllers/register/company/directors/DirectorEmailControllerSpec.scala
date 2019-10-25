@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package identifiers.register.company.directors
+package controllers.register.company.directors
 
-import identifiers._
-import models.ContactDetails
-import play.api.libs.json.JsPath
+import controllers.behaviours.ControllerWithSessionExpiryBehaviours
+import models.NormalMode
+import play.api.test.Helpers._
 
-case class DirectorContactDetailsId(index: Int) extends TypedIdentifier[ContactDetails] {
-  override def path: JsPath = JsPath \ "directors" \ index \ DirectorContactDetailsId.toString
-}
+class DirectorEmailControllerSpec extends ControllerWithSessionExpiryBehaviours {
 
-object DirectorContactDetailsId {
-  override def toString: String = "directorContactDetails"
+  "DirectorEmail Controller" must {
+    running(
+      _.overrides(modules(dontGetAnyData): _*)
+    ) {
+      app =>
+        val controller = app.injector.instanceOf[DirectorEmailController]
+        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode, index = 0),
+          controller.onSubmit(NormalMode, index = 0))
+    }
+  }
 }

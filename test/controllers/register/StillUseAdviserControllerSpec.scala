@@ -20,11 +20,10 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.StillUseAdviserFormProvider
-import identifiers.register.VariationStillDeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserNameId
-import identifiers.register.company.BusinessDetailsId
+import identifiers.register.{BusinessNameId, VariationStillDeclarationWorkingKnowledgeId}
+import models.UpdateMode
 import models.register.DeclarationWorkingKnowledge
-import models.{BusinessDetails, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -90,8 +89,7 @@ object StillUseAdviserControllerSpec extends ControllerSpecBase {
 
   private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
     AdviserNameId.toString -> personWithWorkingKnowledgeName,
-    BusinessDetailsId.toString ->
-      BusinessDetails(companyName = psaName, uniqueTaxReferenceNumber = None)
+    BusinessNameId.toString ->psaName
   )
 
   private val dataRetrievalActionWithAdviserAndBusinessDetails =

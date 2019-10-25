@@ -210,24 +210,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
-  "companyRegistrationNumber" should {
-    behave like cyaHelperMethod(_.companyRegistrationNumber.toSeq,
-      Seq(
-        TestScenario(
-          Json.obj(
-            CompanyRegistrationNumberId.toString -> "crn"
-          ),
-          Seq(
-            AnswerRow("companyRegistrationNumber.checkYourAnswersLabel",
-              Seq("crn"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/change/company-number")))
-          )
-        )
-      )
-    )
-  }
-
   "individualDateOfBirth" should {
     behave like cyaHelperMethod(_.individualDateOfBirth.toSeq,
       Seq(
@@ -241,32 +223,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               answerIsMessageKey = false,
               Some(Link("/register-as-pension-scheme-administrator/register/individual/change/your-date-of-birth")))
           )
-        )
-      )
-    )
-  }
-
-  "directorContactDetails" should {
-    behave like cyaHelperMethod(_.directorContactDetails(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorContactDetailsId.toString ->
-                  ContactDetails("email", "phone")
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("contactDetails.email",
-              Seq("email"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-contact-details"))),
-            AnswerRow("contactDetails.phone",
-              Seq("phone"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-contact-details"))))
         )
       )
     )

@@ -22,8 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.BusinessDetailsId
-import models.{BusinessDetails, NormalMode, TolerantAddress}
+import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -93,7 +92,6 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
     routes.CompanyContactAddressController.onPageLoad(NormalMode),
     Message("companyContactAddressPostCodeLookup.title"),
     Message("companyContactAddressPostCodeLookup.heading").withArgs(companyName),
-    Message("companyContactAddressPostCodeLookup.lede").withArgs(companyName),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link")),
     Message("address.postcode")

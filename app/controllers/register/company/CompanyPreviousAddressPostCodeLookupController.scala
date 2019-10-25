@@ -22,6 +22,7 @@ import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
@@ -51,24 +52,26 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode), mode)
+      BusinessNameId.retrieve.right.map { name =>
+        get(viewModel(mode, name), mode)
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode), mode)
+      BusinessNameId.retrieve.right.map { name =>
+        post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode, name), mode)
+      }
   }
-
 }
 
 object CompanyPreviousAddressPostCodeLookupController {
 
-  def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
+  def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.CompanyPreviousAddressController.onPageLoad(mode),
     Message("companyPreviousAddressPostCodeLookup.title"),
-    Message("companyPreviousAddressPostCodeLookup.heading"),
-    Message("companyPreviousAddressPostCodeLookup.lede"),
+    Message("companyPreviousAddressPostCodeLookup.heading", name),
     Message("companyPreviousAddressPostCodeLookup.enterPostcode"),
     Some(Message("companyPreviousAddressPostCodeLookup.enterPostcode.link")),
     Message("companyPreviousAddressPostCodeLookup.postalCode")

@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package controllers.register.individual
 
-import identifiers._
-import models.BusinessDetails
-import utils.checkyouranswers.BusinessDetailsCYA
+import controllers.behaviours.ControllerWithSessionExpiryBehaviours
+import models.NormalMode
+import play.api.test.Helpers._
 
-case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] {
-  self =>
-  override def toString: String = "businessDetails"
+class IndividualPhoneControllerSpec extends ControllerWithSessionExpiryBehaviours {
 
-  implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
-
+  "IndividualPhoneController" must {
+    running(
+      _.overrides(modules(dontGetAnyData): _*)
+    ) {
+      app =>
+        val controller = app.injector.instanceOf[IndividualPhoneController]
+        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode),
+          controller.onSubmit(NormalMode))
+    }
+  }
 }

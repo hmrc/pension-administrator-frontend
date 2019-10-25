@@ -16,12 +16,15 @@
 
 package utils.navigators
 
+import java.time.LocalDate
+
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.company.{PhoneId, _}
+import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import identifiers.register._
+import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
@@ -71,7 +74,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode), true, Some(contactAddressList(CheckMode)), true),
     (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), true, Some(contactAddress(CheckMode)), true),
-    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(companyAddressYearsPage(CheckMode)), true),
+    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (CompanyAddressYearsId, addressYearsUnderAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
@@ -82,11 +85,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (CompanyPreviousAddressId, emptyAnswers, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
-    (EmailId, emptyAnswers, phonePage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (PhoneId, uk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (PhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (CompanyEmailId, emptyAnswers, phonePage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (CompanyPhoneId, uk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (CompanyPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
-    (CheckYourAnswersId, emptyAnswers, addCompanyDirectors(NormalMode), true, None, false),
+    (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage, true, None, false),
+    (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode), true, None, false),
 
     (CompanyReviewId, emptyAnswers, declarationPage, true, None, false),
 
@@ -112,9 +116,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
 
-    (EmailId, emptyAnswers, anyMoreChanges, false, None, true),
-    (PhoneId, uk, anyMoreChanges, false, None, true),
-    (PhoneId, nonUk, anyMoreChanges, false, None, true)
+    (CompanyEmailId, emptyAnswers, anyMoreChanges, false, None, true),
+    (CompanyPhoneId, uk, anyMoreChanges, false, None, true),
+    (CompanyPhoneId, nonUk, anyMoreChanges, false, None, true)
   )
 
   navigator.getClass.getSimpleName must {
@@ -126,8 +130,8 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {
-  private def emailPage(mode: Mode): Call = routes.EmailController.onPageLoad(mode)
-  private def phonePage(mode: Mode): Call = routes.PhoneController.onPageLoad(mode)
+  private def emailPage(mode: Mode): Call = routes.CompanyEmailController.onPageLoad(mode)
+  private def phonePage(mode: Mode): Call = routes.CompanyPhoneController.onPageLoad(mode)
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
@@ -141,6 +145,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 
   private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
+
+  private def whatYouWillNeedDirectorPage = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad()
 
   private def hasCRNPage(mode: Mode) = routes.HasCompanyCRNController.onPageLoad(mode)
 
@@ -216,6 +222,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
     .set(BusinessTypeId)(BusinessType.UnlimitedCompany).asOpt.value
   val limitedCompany: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
+  val hasDirector: UserAnswers = UserAnswers(Json.obj())
+    .set(DirectorDetailsId(0))(PersonDetails("first", None, "last", LocalDate.now)).asOpt.value
   def hasCRN(b:Boolean): UserAnswers = UserAnswers(Json.obj())
     .set(HasCompanyCRNId)(b).asOpt.value
 

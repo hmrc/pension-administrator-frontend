@@ -22,8 +22,8 @@ import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.{BusinessDetails, NormalMode, TolerantAddress}
+import identifiers.register.company.CompanyAddressId
+import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -55,9 +55,9 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
 
   val viewModel = SameContactAddressViewModel(
     postCall,
-    Message("individual.same.contact.address.title"),
+    Message("company.same.contact.address.title"),
     Message("company.same.contact.address.heading").withArgs(companyName),
-    Some(Message("company.same.contact.address.hint").withArgs(companyName)),
+    None,
     address,
     "Test name",
     NormalMode

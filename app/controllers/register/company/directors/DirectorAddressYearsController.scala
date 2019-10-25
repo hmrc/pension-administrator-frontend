@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.company.directors.DirectorAddressYearsId
+import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
@@ -46,26 +46,31 @@ class DirectorAddressYearsController @Inject()(
                                                 formProvider: AddressYearsFormProvider
                                               ) extends AddressYearsController with Retrievals {
 
-  private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"))
+  private def form(directorName: String): Form[AddressYears] = formProvider(directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-            get(DirectorAddressYearsId(index), form, viewmodel(mode, index), mode)
+        val directorName = entityName(index)
+        get(DirectorAddressYearsId(index), form(directorName), viewModel(mode, index, directorName), mode)
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-          post(DirectorAddressYearsId(index), mode, form, viewmodel(mode, index))
+      val directorName = entityName(index)
+      post(DirectorAddressYearsId(index), mode, form(directorName), viewModel(mode, index, directorName))
   }
 
-  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
-        AddressYearsViewModel(
-          postCall = routes.DirectorAddressYearsController.onSubmit(mode, index),
-          title = Message("directorAddressYears.title"),
-          heading = Message("directorAddressYears.heading"),
-          legend = Message("directorAddressYears.heading"),
-          psaName = psaName()
-        )
+  private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector").resolve)
+
+  private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
+    AddressYearsViewModel(
+      postCall = routes.DirectorAddressYearsController.onSubmit(mode, index),
+      title = Message("addressYears.heading", Message("theDirector").resolve),
+      heading = Message("addressYears.heading", directorName),
+      legend = Message("addressYears.heading", directorName),
+      psaName = psaName()
+    )
 
 }

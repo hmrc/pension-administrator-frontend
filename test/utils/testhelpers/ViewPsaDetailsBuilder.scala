@@ -63,9 +63,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
         None)
     },
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(UpdateMode).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url))))
 
   def companySeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
@@ -86,9 +86,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
         None)
     },
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
-      Some(Link(controllers.register.company.routes.EmailController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(UpdateMode).url))),
     AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url))))
 
   val directorsSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
@@ -102,9 +102,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url))),
+      Some(Link(controllers.register.company.directors.routes.DirectorEmailController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, 0).url)))
+      Some(Link(controllers.register.company.directors.routes.DirectorPhoneController.onPageLoad(UpdateMode, 0).url)))
   )
 
 

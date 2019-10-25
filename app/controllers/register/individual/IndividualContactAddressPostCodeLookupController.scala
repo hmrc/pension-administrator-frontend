@@ -53,7 +53,6 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
     routes.IndividualContactAddressController.onPageLoad(mode),
     Message("individualContactAddressPostCodeLookup.title"),
     Message("individualContactAddressPostCodeLookup.heading"),
-    Message("individualContactAddressPostCodeLookup.hint"),
     Message("individualContactAddressPostCodeLookup.enterPostcode"),
     Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
     Message("individualContactAddressPostCodeLookup.formLabel"),

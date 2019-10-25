@@ -19,10 +19,14 @@ package identifiers.register.partnership
 import identifiers.TypedIdentifier
 import models.AddressYears
 import models.AddressYears.OverAYear
+import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
+import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers, CheckYourAnswersPartnership}
+import viewmodels.{AnswerRow, Link, Message}
 
 case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
+  self =>
   override lazy val toString: String = "partnershipAddressYears"
 
   override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = value match {
@@ -31,4 +35,16 @@ case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
         .removeAllOf(List(PartnershipPreviousAddressPostCodeLookupId, PartnershipPreviousAddressListId,PartnershipPreviousAddressId))
     case _ => super.cleanup(value, userAnswers)
   }
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersPartnership[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "addressYears.heading")
+
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "addressYears.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
 }

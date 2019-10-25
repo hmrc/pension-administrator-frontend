@@ -16,19 +16,17 @@
 
 package forms
 
-import forms.mappings.{EmailMapping, PhoneNumberMapping}
+import forms.mappings.PhoneNumberMapping
 import javax.inject.Inject
-import models.ContactDetails
 import play.api.data.Form
-import play.api.data.Forms._
 
 class PhoneFormProvider @Inject() extends PhoneNumberMapping {
 
   def apply(): Form[String] = Form(
     "value" -> phoneNumberMapping(
-      "contactDetails.error.phone.required",
-      "contactDetails.error.phone.length",
-      "contactDetails.error.phone.invalid"
+      keyPhoneNumberRequired = "contactDetails.error.phone.required",
+      keyPhoneNumberLength = "contactDetails.error.phone.length",
+      keyPhoneNumberInvalid = "contactDetails.error.phone.invalid"
     )
   )
 

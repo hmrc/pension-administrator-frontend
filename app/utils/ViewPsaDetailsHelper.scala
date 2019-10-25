@@ -166,12 +166,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
     AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualPhoneNumber: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   //Company PSA
@@ -207,14 +207,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(EmailId) map { email =>
+  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(CompanyEmailId) map { email =>
     AnswerRow("company.email.label", Seq(email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.EmailController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(PhoneId) map { phone =>
+  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(CompanyPhoneId) map { phone =>
     AnswerRow("company.phone.label", Seq(phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.PhoneController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
@@ -232,7 +232,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }
@@ -242,7 +242,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }
@@ -264,14 +264,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
-    AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPhoneId(index)) map { phone =>
+    AnswerRow("phone.label", Seq(phone), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.directors.routes.DirectorPhoneController.onPageLoad(UpdateMode, index).url)))
   }
 
-  private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorContactDetailsId(index)) map { details =>
-    AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEmailId(index)) map { email =>
+    AnswerRow("email.label", Seq(email), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.directors.routes.DirectorEmailController.onPageLoad(UpdateMode, index).url)))
   }
 
 
@@ -363,7 +363,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }
@@ -373,7 +373,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")))
+      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add"), None))
 
     case _ => None
   }

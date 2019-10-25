@@ -19,16 +19,19 @@ package controllers.register.company.directors
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
+import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController}
 import controllers.{Retrievals, Variations}
-import identifiers.register.company.directors.{CheckYourAnswersId, IsDirectorCompleteId}
+import identifiers.register.company.directors._
 import javax.inject.Inject
-import models._
+import models.Mode.checkMode
+import models.{CheckMode, Mode, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.CompanyDirector
-import utils.{CheckYourAnswersFactory, Navigator, SectionComplete}
-import viewmodels.AnswerSection
+import utils.checkyouranswers.Ops._
+import utils.{CheckYourAnswersFactory, Enumerable, Navigator, SectionComplete}
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,24 +47,22 @@ class CheckYourAnswersController @Inject()(
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             sectionComplete: SectionComplete,
                                             override val cacheConnector: UserAnswersCacheConnector
-                                          )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
+                                          )(implicit ec: ExecutionContext) extends FrontendController
+  with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
       val answersSection = Seq(
-        AnswerSection(
-          Some("directorCheckYourAnswers.directorDetails.heading"),
+        AnswerSection(None,
           checkYourAnswerHelper.directorDetails(index.id, mode) ++
             checkYourAnswerHelper.directorNino(index.id, mode) ++
-            checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode)
-        ),
-        AnswerSection(
-          Some("directorCheckYourAnswers.contactDetails.heading"),
-          checkYourAnswerHelper.directorAddress(index.id, mode) ++
-            checkYourAnswerHelper.directorAddressYears(index.id, mode) ++
+            checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode) ++
+            checkYourAnswerHelper.directorAddress(index.id, mode) ++
+            DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
             checkYourAnswerHelper.directorPreviousAddress(index.id, mode) ++
-            checkYourAnswerHelper.directorContactDetails(index.id, mode)
+            DirectorEmailId(index).row(Some(Link(DirectorEmailController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))
 
       Future.successful(Ok(check_your_answers(

@@ -20,6 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.{BusinessDetails, NormalMode, TolerantAddress}
 import play.api.data.Form
@@ -36,7 +37,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new AddressListFormProvider()
   private val companyName = "ThisCompanyName"
-  private val companyDetails = Json.obj("businessDetails" -> BusinessDetails(companyName, Some("Test UTR")))
+  private val companyDetails = Json.obj(BusinessNameId.toString -> companyName)
 
   private val addresses = Seq(
     address("test post code 1"),
@@ -72,8 +73,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     postCall = routes.CompanyAddressListController.onSubmit(NormalMode),
     manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
     addresses = addresses,
-    Message("common.previousAddressList.title"),
-    Message("common.previousAddressList.heading"),
+    Message("previousAddressList.heading", Message("theCompany").resolve),
+    Message("previousAddressList.heading", companyName),
     Message("common.selectAddress.text"),
     Message("common.selectAddress.link")
   )

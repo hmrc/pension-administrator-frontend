@@ -19,8 +19,12 @@ package identifiers.register.company.directors
 import identifiers._
 import identifiers.register.DirectorsOrPartnersChangedId
 import models.AddressYears
+import play.api.i18n.Messages
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
+import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers, CheckYourAnswersDirector}
+import viewmodels.{AnswerRow, Link, Message}
+
 
 case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[AddressYears] {
 
@@ -36,8 +40,27 @@ case class DirectorAddressYearsId(index: Int) extends TypedIdentifier[AddressYea
       case _ => super.cleanup(value, userAnswers)
     }
   }
+
 }
 
 object DirectorAddressYearsId {
   override lazy val toString: String = "directorAddressYears"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorAddressYearsId] = {
+
+    new CheckYourAnswersDirector[DirectorAddressYearsId] {
+
+      private def label(index: Int, ua: UserAnswers): String =
+        dynamicMessage(ua, "addressYears.heading", index)
+
+
+      private def hiddenLabel(index: Int, ua: UserAnswers): Message =
+        dynamicMessage(ua, "addressYears.visuallyHidden.text", index)
+
+      override def row(id: DirectorAddressYearsId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        AddressYearsCYA(label(id.index, userAnswers), Some(hiddenLabel(id.index, userAnswers)))()
+          .row(id)(changeUrl, userAnswers)
+    }
+  }
 }
+
