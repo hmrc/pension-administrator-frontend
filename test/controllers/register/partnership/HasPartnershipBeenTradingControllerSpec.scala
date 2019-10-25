@@ -61,7 +61,7 @@ class HasPartnershipBeenTradingControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
-    hasReferenceNumber(frontendAppConfig, form, mode, name, viewModel)(fakeRequest, messages).toString
+    hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
   "HasPartnershipBeenTradingController" must {
     "return OK and the correct view for a GET" in {
