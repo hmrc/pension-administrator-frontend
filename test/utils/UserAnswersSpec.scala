@@ -306,6 +306,25 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
   }
 
   "remove" must {
+
+    "remove an element that exists" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "email" -> "a@a.c"
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs"
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
     "remove an element inside an element that does exist with no other elements" in {
       val ua = UserAnswers(Json.obj(
         "name" -> "jim bloggs",
