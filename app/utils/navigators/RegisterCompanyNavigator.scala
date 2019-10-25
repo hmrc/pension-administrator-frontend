@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
-import identifiers.register.company.{PhoneId, _}
+import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
 import models._
@@ -80,9 +80,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
     case CompanyPreviousAddressId =>
       NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
-    case EmailId =>
+    case CompanyEmailId =>
       NavigateTo.save(routes.CompanyPhoneController.onPageLoad(NormalMode))
-    case PhoneId =>
+    case CompanyPhoneId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
       directorRoutes(from.userAnswers, NormalMode)
@@ -132,9 +132,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
     case CompanyPreviousAddressId =>
       checkYourAnswers
-    case EmailId =>
+    case CompanyEmailId =>
       checkYourAnswers
-    case PhoneId =>
+    case CompanyPhoneId =>
       checkYourAnswers
     case _ => None
   }
@@ -156,9 +156,9 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
     case CompanyPreviousAddressId =>
       anyMoreChanges
-    case EmailId =>
+    case CompanyEmailId =>
       anyMoreChanges
-    case PhoneId =>
+    case CompanyPhoneId =>
       anyMoreChanges
   }
 

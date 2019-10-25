@@ -166,12 +166,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
     AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(UpdateMode).url)))
   }
 
   private def individualPhoneNumber: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
     AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   //Company PSA
@@ -207,12 +207,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(EmailId) map { email =>
+  private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(CompanyEmailId) map { email =>
     AnswerRow("company.email.label", Seq(email), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(PhoneId) map { phone =>
+  private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(CompanyPhoneId) map { phone =>
     AnswerRow("company.phone.label", Seq(phone), answerIsMessageKey = false,
       Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url)))
   }
