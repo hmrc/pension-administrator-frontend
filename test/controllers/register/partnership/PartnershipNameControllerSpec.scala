@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -24,26 +24,25 @@ import forms.BusinessNameFormProvider
 import identifiers.register.BusinessTypeId
 import models.register.BusinessType
 import models.requests.DataRequest
-import models.{Mode, PSAUser, UserType}
-import play.api.data.Form
+import models.{PSAUser, UserType}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import utils.{FakeNavigator, UserAnswers}
 
-class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameControllerBehaviour {
+class PartnershipNameControllerSpec extends ControllerSpecBase with BusinessNameControllerBehaviour {
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
 
   def validData = UserAnswers(Json.obj(
-      BusinessTypeId.toString -> BusinessType.LimitedCompany.toString
+      BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString
     ))
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  def createController(userAnswers: UserAnswers): CompanyNameController =
-    new CompanyNameController(
+  def createController(userAnswers: UserAnswers): PartnershipNameController =
+    new PartnershipNameController(
       frontendAppConfig,
       messagesApi,
       new FakeUserAnswersCacheConnector{},
@@ -52,14 +51,20 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
       FakeAllowAccessProvider(),
       new FakeDataRetrievalAction(Some(userAnswers.json)),
       new DataRequiredActionImpl(),
-      new BusinessNameFormProvider
+      new BusinessNameFormProvider()
     ){
       override def href: Call = onwardRoute
     }
 
-  "CompanyUTRController" must {
+  val formProvider = new BusinessNameFormProvider()
+  val form = formProvider(
+    requiredKey = "partnershipName.error.required",
+    invalidKey = "partnershipName.error.invalid",
+    lengthKey = "partnershipName.error.length")
 
-    behave like businessNameController(validData, createController, new BusinessNameFormProvider()())
+  "PartnershipUTRController" must {
+
+    behave like businessNameController(validData, createController, form)
   }
 
 }

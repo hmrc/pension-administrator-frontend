@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -25,15 +25,15 @@ import javax.inject.Inject
 import play.api.i18n.MessagesApi
 import play.api.mvc.Call
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.Partnership
 
 import scala.concurrent.ExecutionContext
 
-class CompanyNameController @Inject()(
+class PartnershipNameController @Inject()(
                                        override val appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi,
                                        override val cacheConnector: UserAnswersCacheConnector,
-                                       @RegisterCompany override val navigator: Navigator,
+                                       @Partnership override val navigator: Navigator,
                                        override val authenticate: AuthAction,
                                        override val allowAccess: AllowAccessActionProvider,
                                        override val getData: DataRetrievalAction,
@@ -41,6 +41,10 @@ class CompanyNameController @Inject()(
                                        formProvider: BusinessNameFormProvider
                                      )(implicit val ec: ExecutionContext) extends BusinessNameController {
 
-  def href: Call = routes.CompanyNameController.onSubmit()
-  val form = formProvider()
+  def href: Call = routes.PartnershipNameController.onSubmit()
+
+  override val form = formProvider(
+    requiredKey = "partnershipName.error.required",
+    invalidKey = "partnershipName.error.invalid",
+    lengthKey = "partnershipName.error.length")
 }
