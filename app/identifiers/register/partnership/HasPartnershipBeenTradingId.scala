@@ -18,7 +18,7 @@ package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
-import play.api.libs.json.{JsPath, JsResult}
+import play.api.libs.json.JsResult
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
 import viewmodels.{AnswerRow, Link, Message}
@@ -41,10 +41,11 @@ case object HasPartnershipBeenTradingId extends TypedIdentifier[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
-      case Some(false) =>
+      case Some(true) =>
         userAnswers
           .remove(PartnershipPreviousAddressPostCodeLookupId)
           .flatMap(_.remove(PartnershipPreviousAddressId))
+          .flatMap(_.remove(PartnershipPreviousAddressListId))
       case _ =>
         super.cleanup(value, userAnswers)
     }
