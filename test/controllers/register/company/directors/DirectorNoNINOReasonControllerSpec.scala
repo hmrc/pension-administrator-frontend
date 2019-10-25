@@ -19,7 +19,7 @@ package controllers.register.company.directors
 import connectors.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
-import forms.EmailFormProvider
+import forms.ReasonFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -27,45 +27,48 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.email
+import views.html.reason
 
-class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
-  import DirectorEmailControllerSpec._
+class DirectorNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
+  import DirectorNoNINOReasonControllerSpec._
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEmailController(
+  private val reasonForm = formProvider(directorName)
+  
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoNINOReasonController(
     new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  private def emailView(form: Form[_] = emailForm): String = email(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def reasonView(form: Form[_] = reasonForm): String = reason(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
-  "DirectorEmail Controller" must {
+  "DirectorNoNINOReasonController" must {
 
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
       validData = getDirector,
-      viewAsString = emailView,
-      form = emailForm,
+      viewAsString = reasonView,
+      form = reasonForm,
       request = postRequest
     )
   }
 }
 
-object DirectorEmailControllerSpec {
-  private val formProvider = new EmailFormProvider()
-  private val emailForm = formProvider()
+object DirectorNoNINOReasonControllerSpec {
+  private val formProvider = new ReasonFormProvider()
   private val index = 0
   private val directorName = "test first name test middle name test last name"
-  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
-      postCall = routes.DirectorEmailController.onSubmit(mode, index),
-      title = Message("email.title", Message("theDirector").resolve),
-      heading = Message("email.title", directorName),
+      postCall = routes.DirectorNoNINOReasonController.onSubmit(mode, index),
+      title = Message("whyNoNINO.heading", Message("theDirector").resolve).resolve,
+      heading = Message("whyNoNINO.heading", directorName).resolve,
       mode = mode,
       entityName = directorName
     )
 }
+
+
+

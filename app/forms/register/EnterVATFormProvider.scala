@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package forms.register
 
 import forms.FormErrorHelper
 import forms.mappings.VatMappingString

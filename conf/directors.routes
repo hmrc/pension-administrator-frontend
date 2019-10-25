@@ -13,10 +13,25 @@ GET        /:index/name                             controllers.register.company
 GET        /:index/:mode/name                      controllers.register.company.directors.DirectorNameController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/name                      controllers.register.company.directors.DirectorNameController.onSubmit(mode: Mode, index: Index)
 
-GET        /:index/national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/:mode/national-insurance-number             controllers.register.company.directors.DirectorNinoController.onPageLoad(mode: Mode, index: Index)
-POST       /:index/:mode/national-insurance-number             controllers.register.company.directors.DirectorNinoController.onSubmit(mode: Mode, index: Index)
+GET        /:index/enter-national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/enter-national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/enter-national-insurance-number             controllers.register.company.directors.DirectorNinoController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/enter-national-insurance-number             controllers.register.company.directors.DirectorNinoController.onSubmit(mode: Mode, index: Index)
+
+GET        /:index/national-insurance-number                    controllers.register.company.directors.DirectorEnterNINOController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/national-insurance-number                    controllers.register.company.directors.DirectorEnterNINOController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/national-insurance-number             controllers.register.company.directors.DirectorEnterNINOController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/national-insurance-number             controllers.register.company.directors.DirectorEnterNINOController.onSubmit(mode: Mode, index: Index)
+
+GET        /:index/have-national-insurance-number                    controllers.register.company.directors.HasDirectorNINOController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/have-national-insurance-number                    controllers.register.company.directors.HasDirectorNINOController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/have-national-insurance-number             controllers.register.company.directors.HasDirectorNINOController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/have-national-insurance-number             controllers.register.company.directors.HasDirectorNINOController.onSubmit(mode: Mode, index: Index)
+
+GET        /:index/why-no-national-insurance-number                    controllers.register.company.directors.DirectorNoNINOReasonController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/why-no-national-insurance-number                    controllers.register.company.directors.DirectorNoNINOReasonController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/why-no-national-insurance-number             controllers.register.company.directors.DirectorNoNINOReasonController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/why-no-national-insurance-number             controllers.register.company.directors.DirectorNoNINOReasonController.onSubmit(mode: Mode, index: Index)
 
 GET        /:index/directors-address                            controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-address                            controllers.register.company.directors.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)

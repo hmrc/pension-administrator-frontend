@@ -19,19 +19,31 @@ package controllers.behaviours
 import controllers.ControllerSpecBase
 import controllers.actions._
 import org.scalatest.concurrent.ScalaFutures
+import play.api.data.Form
 import play.api.mvc._
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-trait ControllerWithSessionExpiryBehaviours extends ControllerSpecBase with ScalaFutures {
+trait ControllerWithCommonBehaviour extends ControllerSpecBase with ScalaFutures {
+  def onwardRoute = Call("GET", "/foo")
 
-  def controllerWithSessionExpiry[T](onPageLoadAction: Action[AnyContent],
-                                        onSubmitAction: Action[AnyContent]
-                                       ): Unit = {
+  def controllerWithCommonFunctions[T](onPageLoadAction: DataRetrievalAction => Action[AnyContent],
+                                       onSubmitAction: DataRetrievalAction => Action[AnyContent],
+                                       validData: DataRetrievalAction,
+                                       viewAsString: Form[T] => String,
+                                       form: Form[T],
+                                       request: FakeRequest[AnyContentAsFormUrlEncoded]
+                                     ): Unit = {
     "calling onPageLoad" must {
+      "return OK and the correct view" in {
+        val result = onPageLoadAction(validData)(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(form)
+      }
 
       "redirect to session expired page when there is no data" in {
-
-        val result = onPageLoadAction(fakeRequest)
+        val result = onPageLoadAction(dontGetAnyData)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -40,9 +52,16 @@ trait ControllerWithSessionExpiryBehaviours extends ControllerSpecBase with Scal
 
     "calling onSubmit" must {
 
+      "redirect to the next page when valid data is submitted" in {
+        val result = onSubmitAction(validData)(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+
       "redirect to session expired page when there is no data" in {
 
-        val result = onSubmitAction(fakeRequest)
+        val result = onSubmitAction(dontGetAnyData)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)

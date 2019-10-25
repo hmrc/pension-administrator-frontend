@@ -50,7 +50,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
-    hasReferenceNumber(frontendAppConfig, form, mode, companyName, viewModel)(fakeRequest, messages).toString
+    hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {
