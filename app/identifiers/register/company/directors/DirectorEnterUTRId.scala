@@ -17,14 +17,36 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.ReferenceValue
-import play.api.libs.json.JsPath
+import models.{Index, ReferenceValue}
+import play.api.i18n.Messages
+import play.api.libs.json.{JsPath, JsResult}
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, ReferenceValueCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorEnterUTRId(index: Int) extends TypedIdentifier[ReferenceValue] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorEnterUTRId.toString
+
+  override def cleanup(value: Option[ReferenceValue], userAnswers: UserAnswers): JsResult[UserAnswers] =
+    userAnswers.remove(DirectorNoUTRReasonId(this.index))
 }
+
 object DirectorEnterUTRId {
   override lazy val toString: String = "utr"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorEnterUTRId] =
+    new CheckYourAnswersDirector[DirectorEnterUTRId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "enterUTR.heading", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "enterUTR.visuallyHidden.text", index)
+
+
+      override def row(id: DirectorEnterUTRId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        ReferenceValueCYA[DirectorEnterUTRId](Some(label(userAnswers, id.index)),
+          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+    }
 }
 
 

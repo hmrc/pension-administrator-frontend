@@ -22,8 +22,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
-import models._
 import models.Mode._
+import models._
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
@@ -98,9 +98,9 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
   private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     mode match {
-      case NormalMode => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index))
+      case NormalMode => NavigateTo.save(routes.HasDirectorUTRController.onPageLoad(mode, index))
       case UpdateMode => redirectBasedOnIsNew(answers, index,
-        routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index), anyMoreChangesPage)
+        routes.HasDirectorUTRController.onPageLoad(mode, index), anyMoreChangesPage)
       case _ => sessionExpired
     }
   }

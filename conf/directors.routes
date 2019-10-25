@@ -43,29 +43,20 @@ POST       /:index/directors-address-manual                     controllers.regi
 GET        /:index/:mode/directors-address-manual              controllers.register.company.directors.DirectorAddressController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/directors-address-manual              controllers.register.company.directors.DirectorAddressController.onSubmit(mode: Mode, index: Index)
 
-GET        /:index/enter-unique-taxpayer-reference                    controllers.register.company.directors.DirectorUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/enter-unique-taxpayer-reference                    controllers.register.company.directors.DirectorUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/:mode/enter-unique-taxpayer-reference             controllers.register.company.directors.DirectorUniqueTaxReferenceController.onPageLoad(mode: Mode, index: Index)
-POST       /:index/:mode/enter-unique-taxpayer-reference             controllers.register.company.directors.DirectorUniqueTaxReferenceController.onSubmit(mode: Mode, index: Index)
-
-
 GET        /:index/have-unique-taxpayer-reference                    controllers.register.company.directors.HasDirectorUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/have-unique-taxpayer-reference                    controllers.register.company.directors.HasDirectorUTRController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/have-unique-taxpayer-reference             controllers.register.company.directors.HasDirectorUTRController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/have-unique-taxpayer-reference             controllers.register.company.directors.HasDirectorUTRController.onSubmit(mode: Mode, index: Index)
-
 
 GET        /:index/unique-taxpayer-reference                    controllers.register.company.directors.DirectorEnterUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/unique-taxpayer-reference                    controllers.register.company.directors.DirectorEnterUTRController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/unique-taxpayer-reference             controllers.register.company.directors.DirectorEnterUTRController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/unique-taxpayer-reference             controllers.register.company.directors.DirectorEnterUTRController.onSubmit(mode: Mode, index: Index)
 
-
 GET        /:index/why-no-utr                                   controllers.register.company.directors.DirectorNoUTRReasonController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/why-no-utr                                   controllers.register.company.directors.DirectorNoUTRReasonController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/why-no-utr                             controllers.register.company.directors.DirectorNoUTRReasonController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/why-no-utr                             controllers.register.company.directors.DirectorNoUTRReasonController.onSubmit(mode: Mode, index: Index)
-
 
 GET        /:index/directors-previous-address                   controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/directors-previous-address                   controllers.register.company.directors.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)

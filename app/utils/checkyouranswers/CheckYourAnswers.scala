@@ -37,27 +37,27 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
 }
 
 trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
     ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
 }
 
 trait CheckYourAnswersIndividual[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
     ua.get(IndividualDetailsId).map(i => Message(messageKey, i.fullName)).getOrElse(Message(messageKey, Message("theIndividual")))
 }
 
 trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String)(implicit messages: Messages): Message =
     ua.get(PartnershipDetailsId).map(name => Message(messageKey, name.companyName)).getOrElse(Message(messageKey, Message("thePartnership")))
 }
 
 trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
     ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
     ua.get(DirectorDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
@@ -80,6 +80,9 @@ object CheckYourAnswers {
   implicit def string[I <: TypedIdentifier[String]](implicit rds: Reads[String]): CheckYourAnswers[I] = StringCYA()()
 
   implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = BooleanCYA()()
+
+  implicit def reference[I <: TypedIdentifier[ReferenceValue]]
+  (implicit rds: Reads[ReferenceValue], messages: Messages): CheckYourAnswers[I] = ReferenceValueCYA()()
 
   implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -186,7 +189,7 @@ case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: 
   def apply()(implicit rds: Reads[BusinessDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
     override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
       userAnswers.get(id).map { businessDetails =>
-        val optionAnswerRow = businessDetails.uniqueTaxReferenceNumber.map{ utr =>
+        val optionAnswerRow = businessDetails.uniqueTaxReferenceNumber.map { utr =>
           AnswerRow(
             utrLabel,
             Seq(utr),
@@ -330,3 +333,22 @@ case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = Non
   }
 }
 
+case class ReferenceValueCYA[I <: TypedIdentifier[ReferenceValue]](
+                                                                    nameLabel: Option[String] = None,
+                                                                    hiddenNameLabel: Option[Message] = None) {
+
+  def apply()(implicit rds: Reads[ReferenceValue]): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map { reference =>
+          Seq(AnswerRow(nameLabel getOrElse s"${id.toString}.heading",
+            Seq(s"${reference.value}"),
+            answerIsMessageKey = false,
+            changeUrl,
+            hiddenNameLabel
+          ))
+        }.getOrElse(Seq.empty[AnswerRow])
+    }
+  }
+}

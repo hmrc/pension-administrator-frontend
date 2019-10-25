@@ -96,25 +96,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def directorUniqueTaxReference(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(
-    identifiers.register.company.directors.DirectorUniqueTaxReferenceId(index)) match {
-    case Some(UniqueTaxReference.Yes(utr)) => Seq(
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.Yes}"), true,
-        Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url), None),
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.utr", Seq(utr), true,
-        Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url), None)
-    )
-
-    case Some(UniqueTaxReference.No(reason)) => Seq(
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel", Seq(s"${UniqueTaxReference.No}"), true,
-        Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url), None),
-      AnswerRow("directorUniqueTaxReference.checkYourAnswersLabel.reason", Seq(reason), true,
-        Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url), None)
-    )
-
-    case _ => Nil
-  }
-
   def directorAddressYears(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorAddressYearsId(index)) match {
     case Some(x) => Seq(AnswerRow("directorAddressYears.checkYourAnswersLabel", Seq(s"common.addressYears.$x"), true,
       Link(controllers.register.company.directors.routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url), None))

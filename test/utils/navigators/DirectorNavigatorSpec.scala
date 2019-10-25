@@ -63,7 +63,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 
   private def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
-    (DirectorNinoId(0), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorNinoId(0), emptyAnswers, directorHasUtrPage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
@@ -72,7 +72,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   private def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
     (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
-    (DirectorNinoId(0), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (DirectorNinoId(0), defaultAnswers, directorHasUtrPage(UpdateMode), false, None, true),
     (DirectorNinoId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
     (DirectorEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
     (DirectorEnterUTRId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
@@ -117,7 +117,6 @@ object DirectorNavigatorSpec extends OptionValues {
   def moreThanTenDirectorsPage(mode: Mode) = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode)
   def directorDetailsPage(mode: Mode) = routes.DirectorDetailsController.onPageLoad(mode, 0)
   def directorNinoPage(mode: Mode) = routes.DirectorNinoController.onPageLoad(mode, 0)
-  def directorUniqueTaxReferencePage(mode: Mode) = routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, 0)
   def directorAddressYearsPage(mode: Mode) = routes.DirectorAddressYearsController.onPageLoad(mode, 0)
   def directorPhonePage(mode: Mode) = routes.DirectorPhoneController.onPageLoad(mode, 0)
   def directorEmailPage(mode: Mode) = routes.DirectorEmailController.onPageLoad(mode, 0)
@@ -134,6 +133,7 @@ object DirectorNavigatorSpec extends OptionValues {
   def addressListPage(mode: Mode): Call = routes.CompanyDirectorAddressListController.onPageLoad(mode, 0)
 
   def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, 0)
+  def directorHasUtrPage(mode: Mode): Call = routes.HasDirectorUTRController.onPageLoad(mode, 0)
   def directorEnterUtrPage(mode: Mode): Call = routes.DirectorEnterUTRController.onPageLoad(mode, 0)
   def directorNoUtrReasonPage(mode: Mode): Call = routes.DirectorNoUTRReasonController.onPageLoad(mode, 0)
 

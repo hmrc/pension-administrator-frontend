@@ -19,7 +19,7 @@ package controllers.register.company.directors
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController}
+import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController, HasDirectorUTRController, DirectorEnterUTRController, DirectorNoUTRReasonController}
 import controllers.{Retrievals, Variations}
 import identifiers.register.company.directors._
 import javax.inject.Inject
@@ -57,7 +57,9 @@ class CheckYourAnswersController @Inject()(
         AnswerSection(None,
           checkYourAnswerHelper.directorDetails(index.id, mode) ++
             checkYourAnswerHelper.directorNino(index.id, mode) ++
-            checkYourAnswerHelper.directorUniqueTaxReference(index.id, mode) ++
+            HasDirectorUTRId(index).row(Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorEnterUTRId(index).row(Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorNoUTRReasonId(index).row(Some(Link(DirectorNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++
             checkYourAnswerHelper.directorAddress(index.id, mode) ++
             DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
             checkYourAnswerHelper.directorPreviousAddress(index.id, mode) ++
