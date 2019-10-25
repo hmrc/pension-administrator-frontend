@@ -18,7 +18,7 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, personDetails}
+import identifiers.register.NonUKBusinessTypeIdSpec.{email, phone, personDetails, contactDetails}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorDetailsId
@@ -318,7 +318,7 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(IndividualAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(IndividualPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(IndividualPreviousAddressId)(address))
-      .flatMap(_.set(IndividualContactDetailsId)(contactDetails))
+      .flatMap(_.set(IndividualEmailId)(email))
       .flatMap(_.set(IndividualDateOfBirthId)(date))
       .flatMap(_.set(IndividualSameContactAddressId)(true))
       .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))

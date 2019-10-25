@@ -136,6 +136,8 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
   val address = Address("line 1", "line 2", None, None, None, "GB")
   val contactDetails = ContactDetails("s@s.com", "999")
+  val email = "s@s.com"
+  val phone = "999"
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
 
   val answersCompany: UserAnswers = UserAnswers(Json.obj())

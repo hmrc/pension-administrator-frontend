@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
 import identifiers.register.company.ContactDetailsId
-import identifiers.register.individual.{IndividualContactDetailsId, IndividualEmailId}
+import identifiers.register.individual.IndividualEmailId
 import identifiers.register.partnership.PartnershipContactDetailsId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}

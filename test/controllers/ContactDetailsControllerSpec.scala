@@ -24,7 +24,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.individual.{IndividualContactDetailsChangedId, IndividualContactDetailsId}
+import identifiers.register.individual.IndividualContactDetailsChangedId
 import identifiers.register.partnership.PartnershipContactDetailsId
 import models.requests.DataRequest
 import models._
