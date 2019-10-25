@@ -21,10 +21,10 @@ import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class HasPartnershipBeenTradingIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class PartnershipTradingOverAYearIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
-    "`HasPartnershipBeenTradingId` has been set to `true`" must {
+    "`PartnershipTradingOverAYearId` has been set to `true`" must {
       "remove `PartnershipPreviousAddressPostCodeLookupId`, `PartnershipPreviousAddressId`, and `PartnershipPreviousAddressListId`" in {
         val ua = UserAnswers(Json.obj(
           PartnershipPreviousAddressPostCodeLookupId.toString -> Seq(TolerantAddress(None, None, None, None, None, None)),
@@ -32,7 +32,7 @@ class HasPartnershipBeenTradingIdSpec extends WordSpec with MustMatchers with Op
           PartnershipPreviousAddressListId.toString -> TolerantAddress(None, None, None, None, None, None)
         ))
 
-        val result = HasPartnershipBeenTradingId.cleanup(Some(true), ua).asOpt.value
+        val result = PartnershipTradingOverAYearId.cleanup(Some(true), ua).asOpt.value
 
         result.get(PartnershipPreviousAddressPostCodeLookupId) mustBe None
         result.get(PartnershipPreviousAddressId) mustBe None
@@ -41,7 +41,7 @@ class HasPartnershipBeenTradingIdSpec extends WordSpec with MustMatchers with Op
 
     }
 
-    "`HasPartnershipBeenTradingId` has been set to `false`" must {
+    "`PartnershipTradingOverAYearId` has been set to `false`" must {
       "not remove `PartnershipPreviousAddressPostCodeLookupId`, `PartnershipPreviousAddressId`, and `PartnershipPreviousAddressListId`" in {
         val ua = UserAnswers(Json.obj(
           PartnershipPreviousAddressPostCodeLookupId.toString -> Seq(TolerantAddress(None, None, None, None, None, None)),
@@ -49,7 +49,7 @@ class HasPartnershipBeenTradingIdSpec extends WordSpec with MustMatchers with Op
           PartnershipPreviousAddressListId.toString -> TolerantAddress(None, None, None, None, None, None)
         ))
 
-        val result = HasPartnershipBeenTradingId.cleanup(Some(false), ua).asOpt.value
+        val result = PartnershipTradingOverAYearId.cleanup(Some(false), ua).asOpt.value
 
         result.get(PartnershipPreviousAddressPostCodeLookupId) mustBe Some(Seq(TolerantAddress(None, None, None, None, None, None)))
         result.get(PartnershipPreviousAddressId) mustBe Some(Address("", "", None, None, None, ""))

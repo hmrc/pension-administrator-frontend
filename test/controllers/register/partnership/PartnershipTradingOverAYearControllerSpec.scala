@@ -30,7 +30,7 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasPartnershipBeenTradingControllerSpec extends ControllerSpecBase {
+class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -40,7 +40,7 @@ class HasPartnershipBeenTradingControllerSpec extends ControllerSpecBase {
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasPartnershipBeenTradingController.onSubmit(NormalMode),
+      postCall = PartnershipTradingOverAYearController.onSubmit(NormalMode),
       title = Message("trading.title", Message("thePartnership").resolve),
       heading = Message("trading.title", name),
       mode = NormalMode,
@@ -49,7 +49,7 @@ class HasPartnershipBeenTradingControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
-    new HasPartnershipBeenTradingController(frontendAppConfig,
+    new PartnershipTradingOverAYearController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -63,7 +63,7 @@ class HasPartnershipBeenTradingControllerSpec extends ControllerSpecBase {
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
     hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
-  "HasPartnershipBeenTradingController" must {
+  "PartnershipTradingOverAYearController" must {
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 

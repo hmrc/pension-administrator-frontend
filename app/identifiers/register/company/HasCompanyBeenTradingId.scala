@@ -18,14 +18,13 @@ package identifiers.register.company
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
-import play.api.libs.json.{JsPath, JsResult}
+import play.api.libs.json.JsResult
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object HasCompanyBeenTradingId extends TypedIdentifier[Boolean] {
   self =>
-  override def path: JsPath = JsPath \ HasCompanyBeenTradingId.toString
 
   override def toString: String = "hasCompanyBeenTrading"
 
@@ -43,7 +42,7 @@ case object HasCompanyBeenTradingId extends TypedIdentifier[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
-      case Some(false) =>
+      case Some(true) =>
         userAnswers
           .remove(CompanyPreviousAddressPostCodeLookupId)
           .flatMap(_.remove(CompanyPreviousAddressId))

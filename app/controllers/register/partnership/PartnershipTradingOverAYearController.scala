@@ -22,7 +22,7 @@ import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.partnership.routes._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.partnership.{HasPartnershipBeenTradingId, PartnershipDetailsId}
+import identifiers.register.partnership.{PartnershipTradingOverAYearId, PartnershipDetailsId}
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -34,7 +34,7 @@ import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.ExecutionContext
 
-class HasPartnershipBeenTradingController @Inject()(override val appConfig: FrontendAppConfig,
+class PartnershipTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     override val dataCacheConnector: UserAnswersCacheConnector,
                                                     @Partnership override val navigator: Navigator,
@@ -47,7 +47,7 @@ class HasPartnershipBeenTradingController @Inject()(override val appConfig: Fron
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasPartnershipBeenTradingController.onSubmit(mode),
+      postCall = PartnershipTradingOverAYearController.onSubmit(mode),
       title = Message("trading.title", Message("thePartnership").resolve),
       heading = Message("trading.title", companyName),
       mode = mode,
@@ -62,7 +62,7 @@ class HasPartnershipBeenTradingController @Inject()(override val appConfig: Fron
       implicit request =>
         PartnershipDetailsId.retrieve.right.map {
           details =>
-            get(HasPartnershipBeenTradingId, form(details.companyName), viewModel(mode, details.companyName))
+            get(PartnershipTradingOverAYearId, form(details.companyName), viewModel(mode, details.companyName))
         }
     }
 
@@ -71,7 +71,7 @@ class HasPartnershipBeenTradingController @Inject()(override val appConfig: Fron
       implicit request =>
         PartnershipDetailsId.retrieve.right.map {
           details =>
-            post(HasPartnershipBeenTradingId, mode, form(details.companyName), viewModel(mode, details.companyName))
+            post(PartnershipTradingOverAYearId, mode, form(details.companyName), viewModel(mode, details.companyName))
         }
     }
 
