@@ -47,7 +47,7 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasDirectorNINOController.onSubmit(mode, index),
+      postCall = routes.HasDirectorNINOController.onSubmit(mode, index),
       title = Message("hasNINO.heading", Message("theDirector").resolve),
       heading = Message("hasNINO.heading", entityName),
       mode = mode,
