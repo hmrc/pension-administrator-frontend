@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package identifiers.register.company.directors
 
-import forms.FormErrorHelper
-import forms.mappings.VatMappingString
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
+import java.time.LocalDate
 
-class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingString {
+import identifiers._
+import play.api.libs.json.JsPath
 
-  def apply(name: String)(implicit messages: Messages): Form[String] =
-    Form(
-      "value" -> vatMapping(
-        keyVatRequired = "enterVAT.error.required",
-        keyVatLength = Message("enterVAT.error.length", name),
-        keyVatInvalid = Message("enterVAT.error.invalid", name)
-      )
-    )
+case class DirectorDOBId(index: Int) extends TypedIdentifier[LocalDate] {
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorDOBId.toString
+
+  override def toString: String = "dateOfBirth"
 
 }

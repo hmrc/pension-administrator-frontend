@@ -16,11 +16,10 @@
 
 package controllers.register
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.company.BusinessDetailsId
+import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}

@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms.register
 
-import identifiers._
-import models.BusinessDetails
-import utils.checkyouranswers.BusinessDetailsCYA
+import forms.FormErrorHelper
+import forms.mappings.VatMappingString
+import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] {
-  self =>
-  override def toString: String = "businessDetails"
+class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingString {
 
-  implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
+  def apply(name: String)(implicit messages: Messages): Form[String] =
+    Form(
+      "value" -> vatMapping(
+        keyVatRequired = "enterVAT.error.required",
+        keyVatLength = Message("enterVAT.error.length", name),
+        keyVatInvalid = Message("enterVAT.error.invalid", name)
+      )
+    )
 
 }

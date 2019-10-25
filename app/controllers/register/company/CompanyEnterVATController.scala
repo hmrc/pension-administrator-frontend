@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
-import forms.register.company.EnterVATFormProvider
+import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
 import javax.inject.Inject
 import models.Mode
