@@ -287,14 +287,14 @@ partnerDetails.heading = Partner
 personDetails.firstName = First name
 personDetails.middleName = Middle name
 personDetails.lastName = Last name
-personDetails.error.firstName.required = Enter the first name
-personDetails.error.firstName.length = The first name cannot be more than 35 characters
-personDetails.error.firstName.invalid = The first name must start with an alphabetic character
+personName.error.firstName.required = Enter the first name
+personName.error.firstName.length = The first name cannot be more than 35 characters
+personName.error.firstName.invalid = The first name must start with an alphabetic character
 personDetails.error.middleName.length = The middle name cannot be more than 35 characters
 personDetails.error.middleName.invalid = The middle name must start with an alphabetic character
-personDetails.error.lastName.required = Enter the last name
-personDetails.error.lastName.length = The last name cannot be more than 35 characters
-personDetails.error.lastName.invalid = The last name must start with an alphabetic character
+personName.error.lastName.required = Enter the last name
+personName.error.lastName.length = The last name cannot be more than 35 characters
+personName.error.lastName.invalid = The last name must start with an alphabetic character
 
 directorNino.title = Does the director have a National Insurance number?
 directorNino.heading = Does the director have a National Insurance number?
@@ -993,3 +993,6 @@ utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?
 isRegisteredName.company.heading = Is {0} the registered name of the company?
+
+directorName.title = What is the director’s name?
+directorName.heading = What is the director’s name?
