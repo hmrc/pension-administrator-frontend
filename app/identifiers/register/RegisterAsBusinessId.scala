@@ -45,8 +45,9 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
     userAnswers.removeAllOf(List(IndividualDetailsId, IndividualAddressId, IndividualDateOfBirthId, IndividualSameContactAddressId,
       IndividualContactAddressListId, IndividualContactAddressId, IndividualAddressYearsId, IndividualPreviousAddressId,
       IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId
-//      ,
-//      IndividualContactDetailsId
+      ,
+      IndividualEmailId,
+      IndividualPhoneId
     ))
   }
 

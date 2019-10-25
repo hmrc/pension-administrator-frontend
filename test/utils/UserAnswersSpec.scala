@@ -19,8 +19,10 @@ package utils
 import java.time.LocalDate
 
 import controllers.register.company.directors.routes
+import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
+import identifiers.register.individual.IndividualEmailId
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models._
 import models.register.adviser.AdviserDetails
@@ -300,6 +302,30 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
+    }
+  }
+
+  // TODO: PODS-3503
+  "remove" must {
+    "work" in {
+      val json = Json.obj(
+        "abc" -> Json.obj(
+          "def" -> "zzz",
+
+        )
+      )
+      val ua = UserAnswers(json)
+
+      val xx = new TypedIdentifier[String] {
+        override def toString: String = "abc"
+        override def path: JsPath = JsPath \ "abc" \ "def"
+      }
+
+      val expectedResult = UserAnswers()
+
+      val result = ua.remove(xx).asOpt.value
+      result mustBe expectedResult
+      //IndividualEmailId
     }
   }
 }

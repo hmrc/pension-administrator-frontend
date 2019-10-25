@@ -94,7 +94,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
 
   "get" must {
 
-    "return a successful result when no partners are added" in {
+    "return a successful resultCompany when no partners are added" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -114,7 +114,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       }
     }
 
-    "return a successful result when there are few partners" in {
+    "return a successful resultCompany when there are few partners" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -139,7 +139,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       }
     }
 
-    "return a successful result when there are maximum allowed partners" in {
+    "return a successful resultCompany when there are maximum allowed partners" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)

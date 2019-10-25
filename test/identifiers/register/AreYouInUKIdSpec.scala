@@ -149,7 +149,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        //result.get(IndividualContactDetailsId) mustNot be(defined)
+        //resultCompany.get(IndividualContactDetailsId) mustNot be(defined)
       }
     }
 
@@ -168,7 +168,7 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualAddressYearsId) mustNot be(defined)
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        //result.get(IndividualContactDetailsId) mustNot be(defined)
+        //resultCompany.get(IndividualContactDetailsId) mustNot be(defined)
       }
 
       "not remove the data for Individual Details Correct " in {

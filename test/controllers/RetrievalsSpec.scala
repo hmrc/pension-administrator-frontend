@@ -54,7 +54,7 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
   }
 
   "retrieveDirectorName" must {
-    "reach the intended result when companyName is found" in {
+    "reach the intended resultCompany when companyName is found" in {
 
       val validData = Json.obj(
         "directors" -> Json.arr(
@@ -79,23 +79,23 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
 
   "retrieve" must {
 
-    "reach the intended result when identifier gets value from answers" in {
+    "reach the intended resultCompany when identifier gets value from answers" in {
 
-      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result"))
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "resultCompany"))
 
-      testIdentifier.retrieve.right.value mustEqual "result"
+      testIdentifier.retrieve.right.value mustEqual "resultCompany"
     }
 
-    "reach the intended result when identifier uses and to get the value from answers" in {
+    "reach the intended resultCompany when identifier uses and to get the value from answers" in {
 
-      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result", "second" -> "answer"))
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "resultCompany", "second" -> "answer"))
 
-      (testIdentifier and secondIdentifier).retrieve.right.value mustEqual new ~("result", "answer")
+      (testIdentifier and secondIdentifier).retrieve.right.value mustEqual new ~("resultCompany", "answer")
     }
 
     "redirect to the session expired page when cant find identifier" in {
 
-      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test1" -> "result"))
+      implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test1" -> "resultCompany"))
 
       whenReady(testIdentifier.retrieve.left.value) {
         _ mustEqual Redirect(routes.SessionExpiredController.onPageLoad())

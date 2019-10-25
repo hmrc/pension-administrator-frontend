@@ -100,7 +100,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
   "get" must {
 
-    "return a successful result when there is no existing answer" in {
+    "return a successful resultCompany when there is no existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)
@@ -119,7 +119,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
       }
     }
 
-    "return a successful result when there is an existing answer" in {
+    "return a successful resultCompany when there is an existing answer" in {
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator)

@@ -195,10 +195,12 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def remove[I <: TypedIdentifier.PathDependent](id: I): JsResult[UserAnswers] = {
-
-    JsLens.fromPath(id.path)
-      .remove(json)
-      .flatMap(json => id.cleanup(None, UserAnswers(json)))
+    val pathExists = JsLens.fromPath(id.path).get(json).asOpt.isDefined
+    if (pathExists) {
+      JsLens.fromPath(id.path).remove(json).flatMap(json => id.cleanup(None, UserAnswers(json)))
+    } else {
+      id.cleanup(None, UserAnswers(json))
+    }
   }
 
   def removeAllOf[I <: TypedIdentifier.PathDependent](ids: List[I]): JsResult[UserAnswers] = {

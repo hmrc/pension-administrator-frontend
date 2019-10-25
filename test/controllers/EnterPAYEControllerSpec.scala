@@ -42,7 +42,7 @@ class EnterPAYEControllerSpec extends ControllerSpecBase {
   "EnterPAYE Controller" must {
     "get" must {
 
-      "return a successful result when there is no existing answer" in {
+      "return a successful resultCompany when there is no existing answer" in {
         running(_.overrides(
           bind[Navigator].toInstance(FakeNavigator)
         )) {
@@ -55,7 +55,7 @@ class EnterPAYEControllerSpec extends ControllerSpecBase {
         }
       }
 
-      "return a successful result when there is an existing answer" in {
+      "return a successful resultCompany when there is an existing answer" in {
         running(_.overrides(
           bind[Navigator].toInstance(FakeNavigator)
         )) {
