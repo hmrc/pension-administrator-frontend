@@ -34,7 +34,7 @@ class EmailViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new EmailFormProvider()()
 
-  private val postCall: Call = routes.EmailController.onSubmit(NormalMode)
+  private val postCall: Call = routes.CompanyEmailController.onSubmit(NormalMode)
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

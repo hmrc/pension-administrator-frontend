@@ -161,7 +161,6 @@ object PartnerAddressPostCodeLookupControllerSpec extends MockitoSugar {
     routes.PartnerAddressController.onPageLoad(NormalMode, index),
     Message("partnerAddressPostCodeLookup.title"),
     Message("partnerAddressPostCodeLookup.heading"),
-    Message("partnerAddressPostCodeLookup.body"),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link")),
     Message("common.address.enterPostcode.formLabel")

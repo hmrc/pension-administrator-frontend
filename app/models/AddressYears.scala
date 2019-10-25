@@ -27,7 +27,7 @@ object AddressYears extends Enumerable.Implicits {
   case object OverAYear extends WithName("over_a_year") with AddressYears
 
   val values: Seq[AddressYears] = Seq(
-    UnderAYear, OverAYear
+    OverAYear, UnderAYear
   )
 
   val options: Seq[InputOption] = values.map {

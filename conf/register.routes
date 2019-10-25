@@ -32,10 +32,10 @@ GET        /different-government-gateway-used           controllers.register.Dup
 
 GET        /unable-to-send-details                      controllers.register.SubmissionInvalidController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /registered-in-uk                            controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
-POST       /registered-in-uk                            controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/registered-in-uk                      controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode)
-POST       /:mode/registered-in-uk                      controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
+GET        /is-company-or-partnership-in-uk             controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /is-company-or-partnership-in-uk             controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/is-company-or-partnership-in-uk       controllers.register.BusinessTypeAreYouInUKController.onPageLoad(mode: Mode)
+POST       /:mode/is-company-or-partnership-in-uk       controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
 
 GET        /what-to-register                            controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
 POST       /what-to-register                            controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)

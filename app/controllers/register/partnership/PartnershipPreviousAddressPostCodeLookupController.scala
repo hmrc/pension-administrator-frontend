@@ -53,7 +53,6 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
     Message("common.previousAddress.title"),
     Message("common.previousAddress.heading"),
-    Message("common.previousAddress.lede"),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),
     Message("common.address.enterPostcode.formLabel"),

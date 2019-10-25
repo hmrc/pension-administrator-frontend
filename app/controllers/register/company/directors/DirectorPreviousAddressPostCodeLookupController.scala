@@ -65,7 +65,6 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
           routes.DirectorPreviousAddressController.onPageLoad(mode, index),
           Message("directorPreviousAddressPostCodeLookup.title"),
           Message("directorPreviousAddressPostCodeLookup.heading"),
-          Message("directorPreviousAddressPostCodeLookup.text"),
           Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
           Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
           Message("directorPreviousAddressPostCodeLookup.input.text"),

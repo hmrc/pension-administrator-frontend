@@ -23,7 +23,7 @@ import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeCountryOptions, FakeNavigator}
-import viewmodels.{AnswerRow, AnswerSection, Link}
+import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -152,11 +152,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders the address years" in {
           val addressYears = AddressYears.OverAYear
-          val rows = Seq(answerRow(
-            "checkyouranswers.partnership.address.years",
+          val rows = Seq(
+            answerRow(
+            Message("addressYears.heading", Message("thePartnership").resolve),
             Seq(s"common.addressYears.${addressYears.toString}"),
-            true,
-            Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))
+            answerIsMessageKey = true,
+            Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
+              visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("thePartnership").resolve))
           ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
@@ -293,8 +295,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     Seq(section)
   }
 
-  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, changeUrl)
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None,
+                        visuallyHiddenLabel: Option[Message]= None): AnswerRow = {
+    AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
   private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {

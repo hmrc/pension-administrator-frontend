@@ -23,6 +23,29 @@ import views.ViewSpecBase
 
 trait ViewBehaviours extends ViewSpecBase {
 
+  def normalPageWithTitle(view: () => HtmlFormat.Appendable,
+                          messageKeyPrefix: String,
+                          title: String,
+                          pageHeader: String,
+                          expectedGuidanceKeys: String*): Unit = {
+    normalPageWithNoPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
+
+    "behave like a normal page" when {
+      "rendered" must {
+        "display the correct browser title" in {
+          val doc = asDocument(view())
+          assertEqualsMessage(doc, "title", title + " - " + messagesApi("pension.scheme.administrator.title"))
+        }
+
+        "display the correct page header" in {
+          val doc = asDocument(view())
+          assertPageTitleEqualsMessage(doc, pageHeader)
+        }
+      }
+    }
+
+  }
+
   // TODO: This should be looked at - it IS doing a page title check!
   def normalPageWithPageTitleCheck(view: () => HtmlFormat.Appendable,
                                    messageKeyPrefix: String,

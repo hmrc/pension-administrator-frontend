@@ -46,8 +46,10 @@ trait Variations extends FrontendController {
     IndividualContactDetailsId -> IndividualContactDetailsChangedId,
     CompanyContactAddressId -> CompanyContactAddressChangedId,
     CompanyPreviousAddressId -> CompanyPreviousAddressChangedId,
-    EmailId -> CompanyContactDetailsChangedId,
-    PhoneId -> CompanyContactDetailsChangedId,
+    CompanyEmailId -> CompanyContactDetailsChangedId,
+    CompanyPhoneId -> CompanyContactDetailsChangedId,
+    IndividualEmailId -> IndividualContactDetailsChangedId,
+    IndividualPhoneId -> IndividualContactDetailsChangedId,
     PartnershipContactAddressId -> PartnershipContactAddressChangedId,
     PartnershipPreviousAddressId -> PartnershipPreviousAddressChangedId,
     PartnershipContactDetailsId -> PartnershipContactDetailsChangedId,
@@ -70,7 +72,7 @@ trait Variations extends FrontendController {
 
   protected def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     id match {
-      case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorContactDetailsId(_) |
+      case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorEmailId(_) | DirectorPhoneId(_) |
            DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_) | DirectorDetailsId(_)
       => Some(DirectorsOrPartnersChangedId)
       case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |

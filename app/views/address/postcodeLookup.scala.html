@@ -42,8 +42,6 @@
             headingKey=components.hyphen(messages(viewmodel.heading)).toString
         )
 
-        <p>@viewmodel.hint.resolve</p>
-
         <p>@Html(viewmodel.enterPostcode.withArgs(link))</p>
 
         @components.input_text(

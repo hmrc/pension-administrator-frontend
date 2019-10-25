@@ -49,25 +49,30 @@ class PartnerAddressYearsController @Inject()(
                                              ) extends AddressYearsController with Retrievals {
 
 
-  private val form: Form[AddressYears] = formProvider(Message("partnerAddressYears.error.required"))
+  private def form(partnerName: String): Form[AddressYears] = formProvider(partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-            get(PartnerAddressYearsId(index), form, viewmodel(mode, index), mode)
+        val partnerName = entityName(index)
+        get(PartnerAddressYearsId(index), form(partnerName), viewmodel(mode, index, partnerName), mode)
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-          post(PartnerAddressYearsId(index), mode, form, viewmodel(mode, index))
+      val partnerName = entityName(index)
+      post(PartnerAddressYearsId(index), mode, form(partnerName), viewmodel(mode, index, partnerName))
   }
 
-  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
-        AddressYearsViewModel(
-          postCall = routes.PartnerAddressYearsController.onSubmit(mode, index),
-          title = Message("partnerAddressYears.title"),
-          heading = Message("partnerAddressYears.heading"),
-          legend = Message("partnerAddressYears.heading"),
-          psaName = psaName()
-        )
+  private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(PartnerDetailsId(index)).map(_.fullName).getOrElse(Message("thePartner").resolve)
+
+  private def viewmodel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
+    AddressYearsViewModel(
+      postCall = routes.PartnerAddressYearsController.onSubmit(mode, index),
+      title = Message("addressYears.heading", Message("thePartner").resolve),
+      heading = Message("addressYears.heading", partnerName),
+      legend = Message("addressYears.heading", partnerName),
+      psaName = psaName()
+    )
 }

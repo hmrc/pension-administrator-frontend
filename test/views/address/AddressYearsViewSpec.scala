@@ -21,21 +21,24 @@ import models.{AddressYears, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
+import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.behaviours.ViewBehaviours
 import views.html.address.addressYears
 
 class AddressYearsViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "companyAddressYears"
+  val messageKeyPrefix = "addressYears"
 
   val form = new AddressYearsFormProvider()("error")
   val name = "Name"
+  val title = Message("addressYears.heading", Message("theCompany").resolve)
+  val heading = Message("addressYears.heading", name)
   val viewmodel = AddressYearsViewModel(
     postCall = Call("GET", "www.example.com"),
-    title = s"How long has the company been at this address?",
-    heading = "How long has the company been at this address?",
-    legend = "legend",
+    title = title,
+    heading = heading,
+    legend = heading,
     psaName = Some("test psa")
   )
 
@@ -45,7 +48,7 @@ class AddressYearsViewSpec extends ViewBehaviours {
     addressYears(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages)
 
   "AddressYears view" must {
-    behave like normalPage(createView(), messageKeyPrefix)
+    behave like normalPageWithTitle(createView(), messageKeyPrefix, title, heading)
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 

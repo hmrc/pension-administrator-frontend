@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package identifiers.register.individual
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
-import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
-import viewmodels.{AnswerRow, Link}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersIndividual, StringCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
-case object PhoneId extends TypedIdentifier[String] {
+case object IndividualEmailId extends TypedIdentifier[String] {
   self =>
 
-  override def path: JsPath = JsPath \ "contactDetails" \ PhoneId.toString
+  override def path: JsPath = JsPath \ "individualContactDetails" \ IndividualEmailId.toString
 
-  override def toString: String = "phone"
+  override def toString: String = "email"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
+    new CheckYourAnswersIndividual[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "phone.title")
+        dynamicMessage(ua, "email.title")
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "email.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
     }
 }
-

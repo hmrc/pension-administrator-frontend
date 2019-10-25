@@ -71,18 +71,20 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
 
-    (IndividualAddressYearsId, ukAddressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
-    (IndividualAddressYearsId, nonUkAddressYearsOverAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (IndividualAddressYearsId, ukAddressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (IndividualAddressYearsId, nonUkAddressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
     (IndividualAddressYearsId, nonUkAddressYearsUnderAYear, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), false, Some(previousAddressListPage(CheckMode)), false),
     (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (IndividualPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (IndividualPreviousAddressId, emptyAnswers, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
-    (IndividualContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (IndividualContactDetailsId, uk, individualDateOfBirthPage, true, Some(checkYourAnswersPage), true),
+    (IndividualEmailId, emptyAnswers, phonePage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (IndividualPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (IndividualPhoneId, uk, individualDateOfBirthPage, true, Some(checkYourAnswersPage), true),
+
     (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
   )
 
@@ -100,7 +102,9 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), false, None, false),
     (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
     (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
-    (IndividualContactDetailsId, nonUk, anyMoreChanges, false, None, true),
+    (IndividualEmailId, emptyAnswers, anyMoreChanges, false, None, true),
+    (IndividualPhoneId, uk, anyMoreChanges, false, None, true),
+    (IndividualPhoneId, nonUk, anyMoreChanges, false, None, true),
     (invalidIdForNavigator, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), true)
   )
 
@@ -118,7 +122,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object IndividualNavigatorSpec extends OptionValues {
-
+  private def emailPage(mode: Mode): Call = routes.IndividualEmailController.onPageLoad(mode)
+  private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
   private lazy val invalidIdForNavigator = AreYouInUKId
 
   lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
@@ -129,7 +134,6 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
   lazy private val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   lazy private val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
-  lazy private val contactDetailsPage = routes.IndividualContactDetailsController.onPageLoad(NormalMode)
   lazy private val ukIndividualDetailsPage = routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
   lazy private val nonUkIndividualNamePage = routes.IndividualNameController.onPageLoad(NormalMode)
   lazy private val nonUkIndividualAddressPage = routes.IndividualRegisteredAddressController.onPageLoad(NormalMode)

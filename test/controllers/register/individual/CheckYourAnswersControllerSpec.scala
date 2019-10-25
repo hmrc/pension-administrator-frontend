@@ -99,7 +99,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 Message("individualAddressYears.title", "Joe Bloggs").resolve,
                 Seq(s"common.addressYears.${addressYears.toString}"),
                 answerIsMessageKey = true,
-                Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)
+                Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url),
+                None
               )
             )
           )
@@ -129,38 +130,45 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         testRenderedView(sections, retrievalAction)
       }
 
-      "render the view correctly on a GET request where there is data for the Contact Details sections" in {
-        val contactDetails = ContactDetails("email@domain", "phone-no")
-        val sections = Seq(
-          AnswerSection(
-            None,
-            Seq(
-              AnswerRow(
-                "contactDetails.email.checkYourAnswersLabel",
-                Seq(contactDetails.email),
-                answerIsMessageKey = false,
-                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
-              ),
-              AnswerRow(
-                "contactDetails.phone.checkYourAnswersLabel",
-                Seq(contactDetails.phone),
-                answerIsMessageKey = false,
-                Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)
-              )
-            )
-          )
-        )
-        val retrievalAction = dataRetrievalAction(
-          IndividualContactDetailsId.toString -> contactDetails
-        )
-        testRenderedView(sections, retrievalAction)
-      }
-
       "redirect to Session Expired if there is no cached data" in {
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
+    }
+
+    "on a GET request for Contact Details section " must {
+
+      "render the view correctly for email and phone" in {
+
+        val rows = Seq(
+          answerRow(
+            label = messages("email.title", defaultIndividual),
+            answer = Seq("test@email"),
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultIndividual))
+          ),
+          answerRow(
+            label = messages("phone.title", defaultIndividual),
+            answer = Seq("1234567890"),
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultIndividual))
+          )
+        )
+
+        val sections = Seq(AnswerSection(None, rows))
+
+        val retrievalAction = dataRetrievalAction(
+          "individualContactDetails" -> Json.obj(
+            IndividualPhoneId.toString -> "1234567890",
+            IndividualEmailId.toString -> "test@email"
+          )
+        )
+
+        testRenderedView(
+          sections = sections, dataRetrievalAction = retrievalAction
+        )
       }
     }
 
@@ -183,6 +191,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
+
+  private val defaultIndividual = Message("theIndividual").resolve
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
@@ -221,6 +231,12 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     val answerRow = AnswerRow(label, answer, answerIsMessageKey, changeUrl)
     val section = AnswerSection(None, Seq(answerRow))
     Seq(section)
+  }
+
+
+  private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
+                        changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message]= None): AnswerRow = {
+    AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
   private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {

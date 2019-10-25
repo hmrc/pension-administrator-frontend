@@ -18,15 +18,27 @@ package identifiers.register.company
 
 import identifiers._
 import models.Address
-import utils.checkyouranswers.AddressCYA
+import play.api.i18n.Messages
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
+import viewmodels.{AnswerRow, Link, Message}
 
 case object CompanyContactAddressId extends TypedIdentifier[Address] {
   self =>
 
   override def toString: String = "companyContactAddress"
 
-  implicit def cya(implicit countryOptions: CountryOptions) =
-    AddressCYA[self.type]("cya.label.company.contact.address")()
+  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
+    new CheckYourAnswersCompany[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "cya.label.company.contact.address")
 
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "companyContactAddress.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
+    }
 }

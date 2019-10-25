@@ -31,16 +31,16 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("confirmCompanyAddress.heading"))
+        @components.heading(messages("confirmCompanyAddress.heading", name ))
 
         <p>
-            <div>@name,</div>
             @components.tolerant_address("companyAddress", address, countryOptions)
         </p>
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("confirmCompanyAddress.title")
+            label = messages("confirmCompanyAddress.title"),
+            labelClass = Some("visually-hidden")
         )
 
         <div class="subsection">

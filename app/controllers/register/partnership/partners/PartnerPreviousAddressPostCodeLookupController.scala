@@ -68,7 +68,6 @@ class PartnerPreviousAddressPostCodeLookupController @Inject()(
           routes.PartnerPreviousAddressController.onPageLoad(mode, index),
           Message("partnerPreviousAddressPostCodeLookup.title"),
           Message("partnerPreviousAddressPostCodeLookup.heading"),
-          Message("partnerPreviousAddressPostCodeLookup.text"),
           Message("partnerPreviousAddressPostCodeLookup.enterPostcode"),
           Some(Message("partnerPreviousAddressPostCodeLookup.enterPostcode.link")),
           Message("partnerPreviousAddressPostCodeLookup.input.text"),

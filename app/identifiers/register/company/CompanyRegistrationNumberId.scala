@@ -31,12 +31,12 @@ case object CompanyRegistrationNumberId extends TypedIdentifier[String] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "companyRegistrationNumber.heading")
 
-      private def hiddenLabel(index: Int, ua: UserAnswers): String =
-        dynamicMessage(ua, "messages__visuallyhidden__dynamic_hasCrn")
+      private def hiddenLabel(ua: UserAnswers): String =
+        dynamicMessage(ua, "companyRegistrationNumber.visuallyHidden.text")
 
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
     }
 
 }

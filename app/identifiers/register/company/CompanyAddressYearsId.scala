@@ -18,9 +18,11 @@ package identifiers.register.company
 
 import identifiers._
 import models.AddressYears
+import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
-import utils.checkyouranswers.AddressYearsCYA
+import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers, CheckYourAnswersCompany}
+import viewmodels.{AnswerRow, Link, Message}
 
 case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
   self =>
@@ -35,6 +37,15 @@ case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
     }
   }
 
-  implicit val cya = AddressYearsCYA[self.type]("companyAddressYears.checkYourAnswersLabel")()
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersCompany[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "addressYears.heading")
 
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "addressYears.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
 }
