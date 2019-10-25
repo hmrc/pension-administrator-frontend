@@ -16,20 +16,57 @@
 
 package controllers.register.company.directors
 
-import controllers.behaviours.ControllerWithSessionExpiryBehaviours
-import models.NormalMode
-import play.api.test.Helpers._
+import connectors.FakeUserAnswersCacheConnector
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.behaviours.ControllerWithCommonBehaviour
+import forms.PhoneFormProvider
+import models.{Index, Mode, NormalMode}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import utils.FakeNavigator
+import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.phone
 
-class DirectorPhoneControllerSpec extends ControllerWithSessionExpiryBehaviours {
+class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
+
+  import DirectorPhoneControllerSpec._
+
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorPhoneController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+
+  private def phoneView(form: Form[_] = phoneForm): String = phone(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorPhoneController" must {
-    running(
-      _.overrides(modules(dontGetAnyData): _*)
-    ) {
-      app =>
-        val controller = app.injector.instanceOf[DirectorPhoneController]
-        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode, index = 0),
-          controller.onSubmit(NormalMode, index = 0))
-    }
+
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
+      validData = getDirector,
+      viewAsString = phoneView,
+      form = phoneForm,
+      request = postRequest
+    )
   }
+}
+
+object DirectorPhoneControllerSpec {
+  private val formProvider = new PhoneFormProvider()
+  private val phoneForm = formProvider()
+  private val index = 0
+  private val directorName = "test first name test middle name test last name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
+
+  private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
+    CommonFormWithHintViewModel(
+      postCall = routes.DirectorPhoneController.onSubmit(mode, index),
+      title = Message("phone.title", Message("theDirector").resolve).resolve,
+      heading = Message("phone.title", directorName).resolve,
+      mode = mode,
+      entityName = directorName
+    )
 }

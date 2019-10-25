@@ -18,6 +18,7 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.Mode
 import models.requests.DataRequest
@@ -27,13 +28,13 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.enterVAT
+import views.html.enterNINO
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait VATNumberController extends FrontendController with I18nSupport {
+trait NINOController extends FrontendController with Retrievals with I18nSupport with Variations {
 
-  implicit def ec: ExecutionContext
+  protected implicit def ec: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -41,27 +42,25 @@ trait VATNumberController extends FrontendController with I18nSupport {
 
   protected def navigator: Navigator
 
-  def get(id: TypedIdentifier[String], form: Form[String], viewModel: CommonFormWithHintViewModel)
+  def get(id: TypedIdentifier[String], form: Form[String], viewmodel: CommonFormWithHintViewModel)
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    val preparedForm = request.userAnswers.get(id) match {
-      case None => form
-      case Some(value) => form.fill(value)
-    }
+    val preparedForm = request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(enterVAT(appConfig, preparedForm, viewModel)))
+    Future.successful(Ok(enterNINO(appConfig, preparedForm, viewmodel)))
   }
 
-  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
+  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewmodel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(enterVAT(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(enterNINO(appConfig, formWithErrors, viewmodel))),
       value =>
-        cacheConnector.save(request.externalId, id, value).map(
+        cacheConnector.save(request.externalId, id, value).flatMap(
           cacheMap =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+            saveChangeFlag(mode, id).map { _ =>
+              Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+            }
         )
     )
   }

@@ -19,7 +19,7 @@ package controllers.register.company.directors
 import connectors.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
-import forms.EmailFormProvider
+import forms.HasReferenceNumberFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -27,44 +27,45 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.email
+import views.html.hasReferenceNumber
 
-class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
-  import DirectorEmailControllerSpec._
+class HasDirectorNINOControllerSpec extends ControllerWithCommonBehaviour {
+  import HasDirectorNINOControllerSpec._
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private val hasReferenceNumberForm = formProvider("error.required", directorName)
 
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorNINOController(
+    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  private def emailView(form: Form[_] = emailForm): String = email(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
+    hasReferenceNumber(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
-  "DirectorEmail Controller" must {
+  "HasDirectorNINOController" must {
 
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
       validData = getDirector,
-      viewAsString = emailView,
-      form = emailForm,
+      viewAsString = hasReferenceNumberView,
+      form = hasReferenceNumberForm,
       request = postRequest
     )
   }
 }
 
-object DirectorEmailControllerSpec {
-  private val formProvider = new EmailFormProvider()
-  private val emailForm = formProvider()
-  private val index = 0
+object HasDirectorNINOControllerSpec {
   private val directorName = "test first name test middle name test last name"
-  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
+  private val formProvider = new HasReferenceNumberFormProvider()
+  private val index = 0
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
-      postCall = routes.DirectorEmailController.onSubmit(mode, index),
-      title = Message("email.title", Message("theDirector").resolve),
-      heading = Message("email.title", directorName),
+      postCall = routes.HasDirectorNINOController.onSubmit(mode, index),
+      title = Message("hasNINO.heading", Message("theDirector").resolve),
+      heading = Message("hasNINO.heading", directorName),
       mode = mode,
       entityName = directorName
     )
