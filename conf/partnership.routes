@@ -36,6 +36,9 @@ POST       /:mode/is-this-the-contact-address           controllers.register.par
 GET        /business-details                            controllers.register.partnership.PartnershipBusinessDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST       /business-details                            controllers.register.partnership.PartnershipBusinessDetailsController.onSubmit(mode: Mode = NormalMode)
 
+GET        /confirm-partnership-name                    controllers.register.partnership.PartnershipIsRegisteredNameController.onPageLoad
+POST       /confirm-partnership-name                    controllers.register.partnership.PartnershipIsRegisteredNameController.onSubmit
+
 GET        /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST       /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/previous-address                      controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
