@@ -194,6 +194,14 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
       "not remove the data for Individual Address" in {
         result.get(IndividualAddressId) must be(defined)
       }
+
+      "not remove the data for email" in {
+        result.get(IndividualEmailId) must be(defined)
+      }
+
+      "not remove the data for phone" in {
+        result.get(IndividualPhoneId) must be(defined)
+      }
     }
   }
 
