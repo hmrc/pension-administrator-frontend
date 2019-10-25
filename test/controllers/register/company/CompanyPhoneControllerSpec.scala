@@ -16,20 +16,57 @@
 
 package controllers.register.company
 
-import controllers.behaviours.ControllerWithSessionExpiryBehaviours
-import models.NormalMode
-import play.api.test.Helpers._
+import connectors.FakeUserAnswersCacheConnector
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.behaviours.ControllerWithCommonBehaviour
+import forms.PhoneFormProvider
+import models.{Mode, NormalMode}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import utils.FakeNavigator
+import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.phone
 
-class CompanyPhoneControllerSpec extends ControllerWithSessionExpiryBehaviours {
+class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
+
+  import CompanyPhoneControllerSpec._
+
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyPhoneController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+
+  private def phoneView(form: Form[_] = phoneForm): String = phone(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "CompanyPhoneController" must {
-    running(
-      _.overrides(modules(dontGetAnyData): _*)
-    ) {
-      app =>
-        val controller = app.injector.instanceOf[CompanyPhoneController]
-        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode),
-          controller.onSubmit(NormalMode))
-    }
+
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode),
+      validData = getCompany,
+      viewAsString = phoneView,
+      form = phoneForm,
+      request = postRequest
+    )
   }
 }
+
+object CompanyPhoneControllerSpec {
+  private val formProvider = new PhoneFormProvider()
+  private val phoneForm = formProvider()
+  private val companyName = "Test Company Name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
+
+  private def viewModel(mode: Mode)(implicit messages: Messages) =
+    CommonFormWithHintViewModel(
+      postCall = routes.CompanyPhoneController.onSubmit(mode),
+      title = Message("phone.title", Message("theCompany").resolve),
+      heading = Message("phone.title", companyName),
+      mode = mode,
+      entityName = companyName
+    )
+}
+

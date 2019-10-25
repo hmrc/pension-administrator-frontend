@@ -27,13 +27,13 @@ class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
   def apply(): Form[PersonDetails] = Form(
     mapping(
       "firstName" ->
-        text("personDetails.error.firstName.required")
+        text("personName.error.firstName.required")
           .verifying(
             firstError(
               maxLength(PersonDetailsFormProvider.firstNameLength,
-                "personDetails.error.firstName.length"
+                "personName.error.firstName.length"
               ),
-              name("personDetails.error.firstName.invalid")
+              name("personName.error.firstName.invalid")
             )
           ),
       "middleName" ->
@@ -47,13 +47,13 @@ class PersonDetailsFormProvider @Inject() extends Mappings with Transforms {
             )
           ),
       "lastName" ->
-        text("personDetails.error.lastName.required")
+        text("personName.error.lastName.required")
           .verifying(
             firstError(
               maxLength(PersonDetailsFormProvider.lastNameLength,
-                "personDetails.error.lastName.length"
+                "personName.error.lastName.length"
               ),
-              name("personDetails.error.lastName.invalid")
+              name("personName.error.lastName.invalid")
             )
           ),
       "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")

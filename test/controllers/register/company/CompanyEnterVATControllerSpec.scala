@@ -19,17 +19,16 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.company.EnterVATFormProvider
+import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
-import identifiers.register.company.BusinessDetailsId
-import models.{BusinessDetails, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import views.html.register.enterVAT
+import views.html.enterVAT
 
 class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 

@@ -19,7 +19,7 @@
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, psaName: String, viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = viewmodel.title,
@@ -44,6 +44,6 @@
 
         @components.submit_button(submitMessageKey = "site.save_and_continue")
 
-        @components.return_link(psaName, mode)
+        @components.return_link(viewmodel.entityName, viewmodel.mode)
     }
 }
