@@ -21,9 +21,8 @@ import java.time.LocalDate
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.BusinessNameId
-import identifiers.register.company.BusinessDetailsId
 import identifiers.register.company.directors.DirectorDetailsId
-import models.{BusinessDetails, NormalMode, PersonDetails}
+import models.{NormalMode, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
