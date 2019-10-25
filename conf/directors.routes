@@ -3,8 +3,8 @@ POST       /:index/directors-confirm-delete                     controllers.regi
 GET        /:index/:mode/directors-confirm-delete            controllers.register.company.directors.ConfirmDeleteDirectorController.onPageLoad(mode:Mode, index: Index)
 POST       /:index/:mode/directors-confirm-delete            controllers.register.company.directors.ConfirmDeleteDirectorController.onSubmit(mode:Mode, index: Index)
 
-POST       /:index/director-details                             controllers.register.company.directors.DirectorDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/director-details                             controllers.register.company.directors.DirectorDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/director-details                             controllers.register.company.directors.DirectorDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/director-details                      controllers.register.company.directors.DirectorDetailsController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/director-details                      controllers.register.company.directors.DirectorDetailsController.onSubmit(mode: Mode, index: Index)
 
@@ -12,6 +12,12 @@ POST       /:index/name                             controllers.register.company
 GET        /:index/name                             controllers.register.company.directors.DirectorNameController.onPageLoad(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/name                      controllers.register.company.directors.DirectorNameController.onPageLoad(mode: Mode, index: Index)
 POST       /:index/:mode/name                      controllers.register.company.directors.DirectorNameController.onSubmit(mode: Mode, index: Index)
+
+
+GET        /:index/date-of-birth                             controllers.register.company.directors.DirectorDOBController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/date-of-birth                             controllers.register.company.directors.DirectorDOBController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/date-of-birth                      controllers.register.company.directors.DirectorDOBController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/date-of-birth                      controllers.register.company.directors.DirectorDOBController.onSubmit(mode: Mode, index: Index)
 
 GET        /:index/enter-national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/enter-national-insurance-number                    controllers.register.company.directors.DirectorNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
