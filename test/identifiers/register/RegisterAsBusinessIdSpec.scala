@@ -187,7 +187,7 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val phone = "999"
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
 
-  def answersCompany: UserAnswers =
+  val answersCompany: UserAnswers =
     UserAnswers(Json.obj())
       .set(RegisterAsBusinessId)(true)
       .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company)
@@ -209,7 +209,7 @@ object RegisterAsBusinessIdSpec extends OptionValues {
         .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))
       ).asOpt.value
 
-  def answersPartnership: UserAnswers = UserAnswers(Json.obj())
+  val answersPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(true)
     .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)
       .flatMap(_.set(PartnershipDetailsId)(BusinessDetails("company name", None)))
@@ -227,7 +227,7 @@ object RegisterAsBusinessIdSpec extends OptionValues {
     )
     .asOpt.value
 
-  def answersIndividual: UserAnswers = UserAnswers(Json.obj())
+  val answersIndividual: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(false)
     .flatMap(_.set(IndividualDetailsId)(tolerantIndividual)
       .flatMap(_.set(IndividualAddressId)(tolerantAddress))
