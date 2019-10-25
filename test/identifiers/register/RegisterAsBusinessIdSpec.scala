@@ -37,46 +37,46 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
 
     "register as company was true and business type was company and we change to false" must {
       "remove the data for non uk business type " in {
-        result.get(NonUKBusinessTypeId) mustNot be(defined)
+        resultCompany.get(NonUKBusinessTypeId) mustNot be(defined)
       }
 
       "remove the data for business details " in {
-        result.get(BusinessDetailsId) mustNot be(defined)
+        resultCompany.get(BusinessDetailsId) mustNot be(defined)
       }
 
       "remove the data for company address " in {
-        result.get(CompanyAddressId) mustNot be(defined)
-        result.get(CompanyAddressListId) mustNot be(defined)
+        resultCompany.get(CompanyAddressId) mustNot be(defined)
+        resultCompany.get(CompanyAddressListId) mustNot be(defined)
       }
 
       "remove the data for company contact address " in {
-        result.get(CompanySameContactAddressId) mustNot be(defined)
-        result.get(CompanyContactAddressId) mustNot be(defined)
-        result.get(CompanyContactAddressListId) mustNot be(defined)
-        result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
+        resultCompany.get(CompanySameContactAddressId) mustNot be(defined)
+        resultCompany.get(CompanyContactAddressId) mustNot be(defined)
+        resultCompany.get(CompanyContactAddressListId) mustNot be(defined)
+        resultCompany.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
       }
 
       "remove the data for company previous address " in {
-        result.get(CompanyAddressYearsId) mustNot be(defined)
-        result.get(CompanyPreviousAddressId) mustNot be(defined)
-        result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
+        resultCompany.get(CompanyAddressYearsId) mustNot be(defined)
+        resultCompany.get(CompanyPreviousAddressId) mustNot be(defined)
+        resultCompany.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
       "remove the data for contact details " in {
-        result.get(ContactDetailsId) mustNot be(defined)
+        resultCompany.get(ContactDetailsId) mustNot be(defined)
       }
 
       "remove the data for more than 10 directors " in {
-        result.get(MoreThanTenDirectorsId) mustNot be(defined)
+        resultCompany.get(MoreThanTenDirectorsId) mustNot be(defined)
       }
 
       "remove the data for directors " in {
-        result.get(DirectorDetailsId(0)) mustNot be(defined)
-        result.get(DirectorDetailsId(1)) mustNot be(defined)
+        resultCompany.get(DirectorDetailsId(0)) mustNot be(defined)
+        resultCompany.get(DirectorDetailsId(1)) mustNot be(defined)
       }
 
       "not remove the data for individuals" in {
-        result.get(IndividualDetailsId) must be(defined)
+        resultCompany.get(IndividualDetailsId) must be(defined)
       }
     }
 
@@ -177,7 +177,7 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val phone = "999"
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
 
-  def result: UserAnswers =
+  def resultCompany: UserAnswers =
     answersCompany.set(RegisterAsBusinessId)(false).asOpt.value
 
   def resultPartnership: UserAnswers =

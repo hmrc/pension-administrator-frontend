@@ -60,7 +60,6 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     ))
   }
 
-  // TODO: PODS-3503
   private def removeIndividualData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
       IndividualAddressYearsId,
