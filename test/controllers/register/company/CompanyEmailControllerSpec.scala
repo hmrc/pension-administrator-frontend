@@ -16,20 +16,55 @@
 
 package controllers.register.company
 
-import controllers.behaviours.ControllerWithSessionExpiryBehaviours
-import models.NormalMode
-import play.api.test.Helpers._
+import connectors.FakeUserAnswersCacheConnector
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.behaviours.ControllerWithCommonBehaviour
+import forms.EmailFormProvider
+import models.{Mode, NormalMode}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import utils.FakeNavigator
+import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.email
 
-class CompanyEmailControllerSpec extends ControllerWithSessionExpiryBehaviours {
+class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
+  import CompanyEmailControllerSpec._
 
-  "CompanyEmailController" must {
-    running(
-      _.overrides(modules(dontGetAnyData): _*)
-    ) {
-      app =>
-        val controller = app.injector.instanceOf[CompanyEmailController]
-        behave like controllerWithSessionExpiry(controller.onPageLoad(NormalMode),
-          controller.onSubmit(NormalMode))
-    }
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyEmailController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+
+  private def emailView(form: Form[_] = emailForm): String = email(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
+
+  "CompanyEmail Controller" must {
+
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode),
+      validData = getCompany,
+      viewAsString = emailView,
+      form = emailForm,
+      request = postRequest
+    )
   }
+}
+
+object CompanyEmailControllerSpec {
+  private val formProvider = new EmailFormProvider()
+  private val emailForm = formProvider()
+  private val CompanyName = "Test Company Name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
+
+  private def viewModel(mode: Mode)(implicit messages: Messages) =
+    CommonFormWithHintViewModel(
+      postCall = routes.CompanyEmailController.onSubmit(mode),
+      title = Message("email.title", Message("theCompany").resolve),
+      heading = Message("email.title", CompanyName),
+      mode = mode,
+      entityName = CompanyName
+    )
 }

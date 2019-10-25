@@ -188,7 +188,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             "Yes",
             "directorNino.checkYourAnswersLabel.nino",
             "nino",
-            "national-insurance-number"),
+            "enter-national-insurance-number"),
           Some("user answered yes")
         ),
         TestScenario(
@@ -204,7 +204,7 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             "No",
             "directorNino.checkYourAnswersLabel.reason",
             reason,
-            "national-insurance-number"),
+            "enter-national-insurance-number"),
           Some("user answered no")
         )
       )

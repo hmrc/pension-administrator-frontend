@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package forms.register.company
+package identifiers.register.company.directors
 
-import forms.FormErrorHelper
-import forms.mappings.VatMappingString
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.Messages
-import viewmodels.Message
+import identifiers._
+import play.api.libs.json.JsPath
 
-class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingString {
-
-  def apply(name: String)(implicit messages: Messages): Form[String] =
-    Form(
-      "value" -> vatMapping(
-        keyVatRequired = "enterVAT.error.required",
-        keyVatLength = Message("enterVAT.error.length", name),
-        keyVatInvalid = Message("enterVAT.error.invalid", name)
-      )
-    )
-
+case class DirectorNoNINOReasonId(index: Int) extends TypedIdentifier[String] {
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorNoNINOReasonId.toString
 }
+object DirectorNoNINOReasonId {
+  override lazy val toString: String = "reason"
+}
+
+
+
+

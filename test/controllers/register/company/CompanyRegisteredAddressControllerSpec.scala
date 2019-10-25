@@ -20,29 +20,24 @@ import audit.testdoubles.StubSuccessfulAuditService
 import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
-import controllers.register.DeclarationFitAndProperControllerSpec.{contactDetails, mockEmailConnector}
 import forms.address.NonUKAddressFormProvider
+import identifiers.register.company.CompanyAddressId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import identifiers.register.partnership.PartnershipContactAddressId
 import models._
+import org.mockito.Matchers
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{atLeastOnce, never, verify}
+import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.PsaId
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
-import org.mockito.Matchers
-import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar._
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 

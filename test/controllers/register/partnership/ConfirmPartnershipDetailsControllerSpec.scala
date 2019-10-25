@@ -20,7 +20,6 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
-import identifiers.register.company.BusinessDetailsId
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.register.BusinessType.BusinessPartnership
@@ -140,7 +139,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
+            PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -171,7 +170,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
+            PartnershipDetailsId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))

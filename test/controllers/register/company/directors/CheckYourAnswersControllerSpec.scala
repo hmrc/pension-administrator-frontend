@@ -21,7 +21,7 @@ import java.time.LocalDate
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.behaviours.ControllerWithSessionExpiryBehaviours
+import controllers.behaviours.ControllerWithCommonBehaviour
 import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController}
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.IsDirectorCompleteId
@@ -35,7 +35,7 @@ import models.Mode.checkMode
 import models.Mode._
 import play.api.mvc.Call
 
-class CheckYourAnswersControllerSpec extends ControllerWithSessionExpiryBehaviours {
+class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
 
   import CheckYourAnswersControllerSpec._
 
@@ -112,9 +112,6 @@ class CheckYourAnswersControllerSpec extends ControllerWithSessionExpiryBehaviou
         FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, value = true)
       }
     }
-
-    behave like controllerWithSessionExpiry(controller(dontGetAnyData).onPageLoad(NormalMode, index),
-      controller(dontGetAnyData).onSubmit(NormalMode, index))
   }
 }
 

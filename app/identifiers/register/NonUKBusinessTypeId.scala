@@ -57,7 +57,7 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
   }
 
   private def removeAllCompany(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(BusinessDetailsId, CompanyAddressId, CompanySameContactAddressId,
+    userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, CompanyAddressId, CompanySameContactAddressId,
       CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
       CompanyPreviousAddressPostCodeLookupId, ContactDetailsId, MoreThanTenDirectorsId))
       .flatMap(answers => removeDirectorsOrPartners(answers.allDirectors, answers, DirectorId))

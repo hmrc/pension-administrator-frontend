@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -27,42 +27,35 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
-import views.html.enterVAT
+import views.html.reason
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait VATNumberController extends FrontendController with I18nSupport {
+trait ReasonController extends FrontendController with Retrievals with I18nSupport {
 
-  implicit def ec: ExecutionContext
+  protected implicit def ec: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
-  protected def cacheConnector: UserAnswersCacheConnector
+  protected val dataCacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
-  def get(id: TypedIdentifier[String], form: Form[String], viewModel: CommonFormWithHintViewModel)
+  def get(id: TypedIdentifier[String], viewmodel: CommonFormWithHintViewModel, form: Form[String])
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
-    val preparedForm = request.userAnswers.get(id) match {
-      case None => form
-      case Some(value) => form.fill(value)
-    }
-
-    Future.successful(Ok(enterVAT(appConfig, preparedForm, viewModel)))
+    val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
+    Future.successful(Ok(reason(appConfig, preparedForm, viewmodel)))
   }
 
-  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
-          (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
+  def post(id: TypedIdentifier[String], mode: Mode, viewmodel: CommonFormWithHintViewModel, form: Form[String])
+          (implicit request: DataRequest[AnyContent]): Future[Result] =
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(enterVAT(appConfig, formWithErrors, viewModel))),
-      value =>
-        cacheConnector.save(request.externalId, id, value).map(
-          cacheMap =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
-        )
+        Future.successful(BadRequest(reason(appConfig, formWithErrors, viewmodel))),
+      reason => {
+        dataCacheConnector.save(request.externalId, id, reason).map { cacheMap =>
+          Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+        }
+      }
     )
-  }
 }
