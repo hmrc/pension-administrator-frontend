@@ -18,10 +18,10 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, personDetails}
+import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, email, personDetails, personName, phone}
 import identifiers.register.adviser._
 import identifiers.register.company._
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerDetailsId
@@ -62,8 +62,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(EnterVATId) mustNot be(defined)
         result.get(EnterPAYEId) mustNot be(defined)
         result.get(CompanyRegistrationNumberId) mustNot be(defined)
-        result.get(DirectorDetailsId(0)) mustNot be(defined)
-        result.get(DirectorDetailsId(1)) mustNot be(defined)
+        result.get(DirectorNameId(0)) mustNot be(defined)
+        result.get(DirectorNameId(1)) mustNot be(defined)
         result.get(MoreThanTenDirectorsId) mustNot be(defined)
       }
 
@@ -97,8 +97,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyPreviousAddressId) mustNot be(defined)
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(ContactDetailsId) mustNot be(defined)
-        result.get(DirectorDetailsId(0)) mustNot be(defined)
-        result.get(DirectorDetailsId(1)) mustNot be(defined)
+        result.get(DirectorNameId(0)) mustNot be(defined)
+        result.get(DirectorNameId(1)) mustNot be(defined)
         result.get(MoreThanTenDirectorsId) mustNot be(defined)
       }
 
@@ -150,7 +150,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
     }
 
@@ -168,7 +169,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualAddressYearsId) mustNot be(defined)
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
 
       "not remove the data for Individual Details Correct " in {
@@ -191,6 +193,14 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
       "not remove the data for Individual Address" in {
         result.get(IndividualAddressId) must be(defined)
+      }
+
+      "not remove the data for email" in {
+        result.get(IndividualEmailId) must be(defined)
+      }
+
+      "not remove the data for phone" in {
+        result.get(IndividualPhoneId) must be(defined)
       }
     }
   }
@@ -302,8 +312,8 @@ object AreYouInUKIdSpec extends OptionValues {
         .flatMap(_.set(CompanyPreviousAddressId)(address))
         .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
         .flatMap(_.set(ContactDetailsId)(contactDetails))
-        .flatMap(_.set(DirectorDetailsId(0))(personDetails))
-        .flatMap(_.set(DirectorDetailsId(1))(personDetails))
+        .flatMap(_.set(DirectorNameId(0))(personName))
+        .flatMap(_.set(DirectorNameId(1))(personName))
         .flatMap(_.set(MoreThanTenDirectorsId)(true))
         .flatMap(_.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser))
         .flatMap(_.set(AdviserNameId)("name"))
@@ -319,7 +329,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(IndividualAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(IndividualPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(IndividualPreviousAddressId)(address))
-      .flatMap(_.set(IndividualContactDetailsId)(contactDetails))
+      .flatMap(_.set(IndividualEmailId)(email))
+      .flatMap(_.set(IndividualPhoneId)(phone))
       .flatMap(_.set(IndividualDateOfBirthId)(date))
       .flatMap(_.set(IndividualSameContactAddressId)(true))
       .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))

@@ -33,7 +33,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
 
-  "DirectorDetailsController" must {
+  "DirectorNameController" must {
 
     val controller = testController(this, getEmptyData)
     val viewModel = controller.viewModel(NormalMode, 0, psaName)

@@ -5,11 +5,11 @@ echo "Applying migration DirectorDetails"
 echo "Adding routes to register.company.routes"
 
 echo "" >> ../conf/register.company.routes
-echo "GET        /directorDetails                       controllers.register.company.DirectorDetailsController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/register.company.routes
-echo "POST       /directorDetails                       controllers.register.company.DirectorDetailsController.onSubmit(mode: Mode = NormalMode)" >> ../conf/register.company.routes
+echo "GET        /directorDetails                       controllers.register.company.DirectorNameController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/register.company.routes
+echo "POST       /directorDetails                       controllers.register.company.DirectorNameController.onSubmit(mode: Mode = NormalMode)" >> ../conf/register.company.routes
 
-echo "GET        /changeDirectorDetails                       controllers.register.company.DirectorDetailsController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/register.company.routes
-echo "POST       /changeDirectorDetails                       controllers.register.company.DirectorDetailsController.onSubmit(mode: Mode = CheckMode)" >> ../conf/register.company.routes
+echo "GET        /changeDirectorDetails                       controllers.register.company.DirectorNameController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/register.company.routes
+echo "POST       /changeDirectorDetails                       controllers.register.company.DirectorNameController.onSubmit(mode: Mode = CheckMode)" >> ../conf/register.company.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -25,8 +25,8 @@ echo "Adding helper method to CheckYourAnswersHelper"
 awk '/class/ {\
      print;\
      print "";\
-     print "  def directorDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorDetailsId) map {";\
-     print "    x => AnswerRow(\"directorDetails.checkYourAnswersLabel\", s\"${x.field1} ${x.field2}\", false, controllers.register.company.routes.DirectorDetailsController.onPageLoad(CheckMode).url)";\
+     print "  def directorDetails: Option[AnswerRow] = userAnswers.get(identifiers.register.company.DirectorNameId) map {";\
+     print "    x => AnswerRow(\"directorDetails.checkYourAnswersLabel\", s\"${x.field1} ${x.field2}\", false, controllers.register.company.routes.DirectorNameController.onPageLoad(CheckMode).url)";\
      print "  }";\
      next }1' ../app/utils/CheckYourAnswersHelper.scala > tmp && mv tmp ../app/utils/CheckYourAnswersHelper.scala
 

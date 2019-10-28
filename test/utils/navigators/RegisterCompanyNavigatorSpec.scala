@@ -24,7 +24,7 @@ import controllers.register.company.routes
 import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import identifiers.register._
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
@@ -230,7 +230,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   val limitedCompany: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
   val hasDirector: UserAnswers = UserAnswers(Json.obj())
-    .set(DirectorDetailsId(0))(PersonDetails("first", None, "last", LocalDate.now)).asOpt.value
+    .set(DirectorNameId(0))(PersonName("first", "last")).asOpt.value
   def hasCRN(b:Boolean): UserAnswers = UserAnswers(Json.obj())
     .set(HasCompanyCRNId)(b).asOpt.value
 

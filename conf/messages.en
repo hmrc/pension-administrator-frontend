@@ -96,7 +96,7 @@ common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
 common.selectAddress.link = enter the address manually
 common.nino = National Insurance number
-common.nino.hint = Example ’QQ 12 34 56 C’
+common.enterNINO.hint = Example ’QQ 12 34 56 C’
 common.error.nino.required = Enter the National Insurance number
 common.error.nino.invalid = Enter a valid National Insurance number in the format QQ 12 34 56 C
 common.error.reason.invalid = The reason contains invalid characters
@@ -988,6 +988,10 @@ businessName.error.required = Enter a company name
 businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
 businessName.error.length = Company name must be 105 characters or fewer
 
+partnershipName.error.required = Enter a partnership name
+partnershipName.error.invalid = Partnership name must only include letters, numbers and the characters ’, &, \ and /
+partnershipName.error.length = Partnership name must be 105 characters or fewer
+
 utr.title = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
 utr.heading = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
 utr.p1 = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
@@ -997,6 +1001,10 @@ utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?
 isRegisteredName.company.heading = Is {0} the registered name of the company?
+
+isRegisteredName.partnership.error = Select yes if this is the registered name of the partnership
+isRegisteredName.partnership.title = Is this the registered name of the partnership?
+isRegisteredName.partnership.heading = Is {0} the registered name of the partnership?
 
 directorName.title = What is the director’s name?
 directorName.heading = What is the director’s name?

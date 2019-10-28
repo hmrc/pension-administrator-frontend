@@ -19,7 +19,8 @@ package utils
 import java.time.LocalDate
 
 import controllers.register.company.directors.routes
-import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.TypedIdentifier
+import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
 import models._
@@ -64,17 +65,17 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
     "return a map of director names, edit links, delete links and isComplete flag" in {
       val userAnswers = UserAnswers()
-        .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+        .set(DirectorNameId(0))(PersonName("First", "Last"))
         .flatMap(_.set(IsDirectorCompleteId(0))(true))
         .flatMap(_.set(IsDirectorCompleteId(1))(false))
-        .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+        .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
       val directorEntities = Seq(
         Person(0, "First Last", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 0).url,
           routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(0)).url,
           isDeleted = false, isComplete = true),
         Person(1, "First1 Last1", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 1).url,
-          routes.DirectorDetailsController.onPageLoad(NormalMode, Index(1)).url,
+          routes.DirectorNameController.onPageLoad(NormalMode, Index(1)).url,
           isDeleted = false, isComplete = false))
 
       val result = userAnswers.allDirectorsAfterDelete(NormalMode)
@@ -166,10 +167,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .variationWorkingKnowledge(true)
-          .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .set(DirectorNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(false))
-          .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -180,10 +181,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .variationWorkingKnowledge(true)
-          .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .set(DirectorNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
-          .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -257,10 +258,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .variationWorkingKnowledge(true)
-          .set(DirectorDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .set(DirectorNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
           .flatMap(_.set(IsDirectorCompleteId(1))(true))
-          .flatMap(_.set(DirectorDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
@@ -300,6 +301,104 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
+    }
+  }
+
+  "remove" must {
+
+    "remove an element that exists" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "email" -> "a@a.c"
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs"
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
+    "remove an element inside an element that does exist with no other elements" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+          "email" -> "a@a.com"
+        )
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+        )
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
+    "remove an element inside an element that does exist with one other element" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+          "email" -> "a@a.com",
+          "phone" -> "999"
+        )
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+          "phone" -> "999"
+        )
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
+    "NOT attempt to remove an element inside an element that does NOT exist" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs"
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe ua
+    }
+
+    "NOT attempt to remove a non-existent element inside an element that DOES exist" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj()
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe ua
     }
   }
 }

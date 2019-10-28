@@ -14,31 +14,41 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
-import models.NormalMode
+import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
+import forms.register.IsRegisteredNameFormProvider
+import models.requests.DataRequest
+import models.{NormalMode, PSAUser, UserType}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, Navigator, UserAnswers}
+import viewmodels.{CommonFormViewModel, Message}
 
-class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
+class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
 
-  import DirectorNameControllerSpec._
+  import PartnershipIsRegisteredNameControllerSpec._
 
-  "DirectorNameController" must {
+  implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+
+  "PartnershipIsRegisteredNameController" must {
+
+    behave like isRegisteredNameController(viewModel, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
+      val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "2019-10-23"))
-      val result = testController(this, dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+      val result = testController(this, dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -47,18 +57,30 @@ class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsCon
   }
 
 }
-object DirectorDOBControllerSpec {
+
+
+object PartnershipIsRegisteredNameControllerSpec {
+
+  def viewModel = CommonFormViewModel(
+    NormalMode,
+    routes.PartnershipIsRegisteredNameController.onSubmit(),
+    Message("isRegisteredName.partnership.title", name),
+    Message("isRegisteredName.partnership.heading", name)
+  )
+
+  val name = "test partnership name"
+
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
-                    ): DirectorDOBController =
+                    ): PartnershipIsRegisteredNameController =
     createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
                         base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorDOBController =
-    new DirectorDOBController(
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): PartnershipIsRegisteredNameController =
+    new PartnershipIsRegisteredNameController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
       cacheConnector = connector,
@@ -66,8 +88,11 @@ object DirectorDOBControllerSpec {
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl()
+      requireData = new DataRequiredActionImpl(),
+      formProvider = new IsRegisteredNameFormProvider()
     )
 
 }
+
+
 

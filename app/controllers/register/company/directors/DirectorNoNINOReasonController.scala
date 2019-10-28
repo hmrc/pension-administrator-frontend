@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import forms.ReasonFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorNoNINOReasonId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorNoNINOReasonId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -61,7 +61,7 @@ class DirectorNoNINOReasonController @Inject()(
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

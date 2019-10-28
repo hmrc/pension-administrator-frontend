@@ -46,8 +46,7 @@ trait BusinessNameController extends FrontendController with I18nSupport with Re
   def getData: DataRetrievalAction
   def requireData: DataRequiredAction
   def href: Call
-
-  private val form = new BusinessNameFormProvider()()
+  def form: Form[String]
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
   implicit request =>

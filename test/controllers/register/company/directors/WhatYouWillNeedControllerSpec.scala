@@ -33,7 +33,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig, routes.DirectorDetailsController.onPageLoad(NormalMode, 0))(fakeRequest, messages).toString
+  private def viewAsString() = whatYouWillNeed(frontendAppConfig, routes.DirectorNameController.onPageLoad(NormalMode, 0))(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
