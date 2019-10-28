@@ -59,8 +59,10 @@ class PartnershipNavigator @Inject()(
     case PartnershipPreviousAddressListId =>
       NavigateTo.save(routes.PartnershipPreviousAddressController.onPageLoad(NormalMode))
     case PartnershipPreviousAddressId =>
-      NavigateTo.save(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
-    case PartnershipContactDetailsId =>
+      NavigateTo.save(routes.PartnershipEmailController.onPageLoad(NormalMode))
+    case PartnershipEmailId =>
+      NavigateTo.save(routes.PartnershipPhoneController.onPageLoad(NormalMode))
+    case PartnershipPhoneId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
     case PartnershipVatId =>
       NavigateTo.save(routes.PartnershipPayeController.onPageLoad(NormalMode))
@@ -94,7 +96,9 @@ class PartnershipNavigator @Inject()(
         NavigateTo.save(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode))
       case PartnershipPreviousAddressId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case PartnershipContactDetailsId =>
+      case PartnershipEmailId =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case PartnershipPhoneId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case PartnershipVatId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
@@ -115,7 +119,9 @@ class PartnershipNavigator @Inject()(
         NavigateTo.dontSave(routes.PartnershipAddressYearsController.onPageLoad(UpdateMode))
       case PartnershipAddressYearsId =>
         addressYearsRoutes(from.userAnswers, UpdateMode)
-      case PartnershipContactDetailsId =>
+      case PartnershipPhoneId =>
+        NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      case PartnershipEmailId =>
         NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case PartnershipPreviousAddressPostCodeLookupId =>
         NavigateTo.dontSave(routes.PartnershipPreviousAddressListController.onPageLoad(UpdateMode))
@@ -146,7 +152,7 @@ class PartnershipNavigator @Inject()(
         }
       case (Some(AddressYears.OverAYear), _) =>
         mode match {
-          case NormalMode => NavigateTo.dontSave(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
+          case NormalMode => NavigateTo.dontSave(routes.PartnershipEmailController.onPageLoad(NormalMode))
           case CheckMode => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
           case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
         }

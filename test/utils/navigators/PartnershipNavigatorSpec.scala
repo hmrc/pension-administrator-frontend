@@ -57,18 +57,20 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
     (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
 
-    (PartnershipAddressYearsId, addressYearsOverAYear, contactDetailsPage, false, Some(checkYourAnswersPage), false),
+    (PartnershipAddressYearsId, addressYearsOverAYear, emailPage, false, Some(checkYourAnswersPage), false),
     (PartnershipAddressYearsId, addressYearsUnderAYearUk, contactPreviousPostcodePage(NormalMode), false, Some(contactPreviousPostcodePage(CheckMode)), false),
     (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, contactPreviousAddressPage(NormalMode), false, Some(contactPreviousAddressPage(CheckMode)), false),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
     (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
-    (PartnershipPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipPreviousAddressId, emptyAnswers, emailPage, true, Some(checkYourAnswersPage), true),
 
-    (PartnershipContactDetailsId, uk, vatPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipContactDetailsId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
+    (PartnershipEmailId, emptyAnswers, phonePage, false, Some(checkYourAnswersPage), true),
+
+    (PartnershipPhoneId, uk, vatPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipPhoneId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
 
     (PartnershipVatId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
     (PartnershipPayeId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
@@ -90,9 +92,15 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipAddressYearsId, addressYearsUnderAYearUk, confirmPreviousAddressPage, false, None, false),
     (PartnershipAddressYearsId, addressYearsUnderAYearNonUk, confirmPreviousAddressPage, false, None, false),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
-    (PartnershipContactDetailsId, uk, anyMoreChangesPage, false, None, false),
-    (PartnershipContactDetailsId, nonUk, anyMoreChangesPage, false, None, false),
-    (PartnershipContactDetailsId, emptyAnswers, anyMoreChangesPage, false, None, false),
+
+    (PartnershipEmailId, uk, anyMoreChangesPage, false, None, false),
+    (PartnershipEmailId, nonUk, anyMoreChangesPage, false, None, false),
+    (PartnershipEmailId, emptyAnswers, anyMoreChangesPage, false, None, false),
+
+    (PartnershipPhoneId, uk, anyMoreChangesPage, false, None, false),
+    (PartnershipPhoneId, nonUk, anyMoreChangesPage, false, None, false),
+    (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage, false, None, false),
+
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode), false, None, false),
     (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(UpdateMode), false, None, false),
     (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage, false, None, false),
@@ -124,10 +132,10 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def checkYourAnswersPage: Call = routes.CheckYourAnswersController.onPageLoad()
 
   private def vatPage: Call = routes.PartnershipVatController.onPageLoad(NormalMode)
+  private def emailPage: Call = routes.PartnershipEmailController.onPageLoad(NormalMode)
+  private def phonePage: Call = routes.PartnershipPhoneController.onPageLoad(NormalMode)
 
   private def payeNumberPage: Call = routes.PartnershipPayeController.onPageLoad(NormalMode)
-
-  private def contactDetailsPage: Call = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
 
   private def addPartnersPage: Call = routes.AddPartnerController.onPageLoad(NormalMode)
 

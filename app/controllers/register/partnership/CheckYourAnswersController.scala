@@ -72,7 +72,8 @@ class CheckYourAnswersController @Inject()(
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
         Seq(
-          PartnershipContactDetailsId.row(Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
+          PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
+          PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
