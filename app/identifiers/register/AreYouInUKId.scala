@@ -63,7 +63,10 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   private def removeIndividualData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
       IndividualAddressYearsId,
-      IndividualPreviousAddressListId, IndividualPreviousAddressId, IndividualContactDetailsId, IndividualDateOfBirthId,
+      IndividualPreviousAddressListId, IndividualPreviousAddressId,
+      IndividualEmailId,
+      IndividualPhoneId,
+      IndividualDateOfBirthId,
       IndividualSameContactAddressId,
       IndividualDetailsId, IndividualAddressId, RegistrationInfoId
     ))

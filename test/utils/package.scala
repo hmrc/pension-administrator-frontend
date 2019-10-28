@@ -110,6 +110,10 @@ package object utils {
     }
 
     // Company director
+    def directorName(index: Int = 0, name: PersonName = PersonName("first", "last")): UserAnswers = {
+      answers.set(DirectorNameId(index))(name).asOpt.value
+    }
+
     def directorAddress(index: Int, address: Address): UserAnswers = {
       answers.set(DirectorAddressId(index))(address).asOpt.value
     }

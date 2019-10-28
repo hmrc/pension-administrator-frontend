@@ -57,6 +57,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers, mode)
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
     case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
+    case DirectorDOBId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
     case DirectorNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
     case HasDirectorUTRId(index) if hasUtr(from.userAnswers, index) => NavigateTo.save(routes.DirectorEnterUTRController.onPageLoad(mode, index))
     case HasDirectorUTRId(index) => NavigateTo.save(routes.DirectorNoUTRReasonController.onPageLoad(mode, index))

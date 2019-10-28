@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.register.individual
+package identifiers.register.company.directors
+
+import java.time.LocalDate
 
 import identifiers._
-import models.ContactDetails
+import play.api.libs.json.JsPath
 
-case object IndividualContactDetailsId extends TypedIdentifier[ContactDetails] {
-  override def toString: String = "individualContactDetails"
+case class DirectorDOBId(index: Int) extends TypedIdentifier[LocalDate] {
+  override def path: JsPath = JsPath \ "directors" \ index \ DirectorDOBId.toString
+
+  override def toString: String = "dateOfBirth"
+
 }

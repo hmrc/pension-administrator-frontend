@@ -16,18 +16,27 @@
 
 package forms
 
-import forms.mappings.BusinessNameMapping
+import java.time.LocalDate
+
+import forms.mappings.{Mappings, Transforms}
 import javax.inject.Inject
 import play.api.data.Form
 
-class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
+class DOBFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(
-            requiredKey: String = "businessName.error.required",
-            invalidKey: String = "businessName.error.invalid",
-            lengthKey: String = "businessName.error.length"
-           ): Form[String] =
-
-    Form("value" -> nameMapping(requiredKey, invalidKey, lengthKey))
+  def apply(): Form[LocalDate] = Form(
+    "value" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
+      .verifying(firstError(
+        nonFutureDate("common.error.dateOfBirth.future"),
+        notBeforeYear("common.error.dateOfBirth.past", DOBFormProvider.startYear)
+      )
+      )
+  )
 
 }
+
+object DOBFormProvider {
+  val startYear: Int = 1900
+}
+
+
