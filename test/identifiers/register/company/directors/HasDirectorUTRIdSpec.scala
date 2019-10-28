@@ -30,13 +30,7 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class HasDirectorUTRIdSpec extends SpecBase {
 
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now)
-  private val onwardUrl = "onwardUrl"
-  private def ua(hasUTR: Boolean = true): UserAnswers = UserAnswers(Json.obj())
-    .set(HasDirectorUTRId(0))(hasUTR)
-    .flatMap(_.set(DirectorEnterUTRId(0))(value = ReferenceValue("test-UTR")))
-    .flatMap(_.set(DirectorNoUTRReasonId(0))(value = "reason"))
-    .asOpt.value
+  import HasDirectorUTRIdSpec._
 
   "cya" when {
     def answers: UserAnswers =
@@ -59,4 +53,29 @@ class HasDirectorUTRIdSpec extends SpecBase {
       }
     }
   }
+
+  "Cleanup" must {
+
+    def answers(hasUtr: Boolean = true): UserAnswers = UserAnswers(Json.obj())
+      .set(HasDirectorUTRId(0))(hasUtr)
+      .flatMap(_.set(DirectorEnterUTRId(0))(ReferenceValue("test-utr")))
+      .flatMap(_.set(DirectorNoUTRReasonId(0))(value = "reason"))
+      .asOpt.value
+
+    "remove the data for `DirectorUTR` when DirectorHasUTR is set to false" in {
+      val result: UserAnswers = answers().set(HasDirectorUTRId(0))(value = false).asOpt.value
+      result.get(DirectorEnterUTRId(0)) mustNot be(defined)
+    }
+
+
+    "remove the data for `DirectorNoUTRReason` when DirectorHasUTR is set to true" in {
+      val result: UserAnswers = answers(hasUtr = false).set(HasDirectorUTRId(0))(value = true).asOpt.value
+      result.get(DirectorNoUTRReasonId(0)) mustNot be(defined)
+    }
+  }
+}
+
+object HasDirectorUTRIdSpec {
+  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now)
+  private val onwardUrl = "onwardUrl"
 }

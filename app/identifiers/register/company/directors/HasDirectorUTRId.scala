@@ -21,7 +21,7 @@ import models.Index
 import play.api.i18n.Messages
 import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
-import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany, CheckYourAnswersDirector}
+import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersDirector}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class HasDirectorUTRId(index: Int) extends TypedIdentifier[Boolean] {
@@ -32,6 +32,8 @@ case class HasDirectorUTRId(index: Int) extends TypedIdentifier[Boolean] {
     value match {
       case Some(false) =>
         userAnswers.remove(DirectorEnterUTRId(index))
+      case Some(true) =>
+        userAnswers.remove(DirectorNoUTRReasonId(index))
       case _ => JsSuccess(userAnswers)
     }
   }
