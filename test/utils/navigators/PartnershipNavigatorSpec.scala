@@ -61,6 +61,10 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode), false, Some(tradingOverAYearPage(CheckMode)), false),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
+    (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(NormalMode), true, Some(contactPreviousPostCodePage(CheckMode)), true),
+    (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
+    (PartnershipTradingOverAYearId, tradingUnderAYear, contactDetailsPage, true, Some(checkYourAnswersPage), true),
+
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
     (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
     (PartnershipPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
@@ -139,7 +143,7 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def contactAddressPage(mode: Mode): Call = routes.PartnershipContactAddressController.onPageLoad(mode)
 
-  private def contactPreviousPostcodePage(mode: Mode): Call = routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
+  private def contactPreviousPostCodePage(mode: Mode): Call = routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
 
   private def contactPreviousAddressListPage(mode: Mode): Call = routes.PartnershipPreviousAddressListController.onPageLoad(mode)
 

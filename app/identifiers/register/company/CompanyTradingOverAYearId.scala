@@ -23,10 +23,10 @@ import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
 import viewmodels.{AnswerRow, Link, Message}
 
-case object HasCompanyBeenTradingId extends TypedIdentifier[Boolean] {
+case object CompanyTradingOverAYearId extends TypedIdentifier[Boolean] {
   self =>
 
-  override def toString: String = "hasCompanyBeenTrading"
+  override def toString: String = "companyTradingOverAYear"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersCompany[self.type] {

@@ -43,7 +43,6 @@ trait Variations extends FrontendController {
   private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,
     IndividualPreviousAddressId -> IndividualPreviousAddressChangedId,
-    IndividualContactDetailsId -> IndividualContactDetailsChangedId,
     CompanyContactAddressId -> CompanyContactAddressChangedId,
     CompanyPreviousAddressId -> CompanyPreviousAddressChangedId,
     CompanyEmailId -> CompanyContactDetailsChangedId,

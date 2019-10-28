@@ -29,7 +29,7 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasCompanyBeenTradingControllerSpec extends ControllerSpecBase {
+class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -39,7 +39,7 @@ class HasCompanyBeenTradingControllerSpec extends ControllerSpecBase {
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasCompanyBeenTradingController.onSubmit(NormalMode),
+      postCall = CompanyTradingOverAYearController.onSubmit(NormalMode),
       title = Message("trading.title", Message("theCompany").resolve),
       heading = Message("trading.title", companyName),
       mode = NormalMode,
@@ -48,7 +48,7 @@ class HasCompanyBeenTradingControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasCompanyBeenTradingController(frontendAppConfig,
+    new CompanyTradingOverAYearController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

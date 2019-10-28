@@ -59,7 +59,7 @@ class PartnershipNavigator @Inject()(
     case PartnershipAddressYearsId =>
       addressYearsIdRoutes(from.userAnswers, NormalMode)
     case PartnershipTradingOverAYearId =>
-      hasBeenTradingRoutes(from.userAnswers, NormalMode)
+      tradingOverAYearRoutes(from.userAnswers, NormalMode)
     case PartnershipPreviousAddressPostCodeLookupId =>
       NavigateTo.save(PartnershipPreviousAddressListController.onPageLoad(NormalMode))
     case PartnershipPreviousAddressListId =>
@@ -95,7 +95,7 @@ class PartnershipNavigator @Inject()(
       case PartnershipAddressYearsId =>
         addressYearsCheckIdRoutes(from.userAnswers, CheckMode)
       case PartnershipTradingOverAYearId =>
-        hasBeenTradingRoutes(from.userAnswers, CheckMode)
+        tradingOverAYearRoutes(from.userAnswers, CheckMode)
       case PartnershipPreviousAddressPostCodeLookupId =>
         NavigateTo.save(PartnershipPreviousAddressListController.onPageLoad(CheckMode))
       case PartnershipPreviousAddressListId =>
@@ -124,7 +124,7 @@ class PartnershipNavigator @Inject()(
       case PartnershipAddressYearsId =>
         addressYearsCheckIdRoutes(from.userAnswers, UpdateMode)
       case PartnershipTradingOverAYearId =>
-        hasBeenTradingRoutes(from.userAnswers, UpdateMode)
+        tradingOverAYearRoutes(from.userAnswers, UpdateMode)
       case PartnershipContactDetailsId =>
         NavigateTo.dontSave(AnyMoreChangesController.onPageLoad())
       case PartnershipPreviousAddressPostCodeLookupId =>
@@ -162,23 +162,23 @@ class PartnershipNavigator @Inject()(
     }
   }
 
-  private def hasBeenTradingRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+  private def tradingOverAYearRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
     (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
-      case (Some(false), Some(false)) =>
+      case (Some(true), Some(false)) =>
         mode match {
           case NormalMode | CheckMode =>
             NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
           case _ =>
             NavigateTo.dontSave(PartnershipConfirmPreviousAddressController.onPageLoad())
         }
-      case (Some(false), Some(true)) =>
+      case (Some(true), Some(true)) =>
         mode match {
           case NormalMode | CheckMode =>
             NavigateTo.dontSave(PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))
           case _ =>
             NavigateTo.dontSave(PartnershipConfirmPreviousAddressController.onPageLoad())
         }
-      case (Some(true), _) =>
+      case (Some(false), _) =>
         mode match {
           case NormalMode =>
             NavigateTo.dontSave(PartnershipContactDetailsController.onPageLoad(NormalMode))
