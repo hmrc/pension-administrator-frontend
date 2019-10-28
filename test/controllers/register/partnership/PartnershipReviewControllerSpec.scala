@@ -20,8 +20,9 @@ import java.time.LocalDate
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{BusinessDetails, NormalMode, PersonDetails}
+import models.{NormalMode, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -33,7 +34,7 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val partnershipName = "test partnership name"
-  val partners = Seq("partner a", "partner b", "partner c")
+  val partners: Seq[String] = Seq("partner a", "partner b", "partner c")
 
   def partner(lastName: String, isDeleted: Boolean = false): JsObject = Json.obj(
     PartnerDetailsId.toString -> PersonDetails("partner", None, lastName, LocalDate.now(), isDeleted)
@@ -41,8 +42,8 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
 
   val validData: JsObject = Json.obj(
     BusinessNameId.toString ->
-      BusinessDetails(partnershipName, Some("test utr")),
-    "partners" -> Json.arr(partner("a"), partner("b"), partner("c"), partner("d", true))
+      partnershipName,
+    "partners" -> Json.arr(partner("a"), partner("b"), partner("c"), partner("d", isDeleted = true))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

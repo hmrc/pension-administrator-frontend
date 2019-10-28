@@ -20,6 +20,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.ConfirmPreviousAddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.individual.ExistingCurrentAddressId
 import identifiers.register.partnership.PartnershipConfirmPreviousAddressId
 import models._
@@ -74,7 +75,7 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
 
 
   val formProvider: ConfirmPreviousAddressFormProvider = new ConfirmPreviousAddressFormProvider()
-  val form = formProvider(Message("confirmPreviousAddress.error", psa))
+  val form: Form[Boolean] = formProvider(Message("confirmPreviousAddress.error", psa))
 
   def viewAsString(form: Form[_] = form): String =
     sameContactAddress(
@@ -85,7 +86,7 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(BusinessNameId)(BusinessDetails("Test partnership name", None)).flatMap(_.set(
+    .set(BusinessNameId)("Test partnership name").flatMap(_.set(
     ExistingCurrentAddressId)(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))

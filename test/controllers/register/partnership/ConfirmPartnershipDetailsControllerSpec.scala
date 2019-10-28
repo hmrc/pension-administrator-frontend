@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.{ConfirmBusinessNameId, PartnershipRegisteredAddressId}
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
 import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
 import play.api.data.Form
@@ -139,7 +139,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         }
         "no business type data is found" in {
           val data = Json.obj(
-            BusinessNameId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
+            BusinessNameId.toString -> "MyPartnership"
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -244,7 +244,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       val info = RegistrationInfo(
         RegistrationLegalStatus.Partnership,
         sapNumber,
-        false,
+        noIdentifier = false,
         RegistrationCustomerType.UK,
         Some(RegistrationIdType.UTR),
         Some(utr)

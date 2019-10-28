@@ -44,17 +44,17 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     Some("test post code"), Some("GB")
   )
 
-  private val partnershipDetails = models.BusinessDetails("Test Partnership Name", Some("1234567890"))
+  private val partnershipName = "Test Partnership Name"
 
   private val requiredData = UserAnswers()
-    .partnershipName(partnershipDetails)
+    .businessName(partnershipName)
     .partnershipRegisteredAddress(testAddress)
     .dataRetrievalAction
 
   def viewmodel = SameContactAddressViewModel(
     postCall = controllers.register.partnership.routes.PartnershipSameContactAddressController.onSubmit(NormalMode),
     title = Message("partnership.sameContactAddress.title"),
-    heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipDetails.companyName),
+    heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipName),
     hint = None,
     address = testAddress,
     psaName = "Test name",
@@ -95,7 +95,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = UserAnswers()
-        .partnershipName(partnershipDetails)
+        .businessName(partnershipName)
         .partnershipRegisteredAddress(testAddress)
         .partnershipSameContactAddress(areSame = false)
         .dataRetrievalAction

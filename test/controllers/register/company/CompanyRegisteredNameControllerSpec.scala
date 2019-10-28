@@ -35,7 +35,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new BusinessNameFormProvider()
-  val form = formProvider()
+  val form: Form[String] = formProvider()
   val testCompanyName = "test company name"
 
   def viewmodel = OrganisationNameViewModel(
@@ -53,8 +53,8 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      FakeUserAnswersCacheConnector,
-      formProvider
+      formProvider,
+      FakeUserAnswersCacheConnector
     )
 
   def viewAsString(form: Form[_] = form): String = nonUkBusinessName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString

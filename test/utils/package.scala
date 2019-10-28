@@ -163,8 +163,8 @@ package object utils {
       answers.set(VariationWorkingKnowledgeId)(value).asOpt.value
     }
 
-    def businessName: UserAnswers = {
-      answers.set(BusinessNameId)("test company").asOpt.value
+    def businessName(name: String = "test company"): UserAnswers = {
+      answers.set(BusinessNameId)(name).asOpt.value
     }
 
     def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {
@@ -172,10 +172,6 @@ package object utils {
     }
 
     // Partnership
-    def partnershipName(name: String): UserAnswers = {
-      answers.set(BusinessNameId)(name).asOpt.value
-    }
-
     def partnershipContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(PartnershipContactAddressListId)(address).asOpt.value
     }

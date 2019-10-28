@@ -159,13 +159,13 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
       .flatMap(_.set(DirectorDetailsId(0))(personDetails))
       .flatMap(_.set(DirectorDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenDirectorsId)(true))
-      .flatMap(_.set(BusinessNameId)(BusinessDetails("company name", None)))
+      .flatMap(_.set(BusinessNameId)("company name"))
     )
     .asOpt.value
 
   val answersPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)
-    .flatMap(_.set(BusinessNameId)(BusinessDetails("company name", None))
+    .flatMap(_.set(BusinessNameId)("company name")
       .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
       .flatMap(_.set(PartnershipSameContactAddressId)(false))
       .flatMap(_.set(PartnershipContactAddressListId)(tolerantAddress))

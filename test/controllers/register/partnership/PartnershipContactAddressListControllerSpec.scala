@@ -21,8 +21,9 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupId
-import models.{BusinessDetails, NormalMode, TolerantAddress}
+import models.{NormalMode, TolerantAddress}
 import org.scalatest.MustMatchers
 import play.api.Application
 import play.api.http.Writeable
@@ -73,7 +74,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
 
   val testName = "Partnership Name"
 
-  val addresses = Seq(
+  val addresses: Seq[TolerantAddress] = Seq(
     TolerantAddress(
       Some("Address 1 Line 1"),
       Some("Address 1 Line 2"),
@@ -101,7 +102,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    BusinessNameId.toString -> BusinessDetails(testName, Some("UTR")),
+    BusinessNameId.toString -> testName,
     PartnershipContactAddressPostCodeLookupId.toString -> addresses
   )))
 

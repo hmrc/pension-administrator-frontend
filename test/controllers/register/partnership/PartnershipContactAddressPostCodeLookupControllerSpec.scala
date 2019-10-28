@@ -17,11 +17,12 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import models.{BusinessDetails, NormalMode, TolerantAddress}
+import identifiers.register.BusinessNameId
+import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -96,7 +97,7 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   )
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    BusinessNameId.toString -> BusinessDetails(partnershipName, Some("UTR"))
+    BusinessNameId.toString -> partnershipName
   )))
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {

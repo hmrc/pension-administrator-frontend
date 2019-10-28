@@ -298,7 +298,7 @@ object AreYouInUKIdSpec extends OptionValues {
   val tolerantAddress = TolerantAddress(Some("line 1"), Some("line 2"), Some("line 3"), Some("line 4"), None, Some("DE"))
   val address = Address("line 1", "line 2", Some("line 3"), Some("line 4"), None, "UK")
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
-  val date = LocalDate.now()
+  val date: LocalDate = LocalDate.now()
   val registrationUK = RegistrationInfo(RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)
 
   private def setCommonCompanyData(userAnswers: UserAnswers) = {
@@ -340,7 +340,7 @@ object AreYouInUKIdSpec extends OptionValues {
 
   private def setCommonPartnershipData(userAnswers: UserAnswers) = {
     userAnswers.set(PartnershipSameContactAddressId)(false)
-      .flatMap(_.set(BusinessNameId)(BusinessDetails("test company", Some("utr"))))
+      .flatMap(_.set(BusinessNameId)("test company"))
       .flatMap(_.set(BusinessTypeId)(BusinessType.BusinessPartnership))
       .flatMap(_.set(PartnershipContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(PartnershipContactAddressListId)(tolerantAddress))

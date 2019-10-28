@@ -212,7 +212,7 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val answersPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(true)
     .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership)
-      .flatMap(_.set(BusinessNameId)(BusinessDetails("company name", None)))
+      .flatMap(_.set(BusinessNameId)("company name"))
       .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
       .flatMap(_.set(PartnershipSameContactAddressId)(false))
       .flatMap(_.set(PartnershipContactAddressListId)(tolerantAddress))

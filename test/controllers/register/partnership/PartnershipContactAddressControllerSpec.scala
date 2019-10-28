@@ -43,7 +43,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val messagePrefix = "partnership.contactAddress"
-  val partnershipDetails = models.BusinessDetails("Test Partnership Name", Some("1234567890"))
+  val partnershipName = "Test Partnership Name"
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
@@ -52,8 +52,8 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
-    heading = Message(s"$messagePrefix.heading").withArgs(partnershipDetails.companyName),
-    hint = Some(Message(s"$messagePrefix.hint").withArgs(partnershipDetails.companyName))
+    heading = Message(s"$messagePrefix.heading").withArgs(partnershipName),
+    hint = Some(Message(s"$messagePrefix.hint").withArgs(partnershipName))
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()
@@ -86,7 +86,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = UserAnswers()
-        .partnershipName(partnershipDetails)
+        .businessName(partnershipName)
         .partnershipContactAddress(Address("value 1", "value 2", None, None, None, "GB"))
         .dataRetrievalAction
 
