@@ -17,13 +17,31 @@
 package identifiers.register.company.directors
 
 import identifiers._
+import models.Index
+import play.api.i18n.Messages
 import play.api.libs.json.JsPath
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, StringCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorNoNINOReasonId(index: Int) extends TypedIdentifier[String] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNoNINOReasonId.toString
 }
 object DirectorNoNINOReasonId {
-  override lazy val toString: String = "reason"
+  override lazy val toString: String = "noNinoReason"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorNoNINOReasonId] =
+    new CheckYourAnswersDirector[DirectorNoNINOReasonId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "whyNoNINO.heading", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "whyNoNINO.visuallyHidden.text", index)
+
+
+      override def row(id: DirectorNoNINOReasonId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA[DirectorNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+    }
 }
 
 

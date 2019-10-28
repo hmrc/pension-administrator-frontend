@@ -57,7 +57,9 @@ class CheckYourAnswersController @Inject()(
         AnswerSection(None,
           checkYourAnswerHelper.directorName(index.id, mode) ++
           checkYourAnswerHelper.directorDob(index.id, mode) ++
-            checkYourAnswerHelper.directorNino(index.id, mode) ++
+          HasDirectorNINOId(index).row(Some(Link(routes.HasDirectorNINOController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorEnterNINOId(index).row(Some(Link(routes.DirectorEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorNoNINOReasonId(index).row(Some(Link(routes.DirectorNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
             HasDirectorUTRId(index).row(Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorEnterUTRId(index).row(Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorNoUTRReasonId(index).row(Some(Link(DirectorNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++

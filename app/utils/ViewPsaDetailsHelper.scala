@@ -228,14 +228,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         None)
     }
 
-  private def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(DirectorNinoId(index)) match {
-    case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
+  private def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEnterNINOId(index)) match {
+    case Some(ReferenceValue(nino, false)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       None))
 
-    case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, index).url, "site.add"), None))
+    case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))))
 
-    case _ => None
+    case None => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
   private def directorUtr(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEnterUTRId(index)) match {
@@ -243,10 +244,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
-      Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url), None))
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
 
     case None => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add"), None))
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
   private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map { address =>
@@ -365,7 +366,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add"), None))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add")), None))
 
     case _ => None
   }
@@ -375,7 +376,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None))
 
     case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add"), None))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")), None))
 
     case _ => None
   }

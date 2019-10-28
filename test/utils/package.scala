@@ -132,6 +132,18 @@ package object utils {
       answers.set(DirectorEmailId(index))(email).asOpt.value
     }
 
+    def directorHasNINO(index: Int, flag: Boolean): UserAnswers = {
+      answers.set(HasDirectorNINOId(index))(flag).asOpt.value
+    }
+
+    def directorEnterNINO(index: Int, nino: ReferenceValue): UserAnswers = {
+      answers.set(DirectorEnterNINOId(index))(nino).asOpt.value
+    }
+
+    def directorNoNINOReason(index: Int, reason: String): UserAnswers = {
+      answers.set(DirectorNoNINOReasonId(index))(reason).asOpt.value
+    }
+
     def companyDirectorAddressList(index: Int, address: TolerantAddress): UserAnswers = {
       answers.set(CompanyDirectorAddressListId(index))(address).asOpt.value
     }

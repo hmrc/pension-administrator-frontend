@@ -16,10 +16,11 @@
 
 package viewmodels
 
-case class AnswerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Option[Link] = None, visuallyHiddenText: Option[Message] = None)
+case class AnswerRow(
+                      label: String,
+                      answer: Seq[String],
+                      answerIsMessageKey: Boolean,
+                      changeUrl: Option[Link] = None,
+                      visuallyHiddenText: Option[Message] = None
+                    )
 
-object AnswerRow {
-  def apply(label: String, answer: Seq[String], answerIsMessageKey: Boolean, changeUrl: Link, visuallyHiddenText: Option[Message]): AnswerRow = {
-    AnswerRow(label, answer, answerIsMessageKey, Some(changeUrl), visuallyHiddenText)
-  }
-}

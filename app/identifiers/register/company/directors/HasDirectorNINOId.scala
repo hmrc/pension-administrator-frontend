@@ -17,10 +17,11 @@
 package identifiers.register.company.directors
 
 import identifiers.TypedIdentifier
+import models.Index
 import play.api.i18n.Messages
 import play.api.libs.json.{JsPath, JsResult, JsSuccess}
 import utils.UserAnswers
-import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
+import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersDirector}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class HasDirectorNINOId(index: Int) extends TypedIdentifier[Boolean] {
@@ -31,6 +32,8 @@ case class HasDirectorNINOId(index: Int) extends TypedIdentifier[Boolean] {
     value match {
       case Some(false) =>
         userAnswers.remove(DirectorEnterNINOId(index))
+      case Some(true) =>
+        userAnswers.remove(DirectorNoNINOReasonId(index))
       case _ => JsSuccess(userAnswers)
     }
   }
@@ -40,15 +43,15 @@ object HasDirectorNINOId {
   override def toString: String = "hasNino"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[HasDirectorNINOId] =
-    new CheckYourAnswersCompany[HasDirectorNINOId] {
-      private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, messageKey = "hasNINO.heading")
+    new CheckYourAnswersDirector[HasDirectorNINOId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "hasNINO.heading", index)
 
-      private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, messageKey = "hasNINO.visuallyHidden.text")
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "hasNINO.visuallyHidden.text", index)
 
 
       override def row(id: HasDirectorNINOId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[HasDirectorNINOId](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+        BooleanCYA[HasDirectorNINOId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
     }
 }

@@ -132,45 +132,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
-  "directorNino" should {
-    behave like cyaHelperMethod(_.directorNino(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorNinoId.toString ->
-                  Nino.Yes("nino")
-              )
-            )
-          ),
-          yesNoExpectedResult("directorNino.checkYourAnswersLabel",
-            "Yes",
-            "directorNino.checkYourAnswersLabel.nino",
-            "nino",
-            "enter-national-insurance-number"),
-          Some("user answered yes")
-        ),
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorNinoId.toString ->
-                  Nino.No(reason)
-              )
-            )
-          ),
-          yesNoExpectedResult("directorNino.checkYourAnswersLabel",
-            "No",
-            "directorNino.checkYourAnswersLabel.reason",
-            reason,
-            "enter-national-insurance-number"),
-          Some("user answered no")
-        )
-      )
-    )
-  }
-
   "moreThanTenDirectors" should {
     behave like cyaHelperMethod(_.moreThanTenDirectors.toSeq,
       Seq(
