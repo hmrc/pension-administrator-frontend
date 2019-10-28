@@ -17,14 +17,14 @@
 package controllers
 
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
-import models.PersonDetails
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
+import models.{PersonDetails, PersonName}
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -39,7 +39,7 @@ trait Retrievals {
   private[controllers] def retrieveDirectorName(index: Int)
                                                (f: String => Future[Result])
                                                (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    retrieve[PersonDetails](DirectorDetailsId(index)) { directorDetails =>
+    retrieve[PersonName](DirectorNameId(index)) { directorDetails =>
       f(directorDetails.fullName)
     }
   }
@@ -53,7 +53,7 @@ trait Retrievals {
   }
 
   private[controllers] def retrieve[A](id: TypedIdentifier[A])
-                                      (f: (A) => Future[Result])
+                                      (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
     request.userAnswers.get(id).map(f).getOrElse {
       Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))

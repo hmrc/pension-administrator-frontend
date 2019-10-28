@@ -172,43 +172,44 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
   private val companyUserAnswersIncomplete = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
     "directors" + ("directors" -> Json.arr(
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()))))
+    Json.obj(DirectorNameId.toString -> PersonName("John", "One"))))
 
   private val companyUserAnswersWithTwoDirectors = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
     "directors" + ("directors" -> Json.arr(
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "One"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Two"),
       IsDirectorCompleteId.toString -> true)
   ))
   private val companyUserAnswersWithTenDirectors = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
     "directors" + ("directors" -> Json.arr(
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "One"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Two"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Three", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Three"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Four", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Four"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Five", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Five"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Six", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Six"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Seven", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Seven"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Eight", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Eight"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Nine", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Nine"),
       IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorDetailsId.toString -> PersonDetails("John", None, "Ten", LocalDate.now()),
+    Json.obj(DirectorNameId.toString -> PersonName("John", "Ten"),
       IsDirectorCompleteId.toString -> true)
   ))
 
   private val companyUserAnswersWithAddLinks = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
     "companyPreviousAddress" - "directors" + ("directors" -> Json.arr(
     Json.obj(
-      DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
+      DirectorNameId.toString -> PersonName("test first name", "test last name"),
+      DirectorDOBId.toString -> LocalDate.of(2019,10, 23),
       DirectorNoNINOReasonId.toString -> "reason",
       DirectorAddressYearsId.toString -> AddressYears.UnderAYear.toString,
       DirectorUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")

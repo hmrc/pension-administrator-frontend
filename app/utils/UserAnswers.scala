@@ -21,7 +21,7 @@ import identifiers.TypedIdentifier
 import identifiers.register._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
 import identifiers.register.company._
-import identifiers.register.company.directors.{DirectorDetailsId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
@@ -54,8 +54,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         )))
   }
 
-  def allDirectors: Seq[PersonDetails] = {
-    getAll[PersonDetails](DirectorDetailsId.collectionPath).getOrElse(Nil)
+  def allDirectors: Seq[PersonName] = {
+    getAll[PersonName](DirectorNameId.collectionPath).getOrElse(Nil)
   }
 
 
@@ -68,7 +68,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         val editUrl = if (isComplete) {
           routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
         } else {
-          routes.DirectorDetailsController.onPageLoad(mode, Index(index)).url
+          routes.DirectorNameController.onPageLoad(mode, Index(index)).url
         }
 
         Seq(
@@ -88,7 +88,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def directorsCount: Int = {
-    getAll[PersonDetails](DirectorDetailsId.collectionPath)
+    getAll[PersonName](DirectorNameId.collectionPath)
       .getOrElse(Nil).length
   }
 

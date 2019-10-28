@@ -122,13 +122,18 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
     case _ => Nil
   }
 
-  def directorDetails(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorDetailsId(index)) match {
+  def directorName(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorNameId(index)) match {
     case Some(x) => Seq(AnswerRow("cya.label.name", Seq(s"${x.firstName} ${x.lastName}"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url)), None),
-      AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x.dateOfBirth)}"), false,
-        Some(Link(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url)), None))
+      Some(Link(controllers.register.company.directors.routes.DirectorNameController.onPageLoad(checkMode(mode), index).url)), None))
     case _ => Nil
   }
+
+  def directorDob(index: Int, mode: Mode): Seq[AnswerRow] = userAnswers.get(identifiers.register.company.directors.DirectorDOBId(index)) match {
+    case Some(x) => Seq(AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
+        Some(Link(controllers.register.company.directors.routes.DirectorDOBController.onPageLoad(checkMode(mode), index).url)), None))
+    case _ => Nil
+  }
+
 
   def moreThanTenDirectors: Option[AnswerRow] = userAnswers.get(identifiers.register.company.MoreThanTenDirectorsId) map {
     x => AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq(if (x) "site.yes" else "site.no"), true,

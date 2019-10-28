@@ -25,9 +25,9 @@ import utils.{FakeNavigator, Navigator}
 
 class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
 
-  import DirectorDetailsControllerSpec._
+  import DirectorNameControllerSpec._
 
-  "DirectorDetailsController" must {
+  "DirectorNameController" must {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = testController(this, dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)

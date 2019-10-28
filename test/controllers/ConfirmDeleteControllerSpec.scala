@@ -23,7 +23,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.MoreThanTenDirectorsId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
 import models.requests.DataRequest
@@ -51,19 +51,20 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
     override def toString: String = "test2"
   }
 
-  val person = PersonDetails("First", None, "Last", LocalDate.now())
+  val personDetails = PersonDetails("First", None, "Last", LocalDate.now())
+  val person = PersonName("First", "Last")
 
   val requestDirectors: DataRequest[AnyContent] = DataRequest(
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
     ), "cacheId", PSAUser(UserType.Individual, None, false, None),
-    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorDetailsId.toString -> person)),
+    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorNameId.toString -> personDetails)),
       MoreThanTenDirectorsId.toString -> true))
   )
 
   val requestDirectorsNoValue: DataRequest[AnyContent] = DataRequest(
     FakeRequest(), "cacheId", PSAUser(UserType.Individual, None, false, None),
-    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorDetailsId.toString -> person)),
+    UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorNameId.toString -> personDetails)),
       MoreThanTenDirectorsId.toString -> true))
   )
 
@@ -71,13 +72,13 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
     ), "cacheId", PSAUser(UserType.Individual, None, false, None),
-    UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerDetailsId.toString -> person)),
+    UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerDetailsId.toString -> personDetails)),
       MoreThanTenDirectorsId.toString -> true))
   )
 
   val requestPartnersNoValue: DataRequest[AnyContent] = DataRequest(
     FakeRequest(), "cacheId", PSAUser(UserType.Individual, None, false, None),
-    UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerDetailsId.toString -> person)),
+    UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerDetailsId.toString -> personDetails)),
       MoreThanTenDirectorsId.toString -> true))
   )
 
@@ -114,7 +115,48 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
 
-  private def controllerWithPost(descr:String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id:TypedIdentifier[PersonDetails]): Unit = {
+  private def controllerWithPostPersonDetails(descr:String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id:TypedIdentifier[PersonDetails]): Unit = {
+    s"redirect to already deleted view for a GET if the $descr was already deleted" in {
+
+      val result = controller().get(viewModel, true, FakeNavigator.desiredRoute, NormalMode)(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+
+    }
+
+    s"redirect to ${descr}s list on removal of $descr" in {
+
+      val result = controller().postPersonDetails(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+    }
+
+    s"set the isDelete flag to true for the selected $descr on submission of POST request" in {
+
+      val result = controller().postPersonDetails(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(request)
+
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(id, personDetails.copy(isDeleted = true))
+    }
+
+    s"bad request for the selected $descr on submission of POST request where invalid submission (no value)" in {
+
+      val result = controller().postPersonDetails(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(requestNoValue)
+
+      status(result) mustBe BAD_REQUEST
+    }
+
+    s"set the morethanten change flag to true where the morethanten flag was already true and a $descr is deleted" in {
+      val result = controller().postPersonDetails(viewModel, id, FakeNavigator.desiredRoute, UpdateMode)(request)
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
+      FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
+    }
+  }
+
+  private def controllerWithPost(descr:String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id:TypedIdentifier[PersonName]): Unit = {
     s"redirect to already deleted view for a GET if the $descr was already deleted" in {
 
       val result = controller().get(viewModel, true, FakeNavigator.desiredRoute, NormalMode)(request)
@@ -165,9 +207,9 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       contentAsString(result) mustBe viewAsString()
     }
 
-    behave like controllerWithPost("director", requestDirectors, requestDirectorsNoValue, DirectorDetailsId(0))
+    behave like controllerWithPost("director", requestDirectors, requestDirectorsNoValue, DirectorNameId(0))
 
-    behave like controllerWithPost("partner", requestPartners, requestPartnersNoValue, PartnerDetailsId(0))
+    behave like controllerWithPostPersonDetails("partner", requestPartners, requestPartnersNoValue, PartnerDetailsId(0))
 
 
   }

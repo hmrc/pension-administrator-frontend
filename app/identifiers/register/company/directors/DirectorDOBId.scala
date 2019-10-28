@@ -23,7 +23,8 @@ import play.api.libs.json.JsPath
 
 case class DirectorDOBId(index: Int) extends TypedIdentifier[LocalDate] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorDOBId.toString
+}
 
-  override def toString: String = "dateOfBirth"
-
+object DirectorDOBId {
+  override lazy val toString: String = "dateOfBirth"
 }

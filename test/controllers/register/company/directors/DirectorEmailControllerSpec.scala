@@ -57,7 +57,7 @@ object DirectorEmailControllerSpec {
   private val formProvider = new EmailFormProvider()
   private val emailForm = formProvider()
   private val index = 0
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =

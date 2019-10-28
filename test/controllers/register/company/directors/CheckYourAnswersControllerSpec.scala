@@ -45,20 +45,20 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
 
       Seq(NormalMode, UpdateMode).foreach { mode =>
         s"render the view correctly for name and dob in ${jsLiteral.to(mode)}" in {
-          val retrievalAction = UserAnswers().directorDetails(index, directorDetails).dataRetrievalAction
+          val retrievalAction = UserAnswers().directorName(index, directorName).directorDob(index, LocalDate.now).dataRetrievalAction
           val rows = Seq(
             AnswerRow(
               "cya.label.name",
               Seq("Test Name"),
               answerIsMessageKey = false,
-              Some(Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url)),
+              Some(Link(routes.DirectorNameController.onPageLoad(checkMode(mode), index).url)),
               None
             ),
             AnswerRow(
               "cya.label.dob",
               Seq(DateHelper.formatDate(LocalDate.now)),
               answerIsMessageKey = false,
-              Some(Link(routes.DirectorDetailsController.onPageLoad(checkMode(mode), index).url)),
+              Some(Link(routes.DirectorDOBController.onPageLoad(checkMode(mode), index).url)),
               None
             ))
 
@@ -153,7 +153,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private val email = "test@test.com"
   private val phone = "1234"
   private val index = Index(0)
-  private val directorDetails = PersonDetails("Test", None, "Name", LocalDate.now)
+  private val directorName = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   private val defaultDirectorName = Message("theDirector").resolve

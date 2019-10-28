@@ -16,8 +16,6 @@
 
 package identifiers.register.company.directors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models._
 import models.requests.DataRequest
@@ -30,7 +28,7 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class HasDirectorNINOIdSpec extends SpecBase {
 
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now)
+  private val personDetails = models.PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "Cleanup" when {
@@ -72,7 +70,7 @@ class HasDirectorNINOIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(DirectorDetailsId(0))(personDetails).asOpt.value
+        .set(DirectorNameId(0))(personDetails).asOpt.value
         .set(HasDirectorNINOId(0))(value = false).asOpt.value
 
     "in normal mode" must {

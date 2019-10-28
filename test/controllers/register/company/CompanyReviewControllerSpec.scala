@@ -21,7 +21,7 @@ import java.time.LocalDate
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.BusinessNameId
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import models.{NormalMode, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,7 +37,7 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
   val directors = Seq("director a", "director b", "director c")
 
   def director(lastName: String, isDeleted: Boolean = false): JsObject = Json.obj(
-    DirectorDetailsId.toString -> PersonDetails("director", None, lastName, LocalDate.now(), isDeleted)
+    DirectorNameId.toString -> PersonDetails("director", None, lastName, LocalDate.now(), isDeleted)
   )
 
   val validData: JsObject = Json.obj(
