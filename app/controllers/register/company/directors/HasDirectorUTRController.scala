@@ -59,8 +59,8 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def form(companyName: String): Form[Boolean] =
-    formProvider("hasUTR.error.required", companyName)
+  private def form(directorName: String): Form[Boolean] =
+    formProvider("hasUTR.error.required", directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

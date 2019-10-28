@@ -18,14 +18,14 @@ package identifiers.register.company.directors
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.{JsPath, JsResult, JsSuccess}
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class HasDirectorNINOId(index: Int) extends TypedIdentifier[Boolean] {
   self =>
-  override def toString: String = "hasNino"
+  override def path: JsPath = JsPath \ "directors" \ index \ HasDirectorNINOId.toString
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
@@ -37,6 +37,8 @@ case class HasDirectorNINOId(index: Int) extends TypedIdentifier[Boolean] {
 }
 
 object HasDirectorNINOId {
+  override def toString: String = "hasNino"
+
   implicit def cya(implicit messages: Messages): CheckYourAnswers[HasDirectorNINOId] =
     new CheckYourAnswersCompany[HasDirectorNINOId] {
       private def label(ua: UserAnswers): String =

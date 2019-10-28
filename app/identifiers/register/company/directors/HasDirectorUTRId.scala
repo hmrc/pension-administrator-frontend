@@ -19,14 +19,14 @@ package identifiers.register.company.directors
 import identifiers.TypedIdentifier
 import models.Index
 import play.api.i18n.Messages
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.{JsPath, JsResult, JsSuccess}
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersDirector}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class HasDirectorUTRId(index: Int) extends TypedIdentifier[Boolean] {
   self =>
-  override def toString: String = "hasUtr"
+  override def path: JsPath = JsPath \ "directors" \ index \ HasDirectorUTRId.toString
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
@@ -39,6 +39,8 @@ case class HasDirectorUTRId(index: Int) extends TypedIdentifier[Boolean] {
   }
 }
 object HasDirectorUTRId {
+  override def toString: String = "hasUtr"
+
   implicit def cya(implicit messages: Messages): CheckYourAnswers[HasDirectorUTRId] =
     new CheckYourAnswersDirector[HasDirectorUTRId] {
       private def label(ua: UserAnswers, index: Index): String =
