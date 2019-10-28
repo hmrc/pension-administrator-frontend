@@ -21,7 +21,7 @@ import java.time.LocalDate
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressId, IsDirectorCompleteId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressId, IsDirectorCompleteId}
 import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
@@ -69,7 +69,7 @@ class VariationsSpec extends ControllerSpecBase {
 
   def userAnswersWithDirector(isNew: Boolean = false) = UserAnswers(Json.obj(
     "directors" -> Json.arr(
-      Json.obj(DirectorDetailsId.toString ->
+      Json.obj(DirectorNameId.toString ->
         PersonDetails("", Some(""), "", LocalDate.now(), isNew = isNew))
     )))
 

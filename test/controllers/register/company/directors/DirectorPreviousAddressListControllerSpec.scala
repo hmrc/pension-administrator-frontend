@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorPreviousAddressPostCodeLookupId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressPostCodeLookupId}
 import models.{NormalMode, PersonDetails, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
@@ -59,7 +59,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val validData: JsValue = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString -> director,
+        DirectorNameId.toString -> director,
         DirectorPreviousAddressPostCodeLookupId.toString -> addresses
       )
     )
@@ -123,7 +123,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "directors" -> Json.arr(
               Json.obj(
-                DirectorDetailsId.toString -> director
+                DirectorNameId.toString -> director
               )
             )
           )
@@ -141,7 +141,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "directors" -> Json.arr(
               Json.obj(
-                DirectorDetailsId.toString -> director
+                DirectorNameId.toString -> director
               )
             )
           )

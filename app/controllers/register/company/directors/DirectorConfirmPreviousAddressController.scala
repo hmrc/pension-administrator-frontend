@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import identifiers.register.company.directors
-import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId, DirectorDetailsId, DirectorPreviousAddressId}
+import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId, DirectorNameId, DirectorPreviousAddressId}
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,7 +48,7 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
   private def viewmodel(mode: Mode, index: Index) =
     Retrieval(
       implicit request =>
-        (DirectorDetailsId(index) and directors.ExistingCurrentAddressId(index)).retrieve.right.map {
+        (DirectorNameId(index) and directors.ExistingCurrentAddressId(index)).retrieve.right.map {
           case details ~ address =>
             SameContactAddressViewModel(
               controllers.register.company.directors.routes.DirectorConfirmPreviousAddressController.onSubmit(index),

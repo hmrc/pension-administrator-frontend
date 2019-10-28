@@ -58,7 +58,7 @@ class DirectorEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
 object DirectorEnterNINOControllerSpec {
   private val formProvider = new NINOFormProvider()
   private val index = 0
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "AB100100A"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =

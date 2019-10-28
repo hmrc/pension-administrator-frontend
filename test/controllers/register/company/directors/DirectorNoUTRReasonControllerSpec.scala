@@ -56,7 +56,7 @@ class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
 object DirectorNoUTRReasonControllerSpec {
   private val formProvider = new ReasonFormProvider()
   private val index = 0
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =

@@ -222,10 +222,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   //Directors
-  private def directorDob(index: Int): Option[AnswerRow] = userAnswers.get(DirectorDetailsId(index)) map { details =>
-    AnswerRow("cya.label.dob", Seq(details.dateOfBirth.toString), answerIsMessageKey = false,
-      None)
-  }
+  private def directorDob(index: Int): Option[AnswerRow] =
+      userAnswers.get(DirectorDOBId(index)) map { dob =>
+      AnswerRow("cya.label.dob", Seq(dob.toString), answerIsMessageKey = false,
+        None)
+    }
 
   private def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(DirectorNinoId(index)) match {
     case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,

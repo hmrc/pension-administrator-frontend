@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.EnterUTRController
 import controllers.actions._
+import controllers.register.company.directors.routes.DirectorEnterUTRController
 import forms.EnterUTRFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorEnterUTRId}
+import identifiers.register.company.directors.{DirectorEnterUTRId, DirectorNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -30,7 +31,6 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.company.directors.routes.DirectorEnterUTRController
 
 class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navigator,
                                            val appConfig: FrontendAppConfig,
@@ -59,7 +59,7 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

@@ -54,7 +54,7 @@ class DOBViewSpec extends QuestionViewBehaviours[PersonDetails] {
     behave like pageWithTextFields(
       createViewUsingForm,
       messageKeyPrefix,
-      controllers.register.company.directors.routes.DirectorDetailsController.onSubmit(NormalMode, 0).url
+      controllers.register.company.directors.routes.DirectorNameController.onSubmit(NormalMode, 0).url
     )
 
     behave like pageWithDateField(

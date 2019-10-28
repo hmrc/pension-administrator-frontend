@@ -56,7 +56,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(from.userAnswers, mode)
     case MoreThanTenDirectorsId => NavigateTo.save(controllers.register.company.routes.CompanyReviewController.onPageLoad())
-    case DirectorDetailsId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
+    case DirectorNameId(index) => NavigateTo.save(routes.DirectorDOBController.onPageLoad(mode, index))
     case DirectorDOBId(index) => NavigateTo.save(routes.DirectorNinoController.onPageLoad(mode, index))
     case DirectorNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
     case HasDirectorUTRId(index) if hasUtr(from.userAnswers, index) => NavigateTo.save(routes.DirectorEnterUTRController.onPageLoad(mode, index))
@@ -78,7 +78,8 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case DirectorDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
+    case DirectorNameId(index) => checkYourAnswers(index, journeyMode(mode))
+    case DirectorDOBId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorNinoId(index) => checkYourAnswers(index, journeyMode(mode))
     case HasDirectorUTRId(index) if hasUtr(from.userAnswers, index) =>
       NavigateTo.save(routes.DirectorEnterUTRController.onPageLoad(mode, index))
@@ -158,7 +159,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
   }
 
   private def redirectBasedOnIsNew(answers: UserAnswers, index: Int, ifNewRoute: Call, ifNotNew: Call): Option[NavigateTo] = {
-    answers.get(DirectorDetailsId(index)).map { person =>
+    answers.get(DirectorNameId(index)).map { person =>
       if (person.isNew) { NavigateTo.save(ifNewRoute) } else { NavigateTo.save(ifNotNew) }
     }.getOrElse(sessionExpired)
   }
@@ -187,7 +188,7 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
         if (index >= appConfig.maxDirectors) {
           NavigateTo.save(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
         } else {
-          NavigateTo.save(controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(mode, answers.directorsCount))
+          NavigateTo.save(routes.DirectorNameController.onPageLoad(mode, answers.directorsCount))
         }
     }
   }

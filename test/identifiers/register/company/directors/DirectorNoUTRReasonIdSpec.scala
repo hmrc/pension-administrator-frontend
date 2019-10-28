@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import models.requests.DataRequest
-import models.{PSAUser, PersonDetails, UserType}
+import models.{PSAUser, PersonDetails, PersonName, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.UserAnswers
@@ -29,13 +29,13 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class DirectorNoUTRReasonIdSpec extends SpecBase {
 
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now)
+  private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(DirectorDetailsId(0))(personDetails).asOpt.value
+        .set(DirectorNameId(0))(personDetails).asOpt.value
         .set(DirectorNoUTRReasonId(0))(value = "test-reason").asOpt.value
 
     "in normal mode" must {

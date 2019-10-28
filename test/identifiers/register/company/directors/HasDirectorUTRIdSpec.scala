@@ -16,11 +16,9 @@
 
 package identifiers.register.company.directors
 
-import java.time.LocalDate
-
 import base.SpecBase
+import models._
 import models.requests.DataRequest
-import models.{PSAUser, PersonDetails, ReferenceValue, UserType}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ class HasDirectorUTRIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(DirectorDetailsId(0))(personDetails).asOpt.value
+        .set(DirectorNameId(0))(personDetails).asOpt.value
         .set(HasDirectorUTRId(0))(value = false).asOpt.value
 
     "in normal mode" must {
@@ -76,6 +74,6 @@ class HasDirectorUTRIdSpec extends SpecBase {
 }
 
 object HasDirectorUTRIdSpec {
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now)
+  private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 }

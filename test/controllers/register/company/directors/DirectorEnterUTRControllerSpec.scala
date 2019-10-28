@@ -58,7 +58,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
 object DirectorEnterUTRControllerSpec {
   private val formProvider = new EnterUTRFormProvider()
   private val index = 0
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "1111111111"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =

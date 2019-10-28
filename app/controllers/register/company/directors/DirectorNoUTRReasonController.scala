@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
+import controllers.register.company.directors.routes.DirectorNoUTRReasonController
 import forms.ReasonFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorNoUTRReasonId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorNoUTRReasonId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -30,7 +31,7 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.company.directors.routes.DirectorNoUTRReasonController
+
 import scala.concurrent.ExecutionContext
 
 class DirectorNoUTRReasonController @Inject()(
@@ -61,7 +62,7 @@ class DirectorNoUTRReasonController @Inject()(
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
+import controllers.register.company.directors.routes.HasDirectorUTRController
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, HasDirectorUTRId}
+import identifiers.register.company.directors.{DirectorNameId, HasDirectorUTRId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -31,7 +32,6 @@ import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.company.directors.routes.HasDirectorUTRController
 
 import scala.concurrent.ExecutionContext
 
@@ -57,7 +57,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def form(directorName: String): Form[Boolean] =
     formProvider("hasUTR.error.required", directorName)

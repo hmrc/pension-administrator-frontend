@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorDetailsId}
+import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorNameId}
 import models._
 import play.api.data.Form
 import play.api.libs.json._
@@ -40,19 +40,19 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressYearsFormProvider()
   private val form = formProvider(Message("error.addressYears.required"))
   private val index = Index(0)
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
 
   private val validData = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString ->
-          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+        DirectorNameId.toString ->
+          PersonName("test first name", "test last name"),
         DirectorAddressYearsId.toString ->
           AddressYears.options.head.value.toString
       ),
       Json.obj(
-        DirectorDetailsId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now)
+        DirectorNameId.toString ->
+          PersonName("test", "test")
       )
     )
   )

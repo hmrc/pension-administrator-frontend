@@ -55,7 +55,8 @@ class CheckYourAnswersController @Inject()(
       val checkYourAnswerHelper = checkYourAnswersFactory.checkYourAnswersHelper(request.userAnswers)
       val answersSection = Seq(
         AnswerSection(None,
-          checkYourAnswerHelper.directorDetails(index.id, mode) ++
+          checkYourAnswerHelper.directorName(index.id, mode) ++
+          checkYourAnswerHelper.directorDob(index.id, mode) ++
             checkYourAnswerHelper.directorNino(index.id, mode) ++
             HasDirectorUTRId(index).row(Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorEnterUTRId(index).row(Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
