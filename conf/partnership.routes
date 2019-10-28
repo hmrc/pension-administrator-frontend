@@ -101,3 +101,13 @@ POST       /enter-registered-address                    controllers.register.par
 
 GET         /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+
+GET         /email-address                         controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /email-address                         controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode)
+POST        /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode)
+
+GET         /phone-number                          controllers.register.partnership.PartnershipPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /phone-number                          controllers.register.partnership.PartnershipPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/phone-number                    controllers.register.partnership.PartnershipPhoneController.onPageLoad(mode: Mode)
+POST        /:mode/phone-number                    controllers.register.partnership.PartnershipPhoneController.onSubmit(mode: Mode)
