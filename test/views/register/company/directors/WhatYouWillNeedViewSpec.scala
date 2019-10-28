@@ -22,7 +22,7 @@ import views.html.register.company.directors.whatYouWillNeed
 
 class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
-  private def call = controllers.register.company.directors.routes.DirectorDetailsController.onPageLoad(NormalMode, 0)
+  private def call = controllers.register.company.directors.routes.DirectorNameController.onPageLoad(NormalMode, 0)
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 

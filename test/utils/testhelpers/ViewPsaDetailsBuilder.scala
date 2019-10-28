@@ -147,7 +147,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
   )
 
   val directorsSeqAnswersWithAddLinks = Seq(
-    AnswerRow("cya.label.dob", Seq(LocalDate.now().toString), false,
+    AnswerRow("cya.label.dob", Seq("2019-10-23"), false,
       None),
     AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorNinoController.onPageLoad(UpdateMode, 0).url, "site.add"))),
@@ -192,7 +192,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
 
   val directorsSuperSection =SuperSection(Some("director.supersection.header"),
     Seq(AnswerSection(
-      Some("Director number one"),
+      Some("Director one"),
       directorsSeqAnswers
     )),
     Some(AddLink(

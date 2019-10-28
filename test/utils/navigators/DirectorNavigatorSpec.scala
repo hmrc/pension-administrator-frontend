@@ -43,8 +43,9 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   //scalastyle:off line.size.limit
   private def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
-    (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorDetailsPage(mode), true, None, true),
-    (DirectorDetailsId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorNamePage(mode), true, None, true),
+    (DirectorNameId(0), emptyAnswers, directorDobPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (DirectorDOBId(0), emptyAnswers, directorNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (CompanyDirectorAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (CompanyDirectorAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (DirectorAddressId(0), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -110,7 +111,8 @@ object DirectorNavigatorSpec extends OptionValues {
   def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(mode, 0)
   def companyReviewPage(mode: Mode) = controllers.register.company.routes.CompanyReviewController.onPageLoad()
   def moreThanTenDirectorsPage(mode: Mode) = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode)
-  def directorDetailsPage(mode: Mode) = routes.DirectorDetailsController.onPageLoad(mode, 0)
+  def directorNamePage(mode: Mode) = routes.DirectorNameController.onPageLoad(mode, 0)
+  def directorDobPage(mode: Mode) = routes.DirectorDOBController.onPageLoad(mode, 0)
   def directorNinoPage(mode: Mode) = routes.DirectorNinoController.onPageLoad(mode, 0)
   def directorUniqueTaxReferencePage(mode: Mode) = routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, 0)
   def directorAddressYearsPage(mode: Mode) = routes.DirectorAddressYearsController.onPageLoad(mode, 0)
@@ -131,19 +133,19 @@ object DirectorNavigatorSpec extends OptionValues {
   def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, 0)
 
   private def director(index: Int) =
-    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0), isNew = true)
+    PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
   private def data = {
     (0 to 19).map(index => Json.obj(
-      DirectorDetailsId.toString -> director(index)
+      DirectorNameId.toString -> director(index)
     )).toArray
   }
 
   val emptyAnswers = UserAnswers(Json.obj())
   val defaultAnswers = UserAnswers(Json.obj())
-    .set(DirectorDetailsId(0))(director(0).copy(isNew = true)).asOpt.value
+    .set(DirectorNameId(0))(director(0).copy(isNew = true)).asOpt.value
   private def existingDirectorInUpdate(index: Index) = UserAnswers(Json.obj())
-    .set(DirectorDetailsId(index))(director(index).copy(isNew = false)).asOpt.value
+    .set(DirectorNameId(index))(director(index).copy(isNew = false)).asOpt.value
   private val addressYearsOverAYear = defaultAnswers
     .set(DirectorAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = defaultAnswers

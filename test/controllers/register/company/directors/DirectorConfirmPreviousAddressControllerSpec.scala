@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.ConfirmPreviousAddressFormProvider
-import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId, DirectorDetailsId, ExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId, DirectorNameId, ExistingCurrentAddressId}
 import models._
 import play.api.data.Form
 import play.api.libs.json.JsResult
@@ -84,7 +84,7 @@ class DirectorConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(DirectorDetailsId(0))(models.PersonDetails("John", None, "Doe", LocalDate.now())).flatMap(_.set(
+    .set(DirectorNameId(0))(models.PersonName("John","Doe")).flatMap(_.set(
     ExistingCurrentAddressId(0))(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
