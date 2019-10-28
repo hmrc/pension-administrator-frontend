@@ -70,9 +70,8 @@
         "hasNino": true,
         "nino": "AA999999A"
       },
-      "directorUtr": {
-        "hasUtr": true,
-        "utr": "1234567892"
+      "utr": {
+        "value": "1234567892"
       },
       "companyDirectorAddressList": {
         "addressLine1": "Flat 2",
