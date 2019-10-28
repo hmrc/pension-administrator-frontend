@@ -63,9 +63,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
         None)
     },
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(UpdateMode).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url))))
 
   def companySeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,

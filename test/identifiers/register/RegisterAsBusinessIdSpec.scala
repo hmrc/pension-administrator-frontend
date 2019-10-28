@@ -18,7 +18,6 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.tolerantAddress
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorDetailsId
 import identifiers.register.individual._
@@ -38,15 +37,15 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
 
     "register as company was true and business type was company and we change to false" must {
       val result: UserAnswers =
-        answersCompany.set(RegisterAsBusinessId)(false)
-          .asOpt.value
+        answersCompany.set(RegisterAsBusinessId)(false).asOpt.value
 
       "remove the data for non uk business type " in {
         result.get(NonUKBusinessTypeId) mustNot be(defined)
       }
 
       "remove the data for business details " in {
-        result.get(BusinessDetailsId) mustNot be(defined)
+        result.get(BusinessNameId) mustNot be(defined)
+        result.get(BusinessUTRId) mustNot be(defined)
       }
 
       "remove the data for company address " in {
@@ -163,8 +162,12 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "remove the data for contact details " in {
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+      "remove the data for individual email" in {
+        result.get(IndividualEmailId) mustNot be(defined)
+      }
+
+      "remove the data for individual phone" in {
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
 
       "not remove the data for non uk business type " in {
@@ -180,28 +183,31 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
   val address = Address("line 1", "line 2", None, None, None, "GB")
   val contactDetails = ContactDetails("s@s.com", "999")
+  val email = "s@s.com"
+  val phone = "999"
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
 
-  val answersCompany: UserAnswers = UserAnswers(Json.obj())
-    .set(RegisterAsBusinessId)(true)
-    .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company)
-      .flatMap(_.set(BusinessDetailsId)(BusinessDetails("company name", None)))
-      .flatMap(_.set(CompanyAddressId)(tolerantAddress))
-      .flatMap(_.set(CompanySameContactAddressId)(false))
-      .flatMap(_.set(CompanyContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(CompanyAddressListId)(tolerantAddress))
-      .flatMap(_.set(CompanyContactAddressId)(address))
-      .flatMap(_.set(CompanyContactAddressListId)(tolerantAddress))
-      .flatMap(_.set(CompanyAddressYearsId)(AddressYears.OverAYear))
-      .flatMap(_.set(CompanyPreviousAddressId)(address))
-      .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(ContactDetailsId)(contactDetails))
-      .flatMap(_.set(DirectorDetailsId(0))(personDetails))
-      .flatMap(_.set(DirectorDetailsId(1))(personDetails))
-      .flatMap(_.set(MoreThanTenDirectorsId)(true))
-      .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))
-    )
-    .asOpt.value
+  val answersCompany: UserAnswers =
+    UserAnswers(Json.obj())
+      .set(RegisterAsBusinessId)(true)
+      .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company)
+        .flatMap(_.set(BusinessNameId)("company name"))
+        .flatMap(_.set(BusinessUTRId)("test-utr"))
+        .flatMap(_.set(CompanyAddressId)(tolerantAddress))
+        .flatMap(_.set(CompanySameContactAddressId)(false))
+        .flatMap(_.set(CompanyContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
+        .flatMap(_.set(CompanyAddressListId)(tolerantAddress))
+        .flatMap(_.set(CompanyContactAddressId)(address))
+        .flatMap(_.set(CompanyContactAddressListId)(tolerantAddress))
+        .flatMap(_.set(CompanyAddressYearsId)(AddressYears.OverAYear))
+        .flatMap(_.set(CompanyPreviousAddressId)(address))
+        .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
+        .flatMap(_.set(ContactDetailsId)(contactDetails))
+        .flatMap(_.set(DirectorDetailsId(0))(personDetails))
+        .flatMap(_.set(DirectorDetailsId(1))(personDetails))
+        .flatMap(_.set(MoreThanTenDirectorsId)(true))
+        .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))
+      ).asOpt.value
 
   val answersPartnership: UserAnswers = UserAnswers(Json.obj())
     .set(RegisterAsBusinessId)(true)
@@ -234,7 +240,8 @@ object RegisterAsBusinessIdSpec extends OptionValues {
       .flatMap(_.set(IndividualPreviousAddressId)(address))
       .flatMap(_.set(IndividualPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(IndividualPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(IndividualContactDetailsId)(contactDetails))
+      .flatMap(_.set(IndividualEmailId)(email))
+      .flatMap(_.set(IndividualPhoneId)(phone))
       .flatMap(_.set(NonUKBusinessTypeId)(NonUKBusinessType.Company))
     )
     .asOpt.value

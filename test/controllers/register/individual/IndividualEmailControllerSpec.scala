@@ -56,16 +56,16 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
 object IndividualEmailControllerSpec {
   private val formProvider = new EmailFormProvider()
   private val emailForm = formProvider()
-  private val IndividualName = "TestFirstName TestLastName"
+  private val individualName = "TestFirstName TestLastName"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.IndividualEmailController.onSubmit(mode),
       title = Message("email.title", Message("theIndividual").resolve),
-      heading = Message("email.title", IndividualName),
+      heading = Message("email.title", individualName),
       mode = mode,
-      entityName = IndividualName
+      entityName = individualName
     )
 }
 

@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.register.company.directors.DirectorAddressId
-import identifiers.register.individual.{IndividualAddressId, IndividualContactDetailsId, IndividualDetailsId, IndividualPreviousAddressId}
+import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId, IndividualPreviousAddressId}
 import models.Mode._
 import models._
 import utils.countryOptions.CountryOptions
@@ -41,20 +41,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
       Some(Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)), None)
-  }
-
-  def individualPhoneNumber: Option[AnswerRow] = {
-    userAnswers.get(IndividualContactDetailsId) map { x =>
-      AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(x.phone), false,
-        Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)), None)
-    }
-  }
-
-  def individualEmailAddress: Option[AnswerRow] = {
-    userAnswers.get(IndividualContactDetailsId) map { x =>
-      AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(x.email), false,
-        Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(CheckMode).url)), None)
-    }
   }
 
   def individualPreviousAddress: Option[AnswerRow] = {

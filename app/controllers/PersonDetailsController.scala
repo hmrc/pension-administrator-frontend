@@ -72,7 +72,7 @@ trait PersonDetailsController extends FrontendController with I18nSupport with V
         Future.successful(BadRequest(personDetails(appConfig, formWithErrors, viewModel, mode))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
-          setNewFlag(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>
+          setNewFlagPerson(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(updatedUserAnswers)))
           }
         }

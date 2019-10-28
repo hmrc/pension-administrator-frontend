@@ -21,8 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
-import identifiers.register.company.BusinessDetailsId
-import models.{BusinessDetails, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call

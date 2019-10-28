@@ -18,7 +18,7 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, personDetails}
+import identifiers.register.NonUKBusinessTypeIdSpec.{email, phone, personDetails, contactDetails}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorDetailsId
@@ -44,7 +44,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
           .asOpt.value
 
       "remove all the uk company data " in {
-        result.get(BusinessDetailsId) mustNot be(defined)
+        result.get(BusinessNameId) mustNot be(defined)
+        result.get(BusinessUTRId) mustNot be(defined)
         result.get(BusinessTypeId) mustNot be(defined)
         result.get(ConfirmCompanyAddressId) mustNot be(defined)
         result.get(CompanySameContactAddressId) mustNot be(defined)
@@ -116,7 +117,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
           .asOpt.value
 
       "not remove the data for Business details " in {
-        result.get(BusinessDetailsId) must be(defined)
+        result.get(BusinessNameId) must be(defined)
+        result.get(BusinessUTRId) must be(defined)
       }
 
       "not remove the data for non uk Business type " in {
@@ -148,7 +150,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
     }
 
@@ -166,7 +169,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualAddressYearsId) mustNot be(defined)
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
 
       "not remove the data for Individual Details Correct " in {
@@ -189,6 +193,14 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
       "not remove the data for Individual Address" in {
         result.get(IndividualAddressId) must be(defined)
+      }
+
+      "not remove the data for email" in {
+        result.get(IndividualEmailId) must be(defined)
+      }
+
+      "not remove the data for phone" in {
+        result.get(IndividualPhoneId) must be(defined)
       }
     }
   }
@@ -291,7 +303,8 @@ object AreYouInUKIdSpec extends OptionValues {
 
   private def setCommonCompanyData(userAnswers: UserAnswers) = {
     userAnswers.set(CompanyContactAddressPostCodeLookupId)(Seq(tolerantAddress))
-      .flatMap(_.set(BusinessDetailsId)(BusinessDetails("test company", Some("utr"))))
+      .flatMap(_.set(BusinessNameId)("test company"))
+      .flatMap(_.set(BusinessUTRId)("utr"))
         .flatMap(_.set(CompanyAddressListId)(tolerantAddress))
         .flatMap(_.set(CompanyContactAddressId)(address))
         .flatMap(_.set(CompanyContactAddressListId)(tolerantAddress))
@@ -316,7 +329,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(IndividualAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(IndividualPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(IndividualPreviousAddressId)(address))
-      .flatMap(_.set(IndividualContactDetailsId)(contactDetails))
+      .flatMap(_.set(IndividualEmailId)(email))
+      .flatMap(_.set(IndividualPhoneId)(phone))
       .flatMap(_.set(IndividualDateOfBirthId)(date))
       .flatMap(_.set(IndividualSameContactAddressId)(true))
       .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))

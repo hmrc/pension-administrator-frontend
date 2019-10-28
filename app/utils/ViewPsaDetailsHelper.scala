@@ -164,14 +164,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
-    AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def individualEmailAddress: Option[AnswerRow] = userAnswers.get(IndividualEmailId) map { details =>
+    AnswerRow("email.label", Seq(details), answerIsMessageKey = false,
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def individualPhoneNumber: Option[AnswerRow] = userAnswers.get(IndividualContactDetailsId) map { details =>
-    AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.individual.routes.IndividualContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def individualPhoneNumber: Option[AnswerRow] = userAnswers.get(IndividualPhoneId) map { details =>
+    AnswerRow("phone.label", Seq(details), answerIsMessageKey = false,
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   //Company PSA

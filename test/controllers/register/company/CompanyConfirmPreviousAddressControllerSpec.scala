@@ -19,10 +19,10 @@ package controllers.register.company
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
+import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyConfirmPreviousAddressId}
-import identifiers.register.individual.{ExistingCurrentAddressId, IndividualConfirmPreviousAddressId, IndividualDetailsId}
+import identifiers.register.company.CompanyConfirmPreviousAddressId
+import identifiers.register.individual.ExistingCurrentAddressId
 import models._
 import play.api.data.Form
 import play.api.libs.json.JsResult

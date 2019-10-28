@@ -14,16 +14,29 @@
  * limitations under the License.
  */
 
-package identifiers.register.company
+package forms
 
-import identifiers._
-import models.BusinessDetails
-import utils.checkyouranswers.BusinessDetailsCYA
+import java.time.LocalDate
 
-case object BusinessDetailsId extends TypedIdentifier[BusinessDetails] {
-  self =>
-  override def toString: String = "businessDetails"
+import forms.mappings.{Mappings, Transforms}
+import javax.inject.Inject
+import play.api.data.Form
 
-  implicit val cya = BusinessDetailsCYA[self.type]("businessDetails.companyName", "companyUniqueTaxReference.checkYourAnswersLabel")()
+class DOBFormProvider @Inject() extends Mappings with Transforms {
+
+  def apply(): Form[LocalDate] = Form(
+    "value" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
+      .verifying(firstError(
+        nonFutureDate("common.error.dateOfBirth.future"),
+        notBeforeYear("common.error.dateOfBirth.past", DOBFormProvider.startYear)
+      )
+      )
+  )
 
 }
+
+object DOBFormProvider {
+  val startYear: Int = 1900
+}
+
+

@@ -22,13 +22,12 @@ import play.api.data.Form
 
 class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> nameMapping(
-        "businessName.error.required",
-        "businessName.error.invalid",
-        "businessName.error.length"
-      )
-    )
+  def apply(
+            requiredKey: String = "businessName.error.required",
+            invalidKey: String = "businessName.error.invalid",
+            lengthKey: String = "businessName.error.length"
+           ): Form[String] =
+
+    Form("value" -> nameMapping(requiredKey, invalidKey, lengthKey))
 
 }

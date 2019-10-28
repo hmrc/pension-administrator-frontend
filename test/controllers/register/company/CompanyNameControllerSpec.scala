@@ -20,10 +20,12 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction, FakeDataRetrievalAction}
 import controllers.register.BusinessNameControllerBehaviour
+import forms.BusinessNameFormProvider
 import identifiers.register.BusinessTypeId
 import models.register.BusinessType
 import models.requests.DataRequest
 import models.{Mode, PSAUser, UserType}
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
@@ -49,14 +51,15 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
       FakeAuthAction,
       FakeAllowAccessProvider(),
       new FakeDataRetrievalAction(Some(userAnswers.json)),
-      new DataRequiredActionImpl()
+      new DataRequiredActionImpl(),
+      new BusinessNameFormProvider
     ){
       override def href: Call = onwardRoute
     }
 
   "CompanyUTRController" must {
 
-    behave like businessNameController(validData, createController)
+    behave like businessNameController(validData, createController, new BusinessNameFormProvider()())
   }
 
 }

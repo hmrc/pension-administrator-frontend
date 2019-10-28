@@ -63,7 +63,10 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   private def removeIndividualData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
       IndividualAddressYearsId,
-      IndividualPreviousAddressListId, IndividualPreviousAddressId, IndividualContactDetailsId, IndividualDateOfBirthId,
+      IndividualPreviousAddressListId, IndividualPreviousAddressId,
+      IndividualEmailId,
+      IndividualPhoneId,
+      IndividualDateOfBirthId,
       IndividualSameContactAddressId,
       IndividualDetailsId, IndividualAddressId, RegistrationInfoId
     ))
@@ -78,7 +81,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   }
 
   private def removeCompanyData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(BusinessDetailsId, CompanySameContactAddressId,
+    userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, CompanySameContactAddressId,
       CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
       CompanyPreviousAddressPostCodeLookupId, ContactDetailsId, MoreThanTenDirectorsId))
       .flatMap(_.remove(DirectorId))

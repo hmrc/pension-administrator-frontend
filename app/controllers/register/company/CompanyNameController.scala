@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.BusinessNameController
+import forms.BusinessNameFormProvider
 import javax.inject.Inject
 import play.api.i18n.MessagesApi
 import play.api.mvc.Call
@@ -36,8 +37,10 @@ class CompanyNameController @Inject()(
                                        override val authenticate: AuthAction,
                                        override val allowAccess: AllowAccessActionProvider,
                                        override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction
+                                       override val requireData: DataRequiredAction,
+                                       formProvider: BusinessNameFormProvider
                                      )(implicit val ec: ExecutionContext) extends BusinessNameController {
 
   def href: Call = routes.CompanyNameController.onSubmit()
+  val form = formProvider()
 }

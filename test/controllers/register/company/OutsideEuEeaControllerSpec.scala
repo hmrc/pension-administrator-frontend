@@ -19,8 +19,8 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{BusinessDetailsId, CompanyAddressId}
-import models.{Address, BusinessDetails, NormalMode}
+import identifiers.register.company.CompanyAddressId
+import models.{Address, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions

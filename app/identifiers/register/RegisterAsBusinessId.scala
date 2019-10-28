@@ -43,7 +43,9 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
   private def removeAllIndividual(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(IndividualDetailsId, IndividualAddressId, IndividualDateOfBirthId, IndividualSameContactAddressId,
       IndividualContactAddressListId, IndividualContactAddressId, IndividualAddressYearsId, IndividualPreviousAddressId,
-      IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId, IndividualContactDetailsId))
+      IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId,
+      IndividualEmailId, IndividualPhoneId
+    ))
   }
 
   private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],
@@ -56,7 +58,7 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
   }
 
   private def removeAllCompany(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(NonUKBusinessTypeId, BusinessDetailsId, CompanyAddressId, CompanySameContactAddressId,
+    userAnswers.removeAllOf(List(NonUKBusinessTypeId, BusinessNameId, BusinessUTRId, CompanyAddressId, CompanySameContactAddressId,
       CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
       CompanyPreviousAddressPostCodeLookupId, ContactDetailsId, MoreThanTenDirectorsId))
       .flatMap(answers => removeAllDirectorsOrPartners(answers.allDirectors, answers, DirectorId))
