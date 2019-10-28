@@ -18,7 +18,7 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, personDetails, personName}
+import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, email, personDetails, personName, phone}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
@@ -150,7 +150,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
     }
 
@@ -168,7 +169,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(IndividualAddressYearsId) mustNot be(defined)
         result.get(IndividualPreviousAddressListId) mustNot be(defined)
         result.get(IndividualPreviousAddressId) mustNot be(defined)
-        result.get(IndividualContactDetailsId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
       }
 
       "not remove the data for Individual Details Correct " in {
@@ -191,6 +193,14 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
       "not remove the data for Individual Address" in {
         result.get(IndividualAddressId) must be(defined)
+      }
+
+      "not remove the data for email" in {
+        result.get(IndividualEmailId) must be(defined)
+      }
+
+      "not remove the data for phone" in {
+        result.get(IndividualPhoneId) must be(defined)
       }
     }
   }
@@ -319,7 +329,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(IndividualAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(IndividualPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(IndividualPreviousAddressId)(address))
-      .flatMap(_.set(IndividualContactDetailsId)(contactDetails))
+      .flatMap(_.set(IndividualEmailId)(email))
+      .flatMap(_.set(IndividualPhoneId)(phone))
       .flatMap(_.set(IndividualDateOfBirthId)(date))
       .flatMap(_.set(IndividualSameContactAddressId)(true))
       .flatMap(_.set(IndividualDetailsId)(tolerantIndividual))

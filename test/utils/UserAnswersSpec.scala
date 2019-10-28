@@ -19,6 +19,7 @@ package utils
 import java.time.LocalDate
 
 import controllers.register.company.directors.routes
+import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
@@ -300,6 +301,104 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
+    }
+  }
+
+  "remove" must {
+
+    "remove an element that exists" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "email" -> "a@a.c"
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs"
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
+    "remove an element inside an element that does exist with no other elements" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+          "email" -> "a@a.com"
+        )
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+        )
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
+    "remove an element inside an element that does exist with one other element" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+          "email" -> "a@a.com",
+          "phone" -> "999"
+        )
+      ))
+
+      val expectedResult = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj(
+          "phone" -> "999"
+        )
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe expectedResult
+    }
+
+    "NOT attempt to remove an element inside an element that does NOT exist" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs"
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe ua
+    }
+
+    "NOT attempt to remove a non-existent element inside an element that DOES exist" in {
+      val ua = UserAnswers(Json.obj(
+        "name" -> "jim bloggs",
+        "contactDetails" -> Json.obj()
+      ))
+
+      val testIdentifier = new TypedIdentifier[String] {
+        override def toString: String = "email"
+        override def path: JsPath = JsPath \ "contactDetails" \ "email"
+      }
+
+      val result = ua.remove(testIdentifier).asOpt.value
+      result mustBe ua
     }
   }
 }
