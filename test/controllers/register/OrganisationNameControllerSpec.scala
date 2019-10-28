@@ -125,7 +125,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
             cacheConnector.save[String, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
-          val request = FakeRequest().withFormUrlEncodedBody(("companyName", testCompanyName))
+          val request = FakeRequest().withFormUrlEncodedBody(("value", testCompanyName))
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 
@@ -145,7 +145,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = new BusinessNameFormProvider()
-          val request = FakeRequest().withFormUrlEncodedBody(("companyName", ""))
+          val request = FakeRequest().withFormUrlEncodedBody(("value", ""))
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
@@ -178,7 +178,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
             cacheConnector.save[String, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
-          val request = FakeRequest().withFormUrlEncodedBody(("companyName", testCompanyNameWithInvalidCharacters))
+          val request = FakeRequest().withFormUrlEncodedBody(("value", testCompanyNameWithInvalidCharacters))
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 

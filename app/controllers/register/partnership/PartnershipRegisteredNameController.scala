@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.OrganisationNameController
-import forms.{BusinessDetailsFormModel, BusinessNameFormProvider}
+import forms.BusinessNameFormProvider
 import identifiers.register.BusinessNameId
 import models.Mode
 import play.api.i18n.MessagesApi

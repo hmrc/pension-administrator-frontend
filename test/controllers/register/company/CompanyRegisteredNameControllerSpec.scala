@@ -45,7 +45,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new controllers.register.company.CompanyRegisteredNameController(
+    new CompanyRegisteredNameController(
       frontendAppConfig,
       messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),

@@ -19,10 +19,9 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, BusinessNameFormProvider}
 import identifiers.TypedIdentifier
+import models.NormalMode
 import models.requests.DataRequest
-import models.{BusinessDetails, NormalMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -59,7 +58,7 @@ trait OrganisationNameController extends FrontendController with Retrievals with
                       viewmodel: OrganisationNameViewModel
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "companyName", form) match {
+    cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "value", form) match {
       case Left(futureResult) => futureResult
       case Right(f) => f.fold(
         formWithErrors =>

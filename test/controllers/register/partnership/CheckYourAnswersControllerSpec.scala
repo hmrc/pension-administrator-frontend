@@ -18,9 +18,10 @@ package controllers.register.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.BusinessNameId
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
 import identifiers.register.partnership._
 import models._
+import models.register.BusinessType
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeCountryOptions, FakeNavigator}
@@ -39,14 +40,18 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders name and utr" in {
           val rows = Seq(
-            answerRow("cya.label.name", Seq("Test Company Name")),
-            answerRow("businessDetails.utr", Seq("Test UTR"))
+            answerRow(Message("businessName.heading",
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test Company Name")),
+            answerRow(Message("utr.heading",
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test UTR"))
           )
 
           val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
 
           val retrievalAction = dataRetrievalAction(
-            BusinessNameId.toString -> "Test Company Name"
+            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
+            BusinessNameId.toString -> "Test Company Name",
+            BusinessUTRId.toString -> "Test UTR"
           )
           testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
         }

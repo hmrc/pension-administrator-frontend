@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.{ConfirmBusinessNameId, PartnershipRegisteredAddressId}
-import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
 import play.api.data.Form
@@ -53,7 +53,8 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        BusinessNameId.toString -> BusinessDetails(partnershipName, Some(validBusinessPartnershipUtr))
+        BusinessNameId.toString -> partnershipName,
+        BusinessUTRId.toString -> validBusinessPartnershipUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -65,7 +66,8 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     "redirect to the next page when the UTR is invalid" in {
       val data = Json.obj(
         BusinessTypeId.toString -> BusinessPartnership.toString,
-        BusinessNameId.toString -> BusinessDetails("MyPartnership", Some(invalidUtr))
+        BusinessNameId.toString -> "MyPartnership",
+        BusinessUTRId.toString -> invalidUtr
       )
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -74,13 +76,20 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
     }
 
-    "data is removed on page load" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+    "data is saved on page load" in {
+      val dataCacheConnector = FakeUserAnswersCacheConnector
 
-      controller(dataRetrievalAction).onPageLoad(NormalMode)(postRequest)
+      val expectedJson =
+        UserAnswers(data)
+          .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
+          .flatMap(_.set(RegistrationInfoId)(regInfo))
+          .asOpt
+          .value
+          .json
+      val result = controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
 
-      FakeUserAnswersCacheConnector.verifyRemoved(ConfirmBusinessNameId)
-      FakeUserAnswersCacheConnector.verifyRemoved(PartnershipRegisteredAddressId)
+      status(result) mustBe OK
+      dataCacheConnector.lastUpsert.value mustBe expectedJson
     }
 
     "valid data is submitted" when {
@@ -88,19 +97,10 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         "upsert address and organisation name from api response" in {
           val dataCacheConnector = FakeUserAnswersCacheConnector
 
-          val info = RegistrationInfo(
-            RegistrationLegalStatus.Partnership,
-            sapNumber,
-            noIdentifier = false,
-            RegistrationCustomerType.UK,
-            Some(RegistrationIdType.UTR),
-            Some(validBusinessPartnershipUtr)
-          )
-
           val expectedJson =
             UserAnswers(data)
               .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
-              .flatMap(_.set(RegistrationInfoId)(info))
+              .flatMap(_.set(RegistrationInfoId)(regInfo))
               .asOpt
               .value
               .json
@@ -220,12 +220,13 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   private val invalidUtr = "INVALID"
   private val sapNumber = "test-sap-number"
 
-  val partnershipDetails = BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
+  val partnershipName = "MyPartnership"
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
 
   private val data = Json.obj(
     BusinessTypeId.toString -> BusinessPartnership.toString,
-    BusinessNameId.toString -> partnershipDetails
+    BusinessNameId.toString -> partnershipName,
+    BusinessUTRId.toString -> validBusinessPartnershipUtr
   )
 
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -236,25 +237,25 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
+  val regInfo = RegistrationInfo(
+    RegistrationLegalStatus.Partnership,
+    sapNumber,
+    noIdentifier = false,
+    RegistrationCustomerType.UK,
+    Some(RegistrationIdType.UTR),
+    Some(validBusinessPartnershipUtr)
+  )
+
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
 
-      val info = RegistrationInfo(
-        RegistrationLegalStatus.Partnership,
-        sapNumber,
-        noIdentifier = false,
-        RegistrationCustomerType.UK,
-        Some(RegistrationIdType.UTR),
-        Some(utr)
-      )
-
       if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
-        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
+        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), regInfo))
       }
       else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
-        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
+        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), regInfo))
       }
       else {
         Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
@@ -280,7 +281,7 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       countryOptions
     )
 
-  private def viewAsString(partnershipName: String = partnershipDetails.companyName, address: TolerantAddress = testBusinessPartnershipAddress): String =
+  private def viewAsString(partnershipName: String = partnershipName, address: TolerantAddress = testBusinessPartnershipAddress): String =
     confirmPartnershipDetails(frontendAppConfig, form, partnershipName, address, countryOptions)(fakeRequest, messages).toString
 
 }
