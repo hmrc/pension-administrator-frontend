@@ -19,9 +19,9 @@ package controllers.register.company.directors
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.{PersonDetailsController, PersonNameController, Retrievals}
+import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorNameId}
+import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -29,7 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.CompanyDirector
-import viewmodels.{CommonFormWithHintViewModel, Message, PersonDetailsViewModel}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.Future
 

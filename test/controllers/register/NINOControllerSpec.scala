@@ -23,7 +23,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.register.NINOFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{NormalMode, PSAUser, ReferenceValue, UserType}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.{AnyContent, Call, Request, Result}
@@ -91,7 +91,7 @@ class NINOControllerSpec extends SpecBase {
       )) {
         app =>
           val request = FakeRequest().withFormUrlEncodedBody(
-            ("value", testNINO)
+            ("value", nino)
           )
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewModel, UserAnswers(), request)
@@ -122,8 +122,9 @@ class NINOControllerSpec extends SpecBase {
 }
 object NINOControllerSpec {
   private val entityName = "entity name"
-  private val testNINO = "AB100100A"
-  object FakeIdentifier extends TypedIdentifier[String]
+  private val nino = "AB100100A"
+  private val testNINO = ReferenceValue(nino)
+  object FakeIdentifier extends TypedIdentifier[ReferenceValue]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,

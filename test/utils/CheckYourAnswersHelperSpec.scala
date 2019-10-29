@@ -65,15 +65,15 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         answerIsMessageKey = true,
         Some(Link(s"/register-as-pension-scheme-administrator/register/company/directors/1/change/$changeLink"))))
 
-  "directorDetails" should {
-    behave like cyaHelperMethod(_.directorDetails(0, NormalMode),
+  "directorName" should {
+    behave like cyaHelperMethod(_.directorName(0, NormalMode),
       Seq(
         TestScenario(
           Json.obj(
             "directors" -> Json.arr(
               Json.obj(
-                DirectorDetailsId.toString ->
-                  PersonDetails("test first name", Some("test middle name"), "test last name", localDate)
+                DirectorNameId.toString ->
+                  PersonName("test first name", "test last name")
               )
             )
           ),
@@ -81,11 +81,29 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             AnswerRow("cya.label.name",
               Seq("test first name test last name"),
               answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/director-details"))),
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/name")))
+        )
+        )
+    )
+    )
+  }
+
+  "directorDob" should {
+    behave like cyaHelperMethod(_.directorDob(0, NormalMode),
+      Seq(
+        TestScenario(
+          Json.obj(
+            "directors" -> Json.arr(
+              Json.obj(
+                DirectorDOBId.toString -> LocalDate.of(2019, 6, 28)
+              )
+            )
+          ),
+          Seq(
             AnswerRow("cya.label.dob",
               Seq(displayDate),
               answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/director-details"))))
+              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/date-of-birth"))))
         )
       )
     )
@@ -149,45 +167,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/how-long-at-address"))
             )
           )
-        )
-      )
-    )
-  }
-
-  "directorNino" should {
-    behave like cyaHelperMethod(_.directorNino(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorNinoId.toString ->
-                  Nino.Yes("nino")
-              )
-            )
-          ),
-          yesNoExpectedResult("directorNino.checkYourAnswersLabel",
-            "Yes",
-            "directorNino.checkYourAnswersLabel.nino",
-            "nino",
-            "enter-national-insurance-number"),
-          Some("user answered yes")
-        ),
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorNinoId.toString ->
-                  Nino.No(reason)
-              )
-            )
-          ),
-          yesNoExpectedResult("directorNino.checkYourAnswersLabel",
-            "No",
-            "directorNino.checkYourAnswersLabel.reason",
-            reason,
-            "enter-national-insurance-number"),
-          Some("user answered no")
         )
       )
     )

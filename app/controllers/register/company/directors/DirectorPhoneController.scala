@@ -21,14 +21,14 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorPhoneId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorPhoneId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.{CompanyDirector, RegisterCompany}
+import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
 class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigator,
@@ -56,7 +56,7 @@ class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigato
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorDetailsId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

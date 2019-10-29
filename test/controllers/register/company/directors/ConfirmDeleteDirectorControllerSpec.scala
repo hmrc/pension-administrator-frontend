@@ -23,7 +23,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ConfirmDeleteFormProvider
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import models.{Index, NormalMode, PersonDetails}
 import play.api.Application
 import play.api.http.Writeable
@@ -88,7 +88,7 @@ object ConfirmDeleteDirectorControllerSpec {
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "directors" -> Json.arr(
-      Json.obj(DirectorDetailsId.toString -> person)
+      Json.obj(DirectorNameId.toString -> person)
     ))))
 
   def viewModel = ConfirmDeleteViewModel(

@@ -18,7 +18,7 @@ package views
 
 import controllers.register.company.routes
 import forms.register.{EnterVATFormProvider, NINOFormProvider}
-import models.NormalMode
+import models.{NormalMode, ReferenceValue}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
@@ -26,9 +26,9 @@ import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
 import views.html.enterNINO
 
-class EnterNINOViewSpec extends QuestionViewBehaviours[String] {
+class EnterNINOViewSpec extends QuestionViewBehaviours[ReferenceValue] {
 
-  val messageKeyPrefix = "enterNINO"
+  val messageKeyPrefix = "nino"
 
   private val name = "Test Name"
 
