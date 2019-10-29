@@ -548,7 +548,7 @@ declaration.invalid = You need to agree to all the declarations before you can c
 
 adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
-adviserName.p1 = This can be either the name of your pension practitioner or provider, or the company they work for.
+adviserName.p1 = This can be either the name of your pension advisor, or the company they work for.
 adviserName.error.required = Enter the name of your pension adviser
 adviserName.error.length = Enter a name using less than 108 characters
 adviserName.error.invalid = Enter a name using only letters
@@ -565,16 +565,15 @@ adviserDetails.error.name.required = Enter the name of your adviser
 adviserDetails.error.name.length = The name cannot be more than 107 characters
 adviserDetails.error.name.invalid = The name contains invalid characters
 
-declarationFitAndProper.title = Fit and proper person declaration
-declarationFitAndProper.heading = Fit and proper person declaration
-declarationFitAndProper.declaration = By continuing you agree that:
-declarationFitAndProper.statement1 = you consider yourself to be a fit and proper person to administer pension schemes
-declarationFitAndProper.statement2 = you have not been involved in tax fraud, abuse of tax repayment systems or other fraudulent behaviour including misrepresentation and/or identity theft
-declarationFitAndProper.statement3 = you have not been convicted of a crime relating to finance, corporate bodies or dishonesty
-declarationFitAndProper.statement4 = you have not been the subject of adverse civil proceedings relating to finance, corporate bodies or dishonesty/misconduct
-declarationFitAndProper.statement5 = you have not participated in, or been connected with, designing and/or marketing tax avoidance or pensions liberation schemes
-declarationFitAndProper.statement6 = you have not been disqualified from acting as a company director or are bankrupt
-declarationFitAndProper.statement7 = you have not been disqualified from acting as a pension scheme trustee
+declarationFitAndProper.title = Fit and proper declaration
+declarationFitAndProper.heading = Fit and proper declaration
+declarationFitAndProper.declaration = I am a fit and proper person to be a scheme administrator and:
+declarationFitAndProper.statement1 = I have not been involved in tax fraud, abuse of tax repayment systems or other fraudulent behaviour including misrepresentation and/or identity theft
+declarationFitAndProper.statement2 = I have not been convicted of a crime relating to finance, corporate bodies or dishonesty
+declarationFitAndProper.statement3 = I have not been the subject of adverse civil proceedings relating to finance, corporate bodies or dishonesty/misconduct
+declarationFitAndProper.statement4 = I have not participated in, or been connected with, designing and/or marketing tax avoidance or pensions liberation schemes
+declarationFitAndProper.statement5 = I have not been disqualified from acting as a company director or are bankrupt
+declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
 
 adviserAddressPostCodeLookup.title = Pension adviser’s address
 adviserAddressPostCodeLookup.heading = Pension adviser’s address

@@ -23,10 +23,10 @@ POST       /check-your-answers                 controllers.register.adviser.Chec
 GET        /:mode/check-your-answers           controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode)
 POST       /:mode/check-your-answers           controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode)
 
-GET        /who-has-working-knowledge          controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /who-has-working-knowledge          controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/who-has-working-knowledge    controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode)
-POST       /:mode/who-has-working-knowledge    controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode)
+GET        /who-has-working-knowledge-pensions          controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /who-has-working-knowledge-pensions          controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/who-has-working-knowledge-pensions    controllers.register.adviser.AdviserNameController.onPageLoad(mode: Mode)
+POST       /:mode/who-has-working-knowledge-pensions    controllers.register.adviser.AdviserNameController.onSubmit(mode: Mode)
 
 GET        /delete-adviser                     controllers.register.adviser.ConfirmDeleteAdviserController.onPageLoad(mode: Mode = UpdateMode)
 POST       /delete-adviser                     controllers.register.adviser.ConfirmDeleteAdviserController.onSubmit(mode: Mode = UpdateMode)
