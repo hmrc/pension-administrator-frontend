@@ -72,7 +72,7 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(NormalMode))
     case CompanyAddressYearsId =>
       companyAddressYearsIdRoutes(from.userAnswers)
-    case HasCompanyBeenTradingId =>
+    case CompanyTradingOverAYearId =>
       hasBeenTradingIdRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>
       NavigateTo.save(routes.CompanyAddressListController.onPageLoad(NormalMode))
@@ -124,7 +124,7 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(from.userAnswers)
-    case HasCompanyBeenTradingId =>
+    case CompanyTradingOverAYearId =>
       hasBeenTradingCheckIdRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>
       NavigateTo.save(routes.CompanyAddressListController.onPageLoad(CheckMode))
@@ -178,7 +178,7 @@ class RegisterCompanyNavigator @Inject()(
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.HasCompanyBeenTradingController.onPageLoad(NormalMode))
+        NavigateTo.save(routes.CompanyTradingOverAYearController.onPageLoad(NormalMode))
       case Some(AddressYears.OverAYear) =>
         NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
       case _ =>
@@ -189,7 +189,7 @@ class RegisterCompanyNavigator @Inject()(
   private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.HasCompanyBeenTradingController.onPageLoad(CheckMode))
+        NavigateTo.save(routes.CompanyTradingOverAYearController.onPageLoad(CheckMode))
       case Some(AddressYears.OverAYear) =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case _ =>
@@ -198,7 +198,7 @@ class RegisterCompanyNavigator @Inject()(
   }
 
   private def hasBeenTradingIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    (answers.get(HasCompanyBeenTradingId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(true)) =>
         NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
       case (Some(true), Some(false)) =>
@@ -211,7 +211,7 @@ class RegisterCompanyNavigator @Inject()(
   }
 
   private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    (answers.get(HasCompanyBeenTradingId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(true)) =>
         NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
       case (Some(true), Some(false)) =>

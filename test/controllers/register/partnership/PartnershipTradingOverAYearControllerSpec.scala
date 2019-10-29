@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.partnership
 
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import controllers.register.company.routes._
+import controllers.register.partnership.routes._
+import controllers.routes._
 import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
@@ -29,26 +30,26 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasCompanyBeenTradingControllerSpec extends ControllerSpecBase {
+class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val companyName = "Test Company Name"
+  private val name = "Test Partnership Name"
   private val formProvider = new HasReferenceNumberFormProvider()
-  private val form = formProvider("trading.error.required", companyName)
+  private val form = formProvider("trading.error.required", name)
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasCompanyBeenTradingController.onSubmit(NormalMode),
-      title = Message("trading.title", Message("theCompany").resolve),
-      heading = Message("trading.title", companyName),
+      postCall = PartnershipTradingOverAYearController.onSubmit(NormalMode),
+      title = Message("trading.title", Message("thePartnership").resolve),
+      heading = Message("trading.title", name),
       mode = NormalMode,
       hint = None,
-      entityName = companyName
+      entityName = name
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasCompanyBeenTradingController(frontendAppConfig,
+  private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
+    new PartnershipTradingOverAYearController(frontendAppConfig,
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -62,7 +63,7 @@ class HasCompanyBeenTradingControllerSpec extends ControllerSpecBase {
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
     hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
 
-  "HasBeenTradingCompanyController" must {
+  "PartnershipTradingOverAYearController" must {
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
@@ -75,7 +76,7 @@ class HasCompanyBeenTradingControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
     }
   }
 }

@@ -21,17 +21,17 @@ import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class HasCompanyBeenTradingIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class CompanyTradingOverAYearIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
-    "HasCompanyBeenTradingId is set to 'true'" must {
+    "CompanyTradingOverAYearId is set to 'true'" must {
       "remove 'CompanyPreviousAddressPostCodeLookupId' and 'CompanyPreviousAddressId' when true" in {
         val ua = UserAnswers(Json.obj(
           CompanyPreviousAddressPostCodeLookupId.toString -> Seq(TolerantAddress(None, None, None, None, None, None)),
           CompanyPreviousAddressId.toString -> Address("", "", None, None, None, ""))
         )
 
-        val result = HasCompanyBeenTradingId.cleanup(Some(true), ua).asOpt.value
+        val result = CompanyTradingOverAYearId.cleanup(Some(true), ua).asOpt.value
         result.get(CompanyPreviousAddressPostCodeLookupId) mustBe None
         result.get(CompanyPreviousAddressId) mustBe None
       }
@@ -42,7 +42,7 @@ class HasCompanyBeenTradingIdSpec extends WordSpec with MustMatchers with Option
           CompanyPreviousAddressId.toString -> Address("", "", None, None, None, ""))
         )
 
-        val result = HasCompanyBeenTradingId.cleanup(Some(false), ua).asOpt.value
+        val result = CompanyTradingOverAYearId.cleanup(Some(false), ua).asOpt.value
         result.get(CompanyPreviousAddressPostCodeLookupId) mustBe Some(Seq(TolerantAddress(None, None, None, None, None, None)))
         result.get(CompanyPreviousAddressId) mustBe Some(Address("", "", None, None, None, ""))
       }

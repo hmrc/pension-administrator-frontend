@@ -80,9 +80,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(NormalMode), true, Some(hasBeenTradingPage(CheckMode)), true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
 
-    (HasCompanyBeenTradingId, tradingOverAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
-    (HasCompanyBeenTradingId, tradingOverAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (HasCompanyBeenTradingId, tradingUnderAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (CompanyTradingOverAYearId, tradingOverAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
+    (CompanyTradingOverAYearId, tradingOverAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
+    (CompanyTradingOverAYearId, tradingUnderAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
@@ -170,7 +170,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
 
-  private def hasBeenTradingPage(mode: Mode): Call = routes.HasCompanyBeenTradingController.onPageLoad(mode)
+  private def hasBeenTradingPage(mode: Mode): Call = routes.CompanyTradingOverAYearController.onPageLoad(mode)
 
   private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
 
@@ -198,10 +198,10 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = UserAnswers().set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
   private val tradingOverAYearUk = UserAnswers(Json.obj()).areYouInUk(true)
-    .set(HasCompanyBeenTradingId)(true).asOpt.value
+    .set(CompanyTradingOverAYearId)(true).asOpt.value
   private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false)
-    .set(HasCompanyBeenTradingId)(true).asOpt.value
-  private val tradingUnderAYear = UserAnswers().set(HasCompanyBeenTradingId)(false).asOpt.value
+    .set(CompanyTradingOverAYearId)(true).asOpt.value
+  private val tradingUnderAYear = UserAnswers().set(CompanyTradingOverAYearId)(false).asOpt.value
   private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
   private val notSameContactAddressUk = UserAnswers().areYouInUk(true).companySameContactAddress(false)
   private val notSameContactAddressNonUk = UserAnswers().areYouInUk(false).companySameContactAddress(false)
