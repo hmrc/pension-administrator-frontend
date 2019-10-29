@@ -58,7 +58,7 @@ class PartnershipAddressYearsController @Inject()(
   def form(partnershipName: String) = formProvider(partnershipName)
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(Message("thePartnership").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
