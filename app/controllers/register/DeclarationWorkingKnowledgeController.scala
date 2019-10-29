@@ -52,27 +52,24 @@ class DeclarationWorkingKnowledgeController @Inject()(
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form
-        case Some(value) =>
-          form.fill(value match {
-            case WorkingKnowledge => true
-            case _ => false
-          })
+        case Some(value) => form.fill(hasWorkingKnowledge(value))
       }
       Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode))
   }
 
+  private def hasWorkingKnowledge(dwk:DeclarationWorkingKnowledge):Boolean = dwk match {
+    case WorkingKnowledge => true
+    case _ => false
+  }
+
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      println( "\n>>" + request.body)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
         value => {
-
-          val xx = DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(value)
-
-
-          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, xx).map(cacheMap =>
+          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
+            DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(value)).map(cacheMap =>
             Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
         }
       )
