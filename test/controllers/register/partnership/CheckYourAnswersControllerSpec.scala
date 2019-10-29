@@ -200,29 +200,18 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
 
       "display Contact Details section " which {
-//        "render the view correctly for email and phone" in {
-//          val rows = Seq(
-//            answerRow(
-//              "contactDetails.email.checkYourAnswersLabel",
-//              Seq("test email"),
-//              false,
-//              Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))
-//            ),
-//            answerRow("contactDetails.phone.checkYourAnswersLabel",
-//              Seq("test phone"),
-//              false,
-//              Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url))
-//            ))
-//
-//          val sections = answerSections(Some("common.checkYourAnswers.contact.details.heading"), rows)
-//
-//          val retrievalAction = dataRetrievalAction(
-//            PartnershipContactDetailsId.toString -> ContactDetails("test email", "test phone")
-//          )
-//          testRenderedView(Seq(partnershipDetails, partnershipContactDetails) ++ sections, retrievalAction)
-//        }
 
         "render the view correctly for email and phone" in {
+
+          val partnershipDetails = AnswerSection(
+            Some("checkyouranswers.partnership.details"),
+            Seq()
+          )
+
+          val partnershipContactDetails = AnswerSection(
+            Some("checkyouranswers.partnership.contact.details.heading"),
+            Seq()
+          )
 
           val rows = Seq(
             answerRow(
@@ -239,7 +228,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             )
           )
 
-          val sections = Seq(AnswerSection(None, rows))
+          val sections = Seq(partnershipDetails, partnershipContactDetails, AnswerSection(Some("common.checkYourAnswers.contact.details.heading"), rows))
 
           val retrievalAction = dataRetrievalAction(
             "partnershipContactDetails" -> Json.obj(
@@ -338,7 +327,23 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
+
+    def writeToDesktop(content:String, fileName:String):Unit = {
+      import java.io._
+      val pw = new PrintWriter(new File( s"/home/grant/Desktop/$fileName" ))
+      pw.write(content)
+      pw.close()
+    }
+
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+    writeToDesktop(contentAsString(result), "act.html")
+    writeToDesktop(check_your_answers(
+      frontendAppConfig,
+      sections,
+      call,
+      None,
+      NormalMode
+    )(fakeRequest, messages).toString(), "exp.html")
     status(result) mustBe OK
     contentAsString(result) mustBe
       check_your_answers(
