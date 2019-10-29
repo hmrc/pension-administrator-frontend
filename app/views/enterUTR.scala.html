@@ -16,36 +16,41 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
+@import controllers.register.company.routes._
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
+@(
+        appConfig: FrontendAppConfig,
+        form: Form[_],
+        viewModel: CommonFormWithHintViewModel
+)(
+        implicit request: Request[_], messages: Messages
+)
 
 @main_template(
-    title = viewmodel.title,
+    title = viewModel.title,
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
-        @components.heading(headingKey=viewmodel.heading)
+        @components.heading(viewModel.heading)
 
-        @viewmodel.hint.map{ hint =>
-            <p>@messages(hint)</p>
-        }
+        <p>@messages("utr.p2")</p>
+        <p>@messages("utr.p3")</p>
 
-        @components.input_yes_no(
-            field = form(viewmodel.formFieldName.fold("value")(identity)),
-            label = viewmodel.title,
-            labelClass = Some("visually-hidden")
+        @components.input_text(
+            field = form("value"),
+            label = viewModel.heading,
+            labelClass = Some("visually-hidden"),
+            hint = viewModel.hint
         )
 
         <div class="section">
-            @components.submit_button(submitMessageKey = "site.save_and_continue")
+            @components.submit_button("site.save_and_continue")
         </div>
-
-        @components.return_link(viewmodel.entityName, viewmodel.mode)
     }
 }

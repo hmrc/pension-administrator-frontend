@@ -212,7 +212,7 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
       DirectorDOBId.toString -> LocalDate.of(2019,10, 23),
       DirectorNoNINOReasonId.toString -> "reason",
       DirectorAddressYearsId.toString -> AddressYears.UnderAYear.toString,
-      DirectorUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")
+      DirectorNoUTRReasonId.toString -> "reason"
     )
   ))
   private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
