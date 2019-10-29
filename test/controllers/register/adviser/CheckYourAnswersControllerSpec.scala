@@ -63,7 +63,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       address.country
     ),
     false,
-    Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url),
+    Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
     None
   ))
 
@@ -72,21 +72,21 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "adviserName.checkYourAnswersLabel",
       Seq(adviserName),
       false,
-      Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url),
+      Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url)),
       None
     ),
     AnswerRow(
       "contactDetails.email.checkYourAnswersLabel",
       Seq(advDetails.email),
       false,
-      Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)),
       None
     ),
     AnswerRow(
       "contactDetails.phone.checkYourAnswersLabel",
       Seq(advDetails.phone),
       false,
-      Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url),
+      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)),
       None
     )
   )

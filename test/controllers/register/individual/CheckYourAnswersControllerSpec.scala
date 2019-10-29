@@ -99,7 +99,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 Message("individualAddressYears.title", "Joe Bloggs").resolve,
                 Seq(s"common.addressYears.${addressYears.toString}"),
                 answerIsMessageKey = true,
-                Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url),
+                Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)),
                 None
               )
             )

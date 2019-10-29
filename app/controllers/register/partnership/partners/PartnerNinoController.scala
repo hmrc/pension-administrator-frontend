@@ -21,8 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.partnership.partners.PartnerNinoFormProvider
-import identifiers.register.company.directors.DirectorNinoId
-import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId}
+import identifiers.register.partnership.partners.PartnerNinoId
 import javax.inject.Inject
 import models.{Index, Mode, Nino}
 import play.api.data.Form
@@ -62,7 +61,7 @@ class PartnerNinoController @Inject()(
           Future.successful(BadRequest(partnerNino(appConfig, formWithErrors, mode, index, psaName()))),
         value =>
           cacheConnector.save(request.externalId, PartnerNinoId(index), value).flatMap(json =>
-            saveChangeFlag(mode, DirectorNinoId(index)).map(_ =>
+            saveChangeFlag(mode, PartnerNinoId(index)).map(_ =>
               Redirect(navigator.nextPage(PartnerNinoId(index), mode, UserAnswers(json))))
           )
       )
