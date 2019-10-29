@@ -16,19 +16,15 @@
 
 package utils.navigators
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers.register.partnership._
-import identifiers.register.{AreYouInUKId, EnterPAYEId, HasPAYEId}
+import identifiers.register._
+import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
-import models.InternationalRegion.EuEea
-import models.InternationalRegion.RestOfTheWorld
-import models.InternationalRegion.UK
-import utils.Navigator
-import utils.UserAnswers
+import utils.{Navigator, UserAnswers}
 import utils.countryOptions.CountryOptions
 
 @Singleton
@@ -39,8 +35,13 @@ class PartnershipNavigator @Inject()(
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case PartnershipDetailsId => regionBasedNameNavigation(from.userAnswers)
-    case ConfirmPartnershipDetailsId =>
+    case BusinessUTRId =>
+      NavigateTo.dontSave(routes.PartnershipNameController.onPageLoad())
+    case BusinessNameId =>
+      regionBasedNameNavigation(from.userAnswers)
+    case IsRegisteredNameId =>
+      registeredNameRoutes(from.userAnswers)
+    case ConfirmBusinessNameId =>
       NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
       NavigateTo.save(routes.PartnershipSameContactAddressController.onPageLoad(NormalMode))
@@ -177,7 +178,7 @@ class PartnershipNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.dontSave(routes.PartnershipRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
+      case Some(true) => NavigateTo.dontSave(routes.PartnershipIsRegisteredNameController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -208,4 +209,10 @@ class PartnershipNavigator @Inject()(
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
+
+  private def registeredNameRoutes(answers: UserAnswers): Option[NavigateTo] =
+    answers.get(IsRegisteredNameId) match {
+      case Some(true) => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad())
+    }
 }

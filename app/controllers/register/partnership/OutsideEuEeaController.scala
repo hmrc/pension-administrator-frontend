@@ -19,7 +19,8 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.BusinessNameId
+import identifiers.register.partnership.PartnershipRegisteredAddressId
 import javax.inject.Inject
 import models.{Address, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,9 +43,9 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
-      (PartnershipDetailsId and PartnershipRegisteredAddressId).retrieve.right.map {
-        case details ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, details.companyName, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
+      (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
+        case name ~ address =>
+          Future.successful(Ok(outsideEuEea(appConfig, name, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

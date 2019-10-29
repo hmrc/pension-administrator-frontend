@@ -20,32 +20,27 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.NameCleansing
+import controllers.register.OrganisationNameController
 import forms.BusinessNameFormProvider
 import identifiers.register.BusinessNameId
-import models.{Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import models.Mode
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
 import viewmodels.{Message, OrganisationNameViewModel}
-import views.html.nonUkBusinessName
 
-import scala.concurrent.{ExecutionContext, Future}
-
-class CompanyRegisteredNameController @Inject()(appConfig: FrontendAppConfig,
+class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
-                                                @RegisterCompany navigator: Navigator,
+                                                @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                cacheConnector: UserAnswersCacheConnector,
-                                                formProvider: BusinessNameFormProvider
-                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with NameCleansing {
+                                                formProvider: BusinessNameFormProvider,
+                                                val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
 
-  val form = formProvider()
+  override val form = formProvider()
 
   private def companyNameViewModel(mode: Mode) =
     OrganisationNameViewModel(
@@ -54,27 +49,13 @@ class CompanyRegisteredNameController @Inject()(appConfig: FrontendAppConfig,
       Message("companyNameNonUk.heading")
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val filledForm =
-        request.userAnswers.get(BusinessNameId).map(form.fill).getOrElse(form)
-
-      Future.successful(Ok(nonUkBusinessName(appConfig, filledForm, companyNameViewModel(mode))))
+      get(BusinessNameId, companyNameViewModel(mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      cleanseAndBindOrRedirect(request.body.asFormUrlEncoded, "value", form) match {
-        case Left(futureResult) => futureResult
-        case Right(f) => f.fold(
-          formWithErrors =>
-            Future.successful(BadRequest(nonUkBusinessName(appConfig, formWithErrors, companyNameViewModel(mode)))),
-          companyName =>
-            cacheConnector.save(request.externalId, BusinessNameId, companyName).map {
-              answers =>
-                Redirect(navigator.nextPage(BusinessNameId, NormalMode, UserAnswers(answers)))
-            }
-        )
-      }
+      post(BusinessNameId, companyNameViewModel(mode))
   }
 }

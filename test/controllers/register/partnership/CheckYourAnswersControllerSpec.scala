@@ -18,9 +18,10 @@ package controllers.register.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.{BusinessNameId, EnterPAYEId, HasPAYEId}
 import identifiers.register.partnership._
+import identifiers.register._
 import models._
+import models.register.BusinessType
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.{FakeCountryOptions, FakeNavigator}
@@ -39,36 +40,42 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders name and utr" in {
           val rows = Seq(
-            answerRow("cya.label.name", Seq("Test Company Name")),
-            answerRow("businessDetails.utr", Seq("Test UTR"))
+            answerRow(Message("businessName.heading",
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test Company Name")),
+            answerRow(Message("utr.heading",
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test UTR"))
           )
 
           val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
 
           val retrievalAction = dataRetrievalAction(
-            PartnershipDetailsId.toString -> BusinessDetails("Test Company Name", Some("Test UTR"))
+            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
+            BusinessNameId.toString -> "Test Company Name",
+            BusinessUTRId.toString -> "Test UTR"
           )
           testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
         }
 
         "renders paye number" in {
           val answerRows = Seq(
-            answerRow("cya.label.name", Seq(businessName)),
+            answerRow(Message("businessName.heading",
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(businessName)),
             answerRow(Message("hasPAYE.heading", businessName), Seq("site.yes"), answerIsMessageKey = true,
-            Some(Link(controllers.register.company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url)),
+            Some(Link(controllers.register.partnership.routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url)),
             visuallyHiddenLabel = Some(Message("hasPAYE.visuallyHidden.text", businessName))),
             answerRow(Message("enterPAYE.heading", businessName), Seq("Test Paye"), answerIsMessageKey = false,
-              Some(Link(controllers.register.company.routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url)),
+              Some(Link(controllers.register.partnership.routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url)),
               visuallyHiddenLabel = Some(Message("enterPAYE.visuallyHidden.text", businessName))))
 
           val sections = answerSections(Some("checkyouranswers.partnership.details"), answerRows)
 
           val retrievalAction = dataRetrievalAction(
+            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
             BusinessNameId.toString -> businessName,
             HasPAYEId.toString -> true,
             EnterPAYEId.toString -> "Test Paye"
           )
-          testRenderedView(sections, retrievalAction)
+          testRenderedView(sections:+ partnershipContactDetails :+ contactDetails, retrievalAction)
         }
 
         "renders vat registration number" in {
@@ -76,7 +83,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             answerRow(
               "common.vatRegistrationNumber.checkYourAnswersLabel",
               Seq("Test Vat"),
-              false,
+              answerIsMessageKey = false,
               Some(Link(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url))
             ))
 
@@ -121,7 +128,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           val rows = Seq(answerRow(
             "cya.label.common.same.contact.address",
             Seq("Yes"),
-            true,
+            answerIsMessageKey = true,
             Some(Link(controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url))
           ))
 
@@ -142,7 +149,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               address.postcode.value,
               address.country
             ),
-            false,
+            answerIsMessageKey = false,
             Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))
           ))
 
@@ -190,7 +197,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
               address.postcode.value,
               address.country
             ),
-            false,
+            answerIsMessageKey = false,
             Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))
           ))
 
@@ -209,12 +216,12 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             answerRow(
               "contactDetails.email.checkYourAnswersLabel",
               Seq("test email"),
-              false,
+              answerIsMessageKey = false,
               Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
             ),
             answerRow("contactDetails.phone.checkYourAnswersLabel",
               Seq("test phone"),
-              false,
+              answerIsMessageKey = false,
               Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
             ))
 

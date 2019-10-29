@@ -19,7 +19,8 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipReviewId}
+import identifiers.register.BusinessNameId
+import identifiers.register.partnership.PartnershipReviewId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,9 +43,9 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnershipDetailsId.retrieve.right.map { details =>
+      BusinessNameId.retrieve.right.map { name =>
         val partners = request.userAnswers.allPartnersAfterDelete(mode).map(_.name)
-        Future.successful(Ok(partnershipReview(appConfig, details.companyName, partners)))
+        Future.successful(Ok(partnershipReview(appConfig, name, partners)))
       }
   }
 

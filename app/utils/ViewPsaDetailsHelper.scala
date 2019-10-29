@@ -231,7 +231,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEnterNINOId(index)) match {
     case Some(ReferenceValue(nino, false)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       None))
-      
+
     case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))))
 
@@ -239,14 +239,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
-  private def directorUtr(index: Int): Option[AnswerRow] = userAnswers.get(DirectorUniqueTaxReferenceId(index)) match {
-    case Some(UniqueTaxReference.Yes(utr)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
+  private def directorUtr(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEnterUTRId(index)) match {
+    case Some(ReferenceValue(utr, false)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       None))
 
-    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")), None))
+    case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
 
-    case _ => None
+    case None => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
   private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map { address =>
@@ -349,10 +350,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
   }
 
-  private def partnershipUtr: Option[AnswerRow] = userAnswers.get(PartnershipDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>
+  private def partnershipUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
     AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       None)
-  })
+  }
 
   //Partners
   private def partnerDob(index: Int): Option[AnswerRow] = userAnswers.get(PartnerDetailsId(index)) map { details =>
