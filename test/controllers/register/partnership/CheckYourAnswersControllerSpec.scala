@@ -327,23 +327,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
-
-    def writeToDesktop(content:String, fileName:String):Unit = {
-      import java.io._
-      val pw = new PrintWriter(new File( s"/home/grant/Desktop/$fileName" ))
-      pw.write(content)
-      pw.close()
-    }
-
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-    writeToDesktop(contentAsString(result), "act.html")
-    writeToDesktop(check_your_answers(
-      frontendAppConfig,
-      sections,
-      call,
-      None,
-      NormalMode
-    )(fakeRequest, messages).toString(), "exp.html")
     status(result) mustBe OK
     contentAsString(result) mustBe
       check_your_answers(
