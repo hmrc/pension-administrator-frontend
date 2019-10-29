@@ -19,6 +19,8 @@ package utils.testhelpers
 import java.time.LocalDate
 
 import base.SpecBase
+import models.UpdateMode
+import viewmodels.{AnswerRow, AnswerSection, SuperSection, _}
 import models.{CheckUpdateMode, ReferenceValue, UpdateMode}
 import viewmodels._
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
@@ -152,7 +154,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("utr.label", Seq("site.not_entered"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
       Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )

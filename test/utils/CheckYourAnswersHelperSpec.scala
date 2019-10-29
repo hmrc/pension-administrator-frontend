@@ -109,46 +109,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
     )
   }
 
-  "directorUniqueTaxReference" should {
-    behave like cyaHelperMethod(_.directorUniqueTaxReference(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorUniqueTaxReferenceId.toString ->
-                  UniqueTaxReference.Yes("utr")
-              )
-            )
-          ),
-          yesNoExpectedResult("directorUniqueTaxReference.checkYourAnswersLabel",
-            "Yes",
-            "directorUniqueTaxReference.checkYourAnswersLabel.utr",
-            "utr",
-            "unique-taxpayer-reference"),
-          Some("user answered yes")
-        ),
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorUniqueTaxReferenceId.toString ->
-                  UniqueTaxReference.No(reason)
-              )
-            )
-          ),
-          yesNoExpectedResult(
-            "directorUniqueTaxReference.checkYourAnswersLabel",
-            "No",
-            "directorUniqueTaxReference.checkYourAnswersLabel.reason",
-            reason,
-            "unique-taxpayer-reference"),
-          Some("user answered no")
-        )
-      )
-    )
-  }
-
   "directorAddressYears" should {
     behave like cyaHelperMethod(_.directorAddressYears(0, NormalMode),
       Seq(
