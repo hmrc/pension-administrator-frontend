@@ -1006,4 +1006,4 @@ directorName.title = What is the director’s name?
 directorName.heading = What is the director’s name?
 
 directorDob.title = What is the director’s date of birth?
-dob.heading = What is the date of birth for {0}?
+dob.heading = What is {0}’s date of birth?
