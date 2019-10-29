@@ -77,9 +77,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (CompanyAddressYearsId, addressYearsUnderAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
-    (CompanyAddressYearsId, addressYearsUnderAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
+    (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(NormalMode), true, Some(hasBeenTradingPage(CheckMode)), true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+
+    (HasCompanyBeenTradingId, tradingOverAYearUk, paPostCodePage(NormalMode), true, Some(paPostCodePage(CheckMode)), true),
+    (HasCompanyBeenTradingId, tradingOverAYearNonUk, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
+    (HasCompanyBeenTradingId, tradingUnderAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), true, Some(paAddressListPage(CheckMode)), true),
     (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
@@ -109,7 +112,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(UpdateMode), true, None, true),
 
     (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges, false, None, true),
-    (CompanyAddressYearsId, addressYearsUnderAYearUk, confirmPreviousAddressPage, true, None, true),
+    (CompanyAddressYearsId, addressYearsUnderAYear, confirmPreviousAddressPage, true, None, true),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode), true, None, true),
@@ -167,6 +170,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def paAddressListPage(mode: Mode) = routes.CompanyAddressListController.onPageLoad(mode)
 
+  private def hasBeenTradingPage(mode: Mode): Call = routes.HasCompanyBeenTradingController.onPageLoad(mode)
+
   private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
 
   private def declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
@@ -191,10 +196,12 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYearUk = UserAnswers(Json.obj()).areYouInUk(true)
-    .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
-  private val addressYearsUnderAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false)
-    .set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+  private val addressYearsUnderAYear = UserAnswers().set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+  private val tradingOverAYearUk = UserAnswers(Json.obj()).areYouInUk(true)
+    .set(HasCompanyBeenTradingId)(true).asOpt.value
+  private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false)
+    .set(HasCompanyBeenTradingId)(true).asOpt.value
+  private val tradingUnderAYear = UserAnswers().set(HasCompanyBeenTradingId)(false).asOpt.value
   private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
   private val notSameContactAddressUk = UserAnswers().areYouInUk(true).companySameContactAddress(false)
   private val notSameContactAddressNonUk = UserAnswers().areYouInUk(false).companySameContactAddress(false)
