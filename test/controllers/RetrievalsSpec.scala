@@ -19,8 +19,8 @@ package controllers
 import java.time.LocalDate
 
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
@@ -35,21 +35,21 @@ import scala.concurrent.Future
 class RetrievalsSpec extends ControllerSpecBase with FrontendController with Retrievals with EitherValues with ScalaFutures {
 
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-    PSAUser(UserType.Organisation, None, false, None), UserAnswers(data))
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(data))
 
   class TestController extends FrontendController with Retrievals
 
   val controller = new TestController()
 
-  val success: (String) => Future[Result] = { _: String =>
+  val success: String => Future[Result] = { _: String =>
     Future.successful(Ok("Success"))
   }
 
-  val testIdentifier = new TypedIdentifier[String] {
+  val testIdentifier: TypedIdentifier[String] = new TypedIdentifier[String] {
     override def toString: String = "test"
   }
 
-  val secondIdentifier = new TypedIdentifier[String] {
+  val secondIdentifier: TypedIdentifier[String] = new TypedIdentifier[String] {
     override def toString: String = "second"
   }
 
@@ -116,10 +116,10 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
 
       val companyName = "test company"
       val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None)).businessName()
+        RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).businessName()
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Organisation, None, false, None), userAnswers)
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), userAnswers)
 
       val result = controller.psaName()
       result.value mustBe companyName
@@ -129,11 +129,11 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
 
       val partnershipName = "test partnership"
       val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None)).
-        partnershipDetails(BusinessDetails("test partnership", None))
+        RegistrationLegalStatus.Partnership, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
+        businessName("test partnership")
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Organisation, None, false, None), userAnswers)
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), userAnswers)
 
       val result = controller.psaName()
       result.value mustBe partnershipName
@@ -143,11 +143,11 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
       val firstName = "first"
       val lastName = "last"
       val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)).
+        RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
         individualDetails(TolerantIndividual(Some(firstName), None, Some(lastName)))
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Individual, None, false, None), userAnswers)
+        PSAUser(UserType.Individual, None, isExistingPSA = false, None), userAnswers)
 
       val result = controller.psaName()
       result.value mustBe firstName + " " + lastName

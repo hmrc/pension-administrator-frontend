@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import controllers.register.individual.IndividualContactAddressPostCodeLookupControllerSpec.getEmptyData

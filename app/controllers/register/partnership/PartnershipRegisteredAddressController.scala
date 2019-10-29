@@ -22,7 +22,8 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.BusinessNameId
+import identifiers.register.partnership.PartnershipRegisteredAddressId
 import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
@@ -67,15 +68,15 @@ class PartnershipRegisteredAddressController @Inject()(
 
   def onPageLoad(mode : Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnershipDetailsId.retrieve.right.map { details =>
-        get(PartnershipRegisteredAddressId, addressViewModel(details.companyName))
+      BusinessNameId.retrieve.right.map { name =>
+        get(PartnershipRegisteredAddressId, addressViewModel(name))
       }
   }
 
   def onSubmit(mode : Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnershipDetailsId.retrieve.right.map { details =>
-        post(details.companyName, PartnershipRegisteredAddressId, addressViewModel(details.companyName), RegistrationLegalStatus.Partnership)
+      BusinessNameId.retrieve.right.map { name =>
+        post(name, PartnershipRegisteredAddressId, addressViewModel(name), RegistrationLegalStatus.Partnership)
       }
   }
 }

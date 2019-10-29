@@ -22,7 +22,6 @@ import base.SpecBase
 import controllers.actions._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
@@ -31,9 +30,11 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import utils.UserAnswers
 
+import scala.concurrent.ExecutionContextExecutor
+
 trait ControllerSpecBase extends SpecBase {
 
-  implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
   val cacheMapId = "id"
 
@@ -46,7 +47,7 @@ trait ControllerSpecBase extends SpecBase {
   def getCompany: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       RegistrationInfoId.toString -> RegistrationInfo(
-        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None),
+        RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
       BusinessNameId.toString -> "Test Company Name")
     ))
 
@@ -63,7 +64,7 @@ trait ControllerSpecBase extends SpecBase {
   def getIndividual: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       RegistrationInfoId.toString -> RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None),
+        RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
       IndividualDetailsId.toString ->
         TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
     )))
@@ -74,7 +75,7 @@ trait ControllerSpecBase extends SpecBase {
   def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(
       Json.obj(
-        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
+        BusinessNameId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
         "partners" -> Json.arr(
           Json.obj(
             PartnerDetailsId.toString ->

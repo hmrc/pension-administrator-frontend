@@ -21,7 +21,6 @@ import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.{BusinessNameId, HasPAYEId}
 import javax.inject.Inject
 import models.Mode
