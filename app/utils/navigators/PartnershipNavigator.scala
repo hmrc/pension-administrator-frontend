@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers.register.partnership._
-import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, IsRegisteredNameId}
+import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId}
 import models._
 import models.InternationalRegion.EuEea
 import models.InternationalRegion.RestOfTheWorld
@@ -67,7 +67,9 @@ class PartnershipNavigator @Inject()(
       NavigateTo.save(routes.PartnershipContactDetailsController.onPageLoad(NormalMode))
     case PartnershipContactDetailsId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
-    case PartnershipVatId =>
+    case HasVATId =>
+      vatNavigation(from.userAnswers, NormalMode)
+    case EnterVATId =>
       NavigateTo.save(routes.PartnershipPayeController.onPageLoad(NormalMode))
     case PartnershipPayeId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
@@ -101,7 +103,9 @@ class PartnershipNavigator @Inject()(
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case PartnershipContactDetailsId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case PartnershipVatId =>
+      case HasVATId =>
+        vatNavigation(from.userAnswers, mode)
+      case EnterVATId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case PartnershipPayeId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
@@ -192,7 +196,7 @@ class PartnershipNavigator @Inject()(
   private def regionBasedContactDetailsRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
       case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case Some(true) => NavigateTo.save(routes.PartnershipVatController.onPageLoad(NormalMode))
+      case Some(true) => NavigateTo.save(routes.HasPartnershipVATController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -210,4 +214,11 @@ class PartnershipNavigator @Inject()(
       case Some(true) => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad())
     }
+
+  def vatNavigation(userAnswers: UserAnswers, mode: Mode): Option[NavigateTo] = userAnswers.get(HasVATId) match {
+    case Some(true) => NavigateTo.save(routes.PartnershipEnterVATController.onPageLoad(mode))
+    case Some(false) if mode == NormalMode => NavigateTo.save(routes.PartnershipPayeController.onPageLoad(mode))
+    case Some(false) if mode == CheckMode => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 }

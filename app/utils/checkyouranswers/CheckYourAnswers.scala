@@ -35,9 +35,9 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
   def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow]
 }
 
-trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+trait CheckYourAnswersBusiness[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
-    ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
+    ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theBusiness")))
 }
 
 trait CheckYourAnswersIndividual[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
@@ -111,29 +111,6 @@ object CheckYourAnswers {
           case Paye.No => Seq(
             AnswerRow(
               "commom.paye.label",
-              Seq("site.no"),
-              true,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
-    }
-  }
-
-  implicit def vat[I <: TypedIdentifier[Vat]](implicit r: Reads[Vat]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map {
-          case Vat.Yes(vat) => Seq(
-            AnswerRow(
-              "common.vatRegistrationNumber.checkYourAnswersLabel",
-              Seq(vat),
-              false,
-              changeUrl
-            )
-          )
-          case Vat.No => Seq(
-            AnswerRow(
-              "common.vatRegistrationNumber.checkYourAnswersLabel",
               Seq("site.no"),
               true,
               changeUrl

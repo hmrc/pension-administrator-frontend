@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
-import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object CompanyEmailId extends TypedIdentifier[String] {
@@ -31,7 +31,7 @@ case object CompanyEmailId extends TypedIdentifier[String] {
   override def toString: String = "email"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
+    new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "email.title")
 

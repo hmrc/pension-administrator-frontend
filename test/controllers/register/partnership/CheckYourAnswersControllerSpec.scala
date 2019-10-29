@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, EnterVATId, HasVATId}
 import identifiers.register.partnership._
 import models._
 import models.register.BusinessType
@@ -41,7 +41,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         "renders name and utr" in {
           val rows = Seq(
             answerRow(Message("businessName.heading",
-              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test Company Name")),
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)),
             answerRow(Message("utr.heading",
               Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test UTR"))
           )
@@ -50,7 +50,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
           val retrievalAction = dataRetrievalAction(
             BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
-            BusinessNameId.toString -> "Test Company Name",
+            BusinessNameId.toString -> partnershipName,
             BusinessUTRId.toString -> "Test UTR"
           )
           testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
@@ -75,17 +75,30 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         "renders vat registration number" in {
           val rows = Seq(
+            answerRow(Message("businessName.heading",
+              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)),
             answerRow(
-              "common.vatRegistrationNumber.checkYourAnswersLabel",
+              Message("hasVAT.heading", partnershipName),
+              Seq("site.yes"),
+              answerIsMessageKey = true,
+              Some(Link(controllers.register.partnership.routes.HasPartnershipVATController.onPageLoad(CheckMode).url)),
+                Some(Message("hasVAT.visuallyHidden.text", partnershipName))
+            ),
+            answerRow(
+              Message("enterVAT.heading", partnershipName),
               Seq("Test Vat"),
               answerIsMessageKey = false,
-              Some(Link(controllers.register.partnership.routes.PartnershipVatController.onPageLoad(CheckMode).url))
+              Some(Link(controllers.register.partnership.routes.PartnershipEnterVATController.onPageLoad(CheckMode).url)),
+                Some(Message("enterVAT.visuallyHidden.text", partnershipName))
             ))
 
           val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
 
           val retrievalAction = dataRetrievalAction(
-            PartnershipVatId.toString -> Vat.Yes("Test Vat")
+            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
+            BusinessNameId.toString -> partnershipName,
+            HasVATId.toString -> true,
+            EnterVATId.toString -> "Test Vat"
           )
           testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
         }
@@ -258,6 +271,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
+
+  private val partnershipName = "Test Partnership Name"
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 

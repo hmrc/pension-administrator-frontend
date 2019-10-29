@@ -52,6 +52,10 @@ package object utils {
       answers.set(identifiers.register.IsRegisteredNameId)(answer).asOpt.value
     }
 
+    def hasVat(answer: Boolean): UserAnswers = {
+      answers.set(identifiers.register.HasVATId)(answer).asOpt.value
+    }
+
     // Individual PSA Contact
     def individualContactAddress(address: Address): UserAnswers = {
       answers.set(IndividualContactAddressId)(address).asOpt.value

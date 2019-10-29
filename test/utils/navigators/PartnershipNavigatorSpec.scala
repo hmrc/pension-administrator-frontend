@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
-import identifiers.register.{BusinessNameId, BusinessUTRId, IsRegisteredNameId}
+import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId}
 import identifiers.register.partnership._
 import models._
 import org.scalatest.OptionValues
@@ -70,11 +70,13 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
     (PartnershipPreviousAddressId, emptyAnswers, contactDetailsPage, true, Some(checkYourAnswersPage), true),
 
-    (PartnershipContactDetailsId, uk, vatPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipContactDetailsId, uk, hasVatPage, true, Some(checkYourAnswersPage), true),
     (PartnershipContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (PartnershipContactDetailsId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
 
-    (PartnershipVatId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
+    (HasVATId, hasVatYes, enterVatPage(NormalMode), true, Some(enterVatPage(CheckMode)), true),
+    (HasVATId, hasVatNo, payeNumberPage, true, Some(checkYourAnswersPage), true),
+    (EnterVATId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
     (PartnershipPayeId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
@@ -129,7 +131,8 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def checkYourAnswersPage: Call = routes.CheckYourAnswersController.onPageLoad()
 
-  private def vatPage: Call = routes.PartnershipVatController.onPageLoad(NormalMode)
+  private def hasVatPage: Call = routes.HasPartnershipVATController.onPageLoad(NormalMode)
+  private def enterVatPage(mode: Mode): Call = routes.PartnershipEnterVATController.onPageLoad(mode)
 
   private def payeNumberPage: Call = routes.PartnershipPayeController.onPageLoad(NormalMode)
 
@@ -165,6 +168,9 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+
+  protected val hasVatYes: UserAnswers = UserAnswers().hasVat(true)
+  protected val hasVatNo: UserAnswers = UserAnswers().hasVat(false)
 
   protected val isRegisteredNameTrue: UserAnswers = UserAnswers().isRegisteredName(true)
   protected val isRegisteredNameFalse: UserAnswers = UserAnswers().isRegisteredName(false)
