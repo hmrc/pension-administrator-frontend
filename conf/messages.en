@@ -524,12 +524,17 @@ companyNotFound.businessNameChanged.individual = If you are an individual or a p
 companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number does not match
 companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference number is made up of 10 or 13 numbers. If it is 13, only enter the last 10.
 
-declarationWorkingKnowledge.title = Do you have a working knowledge of pension scheme administrator duties?
-declarationWorkingKnowledge.heading = Do you have a working knowledge of pension scheme administrator duties?
+declarationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
+declarationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
 declarationWorkingKnowledge.workingKnowledge = I declare that I have a working knowledge of pension scheme administrator duties and liabilities.
 declarationWorkingKnowledge.adviser = I declare that I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge.
 declarationWorkingKnowledge.checkYourAnswersLabel = Do you have a working knowledge of pension scheme administrator duties?
 declarationWorkingKnowledge.error.required = You need to tell us if you have a working knowledge of pensions
+declarationWorkingKnowledge.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with this pension scheme. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
+declarationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.
+declarationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.
+
+
 
 declaration.title = Declaration
 declaration.heading = Declaration
@@ -560,15 +565,16 @@ adviserDetails.error.name.required = Enter the name of your adviser
 adviserDetails.error.name.length = The name cannot be more than 107 characters
 adviserDetails.error.name.invalid = The name contains invalid characters
 
-declarationFitAndProper.title = Fit and proper declaration
-declarationFitAndProper.heading = Fit and proper declaration
-declarationFitAndProper.declaration = I am a fit and proper person to be a scheme administrator and:
-declarationFitAndProper.statement1 = I have not been involved in tax fraud, abuse of tax repayment systems or other fraudulent behaviour including misrepresentation and/or identity theft
-declarationFitAndProper.statement2 = I have not been convicted of a crime relating to finance, corporate bodies or dishonesty
-declarationFitAndProper.statement3 = I have not been the subject of adverse civil proceedings relating to finance, corporate bodies or dishonesty/misconduct
-declarationFitAndProper.statement4 = I have not participated in, or been connected with, designing and/or marketing tax avoidance or pensions liberation schemes
-declarationFitAndProper.statement5 = I have not been disqualified from acting as a company director or are bankrupt
-declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
+declarationFitAndProper.title = Fit and proper person declaration
+declarationFitAndProper.heading = Fit and proper person declaration
+declarationFitAndProper.declaration = By continuing you agree that:
+declarationFitAndProper.statement1 = you consider yourself to be a fit and proper person to administer pension schemes
+declarationFitAndProper.statement2 = you have not been involved in tax fraud, abuse of tax repayment systems or other fraudulent behaviour including misrepresentation and/or identity theft
+declarationFitAndProper.statement3 = you have not been convicted of a crime relating to finance, corporate bodies or dishonesty
+declarationFitAndProper.statement4 = you have not been the subject of adverse civil proceedings relating to finance, corporate bodies or dishonesty/misconduct
+declarationFitAndProper.statement5 = you have not participated in, or been connected with, designing and/or marketing tax avoidance or pensions liberation schemes
+declarationFitAndProper.statement6 = you have not been disqualified from acting as a company director or are bankrupt
+declarationFitAndProper.statement7 = you have not been disqualified from acting as a pension scheme trustee
 
 adviserAddressPostCodeLookup.title = Pension adviser’s address
 adviserAddressPostCodeLookup.heading = Pension adviser’s address
