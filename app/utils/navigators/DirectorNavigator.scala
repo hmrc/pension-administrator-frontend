@@ -22,8 +22,8 @@ import connectors.UserAnswersCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.register.company.directors._
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
-import models._
 import models.Mode._
+import models._
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
@@ -62,7 +62,12 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case HasDirectorNINOId(index) => NavigateTo.save(routes.DirectorNoNINOReasonController.onPageLoad(mode, index))
     case DirectorEnterNINOId(index) => ninoRoutes(index, from.userAnswers, mode)
     case DirectorNoNINOReasonId(index) => ninoRoutes(index, from.userAnswers, mode)
-    case DirectorUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
+
+    case HasDirectorUTRId(index) if hasUtr(from.userAnswers, index) => NavigateTo.save(routes.DirectorEnterUTRController.onPageLoad(mode, index))
+    case HasDirectorUTRId(index) => NavigateTo.save(routes.DirectorNoUTRReasonController.onPageLoad(mode, index))
+    case DirectorEnterUTRId(index) => utrRoutes(index, from.userAnswers, mode)
+    case DirectorNoUTRReasonId(index) => utrRoutes(index, from.userAnswers, mode)
+
     case CompanyDirectorAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.CompanyDirectorAddressListController.onPageLoad(mode, index))
     case CompanyDirectorAddressListId(index) => NavigateTo.save(routes.DirectorAddressController.onPageLoad(mode, index))
     case DirectorAddressId(index) => NavigateTo.save(routes.DirectorAddressYearsController.onPageLoad(mode, index))
@@ -86,7 +91,13 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case DirectorEnterNINOId(index) =>
       checkYourAnswers(index, journeyMode(mode))
     case DirectorNoNINOReasonId(index) => checkYourAnswers(index, journeyMode(mode))
-    case DirectorUniqueTaxReferenceId(index) => checkYourAnswers(index, journeyMode(mode))
+    case HasDirectorUTRId(index) if hasUtr(from.userAnswers, index) =>
+      NavigateTo.save(routes.DirectorEnterUTRController.onPageLoad(mode, index))
+    case HasDirectorUTRId(index) => NavigateTo.save(routes.DirectorNoUTRReasonController.onPageLoad(mode, index))
+    case DirectorEnterUTRId(index) =>
+      checkYourAnswers(index, journeyMode(mode))
+    case DirectorNoUTRReasonId(index) => checkYourAnswers(index, journeyMode(mode))
+
     case DirectorAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, from.userAnswers, journeyMode(mode))
     case DirectorPreviousAddressId(index) => checkYourAnswers(index, journeyMode(mode))
@@ -96,13 +107,15 @@ class DirectorNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     case _ => commonMap(from, mode)
   }
 
+  private def hasUtr(answers: UserAnswers, index: Index): Boolean = answers.get(HasDirectorUTRId(index)).getOrElse(false)
+
   private def hasNino(answers: UserAnswers, index: Index): Boolean = answers.get(HasDirectorNINOId(index)).getOrElse(false)
 
   private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     mode match {
-      case NormalMode => NavigateTo.save(routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index))
+      case NormalMode => NavigateTo.save(routes.HasDirectorUTRController.onPageLoad(mode, index))
       case UpdateMode => redirectBasedOnIsNew(answers, index,
-        routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index), anyMoreChangesPage)
+        routes.HasDirectorUTRController.onPageLoad(mode, index), anyMoreChangesPage)
       case _ => sessionExpired
     }
   }

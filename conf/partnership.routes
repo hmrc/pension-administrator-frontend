@@ -65,6 +65,16 @@ POST       /vat-number                                  controllers.register.par
 GET        /:mode/vat-number                            controllers.register.partnership.PartnershipVatController.onPageLoad(mode: Mode)
 POST       /:mode/vat-number                            controllers.register.partnership.PartnershipVatController.onSubmit(mode: Mode)
 
+GET        /have-paye-reference                         controllers.register.partnership.HasPartnershipPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST       /have-paye-reference                         controllers.register.partnership.HasPartnershipPAYEController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/have-paye-reference                   controllers.register.partnership.HasPartnershipPAYEController.onPageLoad(mode: Mode)
+POST       /:mode/have-paye-reference                   controllers.register.partnership.HasPartnershipPAYEController.onSubmit(mode: Mode)
+
+GET        /paye-reference                              controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST       /paye-reference                              controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/paye-reference                        controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode)
+POST       /:mode/paye-reference                        controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode)
+
 GET        /paye-number                                 controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
 POST       /paye-number                                 controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/paye-number                           controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode)
