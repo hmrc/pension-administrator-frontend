@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package identifiers.register.company.directors
+package forms
 
-import identifiers._
-import models.UniqueTaxReference
-import play.api.libs.json.JsPath
+import forms.mappings.UtrMapping
+import javax.inject.Inject
+import models.ReferenceValue
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.i18n.Messages
+import viewmodels.Message
 
-case class DirectorUniqueTaxReferenceId(index: Int) extends TypedIdentifier[UniqueTaxReference] {
-  override def path: JsPath = JsPath \ "directors" \ index \ DirectorUniqueTaxReferenceId.toString
-}
-
-object DirectorUniqueTaxReferenceId {
-  override lazy val toString: String = "directorUtr"
+class EnterUTRFormProvider @Inject() extends FormErrorHelper with UtrMapping {
+  def apply(name: String)(implicit messages: Messages): Form[ReferenceValue] =
+    Form(
+      mapping("value" ->
+        utrMapping(
+          lengthKey = Message("enterUTR.error.invalid").withArgs(name)
+        )
+      )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
+    )
 }

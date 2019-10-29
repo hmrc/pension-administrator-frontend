@@ -352,4 +352,3 @@ case class ReferenceValueCYA[I <: TypedIdentifier[ReferenceValue]](
     }
   }
 }
-

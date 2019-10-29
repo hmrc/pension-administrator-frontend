@@ -144,8 +144,8 @@ common.error.paye.invalid = Enter a valid PAYE number
 common.error.paye.required = Enter the PAYE employer reference number
 common.utr.text = Unique Taxpayer Reference number
 common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
-common.error.utr.required = Enter the Unique Tax Reference number
-common.error.utr.invalid = The UTR must be ten digits
+common.error.utr.required = Enter a Unique Taxpayer Reference (UTR)
+common.error.utr.invalid = Unique Taxpayer Reference (UTR) must be 10 numbers
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
 common.error.utr.exactLength = Unique Taxpayer Reference (UTR) must be 10 numbers
@@ -362,6 +362,20 @@ whyNoNINO.error.invalid = Reason must only include letters, numbers and punctuat
 whyNoNINO.error.length = Reason must be 160 characters or less
 whyNoNINO.error.required = Enter a reason why {0} does not have a National Insurance number
 whyNoNINO.visuallyHidden.text = the reason why {0} does not have a National Insurance number
+
+hasUTR.heading = Does {0} have a Unique Taxpayer Reference (UTR)?
+hasUTR.error.required = Select yes if {0} has a Unique Taxpayer Reference (UTR)
+hasUTR.visuallyHidden.text = whether {0} has a Unique Taxpayer Reference (UTR)
+
+enterUTR.heading = What is {0}’s UTR?
+enterUTR.error.invalid = {0}'s Unique Taxpayer Reference (UTR) must be 10 numbers
+enterUTR.visuallyHidden.text = {0}’s Unique Taxpayer Reference (UTR)
+
+whyNoUTR.heading = Why does {0} not have a UTR?
+whyNoUTR.error.invalid = Reason must only include letters, numbers and punctuation marks
+whyNoUTR.error.length = Reason must be 160 characters or less
+whyNoUTR.error.required = Enter a reason why {0} does not have a Unique Taxpayer Reference (UTR)
+whyNoUTR.visuallyHidden.text = the reason why {0} does not have a Unique Taxpayer Reference (UTR)
 
 directorUniqueTaxReference.title = Does the director have a Unique Taxpayer Reference number (SAUTR)?
 directorUniqueTaxReference.heading = Does the director have a Unique Taxpayer Reference number (SAUTR)?

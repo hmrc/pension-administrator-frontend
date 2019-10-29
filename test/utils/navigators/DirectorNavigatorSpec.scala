@@ -48,6 +48,8 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (DirectorDOBId(0), emptyAnswers, directorHasNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (HasDirectorNINOId(index), hasNinoYes, directorEnterNinoPage(mode), true, Some(directorEnterNinoPage(checkMode(mode))), true),
     (HasDirectorNINOId(index), hasNinoNo, directorNoNinoPage(mode), true, Some(directorNoNinoPage(checkMode(mode))), true),
+    (HasDirectorUTRId(0), hasUtrYes, directorEnterUtrPage(mode), true, Some(directorEnterUtrPage(checkMode(mode))), true),
+    (HasDirectorUTRId(0), hasUtrNo, directorNoUtrReasonPage(mode), true, Some(directorNoUtrReasonPage(checkMode(mode))), true),
     (CompanyDirectorAddressPostCodeLookupId(index), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (CompanyDirectorAddressListId(index), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (DirectorAddressId(index), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -64,21 +66,24 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 
   private def normalOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
-    (DirectorEnterNINOId(index), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (DirectorNoNINOReasonId(index), emptyAnswers, directorUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (DirectorUniqueTaxReferenceId(index), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorEnterNINOId(index), emptyAnswers, directorHasUtrPage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorNoNINOReasonId(index), emptyAnswers, directorHasUtrPage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+    (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
   )
 
   private def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
     (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
-    (DirectorEnterNINOId(index), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (DirectorEnterNINOId(index), defaultAnswers, directorHasUtrPage(UpdateMode), false, None, true),
     (DirectorEnterNINOId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
-    (DirectorNoNINOReasonId(index), defaultAnswers, directorUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (DirectorNoNINOReasonId(index), defaultAnswers, directorHasUtrPage(UpdateMode), false, None, true),
     (DirectorNoNINOReasonId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
-    (DirectorUniqueTaxReferenceId(index), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
-    (DirectorUniqueTaxReferenceId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
+    (DirectorEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (DirectorEnterUTRId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
+    (DirectorNoUTRReasonId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
+    (DirectorNoUTRReasonId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
     (DirectorAddressYearsId(index), addressYearsOverAYearExistingDirector, anyMoreChangesPage, true, None, true),
     (DirectorAddressYearsId(index), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, true, None, true),
     (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), false, None, true),
@@ -131,8 +136,6 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private def directorNoNinoPage(mode: Mode): Call = routes.DirectorNoNINOReasonController.onPageLoad(mode, index)
 
-  private def directorUniqueTaxReferencePage(mode: Mode): Call = routes.DirectorUniqueTaxReferenceController.onPageLoad(mode, index)
-
   private def directorAddressYearsPage(mode: Mode): Call = routes.DirectorAddressYearsController.onPageLoad(mode, index)
 
   private def directorPhonePage(mode: Mode): Call = routes.DirectorPhoneController.onPageLoad(mode, index)
@@ -151,10 +154,14 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private def addressListPage(mode: Mode): Call = routes.CompanyDirectorAddressListController.onPageLoad(mode, index)
 
-  private def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, index)
+  def addressPage(mode: Mode): Call = routes.DirectorAddressController.onPageLoad(mode, 0)
+  def directorHasUtrPage(mode: Mode): Call = routes.HasDirectorUTRController.onPageLoad(mode, 0)
+  def directorEnterUtrPage(mode: Mode): Call = routes.DirectorEnterUTRController.onPageLoad(mode, 0)
+  def directorNoUtrReasonPage(mode: Mode): Call = routes.DirectorNoUTRReasonController.onPageLoad(mode, 0)
+
 
   private def director(index: Int) =
-    PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
+    PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = index % 2 == 0, isNew = true)
 
   private def data: Array[JsObject] = {
     (0 to 19).map(index => Json.obj(
@@ -177,6 +184,10 @@ object DirectorNavigatorSpec extends OptionValues {
     .set(HasDirectorNINOId(index))(value = true).asOpt.value
   private val hasNinoNo = defaultAnswers
     .set(HasDirectorNINOId(index))(value = false).asOpt.value
+  private val hasUtrYes = defaultAnswers
+    .set(HasDirectorUTRId(0))(value = true).asOpt.value
+  private val hasUtrNo = defaultAnswers
+    .set(HasDirectorUTRId(0))(value = false).asOpt.value
   private val confirmPreviousAddressSame = existingDirectorInUpdate(index)
     .set(DirectorConfirmPreviousAddressId(index))(value = true).asOpt.value
   private val confirmPreviousAddressNotSame = existingDirectorInUpdate(index)
