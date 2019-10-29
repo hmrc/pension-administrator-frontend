@@ -16,19 +16,14 @@
 
 package utils.navigators
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.register.partnership.routes
-import identifiers.register.partnership._
 import identifiers.register.AreYouInUKId
+import identifiers.register.partnership._
+import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
-import models.InternationalRegion.EuEea
-import models.InternationalRegion.RestOfTheWorld
-import models.InternationalRegion.UK
-import utils.Navigator
-import utils.UserAnswers
+import utils.{Navigator, UserAnswers}
 import utils.countryOptions.CountryOptions
 import controllers.register.routes._
 import controllers.register.partnership.routes._
@@ -45,7 +40,7 @@ class PartnershipNavigator @Inject()(
     case PartnershipDetailsId =>
       regionBasedNameNavigation(from.userAnswers)
     case ConfirmPartnershipDetailsId =>
-      NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+      NavigateTo.dontSave(controllers.register.partnership.routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
       NavigateTo.save(PartnershipSameContactAddressController.onPageLoad(NormalMode))
     case PartnershipSameContactAddressId =>
@@ -154,7 +149,7 @@ class PartnershipNavigator @Inject()(
   private def addressYearsCheckIdRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(PartnershipAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.PartnershipTradingOverAYearController.onPageLoad(mode))
+        NavigateTo.save(PartnershipTradingOverAYearController.onPageLoad(mode))
       case Some(AddressYears.OverAYear) =>
         mode match {
           case CheckMode =>
@@ -221,7 +216,7 @@ class PartnershipNavigator @Inject()(
     answers.get(PartnershipRegisteredAddressId) flatMap { address =>
       countryOptions.regions(address.country.getOrElse("")) match {
         case UK => NavigateTo.dontSave(BusinessTypeAreYouInUKController.onPageLoad(CheckMode))
-        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+        case EuEea => NavigateTo.dontSave(controllers.register.partnership.routes.WhatYouWillNeedController.onPageLoad())
         case RestOfTheWorld => NavigateTo.dontSave(OutsideEuEeaController.onPageLoad())
         case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
       }
