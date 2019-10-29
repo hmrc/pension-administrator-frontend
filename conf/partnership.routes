@@ -50,11 +50,6 @@ POST       /previous-address                            controllers.register.par
 GET        /:mode/previous-address                      controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
 POST       /:mode/previous-address                      controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET        /contact-details                             controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /contact-details                             controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode)
-POST       /:mode/contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode)
-
 GET        /previous-address-results                    controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST       /previous-address-results                    controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/previous-address-results              controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode)

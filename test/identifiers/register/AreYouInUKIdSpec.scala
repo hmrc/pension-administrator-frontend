@@ -349,7 +349,7 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(PartnershipPreviousAddressId)(address))
       .flatMap(_.set(PartnershipPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(PartnershipPreviousAddressListId)(tolerantAddress))
-      .flatMap(_.set(PartnershipContactDetailsId)(contactDetails))
+      .flatMap(_.set(PartnershipEmailId)(contactDetails))
       .flatMap(_.set(PartnerDetailsId(0))(personDetails))
       .flatMap(_.set(PartnerDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenPartnersId)(true))
