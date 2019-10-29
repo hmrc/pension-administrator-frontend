@@ -67,7 +67,7 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
     userAnswers.removeAllOf(List(PartnershipDetailsId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-      PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
+      PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 }

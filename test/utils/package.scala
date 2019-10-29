@@ -222,10 +222,6 @@ package object utils {
       answers.set(PartnershipPreviousAddressId)(address).asOpt.value
     }
 
-    def partnershipContactDetails(contactDetails: ContactDetails): UserAnswers = {
-      answers.set(PartnershipContactDetailsId)(contactDetails).asOpt.value
-    }
-
     //Partners
 
     def partnerPreviousAddress(index: Int, address: Address): UserAnswers = {

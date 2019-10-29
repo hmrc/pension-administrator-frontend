@@ -76,7 +76,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     userAnswers.removeAllOf(List(PartnershipDetailsId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-      PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
+      PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(_.remove(PartnerId))
   }
 

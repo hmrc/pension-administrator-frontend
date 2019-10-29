@@ -77,7 +77,7 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
     userAnswers.removeAllOf(List(NonUKBusinessTypeId, PartnershipDetailsId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-      PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
+      PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 

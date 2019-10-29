@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipDetailsId
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
@@ -87,7 +87,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       "redirect to the next page" when {
         "on a valid request and send the email" in {
           val validData = data ++ Json.obj(
-            PartnershipContactDetailsId.toString -> contactDetails
+            PartnershipEmailId.toString -> contactDetails
           )
 
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
@@ -208,6 +208,7 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val contactDetails = ContactDetails("test@test.com", "test Phone")
+  val email = "test@test.com"
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     PartnershipDetailsId.toString -> businessDetails
