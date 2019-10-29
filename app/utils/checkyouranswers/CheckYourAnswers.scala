@@ -36,9 +36,9 @@ trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
   def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow]
 }
 
-trait CheckYourAnswersCompany[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+trait CheckYourAnswersBusiness[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
-    ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theCompany")))
+    ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theBusiness")))
 }
 
 trait CheckYourAnswersIndividual[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {

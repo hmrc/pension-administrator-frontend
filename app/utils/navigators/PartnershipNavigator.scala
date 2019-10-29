@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers.register.partnership._
-import identifiers.register.AreYouInUKId
+import identifiers.register.{AreYouInUKId, EnterPAYEId, HasPAYEId}
 import models._
 import models.InternationalRegion.EuEea
 import models.InternationalRegion.RestOfTheWorld
@@ -63,8 +63,12 @@ class PartnershipNavigator @Inject()(
     case PartnershipContactDetailsId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
     case PartnershipVatId =>
-      NavigateTo.save(routes.PartnershipPayeController.onPageLoad(NormalMode))
-    case PartnershipPayeId =>
+      NavigateTo.save(routes.HasPartnershipPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId if hasPaye(from.userAnswers) =>
+      NavigateTo.save(routes.PartnershipEnterPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case EnterPAYEId =>
       NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
       NavigateTo.save(routes.AddPartnerController.onPageLoad(NormalMode))
@@ -98,7 +102,11 @@ class PartnershipNavigator @Inject()(
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case PartnershipVatId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case PartnershipPayeId =>
+      case HasPAYEId if hasPaye(from.userAnswers) =>
+        NavigateTo.save(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode))
+      case HasPAYEId =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case EnterPAYEId =>
         NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
@@ -130,6 +138,7 @@ class PartnershipNavigator @Inject()(
     }
   }
 
+  private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
   private def addressYearsRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
     (answers.get(PartnershipAddressYearsId), answers.get(AreYouInUKId)) match {

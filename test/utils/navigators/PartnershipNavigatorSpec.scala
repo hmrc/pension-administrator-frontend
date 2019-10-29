@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
+import identifiers.register.{EnterPAYEId, HasPAYEId}
 import identifiers.register.partnership._
 import models._
 import org.scalatest.OptionValues
@@ -70,8 +71,11 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipContactDetailsId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (PartnershipContactDetailsId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
 
-    (PartnershipVatId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipPayeId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipVatId, emptyAnswers, hasPayePage, true, Some(checkYourAnswersPage), true),
+
+    (HasPAYEId, hasPAYEYes, payePage(NormalMode), true, Some(payePage(CheckMode)), true),
+    (HasPAYEId, hasPAYENo, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (EnterPAYEId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
     (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false),
@@ -125,8 +129,6 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def vatPage: Call = routes.PartnershipVatController.onPageLoad(NormalMode)
 
-  private def payeNumberPage: Call = routes.PartnershipPayeController.onPageLoad(NormalMode)
-
   private def contactDetailsPage: Call = routes.PartnershipContactDetailsController.onPageLoad(NormalMode)
 
   private def addPartnersPage: Call = routes.AddPartnerController.onPageLoad(NormalMode)
@@ -151,12 +153,17 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
 
+  private def hasPayePage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
+  private def payePage(mode: Mode): Call = routes.PartnershipEnterPAYEController.onPageLoad(mode)
+
   private def reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
   private def outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+  private val hasPAYEYes = UserAnswers().set(HasPAYEId)(value = true).asOpt.value
+  private val hasPAYENo = UserAnswers().set(HasPAYEId)(value = false).asOpt.value
 
   private val varianceConfirmPreviousAddressYes = UserAnswers().set(PartnershipConfirmPreviousAddressId)(true).asOpt.get
   private val varianceConfirmPreviousAddressNo = UserAnswers().set(PartnershipConfirmPreviousAddressId)(false).asOpt.get

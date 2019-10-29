@@ -18,6 +18,7 @@ package controllers.register.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
+import identifiers.register.{BusinessNameId, EnterPAYEId, HasPAYEId}
 import identifiers.register.partnership._
 import models._
 import play.api.libs.json.Json
@@ -51,20 +52,23 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         }
 
         "renders paye number" in {
-          val rows = Seq(
-            answerRow(
-              "commom.paye.label",
-              Seq("Test Paye"),
-              false,
-              Some(Link(controllers.register.partnership.routes.PartnershipPayeController.onPageLoad(CheckMode).url))
-            ))
+          val answerRows = Seq(
+            answerRow("cya.label.name", Seq(businessName)),
+            answerRow(Message("hasPAYE.heading", businessName), Seq("site.yes"), answerIsMessageKey = true,
+            Some(Link(controllers.register.company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("hasPAYE.visuallyHidden.text", businessName))),
+            answerRow(Message("enterPAYE.heading", businessName), Seq("Test Paye"), answerIsMessageKey = false,
+              Some(Link(controllers.register.company.routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url)),
+              visuallyHiddenLabel = Some(Message("enterPAYE.visuallyHidden.text", businessName))))
 
-          val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
+          val sections = answerSections(Some("checkyouranswers.partnership.details"), answerRows)
 
           val retrievalAction = dataRetrievalAction(
-            PartnershipPayeId.toString -> Paye.Yes("Test Paye")
+            BusinessNameId.toString -> businessName,
+            HasPAYEId.toString -> true,
+            EnterPAYEId.toString -> "Test Paye"
           )
-          testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
+          testRenderedView(sections, retrievalAction)
         }
 
         "renders vat registration number" in {
@@ -254,6 +258,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  private val businessName = "Test Partnership"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new CheckYourAnswersController(
