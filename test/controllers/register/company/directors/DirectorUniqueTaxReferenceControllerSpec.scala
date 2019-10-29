@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.directors.{DirectorDetailsId, DirectorUniqueTaxReferenceId}
+import identifiers.register.company.directors.{DirectorNameId, DirectorUniqueTaxReferenceId}
 import models._
 import play.api.data.Form
 import play.api.libs.json._
@@ -46,13 +46,13 @@ class DirectorUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
   private val validData = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString ->
+        DirectorNameId.toString ->
           PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         DirectorUniqueTaxReferenceId.toString ->
           UniqueTaxReference.Yes("1234567891")
       ),
       Json.obj(
-        DirectorDetailsId.toString ->
+        DirectorNameId.toString ->
           PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )

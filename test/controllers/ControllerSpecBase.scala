@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.actions._
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerDetailsId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
@@ -56,7 +56,7 @@ trait ControllerSpecBase extends SpecBase {
       BusinessNameId.toString -> "Test Company Name",
       "directors" -> Json.arr(
         Json.obj(
-          DirectorDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
+          DirectorNameId.toString -> PersonName("test first name", "test last name")
         )
       )
     )))

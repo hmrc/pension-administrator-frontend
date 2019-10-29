@@ -18,14 +18,18 @@ package forms.register
 
 import forms.mappings.{Constraints, Mappings, Transforms}
 import javax.inject.Inject
+import models.ReferenceValue
 import play.api.data.Form
+import play.api.data.Forms.mapping
 import play.api.i18n.Messages
 import viewmodels.Message
 
 class NINOFormProvider @Inject()() extends Mappings with Constraints with Transforms {
-  def apply(personName: String)(implicit messages: Messages): Form[String] =
+  def apply(personName: String)(implicit messages: Messages): Form[ReferenceValue] =
     Form(
-      "value" -> text(Message("enterNINO.error.required", personName).resolve).transform(noSpaceWithUpperCaseTransform, noTransform).
-        verifying(validNino(Message("enterNINO.error.invalid", personName)))
+      mapping(
+        "value" -> text(Message("enterNINO.error.required", personName).resolve).transform(noSpaceWithUpperCaseTransform, noTransform).
+          verifying(validNino(Message("enterNINO.error.invalid", personName)))
+      )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )
 }

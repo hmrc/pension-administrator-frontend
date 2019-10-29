@@ -68,3 +68,4 @@ object IndividualEmailControllerSpec {
       entityName = individualName
     )
 }
+

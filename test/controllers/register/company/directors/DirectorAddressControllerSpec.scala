@@ -25,7 +25,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.company.directors.{DirectorAddressId, DirectorDetailsId}
+import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -53,10 +53,10 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val directors = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString -> jonathanDoe
+        DirectorNameId.toString -> jonathanDoe
       ),
       Json.obj(
-        DirectorDetailsId.toString -> joeBloggs
+        DirectorNameId.toString -> joeBloggs
       )
     )
   )
@@ -66,11 +66,11 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val directorsWithAddresses = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
-        DirectorDetailsId.toString -> jonathanDoe,
+        DirectorNameId.toString -> jonathanDoe,
         DirectorAddressId.toString -> doeResidence
       ),
       Json.obj(
-        DirectorDetailsId.toString -> joeBloggs,
+        DirectorNameId.toString -> joeBloggs,
         DirectorAddressId.toString -> bloggsResidence
       )
     )

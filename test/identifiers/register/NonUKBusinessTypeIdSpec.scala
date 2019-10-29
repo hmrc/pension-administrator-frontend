@@ -19,7 +19,7 @@ package identifiers.register
 import java.time.LocalDate
 
 import identifiers.register.company._
-import identifiers.register.company.directors.DirectorDetailsId
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerDetailsId
 import models._
@@ -68,16 +68,12 @@ class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValu
       }
 
       "remove the data for directors " in {
-        result.get(DirectorDetailsId(0)) mustNot be(defined)
-        result.get(DirectorDetailsId(1)) mustNot be(defined)
+        result.get(DirectorNameId(0)) mustNot be(defined)
+        result.get(DirectorNameId(1)) mustNot be(defined)
       }
 
       "remove the data for more than 10 directors " in {
         result.get(MoreThanTenDirectorsId) mustNot be(defined)
-      }
-
-      "not remove the data for partnership details" in {
-        result.get(BusinessNameId) must be(defined)
       }
     }
   }
@@ -123,11 +119,6 @@ class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValu
       "remove the data for more than 10 partners" in {
         result.get(MoreThanTenPartnersId) mustNot be(defined)
       }
-
-      "not remove the data for company details" in {
-        result.get(BusinessNameId) must be(defined)
-        result.get(BusinessUTRId) must be(defined)
-      }
     }
   }
 }
@@ -141,6 +132,7 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
   val email = "s@s.com"
   val phone = "999"
   val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+  val personName = PersonName("test first", "test last")
 
   val answersCompany: UserAnswers = UserAnswers(Json.obj())
     .set(NonUKBusinessTypeId)(NonUKBusinessType.Company)
@@ -156,8 +148,8 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
       .flatMap(_.set(CompanyPreviousAddressId)(address))
       .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(ContactDetailsId)(contactDetails))
-      .flatMap(_.set(DirectorDetailsId(0))(personDetails))
-      .flatMap(_.set(DirectorDetailsId(1))(personDetails))
+      .flatMap(_.set(DirectorNameId(0))(personName))
+      .flatMap(_.set(DirectorNameId(1))(personName))
       .flatMap(_.set(MoreThanTenDirectorsId)(true))
       .flatMap(_.set(BusinessNameId)("company name"))
     )

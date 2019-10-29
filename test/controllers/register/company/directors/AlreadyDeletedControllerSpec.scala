@@ -28,7 +28,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode)
 
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
   private val companyName = "test company name"
 
   def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), directorName, onwardRoute)

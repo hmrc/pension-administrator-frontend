@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import java.time.LocalDate
+
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.LastPageId
 import identifiers.register.adviser._
@@ -122,12 +124,24 @@ package object utils {
       answers.set(DirectorPhoneId(index))(phone).asOpt.value
     }
 
-    def directorDetails(index: Int, details: PersonDetails): UserAnswers = {
-      answers.set(DirectorDetailsId(index))(details).asOpt.value
+    def directorDob(index: Int, dateOfBirth: LocalDate): UserAnswers = {
+      answers.set(DirectorDOBId(index))(dateOfBirth).asOpt.value
     }
 
     def directorEmail(index: Int, email: String): UserAnswers = {
       answers.set(DirectorEmailId(index))(email).asOpt.value
+    }
+
+    def directorHasNINO(index: Int, flag: Boolean): UserAnswers = {
+      answers.set(HasDirectorNINOId(index))(flag).asOpt.value
+    }
+
+    def directorEnterNINO(index: Int, nino: ReferenceValue): UserAnswers = {
+      answers.set(DirectorEnterNINOId(index))(nino).asOpt.value
+    }
+
+    def directorNoNINOReason(index: Int, reason: String): UserAnswers = {
+      answers.set(DirectorNoNINOReasonId(index))(reason).asOpt.value
     }
 
     def companyDirectorAddressList(index: Int, address: TolerantAddress): UserAnswers = {

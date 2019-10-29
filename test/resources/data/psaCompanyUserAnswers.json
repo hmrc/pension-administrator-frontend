@@ -61,14 +61,12 @@
     {
       "directorDetails": {
         "firstName": "Director",
-        "middleName": "number",
         "lastName": "one",
-        "dateOfBirth": "1950-03-29",
         "isDeleted": false
       },
-      "directorNino": {
-        "hasNino": true,
-        "nino": "AA999999A"
+      "dateOfBirth": "1950-03-29",
+      "nino": {
+        "value": "AA999999A"
       },
       "directorUtr": {
         "hasUtr": true,

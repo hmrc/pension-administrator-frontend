@@ -72,7 +72,7 @@ trait Variations extends FrontendController {
   protected def findChangeIdIndexed[A](id: TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = {
     id match {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorEmailId(_) | DirectorPhoneId(_) |
-           DirectorNinoId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_) | DirectorDetailsId(_)
+           DirectorEnterNINOId(_) | DirectorPreviousAddressId(_) | DirectorUniqueTaxReferenceId(_) | DirectorNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
            PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerDetailsId(_)
@@ -95,17 +95,28 @@ trait Variations extends FrontendController {
                                               userAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     (mode, inputId) match {
       case (UpdateMode, DirectorPreviousAddressId(index)) =>
-        setCompleteFlag(userAnswers, DirectorDetailsId(index), index, IsDirectorCompleteId(index))
+        setCompleteFlag(userAnswers, DirectorNameId(index), index, IsDirectorCompleteId(index))
       case (UpdateMode, PartnerPreviousAddressId(index)) =>
-        setCompleteFlag(userAnswers, PartnerDetailsId(index), index, IsPartnerCompleteId(index))
+        setCompleteFlagPerson(userAnswers, PartnerDetailsId(index), index, IsPartnerCompleteId(index))
       case _ =>
         doNothing
     }
   }
 
-  private def setCompleteFlag(userAnswers: UserAnswers, id: TypedIdentifier[PersonDetails],
+  private def setCompleteFlagPerson(userAnswers: UserAnswers, id: TypedIdentifier[PersonDetails],
                               index: Int, completeId: TypedIdentifier[Boolean])
                              (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+    userAnswers.get(id) match {
+      case Some(details) if !details.isNew =>
+        cacheConnector.save(request.externalId, completeId, true)
+      case _ =>
+        doNothing
+    }
+  }
+
+  private def setCompleteFlag(userAnswers: UserAnswers, id: TypedIdentifier[PersonName],
+                                    index: Int, completeId: TypedIdentifier[Boolean])
+                                   (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     userAnswers.get(id) match {
       case Some(details) if !details.isNew =>
         cacheConnector.save(request.externalId, completeId, true)
