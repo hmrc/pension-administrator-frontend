@@ -2,15 +2,15 @@
 GET         /what-you-will-need                     controllers.register.individual.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
 POST        /what-you-will-need                     controllers.register.individual.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
 
-GET         /your-date-of-birth                     controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
-POST        /your-date-of-birth                     controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/your-date-of-birth              controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode)
-POST        /:mode/your-date-of-birth              controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode)
+GET         /date-of-birth                     controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST        /date-of-birth                     controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/date-of-birth              controllers.register.individual.IndividualDateOfBirthController.onPageLoad(mode: Mode)
+POST        /:mode/date-of-birth              controllers.register.individual.IndividualDateOfBirthController.onSubmit(mode: Mode)
 
-GET         /personal-details                       controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode = NormalMode)
-POST        /personal-details                       controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/personal-details                controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode)
-POST        /:mode/personal-details                controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode)
+GET         /your-name-address                       controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode = NormalMode)
+POST        /your-name-address                       controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/your-name-address                controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode)
+POST        /:mode/your-name-address                controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode)
 
 GET         /contact-address-year                    controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-address-year                    controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode = NormalMode)

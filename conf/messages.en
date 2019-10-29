@@ -594,7 +594,7 @@ duplicateRegistration.p1 = To access your scheme administrator details, you will
 duplicateRegistration.p2 = The user ID and password you need will be from another Government Gateway account you created.
 
 individualDateOfBirth.title = Your date of birth
-individualDateOfBirth.heading = Your date of birth
+individualDateOfBirth.heading = What is your date of birth?
 
 submissionInvalid.title = Sorry, the service is unavailable
 submissionInvalid.heading = Sorry, the service is unavailable

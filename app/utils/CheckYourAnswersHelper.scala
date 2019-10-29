@@ -39,8 +39,18 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   }
 
   def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
-    AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(x)}"), false,
+    AnswerRow("individualDateOfBirth.heading", Seq(s"${DateHelper.formatDate(x)}"), false,
       Some(Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)), None)
+  }
+
+  def individualEmail: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualEmailId) map { x =>
+    AnswerRow("individual.email.title", Seq(x), false,
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)), None)
+  }
+
+  def individualPhone: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualPhoneId) map { x =>
+    AnswerRow("individual.phone.title", Seq(x), false,
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)), None)
   }
 
   def individualPreviousAddress: Option[AnswerRow] = {
