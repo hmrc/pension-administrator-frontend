@@ -23,7 +23,7 @@ import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.AllowAccessActionProvider
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.individual.IndividualContactDetailsChangedId
+import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.partners.PartnerContactDetailsId
 import models._
 import models.requests.DataRequest
@@ -221,7 +221,7 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
           val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnerContactDetailsId(0))
 
           status(result) mustEqual SEE_OTHER
-          FakeUserAnswersCacheConnector.verify(IndividualContactDetailsChangedId, true)
+          FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
       }
     }
   }
