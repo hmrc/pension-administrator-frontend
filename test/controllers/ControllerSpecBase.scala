@@ -69,7 +69,7 @@ trait ControllerSpecBase extends SpecBase {
     )))
 
   def getPartnership: DataRetrievalAction =
-    UserAnswers().partnershipDetails(details = models.BusinessDetails("Test Partnership Name", Some("1234567890"))).dataRetrievalAction
+    UserAnswers().businessName("Test Partnership Name").dataRetrievalAction
 
   def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(

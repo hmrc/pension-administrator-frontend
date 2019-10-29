@@ -119,7 +119,7 @@ object DOBControllerSpec {
 
   val id: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
 
-  val userAnswers: UserAnswers = UserAnswers().businessName.directorName()
+  val userAnswers: UserAnswers = UserAnswers().businessName().directorName()
 
   def testRequest(answers: UserAnswers = userAnswers, date: Option[LocalDate] = None): DataRequest[AnyContent] = {
 

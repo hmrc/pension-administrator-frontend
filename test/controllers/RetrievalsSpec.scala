@@ -116,7 +116,7 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendController with Ret
 
       val companyName = "test company"
       val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None)).businessName
+        RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None)).businessName()
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
         PSAUser(UserType.Organisation, None, false, None), userAnswers)

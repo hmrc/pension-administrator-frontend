@@ -111,3 +111,13 @@ POST       /enter-registered-address                    controllers.register.par
 
 GET         /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+
+GET         /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode)
+
+GET         /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode)

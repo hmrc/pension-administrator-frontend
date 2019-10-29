@@ -150,7 +150,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
   )
 
   private val dataRetrievalAction =
-    UserAnswers().businessName.companyContactAddressList(addresses).dataRetrievalAction
+    UserAnswers().businessName().companyContactAddressList(addresses).dataRetrievalAction
 
   private def requestResult[T](data: DataRetrievalAction = getEmptyData,
                                request: Application => Request[T],
