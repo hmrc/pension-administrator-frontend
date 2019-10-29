@@ -128,7 +128,7 @@ POST        /contact-phone-number                          controllers.register.
 GET         /:mode/contact-phone-number                    controllers.register.company.CompanyPhoneController.onPageLoad(mode: Mode)
 POST        /:mode/contact-phone-number                    controllers.register.company.CompanyPhoneController.onSubmit(mode: Mode)
 
-GET         /have-been-trading                             controllers.register.company.CompanyTradingOverAYearController.onPageLoad(mode: Mode = NormalMode)
-POST        /have-been-trading                             controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/have-been-trading                       controllers.register.company.CompanyTradingOverAYearController.onPageLoad(mode: Mode)
-POST        /:mode/have-been-trading                       controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode)
+GET         /trading-time                                  controllers.register.company.HasCompanyBeenTradingController.onPageLoad(mode: Mode = NormalMode)
+POST        /trading-time                                  controllers.register.company.HasCompanyBeenTradingController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/trading-time                            controllers.register.company.HasCompanyBeenTradingController.onPageLoad(mode: Mode)
+POST        /:mode/trading-time                            controllers.register.company.HasCompanyBeenTradingController.onSubmit(mode: Mode)
