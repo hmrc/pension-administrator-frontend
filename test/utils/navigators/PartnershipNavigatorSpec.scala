@@ -89,7 +89,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), true, None, true),
     (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), true, None, true),
     (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), false, None, false),
-    (PartnershipAddressYearsId, addressYearsOverAYear, checkYourAnswersPage, false, None, false),
+    (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, false, None, false),
     (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode), false, None, false),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
     (PartnershipContactDetailsId, uk, anyMoreChangesPage, false, None, false),

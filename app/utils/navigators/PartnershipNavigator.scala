@@ -156,9 +156,16 @@ class PartnershipNavigator @Inject()(
       case Some(AddressYears.UnderAYear) =>
         NavigateTo.save(routes.PartnershipTradingOverAYearController.onPageLoad(mode))
       case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        mode match {
+          case CheckMode =>
+            NavigateTo.save(CheckYourAnswersController.onPageLoad())
+          case UpdateMode =>
+            NavigateTo.save(AnyMoreChangesController.onPageLoad())
+          case _ =>
+            NavigateTo.dontSave(SessionExpiredController.onPageLoad())
+        }
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
