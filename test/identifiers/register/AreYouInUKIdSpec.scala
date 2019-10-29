@@ -403,7 +403,7 @@ object AreYouInUKIdSpec extends OptionValues {
     .flatMap(setCommonPartnershipData)
     .flatMap(_.set(ConfirmBusinessNameId)(true))
     .flatMap(_.set(PartnershipVatId)(Vat.No))
-    .flatMap(_.set(PartnershipPayeId)(Paye.No))
+    .flatMap(_.set(HasPAYEId)(false))
     .flatMap(_.set(RegisterAsBusinessId)(true))
     .asOpt.value
 

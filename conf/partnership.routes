@@ -77,11 +77,6 @@ POST       /paye-reference                              controllers.register.par
 GET        /:mode/paye-reference                        controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode)
 POST       /:mode/paye-reference                        controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode)
 
-GET        /paye-number                                 controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
-POST       /paye-number                                 controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/paye-number                           controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode)
-POST       /:mode/paye-number                           controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode)
-
 GET        /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST       /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
