@@ -66,7 +66,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "render the view correctly for the Is this address same as your contact address" in {
         val sections = answerSections("cya.label.individual.same.contact.address", Seq("site.yes"), answerIsMessageKey = true,
           Some(Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)
-          ))
+          ),
+          Some(Message("individualContactAddress.visuallyHidden.text"))
+        )
         val retrievalAction = dataRetrievalAction(
           IndividualSameContactAddressId.toString -> true
         )
@@ -100,7 +102,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
                 Seq(s"common.addressYears.${addressYears.toString}"),
                 answerIsMessageKey = true,
                 Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)),
-                None
+                Some(Message("individualAddressYears.visuallyHidden.text"))
               )
             )
           )
@@ -146,13 +148,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             label = messages("individual.email.title"),
             answer = Seq("test@email"),
             changeUrl = Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)),
-            visuallyHiddenLabel = None //TODO: Some(Message("email.visuallyHidden.text", defaultIndividual))
+            visuallyHiddenLabel = Some(Message("individualEmail.visuallyHidden.text"))
           ),
           answerRow(
             label = messages("individual.phone.title"),
             answer = Seq("1234567890"),
             changeUrl = Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)),
-            visuallyHiddenLabel = None //TODO: Some(Message("phone.visuallyHidden.text", defaultIndividual))
+            visuallyHiddenLabel = Some(Message("individualPhone.visuallyHidden.text"))
           )
         )
 
@@ -226,8 +228,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     )
   }
 
-  private def answerSections(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None): Seq[AnswerSection] = {
-    val answerRow = AnswerRow(label, answer, answerIsMessageKey, changeUrl)
+  private def answerSections(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None, visuallyHiddenText: Option[Message] = None): Seq[AnswerSection] = {
+    val answerRow = AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenText)
     val section = AnswerSection(None, Seq(answerRow))
     Seq(section)
   }

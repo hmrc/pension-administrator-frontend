@@ -25,7 +25,7 @@ import identifiers.register.company.{CompanyRegistrationNumberId, MoreThanTenDir
 import identifiers.register.individual.IndividualDateOfBirthId
 import models._
 import play.api.libs.json.{JsObject, Json}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
@@ -160,7 +160,8 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             AnswerRow("individualDateOfBirth.heading",
               Seq(displayDate),
               answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/date-of-birth")))
+              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/date-of-birth")),
+              Some(Message("individualDateOfBirth.visuallyHidden.text")))
           )
         )
       )
