@@ -41,5 +41,9 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
   def variationDeclarationWorkingKnowledge(workingKnowledge: Boolean): DeclarationWorkingKnowledge ={
     if(workingKnowledge) WorkingKnowledge else Adviser
   }
-}
 
+  def hasWorkingKnowledge(dwk:DeclarationWorkingKnowledge):Boolean = dwk match {
+    case WorkingKnowledge => true
+    case _ => false
+  }
+}

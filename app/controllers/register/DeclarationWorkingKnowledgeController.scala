@@ -52,14 +52,9 @@ class DeclarationWorkingKnowledgeController @Inject()(
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form
-        case Some(value) => form.fill(hasWorkingKnowledge(value))
+        case Some(value) => form.fill(DeclarationWorkingKnowledge.hasWorkingKnowledge(value))
       }
       Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode))
-  }
-
-  private def hasWorkingKnowledge(dwk:DeclarationWorkingKnowledge):Boolean = dwk match {
-    case WorkingKnowledge => true
-    case _ => false
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
