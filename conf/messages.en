@@ -95,6 +95,8 @@ common.you = you
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
+individual.selectAddress.text = You can
+individual.selectAddressPostLink.text = if the address is not shown below.
 common.selectAddress.link = enter the address manually
 common.nino = National Insurance number
 common.enterNINO.hint = Example ’QQ 12 34 56 C’
@@ -614,10 +616,10 @@ individual.same.contact.address.error = Select yes if these details are correct
 company.same.contact.address.title = Can HMRC use this address to contact the company?
 company.same.contact.address.heading = Can HMRC use this address to contact {0}?
 
-individualContactAddressPostCodeLookup.title = What is the contact address
-individualContactAddressPostCodeLookup.heading = What is your contact address?
+individualContactAddressPostCodeLookup.title = Which address can we use to contact you?
+individualContactAddressPostCodeLookup.heading = Which address can we use to contact you?
 individualContactAddressPostCodeLookup.hint = This should be an address that HMRC can use to contact you.
-individualContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
+individualContactAddressPostCodeLookup.enterPostcode = You can {0}.
 individualContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualContactAddressPostCodeLookup.formLabel = Postcode
 

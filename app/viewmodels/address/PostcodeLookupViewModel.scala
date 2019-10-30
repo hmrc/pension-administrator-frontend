@@ -27,5 +27,6 @@ case class PostcodeLookupViewModel(
                                     enterPostcode: Message,
                                     enterPostCodeLink: Option[Message],
                                     formLabel: Message,
-                                    psaName: Option[String] = None
+                                    psaName: Option[String] = None,
+                                    findAddressMessageKey: String  = "site.find_address"
                                   )

@@ -37,10 +37,10 @@ POST        /:mode/select-previous-contact-address        controllers.register.i
 GET         /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST        /check-your-answers                     controllers.register.individual.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
-GET         /what-is-the-contact-address            controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-is-the-contact-address            controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/what-is-the-contact-address     controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST        /:mode/what-is-the-contact-address     controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /which-contact-address            controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /which-contact-address            controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/which-contact-address     controllers.register.individual.IndividualContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/which-contact-address     controllers.register.individual.IndividualContactAddressPostCodeLookupController.onSubmit(mode: Mode)
 
 GET         /select-contact-address                 controllers.register.individual.IndividualContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-contact-address                 controllers.register.individual.IndividualContactAddressListController.onSubmit(mode: Mode = NormalMode)
