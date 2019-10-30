@@ -1,108 +1,105 @@
-->         /partner                                     partners.Routes
+->          /partner                                  partners.Routes
 
-GET        /what-you-will-need                          controllers.register.partnership.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
-POST       /what-you-will-need                          controllers.register.partnership.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
+GET         /what-you-will-need                       controllers.register.partnership.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-you-will-need                       controllers.register.partnership.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
 
-GET        /how-long-at-address                         controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode = NormalMode)
-POST       /how-long-at-address                         controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/how-long-at-address                   controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode)
-POST       /:mode/how-long-at-address                   controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode)
+GET         /how-long-at-address                      controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode = NormalMode)
+POST        /how-long-at-address                      controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/how-long-at-address                controllers.register.partnership.PartnershipAddressYearsController.onPageLoad(mode: Mode)
+POST        /:mode/how-long-at-address                controllers.register.partnership.PartnershipAddressYearsController.onSubmit(mode: Mode)
 
-GET        /confirm-partnership-details                 controllers.register.partnership.ConfirmPartnershipDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /confirm-partnership-details                 controllers.register.partnership.ConfirmPartnershipDetailsController.onSubmit(mode: Mode = NormalMode)
+GET         /confirm-partnership-details              controllers.register.partnership.ConfirmPartnershipDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST        /confirm-partnership-details              controllers.register.partnership.ConfirmPartnershipDetailsController.onSubmit(mode: Mode = NormalMode)
 
-GET        /partnership-address-results                 controllers.register.partnership.PartnershipContactAddressListController.onPageLoad(mode: Mode = NormalMode)
-POST       /partnership-address-results                 controllers.register.partnership.PartnershipContactAddressListController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/partnership-address-results           controllers.register.partnership.PartnershipContactAddressListController.onPageLoad(mode: Mode)
-POST       /:mode/partnership-address-results           controllers.register.partnership.PartnershipContactAddressListController.onSubmit(mode: Mode)
+GET         /partnership-address-results              controllers.register.partnership.PartnershipContactAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST        /partnership-address-results              controllers.register.partnership.PartnershipContactAddressListController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/partnership-address-results        controllers.register.partnership.PartnershipContactAddressListController.onPageLoad(mode: Mode)
+POST        /:mode/partnership-address-results        controllers.register.partnership.PartnershipContactAddressListController.onSubmit(mode: Mode)
 
-GET        /what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST       /what-is-the-contact-address                 controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/what-is-the-contact-address           controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST       /:mode/what-is-the-contact-address           controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /what-is-the-contact-address              controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-is-the-contact-address              controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/what-is-the-contact-address        controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/what-is-the-contact-address        controllers.register.partnership.PartnershipContactAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET        /partnership-company-not-found               controllers.register.partnership.PartnershipCompanyNotFoundController.onPageLoad(mode: Mode = NormalMode)
+GET         /partnership-company-not-found            controllers.register.partnership.PartnershipCompanyNotFoundController.onPageLoad(mode: Mode = NormalMode)
 
-GET        /enter-contact-address                       controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /enter-contact-address                       controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/contact-address                       controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode)
-POST       /:mode/contact-address                       controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode)
+GET         /enter-contact-address                    controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-contact-address                    controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/contact-address                    controllers.register.partnership.PartnershipContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/contact-address                    controllers.register.partnership.PartnershipContactAddressController.onSubmit(mode: Mode)
 
-GET        /is-this-the-contact-address                 controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /is-this-the-contact-address                 controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/is-this-the-contact-address           controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode)
-POST       /:mode/is-this-the-contact-address           controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode)
+GET         /is-this-the-contact-address              controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-this-the-contact-address              controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-this-the-contact-address        controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/is-this-the-contact-address        controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode)
 
 GET        /partnership-name                            controllers.register.partnership.PartnershipNameController.onPageLoad
 POST       /partnership-name                            controllers.register.partnership.PartnershipNameController.onSubmit
 
-GET        /unique-taxpayer-reference                   controllers.register.partnership.PartnershipUTRController.onPageLoad
-POST       /unique-taxpayer-reference                   controllers.register.partnership.PartnershipUTRController.onSubmit
+GET         /unique-taxpayer-reference                controllers.register.partnership.PartnershipUTRController.onPageLoad
+POST        /unique-taxpayer-reference                controllers.register.partnership.PartnershipUTRController.onSubmit
 
-GET        /confirm-partnership-name                    controllers.register.partnership.PartnershipIsRegisteredNameController.onPageLoad
-POST       /confirm-partnership-name                    controllers.register.partnership.PartnershipIsRegisteredNameController.onSubmit
+GET         /confirm-partnership-name                 controllers.register.partnership.PartnershipIsRegisteredNameController.onPageLoad
+POST        /confirm-partnership-name                 controllers.register.partnership.PartnershipIsRegisteredNameController.onSubmit
 
-GET        /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST       /previous-address                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/previous-address                      controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST       /:mode/previous-address                      controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /previous-address                         controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-address                         controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/previous-address                   controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/previous-address                   controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET        /contact-details                             controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /contact-details                             controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode)
-POST       /:mode/contact-details                       controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode)
+GET         /previous-address-results                 controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-address-results                 controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/previous-address-results           controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode)
+POST        /:mode/previous-address-results           controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode)
 
-GET        /previous-address-results                    controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
-POST       /previous-address-results                    controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/previous-address-results              controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode)
-POST       /:mode/previous-address-results              controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode)
-
-GET        /previous-address-manual                     controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /previous-address-manual                     controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/previous-address-manual               controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode)
-POST       /:mode/previous-address-manual               controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode)
+GET         /previous-address-manual                  controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-address-manual                  controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/previous-address-manual            controllers.register.partnership.PartnershipPreviousAddressController.onPageLoad(mode: Mode)
+POST        /:mode/previous-address-manual            controllers.register.partnership.PartnershipPreviousAddressController.onSubmit(mode: Mode)
 
 GET        /have-paye-reference                         controllers.register.partnership.HasPartnershipPAYEController.onPageLoad(mode: Mode = NormalMode)
 POST       /have-paye-reference                         controllers.register.partnership.HasPartnershipPAYEController.onSubmit(mode: Mode = NormalMode)
 GET        /:mode/have-paye-reference                   controllers.register.partnership.HasPartnershipPAYEController.onPageLoad(mode: Mode)
 POST       /:mode/have-paye-reference                   controllers.register.partnership.HasPartnershipPAYEController.onSubmit(mode: Mode)
 
-GET        /paye-reference                              controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode = NormalMode)
-POST       /paye-reference                              controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/paye-reference                        controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode)
-POST       /:mode/paye-reference                        controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode)
+GET         /paye-reference                           controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST        /paye-reference                           controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/paye-reference                     controllers.register.partnership.PartnershipEnterPAYEController.onPageLoad(mode: Mode)
+POST        /:mode/paye-reference                     controllers.register.partnership.PartnershipEnterPAYEController.onSubmit(mode: Mode)
 
-GET        /paye-number                                 controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
-POST       /paye-number                                 controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/paye-number                           controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode)
-POST       /:mode/paye-number                           controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode)
+GET         /paye-number                              controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode = NormalMode)
+POST        /paye-number                              controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/paye-number                        controllers.register.partnership.PartnershipPayeController.onPageLoad(mode: Mode)
+POST        /:mode/paye-number                        controllers.register.partnership.PartnershipPayeController.onSubmit(mode: Mode)
 
-GET        /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
-POST       /check-your-answers                          controllers.register.partnership.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
+GET         /check-your-answers                       controllers.register.partnership.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
+POST        /check-your-answers                       controllers.register.partnership.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
-GET        /other-partners                              controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode = NormalMode)
-POST       /other-partners                              controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/other-partners                        controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode)
-POST       /:mode/other-partners                        controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode)
+GET         /other-partners                           controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode = NormalMode)
+POST        /other-partners                           controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/other-partners                     controllers.register.partnership.MoreThanTenPartnersController.onPageLoad(mode: Mode)
+POST        /:mode/other-partners                     controllers.register.partnership.MoreThanTenPartnersController.onSubmit(mode: Mode)
 
-GET        /add-partners                                controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = NormalMode)
-POST       /add-partners                                controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/add-partners                          controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode)
-POST       /:mode/add-partners                          controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode)
+GET         /add-partners                             controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode = NormalMode)
+POST        /add-partners                             controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/add-partners                       controllers.register.partnership.AddPartnerController.onPageLoad(mode: Mode)
+POST        /:mode/add-partners                       controllers.register.partnership.AddPartnerController.onSubmit(mode: Mode)
 
-GET        /review                                      controllers.register.partnership.PartnershipReviewController.onPageLoad(mode: Mode = NormalMode)
-POST       /review                                      controllers.register.partnership.PartnershipReviewController.onSubmit(mode: Mode = NormalMode)
+GET         /review                                   controllers.register.partnership.PartnershipReviewController.onPageLoad(mode: Mode = NormalMode)
+POST        /review                                   controllers.register.partnership.PartnershipReviewController.onSubmit(mode: Mode = NormalMode)
 
-GET        /outside-eu-eea                              controllers.register.partnership.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
+GET         /outside-eu-eea                           controllers.register.partnership.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
 GET        /non-uk-partnership-name                     controllers.register.partnership.PartnershipRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /non-uk-partnership-name                     controllers.register.partnership.PartnershipRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET         /non-uk-partnership-name                  controllers.register.partnership.PartnershipRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /non-uk-partnership-name                  controllers.register.partnership.PartnershipRegisteredNameController.onSubmit(mode: Mode = NormalMode)
 
-GET        /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /enter-registered-address                    controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /enter-registered-address                 controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-registered-address                 controllers.register.partnership.PartnershipRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET         /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
-POST        /is-this-previous-address                   controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+GET         /is-this-previous-address                 controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address                 controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET         /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode = NormalMode)
 POST        /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode = NormalMode)
@@ -113,3 +110,18 @@ GET         /vat-registration-number                       controllers.register.
 POST        /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
 POST        /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode)
+
+GET         /email-address                         controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /email-address                         controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode)
+POST        /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode)
+
+GET         /phone-number                          controllers.register.partnership.PartnershipPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /phone-number                          controllers.register.partnership.PartnershipPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/phone-number                    controllers.register.partnership.PartnershipPhoneController.onPageLoad(mode: Mode)
+POST        /:mode/phone-number                    controllers.register.partnership.PartnershipPhoneController.onSubmit(mode: Mode)
+
+GET         /trading-time                             controllers.register.partnership.PartnershipTradingOverAYearController.onPageLoad(mode: Mode = NormalMode)
+POST        /trading-time                             controllers.register.partnership.PartnershipTradingOverAYearController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/trading-time                       controllers.register.partnership.PartnershipTradingOverAYearController.onPageLoad(mode: Mode)
+POST        /:mode/trading-time                       controllers.register.partnership.PartnershipTradingOverAYearController.onSubmit(mode: Mode)

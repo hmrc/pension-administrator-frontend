@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.partnership.PartnershipContactDetailsId
+import identifiers.register.partnership.PartnershipEmailId
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
@@ -87,17 +87,19 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       "redirect to the next page" when {
         "on a valid request and send the email" in {
           val validData = data ++ Json.obj(
-            PartnershipContactDetailsId.toString -> contactDetails
+            "partnershipContactDetails" -> Json.obj(
+              PartnershipEmailId.toString -> email
+            )
           )
 
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          when(mockEmailConnector.sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
+          when(mockEmailConnector.sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, times(1)).sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
 
         "on a valid request and not send the email" in {
@@ -108,7 +110,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo(contactDetails.email), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
       }
 
@@ -206,8 +208,9 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
+  val email = "test@test.com"
   val businessName = "MyCompany"
-  val contactDetails = ContactDetails("test@test.com", "test Phone")
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     BusinessNameId.toString -> businessName

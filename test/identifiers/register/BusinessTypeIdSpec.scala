@@ -115,9 +115,14 @@ class BusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValues wi
         result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "remove the data for contact details " in {
-        result.get(PartnershipContactDetailsId) mustNot be(defined)
+      "remove the data for email details " in {
+        result.get(PartnershipEmailId) mustNot be(defined)
       }
+
+      "remove the data for phone details " in {
+        result.get(PartnershipPhoneId) mustNot be(defined)
+      }
+
 
       "remove the data for partners " in {
         result.get(PartnerDetailsId(0)) mustNot be(defined)
@@ -187,7 +192,8 @@ object BusinessTypeIdSpec extends OptionValues {
       .flatMap(_.set(PartnershipAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(PartnershipPreviousAddressId)(address))
       .flatMap(_.set(PartnershipPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(PartnershipContactDetailsId)(contactDetails))
+      .flatMap(_.set(PartnershipEmailId)(email))
+      .flatMap(_.set(PartnershipPhoneId)(phone))
       .flatMap(_.set(PartnerDetailsId(0))(personDetails))
       .flatMap(_.set(PartnerDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenPartnersId)(true))

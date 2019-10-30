@@ -19,14 +19,14 @@ package controllers.register
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
-
-  private def onwardRoute = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+  private def onwardRoute: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
@@ -36,7 +36,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       FakeAuthAction
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig, onwardRoute)(fakeRequest, messages).toString
+  private def viewAsString(): String = whatYouWillNeed(frontendAppConfig, onwardRoute)(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 

@@ -36,6 +36,6 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>
-      Redirect(controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+      Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
   }
 }

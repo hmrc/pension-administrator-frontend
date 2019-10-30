@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.partnership.{ConfirmBusinessNameId, PartnershipRegisteredAddressId}
+import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import javax.inject.Inject
 import models._
@@ -127,7 +127,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             },
           {
             case true =>
-              Future.successful(Redirect(navigator.nextPage(ConfirmBusinessNameId, NormalMode, request.userAnswers)))
+              Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
             case false =>
               val updatedAnswers = request.userAnswers.removeAllOf(List(
                 PartnershipRegisteredAddressId, RegistrationInfoId

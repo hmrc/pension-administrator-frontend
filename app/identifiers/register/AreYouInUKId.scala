@@ -39,7 +39,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
           _.removeAllOf(List(IndividualDetailsCorrectId, IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId,
             BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId,
             HasPAYEId, EnterPAYEId, HasVATId, EnterVATId,
-            ConfirmBusinessNameId, PartnershipPayeId
+            ConfirmPartnershipDetailsId, PartnershipPayeId
           ))
         )
       case Some(true) =>
@@ -76,7 +76,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
     userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-      PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
+      PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(_.remove(PartnerId))
   }
 
