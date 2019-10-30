@@ -43,22 +43,21 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AreYouInUKId, nonUk, nonUkIndividualNamePage, false, Some(nonUkIndividualAddressPage), false),
     (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage, false, Some(nonUkIndividualNamePage), false),
 
-    (IndividualDetailsCorrectId, detailsCorrect, whatYouWillNeedPage, false, None, false),
+    (IndividualDetailsCorrectId, detailsCorrect, individualDateOfBirthPage, false, None, false),
     (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, false, None, false),
-    (IndividualDetailsCorrectId, lastPage, whatYouWillNeedPage, false, None, false),
     (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage, false, None, false),
 
     (IndividualDetailsId, emptyAnswers, nonUkIndividualAddressPage, false, None, false),
 
     (IndividualAddressId, nonUkEuAddress, individualDateOfBirthPage, false, None, false),
-    (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk, false, None, false),
+    (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk(CheckMode), false, None, false),
     (IndividualAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false),
 
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage(NormalMode), true, None, false),
+    (WhatYouWillNeedId, emptyAnswers, reconsiderAreYouInUk(NormalMode), true, None, false),
 
     (IndividualDateOfBirthId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
-    (IndividualDateOfBirthId, uk, checkYourAnswersPage, false, None, false),
-    (IndividualDateOfBirthId, nonUk, whatYouWillNeedPage, false, Some(checkYourAnswersPage), true),
+    (IndividualDateOfBirthId, uk, sameContactAddressPage(NormalMode), false, None, false),
+    (IndividualDateOfBirthId, nonUk, sameContactAddressPage(NormalMode), false, Some(checkYourAnswersPage), true),
     (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
 
     (IndividualSameContactAddressId, sameContactAddressNonUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
@@ -137,7 +136,7 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy private val ukIndividualDetailsPage = routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
   lazy private val nonUkIndividualNamePage = routes.IndividualNameController.onPageLoad(NormalMode)
   lazy private val nonUkIndividualAddressPage = routes.IndividualRegisteredAddressController.onPageLoad(NormalMode)
-  lazy private val reconsiderAreYouInUk = routes.IndividualAreYouInUKController.onPageLoad(CheckMode)
+  private def reconsiderAreYouInUk(mode: Mode): Call = routes.IndividualAreYouInUKController.onPageLoad(mode)
   lazy private val outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
   lazy private val anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   lazy private val confirmPreviousAddress = routes.IndividualConfirmPreviousAddressController.onPageLoad()
