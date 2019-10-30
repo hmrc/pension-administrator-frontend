@@ -18,45 +18,26 @@ package views.register
 
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import models.NormalMode
-import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import views.behaviours.YesNoViewBehaviours
 import views.html.register.declarationWorkingKnowledge
 
-class DeclarationWorkingKnowledgeViewSpec extends ViewBehaviours {
+class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "declarationWorkingKnowledge"
+  private val messageKeyPrefix = "declarationWorkingKnowledge"
 
   val form = new DeclarationWorkingKnowledgeFormProvider()()
 
-  def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) =>
+  private def createViewUsingForm = (form: Form[_]) =>
     declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view" must {
 
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView, messageKeyPrefix, "p1", "p2", "p3")
 
-    "contain radio buttons for the value" in {
-      val doc = asDocument(createViewUsingForm(form))
-      for (option <- DeclarationWorkingKnowledge.options) {
-        assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, false)
-      }
-    }
-
-    for (option <- DeclarationWorkingKnowledge.options) {
-      s"rendered with a value of '${option.value}'" must {
-        s"have the '${option.value}' radio button selected" in {
-          val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
-          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, true)
-
-          for (unselectedOption <- DeclarationWorkingKnowledge.options.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, false)
-          }
-        }
-      }
-    }
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "",s"$messageKeyPrefix.heading")
   }
 }
