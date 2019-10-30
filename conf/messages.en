@@ -617,10 +617,10 @@ common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This should be an address that HMRC can use to contact you.
 
 company.contactAddressList.title = Select the contact address for the company
-company.contactAddressList.heading = Select the contact address for {0}
+contactAddressList.heading = Select the contact address for {0}
 
-companyContactAddress.title = What is the contact address?
-companyContactAddress.heading = What is {0}’s contact address?
+contactAddress.title = What is the contact address?
+contactAddress.heading = What is {0}’s contact address?
 companyContactAddress.lede = You can change any part of the address if you need to.
 companyContactAddress.visuallyHidden.text = {0}’s contact address
 

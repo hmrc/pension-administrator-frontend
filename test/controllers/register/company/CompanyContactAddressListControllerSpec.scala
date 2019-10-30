@@ -124,7 +124,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
       routes.CompanyContactAddressController.onPageLoad(NormalMode),
       addresses,
       Message("company.contactAddressList.title"),
-      Message("company.contactAddressList.heading").withArgs("test company"),
+      Message("contactAddressList.heading").withArgs("test company"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

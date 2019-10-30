@@ -62,8 +62,8 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
               postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
               manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
               addresses = addresses,
-              Message("company.contactAddressList.heading", Message("theDirector").resolve),
-              Message("company.contactAddressList.heading", name.fullName),
+              Message("contactAddressList.heading", Message("theDirector").resolve),
+              Message("contactAddressList.heading", name.fullName),
               Message("common.selectAddress.text"),
               Message("common.selectAddress.link"),
               psaName = psaName()

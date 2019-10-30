@@ -102,6 +102,80 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
           )
         }
 
+        s"render the view correctly for utr in ${jsLiteral.to(mode)}" in {
+          val utr = ReferenceValue("1111111111")
+          val reason = "test reason"
+          val retrievalAction = UserAnswers().directorHasUTR(index, flag = true).directorEnterUTR(index, utr)
+            .directorNoUTRReason(index, reason).dataRetrievalAction
+          val rows = Seq(
+            answerRow(
+              label = messages("hasUTR.heading", defaultDirectorName),
+              answer = Seq("site.yes"),
+              answerIsMessageKey = true,
+              changeUrl = Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("hasUTR.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(
+              label = messages("enterUTR.heading", defaultDirectorName),
+              answer = Seq(utr.value),
+              changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("enterUTR.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(
+              label = messages("whyNoUTR.heading", defaultDirectorName),
+              answer = Seq(reason),
+              changeUrl = Some(Link(DirectorNoUTRReasonController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("whyNoUTR.visuallyHidden.text", defaultDirectorName))
+            )
+          )
+
+          val sections = Seq(AnswerSection(None, rows))
+
+          testRenderedView(
+            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
+          )
+        }
+
+        s"render the view correctly for address in ${jsLiteral.to(mode)}" in {
+          val addressYears = AddressYears.UnderAYear
+          val retrievalAction = UserAnswers().directorAddress(index, address).directorAddressYears(index, addressYears)
+            .directorPreviousAddress(index, address).dataRetrievalAction
+          val rows = Seq(
+            answerRow(Message("address.checkYourAnswersLabel", defaultDirectorName),
+              Seq(
+                address.addressLine1,
+                address.addressLine2,
+                address.postcode.value,
+                address.country
+              ),
+              answerIsMessageKey = false,
+              Some(Link(DirectorAddressController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("address.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(Message("addressYears.heading", defaultDirectorName),
+              Seq(s"common.addressYears.${addressYears.toString}"), answerIsMessageKey = true,
+              Some(Link(DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultDirectorName))
+            ),
+            answerRow(Message("previousAddress.checkYourAnswersLabel", defaultDirectorName),
+              Seq(
+                address.addressLine1,
+                address.addressLine2,
+                address.postcode.value,
+                address.country
+              ),
+              answerIsMessageKey = false,
+              Some(Link(DirectorPreviousAddressController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultDirectorName)))
+          )
+
+          val sections = Seq(AnswerSection(None, rows))
+
+          testRenderedView(
+            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
+          )
+        }
+
         s"render the view correctly for email and phone in ${jsLiteral.to(mode)}" in {
           val retrievalAction = UserAnswers().directorEmail(index, email).directorPhone(index, phone).dataRetrievalAction
           val rows = Seq(
@@ -155,7 +229,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private val directorName = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val defaultDirectorName = Message("theDirector").resolve
-  private def call(mode: Mode): Call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)
+  private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(mode, index)
+  private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
                         changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
