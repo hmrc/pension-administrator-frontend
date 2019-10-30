@@ -35,7 +35,7 @@
         @components.heading(messages("individualDetailsCorrect.heading"))
 
 
-        <p>@individual.fullName</p>
+        <p id="individual-value">@individual.fullName</p>
         <p>
             @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
             <span id="address-value-@i" class="address-multi-line">@line</span>

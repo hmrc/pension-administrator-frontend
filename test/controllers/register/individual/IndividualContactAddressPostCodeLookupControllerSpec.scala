@@ -77,7 +77,8 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
       Message("individualContactAddressPostCodeLookup.enterPostcode"),
       Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
       Message("individualContactAddressPostCodeLookup.formLabel"),
-      psaName = None
+      psaName = None,
+      findAddressMessageKey = "site.save_and_continue"
     )
 
   private val onwardRoute = controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)
