@@ -22,7 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId}
+import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
@@ -56,14 +56,14 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
   }
 
   private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    CompanyDirectorAddressPostCodeLookupId(index).retrieve.right.map {
-      addresses =>
+    (DirectorNameId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
+      case name ~ addresses =>
             AddressListViewModel(
               postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
               manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
               addresses = addresses,
-              Message("common.selectAddress.title"),
-              Message("common.selectAddress.heading"),
+              Message("company.contactAddressList.heading", Message("theDirector").resolve),
+              Message("company.contactAddressList.heading", name.fullName),
               Message("common.selectAddress.text"),
               Message("common.selectAddress.link"),
               psaName = psaName()

@@ -22,18 +22,17 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
-import controllers.register.company.directors.routes.{DirectorEmailController, DirectorPhoneController, HasDirectorNINOController, DirectorEnterNINOController, DirectorNoNINOReasonController}
+import controllers.register.company.directors.routes._
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.IsDirectorCompleteId
+import models.Mode.{checkMode, _}
 import models._
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
-import models.Mode.checkMode
-import models.Mode._
-import play.api.mvc.Call
 
 class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
 
@@ -48,18 +47,18 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
           val retrievalAction = UserAnswers().directorName(index, directorName).directorDob(index, LocalDate.now).dataRetrievalAction
           val rows = Seq(
             AnswerRow(
-              "cya.label.name",
+              Message("directorName.cya.label"),
               Seq("Test Name"),
               answerIsMessageKey = false,
               Some(Link(routes.DirectorNameController.onPageLoad(checkMode(mode), index).url)),
-              None
+              Some(Message("directorName.visuallyHidden.text"))
             ),
             AnswerRow(
-              "cya.label.dob",
+              Message("dob.heading").withArgs(directorName.fullName),
               Seq(DateHelper.formatDate(LocalDate.now)),
               answerIsMessageKey = false,
               Some(Link(routes.DirectorDOBController.onPageLoad(checkMode(mode), index).url)),
-              None
+              Some(Message("dob.visuallyHidden.text").withArgs(directorName.fullName))
             ))
 
           val sections = Seq(AnswerSection(None, rows))
@@ -155,9 +154,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private val index = Index(0)
   private val directorName = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   private val defaultDirectorName = Message("theDirector").resolve
-
   private def call(mode: Mode): Call = controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index)
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
@@ -174,9 +171,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       FakeNavigator,
       messagesApi,
-      checkYourAnswersFactory,
       FakeSectionComplete,
-      FakeUserAnswersCacheConnector
+      FakeUserAnswersCacheConnector,
+      countryOptions
     )
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction, mode: Mode = NormalMode): Unit = {

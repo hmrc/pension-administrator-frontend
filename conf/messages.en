@@ -129,7 +129,7 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.error.dateOfBirth.past = The date of birth must be after 1900
 common.dateOfBirth = Date of birth
-common.dateOfBirth.hint = For example 30 9 1990
+common.dateOfBirth.hint = For example, 31 3 1980
 common.vat = VAT Registration number
 common.vat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
 common.error.vat.required = Enter the VAT registration number
@@ -224,8 +224,11 @@ companyDetails.error.companyName.invalid = The name contains invalid characters
 
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
-companyPreviousAddress.checkYourAnswersLabel = {0}’s previous address
-companyPreviousAddress.visuallyHidden.text = {0}’s previous address
+previousAddress.checkYourAnswersLabel = {0}’s previous address
+previousAddress.visuallyHidden.text = {0}’s previous address
+
+address.checkYourAnswersLabel = {0}’s address
+address.visuallyHidden.text = {0}’s address
 
 companyPreviousAddressPostCodeLookup.title = What was the previous contact address for the company?
 companyPreviousAddressPostCodeLookup.heading = What was the previous contact address for {0} ?
@@ -306,8 +309,7 @@ directorNino.error.required = One of the two radio buttons must be selected (YES
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
 directorNino.error.reason.length = The reason cannot be more than 160 characters
 
-companyDirectorAddressPostCodeLookup.title = Director’s address
-companyDirectorAddressPostCodeLookup.heading = Director’s address
+companyDirectorAddressPostCodeLookup.heading = Which address can we use to contact {0}?
 companyDirectorAddressPostCodeLookup.body = This is usually the director’s residential address.
 companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = Director’s address
 companyDirectorAddressPostCodeLookup.postcode = Postcode
@@ -395,8 +397,7 @@ theDirector = the director
 thePartner = the partner
 theIndividual = the individual
 
-directorPreviousAddressPostCodeLookup.title = Director’s previous address
-directorPreviousAddressPostCodeLookup.heading = Director’s previous address
+directorPreviousAddressPostCodeLookup.heading = What was {0}’s previous contact address?
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
 directorPreviousAddressPostCodeLookup.input.text = Postcode
 directorPreviousAddressPostCodeLookup.checkYourAnswersLabel = Director’s previous address post code
@@ -408,7 +409,7 @@ directorAddressYears.checkYourAnswersLabel = How long has the director lived at 
 directorAddressYears.error.required = Select how long they have been at the current address
 
 addressYears.heading = Has {0} used this contact address for at least 1 year?
-addressYears.visuallyHidden.text = whether {0} has used this address for at least 1 year
+addressYears.visuallyHidden.text = whether {0} has used this contact address for at least 1 year
 
 directorPreviousAddress.title = Director’s previous address
 directorPreviousAddress.heading = Director’s previous address
@@ -1022,6 +1023,8 @@ isRegisteredName.partnership.heading = Is {0} the registered name of the partner
 
 directorName.title = What is the director’s name?
 directorName.heading = What is the director’s name?
+directorName.cya.label = Director’s name
+directorName.visuallyHidden.text = the name of the director
 
-directorDob.title = What is the director’s date of birth?
-dob.heading = What is the date of birth for {0}?
+dob.heading = What is {0}’s date of birth?
+dob.visuallyHidden.text = {0}’s date of birth

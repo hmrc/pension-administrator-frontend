@@ -172,7 +172,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           Some("post-code"),
           "country"
         )
-        val rows = Seq(answerRow(Message("companyPreviousAddress.checkYourAnswersLabel", defaultCompany),
+        val rows = Seq(answerRow(Message("previousAddress.checkYourAnswersLabel", defaultCompany),
           Seq(
             address.addressLine1,
             address.addressLine2,
@@ -180,7 +180,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.country
           ), answerIsMessageKey = false,
           Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)),
-          visuallyHiddenLabel = Some(Message("companyPreviousAddress.visuallyHidden.text", defaultCompany))))
+          visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultCompany))))
 
         val sections = answerSections(None, rows)
 
