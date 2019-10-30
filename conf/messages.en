@@ -343,6 +343,10 @@ enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characte
 enterPAYE.error.required = Enter an employer PAYE reference
 enterPAYE.visuallyHidden.text = {0}’s employer PAYE reference
 
+trading.title = Has {0} been trading for at least 1 year?
+trading.error.required = Select yes if {0} has been trading for at least 1 year
+trading.visuallyHidden.text = whether {0} has been trading for at least 1 year
+
 hasNINO.heading = Does {0} have a National Insurance number?
 hasNINO.error.required = Select yes if {0} has a National Insurance number
 hasNINO.visuallyHidden.text = whether {0} has a National Insurance number

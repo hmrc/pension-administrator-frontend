@@ -401,7 +401,7 @@ object AreYouInUKIdSpec extends OptionValues {
   val partnershipAnswersForYes = UserAnswers(Json.obj())
     .set(AreYouInUKId)(true)
     .flatMap(setCommonPartnershipData)
-    .flatMap(_.set(ConfirmBusinessNameId)(true))
+    .flatMap(_.set(ConfirmPartnershipDetailsId)(true))
     .flatMap(_.set(PartnershipVatId)(Vat.No))
     .flatMap(_.set(PartnershipPayeId)(Paye.No))
     .flatMap(_.set(RegisterAsBusinessId)(true))
