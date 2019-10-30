@@ -18,9 +18,9 @@ package identifiers.register
 
 import identifiers._
 import identifiers.register.company.directors.DirectorId
-import identifiers.register.company.{CompanyAddressId, CompanyAddressListId, CompanyAddressYearsId, CompanyContactAddressId, CompanyContactAddressListId, CompanyEmailId, CompanyPhoneId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId, CompanyRegistrationNumberId, CompanySameContactAddressId, ContactDetailsId, HasCompanyCRNId, MoreThanTenDirectorsId}
+import identifiers.register.company._
 import identifiers.register.partnership.partners.PartnerId
-import identifiers.register.partnership.{MoreThanTenPartnersId, PartnershipAddressYearsId, PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, PartnershipContactDetailsId, PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId}
+import identifiers.register.partnership._
 import models.{PersonDetails, PersonName}
 import models.register.BusinessType
 import models.register.BusinessType._
@@ -72,7 +72,7 @@ case object BusinessTypeId extends TypedIdentifier[BusinessType] {
       HasPAYEId, EnterPAYEId, HasVATId, EnterVATId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-      PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))
+      PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 

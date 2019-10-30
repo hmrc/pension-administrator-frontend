@@ -206,27 +206,48 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
 
       "display Contact Details section " which {
+
         "render the view correctly for email and phone" in {
+
+          val partnershipDetails = AnswerSection(
+            Some("checkyouranswers.partnership.details"),
+            Seq()
+          )
+
+          val partnershipContactDetails = AnswerSection(
+            Some("checkyouranswers.partnership.contact.details.heading"),
+            Seq()
+          )
+
           val rows = Seq(
             answerRow(
-              "contactDetails.email.checkYourAnswersLabel",
-              Seq("test email"),
-              answerIsMessageKey = false,
-              Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
+              label = messages("email.title", defaultPartnership),
+              answer = Seq("test@email"),
+              changeUrl = Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(CheckMode).url)),
+              visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnership))
             ),
-            answerRow("contactDetails.phone.checkYourAnswersLabel",
-              Seq("test phone"),
-              answerIsMessageKey = false,
-              Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url))
-            ))
+            answerRow(
+              label = messages("phone.title", defaultPartnership),
+              answer = Seq("1234567890"),
+              changeUrl = Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(CheckMode).url)),
+              visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnership))
+            )
+          )
 
-          val sections = answerSections(Some("common.checkYourAnswers.contact.details.heading"), rows)
+          val sections = Seq(partnershipDetails, partnershipContactDetails, AnswerSection(Some("common.checkYourAnswers.contact.details.heading"), rows))
 
           val retrievalAction = dataRetrievalAction(
-            PartnershipContactDetailsId.toString -> ContactDetails("test email", "test phone")
+            "partnershipContactDetails" -> Json.obj(
+              PartnershipPhoneId.toString -> "1234567890",
+              PartnershipEmailId.toString -> "test@email"
+            )
           )
-          testRenderedView(Seq(partnershipDetails, partnershipContactDetails) ++ sections, retrievalAction)
+
+          testRenderedView(
+            sections = sections, dataRetrievalAction = retrievalAction
+          )
         }
+
       }
 
       "redirect to session expired page" when {
@@ -258,7 +279,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
-
+  private val defaultPartnership = Message("thePartnership").resolve
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =

@@ -431,8 +431,8 @@ directorCheckYourAnswers.contactDetails.heading = Contact details for director
 confirmCompanyAddress.title = Is this the registered address for the company?
 confirmCompanyAddress.heading = Is this the registered address for {0}?
 
-whatYouWillNeed.title = What you’ll need
-whatYouWillNeed.heading = What you’ll need
+whatYouWillNeed.title = What you will need
+whatYouWillNeed.heading = What you will need
 whatYouWillNeed.body.text = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
 whatYouWillNeed.body.item2 = your contact telephone number and email address
@@ -1024,4 +1024,4 @@ directorName.title = What is the director’s name?
 directorName.heading = What is the director’s name?
 
 directorDob.title = What is the director’s date of birth?
-dob.heading = What is the date of birth for {0}?
+dob.heading = What is {0}’s date of birth?
