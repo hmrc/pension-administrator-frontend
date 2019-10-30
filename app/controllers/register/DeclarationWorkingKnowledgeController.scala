@@ -24,7 +24,6 @@ import identifiers.register.DeclarationWorkingKnowledgeId
 import javax.inject.Inject
 import models.Mode
 import models.register.DeclarationWorkingKnowledge
-import models.register.DeclarationWorkingKnowledge.{Adviser, WorkingKnowledge}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -52,7 +51,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form
-        case Some(value) => form.fill(DeclarationWorkingKnowledge.hasWorkingKnowledge(value))
+        case Some(value) => form.fill(value.hasWorkingKnowledge)
       }
       Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode))
   }
@@ -64,7 +63,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
         value => {
           dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
-            DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(value)).map(cacheMap =>
+            DeclarationWorkingKnowledge.declarationWorkingKnowledge(value)).map(cacheMap =>
             Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
         }
       )
