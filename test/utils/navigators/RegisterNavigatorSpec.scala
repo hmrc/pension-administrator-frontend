@@ -54,8 +54,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
     (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
 
-    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, isCompanyRegisteredInUKPage, false, None, false),
-    (RegisterAsBusinessId, registerAsBusinessIdIndividual, isIndividualBasedInUKPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage, false, None, false),
 
     (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, false, None, false),
     (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, false, None, false)
@@ -91,6 +91,8 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val nonUkPartnershipRegisteredName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
   lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
+  lazy val individualWynPage: Call = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
+  lazy val businessWynPage: Call = controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
   private val isCompanyRegisteredInUKPage = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
   private val isIndividualBasedInUKPage = controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode)
 

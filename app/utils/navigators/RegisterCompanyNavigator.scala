@@ -72,6 +72,8 @@ class RegisterCompanyNavigator @Inject()(
       NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(NormalMode))
     case CompanyAddressYearsId =>
       companyAddressYearsIdRoutes(from.userAnswers)
+    case CompanyTradingOverAYearId =>
+      hasBeenTradingIdRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>
       NavigateTo.save(routes.CompanyAddressListController.onPageLoad(NormalMode))
     case CompanyAddressListId =>
@@ -122,6 +124,8 @@ class RegisterCompanyNavigator @Inject()(
       checkYourAnswers
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(from.userAnswers)
+    case CompanyTradingOverAYearId =>
+      hasBeenTradingCheckIdRoutes(from.userAnswers)
     case CompanyPreviousAddressPostCodeLookupId =>
       NavigateTo.save(routes.CompanyAddressListController.onPageLoad(CheckMode))
     case CompanyAddressListId =>
@@ -172,20 +176,50 @@ class RegisterCompanyNavigator @Inject()(
   private def anyMoreChanges: Option[NavigateTo] = NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
 
   private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
-      case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
-      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    answers.get(CompanyAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) =>
+        NavigateTo.save(routes.CompanyTradingOverAYearController.onPageLoad(NormalMode))
+      case Some(AddressYears.OverAYear) =>
+        NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
+      case _ =>
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
   private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
-    (answers.get(CompanyAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (Some(AddressYears.UnderAYear), Some(false)) => NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
-      case (Some(AddressYears.UnderAYear), Some(true)) => NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
-      case (Some(AddressYears.OverAYear), _) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    answers.get(CompanyAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) =>
+        NavigateTo.save(routes.CompanyTradingOverAYearController.onPageLoad(CheckMode))
+      case Some(AddressYears.OverAYear) =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case _ =>
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def hasBeenTradingIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
+      case (Some(true), Some(true)) =>
+        NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+      case (Some(true), Some(false)) =>
+        NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
+      case (Some(false), _) =>
+        NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
+      case _ =>
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
+      case (Some(true), Some(true)) =>
+        NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
+      case (Some(true), Some(false)) =>
+        NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
+      case (Some(false), _) =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case _ =>
+        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
 
@@ -239,16 +273,6 @@ class RegisterCompanyNavigator @Inject()(
         NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
       case _ =>
         NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
-    }
-  }
-
-  private def hasCrnNoNav(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(BusinessTypeId)
-    match {
-      case Some(BusinessType.LimitedCompany) =>
-        NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
-      case _ =>
-        NavigateTo.dontSave(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
     }
   }
 

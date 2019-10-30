@@ -18,6 +18,6 @@ package identifiers.register.partnership
 
 import identifiers._
 
-case object ConfirmBusinessNameId extends TypedIdentifier[Boolean] {
+case object ConfirmPartnershipDetailsId extends TypedIdentifier[Boolean] {
   override def toString: String = "confirmPartnershipDetails"
 }
