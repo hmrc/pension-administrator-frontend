@@ -59,12 +59,12 @@ class CheckYourAnswersController @Inject()(
         None,
         Seq(
           helper.individualDetails.toSeq,
+          helper.individualDateOfBirth.toSeq,
           helper.individualAddress.toSeq,
           helper.individualSameContactAddress.toSeq,
           helper.individualContactAddress.toSeq,
           helper.individualAddressYears(message).toSeq,
           helper.individualPreviousAddress.toSeq,
-          helper.individualDateOfBirth.toSeq,
           IndividualEmailId.row(Some(Link(routes.IndividualEmailController.onPageLoad(CheckMode).url))),
           IndividualPhoneId.row(Some(Link(routes.IndividualPhoneController.onPageLoad(CheckMode).url)))
         ).flatten

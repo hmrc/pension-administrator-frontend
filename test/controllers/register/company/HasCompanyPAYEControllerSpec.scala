@@ -55,7 +55,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {
       "return OK and the correct view" in {
-        running(_.overrides(modules(UserAnswers().businessName.dataRetrievalAction): _*)) {
+        running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction): _*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -65,7 +65,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = UserAnswers().businessName.set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
+        val validData = UserAnswers().businessName().set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
         running(_.overrides(modules(validData): _*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
@@ -88,7 +88,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
     "on a POST" must {
       "redirect to the next page when valid data is submitted" in {
         running(_.overrides(
-          modules(UserAnswers().businessName.dataRetrievalAction) ++
+          modules(UserAnswers().businessName().dataRetrievalAction) ++
             Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
               bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
           app =>
@@ -102,7 +102,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
-        running(_.overrides(modules(UserAnswers().businessName.dataRetrievalAction): _*)) {
+        running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction): _*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val boundForm = form.bind(Map("value" -> "invalid value"))

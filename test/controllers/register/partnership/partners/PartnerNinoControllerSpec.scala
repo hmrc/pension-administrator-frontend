@@ -22,9 +22,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.partners.PartnerNinoFormProvider
-import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId}
+import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId}
 import models._
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
@@ -45,7 +44,7 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
 
 
   val validData: JsObject = Json.obj(
-    PartnershipDetailsId.toString -> BusinessDetails(partnershipName, Some("1234567890")),
+    BusinessNameId.toString -> partnershipName,
     "partners" -> Json.arr(
       Json.obj(
         PartnerDetailsId.toString ->

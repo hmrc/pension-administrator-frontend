@@ -73,7 +73,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   }
 
   private def removePartnershipData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(PartnershipDetailsId, PartnershipSameContactAddressId,
+    userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))

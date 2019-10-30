@@ -74,7 +74,7 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
   }
 
   private def removeAllPartnership(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(NonUKBusinessTypeId, PartnershipDetailsId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId,
+    userAnswers.removeAllOf(List(NonUKBusinessTypeId, BusinessNameId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipContactDetailsId, MoreThanTenPartnersId))

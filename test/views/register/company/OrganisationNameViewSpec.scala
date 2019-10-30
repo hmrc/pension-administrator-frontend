@@ -16,15 +16,14 @@
 
 package views.register.company
 
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
-import models.{BusinessDetails, NormalMode}
+import forms.BusinessNameFormProvider
 import play.api.data.Form
 import play.api.mvc.Call
-import viewmodels.{OrganisationNameViewModel, Message}
+import viewmodels.{Message, OrganisationNameViewModel}
 import views.behaviours.QuestionViewBehaviours
 import views.html.organisationName
 
-class OrganisationNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
+class OrganisationNameViewSpec extends QuestionViewBehaviours[String] {
 
   private val messageKeyPrefix = "companyNameNonUk"
 
@@ -35,19 +34,7 @@ class OrganisationNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       postCall = Call("POST", "http://www.test.com")
     )
 
-  protected val formModel: BusinessDetailsFormModel =
-    BusinessDetailsFormModel(
-      companyNameMaxLength = 105,
-      companyNameRequiredMsg = "businessDetails.error.companyName.required",
-      companyNameLengthMsg = "businessDetails.error.companyName.length",
-      companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
-      utrMaxLength = 10,
-      utrRequiredMsg = None,
-      utrLengthMsg = "businessDetails.error.utr.length",
-      utrInvalidMsg = "businessDetails.error.utr.invalid"
-    )
-
-  val form = new BusinessDetailsFormProvider(isUK=false)(formModel)
+  val form = new BusinessNameFormProvider()()
 
   private def createView = () => organisationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
 
@@ -63,9 +50,9 @@ class OrganisationNameViewSpec extends QuestionViewBehaviours[BusinessDetails] {
       createViewUsingForm,
       messageKeyPrefix,
       "",
-      "companyName")
+      "value")
 
-    behave like pageWithLabel(createViewUsingForm, "companyName", messages("companyNameNonUk.heading"))
+    behave like pageWithLabel(createViewUsingForm, "value", messages("companyNameNonUk.heading"))
 
 
   }

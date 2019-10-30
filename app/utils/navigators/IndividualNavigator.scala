@@ -44,7 +44,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
     case IndividualDetailsCorrectId => detailsCorrect(from.userAnswers)
     case IndividualDetailsId => NavigateTo.dontSave(routes.IndividualRegisteredAddressController.onPageLoad(NormalMode))
     case IndividualAddressId => regionBasedNavigation(from.userAnswers)
-    case WhatYouWillNeedId => NavigateTo.save(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
+    case WhatYouWillNeedId => NavigateTo.save(routes.IndividualAreYouInUKController.onPageLoad(NormalMode))
     case IndividualSameContactAddressId => contactAddressRoutes(from.userAnswers, NormalMode)
     case IndividualContactAddressPostCodeLookupId => NavigateTo.dontSave(routes.IndividualContactAddressListController.onPageLoad(NormalMode))
     case IndividualContactAddressListId => NavigateTo.save(routes.IndividualContactAddressController.onPageLoad(NormalMode))
@@ -99,7 +99,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
   def detailsCorrect(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) =>
-        NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+        NavigateTo.dontSave(routes.IndividualDateOfBirthController.onPageLoad(NormalMode))
       case Some(false) =>
         NavigateTo.dontSave(routes.YouWillNeedToUpdateController.onPageLoad())
       case None =>
@@ -188,8 +188,7 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
 
   def countryBasedDobNavigation(answers: UserAnswers): Option[NavigateTo] =
     answers.get(AreYouInUKId) match {
-      case Some(false) => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-      case Some(true) => checkYourAnswers()
+      case Some(_) => NavigateTo.dontSave(routes.IndividualSameContactAddressController.onPageLoad(NormalMode))
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
 

@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.partnership.{PartnershipContactDetailsId, PartnershipDetailsId}
+import identifiers.register.partnership.PartnershipContactDetailsId
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
@@ -206,11 +206,11 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
+  val businessName = "MyCompany"
   val contactDetails = ContactDetails("test@test.com", "test Phone")
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
-    PartnershipDetailsId.toString -> businessDetails
+    BusinessNameId.toString -> businessName
   )
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")
