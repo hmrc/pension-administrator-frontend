@@ -64,7 +64,7 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
   }
 
   private def removeAllPartnership(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(PartnershipDetailsId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId,
+    userAnswers.removeAllOf(List(BusinessNameId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId,
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))

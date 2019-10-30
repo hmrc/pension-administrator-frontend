@@ -22,7 +22,7 @@ echo "Adding helper method to CheckYourAnswersHelper"
 awk '/class/ {\
      print;\
      print "";\
-     print "  def confirmPartnershipDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.ConfirmPartnershipDetailsId) match {";\
+     print "  def confirmPartnershipDetails: Seq[AnswerRow] = userAnswers.get(identifiers.register.partnership.ConfirmBusinessNameId) match {";\
      print "    case Some(x) => Seq(AnswerRow(\"confirmPartnershipDetails.checkYourAnswersLabel\", if(x) \"site.yes\" else \"site.no\", true, controllers.register.partnership.routes.ConfirmPartnershipDetailsController.onPageLoad(CheckMode).url))";\
      print "    case _ => Nil";\
      print "  }";\

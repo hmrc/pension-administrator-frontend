@@ -22,8 +22,8 @@ import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipDetailsId, PartnershipRegisteredAddressId}
-import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import javax.inject.Inject
 import models._
 import models.requests.DataRequest
@@ -59,53 +59,36 @@ class ConfirmPartnershipDetailsController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      getPartnershipDetails { case (_, registration) =>
-        dataCacheConnector.remove(request.externalId, ConfirmPartnershipDetailsId).flatMap(_ =>
-          dataCacheConnector.remove(request.externalId, PartnershipRegisteredAddressId).map(_ =>
-            Ok(confirmPartnershipDetails(appConfig, form, registration.response.organisation.organisationName, registration.response.address, countryOptions))))
-      }
-  }
+      getPartnershipDetails { registration =>
+        upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
+          upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
+            upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+              dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      getPartnershipDetails { case (partnershipDetails, registration) =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(confirmPartnershipDetails(
-              appConfig,
-              formWithErrors,
-              registration.response.organisation.organisationName,
-              registration.response.address,
-              countryOptions
-            ))),
-          {
-            case true =>
-              upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
-                upsert(userAnswers, PartnershipDetailsId)(partnershipDetails.copy(registration.response.organisation.organisationName)) { userAnswers =>
-                  upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                    dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
-                      Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, userAnswers))
-                    }
-                  }
-                }
+                Ok(confirmPartnershipDetails(
+                  appConfig,
+                  form,
+                  registration.response.organisation.organisationName,
+                  registration.response.address,
+                  countryOptions)
+                )
               }
-            case false => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
+            }
           }
-        )
+        }
       }
   }
 
-
-  private def getPartnershipDetails(fn: (BusinessDetails, OrganizationRegistration) => Future[Result])
+  private def getPartnershipDetails(fn: OrganizationRegistration => Future[Result])
                                    (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
 
-    (PartnershipDetailsId and BusinessTypeId).retrieve.right.map {
-      case businessDetails ~ businessType =>
-        val organisation = Organisation(businessDetails.companyName.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
+    (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
+      case name ~ utr ~ businessType =>
+        val organisation = Organisation(name.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
         val legalStatus = RegistrationLegalStatus.Partnership
-        registrationConnector.registerWithIdOrganisation(businessDetails.utrOrException, organisation, legalStatus).flatMap {
+        registrationConnector.registerWithIdOrganisation(utr, organisation, legalStatus).flatMap {
           registration =>
-            fn(businessDetails, registration)
+            fn(registration)
         } recoverWith {
           case _: NotFoundException =>
             Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
@@ -126,5 +109,33 @@ class ConfirmPartnershipDetailsController @Inject()(
         },
         userAnswers => fn(userAnswers)
       )
+  }
+
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+    implicit request =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
+              case name ~ address =>
+              Future.successful(BadRequest(confirmPartnershipDetails(
+                appConfig,
+                formWithErrors,
+                name,
+                address,
+                countryOptions
+              )))
+            },
+          {
+            case true =>
+              Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
+            case false =>
+              val updatedAnswers = request.userAnswers.removeAllOf(List(
+                PartnershipRegisteredAddressId, RegistrationInfoId
+              )).asOpt.getOrElse(request.userAnswers)
+              dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+                Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
+              }
+          }
+        )
   }
 }

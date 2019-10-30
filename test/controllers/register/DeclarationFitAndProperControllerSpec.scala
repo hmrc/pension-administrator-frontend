@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register._
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipEmailId}
+import identifiers.register.partnership.PartnershipEmailId
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
@@ -39,7 +39,7 @@ import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse, BadRequestException}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
 
@@ -210,9 +210,10 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val email = "test@test.com"
+  val businessName = "MyCompany"
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
   val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
-    PartnershipDetailsId.toString -> businessDetails
+    BusinessNameId.toString -> businessName
   )
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")

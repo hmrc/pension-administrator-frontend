@@ -22,7 +22,8 @@ import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.partnership.routes._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.partnership.{PartnershipTradingOverAYearId, PartnershipDetailsId}
+import identifiers.register.BusinessNameId
+import identifiers.register.partnership.PartnershipTradingOverAYearId
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
@@ -60,18 +61,18 @@ class PartnershipTradingOverAYearController @Inject()(override val appConfig: Fr
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        PartnershipDetailsId.retrieve.right.map {
-          details =>
-            get(PartnershipTradingOverAYearId, form(details.companyName), viewModel(mode, details.companyName))
+        BusinessNameId.retrieve.right.map {
+          name =>
+            get(PartnershipTradingOverAYearId, form(name), viewModel(mode, name))
         }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        PartnershipDetailsId.retrieve.right.map {
-          details =>
-            post(PartnershipTradingOverAYearId, mode, form(details.companyName), viewModel(mode, details.companyName))
+        BusinessNameId.retrieve.right.map {
+          name =>
+            post(PartnershipTradingOverAYearId, mode, form(name), viewModel(mode, name))
         }
     }
 

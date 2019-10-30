@@ -350,10 +350,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(UpdateMode).url)))
   }
 
-  private def partnershipUtr: Option[AnswerRow] = userAnswers.get(PartnershipDetailsId) flatMap (_.uniqueTaxReferenceNumber map { utr =>
+  private def partnershipUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
     AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       None)
-  })
+  }
 
   //Partners
   private def partnerDob(index: Int): Option[AnswerRow] = userAnswers.get(PartnerDetailsId(index)) map { details =>
