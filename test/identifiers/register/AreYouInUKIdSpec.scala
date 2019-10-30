@@ -131,166 +131,168 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
     }
   }
 
-//  "Cleanup for an individual" when {
-//
-//    "where are you in uk has already answered as Yes and we change to No" must {
-//      val result: UserAnswers =
-//        individualAnswersForYes.set(AreYouInUKId)(false)
-//          .asOpt.value
-//
-//      "remove all the uk individual data " in {
-//        result.get(IndividualDetailsCorrectId) mustNot be(defined)
-//        result.get(IndividualDetailsId) mustNot be(defined)
-//        result.get(IndividualDateOfBirthId) mustNot be(defined)
-//        result.get(RegistrationInfoId) mustNot be(defined)
-//        result.get(IndividualSameContactAddressId) mustNot be(defined)
-//        result.get(IndividualContactAddressListId) mustNot be(defined)
-//        result.get(IndividualAddressId) mustNot be(defined)
-//        result.get(IndividualAddressYearsId) mustNot be(defined)
-//        result.get(IndividualPreviousAddressListId) mustNot be(defined)
-//        result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(IndividualPreviousAddressId) mustNot be(defined)
-//        result.get(IndividualEmailId) mustNot be(defined)
-//        result.get(IndividualPhoneId) mustNot be(defined)
-//      }
-//    }
-//
-//    "where are you in uk has already answered as No and we change to Yes " must {
-//      val result: UserAnswers =
-//        individualAnswersForNo.set(AreYouInUKId)(true)
-//          .asOpt.value
-//
-//      "remove all the non uk individual data " in {
-//        result.get(IndividualDetailsId) mustNot be(defined)
-//        result.get(IndividualDateOfBirthId) mustNot be(defined)
-//        result.get(RegistrationInfoId) mustNot be(defined)
-//        result.get(IndividualSameContactAddressId) mustNot be(defined)
-//        result.get(IndividualAddressId) mustNot be(defined)
-//        result.get(IndividualAddressYearsId) mustNot be(defined)
-//        result.get(IndividualPreviousAddressListId) mustNot be(defined)
-//        result.get(IndividualPreviousAddressId) mustNot be(defined)
-//        result.get(IndividualEmailId) mustNot be(defined)
-//        result.get(IndividualPhoneId) mustNot be(defined)
-//      }
-//
-//      "not remove the data for Individual Details Correct " in {
-//        result.get(IndividualDetailsCorrectId) must be(defined)
-//      }
-//    }
-//
-//    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
-//      val result: UserAnswers =
-//        individualAnswersForNo.set(AreYouInUKId)(false)
-//          .asOpt.value
-//
-//      "not remove the data for non uk Individual Details" in {
-//        result.get(IndividualDetailsId) must be(defined)
-//      }
-//
-//      "not remove the data for Individual date of birth" in {
-//        result.get(IndividualDateOfBirthId) must be(defined)
-//      }
-//
-//      "not remove the data for Individual Address" in {
-//        result.get(IndividualAddressId) must be(defined)
-//      }
-//
-//      "not remove the data for email" in {
-//        result.get(IndividualEmailId) must be(defined)
-//      }
-//
-//      "not remove the data for phone" in {
-//        result.get(IndividualPhoneId) must be(defined)
-//      }
-//    }
-//  }
-//
-//  "Cleanup for a partnership" when {
-//
-//    "where are you in uk has already answered as Yes and we change to No" must {
-//      val result: UserAnswers =
-//        partnershipAnswersForYes.set(AreYouInUKId)(false)
-//          .asOpt.value
-//
-//      "remove all the uk partnership data " in {
-//        result.get(BusinessNameId) mustNot be(defined)
-//        result.get(BusinessTypeId) mustNot be(defined)
-//        result.get(ConfirmBusinessNameId) mustNot be(defined)
-//        result.get(PartnershipSameContactAddressId) mustNot be(defined)
-//        result.get(PartnershipContactAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(PartnershipContactAddressListId) mustNot be(defined)
-//        result.get(PartnershipContactAddressId) mustNot be(defined)
-//        result.get(PartnershipAddressYearsId) mustNot be(defined)
-//        result.get(PartnershipPreviousAddressId) mustNot be(defined)
-//        result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(PartnershipPreviousAddressListId) mustNot be(defined)
-//        result.get(PartnershipContactDetailsId) mustNot be(defined)
-//        result.get(HasVATId) mustNot be(defined)
-//        result.get(EnterVATId) mustNot be(defined)
-//        result.get(HasPAYEId) mustNot be(defined)
-//        result.get(EnterPAYEId) mustNot be(defined)
-//        result.get(PartnershipVatId) mustNot be(defined)
-//        result.get(PartnershipPayeId) mustNot be(defined)
-//        result.get(PartnerDetailsId(0)) mustNot be(defined)
-//        result.get(PartnerDetailsId(1)) mustNot be(defined)
-//        result.get(MoreThanTenPartnersId) mustNot be(defined)
-//      }
-//
-//      "not remove the data for non uk register as business" in {
-//        result.get(RegisterAsBusinessId) must be(defined)
-//      }
-//    }
-//
-//    "where are you in uk has already answered as No and we change to Yes " must {
-//      val result: UserAnswers =
-//        partnershipAnswersForNo.set(AreYouInUKId)(true)
-//          .asOpt.value
-//
-//      "remove all the data for non uk partnership" in {
-//        result.get(BusinessNameId) mustNot be(defined)
-//        result.get(BusinessTypeId) mustNot be(defined)
-//        result.get(PartnershipSameContactAddressId) mustNot be(defined)
-//        result.get(PartnershipRegisteredAddressId) mustNot be(defined)
-//        result.get(PartnershipContactAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(PartnershipContactAddressListId) mustNot be(defined)
-//        result.get(PartnershipContactAddressId) mustNot be(defined)
-//        result.get(PartnershipAddressYearsId) mustNot be(defined)
-//        result.get(PartnershipPreviousAddressId) mustNot be(defined)
-//        result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(PartnershipPreviousAddressListId) mustNot be(defined)
-//        result.get(PartnershipContactDetailsId) mustNot be(defined)
-//        result.get(HasVATId) mustNot be(defined)
-//        result.get(EnterVATId) mustNot be(defined)
-//        result.get(HasPAYEId) mustNot be(defined)
-//        result.get(EnterPAYEId) mustNot be(defined)
-//        result.get(PartnershipVatId) mustNot be(defined)
-//        result.get(PartnershipPayeId) mustNot be(defined)
-//        result.get(PartnerDetailsId(0)) mustNot be(defined)
-//        result.get(PartnerDetailsId(1)) mustNot be(defined)
-//        result.get(MoreThanTenPartnersId) mustNot be(defined)
-//      }
-//
-//    }
-//
-//    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
-//      val result: UserAnswers =
-//        partnershipAnswersForNo.set(AreYouInUKId)(false)
-//          .asOpt.value
-//
-//      "not remove the data for Business details " in {
-//        result.get(BusinessNameId) must be(defined)
-//      }
-//
-//      "not remove the data for non uk Business type " in {
-//        result.get(NonUKBusinessTypeId) must be(defined)
-//      }
-//
-//      "not remove the data for non uk company address " in {
-//        result.get(PartnershipRegisteredAddressId) must be(defined)
-//      }
-//    }
-//
-//  }
+  "Cleanup for an individual" when {
+
+    "where are you in uk has already answered as Yes and we change to No" must {
+      val result: UserAnswers =
+        individualAnswersForYes.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "remove all the uk individual data " in {
+        result.get(IndividualDetailsCorrectId) mustNot be(defined)
+        result.get(IndividualDetailsId) mustNot be(defined)
+        result.get(IndividualDateOfBirthId) mustNot be(defined)
+        result.get(RegistrationInfoId) mustNot be(defined)
+        result.get(IndividualSameContactAddressId) mustNot be(defined)
+        result.get(IndividualContactAddressListId) mustNot be(defined)
+        result.get(IndividualAddressId) mustNot be(defined)
+        result.get(IndividualAddressYearsId) mustNot be(defined)
+        result.get(IndividualPreviousAddressListId) mustNot be(defined)
+        result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
+        result.get(IndividualPreviousAddressId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to Yes " must {
+      val result: UserAnswers =
+        individualAnswersForNo.set(AreYouInUKId)(true)
+          .asOpt.value
+
+      "remove all the non uk individual data " in {
+        result.get(IndividualDetailsId) mustNot be(defined)
+        result.get(IndividualDateOfBirthId) mustNot be(defined)
+        result.get(RegistrationInfoId) mustNot be(defined)
+        result.get(IndividualSameContactAddressId) mustNot be(defined)
+        result.get(IndividualAddressId) mustNot be(defined)
+        result.get(IndividualAddressYearsId) mustNot be(defined)
+        result.get(IndividualPreviousAddressListId) mustNot be(defined)
+        result.get(IndividualPreviousAddressId) mustNot be(defined)
+        result.get(IndividualEmailId) mustNot be(defined)
+        result.get(IndividualPhoneId) mustNot be(defined)
+      }
+
+      "not remove the data for Individual Details Correct " in {
+        result.get(IndividualDetailsCorrectId) must be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
+      val result: UserAnswers =
+        individualAnswersForNo.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "not remove the data for non uk Individual Details" in {
+        result.get(IndividualDetailsId) must be(defined)
+      }
+
+      "not remove the data for Individual date of birth" in {
+        result.get(IndividualDateOfBirthId) must be(defined)
+      }
+
+      "not remove the data for Individual Address" in {
+        result.get(IndividualAddressId) must be(defined)
+      }
+
+      "not remove the data for email" in {
+        result.get(IndividualEmailId) must be(defined)
+      }
+
+      "not remove the data for phone" in {
+        result.get(IndividualPhoneId) must be(defined)
+      }
+    }
+  }
+
+  "Cleanup for a partnership" when {
+
+    "where are you in uk has already answered as Yes and we change to No" must {
+      val result: UserAnswers =
+        partnershipAnswersForYes.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "remove all the uk partnership data " in {
+        result.get(BusinessNameId) mustNot be(defined)
+        result.get(BusinessTypeId) mustNot be(defined)
+        result.get(ConfirmPartnershipDetailsId) mustNot be(defined)
+        result.get(PartnershipSameContactAddressId) mustNot be(defined)
+        result.get(PartnershipContactAddressPostCodeLookupId) mustNot be(defined)
+        result.get(PartnershipContactAddressListId) mustNot be(defined)
+        result.get(PartnershipContactAddressId) mustNot be(defined)
+        result.get(PartnershipAddressYearsId) mustNot be(defined)
+        result.get(PartnershipPreviousAddressId) mustNot be(defined)
+        result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
+        result.get(PartnershipPreviousAddressListId) mustNot be(defined)
+        result.get(PartnershipEmailId) mustNot be(defined)
+        result.get(PartnershipPhoneId) mustNot be(defined)
+        result.get(HasVATId) mustNot be(defined)
+        result.get(EnterVATId) mustNot be(defined)
+        result.get(HasPAYEId) mustNot be(defined)
+        result.get(EnterPAYEId) mustNot be(defined)
+        result.get(PartnershipVatId) mustNot be(defined)
+        result.get(PartnershipPayeId) mustNot be(defined)
+        result.get(PartnerDetailsId(0)) mustNot be(defined)
+        result.get(PartnerDetailsId(1)) mustNot be(defined)
+        result.get(MoreThanTenPartnersId) mustNot be(defined)
+      }
+
+      "not remove the data for non uk register as business" in {
+        result.get(RegisterAsBusinessId) must be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to Yes " must {
+      val result: UserAnswers =
+        partnershipAnswersForNo.set(AreYouInUKId)(true)
+          .asOpt.value
+
+      "remove all the data for non uk partnership" in {
+        result.get(BusinessNameId) mustNot be(defined)
+        result.get(BusinessTypeId) mustNot be(defined)
+        result.get(PartnershipSameContactAddressId) mustNot be(defined)
+        result.get(PartnershipRegisteredAddressId) mustNot be(defined)
+        result.get(PartnershipContactAddressPostCodeLookupId) mustNot be(defined)
+        result.get(PartnershipContactAddressListId) mustNot be(defined)
+        result.get(PartnershipContactAddressId) mustNot be(defined)
+        result.get(PartnershipAddressYearsId) mustNot be(defined)
+        result.get(PartnershipPreviousAddressId) mustNot be(defined)
+        result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
+        result.get(PartnershipPreviousAddressListId) mustNot be(defined)
+        result.get(PartnershipEmailId) mustNot be(defined)
+        result.get(PartnershipPhoneId) mustNot be(defined)
+        result.get(HasVATId) mustNot be(defined)
+        result.get(EnterVATId) mustNot be(defined)
+        result.get(HasPAYEId) mustNot be(defined)
+        result.get(EnterPAYEId) mustNot be(defined)
+        result.get(PartnershipVatId) mustNot be(defined)
+        result.get(PartnershipPayeId) mustNot be(defined)
+        result.get(PartnerDetailsId(0)) mustNot be(defined)
+        result.get(PartnerDetailsId(1)) mustNot be(defined)
+        result.get(MoreThanTenPartnersId) mustNot be(defined)
+      }
+
+    }
+
+    "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
+      val result: UserAnswers =
+        partnershipAnswersForNo.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "not remove the data for Business details " in {
+        result.get(BusinessNameId) must be(defined)
+      }
+
+      "not remove the data for non uk Business type " in {
+        result.get(NonUKBusinessTypeId) must be(defined)
+      }
+
+      "not remove the data for non uk company address " in {
+        result.get(PartnershipRegisteredAddressId) must be(defined)
+      }
+    }
+
+  }
 }
 
 object AreYouInUKIdSpec extends OptionValues {
@@ -349,7 +351,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(PartnershipPreviousAddressId)(address))
       .flatMap(_.set(PartnershipPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(PartnershipPreviousAddressListId)(tolerantAddress))
-      .flatMap(_.set(PartnershipContactDetailsId)(contactDetails))
+      .flatMap(_.set(PartnershipEmailId)(email))
+      .flatMap(_.set(PartnershipPhoneId)(phone))
       .flatMap(_.set(PartnerDetailsId(0))(personDetails))
       .flatMap(_.set(PartnerDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenPartnersId)(true))
@@ -410,6 +413,7 @@ object AreYouInUKIdSpec extends OptionValues {
   val partnershipAnswersForNo = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false)
     .flatMap(setCommonPartnershipData)
+    .flatMap(_.set(BusinessNameId)("test company"))
     .flatMap(_.set(PartnershipSameContactAddressId)(false))
     .flatMap(_.set(PartnershipRegisteredAddressId)(tolerantAddress))
     .flatMap(_.set(RegisterAsBusinessId)(true))

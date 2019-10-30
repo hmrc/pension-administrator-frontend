@@ -127,9 +127,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
         None)
     },
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url))),
+      Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(UpdateMode).url))),
     AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(UpdateMode).url))))
 
   val partnersSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
