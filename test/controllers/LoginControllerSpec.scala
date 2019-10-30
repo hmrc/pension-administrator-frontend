@@ -16,53 +16,23 @@
 
 package controllers
 
-import akka.japi.Option
-import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
-import controllers.actions.AuthAction
-import models.UserType.UserType
-import models.requests.AuthenticatedRequest
-import models.{NormalMode, PSAUser, UserType}
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{Request, Result}
+import controllers.actions.FakeAuthAction
 import play.api.test.Helpers._
-
-import scala.concurrent.Future
 
 class LoginControllerSpec extends ControllerSpecBase {
 
-  private def loginController(appConfig: FrontendAppConfig = frontendAppConfig, userType: UserType = UserType.Organisation) = new LoginController(
-    appConfig, messagesApi, FakeUserAnswersCacheConnector, fakeAuthAction(userType)
+  private def loginController = new LoginController(
+    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction
   )
-
-  private def fakeAuthAction(userType: UserType) = new AuthAction {
-    override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(userType, None, isExistingPSA = false, None)))
-  }
-
-  appRunning()
 
   "Login Controller" must {
 
-    "redirect to are you what you need for individual" in {
-
-      val appConfig = new GuiceApplicationBuilder().build().injector.instanceOf[FrontendAppConfig]
-
-      val result = loginController(appConfig, userType = UserType.Individual).onPageLoad(fakeRequest)
+    "redirect to register as business page" in {
+      val result = loginController.onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(register.routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
-
-    }
-
-    "redirect to are you what you need for organisation" in {
-
-      val appConfig = new GuiceApplicationBuilder().build().injector.instanceOf[FrontendAppConfig]
-
-      val result = loginController(appConfig, userType = UserType.Organisation).onPageLoad(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(register.routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+      redirectLocation(result) mustBe Some(register.routes.RegisterAsBusinessController.onPageLoad().url)
     }
   }
 }
