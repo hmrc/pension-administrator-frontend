@@ -21,7 +21,6 @@ import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.partnership.PartnershipDetailsId
 import identifiers.register.{BusinessNameId, HasPAYEId}
 import javax.inject.Inject
 import models.Mode
@@ -58,7 +57,7 @@ class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendApp
   private def form(partnershipName: String) = formProvider("hasPAYE.error.required", partnershipName)
 
   private def partnershipName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(Message("thePartnership").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -2,10 +2,8 @@
   "index": "",
   "areYouInUK": true,
   "businessType": "limitedPartnership",
-  "partnershipDetails": {
-    "companyName": "Test partnership name",
-    "uniqueTaxReferenceNumber": "121414151"
-  },
+  "businessName": "Test partnership name",
+  "utr": "121414151",
   "partnershipRegisteredAddress": {
     "addressLine1": "100 SuttonStreet",
     "addressLine2": "Wokingham",

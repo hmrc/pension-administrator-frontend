@@ -21,8 +21,8 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.OrganisationNameController
-import forms.BusinessDetailsFormModel
-import identifiers.register.partnership.PartnershipDetailsId
+import forms.BusinessNameFormProvider
+import identifiers.register.BusinessNameId
 import models.Mode
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -37,9 +37,15 @@ class PartnershipRegisteredNameController @Inject()(override val appConfig: Fron
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
+                                                    formProvider: BusinessNameFormProvider,
                                                     val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
 
-  private def partnershipNameViewModel() =
+  override val form = formProvider(
+    requiredKey = "partnershipName.error.required",
+    invalidKey = "partnershipName.error.invalid",
+    lengthKey = "partnershipName.error.length")
+
+  private def partnershipNameViewModel =
     OrganisationNameViewModel(
       routes.PartnershipRegisteredNameController.onSubmit(),
       Message("partnershipName.title"),
@@ -48,23 +54,11 @@ class PartnershipRegisteredNameController @Inject()(override val appConfig: Fron
 
   def onPageLoad(mode : Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(PartnershipDetailsId, partnershipNameViewModel)
+      get(BusinessNameId, partnershipNameViewModel)
   }
 
   def onSubmit(mode : Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PartnershipDetailsId, partnershipNameViewModel())
+      post(BusinessNameId, partnershipNameViewModel)
   }
-
-  override protected val formModel: BusinessDetailsFormModel =
-    BusinessDetailsFormModel(
-      companyNameMaxLength = 105,
-      companyNameRequiredMsg = "partnershipName.error.required",
-      companyNameLengthMsg = "partnershipName.error.length",
-      companyNameInvalidMsg = "partnershipName.error.invalid",
-      utrMaxLength = 10,
-      utrRequiredMsg = None,
-      utrLengthMsg = "businessDetails.error.utr.length",
-      utrInvalidMsg = "businessDetails.error.utr.invalid"
-    )
 }

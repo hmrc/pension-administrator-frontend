@@ -22,7 +22,7 @@ import identifiers.register.company.directors.{DirectorAddressId, IsDirectorComp
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
-import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipDetailsId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
+import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
 import identifiers.register._
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
@@ -131,7 +131,7 @@ class PsaDetailServiceImpl @Inject()(
 
       case Some(Partnership) => (
         viewPsaDetailsHelper.partnershipSections,
-        userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(""))
+        userAnswers.get(BusinessNameId).getOrElse(""))
 
       case unknownStatus =>
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")

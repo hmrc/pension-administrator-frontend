@@ -17,16 +17,13 @@
 package utils.navigators
 
 import base.SpecBase
-import config.FeatureSwitchManagementService
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
-import identifiers.register._
-import identifiers.register.BusinessNameId
-import identifiers.register.partnership.PartnershipDetailsId
+import identifiers.register.{BusinessNameId, _}
+import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
-import models.{BusinessDetails, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
 import play.api.libs.json.Json
@@ -42,9 +39,9 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
     (BusinessTypeId, unlimitedCompany, companyUTRPage, false, None, false),
     (BusinessTypeId, limitedCompany, companyUTRPage, false, None, false),
-    (BusinessTypeId, businessPartnership, partnershipBusinessDetails, false, None, false),
-    (BusinessTypeId, limitedPartnership, partnershipBusinessDetails, false, None, false),
-    (BusinessTypeId, limitedLiabilityPartnership, partnershipBusinessDetails, false, None, false),
+    (BusinessTypeId, businessPartnership, partnershipUTRPage, false, None, false),
+    (BusinessTypeId, limitedPartnership, partnershipUTRPage, false, None, false),
+    (BusinessTypeId, limitedLiabilityPartnership, partnershipUTRPage, false, None, false),
 
     (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, true, None, false),
 
@@ -57,8 +54,8 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
     (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
 
-    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, isCompanyRegisteredInUKPage, false, None, false),
-    (RegisterAsBusinessId, registerAsBusinessIdIndividual, isIndividualBasedInUKPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage, false, None, false),
 
     (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, false, None, false),
     (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, false, None, false)
@@ -78,7 +75,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val emptyAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
-  lazy val partnershipBusinessDetails: Call = controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad()
+  lazy val partnershipUTRPage: Call = controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()
   lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserName: Call = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
@@ -94,6 +91,8 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val nonUkPartnershipRegisteredName: Call = controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
   lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
+  lazy val individualWynPage: Call = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
+  lazy val businessWynPage: Call = controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
   private val isCompanyRegisteredInUKPage = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
   private val isIndividualBasedInUKPage = controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode)
 
@@ -127,7 +126,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val notInUkPartnershipCheckMode: UserAnswers = UserAnswers(Json.obj())
     .areYouInUk(false)
-    .set(PartnershipDetailsId)(BusinessDetails("test partnership name", Some("1234567890"))).asOpt.value
+    .set(BusinessNameId)("test partnership name").asOpt.value
     .set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
   val nonUkBusiness: UserAnswers = UserAnswers(Json.obj()).areYouInUk(false)
@@ -143,9 +142,6 @@ object RegisterNavigatorSpec extends OptionValues {
   val nonUkCompany: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.Company).asOpt.value
   val nonUkPartnership: UserAnswers = notInUk.set(NonUKBusinessTypeId)(NonUKBusinessType.BusinessPartnership).asOpt.value
 
-
-  //
-
   val registerAsBusinessIdCompanyOrPartnership: UserAnswers = UserAnswers()
     .set(RegisterAsBusinessId)(true).asOpt.value
 
@@ -155,7 +151,5 @@ object RegisterNavigatorSpec extends OptionValues {
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
   }
-
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
 
 }

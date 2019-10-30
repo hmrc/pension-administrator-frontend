@@ -22,7 +22,8 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipDetailsId}
+import identifiers.register.BusinessNameId
+import identifiers.register.partnership.PartnershipAddressYearsId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -58,7 +59,7 @@ class PartnershipAddressYearsController @Inject()(
   def form(partnershipName: String) = formProvider(partnershipName)
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnershipDetailsId).map(_.companyName).getOrElse(Message("thePartnership").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

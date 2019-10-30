@@ -20,7 +20,7 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider, BusinessNameFormProvider}
+import forms.BusinessNameFormProvider
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
@@ -28,6 +28,7 @@ import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -66,14 +67,14 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           implicit val materializer: Materializer = app.materializer
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
-          val formProvider = new BusinessDetailsFormProvider(isUK = false)
+          val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual organisationName(appConfig, formProvider(businessDetailsFormModel), viewmodel)(request, messages).toString
+          contentAsString(result) mustEqual organisationName(appConfig, formProvider(), viewmodel)(request, messages).toString
       }
     }
 
@@ -87,17 +88,17 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           implicit val materializer: Materializer = app.materializer
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
-          val formProvider = new BusinessDetailsFormProvider(isUK = false)
+          val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
-          val answers = UserAnswers().set(FakeIdentifier)(BusinessDetails(testCompanyName, None)).get
+          val answers = UserAnswers().set(FakeIdentifier)(testCompanyName).get
           val result = controller.onPageLoad(viewmodel, answers)
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual organisationName(
             appConfig,
-            formProvider(businessDetailsFormModel).fill(BusinessDetails(testCompanyName, None)),
+            formProvider().fill(testCompanyName),
             viewmodel
           )(request, messages).toString
       }
@@ -121,10 +122,10 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           implicit val materializer: Materializer = app.materializer
 
           when(
-            cacheConnector.save[BusinessDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            cacheConnector.save[String, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
-          val request = FakeRequest().withFormUrlEncodedBody(("companyName", testCompanyName))
+          val request = FakeRequest().withFormUrlEncodedBody(("value", testCompanyName))
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 
@@ -143,8 +144,8 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           implicit val materializer: Materializer = app.materializer
 
           val appConfig = app.injector.instanceOf[FrontendAppConfig]
-          val formProvider = new BusinessDetailsFormProvider(isUK = false)
-          val request = FakeRequest().withFormUrlEncodedBody(("companyName", ""))
+          val formProvider = new BusinessNameFormProvider()
+          val request = FakeRequest().withFormUrlEncodedBody(("value", ""))
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
@@ -152,7 +153,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           status(result) mustEqual BAD_REQUEST
           contentAsString(result) mustEqual organisationName(
             appConfig,
-            formProvider(businessDetailsFormModel).bind(Map.empty[String, String]),
+            formProvider().bind(Map.empty[String, String]),
             viewmodel
           )(request, messages).toString
       }
@@ -174,10 +175,10 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           implicit val materializer: Materializer = app.materializer
 
           when(
-            cacheConnector.save[BusinessDetails, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            cacheConnector.save[String, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
-          val request = FakeRequest().withFormUrlEncodedBody(("companyName", testCompanyNameWithInvalidCharacters))
+          val request = FakeRequest().withFormUrlEncodedBody(("value", testCompanyNameWithInvalidCharacters))
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 
@@ -190,17 +191,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
 object OrganisationNameControllerSpec extends OptionValues {
 
-  object FakeIdentifier extends TypedIdentifier[BusinessDetails]
-  val businessDetailsFormModel = BusinessDetailsFormModel(
-    companyNameMaxLength = 105,
-    companyNameRequiredMsg = "businessDetails.error.companyName.required",
-    companyNameLengthMsg = "businessDetails.error.companyName.length",
-    companyNameInvalidMsg = "businessDetails.error.companyName.invalid",
-    utrMaxLength = 10,
-    utrRequiredMsg = None,
-    utrLengthMsg = "businessDetails.error.utr.length",
-    utrInvalidMsg = "businessDetails.error.utr.invalid"
-  )
+  object FakeIdentifier extends TypedIdentifier[String]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
@@ -209,6 +200,8 @@ object OrganisationNameControllerSpec extends OptionValues {
                                   override val navigator: Navigator,
                                   formProvider: BusinessNameFormProvider
                                 ) extends OrganisationNameController {
+
+    override val form: Form[String] = formProvider()
 
     def onPageLoad(viewmodel: OrganisationNameViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
@@ -219,8 +212,6 @@ object OrganisationNameControllerSpec extends OptionValues {
       post(FakeIdentifier, viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
-
-    override protected val formModel: BusinessDetailsFormModel = businessDetailsFormModel
   }
 
 }

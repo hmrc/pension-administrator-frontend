@@ -59,6 +59,7 @@ class CheckYourAnswersController @Inject()(
         None,
         Seq(
           helper.individualDetails.toSeq,
+          helper.individualDateOfBirth.toSeq,
           helper.individualAddress.toSeq,
           helper.individualSameContactAddress.toSeq,
           helper.individualContactAddress.toSeq,

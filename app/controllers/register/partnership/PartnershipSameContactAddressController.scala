@@ -22,6 +22,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
@@ -50,34 +51,34 @@ class PartnershipSameContactAddressController @Inject()(
   val form: Form[Boolean] = formProvider()
 
 
-  private def viewmodel(mode: Mode, address: TolerantAddress, details: models.BusinessDetails) =
+  private def viewmodel(mode: Mode, address: TolerantAddress, name: String) =
     SameContactAddressViewModel(
       postCall = routes.PartnershipSameContactAddressController.onSubmit(mode),
       title = Message("partnership.sameContactAddress.title"),
-      heading = Message("partnership.sameContactAddress.heading").withArgs(details.companyName),
+      heading = Message("partnership.sameContactAddress.heading").withArgs(name),
       hint = None,
       address = address,
-      psaName = details.companyName,
+      psaName = name,
       mode = mode
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (PartnershipRegisteredAddressId and PartnershipDetailsId).retrieve.right.map {
-        case address ~ details =>
-          get(PartnershipSameContactAddressId, viewmodel(mode, address, details))
+      (PartnershipRegisteredAddressId and BusinessNameId).retrieve.right.map {
+        case address ~ name =>
+          get(PartnershipSameContactAddressId, viewmodel(mode, address, name))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (PartnershipRegisteredAddressId and PartnershipDetailsId).retrieve.right.map {
-        case address ~ details =>
+      (PartnershipRegisteredAddressId and BusinessNameId).retrieve.right.map {
+        case address ~ name =>
           post(
             PartnershipSameContactAddressId,
             PartnershipContactAddressListId,
             PartnershipContactAddressId,
-            viewmodel(mode, address, details),
+            viewmodel(mode, address, name),
             mode
           )
       }

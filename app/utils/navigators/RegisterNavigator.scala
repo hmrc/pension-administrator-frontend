@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.register._
-import identifiers.register.partnership.PartnershipDetailsId
 import javax.inject.Inject
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.{Mode, NormalMode}
@@ -50,11 +49,11 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
       case Some(BusinessType.LimitedCompany) =>
         NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
       case Some(BusinessType.LimitedLiabilityPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipUTRController.onPageLoad())
       case Some(BusinessType.LimitedPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipUTRController.onPageLoad())
       case Some(BusinessType.BusinessPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipBusinessDetailsController.onPageLoad())
+        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipUTRController.onPageLoad())
       case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
     }
   }
@@ -82,13 +81,13 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
 
   private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Option[NavigateTo] =
     NavigateTo.dontSave(
-      (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessNameId), userAnswers.get(PartnershipDetailsId)) match {
-        case (Some(false), None, _, _) => controllers.register.routes.RegisterAsBusinessController.onPageLoad()
-        case (Some(false), Some(NonUKBusinessType.Company), Some(_), _) =>
+      (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessNameId)) match {
+        case (Some(false), None, _) => controllers.register.routes.RegisterAsBusinessController.onPageLoad()
+        case (Some(false), Some(NonUKBusinessType.Company), Some(_)) =>
           controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
-        case (Some(false), Some(NonUKBusinessType.BusinessPartnership), _, Some(_)) =>
+        case (Some(false), Some(NonUKBusinessType.BusinessPartnership), Some(_)) =>
           controllers.register.partnership.routes.PartnershipRegisteredAddressController.onPageLoad()
-        case (Some(true), _, _, _) =>
+        case (Some(true), _, _) =>
           controllers.register.routes.RegisterAsBusinessController.onPageLoad()
         case _ => controllers.routes.SessionExpiredController.onPageLoad()
       }
@@ -98,9 +97,9 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
     userAnswers.get(RegisterAsBusinessId) match {
       case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
       case Some(true) =>
-        NavigateTo.dontSave(controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode))
+        NavigateTo.dontSave(controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode))
       case _ =>
-        NavigateTo.dontSave(routes.IndividualAreYouInUKController.onPageLoad(NormalMode))
+        NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
     }
   }
 

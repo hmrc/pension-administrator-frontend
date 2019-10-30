@@ -19,9 +19,9 @@ package controllers.register.partnership
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.{BusinessDetailsFormModel, BusinessDetailsFormProvider}
-import identifiers.register.partnership.PartnershipDetailsId
-import models.{BusinessDetails, NormalMode}
+import forms.BusinessNameFormProvider
+import identifiers.register.BusinessNameId
+import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -34,21 +34,12 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val businessDetailsFormModel = BusinessDetailsFormModel(
-    companyNameMaxLength = 105,
-    companyNameRequiredMsg = "partnershipName.error.required",
-    companyNameLengthMsg = "partnershipName.error.length",
-    companyNameInvalidMsg = "partnershipName.error.invalid",
-    utrMaxLength = 10,
-    utrRequiredMsg = None,
-    utrLengthMsg = "businessDetails.error.utr.length",
-    utrInvalidMsg = "businessDetails.error.utr.invalid"
-  )
-
-  val formProvider = new BusinessDetailsFormProvider(isUK = false)
-  val form = formProvider(businessDetailsFormModel)
+  val formProvider = new BusinessNameFormProvider()
+  val form: Form[String] = formProvider(
+    requiredKey = "partnershipName.error.required",
+    invalidKey = "partnershipName.error.invalid",
+    lengthKey = "partnershipName.error.length")
   val testCompanyName = "test company name"
-  val testBusinessDetails = BusinessDetails(testCompanyName, None)
 
   def viewmodel = OrganisationNameViewModel(
     postCall = controllers.register.partnership.routes.PartnershipRegisteredNameController.onSubmit(),
@@ -65,7 +56,9 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      formProvider,
       FakeUserAnswersCacheConnector
+
     )
 
   def viewAsString(form: Form[_] = form): String = organisationName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
@@ -81,12 +74,12 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = Json.obj(PartnershipDetailsId.toString -> testBusinessDetails)
+        val validData = Json.obj(BusinessNameId.toString -> testCompanyName)
         val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
         val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-        contentAsString(result) mustBe viewAsString(form.fill(testBusinessDetails))
+        contentAsString(result) mustBe viewAsString(form.fill(testCompanyName))
       }
 
       "redirect to Session Expired for a GET if no existing data is found" in {
@@ -100,7 +93,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
     "on a POST" must {
 
       "redirect to the next page when valid data is submitted" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("companyName", testCompanyName))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testCompanyName))
 
         val result = controller().onSubmit(NormalMode)(postRequest)
 
