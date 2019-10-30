@@ -65,7 +65,6 @@ class CheckYourAnswersController @Inject()(
           helper.individualContactAddress.toSeq,
           helper.individualAddressYears(message).toSeq,
           helper.individualPreviousAddress.toSeq,
-          helper.individualDateOfBirth.toSeq,
           helper.individualEmail.toSeq,
           helper.individualPhone.toSeq
         ).flatten

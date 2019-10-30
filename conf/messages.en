@@ -606,6 +606,7 @@ duplicateRegistration.p2 = The user ID and password you need will be from anothe
 
 individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = What is your date of birth?
+individualDateOfBirth.visuallyHidden.text = your date of birth
 
 submissionInvalid.title = Sorry, the service is unavailable
 submissionInvalid.heading = Sorry, the service is unavailable
@@ -644,7 +645,12 @@ cya.label.individual.same.contact.address = Is your contact address the same as 
 cya.label.company.contact.address = {0}’s contact address
 cya.label.company.same.contact.address = Is your contact address the same as your registered address?
 
+individualContactAddress.visuallyHidden.text = whether your contact address is the same as your registered address
+
 cya.label.common.same.contact.address = Is your contact address the same as your registered address?
+individualAddressYears.visuallyHidden.text = whether this has been your contact address for at least 1 year
+individualEmail.visuallyHidden.text = your email address
+individualPhone.visuallyHidden.text = your phone number
 
 partnership.sameContactAddress.title = Is your contact address the same as your registered address?
 partnership.sameContactAddress.heading = Is your contact address the same as your registered address?

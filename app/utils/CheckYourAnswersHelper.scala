@@ -21,7 +21,7 @@ import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId
 import models.Mode._
 import models._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOptions) {
 
@@ -34,23 +34,23 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def individualSameContactAddress: Option[AnswerRow] = {
     userAnswers.get(identifiers.register.individual.IndividualSameContactAddressId) map { answer =>
       AnswerRow("cya.label.individual.same.contact.address", Seq(if (answer) "site.yes" else "site.no"), true, Some(
-        Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)))
+        Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)), Some(Message("individualContactAddress.visuallyHidden.text")))
     }
   }
 
   def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualDateOfBirthId) map { x =>
     AnswerRow("individualDateOfBirth.heading", Seq(s"${DateHelper.formatDate(x)}"), false,
-      Some(Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)), None)
+      Some(Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)), Some(Message("individualDateOfBirth.visuallyHidden.text")))
   }
 
   def individualEmail: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualEmailId) map { x =>
     AnswerRow("individual.email.title", Seq(x), false,
-      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)), None)
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)), Some(Message("individualEmail.visuallyHidden.text")))
   }
 
   def individualPhone: Option[AnswerRow] = userAnswers.get(identifiers.register.individual.IndividualPhoneId) map { x =>
     AnswerRow("individual.phone.title", Seq(x), false,
-      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)), None)
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)), Some(Message("individualPhone.visuallyHidden.text")))
   }
 
   def individualPreviousAddress: Option[AnswerRow] = {
@@ -63,7 +63,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def individualAddressYears(message: String): Option[AnswerRow] = {
     userAnswers.get(identifiers.register.individual.IndividualAddressYearsId) map { x =>
       AnswerRow(message, Seq(s"common.addressYears.$x"), true,
-        Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)), None)
+        Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)), Some(Message("individualAddressYears.visuallyHidden.text")))
     }
   }
 
