@@ -61,7 +61,7 @@ class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, viewmodel(NormalMode).postCall.url, s"$messageKeyPrefix.heading")
 
     "not display dynamic content of CheckMode in NormalMode" in {
       createView() mustNot haveDynamicText("areYouInUK.check.selectedUkAddress")

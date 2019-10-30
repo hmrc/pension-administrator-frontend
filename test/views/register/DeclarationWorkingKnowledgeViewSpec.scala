@@ -38,6 +38,7 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
     behave like normalPage(createView, messageKeyPrefix, "p1", "p2", "p3")
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "",s"$messageKeyPrefix.heading")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix,
+      controllers.register.routes.DeclarationWorkingKnowledgeController.onSubmit(NormalMode).url,s"$messageKeyPrefix.heading")
   }
 }
