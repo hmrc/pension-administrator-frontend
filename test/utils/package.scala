@@ -23,7 +23,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
-import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipDetailsId, _}
+import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactDetailsId, PartnershipPreviousAddressId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId}
 import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
 import models.register.adviser.AdviserDetails
@@ -177,8 +177,8 @@ package object utils {
       answers.set(VariationWorkingKnowledgeId)(value).asOpt.value
     }
 
-    def businessName: UserAnswers = {
-      answers.set(BusinessNameId)("test company").asOpt.value
+    def businessName(name: String = "test company"): UserAnswers = {
+      answers.set(BusinessNameId)(name).asOpt.value
     }
 
     def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {
@@ -186,10 +186,6 @@ package object utils {
     }
 
     // Partnership
-    def partnershipDetails(details: models.BusinessDetails): UserAnswers = {
-      answers.set(PartnershipDetailsId)(details).asOpt.value
-    }
-
     def partnershipContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(PartnershipContactAddressListId)(address).asOpt.value
     }

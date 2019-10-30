@@ -21,7 +21,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
 import forms.address.NonUKAddressFormProvider
-import identifiers.register.partnership.{PartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.BusinessNameId
+import identifiers.register.partnership.PartnershipRegisteredAddressId
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -38,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
-  val form = formProvider("error.country.invalid")
+  val form: Form[Address] = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
   private val partnershipName = "Test Partnership Name"
 
@@ -76,13 +77,13 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
   override val registrationInfo = RegistrationInfo(
     RegistrationLegalStatus.Partnership,
     sapNumber,
-    false,
+    noIdentifier = false,
     RegistrationCustomerType.NonUK,
     None,
     None
   )
 
-  override def fakeRegistrationConnector = new FakeRegistrationConnector {
+  override def fakeRegistrationConnector: FakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithNoIdOrganisation
     (name: String, address: Address, legalStatus: RegistrationLegalStatus)
         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
@@ -100,7 +101,7 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
-        PartnershipDetailsId.toString -> BusinessDetails("Test Partnership Name", None),
+        BusinessNameId.toString -> "Test Partnership Name",
         PartnershipRegisteredAddressId.toString -> Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress)
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 

@@ -142,7 +142,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
   private def companyNamePage = routes.CompanyNameController.onPageLoad()
-  private def companyUTRPage = routes.CompanyUTRController.onPageLoad()
   private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
 
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
