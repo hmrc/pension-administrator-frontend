@@ -16,20 +16,18 @@
 
 package utils.navigators
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.register.partnership.routes
-import identifiers.register.partnership._
 import identifiers.register.AreYouInUKId
+import identifiers.register.partnership._
+import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
-import models.InternationalRegion.EuEea
-import models.InternationalRegion.RestOfTheWorld
-import models.InternationalRegion.UK
-import utils.Navigator
-import utils.UserAnswers
+import utils.{Navigator, UserAnswers}
 import utils.countryOptions.CountryOptions
+import controllers.register.routes._
+import controllers.register.partnership.routes._
+import controllers.routes._
 
 @Singleton
 class PartnershipNavigator @Inject()(
@@ -39,43 +37,46 @@ class PartnershipNavigator @Inject()(
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case PartnershipDetailsId => regionBasedNameNavigation(from.userAnswers)
+    case PartnershipDetailsId =>
+      regionBasedNameNavigation(from.userAnswers)
     case ConfirmPartnershipDetailsId =>
-      NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+      NavigateTo.dontSave(controllers.register.partnership.routes.WhatYouWillNeedController.onPageLoad())
     case WhatYouWillNeedId =>
-      NavigateTo.save(routes.PartnershipSameContactAddressController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipSameContactAddressController.onPageLoad(NormalMode))
     case PartnershipSameContactAddressId =>
       sameContactAddress(NormalMode, from.userAnswers)
     case PartnershipContactAddressPostCodeLookupId =>
-      NavigateTo.save(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipContactAddressListController.onPageLoad(NormalMode))
     case PartnershipContactAddressListId =>
-      NavigateTo.save(routes.PartnershipContactAddressController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipContactAddressController.onPageLoad(NormalMode))
     case PartnershipContactAddressId =>
-      NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipAddressYearsController.onPageLoad(NormalMode))
     case PartnershipAddressYearsId =>
-      addressYearsRoutes(from.userAnswers, NormalMode)
+      addressYearsIdRoutes(from.userAnswers, NormalMode)
+    case PartnershipTradingOverAYearId =>
+      tradingOverAYearRoutes(from.userAnswers, NormalMode)
     case PartnershipPreviousAddressPostCodeLookupId =>
-      NavigateTo.save(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipPreviousAddressListController.onPageLoad(NormalMode))
     case PartnershipPreviousAddressListId =>
-      NavigateTo.save(routes.PartnershipPreviousAddressController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipPreviousAddressController.onPageLoad(NormalMode))
     case PartnershipPreviousAddressId =>
-      NavigateTo.save(routes.PartnershipEmailController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipEmailController.onPageLoad(NormalMode))
     case PartnershipEmailId =>
-      NavigateTo.save(routes.PartnershipPhoneController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipPhoneController.onPageLoad(NormalMode))
     case PartnershipPhoneId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
     case PartnershipVatId =>
-      NavigateTo.save(routes.PartnershipPayeController.onPageLoad(NormalMode))
+      NavigateTo.save(PartnershipPayeController.onPageLoad(NormalMode))
     case PartnershipPayeId =>
-      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      NavigateTo.save(CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
-      NavigateTo.save(routes.AddPartnerController.onPageLoad(NormalMode))
+      NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
     case PartnershipReviewId =>
-      NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
+      NavigateTo.save(DeclarationController.onPageLoad())
     case PartnershipRegisteredAddressId =>
       regionBasedNavigation(from.userAnswers)
     case _ =>
-      NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      NavigateTo.dontSave(SessionExpiredController.onPageLoad())
   }
 
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = {
@@ -83,126 +84,164 @@ class PartnershipNavigator @Inject()(
       case PartnershipSameContactAddressId =>
         sameContactAddress(CheckMode, from.userAnswers)
       case PartnershipContactAddressPostCodeLookupId =>
-        NavigateTo.save(routes.PartnershipContactAddressListController.onPageLoad(CheckMode))
+        NavigateTo.save(PartnershipContactAddressListController.onPageLoad(CheckMode))
       case PartnershipContactAddressListId =>
-        NavigateTo.save(routes.PartnershipContactAddressController.onPageLoad(CheckMode))
+        NavigateTo.save(PartnershipContactAddressController.onPageLoad(CheckMode))
       case PartnershipContactAddressId =>
-        NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(CheckMode))
+        NavigateTo.save(PartnershipAddressYearsController.onPageLoad(CheckMode))
       case PartnershipAddressYearsId =>
-        addressYearsRoutes(from.userAnswers, CheckMode)
+        addressYearsCheckIdRoutes(from.userAnswers, CheckMode)
+      case PartnershipTradingOverAYearId =>
+        tradingOverAYearRoutes(from.userAnswers, CheckMode)
       case PartnershipPreviousAddressPostCodeLookupId =>
-        NavigateTo.save(routes.PartnershipPreviousAddressListController.onPageLoad(CheckMode))
+        NavigateTo.save(PartnershipPreviousAddressListController.onPageLoad(CheckMode))
       case PartnershipPreviousAddressListId =>
-        NavigateTo.save(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode))
+        NavigateTo.save(PartnershipPreviousAddressController.onPageLoad(CheckMode))
       case PartnershipPreviousAddressId =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        NavigateTo.save(CheckYourAnswersController.onPageLoad())
       case PartnershipEmailId =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        NavigateTo.save(CheckYourAnswersController.onPageLoad())
       case PartnershipPhoneId =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        NavigateTo.save(CheckYourAnswersController.onPageLoad())
       case PartnershipVatId =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        NavigateTo.save(CheckYourAnswersController.onPageLoad())
       case PartnershipPayeId =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        NavigateTo.save(CheckYourAnswersController.onPageLoad())
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
   override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = {
     from.id match {
       case PartnershipContactAddressPostCodeLookupId =>
-        NavigateTo.save(routes.PartnershipContactAddressListController.onPageLoad(UpdateMode))
+        NavigateTo.save(PartnershipContactAddressListController.onPageLoad(UpdateMode))
       case PartnershipContactAddressListId =>
-        NavigateTo.save(routes.PartnershipContactAddressController.onPageLoad(UpdateMode))
+        NavigateTo.save(PartnershipContactAddressController.onPageLoad(UpdateMode))
       case PartnershipContactAddressId =>
-        NavigateTo.dontSave(routes.PartnershipAddressYearsController.onPageLoad(UpdateMode))
+        NavigateTo.dontSave(PartnershipAddressYearsController.onPageLoad(UpdateMode))
       case PartnershipAddressYearsId =>
-        addressYearsRoutes(from.userAnswers, UpdateMode)
+        addressYearsCheckIdRoutes(from.userAnswers, UpdateMode)
+      case PartnershipTradingOverAYearId =>
+        tradingOverAYearRoutes(from.userAnswers, UpdateMode)
       case PartnershipPhoneId =>
         NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case PartnershipEmailId =>
         NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case PartnershipPreviousAddressPostCodeLookupId =>
-        NavigateTo.dontSave(routes.PartnershipPreviousAddressListController.onPageLoad(UpdateMode))
+        NavigateTo.dontSave(PartnershipPreviousAddressListController.onPageLoad(UpdateMode))
       case PartnershipPreviousAddressListId =>
-        NavigateTo.dontSave(routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode))
+        NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(UpdateMode))
       case PartnershipPreviousAddressId =>
-        NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+        NavigateTo.dontSave(AnyMoreChangesController.onPageLoad())
       case PartnershipConfirmPreviousAddressId =>
         variationManualPreviousAddressRoutes(from.userAnswers, UpdateMode)
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
+  private def addressYearsIdRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    answers.get(PartnershipAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) =>
+        NavigateTo.save(PartnershipTradingOverAYearController.onPageLoad(NormalMode))
+      case Some(AddressYears.OverAYear) =>
+        NavigateTo.save(PartnershipEmailController.onPageLoad(NormalMode))
+      case _ =>
+        NavigateTo.dontSave(SessionExpiredController.onPageLoad())
+    }
+  }
 
-  private def addressYearsRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
-    (answers.get(PartnershipAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (Some(AddressYears.UnderAYear), Some(false)) =>
+  private def addressYearsCheckIdRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
+    answers.get(PartnershipAddressYearsId) match {
+      case Some(AddressYears.UnderAYear) =>
+        NavigateTo.save(PartnershipTradingOverAYearController.onPageLoad(mode))
+      case Some(AddressYears.OverAYear) =>
         mode match {
-          case NormalMode | CheckMode => NavigateTo.dontSave(routes.PartnershipPreviousAddressController.onPageLoad(mode))
-          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(routes.PartnershipConfirmPreviousAddressController.onPageLoad())
-        }
-
-      case (Some(AddressYears.UnderAYear), Some(true)) =>
-        mode match {
-          case NormalMode | CheckMode => NavigateTo.dontSave(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))
-          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(routes.PartnershipConfirmPreviousAddressController.onPageLoad())
-        }
-      case (Some(AddressYears.OverAYear), _) =>
-        mode match {
-          case NormalMode => NavigateTo.dontSave(routes.PartnershipEmailController.onPageLoad(NormalMode))
-          case CheckMode => NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad())
-          case UpdateMode | CheckUpdateMode => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+          case CheckMode =>
+            NavigateTo.save(CheckYourAnswersController.onPageLoad())
+          case UpdateMode =>
+            NavigateTo.save(AnyMoreChangesController.onPageLoad())
+          case _ =>
+            NavigateTo.dontSave(SessionExpiredController.onPageLoad())
         }
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        NavigateTo.dontSave(SessionExpiredController.onPageLoad())
+    }
+  }
+
+  private def tradingOverAYearRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+    (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
+      case (Some(true), Some(false)) =>
+        mode match {
+          case NormalMode | CheckMode =>
+            NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
+          case _ =>
+            NavigateTo.dontSave(PartnershipConfirmPreviousAddressController.onPageLoad())
+        }
+      case (Some(true), Some(true)) =>
+        mode match {
+          case NormalMode | CheckMode =>
+            NavigateTo.dontSave(PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))
+          case _ =>
+            NavigateTo.dontSave(PartnershipConfirmPreviousAddressController.onPageLoad())
+        }
+      case (Some(false), _) =>
+        mode match {
+          case NormalMode =>
+            NavigateTo.dontSave(PartnershipEmailController.onPageLoad(NormalMode))
+          case CheckMode =>
+            NavigateTo.dontSave(CheckYourAnswersController.onPageLoad())
+          case _ =>
+            NavigateTo.dontSave(AnyMoreChangesController.onPageLoad())
+        }
+      case _ =>
+        NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
     (answers.get(PartnershipSameContactAddressId), answers.get(AreYouInUKId)) match {
-      case (Some(true), _) => NavigateTo.save(routes.PartnershipAddressYearsController.onPageLoad(mode))
-      case (Some(false), Some(false)) => NavigateTo.save(routes.PartnershipContactAddressController.onPageLoad(mode))
-      case (Some(false), Some(true)) => NavigateTo.save(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(mode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case (Some(true), _) => NavigateTo.save(PartnershipAddressYearsController.onPageLoad(mode))
+      case (Some(false), Some(false)) => NavigateTo.save(PartnershipContactAddressController.onPageLoad(mode))
+      case (Some(false), Some(true)) => NavigateTo.save(PartnershipContactAddressPostCodeLookupController.onPageLoad(mode))
+      case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
 
   private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
-      case Some(false) => NavigateTo.dontSave(routes.PartnershipRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case Some(false) => NavigateTo.dontSave(PartnershipRegisteredAddressController.onPageLoad())
+      case Some(true) => NavigateTo.dontSave(ConfirmPartnershipDetailsController.onPageLoad())
+      case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
   private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(PartnershipRegisteredAddressId) flatMap { address =>
       countryOptions.regions(address.country.getOrElse("")) match {
-        case UK => NavigateTo.dontSave(controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode))
-        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-        case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        case UK => NavigateTo.dontSave(BusinessTypeAreYouInUKController.onPageLoad(CheckMode))
+        case EuEea => NavigateTo.dontSave(controllers.register.partnership.routes.WhatYouWillNeedController.onPageLoad())
+        case RestOfTheWorld => NavigateTo.dontSave(OutsideEuEeaController.onPageLoad())
+        case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
       }
     }
   }
 
   private def regionBasedContactDetailsRoutes(answers: UserAnswers): Option[NavigateTo] = {
     answers.get(AreYouInUKId) match {
-      case Some(false) => NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
-      case Some(true) => NavigateTo.save(routes.PartnershipVatController.onPageLoad(NormalMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case Some(false) => NavigateTo.save(CheckYourAnswersController.onPageLoad())
+      case Some(true) => NavigateTo.save(PartnershipVatController.onPageLoad(NormalMode))
+      case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 
   private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
-      case Some(false) =>NavigateTo.dontSave(routes.PartnershipPreviousAddressController.onPageLoad(mode))
-      case Some(true) => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case Some(false) =>NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
+      case Some(true) => NavigateTo.dontSave(AnyMoreChangesController.onPageLoad())
+      case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
 }
