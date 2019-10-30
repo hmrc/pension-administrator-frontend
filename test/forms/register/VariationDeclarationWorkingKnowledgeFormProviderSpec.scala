@@ -20,7 +20,7 @@ import forms.behaviours.OptionFieldBehaviours
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.FormError
 
-class StillUseAdviserFormProviderSpec extends OptionFieldBehaviours {
+class VariationDeclarationWorkingKnowledgeFormProviderSpec extends OptionFieldBehaviours {
 
   val form = new DeclarationWorkingKnowledgeFormProvider()()
 

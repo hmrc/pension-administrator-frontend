@@ -62,10 +62,10 @@ object IndividualEmailControllerSpec {
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.IndividualEmailController.onSubmit(mode),
-      title = Message("email.title", Message("theIndividual").resolve),
-      heading = Message("email.title", individualName),
+      title = Message("individual.email.title"),
+      heading = Message("individual.email.title"),
       mode = mode,
-      entityName = individualName
+      entityName = Message("common.you").resolve
     )
 }
 

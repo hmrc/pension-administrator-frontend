@@ -157,10 +157,10 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             IndividualDateOfBirthId.toString -> localDate
           ),
           Seq(
-            AnswerRow("cya.label.dob",
+            AnswerRow("individualDateOfBirth.heading",
               Seq(displayDate),
               answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/your-date-of-birth")))
+              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/date-of-birth")))
           )
         )
       )

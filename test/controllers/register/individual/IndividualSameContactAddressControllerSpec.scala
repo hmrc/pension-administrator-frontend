@@ -50,7 +50,7 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     postCall = routes.IndividualSameContactAddressController.onSubmit(NormalMode),
     title = Message("individual.same.contact.address.title"),
     heading = Message("individual.same.contact.address.heading"),
-    hint = Some(Message("individual.same.contact.address.hint")),
+    hint = None,
     address = testAddress,
     psaName = "Test name",
     mode = NormalMode
