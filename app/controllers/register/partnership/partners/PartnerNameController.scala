@@ -14,49 +14,49 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
-import identifiers.register.company.directors.DirectorNameId
+import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.CompanyDirector
+import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.Future
 
-class DirectorNameController @Inject()(
+class PartnerNameController @Inject()(
                                            val appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
                                            val cacheConnector: UserAnswersCacheConnector,
-                                           @CompanyDirector val navigator: Navigator,
+                                           @PartnershipPartner val navigator: Navigator,
                                            override val allowAccess: AllowAccessActionProvider,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction
                                          ) extends PersonNameController with Retrievals{
 
-  private[directors] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
+  private[partners] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = routes.DirectorNameController.onSubmit(mode, index),
-      title = "directorName.heading",
-      heading = Message("directorName.heading"),
+      postCall = routes.PartnerNameController.onSubmit(mode, index),
+      title = "partnerName.heading",
+      heading = Message("partnerName.heading"),
       None,
       None,
       mode,
       entityName = name
     )
 
-  private[directors] def id(index: Index): DirectorNameId =
-    DirectorNameId(index)
+  private[partners] def id(index: Index): PartnerNameId =
+    PartnerNameId(index)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

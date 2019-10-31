@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
@@ -23,11 +23,11 @@ import models.NormalMode
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator}
 
-class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
+class PartnerDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
 
-  import DirectorDOBControllerSpec._
+  import PartnerDOBControllerSpec._
 
-  "DirectorDOBController" must {
+  "PartnerDOBController" must {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = testController(this, dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
@@ -47,18 +47,18 @@ class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsCon
   }
 
 }
-object DirectorDOBControllerSpec {
+object PartnerDOBControllerSpec {
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
-                    ): DirectorDOBController =
+                    ): PartnerDOBController =
     createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
                         base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorDOBController =
-    new DirectorDOBController(
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): PartnerDOBController =
+    new PartnerDOBController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
       cacheConnector = connector,
