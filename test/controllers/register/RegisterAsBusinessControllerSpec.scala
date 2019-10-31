@@ -16,6 +16,7 @@
 
 package controllers.register
 
+import audit.testdoubles.StubSuccessfulAuditService
 import base.SpecBase
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
@@ -27,8 +28,10 @@ import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.status
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
+import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -62,6 +65,17 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       true
     )
 
+    "send a PSAStart audit event" in {
+
+      auditService.reset()
+
+      val result = controller(this)(validData.dataRetrievalAction, FakeAuthAction, FakeNavigator, FakeUserAnswersCacheConnector).
+        onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      auditService.verifyNothingSent() mustBe false
+    }
+
   }
 
 }
@@ -69,6 +83,8 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 object RegisterAsBusinessControllerSpec {
 
   val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
+
+  private val auditService = new StubSuccessfulAuditService()
 
   val validData: UserAnswers = UserAnswers().registerAsBusiness(true)
 
@@ -103,7 +119,8 @@ object RegisterAsBusinessControllerSpec {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       cache,
-      navigator
+      navigator,
+      auditService
     )
 
 }

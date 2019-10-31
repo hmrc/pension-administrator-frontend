@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import audit.testdoubles.StubSuccessfulAuditService
 import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
@@ -28,8 +27,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val auditService = new StubSuccessfulAuditService()
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       frontendAppConfig,
@@ -38,8 +35,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      auditService
+      new DataRequiredActionImpl
     )
 
   private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
@@ -59,16 +55,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send a PSAStart audit event" in {
-
-      auditService.reset()
-
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      auditService.verifyNothingSent() mustBe false
     }
 
   }
