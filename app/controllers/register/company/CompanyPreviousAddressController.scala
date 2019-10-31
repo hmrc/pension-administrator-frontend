@@ -53,9 +53,9 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
   private def addressViewModel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyPreviousAddressController.onSubmit(mode),
     countryOptions.options,
-    Message("companyPreviousAddress.title"),
-    Message("companyPreviousAddress.heading", name),
-    Some(Message("companyContactAddress.lede", name)),
+    title = Message("previousAddress.company.title"),
+    heading = Message("previousAddress.heading", name),
+    hint = Some(Message("previousAddress.lede")),
     psaName = psaName()
   )
 

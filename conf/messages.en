@@ -222,18 +222,8 @@ companyDetails.error.companyName.required = Please give an answer for Company na
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
 
-companyPreviousAddress.title = Previous Address of the Company
-companyPreviousAddress.heading = Previous Address of the Company
 companyPreviousAddress.checkYourAnswersLabel = {0}’s previous address
 companyPreviousAddress.visuallyHidden.text = {0}’s previous address
-
-companyPreviousAddressPostCodeLookup.title = What was the previous contact address for the company?
-companyPreviousAddressPostCodeLookup.heading = What was the previous contact address for {0} ?
-companyPreviousAddressPostCodeLookup.lede = This is usually the registered business address but you can enter any address you have for this company.
-companyPreviousAddressPostCodeLookup.checkYourAnswersLabel = Previous address of the company
-companyPreviousAddressPostCodeLookup.postalCode = Postcode
-companyPreviousAddressPostCodeLookup.enterPostcode = You can {0}
-companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 companyContactAddressPostCodeLookup.title = Which address can we use to contact the company?
 companyContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
@@ -324,7 +314,7 @@ hasVAT.visuallyHidden.text = whether {0} is registered for VAT
 
 enterVAT.title = What is {0}’s VAT registration number?
 enterVAT.heading = What is {0}’s VAT registration number?
-enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for {0}.
+enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789.
 enterVAT.visuallyHidden.text = {0}’s VAT registration number
 enterVAT.error.invalid = Enter {0}’s VAT registration number in the correct format
 enterVAT.error.length = Enter {0}’s VAT registration number using 9 characters or less
@@ -617,9 +607,6 @@ individualContactAddressPostCodeLookup.formLabel = Postcode
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This should be an address that HMRC can use to contact you.
-
-company.contactAddressList.title = Select the contact address for the company
-company.contactAddressList.heading = Select the contact address for {0}
 
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
@@ -1028,8 +1015,8 @@ dob.heading = What is {0}’s date of birth?
 
 contactAddressList.heading = Select {0}’s contact address
 
-previousAddressPostCode.heading = What was the {0}’s previous contact address?
-previousAddressList.heading = Select the {0}’s previous contact address
+previousAddressPostCode.heading = What was {0}’s previous contact address?
+previousAddressList.heading = Select {0}’s previous contact address
 previousAddress.partnership.title = The partnership’s previous contact address
 previousAddress.company.title = The company’s previous contact address
 previousAddress.heading = {0}’s previous contact address

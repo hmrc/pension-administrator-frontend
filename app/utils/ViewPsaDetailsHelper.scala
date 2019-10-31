@@ -310,8 +310,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def ifAnyDirectorIncomplete = userAnswers.allDirectorsAfterDelete(NormalMode).exists(!_.isComplete)
 
   //Partnership PSA
-  private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(PartnershipVatId) match {
-    case Some(Vat.Yes(vat)) => Some(AnswerRow("vat.label", Seq(vat), answerIsMessageKey = false,
+  private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(EnterVATId) match {
+    case Some(vat) => Some(AnswerRow("vat.label", Seq(vat), answerIsMessageKey = false,
       None))
 
     case _ => None
