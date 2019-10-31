@@ -23,12 +23,11 @@ import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
-import identifiers.register.partnership.{PartnershipAddressYearsId, PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactDetailsId, PartnershipPreviousAddressId, PartnershipRegisteredAddressId, PartnershipSameContactAddressId}
+import identifiers.register.partnership._
 import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
 import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
-import views.html.phone
 
 
 package object utils {
@@ -216,10 +215,6 @@ package object utils {
 
     def partnershipPreviousAddress(address: Address): UserAnswers = {
       answers.set(PartnershipPreviousAddressId)(address).asOpt.value
-    }
-
-    def partnershipContactDetails(contactDetails: ContactDetails): UserAnswers = {
-      answers.set(PartnershipContactDetailsId)(contactDetails).asOpt.value
     }
 
     //Partners

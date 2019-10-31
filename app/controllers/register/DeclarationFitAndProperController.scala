@@ -24,7 +24,7 @@ import forms.register.DeclarationFormProvider
 import identifiers.register._
 import identifiers.register.company.ContactDetailsId
 import identifiers.register.individual.IndividualEmailId
-import identifiers.register.partnership.PartnershipContactDetailsId
+import identifiers.register.partnership.PartnershipEmailId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
@@ -117,7 +117,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
       registrationInfo.legalStatus match {
         case Individual => answers.get(IndividualEmailId)
         case LimitedCompany => answers.get(ContactDetailsId).map(_.email)
-        case Partnership => answers.get(PartnershipContactDetailsId).map(_.email)
+        case Partnership => answers.get(PartnershipEmailId)
       }
     }
   }

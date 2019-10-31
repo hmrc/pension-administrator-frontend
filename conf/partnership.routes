@@ -47,11 +47,6 @@ POST        /what-was-previous-contact-address                         controlle
 GET         /:mode/what-was-previous-contact-address                   controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
 POST        /:mode/what-was-previous-contact-address                   controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET         /contact-details                          controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST        /contact-details                          controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/contact-details                    controllers.register.partnership.PartnershipContactDetailsController.onPageLoad(mode: Mode)
-POST        /:mode/contact-details                    controllers.register.partnership.PartnershipContactDetailsController.onSubmit(mode: Mode)
-
 GET         /select-previous-contact-address                 controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-previous-contact-address                 controllers.register.partnership.PartnershipPreviousAddressListController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/select-previous-contact-address           controllers.register.partnership.PartnershipPreviousAddressListController.onPageLoad(mode: Mode)
@@ -111,7 +106,27 @@ POST        /enter-registered-address                 controllers.register.partn
 GET         /is-this-previous-address                 controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                 controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
+GET         /email-address                         controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /email-address                         controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode)
+POST        /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode)
+
+GET         /phone-number                          controllers.register.partnership.PartnershipPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /phone-number                          controllers.register.partnership.PartnershipPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/phone-number                    controllers.register.partnership.PartnershipPhoneController.onPageLoad(mode: Mode)
+POST        /:mode/phone-number                    controllers.register.partnership.PartnershipPhoneController.onSubmit(mode: Mode)
+
 GET         /trading-time                             controllers.register.partnership.PartnershipTradingOverAYearController.onPageLoad(mode: Mode = NormalMode)
 POST        /trading-time                             controllers.register.partnership.PartnershipTradingOverAYearController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/trading-time                       controllers.register.partnership.PartnershipTradingOverAYearController.onPageLoad(mode: Mode)
 POST        /:mode/trading-time                       controllers.register.partnership.PartnershipTradingOverAYearController.onSubmit(mode: Mode)
+
+GET         /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode)
+
+GET         /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode)
