@@ -340,14 +340,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
-    AnswerRow("partnership.email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipEmailId) map { details =>
+    AnswerRow("partnership.email.label", Seq(details), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def partnershipPhoneNumber: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
-    AnswerRow("partnership.phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def partnershipPhoneNumber: Option[AnswerRow] = userAnswers.get(PartnershipPhoneId) map { details =>
+    AnswerRow("partnership.phone.label", Seq(details), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
