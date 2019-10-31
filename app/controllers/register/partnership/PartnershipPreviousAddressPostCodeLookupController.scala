@@ -23,6 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
 import models.Mode
 import models.requests.DataRequest
@@ -48,11 +49,11 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
                                                                     formProvider: PostCodeLookupFormProvider
                                                                   ) extends PostcodeLookupController with Retrievals {
 
-  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
+  def viewModel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
-    Message("common.previousAddress.title"),
-    Message("common.previousAddress.heading"),
+    Message("previousAddressPostCode.heading", Message("thePartnership").resolve),
+    Message("previousAddressPostCode.heading", name),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),
     Message("common.address.enterPostcode.formLabel"),
@@ -63,12 +64,18 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode), mode)
+      BusinessNameId.retrieve.right.map {
+        name =>
+          get(viewModel(mode, name), mode)
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PartnershipPreviousAddressPostCodeLookupId, viewModel(mode), mode)
+      BusinessNameId.retrieve.right.map {
+        name =>
+          post(PartnershipPreviousAddressPostCodeLookupId, viewModel(mode, name), mode)
+      }
   }
 }
 

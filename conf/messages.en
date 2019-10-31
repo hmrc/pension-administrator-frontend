@@ -113,7 +113,7 @@ common.addressYears.over_a_year = Yes
 common.previousAddress.heading = Previous Address
 common.previousAddress.title = Previous Address
 common.previousAddress.lede = This can be a residential or company address.
-common.previousAddress.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+common.previousAddress.enterPostcode = You can {0}
 common.previousAddress.enterPostcode.link = enter the address manually
 common.address.enterPostcode.formLabel = Postcode
 common.manual.address.title = Address
@@ -429,7 +429,9 @@ directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
 confirmCompanyAddress.title = Is this the registered address for the company?
-confirmCompanyAddress.heading = Is this the registered address for {0}?
+confirmRegisteredAddress.heading = Is this the registered address for {0}?
+confirmRegisteredAddress.title = Is this the registered address for the business?
+confirmRegisteredAddress.error.required = Select yes if these details are correct
 
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
@@ -630,8 +632,8 @@ cya.label.company.same.contact.address = Is your contact address the same as you
 
 cya.label.common.same.contact.address = Is your contact address the same as your registered address?
 
-partnership.sameContactAddress.title = Is your contact address the same as your registered address?
-partnership.sameContactAddress.heading = Is your contact address the same as your registered address?
+partnership.sameContactAddress.title = Can HMRC use this address to contact the partnership?
+partnership.sameContactAddress.heading = Can HMRC use this address to contact {0}?
 partnershipSameContactAddress.checkYourAnswersLabel = Is your contact address the same as your registered address?
 
 interceptPSA.title = You have already registered as a pension scheme administrator
@@ -654,19 +656,16 @@ whatYouWillNeed.partnership.body.item1 = your partnership name, address and prev
 whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
 whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address
 
-confirmPartnershipDetails.title = Are these details correct?
-confirmPartnershipDetails.heading = Are these details correct?
 confirmPartnershipDetails.error.required = Select yes if these details are correct
 
-partnershipContactAddressPostCodeLookup.title = What is the contact address?
-partnershipContactAddressPostCodeLookup.heading = What is {0}’s contact address?
-partnershipContactAddressPostCodeLookup.lede = This should be an address that HMRC can use to contact {0}.
-partnershipContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
+partnershipContactAddressPostCodeLookup.title = Which address can we use to contact the partnership?
+partnershipContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
+partnershipContactAddressPostCodeLookup.enterPostcode = You can {0}.
 partnershipContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-partnership.contactAddress.title = What is the contact address?
+partnership.contactAddress.title = What is the partnership’s contact address?
 partnership.contactAddress.heading = What is {0}’s contact address?
-partnership.contactAddress.hint = This should be an address that HMRC can use to contact {0}.
+partnership.contactAddress.hint = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
 
 partnership.partner.contactDetails.title = Enter the partner’s contact details
 partnership.partner.contactDetails.heading = Enter the partner’s contact details
@@ -1025,3 +1024,12 @@ directorName.heading = What is the director’s name?
 
 directorDob.title = What is the director’s date of birth?
 dob.heading = What is the date of birth for {0}?
+
+contactAddressList.heading = Select {0}’s contact address
+
+previousAddressPostCode.heading = What was the {0}’s previous contact address?
+previousAddressList.heading = Select the {0}’s previous contact address
+previousAddress.partnership.title = The partnership’s previous contact address
+previousAddress.company.title = The company’s previous contact address
+previousAddress.heading = {0}’s previous contact address
+previousAddress.lede = You can change any part of the address if you need to.

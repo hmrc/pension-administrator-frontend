@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.partnership.routes._
 import forms.AddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -53,24 +54,28 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
-    title = Message("common.previousAddress.title"),
-    heading = Message("common.previousAddress.heading"),
-    hint = Some(Message("common.previousAddress.lede")),
+    title = Message("previousAddress.partnership.title"),
+    heading = Message("previousAddress.heading", name),
+    hint = Some(Message("previousAddress.lede")),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode), mode)
+      BusinessNameId.retrieve.right.map { name =>
+        get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode)
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode), mode, "Partnership Previous Address",
-        PartnershipPreviousAddressPostCodeLookupId)
+      BusinessNameId.retrieve.right.map { name =>
+        post(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, "Partnership Previous Address",
+          PartnershipPreviousAddressPostCodeLookupId)
+      }
   }
 
 }
