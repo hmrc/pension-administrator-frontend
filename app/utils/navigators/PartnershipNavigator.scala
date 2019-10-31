@@ -24,7 +24,7 @@ import controllers.register.partnership.routes._
 import controllers.register.routes._
 import controllers.routes._
 import identifiers.register.partnership._
-import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, IsRegisteredNameId}
+import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, EnterVATId, IsRegisteredNameId}
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
 import utils.countryOptions.CountryOptions
@@ -45,8 +45,9 @@ class PartnershipNavigator @Inject()(
     case IsRegisteredNameId =>
       registeredNameRoutes(from.userAnswers)
     case ConfirmPartnershipDetailsId =>
-      NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-    case WhatYouWillNeedId =>
+      registeredAddressRoutes(from.userAnswers, NormalMode)
+
+    case EnterVATId =>
       NavigateTo.save(PartnershipSameContactAddressController.onPageLoad(NormalMode))
     case PartnershipSameContactAddressId =>
       sameContactAddress(NormalMode, from.userAnswers)
@@ -70,10 +71,6 @@ class PartnershipNavigator @Inject()(
       NavigateTo.save(PartnershipPhoneController.onPageLoad(NormalMode))
     case PartnershipPhoneId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
-    case PartnershipVatId =>
-      NavigateTo.save(PartnershipPayeController.onPageLoad(NormalMode))
-    case PartnershipPayeId =>
-      NavigateTo.save(CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
       NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
     case PartnershipReviewId =>
@@ -253,6 +250,12 @@ class PartnershipNavigator @Inject()(
   private def registeredNameRoutes(answers: UserAnswers): Option[NavigateTo] =
     answers.get(IsRegisteredNameId) match {
       case Some(true) => NavigateTo.dontSave(routes.ConfirmPartnershipDetailsController.onPageLoad())
+      case _ => NavigateTo.dontSave(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad())
+    }
+
+  def registeredAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
+    answers.get(ConfirmPartnershipDetailsId) match {
+      case Some(true) => NavigateTo.dontSave(routes.HasPartnershipPAYEController.onPageLoad(mode))
       case _ => NavigateTo.dontSave(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad())
     }
 }
