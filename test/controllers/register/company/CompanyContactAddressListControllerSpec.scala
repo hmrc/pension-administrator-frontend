@@ -26,6 +26,7 @@ import models.{NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import play.api.Application
 import play.api.http.Writeable
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
@@ -118,13 +119,13 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
 object CompanyContactAddressListControllerSpec extends OptionValues {
   val onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
 
-  private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
+  private def addressListViewModel(addresses: Seq[TolerantAddress])(implicit  messages: Messages) = {
     AddressListViewModel(
       routes.CompanyContactAddressListController.onSubmit(NormalMode),
       routes.CompanyContactAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("company.contactAddressList.title"),
-      Message("company.contactAddressList.heading").withArgs("test company"),
+      Message("contactAddressList.heading", Message("theCompany").resolve),
+      Message("contactAddressList.heading", "test company"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

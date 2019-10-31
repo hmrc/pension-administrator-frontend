@@ -65,7 +65,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
   private lazy val viewModel = ManualAddressViewModel(
     routes.CompanyContactAddressController.onSubmit(NormalMode),
     countryOptions.options,
-    Message("companyContactAddress.title"),
+    Message("companyContactAddress.heading", Message("theCompany").resolve),
     Message("companyContactAddress.heading", companyName),
     Some(Message("companyContactAddress.lede", companyName)),
     psaName = Some("Test Company Name")

@@ -129,7 +129,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "on a GET request for Company Contact Details section " must {
 
       "render the view correctly for the company contact address" in {
-        val rows = Seq(answerRow(Message("cya.label.company.contact.address", defaultCompany),
+        val rows = Seq(answerRow(Message("cya.label.contact.address", defaultCompany),
           Seq(
             address.addressLine1,
             address.addressLine2,
@@ -138,7 +138,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           ),
           answerIsMessageKey = false,
           Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)),
-          visuallyHiddenLabel = Some(Message("companyContactAddress.visuallyHidden.text", defaultCompany))))
+          visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))))
 
         val sections = answerSections(None, rows)
 
@@ -172,7 +172,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           Some("post-code"),
           "country"
         )
-        val rows = Seq(answerRow(Message("companyPreviousAddress.checkYourAnswersLabel", defaultCompany),
+        val rows = Seq(answerRow(Message("previousAddress.checkYourAnswersLabel", defaultCompany),
           Seq(
             address.addressLine1,
             address.addressLine2,
@@ -180,7 +180,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.country
           ), answerIsMessageKey = false,
           Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)),
-          visuallyHiddenLabel = Some(Message("companyPreviousAddress.visuallyHidden.text", defaultCompany))))
+          visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultCompany))))
 
         val sections = answerSections(None, rows)
 

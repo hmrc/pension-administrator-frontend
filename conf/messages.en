@@ -222,8 +222,8 @@ companyDetails.error.companyName.required = Please give an answer for Company na
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
 
-companyPreviousAddress.checkYourAnswersLabel = {0}’s previous address
-companyPreviousAddress.visuallyHidden.text = {0}’s previous address
+previousAddress.checkYourAnswersLabel = {0}’s previous address
+previousAddress.visuallyHidden.text = {0}’s previous address
 
 companyContactAddressPostCodeLookup.title = Which address can we use to contact the company?
 companyContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
@@ -611,11 +611,11 @@ common.contactAddress.lede = This should be an address that HMRC can use to cont
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
 companyContactAddress.lede = You can change any part of the address if you need to.
-companyContactAddress.visuallyHidden.text = {0}’s contact address
+contactAddress.visuallyHidden.text = {0}’s contact address
 
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
-cya.label.company.contact.address = {0}’s contact address
+cya.label.contact.address = {0}’s contact address
 cya.label.company.same.contact.address = Is your contact address the same as your registered address?
 
 cya.label.common.same.contact.address = Is your contact address the same as your registered address?

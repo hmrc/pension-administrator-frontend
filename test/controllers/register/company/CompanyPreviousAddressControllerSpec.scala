@@ -65,9 +65,9 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
   private lazy val viewModel = ManualAddressViewModel(
     routes.CompanyPreviousAddressController.onSubmit(NormalMode),
     countryOptions.options,
-    Message("companyPreviousAddress.title"),
-    Message("companyPreviousAddress.heading", companyName),
-    Some(Message("companyContactAddress.lede", companyName)),
+    title = Message("previousAddress.company.title"),
+    heading = Message("previousAddress.heading", companyName),
+    hint = Some(Message("previousAddress.lede")),
     Some(companyName)
   )
 
