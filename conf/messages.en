@@ -390,6 +390,7 @@ directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 
 theCompany = the company
+theBusiness = the business
 thePartnership = the partnership
 theDirector = the director
 thePartner = the partner

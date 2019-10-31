@@ -26,7 +26,10 @@ import controllers.routes._
 import identifiers.register.partnership._
 import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, EnterVATId, IsRegisteredNameId}
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
+import identifiers.register._
+import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
+import utils.{Navigator, UserAnswers}
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
@@ -71,6 +74,14 @@ class PartnershipNavigator @Inject()(
       NavigateTo.save(PartnershipPhoneController.onPageLoad(NormalMode))
     case PartnershipPhoneId =>
       regionBasedContactDetailsRoutes(from.userAnswers)
+    case PartnershipVatId =>
+      NavigateTo.save(routes.HasPartnershipPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId if hasPaye(from.userAnswers) =>
+      NavigateTo.save(routes.PartnershipEnterPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case EnterPAYEId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
       NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
     case PartnershipReviewId =>
@@ -106,9 +117,13 @@ class PartnershipNavigator @Inject()(
       case PartnershipPhoneId =>
         NavigateTo.save(CheckYourAnswersController.onPageLoad())
       case PartnershipVatId =>
-        NavigateTo.save(CheckYourAnswersController.onPageLoad())
-      case PartnershipPayeId =>
-        NavigateTo.save(CheckYourAnswersController.onPageLoad())
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case HasPAYEId if hasPaye(from.userAnswers) =>
+        NavigateTo.save(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode))
+      case HasPAYEId =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case EnterPAYEId =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
@@ -171,6 +186,8 @@ class PartnershipNavigator @Inject()(
         NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
+
+  private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
   private def tradingOverAYearRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
     (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {

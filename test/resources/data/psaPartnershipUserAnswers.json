@@ -58,10 +58,7 @@
     "hasVat": true,
     "vat": "12345678"
   },
-  "partnershipPaye": {
-    "hasPaye": true,
-    "paye": "9876543210"
-  },
+  "paye": "9876543210",
   "partners": [
     {
       "partnerDetails": {

@@ -317,10 +317,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     case _ => None
   }
 
-  private def partnershipPayeNumber: Option[AnswerRow] = userAnswers.get(PartnershipPayeId) match {
-    case Some(Paye.Yes(paye)) => Some(AnswerRow("paye.label", Seq(paye), answerIsMessageKey = false,
-      None))
-    case _ => None
+  private def partnershipPayeNumber: Option[AnswerRow] = userAnswers.get(EnterPAYEId) map { paye =>
+    AnswerRow("paye.label", Seq(paye), answerIsMessageKey = false,
+      None)
   }
 
   private def partnershipAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactAddressId) map { address =>

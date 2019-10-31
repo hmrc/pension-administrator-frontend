@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.{BusinessNameId, BusinessUTRId}
+import identifiers.register.{EnterPAYEId, HasPAYEId}
 import identifiers.register.partnership.{CheckYourAnswersId, _}
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
@@ -55,7 +56,8 @@ class CheckYourAnswersController @Inject()(
         Seq(
           BusinessNameId.row(None),
           BusinessUTRId.row(None),
-          PartnershipPayeId.row(Some(Link(routes.PartnershipPayeController.onPageLoad(CheckMode).url))),
+          HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
+          EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
           PartnershipVatId.row(Some(Link(routes.PartnershipVatController.onPageLoad(CheckMode).url)))
         ).flatten
       )
