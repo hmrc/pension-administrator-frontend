@@ -38,78 +38,78 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
   "Cleanup for a company" when {
 
-//    "are you in uk has already answered as Yes and we change to No" must {
-//      val result: UserAnswers =
-//        companyAnswersForYes.set(AreYouInUKId)(false)
-//          .asOpt.value
-//
-//      "remove all the uk company data " in {
-//        result.get(BusinessNameId) mustNot be(defined)
-//        result.get(BusinessUTRId) mustNot be(defined)
-//        result.get(BusinessTypeId) mustNot be(defined)
-//        result.get(ConfirmCompanyAddressId) mustNot be(defined)
-//        result.get(CompanySameContactAddressId) mustNot be(defined)
-//        result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(CompanyAddressListId) mustNot be(defined)
-//        result.get(CompanyContactAddressId) mustNot be(defined)
-//        result.get(CompanyContactAddressListId) mustNot be(defined)
-//        result.get(CompanyAddressYearsId) mustNot be(defined)
-//        result.get(CompanyPreviousAddressId) mustNot be(defined)
-//        result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(ContactDetailsId) mustNot be(defined)
-//        result.get(HasVATId) mustNot be(defined)
-//        result.get(HasPAYEId) mustNot be(defined)
-//        result.get(EnterVATId) mustNot be(defined)
-//        result.get(EnterPAYEId) mustNot be(defined)
-//        result.get(CompanyRegistrationNumberId) mustNot be(defined)
-//        result.get(DirectorNameId(0)) mustNot be(defined)
-//        result.get(DirectorNameId(1)) mustNot be(defined)
-//        result.get(MoreThanTenDirectorsId) mustNot be(defined)
-//      }
-//
-//      "remove the data for working knowledge and pension adviser " in {
-//        result.get(DeclarationWorkingKnowledgeId) mustNot be(defined)
-//        result.get(AdviserDetailsId) mustNot be(defined)
-//        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(AdviserAddressListId) mustNot be(defined)
-//        result.get(AdviserAddressId) mustNot be(defined)
-//      }
-//
-//      "not remove the data for no uk business type" in {
-//        result.get(RegisterAsBusinessId) must be(defined)
-//      }
-//    }
-//
-//    "where are you in uk has already answered as No and we change to Yes " must {
-//      val result: UserAnswers =
-//        companyAnswersForNo.set(AreYouInUKId)(true)
-//          .asOpt.value
-//
-//      "remove all the non uk company data" in {
-//        result.get(NonUKBusinessTypeId) mustNot be(defined)
-//        result.get(CompanyAddressId) mustNot be(defined)
-//        result.get(CompanySameContactAddressId) mustNot be(defined)
-//        result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(CompanyAddressListId) mustNot be(defined)
-//        result.get(CompanyContactAddressId) mustNot be(defined)
-//        result.get(CompanyContactAddressListId) mustNot be(defined)
-//        result.get(CompanyAddressYearsId) mustNot be(defined)
-//        result.get(CompanyPreviousAddressId) mustNot be(defined)
-//        result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(ContactDetailsId) mustNot be(defined)
-//        result.get(DirectorNameId(0)) mustNot be(defined)
-//        result.get(DirectorNameId(1)) mustNot be(defined)
-//        result.get(MoreThanTenDirectorsId) mustNot be(defined)
-//      }
-//
-//      "remove the data for working knowledge and pension adviser " in {
-//        result.get(DeclarationWorkingKnowledgeId) mustNot be(defined)
-//        result.get(AdviserDetailsId) mustNot be(defined)
-//        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
-//        result.get(AdviserAddressListId) mustNot be(defined)
-//        result.get(AdviserAddressId) mustNot be(defined)
-//      }
-//    }
+    "are you in uk has already answered as Yes and we change to No" must {
+      val result: UserAnswers =
+        companyAnswersForYes.set(AreYouInUKId)(false)
+          .asOpt.value
+
+      "remove all the uk company data " in {
+        result.get(BusinessNameId) mustNot be(defined)
+        result.get(BusinessUTRId) mustNot be(defined)
+        result.get(BusinessTypeId) mustNot be(defined)
+        result.get(ConfirmCompanyAddressId) mustNot be(defined)
+        result.get(CompanySameContactAddressId) mustNot be(defined)
+        result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
+        result.get(CompanyAddressListId) mustNot be(defined)
+        result.get(CompanyContactAddressId) mustNot be(defined)
+        result.get(CompanyContactAddressListId) mustNot be(defined)
+        result.get(CompanyAddressYearsId) mustNot be(defined)
+        result.get(CompanyPreviousAddressId) mustNot be(defined)
+        result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
+        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(HasVATId) mustNot be(defined)
+        result.get(HasPAYEId) mustNot be(defined)
+        result.get(EnterVATId) mustNot be(defined)
+        result.get(EnterPAYEId) mustNot be(defined)
+        result.get(CompanyRegistrationNumberId) mustNot be(defined)
+        result.get(DirectorNameId(0)) mustNot be(defined)
+        result.get(DirectorNameId(1)) mustNot be(defined)
+        result.get(MoreThanTenDirectorsId) mustNot be(defined)
+      }
+
+      "remove the data for working knowledge and pension adviser " in {
+        result.get(DeclarationWorkingKnowledgeId) mustNot be(defined)
+        result.get(AdviserDetailsId) mustNot be(defined)
+        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
+        result.get(AdviserAddressListId) mustNot be(defined)
+        result.get(AdviserAddressId) mustNot be(defined)
+      }
+
+      "not remove the data for no uk business type" in {
+        result.get(RegisterAsBusinessId) must be(defined)
+      }
+    }
+
+    "where are you in uk has already answered as No and we change to Yes " must {
+      val result: UserAnswers =
+        companyAnswersForNo.set(AreYouInUKId)(true)
+          .asOpt.value
+
+      "remove all the non uk company data" in {
+        result.get(NonUKBusinessTypeId) mustNot be(defined)
+        result.get(CompanyAddressId) mustNot be(defined)
+        result.get(CompanySameContactAddressId) mustNot be(defined)
+        result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
+        result.get(CompanyAddressListId) mustNot be(defined)
+        result.get(CompanyContactAddressId) mustNot be(defined)
+        result.get(CompanyContactAddressListId) mustNot be(defined)
+        result.get(CompanyAddressYearsId) mustNot be(defined)
+        result.get(CompanyPreviousAddressId) mustNot be(defined)
+        result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
+        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(DirectorNameId(0)) mustNot be(defined)
+        result.get(DirectorNameId(1)) mustNot be(defined)
+        result.get(MoreThanTenDirectorsId) mustNot be(defined)
+      }
+
+      "remove the data for working knowledge and pension adviser " in {
+        result.get(DeclarationWorkingKnowledgeId) mustNot be(defined)
+        result.get(AdviserDetailsId) mustNot be(defined)
+        result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
+        result.get(AdviserAddressListId) mustNot be(defined)
+        result.get(AdviserAddressId) mustNot be(defined)
+      }
+    }
 
     "where are you in uk has already answered as No and we change to No (i.e. don't change at all!)" must {
       val result: UserAnswers =
@@ -340,8 +340,8 @@ object AreYouInUKIdSpec extends OptionValues {
 
   private def setCommonPartnershipData(userAnswers: UserAnswers) = {
     userAnswers.set(PartnershipSameContactAddressId)(false)
-      .flatMap(_.set(BusinessNameId)("test company"))
       .flatMap(_.set(BusinessTypeId)(BusinessType.BusinessPartnership))
+      .flatMap(_.set(BusinessNameId)("test company"))
       .flatMap(_.set(PartnershipContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(PartnershipContactAddressListId)(tolerantAddress))
       .flatMap(_.set(PartnershipContactAddressId)(address))

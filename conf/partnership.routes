@@ -101,16 +101,6 @@ POST        /enter-registered-address                 controllers.register.partn
 GET         /is-this-previous-address                 controllers.register.partnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                 controllers.register.partnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
-GET         /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode)
-POST        /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode)
-
-GET         /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
-POST        /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode)
-
 GET         /email-address                         controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode = NormalMode)
 POST        /email-address                         controllers.register.partnership.PartnershipEmailController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/email-address                   controllers.register.partnership.PartnershipEmailController.onPageLoad(mode: Mode)
@@ -125,3 +115,13 @@ GET         /trading-time                             controllers.register.partn
 POST        /trading-time                             controllers.register.partnership.PartnershipTradingOverAYearController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/trading-time                       controllers.register.partnership.PartnershipTradingOverAYearController.onPageLoad(mode: Mode)
 POST        /:mode/trading-time                       controllers.register.partnership.PartnershipTradingOverAYearController.onSubmit(mode: Mode)
+
+GET         /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                             controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                       controllers.register.partnership.HasPartnershipVATController.onSubmit(mode: Mode)
+
+GET         /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode)
