@@ -21,7 +21,7 @@ import models.AddressYears
 import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
-import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers, CheckYourAnswersCompany}
+import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers, CheckYourAnswersBusiness}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
@@ -38,7 +38,7 @@ case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
   }
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
+    new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "addressYears.heading")
 
