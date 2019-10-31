@@ -14,37 +14,32 @@
  * limitations under the License.
  */
 
-package identifiers.register
+package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.JsPath
 import utils.UserAnswers
-import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersBusiness}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersPartnership, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
-case object HasVATId extends TypedIdentifier[Boolean] {
+case object PartnershipEmailId extends TypedIdentifier[String] {
   self =>
-  override def toString: String = "hasVat"
+
+  override def path: JsPath = JsPath \ "partnershipContactDetails" \ PartnershipEmailId.toString
+
+  override def toString: String = "email"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersBusiness[self.type] {
+    new CheckYourAnswersPartnership[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, messageKey = "hasVAT.heading")
+        dynamicMessage(ua, "email.title")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, messageKey = "hasVAT.visuallyHidden.text")
+        dynamicMessage(ua, "email.visuallyHidden.text")
 
-
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
     }
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    value match {
-      case Some(false) =>
-        userAnswers.remove(EnterVATId)
-      case _ => JsSuccess(userAnswers)
-    }
-  }
 }

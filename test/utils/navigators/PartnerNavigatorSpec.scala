@@ -106,23 +106,23 @@ object PartnerNavigatorSpec extends OptionValues {
   private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private lazy val confirmPreviousAddress = routes.PartnerConfirmPreviousAddressController.onPageLoad(0)
 
-  def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
+  private def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
 
-  def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+  private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
 
-  def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
+  private def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
 
-  def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
+  private def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
 
-  def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
+  private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
 
-  def partnerContactDetailsPage(mode: Mode) = routes.PartnerContactDetailsController.onPageLoad(mode, 0)
+  private def partnerContactDetailsPage(mode: Mode) = routes.PartnerContactDetailsController.onPageLoad(mode, 0)
 
-  def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
+  private def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
 
-  def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
+  private def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
 
-  def partnerDetailsPage(mode: Mode) = routes.PartnerDetailsController.onPageLoad(mode, 0)
+  private def partnerDetailsPage(mode: Mode) = routes.PartnerDetailsController.onPageLoad(mode, 0)
 
   def paPostCodePage(mode: Mode): Call = routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
 
@@ -137,7 +137,7 @@ object PartnerNavigatorSpec extends OptionValues {
   def addressPage(mode: Mode): Call = routes.PartnerAddressController.onPageLoad(mode, 0)
 
   private def partner(index: Int) =
-    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = (index % 2 == 0), isNew = true)
+    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = index % 2 == 0, isNew = true)
 
   private def data = {
     (0 to 19).map(index => Json.obj(
@@ -145,7 +145,7 @@ object PartnerNavigatorSpec extends OptionValues {
     ).toArray
   }
 
-  val defaultAnswers = UserAnswers(Json.obj())
+  private val defaultAnswers = UserAnswers(Json.obj())
     .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
 
   private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())

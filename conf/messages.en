@@ -336,7 +336,7 @@ hasVAT.visuallyHidden.text = whether {0} is registered for VAT
 
 enterVAT.title = What is {0}’s VAT registration number?
 enterVAT.heading = What is {0}’s VAT registration number?
-enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789. You can find it on the VAT registration certificate for {0}.
+enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789.
 enterVAT.visuallyHidden.text = {0}’s VAT registration number
 enterVAT.error.invalid = Enter {0}’s VAT registration number in the correct format
 enterVAT.error.length = Enter {0}’s VAT registration number using 9 characters or less
@@ -1046,4 +1046,4 @@ directorName.title = What is the director’s name?
 directorName.heading = What is the director’s name?
 
 directorDob.title = What is the director’s date of birth?
-dob.heading = What is the date of birth for {0}?
+dob.heading = What is {0}’s date of birth?

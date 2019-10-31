@@ -20,14 +20,13 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import connectors.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.ContactDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.individual.IndividualContactDetailsChangedId
-import identifiers.register.partnership.PartnershipContactDetailsId
-import models.requests.DataRequest
+import identifiers.register.DirectorsOrPartnersChangedId
+import identifiers.register.partnership.partners.PartnerContactDetailsId
 import models._
+import models.requests.DataRequest
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -219,10 +218,10 @@ class ContactDetailsControllerSpec extends WordSpec with MustMatchers with Optio
             ("emailAddress", "test@test.com"), ("phoneNumber", "123456789")
           )
           val controller = app.injector.instanceOf[TestController]
-          val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnershipContactDetailsId)
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnerContactDetailsId(0))
 
           status(result) mustEqual SEE_OTHER
-          FakeUserAnswersCacheConnector.verify(IndividualContactDetailsChangedId, true)
+          FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
       }
     }
   }

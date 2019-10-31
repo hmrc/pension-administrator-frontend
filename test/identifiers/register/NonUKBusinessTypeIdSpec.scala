@@ -107,8 +107,12 @@ class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValu
         result.get(PartnershipPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
-      "remove the data for contact details " in {
-        result.get(PartnershipContactDetailsId) mustNot be(defined)
+      "remove the data for email" in {
+        result.get(PartnershipEmailId) mustNot be(defined)
+      }
+
+      "remove the data for phone" in {
+        result.get(PartnershipPhoneId) mustNot be(defined)
       }
 
       "remove the data for partners " in {
@@ -166,7 +170,8 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
       .flatMap(_.set(PartnershipAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(PartnershipPreviousAddressId)(address))
       .flatMap(_.set(PartnershipPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(PartnershipContactDetailsId)(contactDetails))
+      .flatMap(_.set(PartnershipEmailId)(email))
+      .flatMap(_.set(PartnershipPhoneId)(phone))
       .flatMap(_.set(PartnerDetailsId(0))(personDetails))
       .flatMap(_.set(PartnerDetailsId(1))(personDetails))
       .flatMap(_.set(MoreThanTenPartnersId)(true))

@@ -310,8 +310,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def ifAnyDirectorIncomplete = userAnswers.allDirectorsAfterDelete(NormalMode).exists(!_.isComplete)
 
   //Partnership PSA
-  private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(PartnershipVatId) match {
-    case Some(Vat.Yes(vat)) => Some(AnswerRow("vat.label", Seq(vat), answerIsMessageKey = false,
+  private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(EnterVATId) match {
+    case Some(vat) => Some(AnswerRow("vat.label", Seq(vat), answerIsMessageKey = false,
       None))
 
     case _ => None
@@ -340,14 +340,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
-    AnswerRow("partnership.email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def partnershipEmailAddress: Option[AnswerRow] = userAnswers.get(PartnershipEmailId) map { details =>
+    AnswerRow("partnership.email.label", Seq(details), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(UpdateMode).url)))
   }
 
-  private def partnershipPhoneNumber: Option[AnswerRow] = userAnswers.get(PartnershipContactDetailsId) map { details =>
-    AnswerRow("partnership.phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.routes.PartnershipContactDetailsController.onPageLoad(UpdateMode).url)))
+  private def partnershipPhoneNumber: Option[AnswerRow] = userAnswers.get(PartnershipPhoneId) map { details =>
+    AnswerRow("partnership.phone.label", Seq(details), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   private def partnershipUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>

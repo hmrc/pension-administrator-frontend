@@ -19,7 +19,7 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessUTRId}
+import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId}
 import identifiers.register.partnership.{CheckYourAnswersId, _}
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
@@ -56,7 +56,8 @@ class CheckYourAnswersController @Inject()(
           BusinessNameId.row(None),
           BusinessUTRId.row(None),
           PartnershipPayeId.row(Some(Link(routes.PartnershipPayeController.onPageLoad(CheckMode).url))),
-          PartnershipVatId.row(Some(Link(routes.PartnershipVatController.onPageLoad(CheckMode).url)))
+          HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
+          EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
@@ -74,7 +75,8 @@ class CheckYourAnswersController @Inject()(
       val contactDetails = AnswerSection(
         Some("common.checkYourAnswers.contact.details.heading"),
         Seq(
-          PartnershipContactDetailsId.row(Some(Link(routes.PartnershipContactDetailsController.onPageLoad(CheckMode).url)))
+          PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
+          PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
