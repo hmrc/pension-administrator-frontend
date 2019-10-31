@@ -17,10 +17,10 @@ POST        /contact-address-year                    controllers.register.indivi
 GET         /:mode/contact-address-year             controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode)
 POST        /:mode/contact-address-year             controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode)
 
-GET         /confirm-previous-address-correct                controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /confirm-previous-address-correct                controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/confirm-previous-address-correct         controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode)
-POST        /:mode/confirm-previous-address-correct         controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode)
+GET         /previous-contact-address                controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-contact-address                controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/previous-contact-address         controllers.register.individual.IndividualPreviousAddressController.onPageLoad(mode: Mode)
+POST        /:mode/previous-contact-address         controllers.register.individual.IndividualPreviousAddressController.onSubmit(mode: Mode)
 
 GET         /you-will-need-to-update                controllers.register.individual.YouWillNeedToUpdateController.onPageLoad(mode: Mode = NormalMode)
 
@@ -47,10 +47,10 @@ POST        /select-contact-address                 controllers.register.individ
 GET         /:mode/select-contact-address          controllers.register.individual.IndividualContactAddressListController.onPageLoad(mode: Mode)
 POST        /:mode/select-contact-address          controllers.register.individual.IndividualContactAddressListController.onSubmit(mode: Mode)
 
-GET         /enter-contact-address                  controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /enter-contact-address                  controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/enter-contact-address           controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode)
-POST        /:mode/enter-contact-address           controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode)
+GET         /what-is-contact-address                  controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-is-contact-address                  controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/what-is-contact-address           controllers.register.individual.IndividualContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/what-is-contact-address           controllers.register.individual.IndividualContactAddressController.onSubmit(mode: Mode)
 
 GET         /use-address-for-contact            controllers.register.individual.IndividualSameContactAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /use-address-for-contact            controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode = NormalMode)

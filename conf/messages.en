@@ -74,6 +74,7 @@ site.no = No
 site.yes = Yes
 site.continue = Continue
 site.save_and_continue = Save and continue
+site.confirm_address = Confirm address
 site.service_name = Register as a pension scheme administrator
 pension.scheme.administrator.title = Register as a pension scheme administrator - GOV.UK
 site.textarea.char_limit = (Limit is {0} characters)
@@ -119,7 +120,7 @@ common.addressYears.over_a_year = Yes
 common.previousAddress.heading = Previous Address
 common.previousAddress.title = Previous Address
 
-individual.previousAddress.heading = Confirm this previous address is correct
+individual.previousAddress.heading = Your previous contact address
 
 common.previousAddress.lede = This can be a residential or company address.
 individual.previousAddress.lede = You can change any part of the address if you need to.
@@ -139,7 +140,7 @@ common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
 common.error.dateOfBirth.future = The date of birth cannot be in the future
 common.error.dateOfBirth.past = The date of birth must be after 1900
 common.dateOfBirth = Date of birth
-common.dateOfBirth.hint = For example 30 9 1990
+common.dateOfBirth.hint = For example, 31 3 1980
 common.vat = VAT Registration number
 common.vat.hint = This has 9 characters and is issued by HMRC. It might start with GB. For example, GB123456789.
 common.error.vat.required = Enter the VAT registration number
@@ -445,9 +446,9 @@ confirmCompanyAddress.heading = Is this the registered address for {0}?
 
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
-whatYouWillNeed.body.text = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
+whatYouWillNeed.body.text = To register as a pension scheme administrator, you will need:
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
-whatYouWillNeed.body.item2 = your contact telephone number and email address
+whatYouWillNeed.body.item2 = your contact phone number and email address
 whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company
 whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
 whatYouWillNeed.company.body.item3 = the details of all the directors in the company
@@ -604,7 +605,6 @@ duplicateRegistration.heading = A different Government Gateway account has alrea
 duplicateRegistration.p1 = To access your scheme administrator details, you will need to log in with the Government Gateway user ID and password that were used when you were registered.
 duplicateRegistration.p2 = The user ID and password you need will be from another Government Gateway account you created.
 
-individualDateOfBirth.title = Your date of birth
 individualDateOfBirth.heading = What is your date of birth?
 individualDateOfBirth.visuallyHidden.text = your date of birth
 
@@ -630,7 +630,6 @@ individualContactAddressPostCodeLookup.formLabel = Postcode
 
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
-common.contactAddress.lede = This should be an address that HMRC can use to contact you.
 
 company.contactAddressList.title = Select the contact address for the company
 company.contactAddressList.heading = Select the contact address for {0}

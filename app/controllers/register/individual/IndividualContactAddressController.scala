@@ -52,7 +52,6 @@ class IndividualContactAddressController @Inject()(
   private[controllers] val postCall = routes.IndividualContactAddressController.onSubmit _
   private[controllers] val title: Message = "common.contactAddress.title"
   private[controllers] val heading: Message = "common.contactAddress.heading"
-  private[controllers] val hint: Message = "common.contactAddress.lede"
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
@@ -61,7 +60,6 @@ class IndividualContactAddressController @Inject()(
     countryOptions.options,
     title = Message(title),
     heading = Message(heading),
-    hint = Some(Message(hint)),
     psaName = psaName()
   )
 
