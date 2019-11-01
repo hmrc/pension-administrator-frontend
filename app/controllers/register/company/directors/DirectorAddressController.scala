@@ -50,25 +50,28 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
 
   override protected val form: Form[Address] = formProvider()
 
-  private def addressViewModel(mode: Mode, index: Index)
+  private def addressViewModel(mode: Mode, index: Index, directorName: String)
                               (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(mode, index),
     countryOptions.options,
-    Message("directorAddress.title"),
-    Message("directorAddress.heading"),
+    Message("contactAddress.heading", Message("theDirector").resolve),
+    Message("contactAddress.heading", directorName),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index), mode)
+      retrieveDirectorName(index) {
+        directorName =>
+          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          val vm = addressViewModel(mode, index)
+          val vm = addressViewModel(mode, index, directorName)
           post(DirectorAddressId(index), CompanyDirectorAddressListId(index), vm, mode, s"Company Director Address: $directorName",
             CompanyDirectorAddressPostCodeLookupId(index))
       }

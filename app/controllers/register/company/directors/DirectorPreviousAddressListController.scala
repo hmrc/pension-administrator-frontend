@@ -56,14 +56,14 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
   }
 
   private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    DirectorPreviousAddressPostCodeLookupId(index).retrieve.right.map {
-      addresses =>
+    (DirectorNameId(index) and DirectorPreviousAddressPostCodeLookupId(index)).retrieve.right.map {
+      case directorName ~ addresses =>
             AddressListViewModel(
               postCall = routes.DirectorPreviousAddressListController.onSubmit(mode, index),
               manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(mode, index),
               addresses = addresses,
-              Message("common.previousAddressList.title"),
-              Message("common.previousAddressList.heading"),
+              Message("previousAddressList.heading", Message("theDirector").resolve),
+              Message("previousAddressList.heading", directorName.fullName),
               Message("common.selectAddress.text"),
               Message("common.selectAddress.link"),
               psaName()

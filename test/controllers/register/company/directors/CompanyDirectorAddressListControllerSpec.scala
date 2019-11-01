@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
-import models.{NormalMode, PersonDetails, TolerantAddress}
+import models.{NormalMode, PersonDetails, PersonName, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -40,7 +40,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
   val formProvider = new AddressListFormProvider()
   val form: Form[Int] = formProvider(Seq.empty)
 
-  val director = PersonDetails("firstName", Some("middle"), "lastName", LocalDate.now())
+  val director = PersonName("firstName", "lastName")
 
   val addresses = Seq(
     address("test post code 1"),
@@ -84,8 +84,8 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.CompanyDirectorAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.DirectorAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("common.selectAddress.title"),
-      Message("common.selectAddress.heading"),
+      Message("contactAddressList.heading", Message("theDirector").resolve),
+      Message("contactAddressList.heading", director.fullName),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

@@ -16,13 +16,18 @@
 
 package identifiers.register.company.directors
 
+import base.SpecBase
 import identifiers.register.company.MoreThanTenDirectorsId
-import models.PersonName
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import models.requests.DataRequest
+import models.{PSAUser, PersonName, UserType}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import utils.UserAnswers
+import utils.checkyouranswers.Ops._
+import viewmodels.{AnswerRow, Link, Message}
 
-class DirectorNameIdSpec extends WordSpec with MustMatchers with OptionValues {
+class DirectorNameIdSpec extends SpecBase {
 
   val personToDelete = PersonName("John", "One")
 
@@ -65,6 +70,30 @@ class DirectorNameIdSpec extends WordSpec with MustMatchers with OptionValues {
 
     }
 
+  }
+
+  "cya" when {
+    val personDetails = PersonName("test first", "test last")
+    val onwardUrl = "onwardUrl"
+    def answers: UserAnswers =
+      UserAnswers()
+        .set(DirectorNameId(0))(personDetails).asOpt.value
+
+    "in normal mode" must {
+      "return answers rows with change links" in {
+        val answerRows =
+          Seq(
+            AnswerRow(Message("directorName.cya.label").resolve, Seq("test first test last"),
+              answerIsMessageKey = false, Some(Link("site.change", onwardUrl)),
+              Some(Message("directorName.visuallyHidden.text"))
+            )
+          )
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+
+        DirectorNameId(0).row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(answerRows)
+      }
+    }
   }
 
 }

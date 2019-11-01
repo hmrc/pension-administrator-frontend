@@ -25,7 +25,7 @@ import utils.{FakeNavigator, Navigator}
 
 class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
 
-  import DirectorNameControllerSpec._
+  import DirectorDOBControllerSpec._
 
   "DirectorNameController" must {
 

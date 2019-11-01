@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import audit.{AuditService, PSAStartEvent}
 import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.individual.WhatYouWillNeedId
@@ -26,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
-import utils.annotations.Individual
+import utils.annotations.{AuthWithNoIV, Individual}
 import views.html.register.individual.whatYouWillNeed
 
 import scala.concurrent.ExecutionContext
@@ -34,7 +33,7 @@ import scala.concurrent.ExecutionContext
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           @Individual val navigator: Navigator,
-                                          authenticate: AuthAction,
+                                          @AuthWithNoIV authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
