@@ -14,66 +14,66 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
-import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
+import identifiers.register.partnership.partners.{PartnerDOBId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import utils.annotations.CompanyDirector
+import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
 
 import scala.concurrent.Future
 
-class DirectorDOBController @Inject()(
+class PartnerDOBController @Inject()(
                                            val appConfig: FrontendAppConfig,
                                            override val messagesApi: MessagesApi,
                                            val cacheConnector: UserAnswersCacheConnector,
-                                           @CompanyDirector val navigator: Navigator,
+                                           @PartnershipPartner val navigator: Navigator,
                                            override val allowAccess: AllowAccessActionProvider,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction
                                          ) extends DOBController with Retrievals{
 
-  private[directors] def viewModel(mode: Mode,
+  private[partners] def viewModel(mode: Mode,
                                    index: Index,
                                    psaName: String,
-                                   directorName: String)(implicit request: DataRequest[AnyContent]) =
+                                   partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = routes.DirectorDOBController.onSubmit(mode, index),
-      title = Message("dob.heading", Message("theDirector").resolve),
-      heading = Message("dob.heading", directorName),
+      postCall = routes.PartnerDOBController.onSubmit(mode, index),
+      title = "partnerDob.title",
+      heading = Message("dob.heading", partnerName),
       None,
       None,
       mode,
       psaName
     )
 
-  private[directors] def id(index: Index): DirectorDOBId =
-    DirectorDOBId(index)
+  private[partners] def id(index: Index): PartnerDOBId =
+    PartnerDOBId(index)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and DirectorNameId(index)).retrieve.right.map {
-        case psaName ~ directorName =>
-          Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName)))
+      (BusinessNameId and PartnerNameId(index)).retrieve.right.map {
+        case psaName ~ partnerName =>
+          Future(get(id(index), viewModel(mode, index, psaName, partnerName.fullName)))
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and DirectorNameId(index)).retrieve.right.map {
-        case psaName ~ directorName =>
-          post(id(index), viewModel(mode, index, psaName, directorName.fullName))
+      (BusinessNameId and PartnerNameId(index)).retrieve.right.map {
+        case psaName ~ partnerName =>
+          post(id(index), viewModel(mode, index, psaName, partnerName.fullName))
       }
   }
 

@@ -51,24 +51,32 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-        get(viewModel(mode, index), mode)
+      retrieveDirectorName(index) {
+        directorName =>
+          get(viewModel(mode, index, directorName), mode)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-          post(DirectorPreviousAddressPostCodeLookupId(index), viewModel(mode, index), mode)
+      retrieveDirectorName(index) {
+        directorName =>
+          post(DirectorPreviousAddressPostCodeLookupId(index), viewModel(mode, index, directorName), mode)
+      }
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel =
-        PostcodeLookupViewModel(
-          routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
-          routes.DirectorPreviousAddressController.onPageLoad(mode, index),
-          Message("directorPreviousAddressPostCodeLookup.title"),
-          Message("directorPreviousAddressPostCodeLookup.heading"),
-          Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
-          Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
-          Message("directorPreviousAddressPostCodeLookup.input.text"),
-          psaName()
-        )
+  private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = {
+
+    PostcodeLookupViewModel(
+      routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
+      routes.DirectorPreviousAddressController.onPageLoad(mode, index),
+      Message("directorPreviousAddressPostCodeLookup.heading", Message("theDirector").resolve),
+      Message("directorPreviousAddressPostCodeLookup.heading", directorName),
+      Message("common.postcodeLookup.enterPostcode"),
+      Some(Message("common.postcodeLookup.enterPostcode.link")),
+      Message("address.postcode"),
+      psaName()
+    )
+  }
 
 }

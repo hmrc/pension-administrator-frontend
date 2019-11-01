@@ -29,6 +29,7 @@ import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.Message
@@ -39,14 +40,14 @@ import scala.concurrent.Future
 
 class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
   private val index = Index(0)
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressPostCodeLookupController(
@@ -68,11 +69,11 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     PostcodeLookupViewModel(
       routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(NormalMode, index),
       routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index),
-      Message("directorPreviousAddressPostCodeLookup.title"),
-      Message("directorPreviousAddressPostCodeLookup.heading"),
-      Message("directorPreviousAddressPostCodeLookup.enterPostcode"),
-      Some(Message("directorPreviousAddressPostCodeLookup.enterPostcode.link")),
-      Message("directorPreviousAddressPostCodeLookup.input.text")
+      Message("directorPreviousAddressPostCodeLookup.heading", Message("theDirector").resolve),
+      Message("directorPreviousAddressPostCodeLookup.heading", directorName),
+      Message("common.postcodeLookup.enterPostcode"),
+      Some(Message("common.postcodeLookup.enterPostcode.link")),
+      Message("address.postcode")
     )
 
   private def viewAsString(form: Form[_] = form) =
@@ -96,13 +97,13 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     "directors" -> Json.arr(
       Json.obj(
         DirectorNameId.toString ->
-          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonName("test first name", "test last name"),
         DirectorPreviousAddressPostCodeLookupId.toString ->
           Seq(fakeAddress(testAnswer))
       ),
       Json.obj(
         DirectorNameId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now)
+          PersonName("test", "test")
       )
     )
   )
