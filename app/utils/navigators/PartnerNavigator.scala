@@ -51,7 +51,8 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   //noinspection ScalaStyle
   private def commonRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AddPartnersId => addPartnerRoutes(from.userAnswers, mode)
-    case PartnerNameId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
+    case PartnerNameId(index) => NavigateTo.save(routes.PartnerDOBController.onPageLoad(mode, index))
+    case PartnerDOBId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
     case PartnerNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
     case PartnerUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
     case PartnerAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.PartnerAddressListController.onPageLoad(mode, index))
@@ -117,6 +118,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case PartnerNameId(index) => checkYourAnswers(index, journeyMode(mode))
+    case PartnerDOBId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerNinoId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerUniqueTaxReferenceId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerAddressId(index) => checkYourAnswers(index, journeyMode(mode))

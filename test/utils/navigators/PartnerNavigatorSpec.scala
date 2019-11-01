@@ -44,7 +44,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), false, Some(moreThanTenPartnersPage(checkMode(mode))), false),
     (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
-    (PartnerNameId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerNameId(0), emptyAnswers, partnerDOBPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerDOBId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (PartnerAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -109,6 +110,8 @@ object PartnerNavigatorSpec extends OptionValues {
   private def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
 
   private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+
+  private def partnerDOBPage(mode: Mode) = routes.PartnerDOBController.onPageLoad(mode, 0)
 
   private def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
 
