@@ -40,12 +40,12 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           requireData: DataRequiredAction
                                          )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = Action {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
       Ok(whatYouWillNeed(appConfig))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = Action {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }
