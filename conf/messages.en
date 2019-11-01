@@ -1022,10 +1022,10 @@ isRegisteredName.partnership.title = Is this the registered name of the partners
 isRegisteredName.partnership.heading = Is {0} the registered name of the partnership?
 
 directorName.heading = What is the director’s name?
+directorDob.title = What is the director’s date of birth?
+dob.heading = What is {0}’s date of birth?
 directorName.cya.label = Director’s name
 directorName.visuallyHidden.text = the name of the director
-
-dob.heading = What is {0}’s date of birth?
 dob.visuallyHidden.text = {0}’s date of birth
 
 partnerName.heading = What is the partner’s name?
