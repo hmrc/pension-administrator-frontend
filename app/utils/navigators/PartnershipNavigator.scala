@@ -28,6 +28,8 @@ import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
+import controllers.register.partnership.partners.routes.WhatYouWillNeedController
+import controllers.register.partnership.routes.AddPartnerController
 
 @Singleton
 class PartnershipNavigator @Inject()(
@@ -76,7 +78,7 @@ class PartnershipNavigator @Inject()(
     case PartnershipPayeId =>
       NavigateTo.save(CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
-      NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
+      partnerRoutes(from.userAnswers)
     case PartnershipReviewId =>
       NavigateTo.save(DeclarationController.onPageLoad())
     case PartnershipRegisteredAddressId =>
@@ -178,7 +180,7 @@ class PartnershipNavigator @Inject()(
     }
   }
 
-  private def tradingOverAYearRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+  private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(false)) =>
         mode match {
@@ -245,9 +247,9 @@ class PartnershipNavigator @Inject()(
     }
   }
 
-  private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+  private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
-      case Some(false) =>NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
+      case Some(false) => NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
       case Some(true) => NavigateTo.dontSave(AnyMoreChangesController.onPageLoad())
       case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
@@ -265,4 +267,12 @@ class PartnershipNavigator @Inject()(
     case Some(false) if mode == CheckMode => NavigateTo.save(CheckYourAnswersController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
+  private def partnerRoutes(answers: UserAnswers): Option[NavigateTo] =
+    if (answers.allPartnersAfterDelete(NormalMode).isEmpty) {
+      NavigateTo.dontSave(WhatYouWillNeedController.onPageLoad())
+    }
+    else {
+      NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
+    }
 }
