@@ -35,7 +35,16 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
   def createViewUsingForm = (form: Form[LocalDate]) => individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "IndividualDateOfBirth view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    normalPageWithNoPageTitleCheck(createView, messageKeyPrefix)
+
+    "behave like a normal page" when {
+      "rendered" must {
+        "display the correct heading" in {
+          val doc = asDocument(createView())
+          assertPageTitleEqualsMessage(doc, "individualDateOfBirth.heading")
+        }
+      }
+    }
 
     behave like pageWithDateField(
       createViewUsingForm,

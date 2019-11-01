@@ -53,7 +53,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading"),
     heading = Message(s"$messagePrefix.heading"),
-    hint = Some(Message(s"$messagePrefix.lede")),
+    hint = None,
     psaName = None
   )
 
