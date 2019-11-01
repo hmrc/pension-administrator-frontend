@@ -17,7 +17,7 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import config.{FeatureSwitchManagementService, FrontendAppConfig}
+import config.FrontendAppConfig
 import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
@@ -31,6 +31,7 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.UserAnswers
@@ -47,7 +48,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(User or Admin).retrieve(
+    authorised(User).retrieve(
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
