@@ -16,6 +16,7 @@
 
 package controllers.register
 
+import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
@@ -40,7 +41,8 @@ class RegisterAsBusinessController @Inject()(
                                               allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
                                               cache: UserAnswersCacheConnector,
-                                              @Register navigator: Navigator
+                                              @Register navigator: Navigator,
+                                              auditService: AuditService
 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
@@ -52,9 +54,7 @@ class RegisterAsBusinessController @Inject()(
         case None => form
         case Some(ua) => ua.get(RegisterAsBusinessId).fold(form)(form.fill)
       }
-
       Ok(registerAsBusiness(appConfig, preparedForm))
-
   }
 
   def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData).async {
@@ -66,6 +66,7 @@ class RegisterAsBusinessController @Inject()(
         isBusiness => {
           cache.save(request.externalId, RegisterAsBusinessId, isBusiness).map {
             newCache =>
+              PSAStartEvent.sendEvent(auditService)
               Redirect(navigator.nextPage(RegisterAsBusinessId, NormalMode, UserAnswers(newCache)))
           }
         }

@@ -51,6 +51,10 @@ package object utils {
       answers.set(identifiers.register.IsRegisteredNameId)(answer).asOpt.value
     }
 
+    def hasVat(answer: Boolean): UserAnswers = {
+      answers.set(identifiers.register.HasVATId)(answer).asOpt.value
+    }
+
     // Individual PSA Contact
     def individualContactAddress(address: Address): UserAnswers = {
       answers.set(IndividualContactAddressId)(address).asOpt.value
@@ -119,6 +123,10 @@ package object utils {
       answers.set(DirectorAddressId(index))(address).asOpt.value
     }
 
+    def directorAddressYears(index: Int, addressYears: AddressYears): UserAnswers = {
+      answers.set(DirectorAddressYearsId(index))(addressYears).asOpt.value
+    }
+
     def directorPhone(index: Int, phone: String): UserAnswers = {
       answers.set(DirectorPhoneId(index))(phone).asOpt.value
     }
@@ -141,6 +149,18 @@ package object utils {
 
     def directorNoNINOReason(index: Int, reason: String): UserAnswers = {
       answers.set(DirectorNoNINOReasonId(index))(reason).asOpt.value
+    }
+
+    def directorHasUTR(index: Int, flag: Boolean): UserAnswers = {
+      answers.set(HasDirectorUTRId(index))(flag).asOpt.value
+    }
+
+    def directorEnterUTR(index: Int, utr: ReferenceValue): UserAnswers = {
+      answers.set(DirectorEnterUTRId(index))(utr).asOpt.value
+    }
+
+    def directorNoUTRReason(index: Int, reason: String): UserAnswers = {
+      answers.set(DirectorNoUTRReasonId(index))(reason).asOpt.value
     }
 
     def companyDirectorAddressList(index: Int, address: TolerantAddress): UserAnswers = {

@@ -44,7 +44,7 @@ object PartnerNameId {
   implicit def cya(implicit messages: Messages): CheckYourAnswers[PartnerNameId] =
     new CheckYourAnswersPartner[PartnerNameId] {
       private def label(ua: UserAnswers, index: Index): String =
-        dynamicMessage(ua, messageKey = "cya.label.name", index)
+        dynamicMessage(ua, messageKey = "partnerName.cya.label", index)
 
       private def hiddenLabel(ua: UserAnswers, index: Index): Message =
         dynamicMessage(ua, messageKey = "partnerName.visuallyHidden.text", index)

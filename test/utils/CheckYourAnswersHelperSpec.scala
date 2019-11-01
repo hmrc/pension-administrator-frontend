@@ -20,10 +20,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import base.SpecBase
-import identifiers.register.company.directors._
-import identifiers.register.company.{CompanyRegistrationNumberId, MoreThanTenDirectorsId}
+import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.individual.IndividualDateOfBirthId
-import models._
 import play.api.libs.json.{JsObject, Json}
 import viewmodels.{AnswerRow, Link}
 
@@ -65,73 +63,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
         answerIsMessageKey = true,
         Some(Link(s"/register-as-pension-scheme-administrator/register/company/directors/1/change/$changeLink"))))
 
-  "directorName" should {
-    behave like cyaHelperMethod(_.directorName(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorNameId.toString ->
-                  PersonName("test first name", "test last name")
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("cya.label.name",
-              Seq("test first name test last name"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/name")))
-        )
-        )
-    )
-    )
-  }
-
-  "directorDob" should {
-    behave like cyaHelperMethod(_.directorDob(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorDOBId.toString -> LocalDate.of(2019, 6, 28)
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("cya.label.dob",
-              Seq(displayDate),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/date-of-birth"))))
-        )
-      )
-    )
-  }
-
-  "directorAddressYears" should {
-    behave like cyaHelperMethod(_.directorAddressYears(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorAddressYearsId.toString -> AddressYears.OverAYear.toString
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("directorAddressYears.checkYourAnswersLabel",
-              Seq("common.addressYears.over_a_year"),
-              answerIsMessageKey = true,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/how-long-at-address"))
-            )
-          )
-        )
-      )
-    )
-  }
-
   "moreThanTenDirectors" should {
     behave like cyaHelperMethod(_.moreThanTenDirectors.toSeq,
       Seq(
@@ -162,50 +93,6 @@ class CheckYourAnswersHelperSpec extends SpecBase {
               answerIsMessageKey = false,
               Some(Link("/register-as-pension-scheme-administrator/register/individual/change/your-date-of-birth")))
           )
-        )
-      )
-    )
-  }
-
-  "directorAddress" should {
-    behave like cyaHelperMethod(_.directorAddress(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorAddressId.toString ->
-                  Address("addr1","addr2",Some("addr3"),Some("addr4"), Some("pcode"), "GB")
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("cya.label.address",
-              Seq("addr1","addr2","addr3","addr4","pcode", "Country of GB"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-address-manual"))))
-        )
-      )
-    )
-  }
-
-  "directorPreviousAddress" should {
-    behave like cyaHelperMethod(_.directorPreviousAddress(0, NormalMode),
-      Seq(
-        TestScenario(
-          Json.obj(
-            "directors" -> Json.arr(
-              Json.obj(
-                DirectorPreviousAddressId.toString ->
-                  Address("addr1","addr2",Some("addr3"),Some("addr4"), Some("pcode"), "GB")
-              )
-            )
-          ),
-          Seq(
-            AnswerRow("directorPreviousAddress.checkYourAnswersLabel",
-              Seq("addr1","addr2","addr3","addr4","pcode", "Country of GB"),
-              answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/company/directors/1/change/directors-previous-address-manual"))))
         )
       )
     )

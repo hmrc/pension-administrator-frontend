@@ -17,8 +17,13 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.Address
+import models.{Address, Index}
+import play.api.i18n.Messages
 import play.api.libs.json.JsPath
+import utils.{UserAnswers, checkyouranswers}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector}
+import utils.countryOptions.CountryOptions
+import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorPreviousAddressId(index: Int) extends TypedIdentifier[Address] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorPreviousAddressId.toString
@@ -26,4 +31,18 @@ case class DirectorPreviousAddressId(index: Int) extends TypedIdentifier[Address
 
 object DirectorPreviousAddressId {
   override def toString: String = "directorPreviousAddress"
+
+  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[DirectorPreviousAddressId] =
+    new CheckYourAnswersDirector[DirectorPreviousAddressId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "previousAddress.checkYourAnswersLabel", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "previousAddress.visuallyHidden.text", index)
+
+      override def row(id: DirectorPreviousAddressId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        checkyouranswers.AddressCYA[DirectorPreviousAddressId](label(userAnswers, id.index),
+          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+      }
+    }
 }

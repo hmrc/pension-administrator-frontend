@@ -75,7 +75,7 @@ trait ControllerSpecBase extends SpecBase {
   def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(
       Json.obj(
-        BusinessNameId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
+        BusinessNameId.toString -> "Test Partnership Name",
         "partners" -> Json.arr(
           Json.obj(
             PartnerNameId.toString ->

@@ -25,7 +25,7 @@ trait VatMappingString extends Mappings with Transforms {
       .transform(vatRegistrationNumberTransform, noTransform)
       .verifying(
         firstError(
-          maxLength(VatMapping.maxVatLength, keyVatLength),
+          maxLength(VatMappingString.maxVatLength, keyVatLength),
           vatRegistrationNumber(keyVatInvalid))
       )
   }

@@ -36,7 +36,7 @@ object PartnerDOBId {
   implicit def cya(implicit messages: Messages): CheckYourAnswers[PartnerDOBId] =
     new CheckYourAnswersPartner[PartnerDOBId] {
       private def label(ua: UserAnswers, index: Index): String =
-        dynamicMessage(ua, messageKey = "cya.label.dob", index)
+        dynamicMessage(ua, messageKey = "dob.heading", index)
 
       private def hiddenLabel(ua: UserAnswers, index: Index): Message =
         dynamicMessage(ua, messageKey = "dob.visuallyHidden.text", index)

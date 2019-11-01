@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import audit.{AuditService, PSAStartEvent}
 import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.company.WhatYouWillNeedId
@@ -37,8 +36,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          auditService: AuditService
+                                          requireData: DataRequiredAction
                                          )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
@@ -48,7 +46,6 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      PSAStartEvent.sendEvent(auditService)
       Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }
 

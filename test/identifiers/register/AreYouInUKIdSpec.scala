@@ -230,7 +230,6 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(EnterVATId) mustNot be(defined)
         result.get(HasPAYEId) mustNot be(defined)
         result.get(EnterPAYEId) mustNot be(defined)
-        result.get(PartnershipVatId) mustNot be(defined)
         result.get(PartnershipPayeId) mustNot be(defined)
         result.get(PartnerNameId(0)) mustNot be(defined)
         result.get(PartnerNameId(1)) mustNot be(defined)
@@ -265,7 +264,6 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(EnterVATId) mustNot be(defined)
         result.get(HasPAYEId) mustNot be(defined)
         result.get(EnterPAYEId) mustNot be(defined)
-        result.get(PartnershipVatId) mustNot be(defined)
         result.get(PartnershipPayeId) mustNot be(defined)
         result.get(PartnerNameId(0)) mustNot be(defined)
         result.get(PartnerNameId(1)) mustNot be(defined)
@@ -405,7 +403,6 @@ object AreYouInUKIdSpec extends OptionValues {
     .set(AreYouInUKId)(true)
     .flatMap(setCommonPartnershipData)
     .flatMap(_.set(ConfirmPartnershipDetailsId)(true))
-    .flatMap(_.set(PartnershipVatId)(Vat.No))
     .flatMap(_.set(PartnershipPayeId)(Paye.No))
     .flatMap(_.set(RegisterAsBusinessId)(true))
     .asOpt.value

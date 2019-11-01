@@ -150,10 +150,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
       "render the view correctly for the company address years" in {
         val addressYears = AddressYears.OverAYear
-        val rows = Seq(answerRow(Message("addressYears.heading", Message("theCompany").resolve),
+        val rows = Seq(answerRow(Message("addressYears.heading", Message("theBusiness").resolve),
           Seq(s"common.addressYears.${addressYears.toString}"), answerIsMessageKey = true,
           Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-          visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theCompany").resolve))))
+          visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness").resolve))))
 
         val sections = answerSections(None, rows)
 
@@ -172,7 +172,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
           Some("post-code"),
           "country"
         )
-        val rows = Seq(answerRow(Message("companyPreviousAddress.checkYourAnswersLabel", defaultCompany),
+        val rows = Seq(answerRow(Message("previousAddress.checkYourAnswersLabel", defaultCompany),
           Seq(
             address.addressLine1,
             address.addressLine2,
@@ -180,7 +180,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.country
           ), answerIsMessageKey = false,
           Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)),
-          visuallyHiddenLabel = Some(Message("companyPreviousAddress.visuallyHidden.text", defaultCompany))))
+          visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultCompany))))
 
         val sections = answerSections(None, rows)
 
@@ -253,7 +253,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private val companyName = "Test Company Name"
-  private val defaultCompany = Message("theCompany").resolve
+  private val defaultCompany = Message("theBusiness").resolve
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
