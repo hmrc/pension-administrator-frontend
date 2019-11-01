@@ -16,13 +16,15 @@
 
 package utils.navigators
 
+import java.time.LocalDate
+
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId}
 import identifiers.register.partnership._
-import identifiers.register._
+import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
@@ -88,7 +90,8 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (HasPAYEId, hasPAYENo, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
     (EnterPAYEId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
-    (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
+    (CheckYourAnswersId, emptyAnswers, wynPage, true, None, true),
+    (CheckYourAnswersId, hasPartner, addPartnersPage(), true, None, true),
     (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false),
 
     (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
@@ -155,6 +158,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def tradingOverAYearPage(mode: Mode): Call = routes.PartnershipTradingOverAYearController.onPageLoad(mode)
 
   private def addPartnersPage(): Call = routes.AddPartnerController.onPageLoad(NormalMode)
+  private def wynPage: Call = controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad()
 
   private def addressYearsPage(mode: Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
 
@@ -212,7 +216,8 @@ object PartnershipNavigatorSpec extends OptionValues {
   private val tradingOverAYearUk = UserAnswers(Json.obj()).areYouInUk(true).set(PartnershipTradingOverAYearId)(true).asOpt.value
   private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false).set(PartnershipTradingOverAYearId)(true).asOpt.value
   private val addressYearsOverAYear = UserAnswers().partnershipAddressYears(AddressYears.OverAYear)
-
+  val hasPartner: UserAnswers = UserAnswers(Json.obj())
+    .set(PartnerDetailsId(0))(PersonDetails("first", None, "last", LocalDate.now())).asOpt.value
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
   private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value

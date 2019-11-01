@@ -99,4 +99,3 @@ GET        /:index/is-this-previous-address                   controllers.regist
 POST       /:index/is-this-previous-address                   controllers.register.company.directors.DirectorConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
 
 GET        /what-you-will-need                                  controllers.register.company.directors.WhatYouWillNeedController.onPageLoad()
-GET        /what-you-will-need                                  controllers.register.company.directors.WhatYouWillNeedController.onPageLoad()
