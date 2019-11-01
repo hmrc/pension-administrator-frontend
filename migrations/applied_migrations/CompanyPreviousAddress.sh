@@ -17,7 +17,7 @@ echo "companyPreviousAddress.title = companyPreviousAddress" >> ../conf/messages
 echo "companyPreviousAddress.heading = companyPreviousAddress" >> ../conf/messages.en
 echo "companyPreviousAddress.field1 = Field 1" >> ../conf/messages.en
 echo "companyPreviousAddress.field2 = Field 2" >> ../conf/messages.en
-echo "companyPreviousAddress.checkYourAnswersLabel = companyPreviousAddress" >> ../conf/messages.en
+echo "previousAddress.checkYourAnswersLabel = companyPreviousAddress" >> ../conf/messages.en
 echo "companyPreviousAddress.error.field1.required = Please give an answer for field1" >> ../conf/messages.en
 echo "companyPreviousAddress.error.field2.required = Please give an answer for field2" >> ../conf/messages.en
 
@@ -26,7 +26,7 @@ awk '/class/ {\
      print;\
      print "";\
      print "  def companyPreviousAddress: Option[AnswerRow] = userAnswers.get(identifiers.register.company.CompanyPreviousAddressId) map {";\
-     print "    x => AnswerRow(\"companyPreviousAddress.checkYourAnswersLabel\", s\"${x.field1} ${x.field2}\", false, controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)";\
+     print "    x => AnswerRow(\"previousAddress.checkYourAnswersLabel\", s\"${x.field1} ${x.field2}\", false, controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)";\
      print "  }";\
      next }1' ../app/utils/CheckYourAnswersHelper.scala > tmp && mv tmp ../app/utils/CheckYourAnswersHelper.scala
 

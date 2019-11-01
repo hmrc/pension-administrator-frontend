@@ -16,6 +16,8 @@
 
 package utils.checkyouranswers
 
+import java.time.LocalDate
+
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
@@ -82,6 +84,10 @@ object CheckYourAnswers {
 
   implicit def reference[I <: TypedIdentifier[ReferenceValue]]
   (implicit rds: Reads[ReferenceValue], messages: Messages): CheckYourAnswers[I] = ReferenceValueCYA()()
+
+  implicit def personName[I <: TypedIdentifier[PersonName]](implicit rds: Reads[PersonName], messages: Messages): CheckYourAnswers[I] = PersonNameCYA()()
+
+  implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
 
   implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -327,4 +333,38 @@ case class ReferenceValueCYA[I <: TypedIdentifier[ReferenceValue]](
         }.getOrElse(Seq.empty[AnswerRow])
     }
   }
+}
+
+case class PersonNameCYA[I <: TypedIdentifier[PersonName]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+  def apply()(implicit rds: Reads[PersonName]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          personName =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.heading",
+              answer = Seq(personName.fullName),
+              answerIsMessageKey = false,
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
+}
+
+case class DateCYA[I <: TypedIdentifier[LocalDate]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+  def apply()(implicit rds: Reads[LocalDate]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          date =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.heading",
+              answer = Seq(DateHelper.formatDate(date)),
+              answerIsMessageKey = false,
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
 }

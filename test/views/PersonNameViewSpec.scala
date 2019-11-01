@@ -49,7 +49,7 @@ class PersonNameViewSpec extends QuestionViewBehaviours[PersonDetails] {
 
   "PersonDetails view" must {
 
-    behave like normalPage(createView(), messageKeyPrefix)
+    behave like normalPageWithNoPageTitleCheck(createView(), messageKeyPrefix)
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 

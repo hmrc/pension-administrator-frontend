@@ -52,22 +52,29 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index), mode)
+      retrieveDirectorName(index) {
+        directorName =>
+          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName), mode)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val vm = addressViewModel(mode, index)
-      post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, "Company Director Previous Address",
-        DirectorPreviousAddressPostCodeLookupId(index))
+      retrieveDirectorName(index) {
+        directorName =>
+          val vm = addressViewModel(mode, index, directorName)
+          post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, "Company Director Previous Address",
+            DirectorPreviousAddressPostCodeLookupId(index))
+      }
   }
 
-  private def addressViewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
+  private def addressViewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): ManualAddressViewModel = {
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
-      Message("directorPreviousAddress.title"),
-      Message("directorPreviousAddress.heading"),
+      Message("directorPreviousAddress.heading", Message("theDirector").resolve.capitalize),
+      Message("directorPreviousAddress.heading", directorName),
       psaName = psaName()
     )
+  }
 }

@@ -14,39 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.register.partnership
+package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
+import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.WhatYouWillNeedId
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.Navigator
-import utils.annotations.Partnership
-import views.html.register.partnership.whatYouWillNeed
+import views.html.register.partnership.partners.whatYouWillNeed
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
-                                          @Partnership navigator: Navigator,
                                           authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
-                                         )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                         ) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      Ok(whatYouWillNeed(appConfig))
+      val href = routes.PartnerDetailsController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
+      Future.successful(Ok(whatYouWillNeed(appConfig, href)))
   }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
-    implicit request =>
-      Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
-  }
-
 }

@@ -16,14 +16,12 @@
 
 package controllers.register.company.directors
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressPostCodeLookupId}
-import models.{NormalMode, PersonDetails, TolerantAddress}
+import models.{NormalMode, PersonName, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -40,7 +38,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressListFormProvider()
   private val form: Form[Int] = formProvider(Seq.empty)
 
-  private val director = PersonDetails("firstName", Some("middle"), "lastName", LocalDate.now())
+  private val director = PersonName("firstName", "lastName")
 
   private val addresses = Seq(
     address("test post code 1"),
@@ -84,8 +82,8 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.DirectorPreviousAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("common.previousAddressList.title"),
-      Message("common.previousAddressList.heading"),
+      Message("previousAddressList.heading", Message("theDirector").resolve),
+      Message("previousAddressList.heading", director.fullName),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

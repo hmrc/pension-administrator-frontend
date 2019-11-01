@@ -14,49 +14,36 @@
  * limitations under the License.
  */
 
-package controllers.register.individual
+package controllers.register.partnership.partners
 
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
-import utils.FakeNavigator
-import views.html.register.individual.whatYouWillNeed
+import views.html.register.partnership.partners.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
-
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       frontendAppConfig,
       messagesApi,
-      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
+  private def viewAsString(): String =
+    whatYouWillNeed(frontendAppConfig, routes.PartnerDetailsController.onPageLoad(NormalMode, index = 0))(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
-
-    "redirect to next page on submit" in {
-
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
   }
 
 }
