@@ -16,7 +16,6 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
-@import viewmodels.Message
 
 @(appConfig: FrontendAppConfig, href: Call)(implicit request: Request[_], messages: Messages)
 
@@ -26,9 +25,9 @@
     bodyClasses = None
 ) {
 
-    @components.heading(headingKey = messages("whatYouWillNeed.directors.heading"))
+    @components.heading(headingKey = messages("whatYouWillNeed.partners.heading"))
 
-    <p>@messages("whatYouWillNeed.directors.body.text")</p>
+    <p>@messages("whatYouWillNeed.partners.body.text")</p>
 
     <ul class="list list-bullet">
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item1")</li>

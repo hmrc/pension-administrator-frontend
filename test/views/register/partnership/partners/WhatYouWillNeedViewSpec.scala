@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package views.register.company.directors
+package views.register.partnership.partners
 
 import models.NormalMode
+import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
 import viewmodels.Message
 import views.behaviours.ViewBehaviours
-import views.html.register.company.directors.whatYouWillNeed
+import views.html.register.partnership.partners.whatYouWillNeed
 
 class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
-  private def call = controllers.register.company.directors.routes.DirectorNameController.onPageLoad(NormalMode, 0)
+  private def call: Call = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index = 0)
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 
-  private def createView = () => whatYouWillNeed(frontendAppConfig, call)(fakeRequest, messages)
+  private def createView: () => HtmlFormat.Appendable = () => whatYouWillNeed(frontendAppConfig, call)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPageWithTitle(createView, messageKeyPrefix,
       title = Message("whatYouWillNeed.directorsOrPartners.title"),
-      pageHeader = Message("whatYouWillNeed.directors.heading"),
+      pageHeader = Message("whatYouWillNeed.partners.heading"),
       expectedGuidanceKeys = "body.item1", "body.item2", "body.item3", "body.item4",
       "body.item5", "body.item6", "body.item7", "body.item8")
 
     "display the correct paragraph" in {
       val doc = asDocument(createView())
-      assertContainsText(doc, Message("whatYouWillNeed.directors.body.text"))
+      assertContainsText(doc, Message("whatYouWillNeed.partners.body.text"))
     }
 
     behave like pageWithSubmitButton(createView)

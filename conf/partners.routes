@@ -93,3 +93,5 @@ POST       /:index/:mode/check-your-answers                  controllers.registe
 
 GET        /:index/is-this-previous-address                   controllers.register.partnership.partners.PartnerConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
 POST       /:index/is-this-previous-address                   controllers.register.partnership.partners.PartnerConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
+
+GET        /what-you-will-need                                controllers.register.partnership.partners.WhatYouWillNeedController.onPageLoad()
