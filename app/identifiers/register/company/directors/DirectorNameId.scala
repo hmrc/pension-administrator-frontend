@@ -19,8 +19,11 @@ package identifiers.register.company.directors
 import identifiers._
 import identifiers.register.company.MoreThanTenDirectorsId
 import models.PersonName
+import play.api.i18n.Messages
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, PersonNameCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorNameId(index: Int) extends TypedIdentifier[PersonName] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNameId.toString
@@ -37,6 +40,15 @@ object DirectorNameId {
   def collectionPath: JsPath = JsPath \ "directors" \\ DirectorNameId.toString
 
   override def toString: String = "directorDetails"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorNameId] =
+    new CheckYourAnswers[DirectorNameId] {
+
+      override def row(id: DirectorNameId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        PersonNameCYA[DirectorNameId](
+          Some(Message("directorName.cya.label")),
+          Some(Message("directorName.visuallyHidden.text")))().row(id)(changeUrl, userAnswers)
+    }
 
 }
 

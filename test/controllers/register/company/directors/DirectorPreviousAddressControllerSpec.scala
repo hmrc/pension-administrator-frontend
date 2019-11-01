@@ -44,21 +44,21 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form = formProvider()
   private val index = Index(0)
-  private val directorName = "test first name test middle name test last name"
+  private val directorName = "test first name test last name"
   private val address = Address("test address line 1", "test address line 2", None, None, None, "GB")
 
   private val validData = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
         DirectorNameId.toString ->
-          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonName("test first name", "test last name"),
         DirectorPreviousAddressId.toString ->
           address
 
       ),
       Json.obj(
         DirectorNameId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now)
+          PersonName("test", "test")
       )
     )
   )
@@ -84,8 +84,8 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(NormalMode, index),
       countryOptions.options,
-      Message("directorPreviousAddress.title"),
-      Message("directorPreviousAddress.heading")
+      Message("directorPreviousAddress.heading", Message("theDirector").resolve.capitalize),
+      Message("directorPreviousAddress.heading", directorName)
     )
 
   private def viewAsString(form: Form[_] = form) =

@@ -77,11 +77,11 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private lazy val viewModel = PostcodeLookupViewModel(
     routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(NormalMode, index),
     routes.DirectorAddressController.onPageLoad(NormalMode, index),
-    Message("companyDirectorAddressPostCodeLookup.title"),
-    Message("companyDirectorAddressPostCodeLookup.heading"),
-    Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
-    Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
-    Message("companyDirectorAddressPostCodeLookup.postcode")
+    Message("companyDirectorAddressPostCodeLookup.heading", Message("theDirector").resolve),
+    Message("companyDirectorAddressPostCodeLookup.heading", directorName),
+    Message("common.postcodeLookup.enterPostcode"),
+    Some(Message("common.postcodeLookup.enterPostcode.link")),
+    Message("address.postcode")
   )
 
   private def viewAsString(form: Form[_] = form) =

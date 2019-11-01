@@ -66,6 +66,7 @@ object DirectorEnterNINOControllerSpec {
       postCall = routes.DirectorEnterNINOController.onSubmit(mode, index),
       title = Message("enterNINO.heading", Message("theDirector").resolve),
       heading = Message("enterNINO.heading", directorName),
+      hint = Some(Message("enterNINO.hint")),
       mode = mode,
       entityName = directorName
     )

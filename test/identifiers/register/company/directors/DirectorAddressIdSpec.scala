@@ -17,37 +17,42 @@
 package identifiers.register.company.directors
 
 import base.SpecBase
+import models._
 import models.requests.DataRequest
-import models.{PSAUser, PersonName, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import utils.UserAnswers
 import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
 
-class DirectorNoUTRReasonIdSpec extends SpecBase {
-
-  private val personDetails = PersonName("test first", "test last")
-  private val onwardUrl = "onwardUrl"
+class DirectorAddressIdSpec extends SpecBase {
+  private val personDetails = models.PersonName("test first", "test last")
+  private val address = Address("line1", "line2", None, None, None, "country")
+  implicit val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val index = 0
+  private val onwardUrl = controllers.register.company.directors.routes.DirectorAddressController.onPageLoad(NormalMode, index)
 
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
         .set(DirectorNameId(0))(personDetails).asOpt.value
-        .set(DirectorNoUTRReasonId(0))(value = "test-reason").asOpt.value
+        .set(DirectorAddressId(0))(value = address).asOpt.value
 
     "in normal mode" must {
       "return answers rows with change links" in {
         val answerRows =
-          Seq(
-            AnswerRow(Message("whyNoUTR.heading").withArgs(personDetails.fullName).resolve, Seq("test-reason"), answerIsMessageKey = false,
-              Some(Link("site.change", onwardUrl)), Some(Message("whyNoUTR.visuallyHidden.text").withArgs(personDetails.fullName))
-            )
-          )
+          Seq(AnswerRow(
+            Message("address.checkYourAnswersLabel").withArgs(personDetails.fullName),
+            address.lines(countryOptions),
+            answerIsMessageKey = false,
+            Some(Link(onwardUrl.url)),
+            visuallyHiddenText = Some(Message("address.visuallyHidden.text").withArgs(personDetails.fullName))
+          ))
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
           PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
-        DirectorNoUTRReasonId(0).row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(answerRows)
+        DirectorAddressId(index).row(Some(Link(onwardUrl.url)))(request, implicitly) must equal(answerRows)
       }
     }
   }

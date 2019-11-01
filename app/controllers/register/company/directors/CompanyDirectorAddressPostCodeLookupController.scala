@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.company.directors.CompanyDirectorAddressPostCodeLookupId
+import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -59,16 +59,20 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
           post(CompanyDirectorAddressPostCodeLookupId(index), viewModel(mode, index), mode)
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel =
-        PostcodeLookupViewModel(
-          routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode, index),
-          routes.DirectorAddressController.onPageLoad(mode, index),
-          Message("companyDirectorAddressPostCodeLookup.title"),
-          Message("companyDirectorAddressPostCodeLookup.heading"),
-          Message("companyDirectorAddressPostCodeLookup.enterPostcode"),
-          Some(Message("companyDirectorAddressPostCodeLookup.enterPostcode.link")),
-          Message("companyDirectorAddressPostCodeLookup.postcode"),
-          psaName = psaName()
-        )
+  private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
+
+  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = {
+    PostcodeLookupViewModel(
+      routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode, index),
+      routes.DirectorAddressController.onPageLoad(mode, index),
+      Message("companyDirectorAddressPostCodeLookup.heading", Message("theDirector").resolve),
+      Message("companyDirectorAddressPostCodeLookup.heading", entityName(index)),
+      Message("common.postcodeLookup.enterPostcode"),
+      Some(Message("common.postcodeLookup.enterPostcode.link")),
+      Message("address.postcode"),
+      psaName = psaName()
+    )
+  }
 
 }
