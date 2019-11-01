@@ -60,7 +60,8 @@ class IndividualContactAddressController @Inject()(
     countryOptions.options,
     title = Message(title),
     heading = Message(heading),
-    psaName = psaName()
+    psaName = psaName(),
+    hint = Some("companyContactAddress.lede")
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
