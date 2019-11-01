@@ -270,8 +270,10 @@ directorDetails.heading = Company director
 directorDetails.checkYourAnswersLabel = Company director
 
 whatYouWillNeed.directorsOrPartners.title = What you will need
-whatYouWillNeed.directorsOrPartners.heading = Directors
-whatYouWillNeed.directorsOrPartners.body.text = For every director associated with the company you’re registering, you will need to tell us each director’s:
+whatYouWillNeed.directors.heading = Directors
+whatYouWillNeed.partners.heading = Partners
+whatYouWillNeed.directors.body.text = For every director associated with the company you’re registering, you will need to tell us each director’s:
+whatYouWillNeed.partners.body.text = For every partner associated with the partnership you’re registering, you will need to tell us each partner’s:
 whatYouWillNeed.directorsOrPartners.body.item1 = name
 whatYouWillNeed.directorsOrPartners.body.item2 = date of birth
 whatYouWillNeed.directorsOrPartners.body.item3 = National Insurance number, or reason why they do not have one
