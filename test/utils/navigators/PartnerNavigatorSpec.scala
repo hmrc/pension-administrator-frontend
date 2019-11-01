@@ -44,7 +44,9 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), false, Some(moreThanTenPartnersPage(checkMode(mode))), false),
     (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
-    (PartnerDetailsId(0), emptyAnswers, partnerNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerDetailsId(0), emptyAnswers, partnerHasNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(mode), true, Some(partnerEnterNinoPage(checkMode(mode))), true),
+    (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(mode), true, Some(partnerNoNinoPage(checkMode(mode))), true),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
     (PartnerAddressListId(0), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
@@ -60,15 +62,18 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 
   def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] =
     Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), true, None, true),
-      (PartnerNinoId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+      (PartnerEnterNINOId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
+      (PartnerNoNINOReasonId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
       (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
       (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), true, None, false)
     )
 
-  def updateOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
+  def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddPartnersId, addPartnersFalse, anyMoreChangesPage, false, None, true),
-    (PartnerNinoId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), false, None, true),
-    (PartnerNinoId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (PartnerEnterNINOId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (PartnerEnterNINOId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
+    (PartnerNoNINOReasonId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), false, None, true),
+    (PartnerNoNINOReasonId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
     (PartnerUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
     (PartnerUniqueTaxReferenceId(0), existingPartnerInUpdate(0), anyMoreChangesPage, false, None, true),
     (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, false, None, false),
@@ -85,7 +90,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     normalOnlyRoutes ++ routes(NormalMode): _*
   )
 
-  def updateRoutes: TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
+  def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
     updateOnlyRoutes ++ routes(UpdateMode): _*
   )
@@ -96,7 +101,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     appRunning()
     behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, normalRoutes, dataDescriber)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes, dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
@@ -110,8 +115,6 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
 
-  private def partnerNinoPage(mode: Mode) = routes.PartnerNinoController.onPageLoad(mode, 0)
-
   private def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
 
   private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
@@ -123,6 +126,12 @@ object PartnerNavigatorSpec extends OptionValues {
   private def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
 
   private def partnerDetailsPage(mode: Mode) = routes.PartnerDetailsController.onPageLoad(mode, 0)
+
+  private def partnerHasNinoPage(mode: Mode): Call = routes.HasPartnerNINOController.onPageLoad(mode, 0)
+
+  private def partnerEnterNinoPage(mode: Mode): Call = routes.PartnerEnterNINOController.onPageLoad(mode, 0)
+
+  private def partnerNoNinoPage(mode: Mode): Call = routes.PartnerNoNINOReasonController.onPageLoad(mode, 0)
 
   def paPostCodePage(mode: Mode): Call = routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
 
@@ -145,11 +154,11 @@ object PartnerNavigatorSpec extends OptionValues {
     ).toArray
   }
 
+  private def existingPartnerInUpdate(index: Index): UserAnswers = UserAnswers(Json.obj())
+    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
+
   private val defaultAnswers = UserAnswers(Json.obj())
     .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
-
-  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
 
   private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
@@ -165,6 +174,11 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(AddPartnersId)(false).asOpt.value
   private val addPartnersTrue = UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
+
+  private val hasNinoYes = defaultAnswers
+    .set(HasPartnerNINOId(0))(value = true).asOpt.value
+  private val hasNinoNo = defaultAnswers
+    .set(HasPartnerNINOId(0))(value = false).asOpt.value
 
   private def confirmPreviousAddressSame(index: Int) = existingPartnerInUpdate(0)
     .set(PartnerConfirmPreviousAddressId(0))(true).asOpt.value

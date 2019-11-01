@@ -256,7 +256,8 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     "partners" + ("partners" -> Json.arr(
     Json.obj(
       PartnerDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
-      PartnerNinoId.toString -> Nino.No("reason"),
+      HasPartnerNINOId.toString -> false,
+      PartnerNoNINOReasonId.toString -> "reason",
       PartnerAddressYearsId.toString -> AddressYears.UnderAYear.toString,
       PartnerUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")
     )

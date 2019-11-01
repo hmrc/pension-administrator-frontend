@@ -58,7 +58,9 @@ class CheckYourAnswersController @Inject()(
         AnswerSection(
           Some("partnerCheckYourAnswers.partnerDetails.heading"),
           PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerNinoId(index).row(Some(Link(routes.PartnerNinoController.onPageLoad(checkMode(mode), index).url))) ++
+            HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerNoNINOReasonId(index).row(Some(Link(routes.PartnerNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url)))
         ),
         AnswerSection(

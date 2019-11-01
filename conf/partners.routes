@@ -4,11 +4,6 @@ POST        /:index/contact                                  controllers.registe
 GET         /:index/:mode/contact                            controllers.register.partnership.partners.PartnerContactDetailsController.onPageLoad(mode: Mode, index: Index)
 POST        /:index/:mode/contact                            controllers.register.partnership.partners.PartnerContactDetailsController.onSubmit(mode: Mode, index: Index)
 
-GET        /:index/enter-national-insurance-number                 controllers.register.partnership.partners.PartnerNinoController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/enter-national-insurance-number                 controllers.register.partnership.partners.PartnerNinoController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/:mode/enter-national-insurance-number           controllers.register.partnership.partners.PartnerNinoController.onPageLoad(mode: Mode, index: Index)
-POST       /:index/:mode/enter-national-insurance-number           controllers.register.partnership.partners.PartnerNinoController.onSubmit(mode: Mode, index: Index)
-
 GET        /:index/have-national-insurance-number                 controllers.register.partnership.partners.HasPartnerNINOController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/have-national-insurance-number                 controllers.register.partnership.partners.HasPartnerNINOController.onSubmit(mode: Mode = NormalMode, index: Index)
 GET        /:index/:mode/have-national-insurance-number           controllers.register.partnership.partners.HasPartnerNINOController.onPageLoad(mode: Mode, index: Index)

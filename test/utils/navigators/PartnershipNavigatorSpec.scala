@@ -22,10 +22,9 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId}
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerDetailsId
-import identifiers.register.{BusinessNameId, BusinessUTRId, IsRegisteredNameId}
+import identifiers.register._
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6

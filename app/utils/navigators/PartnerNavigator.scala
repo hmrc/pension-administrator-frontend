@@ -51,8 +51,11 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   //noinspection ScalaStyle
   private def commonRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AddPartnersId => addPartnerRoutes(from.userAnswers, mode)
-    case PartnerDetailsId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
-    case PartnerNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
+    case PartnerDetailsId(index) => NavigateTo.save(routes.HasPartnerNINOController.onPageLoad(mode, index))
+    case HasPartnerNINOId(index) if hasNino(from.userAnswers, index) => NavigateTo.save(routes.PartnerEnterNINOController.onPageLoad(mode, index))
+    case HasPartnerNINOId(index) => NavigateTo.save(routes.PartnerNoNINOReasonController.onPageLoad(mode, index))
+    case PartnerEnterNINOId(index) => ninoRoutes(index, from.userAnswers, mode)
+    case PartnerNoNINOReasonId(index) => ninoRoutes(index, from.userAnswers, mode)
     case PartnerUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
     case PartnerAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.PartnerAddressListController.onPageLoad(mode, index))
     case PartnerAddressListId(index) => NavigateTo.save(routes.PartnerAddressController.onPageLoad(mode, index))
@@ -65,6 +68,8 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
     case CheckYourAnswersId => NavigateTo.save(controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode))
     case _ => sessionExpired
   }
+
+  private def hasNino(answers: UserAnswers, index: Index): Boolean = answers.get(HasPartnerNINOId(index)).getOrElse(false)
 
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Option[NavigateTo] =
     answers.get(PartnerConfirmPreviousAddressId(index)) match {
@@ -117,7 +122,12 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case PartnerDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
-    case PartnerNinoId(index) => checkYourAnswers(index, journeyMode(mode))
+    case HasPartnerNINOId(index) if hasNino(from.userAnswers, index) =>
+      NavigateTo.save(routes.PartnerEnterNINOController.onPageLoad(mode, index))
+    case HasPartnerNINOId(index) => NavigateTo.save(routes.PartnerNoNINOReasonController.onPageLoad(mode, index))
+    case PartnerEnterNINOId(index) =>
+      checkYourAnswers(index, journeyMode(mode))
+    case PartnerNoNINOReasonId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerUniqueTaxReferenceId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerAddressId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerAddressYearsId(index) => partnerAddressYearsCheckRoutes(index, from.userAnswers, mode)
