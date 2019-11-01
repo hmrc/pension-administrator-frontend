@@ -18,11 +18,10 @@ package audit
 
 import audit.testdoubles.StubSuccessfulAuditService
 import models.UserType.UserType
-import models.requests.DataRequest
+import models.requests.OptionalDataRequest
 import models.{PSAUser, UserType}
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import play.api.test.FakeRequest
-import utils.UserAnswers
 
 import scala.concurrent.Future
 
@@ -30,19 +29,19 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
 
   private val externalId = "test-external-id"
 
-  private def testRequest(userType: UserType, isExistingPsa: Boolean): DataRequest[_] = {
-    DataRequest(
+  private def testRequest(userType: UserType, isExistingPsa: Boolean): OptionalDataRequest[_] = {
+    OptionalDataRequest(
       request = FakeRequest("", ""),
       externalId = externalId,
       user = PSAUser(userType, None, isExistingPsa, None),
-      userAnswers = UserAnswers()
+      userAnswers = None
     )
   }
 
   "PSAStartEvent" should "send a PSAStart event for invdividuals" in {
 
     val auditService = new StubSuccessfulAuditService()
-    implicit val request: DataRequest[_] = testRequest(UserType.Individual, false)
+    implicit val request: OptionalDataRequest[_] = testRequest(UserType.Individual, false)
 
     PSAStartEvent.sendEvent(auditService)
 
@@ -61,7 +60,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
   it should "send a PSAStart event for organisations" in {
 
     val auditService = new StubSuccessfulAuditService()
-    implicit val request: DataRequest[_] = testRequest(UserType.Organisation, false)
+    implicit val request: OptionalDataRequest[_] = testRequest(UserType.Organisation, false)
 
     PSAStartEvent.sendEvent(auditService)
 
@@ -80,7 +79,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
   it should "send a PSAStart event for an existing user" in {
 
     val auditService = new StubSuccessfulAuditService()
-    implicit val request: DataRequest[_] = testRequest(UserType.Individual, true)
+    implicit val request: OptionalDataRequest[_] = testRequest(UserType.Individual, true)
 
     PSAStartEvent.sendEvent(auditService)
 
