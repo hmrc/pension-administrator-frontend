@@ -84,8 +84,6 @@ class PartnershipNavigator @Inject()(
       NavigateTo.save(DeclarationController.onPageLoad())
     case PartnershipRegisteredAddressId =>
       regionBasedNavigation(from.userAnswers)
-    case WhatYouWillNeedId =>
-      NavigateTo.save(PartnershipSameContactAddressController.onPageLoad(NormalMode))
     case _ =>
       NavigateTo.dontSave(SessionExpiredController.onPageLoad())
   }
@@ -232,7 +230,7 @@ class PartnershipNavigator @Inject()(
     answers.get(PartnershipRegisteredAddressId) flatMap { address =>
       countryOptions.regions(address.country.getOrElse("")) match {
         case UK => NavigateTo.dontSave(BusinessTypeAreYouInUKController.onPageLoad(CheckMode))
-        case EuEea => NavigateTo.dontSave(controllers.register.partnership.routes.WhatYouWillNeedController.onPageLoad())
+        case EuEea => NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(NormalMode))
         case RestOfTheWorld => NavigateTo.dontSave(OutsideEuEeaController.onPageLoad())
         case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
       }

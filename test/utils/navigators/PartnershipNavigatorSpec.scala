@@ -84,10 +84,9 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, addPartnersPage, true, None, true),
     (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false),
 
-    (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
+    (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage, false, None, false),
     (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, false, None, false),
-    (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false),
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true)
+    (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
   )
 
   private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
