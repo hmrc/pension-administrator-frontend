@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,7 +48,7 @@ class AlreadyDeletedController @Inject()(
         controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
       )
 
-      PartnerDetailsId(index).retrieve.right.map { partnerDetails =>
+      PartnerNameId(index).retrieve.right.map { partnerDetails =>
         Future.successful(Ok(alreadyDeleted(appConfig, viewmodel(partnerDetails.fullName))))
       }
 

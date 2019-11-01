@@ -40,7 +40,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val index = Index(0)
   val companyName = "Test Company Name"
-  val partnerName = "test first name test middle name test last name"
+  val partnerName = "test first name test last name"
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   object FakeSectionComplete extends SectionComplete with FakeUserAnswersCacheConnector {
@@ -57,14 +57,14 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "cya.label.name",
       Seq("test first name test last name"),
       answerIsMessageKey = false,
-      Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)),
+      Some(Link(routes.PartnerNameController.onPageLoad(CheckMode, index).url)),
       None
     ),
     AnswerRow(
       "cya.label.dob",
       Seq(DateHelper.formatDate(LocalDate.now)),
       answerIsMessageKey = false,
-      Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)),
+      Some(Link(routes.PartnerNameController.onPageLoad(CheckMode, index).url)),
       None
     ))
 

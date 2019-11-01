@@ -218,44 +218,45 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
   private val partnershipUserAnswersIncomplete = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partners" +
     ("partners" -> Json.arr(
-      Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()))
+      Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "One", LocalDate.now()))
     ))
 
   private val partnershipUserAnswersWithTwoPartners = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
     "partners" + ("partners" -> Json.arr(
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
       IsPartnerCompleteId.toString -> true)
   ))
 
   private val partnershipUserAnswersWithTenPartners = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
     "partners" + ("partners" -> Json.arr(
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Three", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Three", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Four", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Four", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Five", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Five", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Six", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Six", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Seven", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Seven", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Eight", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Eight", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Nine", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Nine", LocalDate.now()),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerDetailsId.toString -> PersonDetails("John", None, "Ten", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Ten", LocalDate.now()),
       IsPartnerCompleteId.toString -> true)
   ))
   private val partnershipUserAnswersWithAddLinks = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partnershipPreviousAddress" -
     "partners" + ("partners" -> Json.arr(
     Json.obj(
-      PartnerDetailsId.toString -> PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
+      PartnerNameId.toString -> PersonName("test first name", "test last name"),
+      PartnerDOBId.toString -> LocalDate.now(),
       PartnerNinoId.toString -> Nino.No("reason"),
       PartnerAddressYearsId.toString -> AddressYears.UnderAYear.toString,
       PartnerUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")

@@ -51,7 +51,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   //noinspection ScalaStyle
   private def commonRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
     case AddPartnersId => addPartnerRoutes(from.userAnswers, mode)
-    case PartnerDetailsId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
+    case PartnerNameId(index) => NavigateTo.save(routes.PartnerNinoController.onPageLoad(mode, index))
     case PartnerNinoId(index) => ninoRoutes(index, from.userAnswers, mode)
     case PartnerUniqueTaxReferenceId(index) => utrRoutes(index, from.userAnswers, mode)
     case PartnerAddressPostCodeLookupId(index) => NavigateTo.dontSave(routes.PartnerAddressListController.onPageLoad(mode, index))
@@ -116,7 +116,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
 
   //noinspection ScalaStyle
   override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case PartnerDetailsId(index) => checkYourAnswers(index, journeyMode(mode))
+    case PartnerNameId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerNinoId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerUniqueTaxReferenceId(index) => checkYourAnswers(index, journeyMode(mode))
     case PartnerAddressId(index) => checkYourAnswers(index, journeyMode(mode))
@@ -147,7 +147,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
   }
 
   private def redirectBasedOnIsNew(answers: UserAnswers, index: Int, ifNewRoute: Call, ifNotNew: Call): Option[NavigateTo] = {
-    answers.get(PartnerDetailsId(index)).map { person =>
+    answers.get(PartnerNameId(index)).map { person =>
       if (person.isNew) {
         NavigateTo.save(ifNewRoute)
       } else {
@@ -165,7 +165,7 @@ class PartnerNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnect
         if (index >= config.maxPartners) {
           NavigateTo.dontSave(controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode))
         } else {
-          NavigateTo.save(controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, answers.partnersCount))
+          NavigateTo.save(controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(mode, answers.partnersCount))
         }
     }
   }

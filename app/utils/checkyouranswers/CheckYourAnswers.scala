@@ -16,11 +16,13 @@
 
 package utils.checkyouranswers
 
+import java.time.LocalDate
+
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.register.adviser.AdviserDetails
 import play.api.i18n.Messages
@@ -52,7 +54,7 @@ trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends Ch
 
 trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
-    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
+    ua.get(PartnerNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
@@ -330,6 +332,40 @@ case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = Non
         } getOrElse Seq.empty[AnswerRow]
     }
   }
+}
+
+case class PersonNameCYA[I <: TypedIdentifier[PersonName]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+  def apply()(implicit rds: Reads[PersonName]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          personName =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.heading",
+              answer = Seq(personName.fullName),
+              answerIsMessageKey = false,
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
+}
+
+case class DateCYA[I <: TypedIdentifier[LocalDate]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+  def apply()(implicit rds: Reads[LocalDate]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          date =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.heading",
+              answer = Seq(DateHelper.formatDate(date)),
+              answerIsMessageKey = false,
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
+            ))
+        } getOrElse Seq.empty[AnswerRow]
+    }
 }
 
 case class ReferenceValueCYA[I <: TypedIdentifier[ReferenceValue]](

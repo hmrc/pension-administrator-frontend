@@ -18,13 +18,13 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, email, personDetails, personName, phone}
+import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, email, personName, phone}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.register.adviser.AdviserDetails
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
@@ -232,8 +232,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(EnterPAYEId) mustNot be(defined)
         result.get(PartnershipVatId) mustNot be(defined)
         result.get(PartnershipPayeId) mustNot be(defined)
-        result.get(PartnerDetailsId(0)) mustNot be(defined)
-        result.get(PartnerDetailsId(1)) mustNot be(defined)
+        result.get(PartnerNameId(0)) mustNot be(defined)
+        result.get(PartnerNameId(1)) mustNot be(defined)
         result.get(MoreThanTenPartnersId) mustNot be(defined)
       }
 
@@ -267,8 +267,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(EnterPAYEId) mustNot be(defined)
         result.get(PartnershipVatId) mustNot be(defined)
         result.get(PartnershipPayeId) mustNot be(defined)
-        result.get(PartnerDetailsId(0)) mustNot be(defined)
-        result.get(PartnerDetailsId(1)) mustNot be(defined)
+        result.get(PartnerNameId(0)) mustNot be(defined)
+        result.get(PartnerNameId(1)) mustNot be(defined)
         result.get(MoreThanTenPartnersId) mustNot be(defined)
       }
 
@@ -353,8 +353,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(PartnershipPreviousAddressListId)(tolerantAddress))
       .flatMap(_.set(PartnershipEmailId)(email))
       .flatMap(_.set(PartnershipPhoneId)(phone))
-      .flatMap(_.set(PartnerDetailsId(0))(personDetails))
-      .flatMap(_.set(PartnerDetailsId(1))(personDetails))
+      .flatMap(_.set(PartnerNameId(0))(personName))
+      .flatMap(_.set(PartnerNameId(1))(personName))
       .flatMap(_.set(MoreThanTenPartnersId)(true))
       .flatMap(_.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser))
       .flatMap(_.set(AdviserNameId)("name"))

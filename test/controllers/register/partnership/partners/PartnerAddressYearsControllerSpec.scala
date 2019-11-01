@@ -16,14 +16,12 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerNameId}
 import models._
 import play.api.data.Form
 import play.api.libs.json._
@@ -40,20 +38,20 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressYearsFormProvider()
   private val form = formProvider(Message("error.addressYears.required"))
   private val index = Index(0)
-  private val partnerName = "test first name test middle name test last name"
+  private val partnerName = "test first name test last name"
 
   private val validData = Json.obj(
     BusinessNameId.toString -> "Test Partnership Name",
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString ->
-          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+        PartnerNameId.toString ->
+          PersonName("test first name", "test last name"),
         PartnerAddressYearsId.toString ->
           AddressYears.options.head.value.toString
       ),
       Json.obj(
-        PartnerDetailsId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now)
+        PartnerNameId.toString ->
+          PersonName("test", "test")
       )
     )
   )

@@ -25,7 +25,7 @@ import controllers.register.company.AddCompanyDirectorsControllerSpec.{johnDoePe
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
 import models.requests.DataRequest
 import models._
 import play.api.data.Form
@@ -215,7 +215,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def dataRetrievalAction(partners: PersonDetails*): FakeDataRetrievalAction = {
     val validData = Json.obj("partners" ->
       partners.map(d => Json.obj(
-        PartnerDetailsId.toString -> Json.toJson(d),
+        PartnerNameId.toString -> Json.toJson(d),
         IsPartnerCompleteId.toString -> true
       ))
     )

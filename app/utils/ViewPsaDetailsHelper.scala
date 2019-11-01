@@ -356,8 +356,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   //Partners
-  private def partnerDob(index: Int): Option[AnswerRow] = userAnswers.get(PartnerDetailsId(index)) map { details =>
-    AnswerRow("cya.label.dob", Seq(details.dateOfBirth.toString), answerIsMessageKey = false,
+  private def partnerDob(index: Int): Option[AnswerRow] = userAnswers.get(PartnerDOBId(index)) map { dateOfBirth =>
+    AnswerRow("cya.label.dob", Seq(dateOfBirth.toString), answerIsMessageKey = false,
       None)
   }
 

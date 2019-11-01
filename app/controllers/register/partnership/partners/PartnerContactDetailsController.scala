@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.{ContactDetailsController, Retrievals}
 import forms.ContactDetailsFormProvider
-import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{PartnerContactDetailsId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}

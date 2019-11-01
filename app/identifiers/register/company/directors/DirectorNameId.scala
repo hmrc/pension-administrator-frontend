@@ -18,9 +18,12 @@ package identifiers.register.company.directors
 
 import identifiers._
 import identifiers.register.company.MoreThanTenDirectorsId
-import models.PersonName
+import models.{Index, PersonName}
+import play.api.i18n.Messages
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector, PersonNameCYA, StringCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorNameId(index: Int) extends TypedIdentifier[PersonName] {
   override def path: JsPath = JsPath \ "directors" \ index \ DirectorNameId.toString
@@ -37,6 +40,19 @@ object DirectorNameId {
   def collectionPath: JsPath = JsPath \ "directors" \\ DirectorNameId.toString
 
   override def toString: String = "directorDetails"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[DirectorNameId] =
+    new CheckYourAnswersDirector[DirectorNameId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "cya.label.name", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "directorName.visuallyHidden.text", index)
+
+
+      override def row(id: DirectorNameId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        PersonNameCYA[DirectorNameId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+    }
 
 }
 

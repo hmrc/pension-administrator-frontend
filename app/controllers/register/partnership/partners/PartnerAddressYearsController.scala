@@ -22,19 +22,17 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
-
-import scala.concurrent.Future
 
 class PartnerAddressYearsController @Inject()(
                                                val appConfig: FrontendAppConfig,
@@ -65,7 +63,7 @@ class PartnerAddressYearsController @Inject()(
   }
 
   private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnerDetailsId(index)).map(_.fullName).getOrElse(Message("thePartner").resolve)
+    request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner").resolve)
 
   private def viewmodel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(
