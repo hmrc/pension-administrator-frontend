@@ -52,6 +52,8 @@ class IndividualPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      println("\n11122222222222221")
+
       get(viewModel(mode), mode)
   }
 

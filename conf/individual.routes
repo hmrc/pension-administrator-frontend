@@ -24,10 +24,10 @@ POST        /:mode/previous-contact-address         controllers.register.individ
 
 GET         /you-will-need-to-update                controllers.register.individual.YouWillNeedToUpdateController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /previous-contact-address                       controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /previous-contact-address                       controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/previous-contact-address                controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST        /:mode/previous-contact-address                controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /what-was-previous-contact-address                       controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-was-previous-contact-address                       controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/what-was-previous-contact-address                controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/what-was-previous-contact-address                controllers.register.individual.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
 GET         /select-previous-contact-address               controllers.register.individual.IndividualPreviousAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-previous-contact-address               controllers.register.individual.IndividualPreviousAddressListController.onSubmit(mode: Mode = NormalMode)

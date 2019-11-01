@@ -206,6 +206,8 @@ phone.title = What is {0}’s phone number?
 individual.phone.title = What is your phone number?
 phone.visuallyHidden.text = {0}’s phone number
 
+individualPreviousAddress.visuallyHidden.text = your previous address
+
 businessDetails.title = What are your business details?
 businessDetails.heading = What are your business details?
 businessDetails.companyName = Registered company name

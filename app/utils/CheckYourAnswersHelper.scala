@@ -56,7 +56,7 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers, countryOptions: CountryOp
   def individualPreviousAddress: Option[AnswerRow] = {
     userAnswers.get(IndividualPreviousAddressId) map { x =>
       AnswerRow("individualPreviousAddress.checkYourAnswersLabel", addressAnswer(x), false,
-        Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)), None)
+        Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)), Some(Message("individualPreviousAddress.visuallyHidden.text")))
     }
   }
 
