@@ -92,8 +92,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       .getOrElse(Nil).length
   }
 
-  def allPartners: Seq[PersonDetails] = {
-    getAll[PersonDetails](PartnerNameId.collectionPath).getOrElse(Nil)
+  def allPartners: Seq[PersonName] = {
+    getAll[PersonName](PartnerNameId.collectionPath).getOrElse(Nil)
   }
 
   def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
@@ -125,7 +125,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def partnersCount: Int = {
-    getAll[PersonDetails](PartnerNameId.collectionPath)
+    getAll[PersonName](PartnerNameId.collectionPath)
       .getOrElse(Nil).length
   }
 

@@ -38,15 +38,6 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
     }
   }
 
-  private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],
-                                           userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
-    if (personDetailsSeq.nonEmpty) {
-      userAnswers.remove(id)
-    } else {
-      JsSuccess(userAnswers)
-    }
-  }
-
   private def removeDirectorsOrPartners(personNameSeq: Seq[PersonName],
                                         userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
     if (personNameSeq.nonEmpty) {
@@ -68,6 +59,6 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
-      .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
+      .flatMap(answers => removeDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 }
