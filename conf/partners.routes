@@ -14,6 +14,16 @@ POST        /:index/partner-details                          controllers.registe
 GET         /:index/:mode/partner-details                    controllers.register.partnership.partners.PartnerDetailsController.onPageLoad(mode: Mode, index: Index)
 POST        /:index/:mode/partner-details                    controllers.register.partnership.partners.PartnerDetailsController.onSubmit(mode: Mode, index: Index)
 
+GET         /:index/name                                     controllers.register.partnership.partners.PartnerNameController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/name                                     controllers.register.partnership.partners.PartnerNameController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/name                               controllers.register.partnership.partners.PartnerNameController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/name                               controllers.register.partnership.partners.PartnerNameController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/date-of-birth                            controllers.register.partnership.partners.PartnerDOBController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/date-of-birth                            controllers.register.partnership.partners.PartnerDOBController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/date-of-birth                      controllers.register.partnership.partners.PartnerDOBController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/date-of-birth                      controllers.register.partnership.partners.PartnerDOBController.onSubmit(mode: Mode, index: Index)
+
 GET         /:index/partners-confirm-delete                  controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode = NormalMode)
 POST        /:index/partners-confirm-delete                  controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode = NormalMode)
 GET         /:index/:mode/partners-confirm-delete            controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode)

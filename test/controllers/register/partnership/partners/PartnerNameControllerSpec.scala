@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package controllers.register.company.directors
+package controllers.register.partnership.partners
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
-import models.NormalMode
+import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
+import models.requests.DataRequest
+import models.{NormalMode, PSAUser, UserType}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator}
+import utils.{FakeNavigator, Navigator, UserAnswers}
 
-class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
+class PartnerNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
-  import DirectorDOBControllerSpec._
+  import PartnerNameControllerSpec._
 
-  "DirectorDOBController" must {
+  implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+
+  "PartnerNameController" must {
+
+    val controller = testController(this, getEmptyData)
+    val viewModel = controller.viewModel(NormalMode, 0, psaName)
+    val id = controller.id(0)
+
+    behave like personNameController(viewModel, id, createController(this, getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = testController(this, dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
@@ -37,7 +49,7 @@ class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsCon
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "2019-10-23"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"))
       val result = testController(this, dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
@@ -47,18 +59,23 @@ class DirectorDOBControllerSpec extends ControllerSpecBase with PersonDetailsCon
   }
 
 }
-object DirectorDOBControllerSpec {
+
+
+
+object PartnerNameControllerSpec {
+
+  val psaName = "test name"
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
-                    ): DirectorDOBController =
+                    ): PartnerNameController =
     createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
                         base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorDOBController =
-    new DirectorDOBController(
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): PartnerNameController =
+    new PartnerNameController(
       appConfig = base.frontendAppConfig,
       messagesApi = base.messagesApi,
       cacheConnector = connector,
@@ -70,4 +87,3 @@ object DirectorDOBControllerSpec {
     )
 
 }
-
