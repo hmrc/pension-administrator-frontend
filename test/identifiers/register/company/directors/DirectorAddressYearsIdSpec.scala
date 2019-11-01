@@ -16,14 +16,23 @@
 
 package identifiers.register.company.directors
 
+import base.SpecBase
 import identifiers.register.DirectorsOrPartnersChangedId
-import models.{Address, AddressYears, TolerantAddress}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import models._
+import models.requests.DataRequest
 import play.api.libs.json.Json
-import utils.{Enumerable, UserAnswers}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import utils.checkyouranswers.Ops._
+import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, UserAnswers}
+import viewmodels.{AnswerRow, Link, Message}
 
-class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
-
+class DirectorAddressYearsIdSpec extends SpecBase {
+  private val personDetails = models.PersonName("test first", "test last")
+  private val onwardUrl = "onwardUrl"
+  implicit val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val addressYears = AddressYears.OverAYear
   "Cleanup" when {
 
     val answersWithPreviousAddress = UserAnswers(Json.obj())
@@ -98,6 +107,30 @@ class DirectorAddressYearsIdSpec extends WordSpec with MustMatchers with OptionV
 
       "not remove the data for `PreviousAddress`" in {
         result.get(DirectorPreviousAddressId(0)) mustBe defined
+      }
+    }
+  }
+
+  "cya" when {
+    def answers: UserAnswers =
+      UserAnswers()
+        .set(DirectorNameId(0))(personDetails).asOpt.value
+        .set(DirectorAddressYearsId(0))(value = AddressYears.OverAYear).asOpt.value
+
+    "in normal mode" must {
+      "return answers rows with change links" in {
+        val answerRows =
+          Seq(AnswerRow(
+            Message("addressYears.heading").withArgs(personDetails.fullName),
+            Seq(s"common.addressYears.${addressYears.toString}"),
+            answerIsMessageKey = true,
+            Some(Link(onwardUrl)),
+            Some(Message("addressYears.visuallyHidden.text").withArgs(personDetails.fullName))
+          ))
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+
+        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(answerRows)
       }
     }
   }

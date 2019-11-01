@@ -20,7 +20,7 @@ import identifiers.TypedIdentifier
 import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
-import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersCompany}
+import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersBusiness}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object CompanyTradingOverAYearId extends TypedIdentifier[Boolean] {
@@ -29,7 +29,7 @@ case object CompanyTradingOverAYearId extends TypedIdentifier[Boolean] {
   override def toString: String = "companyTradingOverAYear"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
+    new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, "trading.title")
 

@@ -42,6 +42,18 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
 
   import CompanyContactAddressListControllerSpec._
 
+  private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
+    AddressListViewModel(
+      routes.CompanyContactAddressListController.onSubmit(NormalMode),
+      routes.CompanyContactAddressController.onPageLoad(NormalMode),
+      addresses,
+      Message("contactAddressList.heading").withArgs(Message("theCompany").resolve),
+      Message("contactAddressList.heading").withArgs("test company"),
+      Message("common.selectAddress.text"),
+      Message("common.selectAddress.link")
+    )
+  }
+
   "company Contact Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
@@ -117,18 +129,6 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
 
 object CompanyContactAddressListControllerSpec extends OptionValues {
   val onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
-
-  private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
-    AddressListViewModel(
-      routes.CompanyContactAddressListController.onSubmit(NormalMode),
-      routes.CompanyContactAddressController.onPageLoad(NormalMode),
-      addresses,
-      Message("company.contactAddressList.title"),
-      Message("company.contactAddressList.heading").withArgs("test company"),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
-    )
-  }
 
   private val addresses = Seq(
     TolerantAddress(

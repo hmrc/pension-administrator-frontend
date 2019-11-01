@@ -19,7 +19,7 @@ package identifiers.register
 import identifiers.TypedIdentifier
 import play.api.i18n.Messages
 import utils.UserAnswers
-import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersCompany, StringCYA}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object EnterVATId extends TypedIdentifier[String] {
@@ -27,7 +27,7 @@ case object EnterVATId extends TypedIdentifier[String] {
   override def toString: String = "vat"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersCompany[self.type] {
+    new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
         dynamicMessage(ua, messageKey = "enterVAT.heading")
 

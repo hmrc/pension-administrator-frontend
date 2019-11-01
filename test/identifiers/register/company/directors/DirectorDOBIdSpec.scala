@@ -16,16 +16,18 @@
 
 package identifiers.register.company.directors
 
+import java.time.LocalDate
+
 import base.SpecBase
+import models._
 import models.requests.DataRequest
-import models.{PSAUser, PersonName, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import utils.UserAnswers
 import utils.checkyouranswers.Ops._
+import utils.{DateHelper, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
 
-class DirectorNoUTRReasonIdSpec extends SpecBase {
+class DirectorDOBIdSpec extends SpecBase {
 
   private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
@@ -34,20 +36,21 @@ class DirectorNoUTRReasonIdSpec extends SpecBase {
     def answers: UserAnswers =
       UserAnswers()
         .set(DirectorNameId(0))(personDetails).asOpt.value
-        .set(DirectorNoUTRReasonId(0))(value = "test-reason").asOpt.value
+        .set(DirectorDOBId(0))(value = LocalDate.now()).asOpt.value
 
     "in normal mode" must {
       "return answers rows with change links" in {
         val answerRows =
-          Seq(
-            AnswerRow(Message("whyNoUTR.heading").withArgs(personDetails.fullName).resolve, Seq("test-reason"), answerIsMessageKey = false,
-              Some(Link("site.change", onwardUrl)), Some(Message("whyNoUTR.visuallyHidden.text").withArgs(personDetails.fullName))
-            )
+        Seq(
+          AnswerRow(Message("dob.heading").withArgs(personDetails.fullName).resolve, Seq(DateHelper.formatDate(LocalDate.now())),
+            answerIsMessageKey = false, Some(Link("site.change", onwardUrl)),
+            Some(Message("dob.visuallyHidden.text").withArgs(personDetails.fullName))
           )
+        )
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
           PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
-        DirectorNoUTRReasonId(0).row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(answerRows)
+        DirectorDOBId(0).row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(answerRows)
       }
     }
   }
