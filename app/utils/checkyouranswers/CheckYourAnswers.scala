@@ -119,29 +119,6 @@ object CheckYourAnswers {
     }
   }
 
-  implicit def vat[I <: TypedIdentifier[Vat]](implicit r: Reads[Vat]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map {
-          case Vat.Yes(vat) => Seq(
-            AnswerRow(
-              "common.vatRegistrationNumber.checkYourAnswersLabel",
-              Seq(vat),
-              false,
-              changeUrl
-            )
-          )
-          case Vat.No => Seq(
-            AnswerRow(
-              "common.vatRegistrationNumber.checkYourAnswersLabel",
-              Seq("site.no"),
-              true,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
-    }
-  }
-
   implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {

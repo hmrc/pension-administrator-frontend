@@ -17,7 +17,7 @@
 package audit
 
 import models.UserType.UserType
-import models.requests.DataRequest
+import models.requests.OptionalDataRequest
 
 import scala.concurrent.ExecutionContext
 
@@ -36,7 +36,7 @@ case class PSAStartEvent(externalId: String, userType: UserType, existingUser: B
 
 object PSAStartEvent {
 
-  def sendEvent(auditService: AuditService)(implicit request: DataRequest[_], ec: ExecutionContext): Unit = {
+  def sendEvent(auditService: AuditService)(implicit request: OptionalDataRequest[_], ec: ExecutionContext): Unit = {
 
     val event = PSAStartEvent(request.externalId, request.user.userType, request.user.isExistingPSA)
 

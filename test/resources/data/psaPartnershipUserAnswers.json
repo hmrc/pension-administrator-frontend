@@ -54,10 +54,8 @@
     "email": "aaa@aa.com",
     "phone": "0044-09876542312"
   },
-  "partnershipVat": {
-    "hasVat": true,
-    "vat": "12345678"
-  },
+  "hasVat": true,
+  "vat": "12345678",
   "paye": "9876543210",
   "partners": [
     {
