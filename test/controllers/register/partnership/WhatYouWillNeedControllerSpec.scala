@@ -38,8 +38,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      auditService
+      new DataRequiredActionImpl
     )
 
   private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
@@ -59,16 +58,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send a PSAStart audit event" in {
-
-      auditService.reset()
-
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      auditService.verifyNothingSent() mustBe false
     }
 
   }

@@ -37,8 +37,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          auditService: AuditService
+                                          requireData: DataRequiredAction
                                          )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = Action {
@@ -48,7 +47,6 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = Action {
     implicit request =>
-      PSAStartEvent.sendEvent(auditService)
       Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }
 
