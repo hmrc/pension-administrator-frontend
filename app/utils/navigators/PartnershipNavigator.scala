@@ -28,8 +28,6 @@ import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
-import controllers.register.partnership.partners.routes.WhatYouWillNeedController
-import controllers.register.partnership.routes.AddPartnerController
 
 @Singleton
 class PartnershipNavigator @Inject()(
@@ -180,7 +178,7 @@ class PartnershipNavigator @Inject()(
 
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
-  private def tradingOverAYearRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+  private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(false)) =>
         mode match {
@@ -262,7 +260,7 @@ class PartnershipNavigator @Inject()(
 
   private def partnerRoutes(answers: UserAnswers): Option[NavigateTo] =
     if (answers.allPartnersAfterDelete(NormalMode).isEmpty) {
-      NavigateTo.dontSave(WhatYouWillNeedController.onPageLoad())
+      NavigateTo.dontSave(controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad())
     }
     else {
       NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))

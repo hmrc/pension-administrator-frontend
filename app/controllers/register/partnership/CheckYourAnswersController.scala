@@ -19,10 +19,8 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessUTRId}
-import identifiers.register.{EnterPAYEId, HasPAYEId}
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId}
 import identifiers.register.partnership.{CheckYourAnswersId, _}
+import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}

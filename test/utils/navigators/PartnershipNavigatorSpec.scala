@@ -22,11 +22,9 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId}
 import identifiers.register.partnership._
-import identifiers.register._
 import identifiers.register.partnership.partners.PartnerDetailsId
-import identifiers.register.{BusinessNameId, BusinessUTRId, IsRegisteredNameId}
+import identifiers.register.{BusinessNameId, BusinessUTRId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
@@ -147,6 +145,8 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def phonePage: Call = routes.PartnershipPhoneController.onPageLoad(NormalMode)
   private def hasVatPage: Call = routes.HasPartnershipVATController.onPageLoad(NormalMode)
   private def enterVatPage(mode: Mode): Call = routes.PartnershipEnterVATController.onPageLoad(mode)
+
+  private def payeNumberPage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
 
   private def tradingOverAYearPage(mode: Mode): Call = routes.PartnershipTradingOverAYearController.onPageLoad(mode)
 
