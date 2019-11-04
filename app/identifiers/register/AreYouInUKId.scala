@@ -39,7 +39,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
           _.removeAllOf(List(IndividualDetailsCorrectId, IndividualContactAddressListId, IndividualPreviousAddressPostCodeLookupId,
             BusinessTypeId, CompanyRegistrationNumberId, ConfirmCompanyAddressId, CompanyContactAddressPostCodeLookupId,
             HasPAYEId, EnterPAYEId, HasVATId, EnterVATId,
-            ConfirmPartnershipDetailsId, PartnershipPayeId
+            ConfirmPartnershipDetailsId
           ))
         )
       case Some(true) =>
