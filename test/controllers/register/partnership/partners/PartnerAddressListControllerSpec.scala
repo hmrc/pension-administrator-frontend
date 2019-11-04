@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerNameId}
-import models.{Index, NormalMode, PersonDetails, TolerantAddress}
+import models.{Index, NormalMode, PersonName, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -152,7 +152,7 @@ object PartnerAddressListControllerSpec {
   val formProvider = new AddressListFormProvider()
   val form: Form[Int] = formProvider(Seq.empty)
   val firstIndex = Index(0)
-  val partner = PersonDetails("firstName", Some("middle"), "lastName", LocalDate.now())
+  val partner = PersonName("firstName", "lastName")
 
   val addresses = Seq(
     address("test post code 1"),

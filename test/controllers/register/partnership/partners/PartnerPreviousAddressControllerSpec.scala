@@ -16,8 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
 import connectors.FakeUserAnswersCacheConnector
@@ -51,14 +49,14 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     "partners" -> Json.arr(
       Json.obj(
         PartnerNameId.toString ->
-          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
+          PersonName("test first name", "test last name"),
         PartnerPreviousAddressId.toString ->
           address
 
       ),
       Json.obj(
         PartnerNameId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now)
+          PersonName("test", "test")
       )
     )
   )

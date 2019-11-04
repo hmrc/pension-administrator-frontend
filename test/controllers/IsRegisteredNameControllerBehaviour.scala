@@ -16,26 +16,20 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.register.IsRegisteredNameController
-import forms.PersonDetailsFormProvider
 import forms.register.IsRegisteredNameFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.IsRegisteredNameId
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, PersonDetails, UserType}
+import models.{PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
-import viewmodels.{CommonFormViewModel, PersonDetailsViewModel}
-import views.html.personDetails
+import viewmodels.CommonFormViewModel
 import views.html.register.isRegisteredName
-
-import scala.concurrent.Future
 
 trait IsRegisteredNameControllerBehaviour {
   this: ControllerSpecBase =>

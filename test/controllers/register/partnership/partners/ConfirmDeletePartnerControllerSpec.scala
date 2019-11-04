@@ -16,15 +16,13 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import base.CSRFRequest
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerNameId
-import models.{Index, NormalMode, PersonDetails}
+import models.{Index, NormalMode, PersonName}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -92,7 +90,7 @@ object ConfirmDeletePartnerControllerSpec {
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()
 
-  val person = PersonDetails("First", None, "Last", LocalDate.now())
+  val person = PersonName("First", "Last")
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "partners" -> Json.arr(

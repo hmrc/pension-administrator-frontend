@@ -16,19 +16,19 @@
 
 package views
 
-import forms.PersonDetailsFormProvider
-import models.{Mode, NormalMode, PersonDetails, UpdateMode}
+import forms.PersonNameFormProvider
+import models.{Mode, NormalMode, PersonName, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
 import views.html.personName
 
-class PersonNameViewSpec extends QuestionViewBehaviours[PersonDetails] {
+class PersonNameViewSpec extends QuestionViewBehaviours[PersonName] {
 
   private val messageKeyPrefix = "directorName"
 
-  override val form = new PersonDetailsFormProvider()()
+  override val form = new PersonNameFormProvider()()
 
   private lazy val viewModel =
     CommonFormWithHintViewModel(
@@ -47,7 +47,7 @@ class PersonNameViewSpec extends QuestionViewBehaviours[PersonDetails] {
   private def createViewUsingForm = (form: Form[_]) =>
     personName(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages)
 
-  "PersonDetails view" must {
+  "PersonName view" must {
 
     behave like normalPageWithNoPageTitleCheck(createView(), messageKeyPrefix)
 
