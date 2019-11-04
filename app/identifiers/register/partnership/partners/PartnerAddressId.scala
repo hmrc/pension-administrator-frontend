@@ -17,8 +17,13 @@
 package identifiers.register.partnership.partners
 
 import identifiers._
-import models.Address
+import models.{Address, Index}
+import play.api.i18n.Messages
 import play.api.libs.json.JsPath
+import utils.{UserAnswers, checkyouranswers}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersPartner}
+import utils.countryOptions.CountryOptions
+import viewmodels.{AnswerRow, Link, Message}
 
 case class PartnerAddressId(index: Int) extends TypedIdentifier[Address] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerAddressId.toString
@@ -26,6 +31,20 @@ case class PartnerAddressId(index: Int) extends TypedIdentifier[Address] {
 
 object PartnerAddressId {
   override lazy val toString: String = "partnerAddress"
+
+  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[PartnerAddressId] =
+    new CheckYourAnswersPartner[PartnerAddressId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "address.checkYourAnswersLabel", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "address.visuallyHidden.text", index)
+
+      override def row(id: PartnerAddressId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        checkyouranswers.AddressCYA[PartnerAddressId](label(userAnswers, id.index),
+          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+      }
+    }
 }
 
 

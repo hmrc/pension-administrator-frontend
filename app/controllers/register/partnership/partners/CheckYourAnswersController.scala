@@ -56,18 +56,15 @@ class CheckYourAnswersController @Inject()(
     implicit request =>
       val answersSection = Seq(
         AnswerSection(
-          Some("partnerCheckYourAnswers.partnerDetails.heading"),
+          None,
           PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(checkMode(mode), index).url))) ++
             HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerNoNINOReasonId(index).row(Some(Link(routes.PartnerNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url)))
-        ),
-        AnswerSection(
-          Some("partnerCheckYourAnswers.contactDetails.heading"),
-          PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerUniqueTaxReferenceId(index).row(Some(Link(routes.PartnerUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerPreviousAddressId(index).row(None) ++
+            PartnerPreviousAddressId(index).row(Some(Link(routes.PartnerPreviousAddressController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url)))
         ))
 

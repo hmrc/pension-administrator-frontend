@@ -16,13 +16,20 @@
 
 package identifiers.register.partnership.partners
 
-import identifiers.register.DirectorsOrPartnersChangedId
-import models.{Address, AddressYears}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import play.api.libs.json.Json
-import utils.{Enumerable, UserAnswers}
+import java.time.LocalDate
 
-class PartnerAddressYearsIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+import base.SpecBase
+import identifiers.register.DirectorsOrPartnersChangedId
+import models._
+import models.requests.DataRequest
+import play.api.libs.json.Json
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import utils.UserAnswers
+import utils.checkyouranswers.Ops._
+import viewmodels.{AnswerRow, Link, Message}
+
+class PartnerAddressYearsIdSpec extends SpecBase {
 
   "Cleanup" when {
 
@@ -80,6 +87,33 @@ class PartnerAddressYearsIdSpec extends WordSpec with MustMatchers with OptionVa
 
       "not remove the data for `PreviousAddress`" in {
         result.get(PartnerPreviousAddressId(0)) mustBe defined
+      }
+    }
+  }
+
+  "cya" when {
+    val partnerDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+    val addressYears = AddressYears.OverAYear
+    val onwardUrl = "onwardUrl"
+    def answers: UserAnswers =
+      UserAnswers()
+        .set(PartnerDetailsId(0))(partnerDetails).asOpt.value
+        .set(PartnerAddressYearsId(0))(value = AddressYears.OverAYear).asOpt.value
+
+    "in normal mode" must {
+      "return answers rows with change links" in {
+        val answerRows =
+          Seq(AnswerRow(
+            Message("addressYears.heading").withArgs(partnerDetails.fullName),
+            Seq(s"common.addressYears.${addressYears.toString}"),
+            answerIsMessageKey = true,
+            Some(Link(onwardUrl)),
+            Some(Message("addressYears.visuallyHidden.text").withArgs(partnerDetails.fullName))
+          ))
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+
+        PartnerAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(answerRows)
       }
     }
   }
