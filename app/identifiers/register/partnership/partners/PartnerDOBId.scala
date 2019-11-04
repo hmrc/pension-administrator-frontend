@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package identifiers.register.partnership
+package identifiers.register.partnership.partners
 
-import identifiers.TypedIdentifier
-import models.Paye
+import java.time.LocalDate
 
-case object PartnershipPayeId extends TypedIdentifier[Paye] {
-  override def toString: String = "partnershipPaye"
+import identifiers._
+import play.api.libs.json.JsPath
+
+case class PartnerDOBId(index: Int) extends TypedIdentifier[LocalDate] {
+  override def path: JsPath = JsPath \ "partners" \ index \ PartnerDOBId.toString
+}
+
+object PartnerDOBId {
+  override lazy val toString: String = "dateOfBirth"
 }

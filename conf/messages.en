@@ -239,8 +239,11 @@ companyDetails.error.companyName.invalid = The name contains invalid characters
 
 companyPreviousAddress.title = Previous Address of the Company
 companyPreviousAddress.heading = Previous Address of the Company
-companyPreviousAddress.checkYourAnswersLabel = {0}’s previous address
-companyPreviousAddress.visuallyHidden.text = {0}’s previous address
+previousAddress.checkYourAnswersLabel = {0}’s previous address
+previousAddress.visuallyHidden.text = {0}’s previous address
+
+address.checkYourAnswersLabel = {0}’s address
+address.visuallyHidden.text = {0}’s address
 
 companyPreviousAddressPostCodeLookup.title = What was the previous contact address for the company?
 companyPreviousAddressPostCodeLookup.heading = What was the previous contact address for {0} ?
@@ -285,8 +288,10 @@ directorDetails.heading = Company director
 directorDetails.checkYourAnswersLabel = Company director
 
 whatYouWillNeed.directorsOrPartners.title = What you will need
-whatYouWillNeed.directorsOrPartners.heading = Directors
-whatYouWillNeed.directorsOrPartners.body.text = For every director associated with the company you’re registering, you will need to tell us each director’s:
+whatYouWillNeed.directors.heading = Directors
+whatYouWillNeed.partners.heading = Partners
+whatYouWillNeed.directors.body.text = For every director associated with the company you’re registering, you will need to tell us each director’s:
+whatYouWillNeed.partners.body.text = For every partner associated with the partnership you’re registering, you will need to tell us each partner’s:
 whatYouWillNeed.directorsOrPartners.body.item1 = name
 whatYouWillNeed.directorsOrPartners.body.item2 = date of birth
 whatYouWillNeed.directorsOrPartners.body.item3 = National Insurance number, or reason why they do not have one
@@ -321,8 +326,7 @@ directorNino.error.required = One of the two radio buttons must be selected (YES
 directorNino.error.reason.required = You need to tell us why the director does not have a National Insurance number
 directorNino.error.reason.length = The reason cannot be more than 160 characters
 
-companyDirectorAddressPostCodeLookup.title = Director’s address
-companyDirectorAddressPostCodeLookup.heading = Director’s address
+companyDirectorAddressPostCodeLookup.heading = Which address can we use to contact {0}?
 companyDirectorAddressPostCodeLookup.body = This is usually the director’s residential address.
 companyDirectorAddressPostCodeLookup.checkYourAnswersLabel = Director’s address
 companyDirectorAddressPostCodeLookup.postcode = Postcode
@@ -405,13 +409,13 @@ directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 
 theCompany = the company
+theBusiness = the business
 thePartnership = the partnership
 theDirector = the director
 thePartner = the partner
 theIndividual = the individual
 
-directorPreviousAddressPostCodeLookup.title = Director’s previous address
-directorPreviousAddressPostCodeLookup.heading = Director’s previous address
+directorPreviousAddressPostCodeLookup.heading = What was {0}’s previous contact address?
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
 directorPreviousAddressPostCodeLookup.input.text = Postcode
 directorPreviousAddressPostCodeLookup.checkYourAnswersLabel = Director’s previous address post code
@@ -423,11 +427,9 @@ directorAddressYears.checkYourAnswersLabel = How long has the director lived at 
 directorAddressYears.error.required = Select how long they have been at the current address
 
 addressYears.heading = Has {0} used this contact address for at least 1 year?
-addressYears.visuallyHidden.text = whether {0} has used this address for at least 1 year
+addressYears.visuallyHidden.text = whether {0} has used this contact address for at least 1 year
 
-directorPreviousAddress.title = Director’s previous address
-directorPreviousAddress.heading = Director’s previous address
-directorPreviousAddress.checkYourAnswersLabel = Previous Address
+directorPreviousAddress.heading = {0}’s previous contact address
 
 directorPreviousAddressList.checkYourAnswersLabel = directorPreviousAddressList
 
@@ -633,12 +635,9 @@ individualContactAddressPostCodeLookup.formLabel = Postcode
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 
-company.contactAddressList.title = Select the contact address for the company
-company.contactAddressList.heading = Select the contact address for {0}
+contactAddressList.heading = Select {0}’s contact address
 
-companyContactAddress.title = What is the contact address?
-companyContactAddress.heading = What is {0}’s contact address?
-companyContactAddress.lede = You can change any part of the address if you need to.
+contactAddress.heading = What is {0}’s contact address?
 companyContactAddress.visuallyHidden.text = {0}’s contact address
 
 cya.label.individual.contact.address = Contact Address
@@ -1043,8 +1042,12 @@ isRegisteredName.partnership.error = Select yes if this is the registered name o
 isRegisteredName.partnership.title = Is this the registered name of the partnership?
 isRegisteredName.partnership.heading = Is {0} the registered name of the partnership?
 
-directorName.title = What is the director’s name?
 directorName.heading = What is the director’s name?
-
 directorDob.title = What is the director’s date of birth?
 dob.heading = What is {0}’s date of birth?
+directorName.cya.label = Director’s name
+directorName.visuallyHidden.text = the name of the director
+dob.visuallyHidden.text = {0}’s date of birth
+
+partnerName.heading = What is the partner’s name?
+partnerDob.title = What is the partner’s date of birth?

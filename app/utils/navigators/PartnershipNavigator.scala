@@ -19,15 +19,18 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
+import controllers.register.partnership.routes
 import controllers.register.partnership.routes._
 import controllers.register.routes._
 import controllers.routes._
-import identifiers.register.partnership._
 import identifiers.register._
+import identifiers.register.partnership._
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
+import controllers.register.partnership.partners.routes.WhatYouWillNeedController
+import controllers.register.partnership.routes.AddPartnerController
 
 @Singleton
 class PartnershipNavigator @Inject()(
@@ -72,11 +75,15 @@ class PartnershipNavigator @Inject()(
     case HasVATId =>
       vatNavigation(from.userAnswers, NormalMode)
     case EnterVATId =>
-      NavigateTo.save(PartnershipPayeController.onPageLoad(NormalMode))
-    case PartnershipPayeId =>
-      NavigateTo.save(CheckYourAnswersController.onPageLoad())
+      NavigateTo.save(HasPartnershipPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId if hasPaye(from.userAnswers) =>
+      NavigateTo.save(routes.PartnershipEnterPAYEController.onPageLoad(NormalMode))
+    case HasPAYEId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+    case EnterPAYEId =>
+      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
     case CheckYourAnswersId =>
-      NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
+      partnerRoutes(from.userAnswers)
     case PartnershipReviewId =>
       NavigateTo.save(DeclarationController.onPageLoad())
     case PartnershipRegisteredAddressId =>
@@ -113,8 +120,12 @@ class PartnershipNavigator @Inject()(
         vatNavigation(from.userAnswers, mode)
       case EnterVATId =>
         NavigateTo.save(CheckYourAnswersController.onPageLoad())
-      case PartnershipPayeId =>
-        NavigateTo.save(CheckYourAnswersController.onPageLoad())
+      case HasPAYEId if hasPaye(from.userAnswers) =>
+        NavigateTo.save(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode))
+      case HasPAYEId =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      case EnterPAYEId =>
+        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
       case _ =>
         NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
@@ -177,8 +188,9 @@ class PartnershipNavigator @Inject()(
         NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
   }
+  private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
-  private def tradingOverAYearRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+  private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(false)) =>
         mode match {
@@ -245,9 +257,9 @@ class PartnershipNavigator @Inject()(
     }
   }
 
-  private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode:Mode): Option[NavigateTo] = {
+  private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
-      case Some(false) =>NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
+      case Some(false) => NavigateTo.dontSave(PartnershipPreviousAddressController.onPageLoad(mode))
       case Some(true) => NavigateTo.dontSave(AnyMoreChangesController.onPageLoad())
       case _ => NavigateTo.dontSave(SessionExpiredController.onPageLoad())
     }
@@ -261,8 +273,16 @@ class PartnershipNavigator @Inject()(
 
   def vatNavigation(userAnswers: UserAnswers, mode: Mode): Option[NavigateTo] = userAnswers.get(HasVATId) match {
     case Some(true) => NavigateTo.save(PartnershipEnterVATController.onPageLoad(mode))
-    case Some(false) if mode == NormalMode => NavigateTo.save(PartnershipPayeController.onPageLoad(mode))
+    case Some(false) if mode == NormalMode => NavigateTo.save(HasPartnershipPAYEController.onPageLoad(mode))
     case Some(false) if mode == CheckMode => NavigateTo.save(CheckYourAnswersController.onPageLoad())
     case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
   }
+
+  private def partnerRoutes(answers: UserAnswers): Option[NavigateTo] =
+    if (answers.allPartnersAfterDelete(NormalMode).isEmpty) {
+      NavigateTo.dontSave(WhatYouWillNeedController.onPageLoad())
+    }
+    else {
+      NavigateTo.save(AddPartnerController.onPageLoad(NormalMode))
+    }
 }

@@ -47,7 +47,7 @@ class DirectorNameController @Inject()(
   private[directors] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNameController.onSubmit(mode, index),
-      title = "directorName.title",
+      title = "directorName.heading",
       heading = Message("directorName.heading"),
       None,
       None,
