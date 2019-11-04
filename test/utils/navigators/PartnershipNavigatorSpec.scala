@@ -23,7 +23,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
@@ -217,7 +217,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false).set(PartnershipTradingOverAYearId)(true).asOpt.value
   private val addressYearsOverAYear = UserAnswers().partnershipAddressYears(AddressYears.OverAYear)
   val hasPartner: UserAnswers = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(0))(PersonDetails("first", None, "last", LocalDate.now())).asOpt.value
+    .set(PartnerNameId(0))(PersonName("first", "last")).asOpt.value
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
   private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value

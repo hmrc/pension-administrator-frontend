@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.partnership.partners.{HasPartnerNINOId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{HasPartnerNINOId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -56,7 +56,7 @@ class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConf
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnerDetailsId(index)).map(_.fullName).getOrElse(Message("thePartner"))
+    request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
   private def form(companyName: String): Form[Boolean] =
     formProvider("hasNINO.error.required", companyName)

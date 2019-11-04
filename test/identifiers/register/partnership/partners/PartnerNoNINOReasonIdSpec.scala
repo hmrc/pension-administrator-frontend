@@ -29,13 +29,13 @@ import utils.checkyouranswers.Ops._
 
 class PartnerNoNINOReasonIdSpec extends SpecBase {
 
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+  private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerDetailsId(0))(personDetails).asOpt.value
+        .set(PartnerNameId(0))(personDetails).asOpt.value
         .set(PartnerNoNINOReasonId(0))(value = "test-reason").asOpt.value
 
     "in normal mode" must {
