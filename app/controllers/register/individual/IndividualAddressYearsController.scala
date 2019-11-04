@@ -59,7 +59,8 @@ class IndividualAddressYearsController @Inject()(
         }
     )
 
-  private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"))
+  private val form: Form[AddressYears] = formProvider(Message("error.addressYears.required"),
+    Some("error.individual.addressYears.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
