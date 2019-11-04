@@ -58,7 +58,7 @@ class PartnershipContactAddressController @Inject()(
       countryOptions = countryOptions.options,
       title = Message("partnership.contactAddress.title"),
       heading = Message("partnership.contactAddress.heading").withArgs(partnershipName),
-      hint = Some(Message("partnership.contactAddress.hint").withArgs(partnershipName)),
+      hint = Some(Message("partnership.contactAddress.hint")),
       psaName = psaName()
     )
 

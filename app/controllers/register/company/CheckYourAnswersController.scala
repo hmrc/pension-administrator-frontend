@@ -49,10 +49,9 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
-      val companyDetails = AnswerSection(None,
-        BusinessNameId.row(None)(request, implicitly) ++
-          BusinessUTRId.row(None)
-          ++ Seq(
+      val companyDetails = AnswerSection(None, Seq(
+        BusinessNameId.row(None)(request, implicitly),
+          BusinessUTRId.row(None),
           HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
           CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))),
           HasPAYEId.row(Some(Link(routes.HasCompanyPAYEController.onPageLoad(CheckMode).url))),
