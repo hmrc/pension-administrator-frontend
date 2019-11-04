@@ -18,9 +18,8 @@ package controllers.register.partnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, EnterVATId, HasVATId}
 import identifiers.register.partnership._
-import identifiers.register._
+import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, EnterVATId, HasVATId, _}
 import models._
 import models.register.BusinessType
 import play.api.libs.json.Json
@@ -37,247 +36,194 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     "GET" must {
 
-      "display Partnership Details section " which {
+      "renders name and utr" in {
+        val rows = Seq(
+          answerRow(Message("businessName.heading",
+            Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)),
+          answerRow(Message("utr.heading",
+            Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test UTR"))
+        )
 
-        "renders name and utr" in {
-          val rows = Seq(
-            answerRow(Message("businessName.heading",
-              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)),
-            answerRow(Message("utr.heading",
-              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("Test UTR"))
-          )
+        val sections = answerSections(None, rows)
 
-          val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
-
-          val retrievalAction = dataRetrievalAction(
-            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
-            BusinessNameId.toString -> partnershipName,
-            BusinessUTRId.toString -> "Test UTR"
-          )
-          testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
-        }
-
-        "renders paye number" in {
-          val answerRows = Seq(
-            answerRow(Message("businessName.heading",
-              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(businessName)),
-            answerRow(Message("hasPAYE.heading", businessName), Seq("site.yes"), answerIsMessageKey = true,
-            Some(Link(controllers.register.partnership.routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url)),
-            visuallyHiddenLabel = Some(Message("hasPAYE.visuallyHidden.text", businessName))),
-            answerRow(Message("enterPAYE.heading", businessName), Seq("Test Paye"), answerIsMessageKey = false,
-              Some(Link(controllers.register.partnership.routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url)),
-              visuallyHiddenLabel = Some(Message("enterPAYE.visuallyHidden.text", businessName))))
-
-          val sections = answerSections(Some("checkyouranswers.partnership.details"), answerRows)
-
-          val retrievalAction = dataRetrievalAction(
-            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
-            BusinessNameId.toString -> businessName,
-            HasPAYEId.toString -> true,
-            EnterPAYEId.toString -> "Test Paye"
-          )
-          testRenderedView(sections:+ partnershipContactDetails :+ contactDetails, retrievalAction)
-        }
-
-        "renders vat registration number" in {
-          val rows = Seq(
-            answerRow(Message("businessName.heading",
-              Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)),
-            answerRow(
-              Message("hasVAT.heading", partnershipName),
-              Seq("site.yes"),
-              answerIsMessageKey = true,
-              Some(Link(controllers.register.partnership.routes.HasPartnershipVATController.onPageLoad(CheckMode).url)),
-                Some(Message("hasVAT.visuallyHidden.text", partnershipName))
-            ),
-            answerRow(
-              Message("enterVAT.heading", partnershipName),
-              Seq("Test Vat"),
-              answerIsMessageKey = false,
-              Some(Link(controllers.register.partnership.routes.PartnershipEnterVATController.onPageLoad(CheckMode).url)),
-                Some(Message("enterVAT.visuallyHidden.text", partnershipName))
-            ))
-
-          val sections = answerSections(Some("checkyouranswers.partnership.details"), rows)
-
-          val retrievalAction = dataRetrievalAction(
-            BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
-            BusinessNameId.toString -> partnershipName,
-            HasVATId.toString -> true,
-            EnterVATId.toString -> "Test Vat"
-          )
-          testRenderedView(sections :+ partnershipContactDetails :+ contactDetails, retrievalAction)
-        }
-
+        val retrievalAction = dataRetrievalAction(
+          BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
+          BusinessNameId.toString -> partnershipName,
+          BusinessUTRId.toString -> "Test UTR"
+        )
+        testRenderedView(sections, retrievalAction)
       }
 
-      "display Partnership Contact Details" which {
+      "renders paye number" in {
+        val answerRows = Seq(
+          answerRow(Message("businessName.heading",
+            Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(businessName)),
+          answerRow(Message("hasPAYE.heading", businessName), Seq("site.yes"), answerIsMessageKey = true,
+            Some(Link(controllers.register.partnership.routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("hasPAYE.visuallyHidden.text", businessName))),
+          answerRow(Message("enterPAYE.heading", businessName), Seq("Test Paye"), answerIsMessageKey = false,
+            Some(Link(controllers.register.partnership.routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("enterPAYE.visuallyHidden.text", businessName))))
 
-        "renders address" in {
-          val address = TolerantAddress(
-            Some("address-line-1"),
-            Some("address-line-2"),
-            None,
-            None,
-            Some("post-code"),
-            Some("country")
-          )
-          val rows = Seq(answerRow("companyAddress.checkYourAnswersLabel",
-            Seq(
-              address.addressLine1.value,
-              address.addressLine2.value,
-              address.postcode.value,
-              address.country.value
-            )))
+        val sections = answerSections(None, answerRows)
 
-          val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
+        val retrievalAction = dataRetrievalAction(
+          BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
+          BusinessNameId.toString -> businessName,
+          HasPAYEId.toString -> true,
+          EnterPAYEId.toString -> "Test Paye"
+        )
+        testRenderedView(sections, retrievalAction)
+      }
 
-          val retrievalAction = dataRetrievalAction(
-            PartnershipRegisteredAddressId.toString -> address
-          )
-          testRenderedView(partnershipDetails +: sections :+ contactDetails, retrievalAction)
-        }
-
-        "renders same contact address" in {
-          val rows = Seq(answerRow(
-            "cya.label.common.same.contact.address",
-            Seq("Yes"),
+      "renders vat registration number" in {
+        val rows = Seq(
+          answerRow(Message("businessName.heading",
+            Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)),
+          answerRow(
+            Message("hasVAT.heading", partnershipName),
+            Seq("site.yes"),
             answerIsMessageKey = true,
-            Some(Link(controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url))
-          ))
-
-          val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
-
-          val retrievalAction = dataRetrievalAction(
-            PartnershipSameContactAddressId.toString -> true
-          )
-          testRenderedView(partnershipDetails +: sections :+ contactDetails, retrievalAction)
-        }
-
-        "renders contact address" in {
-          val rows = Seq(answerRow(
-            "cya.label.address",
-            Seq(
-              address.addressLine1,
-              address.addressLine2,
-              address.postcode.value,
-              address.country
-            ),
+            Some(Link(controllers.register.partnership.routes.HasPartnershipVATController.onPageLoad(CheckMode).url)),
+            Some(Message("hasVAT.visuallyHidden.text", partnershipName))
+          ),
+          answerRow(
+            Message("enterVAT.heading", partnershipName),
+            Seq("Test Vat"),
             answerIsMessageKey = false,
-            Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))
+            Some(Link(controllers.register.partnership.routes.PartnershipEnterVATController.onPageLoad(CheckMode).url)),
+            Some(Message("enterVAT.visuallyHidden.text", partnershipName))
           ))
 
-          val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
-          val retrievalAction = dataRetrievalAction(
-            PartnershipContactAddressId.toString -> address
-          )
-          testRenderedView(partnershipDetails +: sections :+ contactDetails, retrievalAction)
-        }
+        val retrievalAction = dataRetrievalAction(
+          BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString,
+          BusinessNameId.toString -> partnershipName,
+          HasVATId.toString -> true,
+          EnterVATId.toString -> "Test Vat"
+        )
+        testRenderedView(sections, retrievalAction)
+      }
 
-        "renders the address years" in {
-          val addressYears = AddressYears.OverAYear
-          val rows = Seq(
-            answerRow(
-            Message("addressYears.heading", Message("thePartnership").resolve),
+      "renders contact address" in {
+        val rows = Seq(answerRow(
+          Message("cya.label.contact.address", defaultBusiness),
+          Seq(
+            address.addressLine1,
+            address.addressLine2,
+            address.postcode.value,
+            address.country
+          ),
+          answerIsMessageKey = false,
+          Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)),
+          visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultBusiness))
+        ))
+
+        val sections = answerSections(None, rows)
+
+        val retrievalAction = dataRetrievalAction(
+          PartnershipContactAddressId.toString -> address
+        )
+        testRenderedView(sections, retrievalAction)
+      }
+
+      "renders the address years" in {
+        val addressYears = AddressYears.OverAYear
+        val rows = Seq(
+          answerRow(
+            Message("addressYears.heading", defaultPartnership),
             Seq(s"common.addressYears.${addressYears.toString}"),
             answerIsMessageKey = true,
             Some(Link(controllers.register.partnership.routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
-              visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("thePartnership").resolve))
+            visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultPartnership))
           ))
 
-          val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
+        val sections = answerSections(None, rows)
 
-          val retrievalAction = dataRetrievalAction(
-            PartnershipAddressYearsId.toString -> addressYears.toString
-          )
-          testRenderedView(partnershipDetails +: sections :+ contactDetails, retrievalAction)
-        }
+        val retrievalAction = dataRetrievalAction(
+          PartnershipAddressYearsId.toString -> addressYears.toString
+        )
 
-        "renders the previous address" in {
-          val address = Address(
-            "address-line-1",
-            "address-line-2",
-            None,
-            None,
-            Some("post-code"),
-            "country"
-          )
-          val rows = Seq(answerRow(
-            "common.previousAddress.checkyouranswers",
-            Seq(
-              address.addressLine1,
-              address.addressLine2,
-              address.postcode.value,
-              address.country
-            ),
-            answerIsMessageKey = false,
-            Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))
-          ))
-
-          val sections = answerSections(Some("checkyouranswers.partnership.contact.details.heading"), rows)
-
-          val retrievalAction = dataRetrievalAction(
-            PartnershipPreviousAddressId.toString -> address
-          )
-          testRenderedView(partnershipDetails +: sections :+ contactDetails, retrievalAction)
-        }
+        testRenderedView(sections, retrievalAction)
       }
 
-      "display Contact Details section " which {
+      "renders the previous address" in {
+        val address = Address(
+          "address-line-1",
+          "address-line-2",
+          None,
+          None,
+          Some("post-code"),
+          "country"
+        )
+        val rows = Seq(answerRow(
+          Message("previousAddress.checkYourAnswersLabel", defaultBusiness),
+          Seq(
+            address.addressLine1,
+            address.addressLine2,
+            address.postcode.value,
+            address.country
+          ),
+          answerIsMessageKey = false,
+          Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)),
+          visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultBusiness))
+        ))
 
-        "render the view correctly for email and phone" in {
+        val sections = answerSections(None, rows)
 
-          val partnershipDetails = AnswerSection(
-            Some("checkyouranswers.partnership.details"),
-            Seq()
-          )
+        val retrievalAction = dataRetrievalAction(
+          PartnershipPreviousAddressId.toString -> address
+        )
 
-          val partnershipContactDetails = AnswerSection(
-            Some("checkyouranswers.partnership.contact.details.heading"),
-            Seq()
-          )
-
-          val rows = Seq(
-            answerRow(
-              label = messages("email.title", defaultPartnership),
-              answer = Seq("test@email"),
-              changeUrl = Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(CheckMode).url)),
-              visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnership))
-            ),
-            answerRow(
-              label = messages("phone.title", defaultPartnership),
-              answer = Seq("1234567890"),
-              changeUrl = Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(CheckMode).url)),
-              visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnership))
-            )
-          )
-
-          val sections = Seq(partnershipDetails, partnershipContactDetails, AnswerSection(Some("common.checkYourAnswers.contact.details.heading"), rows))
-
-          val retrievalAction = dataRetrievalAction(
-            "partnershipContactDetails" -> Json.obj(
-              PartnershipPhoneId.toString -> "1234567890",
-              PartnershipEmailId.toString -> "test@email"
-            )
-          )
-
-          testRenderedView(
-            sections = sections, dataRetrievalAction = retrievalAction
-          )
-        }
-
+        testRenderedView(sections, retrievalAction)
       }
+    }
 
-      "redirect to session expired page" when {
-        "no existing data" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
+    "display Contact Details section " which {
+
+      "render the view correctly for email and phone" in {
+
+
+        val rows = Seq(
+          answerRow(
+            label = messages("email.title", defaultPartnership),
+            answer = Seq("test@email"),
+            changeUrl = Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnership))
+          ),
+          answerRow(
+            label = messages("phone.title", defaultPartnership),
+            answer = Seq("1234567890"),
+            changeUrl = Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnership))
+          )
+        )
+
+        val sections = Seq(AnswerSection(None, rows))
+
+        val retrievalAction = dataRetrievalAction(
+          "partnershipContactDetails" -> Json.obj(
+            PartnershipPhoneId.toString -> "1234567890",
+            PartnershipEmailId.toString -> "test@email"
+          )
+        )
+
+        testRenderedView(
+          sections = sections, dataRetrievalAction = retrievalAction
+        )
       }
 
     }
+
+    "redirect to session expired page" when {
+      "no existing data" in {
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
+    }
+
 
     "POST" must {
       "redirect to the next page" in {
@@ -300,6 +246,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private val partnershipName = "Test Partnership Name"
+  private val defaultBusiness = Message("theBusiness").resolve
   private val defaultPartnership = Message("thePartnership").resolve
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 

@@ -46,8 +46,6 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
                                                                 formProvider: PostCodeLookupFormProvider
                                                               ) extends PostcodeLookupController {
 
-  import CompanyPreviousAddressPostCodeLookupController._
-
   override protected def form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -63,18 +61,15 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
         post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode, name), mode)
       }
   }
-}
-
-object CompanyPreviousAddressPostCodeLookupController {
 
   def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.CompanyPreviousAddressController.onPageLoad(mode),
-    Message("companyPreviousAddressPostCodeLookup.title"),
-    Message("companyPreviousAddressPostCodeLookup.heading", name),
-    Message("companyPreviousAddressPostCodeLookup.enterPostcode"),
-    Some(Message("companyPreviousAddressPostCodeLookup.enterPostcode.link")),
-    Message("companyPreviousAddressPostCodeLookup.postalCode")
+    Message("previousAddressPostCode.heading", Message("theCompany")),
+    Message("previousAddressPostCode.heading", name),
+    Message("common.previousAddress.enterPostcode"),
+    Some(Message("common.previousAddress.enterPostcode.link")),
+    Message("common.address.enterPostcode.formLabel")
   )
 
 }

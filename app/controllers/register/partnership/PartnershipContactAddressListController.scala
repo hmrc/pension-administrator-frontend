@@ -30,6 +30,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
 import utils.annotations.Partnership
+import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 
 class PartnershipContactAddressListController @Inject()(
@@ -50,6 +51,8 @@ class PartnershipContactAddressListController @Inject()(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
+        Message("contactAddressList.heading", Message("thePartnership").resolve),
+        Message("contactAddressList.heading", name),
         psaName = psaName()
       )
     }

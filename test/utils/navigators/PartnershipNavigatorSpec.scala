@@ -16,8 +16,6 @@
 
 package utils.navigators
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
@@ -50,10 +48,14 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessNameId, nonUk, nonUkAddress, false, None, false),
     (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage, false, None, false),
     (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
+    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, hasPayePage, false, None, false),
 
-    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
-
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true),
+    (HasPAYEId, hasPAYEYes, payePage(NormalMode), true, Some(payePage(CheckMode)), true),
+    (HasPAYEId, hasPAYENo, hasVatPage, true, Some(checkYourAnswersPage), true),
+    (EnterPAYEId, emptyAnswers, hasVatPage, true, Some(checkYourAnswersPage), true),
+    (HasVATId, hasVatYes, enterVatPage(NormalMode), true, Some(enterVatPage(CheckMode)), true),
+    (HasVATId, hasVatNo, sameContactAddressPage, true, Some(checkYourAnswersPage), true),
+    (EnterVATId, emptyAnswers, sameContactAddressPage, true, Some(checkYourAnswersPage), true),
 
     (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
     (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), true, Some(contactPostcodePage(CheckMode)), true),
@@ -77,24 +79,13 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipPreviousAddressId, emptyAnswers, emailPage, true, Some(checkYourAnswersPage), true),
 
     (PartnershipEmailId, emptyAnswers, phonePage, false, Some(checkYourAnswersPage), true),
-
-    (PartnershipPhoneId, uk, hasVatPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipPhoneId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
-
-    (HasVATId, hasVatYes, enterVatPage(NormalMode), true, Some(enterVatPage(CheckMode)), true),
-    (HasVATId, hasVatNo, payeNumberPage, true, Some(checkYourAnswersPage), true),
-    (EnterVATId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
-
-    (HasPAYEId, hasPAYEYes, payePage(NormalMode), true, Some(payePage(CheckMode)), true),
-    (HasPAYEId, hasPAYENo, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (EnterPAYEId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipPhoneId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, wynPage, true, None, true),
     (CheckYourAnswersId, hasPartner, addPartnersPage(), true, None, true),
     (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false),
 
-    (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
+    (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage, false, None, false),
     (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, false, None, false),
     (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
   )
@@ -157,8 +148,9 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def tradingOverAYearPage(mode: Mode): Call = routes.PartnershipTradingOverAYearController.onPageLoad(mode)
 
-  private def addPartnersPage(): Call = routes.AddPartnerController.onPageLoad(NormalMode)
   private def wynPage: Call = controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad()
+
+  private def addPartnersPage(): Call = routes.AddPartnerController.onPageLoad(NormalMode)
 
   private def addressYearsPage(mode: Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
 
