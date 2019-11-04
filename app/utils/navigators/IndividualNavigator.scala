@@ -113,7 +113,6 @@ class IndividualNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConn
       case (Some(AddressYears.UnderAYear), Some(false)) =>
         NavigateTo.save(routes.IndividualPreviousAddressController.onPageLoad(NormalMode))
       case (Some(AddressYears.UnderAYear), Some(true)) =>
-        println("\n1111")
         NavigateTo.save(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
       case (Some(AddressYears.OverAYear), _) =>
         NavigateTo.save(routes.IndividualEmailController.onPageLoad(NormalMode))
