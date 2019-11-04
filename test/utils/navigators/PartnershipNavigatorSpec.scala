@@ -22,10 +22,9 @@ import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId}
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerDetailsId
-import identifiers.register.{BusinessNameId, BusinessUTRId, IsRegisteredNameId}
+import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor6
@@ -86,7 +85,10 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (HasVATId, hasVatYes, enterVatPage(NormalMode), true, Some(enterVatPage(CheckMode)), true),
     (HasVATId, hasVatNo, payeNumberPage, true, Some(checkYourAnswersPage), true),
     (EnterVATId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipPayeId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+
+    (HasPAYEId, hasPAYEYes, payePage(NormalMode), true, Some(payePage(CheckMode)), true),
+    (HasPAYEId, hasPAYENo, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (EnterPAYEId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
 
     (CheckYourAnswersId, emptyAnswers, wynPage, true, None, true),
     (CheckYourAnswersId, hasPartner, addPartnersPage(), true, None, true),
@@ -151,7 +153,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private def hasVatPage: Call = routes.HasPartnershipVATController.onPageLoad(NormalMode)
   private def enterVatPage(mode: Mode): Call = routes.PartnershipEnterVATController.onPageLoad(mode)
 
-  private def payeNumberPage: Call = routes.PartnershipPayeController.onPageLoad(NormalMode)
+  private def payeNumberPage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
 
   private def tradingOverAYearPage(mode: Mode): Call = routes.PartnershipTradingOverAYearController.onPageLoad(mode)
 
@@ -178,6 +180,9 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
 
+  private def hasPayePage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
+  private def payePage(mode: Mode): Call = routes.PartnershipEnterPAYEController.onPageLoad(mode)
+
   private def reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
   private def outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
@@ -186,6 +191,8 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+  private val hasPAYEYes = UserAnswers().set(HasPAYEId)(value = true).asOpt.value
+  private val hasPAYENo = UserAnswers().set(HasPAYEId)(value = false).asOpt.value
 
   protected val hasVatYes: UserAnswers = UserAnswers().hasVat(true)
   protected val hasVatNo: UserAnswers = UserAnswers().hasVat(false)
