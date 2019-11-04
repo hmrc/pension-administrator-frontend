@@ -628,7 +628,7 @@ company.same.contact.address.heading = Can HMRC use this address to contact {0}?
 individualContactAddressPostCodeLookup.title = Which address can we use to contact you?
 individualContactAddressPostCodeLookup.heading = Which address can we use to contact you?
 individualContactAddressPostCodeLookup.hint = This should be an address that HMRC can use to contact you.
-individualContactAddressPostCodeLookup.enterPostcode = You can {0}.
+individualContactAddressPostCodeLookup.enterPostcode = You can {0}
 individualContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualContactAddressPostCodeLookup.formLabel = Postcode
 
