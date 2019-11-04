@@ -105,7 +105,7 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
-      bind[DataRetrievalAction].toInstance(getEmptyData),
+      bind[DataRetrievalAction].toInstance(getPartnership),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).to(fakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
@@ -120,8 +120,8 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
-    Message("common.previousAddress.title"),
-    Message("common.previousAddress.heading"),
+    Message("previousAddressPostCode.heading", Message("thePartnership").resolve),
+    Message("previousAddressPostCode.heading", "Test Partnership Name"),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),
     Message("common.address.enterPostcode.formLabel"),

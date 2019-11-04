@@ -21,7 +21,7 @@ import play.api.data.FormError
 
 class ConfirmPartnershipDetailsFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "confirmPartnershipDetails.error.required"
+  val requiredKey = "confirmRegisteredAddress.error.required"
   val invalidKey = "error.boolean"
 
   val form = new ConfirmPartnershipDetailsFormProvider()()

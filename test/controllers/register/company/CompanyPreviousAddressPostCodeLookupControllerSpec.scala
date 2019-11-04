@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.{NormalMode, TolerantAddress}
+import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -31,6 +31,8 @@ import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
 import utils.FakeNavigator
+import viewmodels.Message
+import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
@@ -61,7 +63,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     postcodeLookup(
       frontendAppConfig,
       form,
-      CompanyPreviousAddressPostCodeLookupController.viewModel(NormalMode, companyName),
+      viewModel(NormalMode, companyName),
       NormalMode
     )(fakeRequest, messages).toString()
 
@@ -72,6 +74,16 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     Some("Address Line 4"),
     Some(postCode),
     Some("GB")
+  )
+
+  def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
+    routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
+    routes.CompanyPreviousAddressController.onPageLoad(mode),
+    Message("previousAddressPostCode.heading", Message("theCompany").resolve),
+    Message("previousAddressPostCode.heading", name),
+    Message("common.previousAddress.enterPostcode"),
+    Some(Message("common.previousAddress.enterPostcode.link")),
+    Message("common.address.enterPostcode.formLabel")
   )
 
   private val testAnswer = "AB12 1AB"

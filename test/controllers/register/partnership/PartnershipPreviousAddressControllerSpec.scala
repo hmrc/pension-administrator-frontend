@@ -22,6 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipPreviousAddressId
 import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
@@ -50,7 +51,9 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(PartnershipPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
+      val validData = Json.obj(
+        BusinessNameId.toString -> "Test Partnership Name",
+        PartnershipPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -87,6 +90,7 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
 
       val data =
         UserAnswers()
+        .businessName("Test Partnership Name")
           .partnershipPreviousAddress(existingAddress)
           .dataRetrievalAction
 
@@ -157,21 +161,21 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val messagePrefix = "common.previousAddress"
+  val messagePrefix = "previousAddress"
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
 
   val viewmodel = ManualAddressViewModel(
     postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    title = Message(s"$messagePrefix.title"),
-    heading = Message(s"$messagePrefix.heading"),
+    title = Message(s"$messagePrefix.partnership.title"),
+    heading = Message(s"$messagePrefix.heading", "Test Partnership Name"),
     hint = Some(Message(s"$messagePrefix.lede"))
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipPreviousAddressController(
       frontendAppConfig,
       messagesApi,
