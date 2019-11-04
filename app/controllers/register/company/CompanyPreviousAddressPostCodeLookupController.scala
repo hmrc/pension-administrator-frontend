@@ -65,7 +65,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
   def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.CompanyPreviousAddressController.onPageLoad(mode),
-    Message("previousAddressPostCode.heading", Message("theCompany").resolve),
+    Message("previousAddressPostCode.heading", Message("theCompany")),
     Message("previousAddressPostCode.heading", name),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),

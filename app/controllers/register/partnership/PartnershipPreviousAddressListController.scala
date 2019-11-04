@@ -65,7 +65,7 @@ class PartnershipPreviousAddressListController @Inject()(
           postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
           manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("previousAddressList.heading", Message("thePartnership").resolve),
+          Message("previousAddressList.heading", Message("thePartnership")),
           Message("previousAddressList.heading", name),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")

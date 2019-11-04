@@ -52,7 +52,7 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
   def viewModel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
-    Message("previousAddressPostCode.heading", Message("thePartnership").resolve),
+    Message("previousAddressPostCode.heading", Message("thePartnership")),
     Message("previousAddressPostCode.heading", name),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),
