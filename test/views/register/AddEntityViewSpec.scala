@@ -66,7 +66,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     behave like yesNoPage(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
-      routes.AddPartnerController.onSubmit(NormalMode).url,
+      viewmodel(Seq(johnDoe)).postCall.url,
       Message("addEntity.addYesNo", entityTypeSinglular).resolve,
       Some(Message("addEntity.addAnEntity.hint", entityType).resolve)
     )

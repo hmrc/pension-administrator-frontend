@@ -50,9 +50,8 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                    ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
-  private[controllers] val title: Message = "common.previousAddress.title"
-  private[controllers] val heading: Message = "common.previousAddress.heading"
-  private[controllers] val hint: Message = "common.previousAddress.lede"
+  private[controllers] val title: Message = "individual.previousAddress.heading"
+  private[controllers] val heading: Message = "individual.previousAddress.heading"
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
@@ -61,7 +60,6 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     countryOptions.options,
     title = Message(title),
     heading = Message(heading),
-    hint = Some(Message(hint)),
     psaName = psaName()
   )
 

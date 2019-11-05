@@ -23,8 +23,10 @@ import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
 import javax.inject.Inject
 import models.Mode
+import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
@@ -45,23 +47,25 @@ class DeclarationWorkingKnowledgeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form
-        case Some(value) => form.fill(value)
+        case Some(value) => form.fill(value.hasWorkingKnowledge)
       }
       Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, new UserAnswers(cacheMap))))
+        value => {
+          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
+            DeclarationWorkingKnowledge.declarationWorkingKnowledge(value)).map(cacheMap =>
+            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+        }
       )
   }
 }

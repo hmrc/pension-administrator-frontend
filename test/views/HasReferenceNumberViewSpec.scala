@@ -53,7 +53,7 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
   }
 
   val form = new HasXFormProvider()("required", "name")
-  private val postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode)
+  private def postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode)
 
   private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
     hasReferenceNumber(frontendAppConfig, form, viewModel(mode))(fakeRequest, messages)
@@ -69,7 +69,7 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
       createView = createViewUsingForm,
       messageKeyPrefix = messageKeyPrefix,
       messageKey = pageTitle,
-      expectedFormAction = postCall.url
+      expectedFormAction = viewModel(NormalMode).postCall.url
     )
 
     behave like pageWithSubmitButton(createView())

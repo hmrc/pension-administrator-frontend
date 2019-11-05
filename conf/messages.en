@@ -45,6 +45,7 @@ error.country.required = Enter a country
 error.country.invalid = Enter a valid country
 error.country.invalid.eueea = Pension Scheme Administrators must be resident in the UK, EU or EEA
 error.addressYears.required = Select yes if {0} has used this contact address for at least 1 year
+error.individual.addressYears.required = Select yes if you have used this contact address for at least 1 year
 
 error.postcode.required = Enter the postcode
 error.postcode.length = The postcode cannot be more than 8 characters
@@ -92,9 +93,12 @@ site.not_entered = Not entered
 site.exit = Exit to GOV.UK
 site.error = Error:
 
+common.you = you
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
+individual.selectAddress.text = You can
+individual.selectAddressPostLink.text = if the address is not shown below.
 common.selectAddress.link = enter the address manually
 common.nino = National Insurance number
 common.enterNINO.hint = Example ’QQ 12 34 56 C’
@@ -103,7 +107,10 @@ common.error.nino.invalid = Enter a valid National Insurance number in the forma
 common.error.reason.invalid = The reason contains invalid characters
 common.previousAddressList.title = Select the previous address
 common.previousAddressList.heading = Select the previous address
-previousAddressList.heading = Select {0}’s previous contact address
+
+individual.previousAddressList.heading = Select your previous contact address
+
+previousAddressList.heading = Select the previous contact address for {0}
 common.previousAddress.checkyouranswers = Previous address
 common.previousAddressList.error.required = Select an address
 common.contactAddressList.title = Select your contact address
@@ -113,7 +120,11 @@ common.addressYears.under_a_year = No
 common.addressYears.over_a_year = Yes
 common.previousAddress.heading = Previous Address
 common.previousAddress.title = Previous Address
+
+individual.previousAddress.heading = Your previous contact address
+
 common.previousAddress.lede = This can be a residential or company address.
+individual.previousAddress.lede = You can change any part of the address if you need to.
 common.previousAddress.enterPostcode = You can {0}
 common.previousAddress.enterPostcode.link = enter the address manually
 common.address.enterPostcode.formLabel = Postcode
@@ -192,11 +203,15 @@ contactDetails.error.phone.length =  Enter a phone number using 24 characters or
 contactDetails.error.phone.invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 
 email.title = What is {0}’s email address?
+individual.email.title = What is your email address?
 email.visuallyHidden.text = {0}’s email address
 contact.body = We will only use this to contact {0} about pension scheme administration.
 
 phone.title = What is {0}’s phone number?
+individual.phone.title = What is your phone number?
 phone.visuallyHidden.text = {0}’s phone number
+
+individualPreviousAddress.visuallyHidden.text = your previous address
 
 businessDetails.title = What are your business details?
 businessDetails.heading = What are your business details?
@@ -443,9 +458,9 @@ confirmRegisteredAddress.error.required = Select yes if these details are correc
 
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
-whatYouWillNeed.body.text = Your information will be saved as you progress. If you sign out, your changes will be saved for 28 days. After that time you will need to start from the beginning.
+whatYouWillNeed.body.text = To register as a pension scheme administrator, you will need:
 whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
-whatYouWillNeed.body.item2 = your contact telephone number and email address
+whatYouWillNeed.body.item2 = your contact phone number and email address
 whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company
 whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
 whatYouWillNeed.company.body.item3 = the details of all the directors in the company
@@ -458,8 +473,8 @@ whatYouWillNeed.main.body.item2 = the phone number and email address of a contac
 whatYouWillNeed.main.body.item3 = the details of all the directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
 whatYouWillNeed.main.body.hint = The information you enter will be saved as you progress. If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
 
-individualDetailsCorrect.title = Are your details correct?
-individualDetailsCorrect.heading = Are your details correct?
+individualDetailsCorrect.title = Is this your name and address?
+individualDetailsCorrect.heading = Is this your name and address?
 individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
 individualDetailsCorrect.error.required = You must make a selection
 individualDetailsCorrect.name = Name
@@ -474,8 +489,8 @@ individualPreviousAddress.checkYourAnswersLabel = Previous address
 
 youWillNeedToUpdate.title = You need to update your details before registering
 youWillNeedToUpdate.heading = You need to update your details before registering
-youWillNeedToUpdate.text = If you are an individual or partnership and are not registered with Companies House
-youWillNeedToUpdate.link = you only need to inform HMRC
+youWillNeedToUpdate.text = If you need to update personal details, such as your name or address, you can
+youWillNeedToUpdate.link = tell HMRC about the changes you need to make
 
 companyReview.title = Review the company details
 companyReview.heading = Review the company details
@@ -484,10 +499,10 @@ companyReview.directors.heading = Company directors
 companyReview.directors.editLink = Add, delete or edit company directors
 companyReview.directors.changeLink = Change company directors
 
-individualPreviousAddressPostCodeLookup.title = Previous address
-individualPreviousAddressPostCodeLookup.heading = Previous address
+individualPreviousAddressPostCodeLookup.title = What was your previous contact address?
+individualPreviousAddressPostCodeLookup.heading = What was your previous contact address?
 individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
-individualPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+individualPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 
@@ -528,12 +543,17 @@ companyNotFound.businessNameChanged.individual = If you are an individual or a p
 companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) number does not match
 companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference number is made up of 10 or 13 numbers. If it is 13, only enter the last 10.
 
-declarationWorkingKnowledge.title = Do you have a working knowledge of pension scheme administrator duties?
-declarationWorkingKnowledge.heading = Do you have a working knowledge of pension scheme administrator duties?
+declarationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
+declarationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
 declarationWorkingKnowledge.workingKnowledge = I declare that I have a working knowledge of pension scheme administrator duties and liabilities.
 declarationWorkingKnowledge.adviser = I declare that I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge.
 declarationWorkingKnowledge.checkYourAnswersLabel = Do you have a working knowledge of pension scheme administrator duties?
 declarationWorkingKnowledge.error.required = You need to tell us if you have a working knowledge of pensions
+declarationWorkingKnowledge.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with this pension scheme. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
+declarationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.
+declarationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.
+
+
 
 declaration.title = Declaration
 declaration.heading = Declaration
@@ -547,7 +567,7 @@ declaration.invalid = You need to agree to all the declarations before you can c
 
 adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
-adviserName.p1 = This can be either the name of your pension practitioner or provider, or the company they work for.
+adviserName.p1 = This can be either the name of your pension advisor, or the company they work for.
 adviserName.error.required = Enter the name of your pension adviser
 adviserName.error.length = Enter a name using less than 108 characters
 adviserName.error.invalid = Enter a name using only letters
@@ -597,8 +617,8 @@ duplicateRegistration.heading = A different Government Gateway account has alrea
 duplicateRegistration.p1 = To access your scheme administrator details, you will need to log in with the Government Gateway user ID and password that were used when you were registered.
 duplicateRegistration.p2 = The user ID and password you need will be from another Government Gateway account you created.
 
-individualDateOfBirth.title = Your date of birth
-individualDateOfBirth.heading = Your date of birth
+individualDateOfBirth.heading = What is your date of birth?
+individualDateOfBirth.visuallyHidden.text = your date of birth
 
 submissionInvalid.title = Sorry, the service is unavailable
 submissionInvalid.heading = Sorry, the service is unavailable
@@ -606,24 +626,22 @@ submissionInvalid.body1 = We saved your answers. They will be available for 28 d
 submissionInvalid.body2 = We will use your contact details to contact you when the service is available again.
 exitToGovUK = Exit to Gov.UK
 
-individual.same.contact.address.title = Is this your contact address?
-individual.same.contact.address.heading = Is this your contact address?
-individual.same.contact.address.hint = This should be an address that HMRC can use to contact you.
+individual.same.contact.address.title = Can HMRC use this address to contact you?
+individual.same.contact.address.heading = Can HMRC use this address to contact you?
 individual.same.contact.address.error = Select yes if these details are correct
 
 company.same.contact.address.title = Can HMRC use this address to contact the company?
 company.same.contact.address.heading = Can HMRC use this address to contact {0}?
 
-individualContactAddressPostCodeLookup.title = What is the contact address
-individualContactAddressPostCodeLookup.heading = What is your contact address?
+individualContactAddressPostCodeLookup.title = Which address can we use to contact you?
+individualContactAddressPostCodeLookup.heading = Which address can we use to contact you?
 individualContactAddressPostCodeLookup.hint = This should be an address that HMRC can use to contact you.
-individualContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
+individualContactAddressPostCodeLookup.enterPostcode = You can {0}
 individualContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualContactAddressPostCodeLookup.formLabel = Postcode
 
 common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
-common.contactAddress.lede = This should be an address that HMRC can use to contact you.
 
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
@@ -641,7 +659,12 @@ cya.label.individual.same.contact.address = Is your contact address the same as 
 cya.label.contact.address = {0}’s contact address
 cya.label.company.same.contact.address = Is your contact address the same as your registered address?
 
+individualContactAddress.visuallyHidden.text = whether your contact address is the same as your registered address
+
 cya.label.common.same.contact.address = Is your contact address the same as your registered address?
+individualAddressYears.visuallyHidden.text = whether this has been your contact address for at least 1 year
+individualEmail.visuallyHidden.text = your email address
+individualPhone.visuallyHidden.text = your phone number
 
 partnership.sameContactAddress.title = Can HMRC use this address to contact the partnership?
 partnership.sameContactAddress.heading = Can HMRC use this address to contact {0}?

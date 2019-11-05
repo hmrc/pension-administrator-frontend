@@ -65,8 +65,8 @@ class CheckYourAnswersController @Inject()(
           helper.individualContactAddress.toSeq,
           helper.individualAddressYears(message).toSeq,
           helper.individualPreviousAddress.toSeq,
-          IndividualEmailId.row(Some(Link(routes.IndividualEmailController.onPageLoad(CheckMode).url))),
-          IndividualPhoneId.row(Some(Link(routes.IndividualPhoneController.onPageLoad(CheckMode).url)))
+          helper.individualEmail.toSeq,
+          helper.individualPhone.toSeq
         ).flatten
       )
       val sections = Seq(section)

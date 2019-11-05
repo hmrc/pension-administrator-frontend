@@ -22,9 +22,8 @@ import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 
 class DeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[DeclarationWorkingKnowledge] =
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> enumerable[DeclarationWorkingKnowledge]("declarationWorkingKnowledge.error.required")
+      "value" -> boolean("declarationWorkingKnowledge.error.required")
     )
 }
