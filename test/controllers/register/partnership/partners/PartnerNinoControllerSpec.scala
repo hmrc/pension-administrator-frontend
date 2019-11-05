@@ -48,13 +48,13 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
     "partners" -> Json.arr(
       Json.obj(
         PartnerNameId.toString ->
-          PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
+          PersonName("test first name", "test last name"),
         PartnerNinoId.toString ->
           Nino.Yes("CS700100A")
       ),
       Json.obj(
         PartnerNameId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now())
+          PersonName("test", "test")
       )
     )
   )

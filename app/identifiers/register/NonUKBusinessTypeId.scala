@@ -21,7 +21,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors.DirectorId
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerId
-import models.{PersonDetails, PersonName}
+import models.PersonName
 import models.register.NonUKBusinessType
 import models.register.NonUKBusinessType.{BusinessPartnership, Company}
 import play.api.libs.json.{JsResult, JsSuccess}

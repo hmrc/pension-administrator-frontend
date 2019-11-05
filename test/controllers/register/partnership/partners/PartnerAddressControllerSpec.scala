@@ -16,8 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
 import connectors.FakeUserAnswersCacheConnector
@@ -156,8 +154,8 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider()
 
-  private val jonathanDoe = PersonDetails("Jonathan", None, "Doe", LocalDate.now())
-  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.now())
+  private val jonathanDoe = PersonName("Jonathan", "Doe")
+  private val joeBloggs = PersonName("Joe", "Bloggs")
 
   private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
   private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")

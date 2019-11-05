@@ -16,8 +16,6 @@
 
 package controllers.register.company
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -25,7 +23,7 @@ import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, PersonDetails, UserType}
+import models.{NormalMode, PSAUser, PersonName, UserType}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.AnyContent
@@ -187,8 +185,8 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, None)(request, messages).toString
 
   // scalastyle:off magic.number
-  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = PersonName("John", "Doe")
+  private val joeBloggs = PersonName("Joe", "Bloggs")
   // scalastyle:on magic.number
 
   private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, index).url
@@ -201,7 +199,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
 
   private val maxDirectors = frontendAppConfig.maxDirectors
 
-  private def dataRetrievalAction(directors: PersonDetails*): FakeDataRetrievalAction = {
+  private def dataRetrievalAction(directors: PersonName*): FakeDataRetrievalAction = {
     val validData = Json.obj("directors" ->
       directors.map(d => Json.obj(
         DirectorNameId.toString -> Json.toJson(d),

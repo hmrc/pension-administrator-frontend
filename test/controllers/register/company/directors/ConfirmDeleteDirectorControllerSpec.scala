@@ -16,15 +16,13 @@
 
 package controllers.register.company.directors
 
-import java.time.LocalDate
-
 import base.CSRFRequest
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorNameId
-import models.{Index, NormalMode, PersonDetails}
+import models.{Index, NormalMode, PersonName}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
@@ -81,7 +79,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
 
 object ConfirmDeleteDirectorControllerSpec {
   val firstIndex = Index(0)
-  val person = PersonDetails("First", None, "Last", LocalDate.now())
+  val person = PersonName("First", "Last")
 
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()

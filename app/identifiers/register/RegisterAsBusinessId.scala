@@ -22,7 +22,7 @@ import identifiers.register.company.directors.DirectorId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerId
-import models.{PersonDetails, PersonName}
+import models.PersonName
 import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 

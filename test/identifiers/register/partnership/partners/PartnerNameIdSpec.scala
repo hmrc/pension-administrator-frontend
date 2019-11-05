@@ -16,42 +16,40 @@
 
 package identifiers.register.partnership.partners
 
-import java.time.LocalDate
-
 import identifiers.register.partnership.MoreThanTenPartnersId
-import models.PersonDetails
+import models.PersonName
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.UserAnswers
 
-class PartnerDetailsIdSpec extends WordSpec with OptionValues with MustMatchers {
+class PartnerNameIdSpec extends WordSpec with OptionValues with MustMatchers {
 
   "Cleanup" when {
 
-    val personDetails = PersonDetails("foo", None, "bar", LocalDate.now)
+    val personName = PersonName("foo", "bar")
 
-    val partnershipUserAnswers = UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerDetailsId.toString -> personDetails))))
+    val partnershipUserAnswers = UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerNameId.toString -> personName))))
       .set(MoreThanTenPartnersId)(true)
       .asOpt.value
 
-    "'PersonDetails' isDeleted is changed to true" must {
+    "'PersonName' isDeleted is changed to true" must {
 
       "the 'MoreThanTenPartners' flag should be removed" in {
 
         partnershipUserAnswers
-          .set(PartnerDetailsId(1))(personDetails.copy(isDeleted = true))
+          .set(PartnerNameId(1))(personName.copy(isDeleted = true))
           .asOpt.value
           .get(MoreThanTenPartnersId) must not be defined
 
       }
     }
 
-    "'PersonDetails' isDeleted remains false" must {
+    "'PersonName' isDeleted remains false" must {
 
       "the 'MoreThanTenPartners' flag remains the same" in {
 
         partnershipUserAnswers
-          .set(PartnerDetailsId(1))(personDetails.copy(firstName = "changedName"))
+          .set(PartnerNameId(1))(personName.copy(firstName = "changedName"))
           .asOpt.value
           .get(MoreThanTenPartnersId).value mustBe true
       }

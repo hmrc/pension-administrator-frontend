@@ -115,17 +115,6 @@ trait Variations extends FrontendController {
     }
   }
 
-  def setNewFlagPerson(id: TypedIdentifier[PersonDetails], mode: Mode, userAnswers: UserAnswers)
-                      (implicit request: DataRequest[_]): Future[JsValue] = {
-    if (mode == UpdateMode | mode == CheckUpdateMode) {
-      userAnswers.get(id).fold(doNothing) { details =>
-        cacheConnector.save(request.externalId, id, details.copy(isNew = true))
-      }
-    } else {
-      doNothing
-    }
-  }
-
   def setNewFlag(id: TypedIdentifier[PersonName], mode: Mode, userAnswers: UserAnswers)
                 (implicit request: DataRequest[_]): Future[JsValue] = {
     if (mode == UpdateMode | mode == CheckUpdateMode) {

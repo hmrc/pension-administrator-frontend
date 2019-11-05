@@ -24,7 +24,7 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.MoreThanTenPartnersId
 import identifiers.register.partnership.partners.PartnerNameId
 import models.requests.DataRequest
-import models.{Mode, PersonDetails, PersonName, UpdateMode}
+import models.{Mode, PersonName, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
